@@ -1,0 +1,15 @@
+; Engine configuration file.
+; This file is the entry point for the Godot project.
+
+config_version=5
+
+[application]
+
+config/name="Ninja Survival Godot"
+config/features=PackedStringArray("4.4", "Forward Plus")
+config/icon="res://icon.svg"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
