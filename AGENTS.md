@@ -46,32 +46,66 @@ At the end, run Compound Review and report mistakes, lessons, prevention rules, 
 - Do not write Unity/C#/MonoBehaviour/Prefab-based implementation plans for the Godot version.
 - Do not directly translate Unity C# line by line.
 - Use Godot Nodes, Scenes, signals, resources, and JSON/data files where appropriate.
-- Keep the first Godot MVP small.
+- Keep each Codex Goal small, even if the full planning MVP is broader.
 - Preserve user-made art and gameplay intent from the Unity archive.
 - Do not claim the Godot port is complete unless actual Godot files were created and tested.
 
-## Initial MVP Scope
+## Benchmarking Rule
 
-Include:
+Before new planning or implementation work, check the current benchmark notes and record:
 
-- Player 8-direction movement
-- Camera follow
-- One low-rank enemy chase behavior
-- Automatic projectile attack
-- Enemy hit/removal
-- Score UI
-- Basic game over flow
+```md
+## Benchmarking conclusion
 
-Exclude for MVP 1:
+- Must reflect:
+- Conditional:
+- Excluded:
+- Risks:
+- Validation method:
+```
 
-- Backpack system
-- Ninja school selection
-- Ninjutsu combination
-- Ultimate/step technique progression
-- Rest phase
-- Store/upgrades
-- Full animation set
-- Advanced infinite map
+Do not copy benchmarked games directly. Convert observed patterns into the confirmed `닌자 서바이벌` loop.
+
+## Current Planning MVP Scope
+
+The older initial MVP scope is now treated as `MVP-0: basic combat foundation`.
+
+The current planning MVP is a staged validation slice, not a finished game. It validates whether these systems connect:
+
+- Basic combat foundation
+- Combat DDD: kill combo, stylish score, reward absorption feedback
+- Four shallow ninja schools: 봉마류, 천술류, 귀인류, 흑영류
+- Stage structure: 5/10/15 minute mid-boss checks and a 20 minute final boss target
+- Stage-end result cards for damage, healing, defense, status application, and combo/kill contribution
+- Rest phase: combat summary, loot, backpack cleanup, combination hints, shop/upgrade, fate/mission choice, next-stage preview
+- Backpack basics: temporary storage, slot limit, adjacency synergy, combination hints
+- Fate choices that change the rules of the current run
+- Final result: ninja rank, stylish score, MVP ninjutsu/equipment, fate result, short ending text, Ninja Soul reward
+
+Do not implement this full planning MVP in one Codex task. Split it into staged Goals documented in `MVP_ROADMAP.md`.
+
+## MVP Stage Order
+
+1. `MVP-0` Basic combat foundation
+2. `MVP-1` Combat DDD feedback
+3. `MVP-2` Four shallow ninja schools
+4. `MVP-3` Stage result and rest-loop skeleton
+5. `MVP-4` Backpack and combination basics
+6. `MVP-5` Final run loop and meta reward skeleton
+
+## Explicit MVP Exclusions
+
+For the current staged MVP, exclude:
+
+- Full skill pools for all four schools
+- Second/third-stage combinations
+- Complex backpack shapes, rotation, deep set effects, and deep curse systems
+- Full ending branches or ending CGs
+- Complete shop economy, reroll economy, or final balance tuning
+- Polished UI animation and full art production
+- Complex boss pattern sets
+
+Use card/text/placeholder UI where it is enough to validate the loop.
 
 ## Expected Structure
 
@@ -83,6 +117,8 @@ scenes/
   projectiles/
   ui/
   stages/
+  rest/
+  results/
 scripts/
   core/
   player/
@@ -90,11 +126,17 @@ scripts/
   combat/
   ui/
   data/
+  schools/
+  rest/
+  results/
 data/
   player/
   enemies/
   weapons/
+  ninjutsu/
+  schools/
   stages/
+  fates/
 assets/
   sprites/
   animations/
