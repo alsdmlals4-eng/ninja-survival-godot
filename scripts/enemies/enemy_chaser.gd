@@ -39,7 +39,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity = Vector2.ZERO
 
-	if offset.length_squared() <= contact_range * contact_range:
+	if _is_touching_target() or offset.length_squared() <= contact_range * contact_range:
 		_try_contact_damage()
 
 
@@ -60,6 +60,14 @@ func take_damage(amount: int) -> void:
 
 func is_dead() -> bool:
 	return _dead
+
+
+func _is_touching_target() -> bool:
+	for collision_index in range(get_slide_collision_count()):
+		var collision := get_slide_collision(collision_index)
+		if collision.get_collider() == target:
+			return true
+	return false
 
 
 func _try_contact_damage() -> void:
