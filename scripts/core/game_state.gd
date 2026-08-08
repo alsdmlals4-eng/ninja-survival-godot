@@ -7,5 +7,7 @@ var score: int = 0
 var kill_count: int = 0
 
 
-func register_kill(_points: int = 100) -> void:
-	pass
+func register_kill(points: int = 100) -> void:
+	kill_count += 1
+	score += max(points, 0)
+	score_changed.emit(score, kill_count)
