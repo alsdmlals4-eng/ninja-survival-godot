@@ -10,6 +10,14 @@ class DamageTarget:
 		damage_taken += amount
 
 
+class DamageBodyTarget:
+	extends CharacterBody2D
+	var damage_taken: int = 0
+
+	func take_damage(amount: int) -> void:
+		damage_taken += amount
+
+
 var death_count: int = 0
 
 
@@ -66,6 +74,40 @@ func test_contact_damage_is_cooldown_gated() -> void:
 
 	enemy._physics_process(0.65)
 	assert_eq(target.damage_taken, 14)
+
+
+func test_physics_contact_applies_damage_when_bodies_collide() -> void:
+	var enemy = EnemyScript.new()
+	enemy.collision_layer = 2
+	enemy.collision_mask = 1
+	enemy.move_speed = 90.0
+	enemy.contact_damage = 10
+	enemy.contact_range = 28.0
+	_add_circle_shape(enemy, 14.0)
+	add_child_autofree(enemy)
+
+	var target = DamageBodyTarget.new()
+	target.collision_layer = 1
+	target.collision_mask = 2
+	_add_circle_shape(target, 14.0)
+	add_child_autofree(target)
+
+	target.global_position = Vector2.ZERO
+	enemy.global_position = Vector2(40.0, 0.0)
+	enemy.set_target(target)
+
+	for _frame in range(30):
+		await get_tree().physics_frame
+
+	assert_gt(target.damage_taken, 0, "real CharacterBody2D contact should deal damage")
+
+
+func _add_circle_shape(body: CharacterBody2D, radius: float) -> void:
+	var collision_shape := CollisionShape2D.new()
+	var circle := CircleShape2D.new()
+	circle.radius = radius
+	collision_shape.shape = circle
+	body.add_child(collision_shape)
 
 
 func _on_enemy_died(_enemy: Node) -> void:
