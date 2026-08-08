@@ -147,12 +147,21 @@ func test_main_wires_enemies_score_health_and_game_over() -> void:
 	state.register_kill(100)
 	assert_eq(score_label.text, "KILLS 1  SCORE 100")
 
+	var first_enemy = enemies[0]
+	first_enemy.take_damage(first_enemy.max_health)
+	assert_eq(state.kill_count, 2)
+	assert_eq(score_label.text, "KILLS 2  SCORE 200")
+
 	player.take_damage(25)
 	assert_eq(health_label.text, "HP 75 / 100")
 
 	player.take_damage(1000)
 	assert_true(main.game_over)
 	assert_true(game_over_panel.visible)
+	assert_eq(player.process_mode, Node.PROCESS_MODE_DISABLED)
+	for enemy in enemies:
+		if is_instance_valid(enemy) and not enemy.is_queued_for_deletion():
+			assert_eq(enemy.process_mode, Node.PROCESS_MODE_DISABLED)
 
 
 func _spawn_main() -> Node:
