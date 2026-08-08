@@ -1,11 +1,8 @@
-# Godot generated/imported files
+# Godot generated/imported cache files
 .godot/
 .import/
 export.cfg
 export_presets.cfg
-
-# Imported asset metadata from older Godot versions
-*.import
 
 # Mono/C# generated files, if accidentally created
 .mono/
