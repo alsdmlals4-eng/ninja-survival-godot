@@ -39,6 +39,15 @@ jobs:
         shell: bash
         run: ./Godot_v4.7.1-stable_linux.x86_64 --headless --path . --import
 
+      - name: Smoke test main scene
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./Godot_v4.7.1-stable_linux.x86_64 --headless --path . --scene res://scenes/main/main_scene.tscn --quit-after 120 2>&1 | tee smoke-output.log
+          if grep -E "SCRIPT ERROR:|ERROR:" smoke-output.log; then
+            exit 1
+          fi
+
       - name: Run GUT
         shell: bash
         run: |
