@@ -1,13 +1,27 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/player/player_controller.gd" id="1_player"]
 [ext_resource type="Script" path="res://scripts/combat/auto_attack_controller.gd" id="2_attack"]
+[ext_resource type="PackedScene" path="res://scenes/projectiles/projectile_basic.tscn" id="3_projectile"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_player"]
+radius = 14.0
 
 [node name="Player" type="CharacterBody2D"]
+collision_layer = 1
+collision_mask = 2
 script = ExtResource("1_player")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_player")
+
+[node name="Visual" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+color = Color(0.25, 0.75, 1, 1)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 enabled = true
 
 [node name="AutoAttack" type="Node" parent="."]
 script = ExtResource("2_attack")
+projectile_scene = ExtResource("3_projectile")
