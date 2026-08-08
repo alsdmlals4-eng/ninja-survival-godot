@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/player/player_controller.gd" id="1_player"]
+[ext_resource type="Script" path="res://scripts/combat/auto_attack_controller.gd" id="2_attack"]
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_player")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+enabled = true
+
+[node name="AutoAttack" type="Node" parent="."]
+script = ExtResource("2_attack")
