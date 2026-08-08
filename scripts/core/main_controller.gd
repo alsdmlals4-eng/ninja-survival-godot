@@ -38,4 +38,12 @@ func _on_player_died() -> void:
 	if game_over:
 		return
 	game_over = true
+	_stop_gameplay()
 	hud.show_game_over()
+
+
+func _stop_gameplay() -> void:
+	for child in get_children():
+		if child == game_state or child == hud:
+			continue
+		child.process_mode = Node.PROCESS_MODE_DISABLED
