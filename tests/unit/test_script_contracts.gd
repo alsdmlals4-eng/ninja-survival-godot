@@ -2,10 +2,12 @@ extends GutTest
 
 const REQUIRED_SCRIPTS := [
 	"res://scripts/core/game_state.gd",
+	"res://scripts/core/main_controller.gd",
 	"res://scripts/player/player_controller.gd",
 	"res://scripts/enemies/enemy_chaser.gd",
 	"res://scripts/combat/auto_attack_controller.gd",
 	"res://scripts/combat/projectile.gd",
+	"res://scripts/ui/hud.gd",
 ]
 
 
@@ -20,6 +22,12 @@ func test_game_state_contract() -> void:
 	assert_true(_has_property(state, "score"))
 	assert_true(_has_property(state, "kill_count"))
 	state.free()
+
+
+func test_main_controller_contract() -> void:
+	var main = load("res://scripts/core/main_controller.gd").new()
+	assert_true(_has_property(main, "game_over"))
+	main.free()
 
 
 func test_player_controller_contract() -> void:
@@ -47,18 +55,31 @@ func test_enemy_chaser_contract() -> void:
 func test_auto_attack_controller_contract() -> void:
 	var controller = load("res://scripts/combat/auto_attack_controller.gd").new()
 	assert_true(controller.has_method("find_nearest_target"))
+	assert_true(controller.has_method("fire_once"))
 	assert_true(_has_property(controller, "attack_interval"))
 	assert_true(_has_property(controller, "projectile_scene"))
+	assert_true(_has_property(controller, "projectile_speed"))
+	assert_true(_has_property(controller, "projectile_damage"))
 	controller.free()
 
 
 func test_projectile_contract() -> void:
 	var projectile = load("res://scripts/combat/projectile.gd").new()
 	assert_true(projectile.has_method("configure"))
+	assert_true(projectile.has_method("hit_body"))
 	assert_true(_has_property(projectile, "direction"))
 	assert_true(_has_property(projectile, "speed"))
 	assert_true(_has_property(projectile, "damage"))
+	assert_true(_has_property(projectile, "lifetime"))
 	projectile.free()
+
+
+func test_hud_contract() -> void:
+	var hud = load("res://scripts/ui/hud.gd").new()
+	assert_true(hud.has_method("set_health"))
+	assert_true(hud.has_method("set_score"))
+	assert_true(hud.has_method("show_game_over"))
+	hud.free()
 
 
 func _has_property(instance: Object, property_name: StringName) -> bool:
