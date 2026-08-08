@@ -5,5 +5,19 @@ class_name AutoAttackController
 @export var projectile_scene: PackedScene
 
 
-func find_nearest_target(_candidates: Array, _origin: Vector2) -> Node2D:
-	return null
+func find_nearest_target(candidates: Array, origin: Vector2) -> Node2D:
+	var nearest: Node2D = null
+	var nearest_distance: float = INF
+
+	for candidate in candidates:
+		if not is_instance_valid(candidate) or not candidate is Node2D:
+			continue
+		if candidate.has_method("is_dead") and candidate.is_dead():
+			continue
+
+		var distance := origin.distance_squared_to(candidate.global_position)
+		if distance < nearest_distance:
+			nearest_distance = distance
+			nearest = candidate
+
+	return nearest
