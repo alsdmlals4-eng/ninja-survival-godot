@@ -21,6 +21,7 @@ jobs:
           set -euo pipefail
           curl -L --fail -o godot.zip https://github.com/godotengine/godot-builds/releases/download/4.7.1-stable/Godot_v4.7.1-stable_linux.x86_64.zip
           unzip -q godot.zip
+          rm -f godot.zip
           chmod +x Godot_v4.7.1-stable_linux.x86_64
           ./Godot_v4.7.1-stable_linux.x86_64 --version
 
@@ -32,11 +33,15 @@ jobs:
           unzip -q gut.zip
           mkdir -p addons
           cp -R Gut-9.7.1/addons/gut addons/gut
+          rm -rf Gut-9.7.1 gut.zip
 
       - name: Import project
         shell: bash
-        run: ./Godot_v4.7.1-stable_linux.x86_64 --headless --editor --path . --quit-after 2
+        run: ./Godot_v4.7.1-stable_linux.x86_64 --headless --path . --import
 
       - name: Run GUT
         shell: bash
-        run: ./Godot_v4.7.1-stable_linux.x86_64 --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/unit -ginclude_subdirs -gexit
+        run: |
+          set -euo pipefail
+          ./Godot_v4.7.1-stable_linux.x86_64 --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/unit -ginclude_subdirs -gexit 2>&1 | tee gut-output.log
+          grep -q "test_script_contracts.gd" gut-output.log
