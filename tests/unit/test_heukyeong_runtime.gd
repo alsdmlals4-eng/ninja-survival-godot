@@ -100,6 +100,18 @@ func test_marks_do_not_expire_with_time_and_charge_is_live_total() -> void:
 	assert_eq(runtime.get_total_active_marks(), 3)
 
 
+func test_two_live_enemies_can_reach_shadow_execution_threshold() -> void:
+	var runtime = _make_runtime()
+	if runtime == null:
+		return
+	var first = _enemy(runtime.world, Vector2.ZERO, 200)
+	var second = _enemy(runtime.world, Vector2(50, 0), 200)
+	runtime.apply_needle_hit(first, true)
+	runtime.apply_needle_hit(second, false)
+	assert_eq(runtime.get_total_active_marks(), 3)
+	assert_true(runtime.is_ultimate_ready(), "Two-enemy MVP waves must be able to reach Shadow Execution")
+
+
 func test_queued_enemy_is_pruned_from_live_mark_charge() -> void:
 	var runtime = _make_runtime()
 	if runtime == null:
