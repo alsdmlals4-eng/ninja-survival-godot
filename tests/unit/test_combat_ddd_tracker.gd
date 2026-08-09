@@ -37,6 +37,17 @@ func test_timeout_resets_current_combo_but_preserves_maximum() -> void:
 	assert_eq(tracker.max_combo, 2)
 
 
+func test_non_positive_delta_does_not_advance_combo_timeout() -> void:
+	var tracker = _make_tracker()
+	if tracker == null:
+		return
+	tracker.register_kill()
+	tracker._process(0.0)
+	tracker._process(-1.0)
+	assert_eq(tracker.combo_count, 1)
+	assert_eq(tracker.combo_time_remaining, 2.5)
+
+
 func test_kill_after_timeout_restarts_at_one() -> void:
 	var tracker = _make_tracker()
 	if tracker == null:
