@@ -371,10 +371,10 @@ func _valid_enemies() -> Array[Node2D]:
 
 func _nearest_enemy() -> Node2D:
 	var nearest: Node2D = null
-	var nearest_distance := INF
-	var origin := player.global_position if is_instance_valid(player) else global_position
+	var nearest_distance: float = INF
+	var origin: Vector2 = player.global_position if is_instance_valid(player) else Vector2.ZERO
 	for enemy in _valid_enemies():
-		var distance := origin.distance_squared_to(enemy.global_position)
+		var distance: float = origin.distance_squared_to(enemy.global_position)
 		if distance < nearest_distance:
 			nearest_distance = distance
 			nearest = enemy
