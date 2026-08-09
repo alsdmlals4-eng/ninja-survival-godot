@@ -18,6 +18,7 @@ const MVP2_SELECTOR_PATH := "res://scripts/ui/school_selection_ui.gd"
 const MVP2_BONGMA_RUNTIME_PATH := "res://scripts/schools/bongma_runtime.gd"
 const MVP2_BONGMA_FAMILIAR_PATH := "res://scripts/schools/bongma_familiar.gd"
 const MVP2_CHEONSUL_RUNTIME_PATH := "res://scripts/schools/cheonsul_runtime.gd"
+const MVP2_GUIIN_RUNTIME_PATH := "res://scripts/schools/guiin_runtime.gd"
 const MVP2_BADGE_PATH := "res://scripts/ui/enemy_effect_badge.gd"
 
 
@@ -201,6 +202,18 @@ func test_cheonsul_runtime_contract() -> void:
 	for method_name in ["apply_flame_cast", "apply_token", "has_status", "try_use_ultimate", "is_ultimate_ready"]:
 		assert_true(runtime.has_method(method_name), "Missing Cheonsul method: %s" % method_name)
 	assert_true(_has_property(runtime, "reaction_count"))
+	runtime.free()
+
+
+func test_guiin_runtime_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP2_GUIIN_RUNTIME_PATH), "Missing Guiin runtime")
+	if not ResourceLoader.exists(MVP2_GUIIN_RUNTIME_PATH):
+		return
+	var runtime = load(MVP2_GUIIN_RUNTIME_PATH).new()
+	for method_name in ["perform_melee_pulse", "current_pulse_interval", "current_pulse_radius", "current_pulse_damage", "try_use_ultimate", "is_ultimate_ready"]:
+		assert_true(runtime.has_method(method_name), "Missing Guiin method: %s" % method_name)
+	for property_name in ["gwihyeol", "time_since_gain", "ultimate_time_remaining"]:
+		assert_true(_has_property(runtime, property_name), "Missing Guiin property: %s" % property_name)
 	runtime.free()
 
 
