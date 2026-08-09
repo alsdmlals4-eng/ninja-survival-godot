@@ -110,7 +110,7 @@ func test_wet_then_shock_reacts_once_and_chain_is_non_recursive() -> void:
 	assert_eq(target.health, 90)
 	assert_eq(chain.health, 94)
 	assert_eq(far_enemy.health, 100)
-	assert_eq(runtime.reaction_count, 1)
+	assert_eq(runtime.reaction_count, 1.0)
 	assert_false(runtime.has_status(target, &"wet"))
 	assert_false(runtime.has_status(target, &"shock"))
 	assert_false(runtime.has_status(chain, &"wet"))
@@ -124,11 +124,11 @@ func test_shock_then_wet_waits_for_next_shock() -> void:
 	var enemy = _enemy(runtime.world, Vector2.ZERO)
 	assert_false(runtime.apply_token(enemy, &"shock"))
 	assert_false(runtime.apply_token(enemy, &"wet"))
-	assert_eq(runtime.reaction_count, 0)
+	assert_eq(runtime.reaction_count, 0.0)
 	assert_true(runtime.has_status(enemy, &"shock"))
 	assert_true(runtime.has_status(enemy, &"wet"))
 	assert_true(runtime.apply_token(enemy, &"shock"))
-	assert_eq(runtime.reaction_count, 1)
+	assert_eq(runtime.reaction_count, 1.0)
 
 
 func test_fractional_reaction_readiness_uses_resource_and_ultimate_gain() -> void:
@@ -158,14 +158,14 @@ func test_reaction_charge_clamps_at_three_and_ultimate_clears_statuses() -> void
 	for _index in range(4):
 		runtime.apply_token(enemy, &"wet")
 		runtime.apply_token(enemy, &"shock")
-	assert_eq(runtime.reaction_count, 3)
+	assert_eq(runtime.reaction_count, 3.0)
 	assert_true(runtime.is_ultimate_ready())
 
 	runtime.apply_token(enemy, &"wet")
 	var health_before: int = enemy.health
 	assert_true(runtime.try_use_ultimate())
 	assert_eq(enemy.health, health_before - 18)
-	assert_eq(runtime.reaction_count, 0)
+	assert_eq(runtime.reaction_count, 0.0)
 	assert_false(runtime.has_status(enemy, &"wet"))
 	assert_false(runtime.is_ultimate_ready())
 
@@ -238,10 +238,10 @@ func test_ultimate_without_status_target_preserves_ready_charge() -> void:
 	var runtime = _make_runtime()
 	if runtime == null:
 		return
-	runtime.reaction_count = 3
+	runtime.reaction_count = 3.0
 	assert_true(runtime.is_ultimate_ready())
 	assert_false(runtime.try_use_ultimate())
-	assert_eq(runtime.reaction_count, 3)
+	assert_eq(runtime.reaction_count, 3.0)
 
 
 func test_deactivate_clears_owned_state_and_badges() -> void:
@@ -270,7 +270,7 @@ func test_automatic_cast_waits_one_point_eight_seconds_and_alternates_tokens() -
 	assert_eq(enemy.health, 194)
 	assert_true(runtime.has_status(enemy, &"wet"))
 	runtime._process(1.80)
-	assert_eq(runtime.reaction_count, 1)
+	assert_eq(runtime.reaction_count, 1.0)
 
 
 func test_automatic_shock_prioritizes_existing_wet_target() -> void:
@@ -285,6 +285,6 @@ func test_automatic_shock_prioritizes_existing_wet_target() -> void:
 
 	runtime._process(0.01)
 
-	assert_eq(runtime.reaction_count, 1, "SHOCK should chase a live WET target so reaction charge progresses reliably")
+	assert_eq(runtime.reaction_count, 1.0, "SHOCK should chase a live WET target so reaction charge progresses reliably")
 	assert_lt(wet_enemy.health, 200)
 	assert_eq(fresh_near_enemy.health, 200, "The closer fresh enemy should not steal the SHOCK cast from an existing WET target")
