@@ -9,11 +9,16 @@ const REQUIRED_SCRIPTS := [
 	"res://scripts/combat/projectile.gd",
 	"res://scripts/ui/hud.gd",
 ]
+const MVP1_TRACKER_PATH := "res://scripts/combat/combat_ddd_tracker.gd"
 
 
 func test_mvp0_script_resources_exist() -> void:
 	for path in REQUIRED_SCRIPTS:
 		assert_true(ResourceLoader.exists(path), "Missing MVP-0 script: %s" % path)
+
+
+func test_mvp1_tracker_resource_exists() -> void:
+	assert_true(ResourceLoader.exists(MVP1_TRACKER_PATH), "Missing MVP-1 tracker script")
 
 
 func test_game_state_contract() -> void:
@@ -72,6 +77,21 @@ func test_projectile_contract() -> void:
 	assert_true(_has_property(projectile, "damage"))
 	assert_true(_has_property(projectile, "lifetime"))
 	projectile.free()
+
+
+func test_combat_ddd_tracker_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP1_TRACKER_PATH), "Missing MVP-1 tracker script")
+	if not ResourceLoader.exists(MVP1_TRACKER_PATH):
+		return
+	var tracker = load(MVP1_TRACKER_PATH).new()
+	assert_true(tracker.has_method("register_kill"))
+	assert_true(tracker.has_method("register_reward_collected"))
+	assert_true(_has_property(tracker, "combo_count"))
+	assert_true(_has_property(tracker, "max_combo"))
+	assert_true(_has_property(tracker, "stylish_score"))
+	assert_true(_has_property(tracker, "reward_count"))
+	assert_true(_has_property(tracker, "combo_time_remaining"))
+	tracker.free()
 
 
 func test_hud_contract() -> void:
