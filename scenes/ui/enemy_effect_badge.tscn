@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/enemy_effect_badge.gd" id="1_badge"]
+
+[node name="EnemyEffectBadge" type="Label"]
+offset_left = -36.0
+offset_top = -46.0
+offset_right = 36.0
+offset_bottom = -24.0
+mouse_filter = 2
+text = ""
+horizontal_alignment = 1
+script = ExtResource("1_badge")
