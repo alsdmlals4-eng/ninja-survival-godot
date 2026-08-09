@@ -4,17 +4,17 @@
 
 Approved design for MVP-3. This spec starts from `main` at `e0150fa83512fb01c01569ed2b7a925dec81ec60`, after MVP-2 four-school combat identities were merged.
 
-The user approved the design section-by-section. The selected architecture is the recommended isolated-subsystem approach rather than a monolithic MVP-3 manager or scene-per-step flow.
+The selected approach is an isolated-subsystem architecture: `MainController` remains composition/orchestration while stage flow, build state, shop, fate, telemetry, combat resolution, and rest UI have separate responsibilities.
 
 ## Goal
 
-Validate the core build-decision loop:
+Validate the build-decision loop:
 
 `fight -> midboss -> understand results -> spend/reshape build -> accept a fate tradeoff -> preview next fight -> re-enter combat`
 
-MVP-3 succeeds when, after each five-minute combat segment, the player can look at concrete contribution data and make a meaningful decision about what to strengthen before the next segment.
+MVP-3 succeeds when the player can use concrete contribution data from the previous segment to decide what to strengthen before the next one.
 
-The target slice contains three combat segments and three rests. It ends after the third rest preview rather than pulling the 20-minute final boss/final-result loop forward from MVP-5.
+The slice contains three five-minute combat segments and three rests. It ends after the third rest preview. The 20-minute final boss/final-result/Ninja Soul loop remains MVP-5 work.
 
 ## Scope
 
@@ -26,10 +26,10 @@ MVP-3 includes:
 - five contribution axes,
 - GOLD as a separate run currency,
 - a real shop with three offers, buy, sell, and paid reroll,
-- a non-spatial owned-item list that becomes backpack content in MVP-4,
+- a non-spatial owned-item list reused by MVP-4 backpack work,
 - eight initial shop items,
 - five fate choices with visible benefit and cost,
-- one fate choice required at each rest, with choices accumulating for the run,
+- one mandatory fate choice at each rest, accumulated for the run,
 - a next-combat preview,
 - deterministic growth hints,
 - automated tests with an injectable segment duration.
@@ -38,89 +38,77 @@ MVP-3 includes:
 
 Do not add:
 
-- the backpack grid,
-- item rotation, size, shape, placement, or adjacency logic,
-- backpack set bonuses,
+- backpack grid, item rotation, size, shape, placement, adjacency, or set bonuses,
 - deep combination-ninjutsu mechanics,
-- a general loot-drop inventory pipeline,
-- shop level,
-- discounts,
-- buyback,
-- offer locking,
-- complex weighted shop probability tables,
+- a general combat loot-drop inventory pipeline,
+- shop level, discounts, buyback, offer locking, or weighted shop tables,
 - complex fate branching,
 - permanent progression or Ninja Soul,
-- a 20-minute final boss,
-- final rank/result/ending screens,
+- a 20-minute final boss or final rank/result/ending screen,
 - a visible debug time-skip UI,
 - unrelated refactors,
 - new shared `project.godot` InputMap entries or autoloads unless implementation proves they are strictly necessary and the user separately approves that change.
 
-## Product decisions already approved
+## Approved product decisions
 
 - Midboss depth: one simple archetype, numerically stronger at 5/10/15 minutes.
-- Boss transition: at the five-minute boundary, stop new normal waves, keep living normal enemies for boss pressure, and require the boss kill before rest.
+- Boss transition: at the five-minute boundary stop new normal waves, keep living normal enemies for boss pressure, and require the boss kill before rest.
 - Shop: GOLD economy plus actual buy/sell/reroll.
-- Shop inventory: real reusable item definitions now; spatial backpack behavior is deferred to MVP-4.
+- Inventory: real reusable item definitions now; spatial backpack behavior is deferred to MVP-4.
 - Owned-item capacity: 6 total items.
 - Duplicate cap: at most 2 copies of one item id.
 - Shop offers: 3 per rest.
 - Fate: 3 candidates at each rest, one mandatory selection, selected fates persist and do not reappear.
 - Contribution contract: damage, healing, defense, status, kill/combo.
 - Rest sequence: `RESULT -> SHOP -> FATE -> PREVIEW`.
-- Third preview ends the MVP-3 slice with `MVP-3 LOOP COMPLETE` and restart rather than starting a fourth combat segment.
+- Third preview ends with `MVP-3 LOOP COMPLETE` and restart instead of starting a fourth segment.
 
 ## Architecture
 
-Keep `MainController` as composition/orchestration only. Do not turn it into the owner of stage, shop, fate, item, or telemetry rules.
-
 ### `StageFlowController`
 
-Owns the run phase and segment clock.
+Owns run phase and combat clock.
 
 States:
 
 `SCHOOL_SELECT -> COMBAT -> BOSS -> RESULT -> SHOP -> FATE -> PREVIEW`
 
-`PREVIEW` returns to `COMBAT` after rests 1 and 2. After rest 3 it enters terminal MVP-3 completion state instead.
+`PREVIEW` returns to `COMBAT` after rests 1 and 2. After rest 3 it enters terminal completion state.
 
 Responsibilities:
 
-- start the first segment only after school selection,
-- advance the combat clock only in `COMBAT`,
-- stop normal spawning at the segment boundary,
-- request one boss spawn,
+- start segment 1 only after school selection,
+- advance combat time only in `COMBAT`,
+- stop normal spawning at a five-minute boundary,
+- request exactly one boss,
 - wait for boss death,
-- snapshot the segment result after all boss-death rewards/events are registered,
+- snapshot the segment after boss-death rewards/callbacks complete,
 - pause gameplay for rest,
-- advance rest states only through their valid UI actions,
-- reset segment-only telemetry when starting a new segment,
-- preserve run-level build, school resource, score, stylish state, GOLD, owned items, and fate state,
-- terminate the slice after the third preview.
+- advance rest states only through valid UI actions,
+- reset segment telemetry before the next combat begins,
+- preserve run-level score, DDD state, school resource, HP, GOLD, items, and fates,
+- terminate after the third preview.
 
-Production `segment_duration_seconds` is `300.0`. Tests may construct/configure the controller with a shorter duration. No production debug control changes this value during play.
-
-The cumulative combat milestones are therefore 5:00, 10:00, and 15:00 of combat time. Boss and rest time do not advance the combat clock.
+Production `segment_duration_seconds` is `300.0`. Tests may inject a shorter value. Boss/rest time does not advance the combat clock, so the milestones are 5:00, 10:00, and 15:00 of combat time.
 
 ### `RunBuildState`
 
-Owns run-level build/economy state:
+Single source of truth for:
 
 - integer GOLD balance,
 - owned item ids/counts,
 - selected fate ids,
-- derived `RunModifierSet`,
-- pending per-rest shop state where appropriate.
+- derived `RunModifierSet`.
 
-It is the single source of truth for whether a purchase, sale, or fate change is legal.
+All purchases, sales, and fate mutations are validated here or through a narrow method that delegates to it.
 
-Whenever owned items or fates change, it recomputes modifiers from source data. It never repeatedly mutates an already-modified value.
+Modifiers are always recomputed from owned items + selected fates. Never repeatedly mutate already-modified runtime values.
 
 ### `RunModifierSet`
 
-A derived immutable-style snapshot used by player/school combat code.
+Derived modifier snapshot consumed by player/school systems.
 
-Supported channels for MVP-3:
+MVP-3 channels:
 
 - `move_speed_pct`,
 - `max_health_flat`,
@@ -131,92 +119,101 @@ Supported channels for MVP-3:
 - `school_damage_pct`,
 - `school_resource_gain_pct`,
 - `ultimate_charge_gain_pct`,
-- `ultimate_damage_pct`,
+- `ultimate_power_pct`,
+- `school_status_effect_pct`,
 - `evasion_chance`,
-- school-token-specific fields for Bongma familiar interval, Cheonsul reaction damage, Guiin melee radius, and Heukyeong marked-target critical chance.
+- Bongma familiar-interval modifier,
+- Cheonsul reaction-damage modifier,
+- Guiin melee-radius modifier,
+- Heukyeong marked-target critical-chance modifier,
+- Heukyeong mark-duration modifier.
 
-Percentage contributions in the same channel are additive. A normal multiplier is computed as `1.0 + summed_pct`, then clamped to a safe non-negative range where needed.
+Contributions within one percentage channel are additive. Distinct channels are then applied in a fixed order. For example, an ultimate hit resolves as:
 
-Player maximum HP is resolved as:
+`base_damage * (1 + school_damage_pct) * (1 + ultimate_power_pct)`
 
-`roundi((base_max_health + max_health_flat) * (1.0 + max_health_pct))`
+Player maximum HP resolves as:
 
-Movement is resolved from the player's base move speed times the final movement multiplier.
+`roundi((base_max_health + max_health_flat) * (1 + max_health_pct))`
 
-Selling/removing a source triggers a full recomputation. This avoids stacking-order bugs.
+Movement resolves from base move speed times the movement multiplier. Incoming damage and healing use their corresponding final multipliers.
+
+Recomputing after a sale/removal prevents order-dependent stacking bugs.
 
 ### `ShopController`
 
-Owns shop offer generation and per-rest reroll cost progression. It delegates balance/item legality to `RunBuildState`.
+Owns offer generation and reroll progression. It delegates wallet/inventory legality to `RunBuildState`.
 
-Responsibilities:
+Rules:
 
-- produce exactly 3 distinct item ids per offer roll,
-- never include an item already at its two-copy cap,
-- allow repeats across separate rerolls/rests,
-- reject unaffordable or capacity-invalid purchases without changing state,
-- sell one owned copy at its fixed sell value,
-- charge reroll before replacing offers,
-- reset reroll price when entering a new rest.
+- exactly 3 distinct item ids per roll,
+- exclude an item already at its two-copy cap,
+- repeats are allowed across different rolls/rests,
+- uniform selection is sufficient; no rarity weights,
+- purchase failure is atomic,
+- sale removes one owned copy and refunds its fixed sell value,
+- reroll cost resets at each new rest.
 
-No weighted rarity table is required in MVP-3. Eligible items may be selected uniformly.
+For deterministic tests, candidate generation accepts an injected/seeded `RandomNumberGenerator` or equivalent deterministic picker.
 
 ### `FateController`
 
-Owns the five-fate catalog and per-rest candidate generation.
+Owns five fate definitions and candidate generation.
 
-Responsibilities:
+Rules:
 
 - exclude already selected fate ids,
-- show exactly 3 candidates,
-- require one selection,
-- add the selected fate to `RunBuildState`,
-- never allow replacement/removal during the run.
+- offer exactly 3 distinct candidates,
+- require exactly one selection,
+- selected fate is added to `RunBuildState` immediately,
+- no removal/replacement during the run.
 
-There are five total fates. At rest 3, exactly three unselected fates remain and all three are shown.
+At rest 3 exactly three unselected fates remain, so all three are shown.
+
+Candidate generation is seedable/injectable for tests.
 
 ### `CombatContributionTracker`
 
-Owns segment telemetry plus the frozen result snapshot.
+Owns segment telemetry and the frozen result snapshot.
 
-Segment axes:
+Axes:
 
 - actual damage dealt,
 - actual healing received,
 - actual incoming damage prevented,
 - successful status/reaction application events,
-- kills and maximum combo.
+- kills and segment maximum combo.
 
-It also snapshots:
+Also snapshot:
 
 - segment GOLD earned,
-- reward-orb collection delta if available from the existing DDD tracker,
+- reward-orb collection delta when available,
 - deterministic growth hints.
 
-A result snapshot is immutable from the moment the boss-death transition completes. Later shop/fate/healing changes must not rewrite the previous segment result.
+A result snapshot is immutable after boss-death transition completion. Shop/fate/healing mutations during rest cannot rewrite it.
 
 ### `CombatResolver`
 
-A small focused helper used by school runtime attacks so modifiers and damage telemetry share one path.
+Small shared damage helper used by school runtime attacks and their spawned attack nodes.
 
 Responsibilities:
 
-- accept base school damage plus damage kind (`normal`, `ultimate`, or school-specific subtype),
-- apply `school_damage_pct` and, for ultimate damage, `ultimate_damage_pct`,
-- apply school-token-specific damage modifiers where relevant,
+- accept base school damage and damage kind (`normal`, `ultimate`, or school subtype),
+- apply run modifiers,
+- apply school-specific token/fate effects where relevant,
 - convert the final positive hit to an integer,
 - call the target damage API,
-- record the target's actual HP loss in `CombatContributionTracker`.
+- record actual target HP loss in `CombatContributionTracker`.
 
-`EnemyChaser.take_damage()` may be extended to return actual HP loss while preserving compatibility with callers that ignore the return value.
+`EnemyChaser.take_damage()` may return actual HP loss while preserving callers that ignore the return value.
 
-Status application/reaction events remain owned by the school runtime that knows whether the application actually succeeded; that runtime records the event through the tracker only after success.
+Status/reaction application remains owned by the runtime that knows whether it actually succeeded; successful events are then recorded in telemetry.
 
 ### `RestFlowUI`
 
-A dedicated full-screen rest overlay, separate from the compact combat HUD.
+Dedicated full-screen rest overlay, separate from combat HUD.
 
-It renders only the state selected by `StageFlowController`:
+It renders only the current stage-flow state:
 
 - result cards,
 - shop,
@@ -224,19 +221,19 @@ It renders only the state selected by `StageFlowController`:
 - next-combat preview,
 - terminal MVP-3 completion panel.
 
-It emits intent signals. It does not directly mutate GOLD, inventory, fate, timers, enemies, or school state.
+It emits intent signals only. It does not mutate economy, inventory, fate, enemies, timers, or school state directly.
 
 ## Existing-system integration
 
 ### `MainController`
 
-Main keeps the existing responsibilities for wiring enemy death, GameState, CombatDDD, school selection, player death, school host, HUD, and reward orbs.
+Keep existing wiring responsibilities for GameState, CombatDDD, enemy death, school selection/host, player death, HUD, and reward orbs.
 
-MVP-3 adds wiring between the independent controllers. Main must not contain the shop catalog, fate catalog, timer state machine, or modifier math.
+MVP-3 adds composition/wiring between the new focused controllers. Main must not contain the shop catalog, fate catalog, timer state machine, or modifier math.
 
-Boss death still passes through the normal enemy-death path exactly once so it continues to contribute to:
+Boss death still passes through the normal enemy-death path exactly once, preserving:
 
-- `GameState` kill count/score,
+- GameState kill/score,
 - MVP-1 combo/stylish behavior,
 - active school `on_enemy_died`,
 - reward-orb spawning.
@@ -246,7 +243,7 @@ GOLD differs by enemy type:
 - normal enemy: exactly `+1 GOLD`,
 - stage boss: exactly `+25 GOLD`.
 
-A boss does not receive the normal `+1` in addition to its `+25`.
+A boss does not also receive the normal +1 reward.
 
 ### `WaveSpawner`
 
@@ -254,59 +251,57 @@ Use the existing `set_spawning_enabled(bool)` boundary.
 
 At a five-minute threshold:
 
-1. set normal spawning disabled,
-2. leave currently living normal enemies active,
+1. disable new normal spawning,
+2. leave living normal enemies active,
 3. spawn one stage boss,
-4. remain in `BOSS` until that boss dies.
+4. stay in `BOSS` until it dies.
 
-When the boss dies and the rest snapshot is captured, remaining normal enemies are removed without emitting kill rewards, score, combo, school kill-resource, or GOLD. This prevents stale normal mobs from carrying into the next segment while still preserving their intended pressure during the boss fight.
+After boss death and snapshot creation, remove remaining normal enemies without emitting kill rewards, score, combo, school kill-resource, or GOLD. This preserves boss-fight pressure without carrying stale mobs into the next segment.
 
-Pending reward orbs are not converted into free rewards. They may remain paused and resume on the next combat segment; only actually collected orbs contribute to the segment in which collection occurred.
+Pending reward orbs are not converted into free rewards. They remain paused and may resume next segment; only actually collected orbs count in the segment where collection occurs.
 
 ### School runtime pause semantics
 
-Rest must pause the selected school runtime without semantically deactivating/resetting the chosen school.
+Rest pauses the selected runtime by process state, not by semantic deactivation/reset.
 
-Do not use a reset path that clears school resource merely because rest began. Spirit, reaction count, Gwihyeol, and other run-level school resources persist across rests unless the school's own rules consume them.
+Do not call a path that clears school identity/resource merely because rest begins. Spirit, reaction count, Gwihyeol, mark-related run state that is not tied to removed enemies, and other persistent runtime resources remain unless their own rules consume them.
 
-Enemy-bound effects on enemies removed after boss death naturally disappear with those enemies.
+Enemy-bound marks/statuses naturally disappear when their enemy is removed.
 
 ### `PlayerController`
 
-Add the minimum reusable runtime-stat surface needed by approved items/fates:
+Add only the reusable surface needed for approved effects:
 
-- apply/reapply a `RunModifierSet`,
+- apply/reapply `RunModifierSet`,
 - `heal(amount)` returning/emitting actual healing,
-- damage resolution that can apply evasion and damage-taken modifiers,
-- reporting requested/applied/prevented incoming damage for defense telemetry.
+- incoming-damage resolution with evasion and damage-taken modifiers,
+- requested/applied/prevented damage reporting for defense telemetry.
 
-Damage-prevention telemetry counts only prevented incoming damage:
+Defense contribution is actual prevented damage only:
 
-- reduction: requested damage minus post-reduction applied damage,
-- evade: the entire requested damage,
-- no invented defense value when no damage event occurred.
+- reduction: requested minus applied,
+- evade: full requested damage,
+- no damage event: zero contribution.
 
-Changing maximum HP is not damage and does not count as defense. If effective max HP falls below current HP after selling an item or selecting a fate, current HP clamps to the new max.
+Changing maximum HP is not defense. If max HP falls below current HP after sale/fate recomputation, current HP clamps to the new maximum.
+
+Evasion uses an injectable/seeded random source for tests; production uses normal runtime randomness.
 
 ## Stage and boss behavior
 
 ### Combat segments
 
-Segments are:
-
 - Segment 1: combat minutes 0-5,
 - Segment 2: combat minutes 5-10,
 - Segment 3: combat minutes 10-15.
 
-Normal wave behavior otherwise remains the current MVP-2 behavior. MVP-3 does not introduce a second regular-enemy archetype or a general difficulty director.
+Normal wave behavior otherwise stays at the current MVP-2 level. MVP-3 does not add another regular-enemy archetype or a difficulty director.
 
 ### Boss archetype
 
-Use one simple chaser-style boss scene derived from the existing enemy contract rather than three bespoke bosses.
+One chaser-style boss scene reuses the existing enemy contract. It is larger than a normal enemy and explicitly identifiable as a stage boss for flow/GOLD logic.
 
-The boss is visibly larger than a normal enemy and is identifiable as a stage boss for GOLD/flow logic.
-
-Initial tuning defaults are data, not architectural invariants:
+Initial tuning defaults:
 
 | Tier | Max HP | Move speed | Contact damage | Visual scale |
 | --- | ---: | ---: | ---: | ---: |
@@ -314,7 +309,7 @@ Initial tuning defaults are data, not architectural invariants:
 | 2 | 350 | 80 | 20 | 1.8x |
 | 3 | 500 | 90 | 25 | 2.0x |
 
-The boss uses the same contact cooldown unless playtesting shows a blocking issue. Do not add bespoke boss phases/patterns in MVP-3.
+These are tuning constants, not architecture. Keep the current contact cooldown unless playtesting finds a blocker. No bespoke phases/patterns in MVP-3.
 
 ## GOLD economy
 
@@ -322,28 +317,28 @@ The boss uses the same contact cooldown unless playtesting shows a blocking issu
 
 - normal kill: `1 GOLD`,
 - boss kill: `25 GOLD`,
-- GOLD persists across rests/segments,
-- SCORE remains independent and is never spent.
+- GOLD persists across segments/rests,
+- SCORE is separate and never spent.
 
-The `행운 부적` modifier applies to normal-kill GOLD only. It does not alter the fixed 25-GOLD boss reward.
+`행운 부적` modifies normal-kill GOLD only; boss reward remains fixed at 25G.
 
-Because normal kills have a base reward of 1, percentage GOLD bonuses use a deterministic fractional carry. Example: one `행운 부적` produces `1.25` reward credit per normal kill; integer GOLD is granted when accumulated credit crosses a whole number, preserving exactly +25% over repeated kills without random rounding.
+Percentage normal-kill GOLD bonuses use deterministic fractional carry. One `행운 부적` creates 1.25 reward credit per normal kill; whole GOLD is paid when accumulated credit crosses an integer boundary. This preserves exact long-run +25% without random rounding.
 
-### Shop prices
+### Prices and sales
 
-Item prices are fixed by definition:
+Fixed prices:
 
-- light/common utility: 20G,
-- specialized: 30G,
-- strong/school-specific: 40G.
+- 20G utility,
+- 30G specialized,
+- 40G strong/school-specific.
 
-Selling returns exactly half the fixed base price:
+Sell value is exactly 50% of fixed base price:
 
-- 20G item -> 10G,
-- 30G item -> 15G,
-- 40G item -> 20G.
+- 20G -> 10G,
+- 30G -> 15G,
+- 40G -> 20G.
 
-No purchase-price history or buyback list is needed.
+No buyback or purchase-price history.
 
 ### Reroll
 
@@ -351,93 +346,89 @@ Within one rest:
 
 `5G -> 10G -> 15G -> 15G -> ...`
 
-Entering the next rest resets the first reroll to 5G.
+Next rest resets to 5G.
 
-If GOLD is insufficient, reroll is rejected and both offers and reroll index remain unchanged.
+Insufficient GOLD rejects the reroll with no wallet, offer, or reroll-index change.
 
 ### Inventory constraints
 
-- total owned item count: maximum 6,
-- same item id: maximum 2,
-- a rejected purchase changes neither GOLD nor inventory,
-- selling one copy immediately removes one copy's modifier contribution and refunds its sell value.
+- maximum 6 owned item copies total,
+- maximum 2 copies of one item id,
+- rejected purchase changes neither GOLD nor inventory,
+- sale immediately recomputes modifiers.
 
-The item list is intentionally non-spatial. MVP-4 adds backpack position/size/adjacency to the same item definitions rather than replacing the economy model.
+This list is intentionally non-spatial. MVP-4 adds footprint/position/adjacency to the same items.
 
-## Item data contract
+## `ItemDefinition` contract
 
-Each `ItemDefinition` contains at least:
+At minimum:
 
-- stable `id`,
+- stable id,
 - display name,
 - base price,
-- derived fixed sell price,
+- derived sell price,
 - tags,
-- modifier/effect kind,
-- modifier/effect value,
+- effect/modifier kind,
+- effect value,
 - optional school-specific payload.
 
-MVP-4 may extend this definition with footprint/shape/placement/adjacency metadata.
+MVP-4 may extend this definition with backpack geometry/adjacency metadata.
 
 ## Initial shop pool
 
-### 1. `체술단련` — 20G
+### `체술단련` — 20G
 
-- movement speed `+10%` per copy.
+Movement speed `+10%` per copy.
 
-### 2. `호신 부적` — 20G
+### `호신 부적` — 20G
 
-- maximum HP `+20` flat per copy,
-- on purchase, also heal exactly the amount by which effective max HP increased, capped at the new maximum,
-- selling removes the max-HP contribution and clamps current HP if needed.
+Maximum HP `+20` flat per copy. On purchase, heal exactly the effective max-HP increase, capped at the new maximum. Selling removes the contribution and clamps current HP if required.
 
-### 3. `행운 부적` — 20G
+### `행운 부적` — 20G
 
-- normal-enemy kill GOLD `+25%` per copy,
-- uses deterministic fractional carry,
-- does not modify the fixed boss reward.
+Normal-enemy kill GOLD `+25%` per copy via deterministic fractional carry. Boss GOLD stays fixed.
 
-### 4. `인법단련` — 30G
+### `인법단련` — 30G
 
-- school normal/ultimate direct damage `+12%` per copy through the common school-damage channel.
+School direct damage `+12%` per copy through `school_damage_pct`. This includes school attacks that occur during an ultimate; the separate ultimate-power channel may additionally apply when appropriate.
 
-### 5. `깨달음` — 30G
+### `깨달음` — 30G
 
-- school resource gain `+20%` per copy.
+School resource/counter gain `+20%` per copy where the school actually has a qualifying gain event. It does not invent events.
 
-This applies only where the school runtime receives/generates its own resource or counter. It does not invent a resource event that the school did not already have.
+### `재생의 두루마리` — 30G
 
-### 6. `재생의 두루마리` — 30G
+Whenever combat resumes from a rest, heal `20%` of effective max HP per copy. Overheal is discarded. The tracker resets before this heal, so actual restored HP belongs to the new segment.
 
-- whenever combat resumes from a rest, heal `20%` of current effective maximum HP per copy,
-- actual healing only; overheal is discarded,
-- this start-of-segment healing belongs to the new segment telemetry after that segment tracker has been reset.
+It cannot trigger before segment 1 because it cannot be owned before the first shop.
 
-It does not trigger before the very first combat segment because it cannot be owned before the first shop.
+### `오의 비전서` — 40G
 
-### 7. `오의 비전서` — 40G
+Improves the selected school's existing ultimate-readiness mechanism by `+25%` per copy without introducing a universal ultimate meter.
 
-- gain toward ultimate readiness `+25%` per copy where the school has a numeric resource/counter gain event,
-- ultimate direct damage `+0%`; this item accelerates readiness only.
+Mapping:
 
-If a school has a discrete integer counter, fractional gain is retained by that runtime or an equivalent deterministic accumulator rather than randomly rounded.
+- 봉마류: spirit gains that contribute to ultimate readiness `+25%` per copy,
+- 천술류: reaction readiness gain `+25%` per copy using deterministic fractional progress,
+- 귀인류: Gwihyeol gains `+25%` per copy,
+- 흑영류: because readiness depends on active marks rather than a numeric gain meter, mark duration `+25%` per copy so marks remain simultaneously active longer and the existing three-mark readiness rule remains intact.
 
-### 8. `유파 증표` — 40G
+This explicit Heukyeong mapping prevents the item from becoming a no-op while preserving the MVP-2 ultimate condition.
 
-One generic item id whose effect resolves from the selected school:
+### `유파 증표` — 40G
+
+One generic item id resolved from selected school:
 
 - 봉마류: familiar attack interval `-15%` per copy,
 - 천술류: WET+SHOCK primary and chain reaction damage `+20%` per copy,
-- 귀인류: representative melee attack radius `+15%` per copy,
-- 흑영류: attacks against a currently marked target gain `+15 percentage points` critical chance per copy; critical hits deal `2.0x` final Heukyeong attack damage.
+- 귀인류: representative melee radius `+15%` per copy,
+- 흑영류: attacks against a currently marked target gain `+15 percentage points` critical chance per copy; qualifying critical hits deal `2.0x` final Heukyeong attack damage.
 
-Critical chance is checked only for Heukyeong attacks that qualify under the token rule. It is not introduced as a universal crit framework in MVP-3.
+Critical chance exists only inside this Heukyeong-specific rule in MVP-3; do not create a universal crit framework.
 
 ## Fate pool
 
-Fate is a run-rule tradeoff, not a free stat card. The UI must show both benefit and cost before selection.
-
-All fate percentage changes feed the same recomputed `RunModifierSet` used by items.
+Fate is a benefit-plus-cost run rule, not a free stat card. UI shows both sides before selection.
 
 ### `살육의 길`
 
@@ -459,257 +450,256 @@ All fate percentage changes feed the same recomputed `RunModifierSet` used by it
 ### `금기의 길`
 
 - school resource gain `+25%`,
-- school-owned status/reaction damage/effect magnitude `+20%` where such an effect exists,
+- qualifying school status/reaction effect `+20%`,
 - incoming damage `+15%`.
 
-For schools without a status/reaction magnitude, the resource benefit still applies; do not synthesize a fake status system.
+`school_status_effect_pct` is consumed only by a runtime with a qualifying effect:
+
+- 천술류: elemental reaction damage,
+- 흑영류: mark-based execution/burst damage,
+- 봉마류/귀인류: no artificial status system is created; they receive the resource benefit where applicable but no fake status bonus.
 
 ### `봉인의 길`
 
 - ultimate readiness gain `+30%`,
-- ultimate direct damage `+25%`,
+- ultimate power `+25%`,
 - non-ultimate school direct damage `-15%`.
 
-No selected fate can appear again. Three distinct candidates are shown at each rest, and the player cannot proceed without choosing exactly one.
+`ultimate_power_pct` strengthens the primary offensive output while the ultimate is active or executed:
+
+- 봉마류: familiar damage dealt during `백귀야행`,
+- 천술류: `오행폭주` direct damage,
+- 귀인류: its existing ultimate offensive output,
+- 흑영류: its existing shadow-execution ultimate damage.
+
+This prevents Bongma's non-single-hit ultimate from receiving no benefit.
+
+No selected fate may appear again. Exactly three distinct unselected candidates are shown per rest, and the player cannot proceed without choosing one.
 
 ## Rest flow
 
-Gameplay is paused throughout rest. The player, enemies, school runtime processing, normal spawning, boss processing, and stage clock do not advance. UI remains active.
+Gameplay is inert throughout rest: player, enemies, selected school processing, spawner, boss, and stage clock are paused. UI remains active.
 
-### 1. RESULT
+### RESULT
 
-Show a card-style summary with:
+Show cards for:
 
-- damage dealt,
-- healing received,
-- damage prevented,
-- status/reaction events,
+- actual damage dealt,
+- actual healing,
+- actual damage prevented,
+- status/reaction event count,
 - kills,
 - maximum combo,
 - segment GOLD earned,
 - reward-orb collection delta when available,
 - 1-2 growth hints.
 
-If healing/defense has no real event, display `기여 없음` rather than inventing a number or pretending a mechanic exists.
+If healing/defense has no real event, show `기여 없음` rather than a fabricated mechanic.
 
-`Continue` advances to SHOP. RESULT itself has no build mutation.
+MVP-3 has no combat item-drop pipeline, so do not fabricate a `key loot` item. The result's key reward summary is the real segment GOLD/orb reward data.
 
-### 2. SHOP
+`Continue` advances to SHOP without changing the build.
+
+### SHOP
+
+Show current GOLD, three offers, owned items/counts, buy/sell controls, reroll cost, and `Next`.
+
+The player may buy/sell/reroll repeatedly while legal or skip purchases entirely.
+
+### FATE
+
+Show three unselected fate cards with title, benefit, and cost. There is no skip. Selecting one applies it and permits PREVIEW.
+
+### PREVIEW
 
 Show:
 
-- current GOLD,
-- 3 offers,
-- owned item list with counts,
-- buy action per offer,
-- sell action per owned copy/type,
-- current reroll cost,
-- `Next` button.
-
-Buying/selling/rerolling may be repeated while legal. The player may buy nothing and continue.
-
-### 3. FATE
-
-Show 3 unselected fate cards. Each card includes title, benefit, and cost.
-
-There is no skip. Selecting one applies it immediately and enables progression to PREVIEW.
-
-### 4. PREVIEW
-
-Show a compact summary of:
-
 - next segment number,
 - next boss tier,
-- newly bought/sold item changes from this rest,
+- this rest's item buy/sell changes,
 - newly selected fate,
-- current cumulative fates,
+- cumulative fates,
 - current GOLD,
-- one-line description of the next combat expectation.
+- one-line next-combat expectation.
 
-After rests 1 and 2, `Start Combat` resumes gameplay and starts the next five-minute segment.
+After rests 1 and 2, `Start Combat` resumes the next segment.
 
-After rest 3, PREVIEW becomes terminal `MVP-3 LOOP COMPLETE` and offers restart. It does not start a segment 4.
+After rest 3, show `MVP-3 LOOP COMPLETE` with restart; do not start segment 4.
 
 ## Combat HUD
 
-Keep the existing MVP-2 HUD. Add only compact run-flow information:
+Keep existing MVP-2 HUD. Add only:
 
-- segment indicator, e.g. `SEGMENT 1/3`,
+- `SEGMENT n/3`,
 - remaining segment combat time, e.g. `04:32`,
 - GOLD.
 
-Large result/shop/fate/preview panels do not live inside `HUDController`.
+Large rest panels remain in `RestFlowUI`, not `HUDController`.
 
 ## Contribution telemetry
 
 ### Damage
 
-Count actual target HP lost, not requested/raw damage.
-
-Example: a target at 3 HP receives a requested 20-damage hit; contribution is 3.
+Count actual target HP lost, not requested damage. A target at 3 HP hit for 20 contributes 3 damage.
 
 ### Healing
 
-Count only actual HP restored after cap.
-
-Example: player missing 5 HP receives a 20 heal; contribution is 5.
+Count actual HP restored after cap. A player missing 5 HP healed for 20 contributes 5.
 
 ### Defense
 
-Count prevented incoming damage caused by current run modifiers:
+Count incoming damage actually prevented by run modifiers:
 
-- reduction contributes the rounded/actual amount prevented,
-- a successful evade contributes the full requested incoming damage.
+- reduction contributes requested minus applied,
+- successful evade contributes the full requested amount.
 
 Max-HP clamping is not defense.
 
 ### Status/reaction
 
-Count a successful school-owned status application or reaction event once when the runtime confirms it occurred.
-
-Examples include Cheonsul elemental application/reaction and Heukyeong mark application. Damage from the event still contributes separately to damage.
+Count one successful school-owned application/reaction event when the runtime confirms it. Cheonsul elemental applications/reactions and Heukyeong mark applications qualify. Event damage also contributes separately to damage.
 
 ### Kill/combo
 
-Track segment kill count and the segment maximum combo. Existing overall MVP-1 DDD state is not reset just to produce a segment result; the contribution tracker stores its own segment deltas/maximums.
+Track segment kill count and segment maximum combo. Existing overall MVP-1 DDD state is not reset; the contribution tracker stores segment-local deltas/maximums.
 
 ## Growth hints
 
-Hints are deterministic, short, and based only on observed contribution plus current build state. They are not random flavor text.
+Hints are deterministic and based only on observed contribution plus current build state.
 
 Rules:
 
-- pick the strongest non-zero contribution axis as the primary hint source,
-- add a second hint only if another non-zero axis or an owned-item/fate synergy creates a clear recommendation,
-- never fabricate a healing/defense recommendation from a zero-event axis,
-- phrase recommendations as build directions, not guaranteed shop contents.
+- strongest non-zero axis drives the primary hint,
+- add a second hint only when another non-zero axis or owned-item/fate synergy creates a clear recommendation,
+- never derive healing/defense advice from a zero-event axis,
+- recommend a build direction, not a shop item guaranteed to appear.
 
-Examples:
+Representative messages:
 
-- high damage -> `현재 화력을 유지할 피해/유파 강화가 잘 맞습니다`,
-- high status -> `상태·반응 빈도 또는 효과를 키우는 선택이 잘 맞습니다`,
-- meaningful prevented damage -> `생존 투자 효율이 실제로 나오고 있습니다`,
-- high kill/combo with lower direct damage -> `이동·공격 주기를 유지해 콤보 흐름을 강화할 수 있습니다`.
+- high damage: `현재 화력을 유지할 피해/유파 강화가 잘 맞습니다`,
+- high status: `상태·반응 빈도 또는 효과를 키우는 선택이 잘 맞습니다`,
+- meaningful defense: `생존 투자 효율이 실제로 나오고 있습니다`,
+- high kill/combo with lower direct damage: `이동·공격 주기를 유지해 콤보 흐름을 강화할 수 있습니다`.
 
-## Error and boundary behavior
+## Boundary and failure behavior
 
-- Before school selection, the stage clock is stopped and no combat GOLD can be earned.
-- Only one boss may exist for the active milestone.
-- Crossing a timer threshold cannot spawn duplicate bosses on later frames.
-- Boss death must be processed exactly once.
-- Normal spawning remains disabled throughout `BOSS` and rest.
-- Rest cannot begin before the boss is dead.
-- The result snapshot happens after boss kill/score/GOLD/combo/school callbacks have been registered.
-- Removing leftover normal enemies at rest entry must not trigger their normal death rewards.
-- Shop purchase failure is atomic: no GOLD loss and no inventory mutation.
-- Reroll failure is atomic: no GOLD loss, no offer mutation, no reroll-index advance.
-- Selling fails cleanly if the requested item is not owned.
-- Fate selection fails cleanly for an already-selected or non-offered fate.
-- `Start Combat` is valid only in PREVIEW after a fate has been selected for that rest.
-- Player death during `COMBAT` or `BOSS` always wins over pending stage transitions and goes to the existing game-over path.
+- Before school selection, stage clock is stopped and no combat GOLD is earned.
+- Only one boss exists for the active milestone.
+- A threshold cannot spawn duplicate bosses on later frames.
+- Boss death is processed exactly once.
+- Normal spawning stays disabled during `BOSS` and rest.
+- Rest cannot begin before boss death.
+- Result snapshot occurs after boss kill/score/GOLD/combo/school callbacks.
+- Cleanup of leftover normal enemies never emits normal rewards.
+- Purchase failure is atomic.
+- Reroll failure is atomic.
+- Selling a non-owned item fails without mutation.
+- Fate selection fails for an already selected or non-offered fate.
+- `Start Combat` is valid only in PREVIEW after that rest's fate is selected.
+- Player death during `COMBAT` or `BOSS` always wins over pending stage transitions and uses existing game-over flow.
 - No shop/fate/rest reward is granted after death.
 - Existing `ui_accept` game-over restart precedence remains intact.
-- Rest pause must not erase selected-school identity or run-level school resource.
+- Rest pause never erases selected-school identity or persistent school resource.
 
 ## Testing strategy
 
-The repository keeps both unit and integration GUT layers.
+Keep both unit and integration GUT layers.
 
 ### Unit tests
 
 Cover at least:
 
-- `StageFlowController` legal/illegal transitions,
-- production default segment duration is 300 seconds,
-- short injected duration reaches BOSS exactly once,
-- boss kill advances to RESULT and snapshots after reward registration,
-- third preview terminates the MVP-3 loop,
-- GOLD normal/boss rewards are distinct,
+- legal/illegal stage transitions,
+- production default duration = 300 seconds,
+- injected short duration reaches BOSS exactly once,
+- boss kill advances to RESULT after reward registration,
+- third preview terminates the slice,
+- normal/boss GOLD distinction,
 - fractional normal-kill GOLD carry,
-- shop 3-offer uniqueness,
-- purchase affordability,
-- 6-item capacity,
-- 2-copy duplicate cap,
-- sell refund and modifier removal,
-- reroll cost sequence/reset/failure atomicity,
-- all eight item modifier calculations,
-- recomputation after buy/sell,
-- max-HP increase heal and decrease clamp,
-- rest-start regeneration heal actual amount,
-- all five fate modifiers,
-- fate candidate exclusion and mandatory choice,
-- damage/heal/defense actual-value telemetry,
+- three-offer uniqueness,
+- affordability/capacity/duplicate-cap failures,
+- sale refund and modifier removal,
+- reroll sequence/reset/failure atomicity,
+- all eight item mappings,
+- modifier recomputation after buy/sell,
+- max-HP purchase heal and sell/fate clamp,
+- rest-start regeneration actual healing,
+- all five fate modifier mappings,
+- fate candidate exclusion/mandatory choice,
+- actual-value damage/heal/defense telemetry,
 - status event counting,
-- deterministic growth-hint selection,
+- deterministic growth hints,
 - boss tier data.
 
 ### School regression tests
 
 For all four schools:
 
-- school still activates after selection,
-- base combat continues to damage/kill enemies,
-- school resource/ultimate readiness still functions,
+- selection/activation still works,
+- base combat still kills enemies,
+- existing resource/ultimate readiness still works,
 - rest pause/resume preserves school identity/resource,
-- common school-damage modifier changes actual damage,
-- school-resource/ultimate-charge modifiers affect qualifying gain events,
-- the relevant `유파 증표` effect works,
+- school-damage modifier changes actual damage,
+- qualifying resource/ultimate-readiness modifiers work,
+- `오의 비전서` has a non-no-op mapping,
+- `유파 증표` school-specific effect works,
+- `봉인의 길` ultimate-power benefit is observable,
 - existing ultimate behavior is not broken.
 
 ### Integration tests
 
-At least one accelerated main-scene path must exercise:
+At least one accelerated main-scene path covers:
 
 `school select -> COMBAT -> timer threshold -> BOSS -> boss death -> RESULT -> SHOP -> FATE -> PREVIEW -> next COMBAT`
 
 Also cover:
 
-- a full accelerated three-segment path ending at `MVP-3 LOOP COMPLETE`,
-- player death during normal combat,
-- player death during boss combat,
-- shop buy/sell/reroll reflected in preview and next-combat modifiers,
-- result snapshot does not change after rest mutations.
+- full accelerated three-segment path ending at `MVP-3 LOOP COMPLETE`,
+- player death in normal combat,
+- player death in boss combat,
+- buy/sell/reroll reflected in preview and next-combat modifiers,
+- result snapshot unchanged by later rest mutations.
 
 ### Manual acceptance
 
-Run the normal main scene and confirm:
+Normal main-scene sanity check:
 
 - school selection still gates combat,
-- HUD shows segment/time/GOLD without obscuring existing school/combo information,
-- at the real 5:00 combat threshold normal spawning stops and one boss appears,
-- living normal enemies remain dangerous during the boss fight,
-- boss defeat enters a readable result screen,
-- result values match observable actions at a sanity-check level,
-- shop clearly communicates insufficient GOLD, capacity, and duplicate-cap failures,
-- buy/sell/reroll are understandable without hidden controls,
-- fate cards clearly show both upside and downside,
+- HUD shows segment/time/GOLD without hiding existing school/combo data,
+- at real 5:00 combat time normal spawning stops and exactly one boss appears,
+- living normal enemies remain active during the boss fight,
+- boss defeat enters readable RESULT,
+- displayed contribution is directionally consistent with observable play,
+- shop failures clearly communicate insufficient GOLD/capacity/duplicate cap,
+- buy/sell/reroll require no hidden controls,
+- fate cards clearly show upside and downside,
 - combat is inert during rest,
 - `Start Combat` resumes correctly,
 - game over/restart still works.
 
-The full 15-minute production-time loop is desirable for final tuning, but automated acceptance uses injected time and must not depend on waiting 15 real minutes.
+Automated acceptance uses injected time and must not require waiting 15 real minutes. A full production-time 15-minute run is for final tuning, not CI.
 
 ## Compatibility and repository safety
 
-Implementation must preserve MVP-0/1/2 behavior unless this spec explicitly changes it.
+Preserve MVP-0/1/2 behavior unless this spec explicitly changes it.
 
-Expected work should remain in scenes/scripts/tests/docs. Avoid `project.godot` so the user's local Godot AI/Hera/GUT plugin state remains isolated. Never stage or clean unrelated local plugin files.
+Expected implementation stays in scenes/scripts/tests/docs. Avoid `project.godot` so local Godot AI/Hera/GUT plugin state remains isolated. Never stage or clean unrelated local plugin files.
 
-Do not merge/integrate the feature branch without explicit user approval after implementation, review, regression checks, and CI evidence.
+Do not merge/integrate the feature branch without explicit user approval after implementation, adversarial review, regression checks, and CI evidence.
 
-## MVP-3 acceptance summary
+## Acceptance summary
 
-MVP-3 is complete when all of the following are true:
+MVP-3 is complete when:
 
 1. a selected school can play three five-minute combat segments,
 2. each segment ends in a required tiered midboss kill,
 3. each boss kill produces an immutable contribution result,
-4. each rest allows a real GOLD shop with buy/sell/reroll,
-5. owned reusable items modify subsequent combat and obey capacity/duplicate limits,
+4. each rest provides a real GOLD shop with buy/sell/reroll,
+5. reusable items modify subsequent combat and obey 6-item/2-copy limits,
 6. each rest requires one new benefit-plus-cost fate from three unselected candidates,
-7. item/fate modifiers work across all four schools without collapsing their runtime boundaries,
-8. next-combat preview communicates the build changes,
-9. the third preview ends with `MVP-3 LOOP COMPLETE`,
-10. existing movement, game over, DDD, school selection, school combat, and restart behavior regressions pass,
+7. item/fate modifiers have meaningful mappings across all four schools without collapsing runtime boundaries,
+8. preview communicates the build change before next combat,
+9. third preview ends with `MVP-3 LOOP COMPLETE`,
+10. movement, game over, DDD, selection, school combat, and restart regressions pass,
 11. unit/integration tests pass in CI,
 12. backpack spatial mechanics and the 20-minute final loop remain deferred.
