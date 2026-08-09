@@ -19,6 +19,7 @@ const MVP2_BONGMA_RUNTIME_PATH := "res://scripts/schools/bongma_runtime.gd"
 const MVP2_BONGMA_FAMILIAR_PATH := "res://scripts/schools/bongma_familiar.gd"
 const MVP2_CHEONSUL_RUNTIME_PATH := "res://scripts/schools/cheonsul_runtime.gd"
 const MVP2_GUIIN_RUNTIME_PATH := "res://scripts/schools/guiin_runtime.gd"
+const MVP2_HEUKYEONG_RUNTIME_PATH := "res://scripts/schools/heukyeong_runtime.gd"
 const MVP2_BADGE_PATH := "res://scripts/ui/enemy_effect_badge.gd"
 
 
@@ -214,6 +215,16 @@ func test_guiin_runtime_contract() -> void:
 		assert_true(runtime.has_method(method_name), "Missing Guiin method: %s" % method_name)
 	for property_name in ["gwihyeol", "time_since_gain", "ultimate_time_remaining"]:
 		assert_true(_has_property(runtime, property_name), "Missing Guiin property: %s" % property_name)
+	runtime.free()
+
+
+func test_heukyeong_runtime_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP2_HEUKYEONG_RUNTIME_PATH), "Missing Heukyeong runtime")
+	if not ResourceLoader.exists(MVP2_HEUKYEONG_RUNTIME_PATH):
+		return
+	var runtime = load(MVP2_HEUKYEONG_RUNTIME_PATH).new()
+	for method_name in ["set_rng_seed", "attack_once", "apply_needle_hit", "get_mark_count", "get_total_active_marks", "get_critical_chance", "try_use_ultimate", "is_ultimate_ready"]:
+		assert_true(runtime.has_method(method_name), "Missing Heukyeong method: %s" % method_name)
 	runtime.free()
 
 
