@@ -95,6 +95,28 @@ func test_school_kill_keeps_single_mvp1_kill_combo_orb_and_school_gain() -> void
 	assert_almost_eq(bongma.spirit, spirit_before + 10.0, 0.001)
 
 
+func test_repeated_enemy_death_callback_is_idempotent() -> void:
+	var main = MAIN_SCENE.instantiate()
+	add_child_autofree(main)
+	await get_tree().process_frame
+	main.get_node("SchoolSelectionUI")._choose(&"bongma")
+	var bongma = main.get_node("SchoolRuntimeHost").active_runtime
+	var enemy = _living_enemies(main)[0]
+
+	enemy.take_damage(enemy.max_health)
+	var kills_after_first: int = main.get_node("GameState").kill_count
+	var combo_after_first: int = main.get_node("CombatDDD").combo_count
+	var spirit_after_first: float = bongma.spirit
+	var orbs_after_first: int = _living_reward_orbs(main).size()
+
+	main._on_enemy_died(enemy)
+
+	assert_eq(main.get_node("GameState").kill_count, kills_after_first)
+	assert_eq(main.get_node("CombatDDD").combo_count, combo_after_first)
+	assert_almost_eq(bongma.spirit, spirit_after_first, 0.001)
+	assert_eq(_living_reward_orbs(main).size(), orbs_after_first)
+
+
 func test_wave_spawned_enemy_is_wired_after_selection() -> void:
 	var main = MAIN_SCENE.instantiate()
 	add_child_autofree(main)
