@@ -92,14 +92,14 @@ No higher gameplay effect is attached to them. If a future phase needs more titl
 
 ### `RewardOrb`
 
-Add a lightweight `Area2D` reward object with placeholder visual geometry.
+Add a lightweight `Node2D` reward object with placeholder visual geometry. Collection is distance-based; MVP-1 does not add a reward collision layer or pickup-area system.
 
 Responsibilities:
 
 - spawn at the defeated enemy's last global position,
 - receive a player target,
 - move toward that target every physics frame at a fixed speed,
-- when close enough, emit `collected` and queue itself for deletion,
+- when target distance is at or below the collection radius, emit `collected` and queue itself for deletion,
 - never change player stats directly.
 
 Initial tuning:
@@ -157,7 +157,7 @@ Extend the existing HUD with minimal text-only feedback:
 - new `ORBS N` label,
 - one short title label used for threshold text.
 
-The title label is shown when a title signal arrives and automatically clears after about 1.0 second. This is visual feedback only; no animation system is required.
+The title label is shown when a title signal arrives and clears exactly `1.0` second later. This is visual feedback only; no animation system is required.
 
 ## Data Flow
 
