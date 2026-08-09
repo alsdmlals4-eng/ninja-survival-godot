@@ -10,7 +10,7 @@ const MARKED_CRITICAL_CHANCE := 0.40
 const CRITICAL_MULTIPLIER := 2.0
 const BURST_THRESHOLD := 3
 const BURST_DAMAGE := 16
-const ULTIMATE_MARK_THRESHOLD := 6
+const ULTIMATE_MARK_THRESHOLD := 3
 
 @export var badge_scene: PackedScene
 
