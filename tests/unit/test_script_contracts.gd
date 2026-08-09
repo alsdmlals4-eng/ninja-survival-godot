@@ -17,6 +17,8 @@ const MVP2_RUNTIME_HOST_PATH := "res://scripts/schools/school_runtime_host.gd"
 const MVP2_SELECTOR_PATH := "res://scripts/ui/school_selection_ui.gd"
 const MVP2_BONGMA_RUNTIME_PATH := "res://scripts/schools/bongma_runtime.gd"
 const MVP2_BONGMA_FAMILIAR_PATH := "res://scripts/schools/bongma_familiar.gd"
+const MVP2_CHEONSUL_RUNTIME_PATH := "res://scripts/schools/cheonsul_runtime.gd"
+const MVP2_BADGE_PATH := "res://scripts/ui/enemy_effect_badge.gd"
 
 
 func test_mvp0_script_resources_exist() -> void:
@@ -189,6 +191,26 @@ func test_bongma_familiar_contract() -> void:
 	assert_true(_has_property(familiar, "attack_interval"))
 	assert_true(_has_property(familiar, "damage"))
 	familiar.free()
+
+
+func test_cheonsul_runtime_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP2_CHEONSUL_RUNTIME_PATH), "Missing Cheonsul runtime")
+	if not ResourceLoader.exists(MVP2_CHEONSUL_RUNTIME_PATH):
+		return
+	var runtime = load(MVP2_CHEONSUL_RUNTIME_PATH).new()
+	for method_name in ["apply_flame_cast", "apply_token", "has_status", "try_use_ultimate", "is_ultimate_ready"]:
+		assert_true(runtime.has_method(method_name), "Missing Cheonsul method: %s" % method_name)
+	assert_true(_has_property(runtime, "reaction_count"))
+	runtime.free()
+
+
+func test_enemy_effect_badge_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP2_BADGE_PATH), "Missing enemy effect badge")
+	if not ResourceLoader.exists(MVP2_BADGE_PATH):
+		return
+	var badge = load(MVP2_BADGE_PATH).new()
+	assert_true(badge.has_method("set_text"))
+	badge.free()
 
 
 func test_hud_contract() -> void:
