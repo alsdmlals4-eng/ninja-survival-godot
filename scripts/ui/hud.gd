@@ -1,6 +1,8 @@
 extends CanvasLayer
 class_name HUDController
 
+signal restart_requested
+
 @onready var health_label: Label = $HealthLabel
 @onready var score_label: Label = $ScoreLabel
 @onready var combo_label: Label = $ComboLabel
@@ -11,6 +13,7 @@ class_name HUDController
 @onready var ultimate_label: Label = $UltimateLabel
 @onready var school_feedback_label: Label = $SchoolFeedbackLabel
 @onready var combo_title_label: Label = $ComboTitleLabel
+@onready var restart_button: Button = $RestartButton
 @onready var game_over_panel: Control = $GameOverPanel
 
 var _title_generation: int = 0
@@ -19,6 +22,7 @@ var _school_feedback_generation: int = 0
 
 func _ready() -> void:
 	game_over_panel.visible = false
+	restart_button.pressed.connect(_on_restart_pressed)
 
 
 func set_health(current: int, maximum: int) -> void:
@@ -76,3 +80,7 @@ func show_combo_title(title: String) -> void:
 
 func show_game_over() -> void:
 	game_over_panel.visible = true
+
+
+func _on_restart_pressed() -> void:
+	restart_requested.emit()
