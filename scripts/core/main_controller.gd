@@ -30,6 +30,7 @@ func _ready() -> void:
 	school_host.resource_changed.connect(hud.set_school_resource)
 	school_host.ultimate_ready_changed.connect(hud.set_ultimate_ready)
 	school_host.school_feedback.connect(hud.show_school_feedback)
+	hud.restart_requested.connect(_restart_run)
 
 	hud.set_health(player.health, player.max_health)
 	hud.set_score(game_state.score, game_state.kill_count)
@@ -52,10 +53,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not event.is_action_pressed("ui_accept"):
 		return
 	if game_over:
-		get_tree().reload_current_scene()
+		_restart_run()
 		return
 	if school_host.selected_school_id != &"":
 		school_host.try_use_ultimate()
+
+
+func _restart_run() -> void:
+	get_tree().reload_current_scene()
 
 
 func _on_school_selected(school_id: StringName) -> void:
