@@ -148,7 +148,7 @@ func test_deactivate_clears_owned_state_and_badges() -> void:
 	var enemy = _enemy(runtime.world, Vector2.ZERO)
 	runtime.apply_token(enemy, &"wet")
 	assert_true(runtime.has_status(enemy, &"wet"))
-	var badge := enemy.get_node_or_null("EnemyEffectBadge")
+	var badge: Node = enemy.get_node_or_null("EnemyEffectBadge")
 	assert_not_null(badge)
 
 	runtime.deactivate()
