@@ -21,6 +21,12 @@ const MVP2_CHEONSUL_RUNTIME_PATH := "res://scripts/schools/cheonsul_runtime.gd"
 const MVP2_GUIIN_RUNTIME_PATH := "res://scripts/schools/guiin_runtime.gd"
 const MVP2_HEUKYEONG_RUNTIME_PATH := "res://scripts/schools/heukyeong_runtime.gd"
 const MVP2_BADGE_PATH := "res://scripts/ui/enemy_effect_badge.gd"
+const MVP3_DATA_PATHS := [
+	"res://scripts/data/item_definition.gd",
+	"res://scripts/data/fate_definition.gd",
+	"res://scripts/data/run_modifier_set.gd",
+	"res://scripts/data/mvp3_catalog.gd",
+]
 
 
 func test_mvp0_script_resources_exist() -> void:
@@ -43,6 +49,11 @@ func test_mvp1_wave_spawner_resource_exists() -> void:
 func test_mvp2_shared_school_resources_exist() -> void:
 	for path in [MVP2_RUNTIME_BASE_PATH, MVP2_RUNTIME_HOST_PATH, MVP2_SELECTOR_PATH]:
 		assert_true(ResourceLoader.exists(path), "Missing MVP-2 shared script: %s" % path)
+
+
+func test_mvp3_data_resources_exist() -> void:
+	for path in MVP3_DATA_PATHS:
+		assert_true(ResourceLoader.exists(path), "Missing MVP-3 data script: %s" % path)
 
 
 func test_game_state_contract() -> void:

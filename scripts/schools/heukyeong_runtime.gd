@@ -8,6 +8,7 @@ const BASE_DAMAGE := 6
 const BASE_CRITICAL_CHANCE := 0.20
 const MARKED_CRITICAL_CHANCE := 0.40
 const CRITICAL_MULTIPLIER := 2.0
+const BASE_MARK_DURATION := 8.0
 const BURST_THRESHOLD := 3
 const BURST_DAMAGE := 16
 const ULTIMATE_MARK_THRESHOLD := 3
@@ -18,6 +19,7 @@ var _rng := RandomNumberGenerator.new()
 var _marks: Dictionary = {}
 var _attack_remaining: float = ATTACK_INTERVAL
 var _last_ultimate_ready: bool = false
+var _mark_gain_credit: float = 0.0
 
 
 func activate() -> void:
@@ -25,6 +27,7 @@ func activate() -> void:
 		return
 	super.activate()
 	_clear_all_marks()
+	_mark_gain_credit = 0.0
 	_attack_remaining = ATTACK_INTERVAL
 	_rng.randomize()
 	_emit_resource()
@@ -33,14 +36,28 @@ func activate() -> void:
 
 func deactivate() -> void:
 	_clear_all_marks()
+	_mark_gain_credit = 0.0
 	super.deactivate()
+
+
+func apply_run_modifiers(modifiers: RunModifierSet) -> void:
+	super.apply_run_modifiers(modifiers)
+	var new_duration := _effective_mark_duration()
+	for instance_id in _marks.keys():
+		var state: Dictionary = _marks[instance_id]
+		var old_duration := maxf(float(state.get("duration", BASE_MARK_DURATION)), TIMER_EPSILON)
+		var old_remaining := clampf(float(state.get("remaining", old_duration)), 0.0, old_duration)
+		var remaining_ratio := old_remaining / old_duration
+		state["duration"] = new_duration
+		state["remaining"] = new_duration * remaining_ratio
+		_marks[instance_id] = state
 
 
 func _process(delta: float) -> void:
 	if not active or delta <= 0.0:
 		return
 
-	_prune_invalid_marks()
+	_tick_marks(delta)
 	_attack_remaining -= delta
 	if _attack_remaining <= TIMER_EPSILON:
 		attack_once()
@@ -81,25 +98,34 @@ func apply_needle_hit(enemy: Node2D, force_critical: Variant = null) -> bool:
 	var critical_chance := get_critical_chance(enemy)
 	var is_critical := bool(force_critical) if force_critical != null else _rng.randf() < critical_chance
 	var multiplier := CRITICAL_MULTIPLIER if is_critical else 1.0
-	var hit_damage := maxi(roundi(float(BASE_DAMAGE) * multiplier), 1)
-	enemy.take_damage(hit_damage)
+	var actual_damage := _deal_damage(enemy, float(BASE_DAMAGE), &"normal", multiplier)
+	if actual_damage <= 0:
+		return is_critical
 
 	if not _is_valid_enemy(enemy):
 		_remove_mark_state(enemy.get_instance_id())
 		_emit_resource_and_ready()
 		return is_critical
 
+	var mark_gain := _consume_mark_gain(2 if is_critical else 1)
+	if mark_gain <= 0:
+		return is_critical
+
 	var instance_id := enemy.get_instance_id()
 	var state := _ensure_mark_state(enemy)
-	var mark_gain := 2 if is_critical else 1
 	var next_marks := int(state["marks"]) + mark_gain
+	_record_status_event()
 
 	if next_marks >= BURST_THRESHOLD:
-		enemy.take_damage(BURST_DAMAGE)
+		_deal_damage(enemy, float(BURST_DAMAGE), &"normal", _status_effect_multiplier())
 		_remove_mark_state(instance_id)
+		_record_status_event()
 		school_feedback.emit("MARK BURST")
 	else:
+		var duration := _effective_mark_duration()
 		state["marks"] = next_marks
+		state["duration"] = duration
+		state["remaining"] = duration
 		_marks[instance_id] = state
 		_update_badge(instance_id)
 
@@ -108,7 +134,9 @@ func apply_needle_hit(enemy: Node2D, force_critical: Variant = null) -> bool:
 
 
 func get_critical_chance(enemy: Node) -> float:
-	return MARKED_CRITICAL_CHANCE if get_mark_count(enemy) > 0 else BASE_CRITICAL_CHANCE
+	if get_mark_count(enemy) <= 0:
+		return BASE_CRITICAL_CHANCE
+	return clampf(MARKED_CRITICAL_CHANCE + run_modifiers.heukyeong_marked_crit_bonus, 0.0, 1.0)
 
 
 func get_mark_count(enemy: Node) -> int:
@@ -160,8 +188,8 @@ func try_use_ultimate() -> bool:
 		var enemy = target["enemy"]
 		if not _is_valid_enemy(enemy):
 			continue
-		var damage := 14 + 4 * int(target["marks"])
-		enemy.take_damage(damage)
+		var base_damage := 14 + 4 * int(target["marks"])
+		_deal_damage(enemy, float(base_damage), &"ultimate", _status_effect_multiplier())
 
 	_clear_all_marks()
 	_emit_resource_and_ready(true)
@@ -173,13 +201,29 @@ func _ensure_mark_state(enemy: Node2D) -> Dictionary:
 	var instance_id := enemy.get_instance_id()
 	if _marks.has(instance_id):
 		return _marks[instance_id]
+	var duration := _effective_mark_duration()
 	var state := {
 		"enemy": enemy,
 		"marks": 0,
+		"duration": duration,
+		"remaining": duration,
 		"badge": null,
 	}
 	_marks[instance_id] = state
 	return state
+
+
+func _tick_marks(delta: float) -> void:
+	_prune_invalid_marks()
+	for instance_id in _marks.keys():
+		if not _marks.has(instance_id):
+			continue
+		var state: Dictionary = _marks[instance_id]
+		state["remaining"] = maxf(float(state.get("remaining", 0.0)) - delta, 0.0)
+		if float(state["remaining"]) <= TIMER_EPSILON:
+			_remove_mark_state(instance_id)
+		else:
+			_marks[instance_id] = state
 
 
 func _update_badge(instance_id: int) -> void:
@@ -233,6 +277,46 @@ func _prune_invalid_marks() -> void:
 		var state: Dictionary = _marks[instance_id]
 		if not _is_valid_enemy(state.get("enemy")):
 			_remove_mark_state(instance_id)
+
+
+func _consume_mark_gain(base_gain: int) -> int:
+	if base_gain <= 0:
+		return 0
+	var multiplier := maxf(1.0 + run_modifiers.school_resource_gain_pct, 0.0)
+	_mark_gain_credit += float(base_gain) * multiplier
+	var whole_gain := floori(_mark_gain_credit + TIMER_EPSILON)
+	_mark_gain_credit = maxf(_mark_gain_credit - float(whole_gain), 0.0)
+	return whole_gain
+
+
+func _effective_mark_duration() -> float:
+	return BASE_MARK_DURATION * maxf(1.0 + run_modifiers.heukyeong_mark_duration_pct, 0.05)
+
+
+func _status_effect_multiplier() -> float:
+	return maxf(1.0 + run_modifiers.school_status_effect_pct, 0.0)
+
+
+func _deal_damage(
+	target: Node,
+	base_damage: float,
+	damage_kind: StringName,
+	extra_multiplier: float = 1.0
+) -> int:
+	if target == null or not is_instance_valid(target) or not target.has_method("take_damage"):
+		return 0
+	if combat_resolver != null:
+		return combat_resolver.deal_school_damage(target, base_damage, damage_kind, extra_multiplier)
+	var requested := maxi(roundi(base_damage * maxf(extra_multiplier, 0.0)), 1)
+	var result = target.call("take_damage", requested)
+	if result is int:
+		return maxi(int(result), 0)
+	return requested
+
+
+func _record_status_event(count: int = 1) -> void:
+	if contribution_tracker != null:
+		contribution_tracker.record_status_event(count)
 
 
 func _is_valid_enemy(candidate) -> bool:

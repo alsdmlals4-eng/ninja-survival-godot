@@ -70,11 +70,14 @@ func perform_melee_pulse() -> int:
 		return 0
 	var hit_count := 0
 	var radius := current_pulse_radius()
-	var damage := current_pulse_damage()
+	var base_damage := float(current_pulse_damage())
+	var damage_kind: StringName = &"ultimate" if ultimate_time_remaining > 0.0 else &"normal"
 	for enemy in _valid_enemies():
 		if enemy.global_position.distance_squared_to(player.global_position) > radius * radius:
 			continue
-		enemy.take_damage(damage)
+		var actual_damage := _deal_damage(enemy, base_damage, damage_kind)
+		if actual_damage <= 0:
+			continue
 		hit_count += 1
 	if hit_count > 0:
 		_gain_gwihyeol(HIT_GWIHYEOL * float(hit_count))
@@ -89,7 +92,7 @@ func current_pulse_radius() -> float:
 	var radius := BERSERKER_RADIUS if _is_berserker_active() else PULSE_RADIUS
 	if ultimate_time_remaining > 0.0:
 		radius = maxf(radius, ULTIMATE_RADIUS)
-	return radius
+	return radius * maxf(1.0 + run_modifiers.guiin_melee_radius_pct, 0.0)
 
 
 func current_pulse_damage() -> int:
@@ -132,7 +135,9 @@ func _is_berserker_active() -> bool:
 func _gain_gwihyeol(amount: float) -> void:
 	if amount <= 0.0:
 		return
-	_set_gwihyeol(gwihyeol + amount, true)
+	var gain_multiplier := maxf(1.0 + run_modifiers.school_resource_gain_pct, 0.0)
+	gain_multiplier *= maxf(1.0 + run_modifiers.ultimate_charge_gain_pct, 0.0)
+	_set_gwihyeol(gwihyeol + amount * gain_multiplier, true)
 
 
 func _set_gwihyeol(value: float, reset_gain_timer: bool) -> void:
@@ -143,6 +148,18 @@ func _set_gwihyeol(value: float, reset_gain_timer: bool) -> void:
 	if not is_equal_approx(previous, gwihyeol):
 		_emit_resource()
 		_emit_ultimate_ready_if_changed()
+
+
+func _deal_damage(target: Node, base_damage: float, damage_kind: StringName) -> int:
+	if target == null or not is_instance_valid(target) or not target.has_method("take_damage"):
+		return 0
+	if combat_resolver != null:
+		return combat_resolver.deal_school_damage(target, base_damage, damage_kind)
+	var requested := maxi(roundi(base_damage), 1)
+	var result = target.call("take_damage", requested)
+	if result is int:
+		return maxi(int(result), 0)
+	return requested
 
 
 func _valid_enemies() -> Array[Node2D]:

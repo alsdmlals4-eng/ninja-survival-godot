@@ -13,6 +13,9 @@ signal restart_requested
 @onready var ultimate_label: Label = $UltimateLabel
 @onready var school_feedback_label: Label = $SchoolFeedbackLabel
 @onready var combo_title_label: Label = $ComboTitleLabel
+@onready var stage_label: Label = $StageLabel
+@onready var stage_time_label: Label = $StageTimeLabel
+@onready var gold_label: Label = $GoldLabel
 @onready var restart_button: Button = $RestartButton
 @onready var game_over_panel: Control = $GameOverPanel
 
@@ -58,6 +61,21 @@ func set_school_resource(label: String, current: float, maximum: float) -> void:
 
 func set_ultimate_ready(ready: bool) -> void:
 	ultimate_label.text = "ULT READY" if ready else "ULT charging"
+
+
+func set_stage(segment: int, total: int = 3) -> void:
+	stage_label.text = "SEGMENT %d/%d" % [maxi(segment, 0), maxi(total, 1)]
+
+
+func set_stage_time(seconds_remaining: float) -> void:
+	var total_seconds := maxi(ceili(maxf(seconds_remaining, 0.0)), 0)
+	var minutes := floori(float(total_seconds) / 60.0)
+	var seconds := total_seconds % 60
+	stage_time_label.text = "TIME %02d:%02d" % [minutes, seconds]
+
+
+func set_gold(gold: int) -> void:
+	gold_label.text = "GOLD %d" % maxi(gold, 0)
 
 
 func show_school_feedback(text: String) -> void:

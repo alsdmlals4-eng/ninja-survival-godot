@@ -7,19 +7,35 @@ class_name BongmaFamiliar
 var player: PlayerController
 var attack_interval: float = 0.70
 var damage: int = 8
+var damage_kind: StringName = &"normal"
+var combat_resolver: CombatResolver
 var _cooldown_remaining: float = 0.0
 
 
-func configure(new_player: PlayerController, new_attack_interval: float, new_damage: int) -> void:
+func configure(
+	new_player: PlayerController,
+	new_attack_interval: float,
+	new_damage: int,
+	resolver: CombatResolver = null
+) -> void:
 	player = new_player
 	attack_interval = maxf(new_attack_interval, 0.05)
 	damage = maxi(new_damage, 1)
+	combat_resolver = resolver
 	_cooldown_remaining = 0.0
 
 
 func set_attack_interval(seconds: float) -> void:
 	attack_interval = maxf(seconds, 0.05)
 	_cooldown_remaining = minf(_cooldown_remaining, attack_interval)
+
+
+func set_combat_resolver(resolver: CombatResolver) -> void:
+	combat_resolver = resolver
+
+
+func set_damage_kind(kind: StringName) -> void:
+	damage_kind = kind
 
 
 func _physics_process(delta: float) -> void:
@@ -49,7 +65,10 @@ func attack_once() -> Node:
 	var target := _nearest_target()
 	if target == null:
 		return null
-	target.take_damage(damage)
+	if combat_resolver != null:
+		combat_resolver.deal_school_damage(target, float(damage), damage_kind)
+	else:
+		target.take_damage(damage)
 	return target
 
 

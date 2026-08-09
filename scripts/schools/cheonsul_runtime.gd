@@ -13,12 +13,12 @@ const TOKEN_DURATION := 4.0
 const REACTION_DAMAGE := 10
 const CHAIN_RADIUS := 120.0
 const CHAIN_DAMAGE := 6
-const REACTION_MAXIMUM := 3
+const REACTION_MAXIMUM := 3.0
 const ULTIMATE_DAMAGE := 18
 
 @export var badge_scene: PackedScene
 
-var reaction_count: int = 0
+var reaction_count: float = 0.0
 
 var _cast_remaining: float = CAST_INTERVAL
 var _next_token: StringName = &"wet"
@@ -31,7 +31,7 @@ func activate() -> void:
 	if active:
 		return
 	super.activate()
-	reaction_count = 0
+	reaction_count = 0.0
 	_cast_remaining = CAST_INTERVAL
 	_next_token = &"wet"
 	_clear_states()
@@ -74,7 +74,7 @@ func apply_flame_cast(center: Vector2) -> int:
 	for enemy in _valid_enemies():
 		if enemy.global_position.distance_squared_to(center) > FLAME_RADIUS * FLAME_RADIUS:
 			continue
-		enemy.take_damage(FLAME_DAMAGE)
+		_deal_damage(enemy, FLAME_DAMAGE)
 		hit_enemies.append(enemy)
 		if enemy.has_method("is_dead") and enemy.is_dead():
 			continue
@@ -102,6 +102,7 @@ func apply_token(enemy: Node2D, token: StringName) -> bool:
 		return false
 
 	var state := _ensure_state(enemy)
+	_record_status_event()
 	if token == &"wet":
 		state["wet_remaining"] = TOKEN_DURATION
 		_states[enemy.get_instance_id()] = state
@@ -118,17 +119,17 @@ func apply_token(enemy: Node2D, token: StringName) -> bool:
 	state["shock_remaining"] = 0.0
 	_states[enemy.get_instance_id()] = state
 
-	enemy.take_damage(REACTION_DAMAGE)
 	var reaction_center := enemy.global_position
+	var reaction_multiplier := _reaction_effect_multiplier()
+	_deal_damage(enemy, REACTION_DAMAGE, &"normal", reaction_multiplier)
 	for other in _valid_enemies():
 		if other == enemy:
 			continue
 		if other.global_position.distance_squared_to(reaction_center) <= CHAIN_RADIUS * CHAIN_RADIUS:
-			other.take_damage(CHAIN_DAMAGE)
+			_deal_damage(other, CHAIN_DAMAGE, &"normal", reaction_multiplier)
 
-	reaction_count = mini(reaction_count + 1, REACTION_MAXIMUM)
-	_emit_resource()
-	_emit_ultimate_ready_if_changed()
+	_record_status_event()
+	_add_reaction_progress()
 	school_feedback.emit("WET + SHOCK")
 	_update_badge(enemy.get_instance_id())
 	return true
@@ -181,10 +182,10 @@ func try_use_ultimate() -> bool:
 
 	for enemy in targets:
 		if _is_valid_enemy(enemy):
-			enemy.take_damage(ULTIMATE_DAMAGE)
+			_deal_damage(enemy, ULTIMATE_DAMAGE, &"ultimate")
 
 	_clear_states()
-	reaction_count = 0
+	reaction_count = 0.0
 	_emit_resource()
 	_emit_ultimate_ready_if_changed(true)
 	school_feedback.emit("오행폭주")
@@ -196,6 +197,7 @@ func _apply_burn(enemy: Node2D) -> void:
 	state["burn_remaining"] = BURN_DURATION
 	state["burn_tick_remaining"] = BURN_TICK_INTERVAL
 	_states[enemy.get_instance_id()] = state
+	_record_status_event()
 	_update_badge(enemy.get_instance_id())
 
 
@@ -217,7 +219,7 @@ func _tick_states(delta: float) -> void:
 			while tick_remaining <= 0.0:
 				if not _is_valid_enemy(enemy):
 					break
-				enemy.take_damage(BURN_DAMAGE)
+				_deal_damage(enemy, BURN_DAMAGE)
 				tick_remaining += BURN_TICK_INTERVAL
 			state["burn_tick_remaining"] = tick_remaining
 
@@ -404,8 +406,43 @@ func _nearest_enemy() -> Node2D:
 	return nearest
 
 
+func _deal_damage(
+	target: Node,
+	base_damage: float,
+	damage_kind: StringName = &"normal",
+	extra_multiplier: float = 1.0
+) -> int:
+	if not is_instance_valid(target) or not target.has_method("take_damage"):
+		return 0
+	if combat_resolver != null:
+		return combat_resolver.deal_school_damage(target, base_damage, damage_kind, extra_multiplier)
+	var requested := maxi(roundi(base_damage * maxf(extra_multiplier, 0.0)), 1)
+	var result = target.call("take_damage", requested)
+	return int(result) if result is int else requested
+
+
+func _reaction_effect_multiplier() -> float:
+	return (
+		maxf(1.0 + run_modifiers.cheonsul_reaction_damage_pct, 0.0)
+		* maxf(1.0 + run_modifiers.school_status_effect_pct, 0.0)
+	)
+
+
+func _add_reaction_progress() -> void:
+	var gain_multiplier := maxf(1.0 + run_modifiers.school_resource_gain_pct, 0.0)
+	gain_multiplier *= maxf(1.0 + run_modifiers.ultimate_charge_gain_pct, 0.0)
+	reaction_count = clampf(reaction_count + gain_multiplier, 0.0, REACTION_MAXIMUM)
+	_emit_resource()
+	_emit_ultimate_ready_if_changed()
+
+
+func _record_status_event(count: int = 1) -> void:
+	if contribution_tracker != null:
+		contribution_tracker.record_status_event(count)
+
+
 func _emit_resource() -> void:
-	resource_changed.emit("REACTION", float(reaction_count), float(REACTION_MAXIMUM))
+	resource_changed.emit("REACTION", reaction_count, REACTION_MAXIMUM)
 
 
 func _emit_ultimate_ready_if_changed(force: bool = false) -> void:

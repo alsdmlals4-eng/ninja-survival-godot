@@ -1,0 +1,141 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/rest_flow_ui.gd" id="1_rest"]
+
+[node name="RestFlowUI" type="CanvasLayer"]
+script = ExtResource("1_rest")
+
+[node name="Panel" type="PanelContainer" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 48
+theme_override_constants/margin_top = 36
+theme_override_constants/margin_right = 48
+theme_override_constants/margin_bottom = 36
+
+[node name="Content" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+
+[node name="ResultView" type="VBoxContainer" parent="Panel/Margin/Content"]
+visible = false
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/Content/ResultView"]
+layout_mode = 2
+text = "전투 결과"
+
+[node name="DamageLabel" type="Label" parent="Panel/Margin/Content/ResultView"]
+layout_mode = 2
+text = "피해 0"
+
+[node name="HealingLabel" type="Label" parent="Panel/Margin/Content/ResultView"]
+layout_mode = 2
+text = "회복 기여 없음"
+
+[node name="DefenseLabel" type="Label" parent="Panel/Margin/Content/ResultView"]
+layout_mode = 2
+text = "방어 기여 없음"
+
+[node name="StatusLabel" type="Label" parent="Panel/Margin/Content/ResultView"]
+layout_mode = 2
+text = "상태/반응 0"
+
+[node name="ComboLabel" type="Label" parent="Panel/Margin/Content/ResultView"]
+layout_mode = 2
+text = "처치 0  MAX COMBO 0"
+
+[node name="GoldLabel" type="Label" parent="Panel/Margin/Content/ResultView"]
+layout_mode = 2
+text = "획득 GOLD 0"
+
+[node name="HintsLabel" type="Label" parent="Panel/Margin/Content/ResultView"]
+layout_mode = 2
+text = "추천 없음"
+autowrap_mode = 2
+
+[node name="ContinueButton" type="Button" parent="Panel/Margin/Content/ResultView"]
+layout_mode = 2
+text = "계속"
+
+[node name="ShopView" type="VBoxContainer" parent="Panel/Margin/Content"]
+visible = false
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/Content/ShopView"]
+layout_mode = 2
+text = "상점"
+
+[node name="GoldLabel" type="Label" parent="Panel/Margin/Content/ShopView"]
+layout_mode = 2
+text = "GOLD 0"
+
+[node name="Offers" type="HBoxContainer" parent="Panel/Margin/Content/ShopView"]
+layout_mode = 2
+
+[node name="OwnedTitleLabel" type="Label" parent="Panel/Margin/Content/ShopView"]
+layout_mode = 2
+text = "보유 아이템 — 눌러서 판매"
+
+[node name="OwnedList" type="VBoxContainer" parent="Panel/Margin/Content/ShopView"]
+layout_mode = 2
+
+[node name="RerollButton" type="Button" parent="Panel/Margin/Content/ShopView"]
+layout_mode = 2
+text = "리롤 5G"
+
+[node name="MessageLabel" type="Label" parent="Panel/Margin/Content/ShopView"]
+layout_mode = 2
+
+[node name="ContinueButton" type="Button" parent="Panel/Margin/Content/ShopView"]
+layout_mode = 2
+text = "다음"
+
+[node name="FateView" type="VBoxContainer" parent="Panel/Margin/Content"]
+visible = false
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/Content/FateView"]
+layout_mode = 2
+text = "운명 선택 — 1개 필수"
+
+[node name="Candidates" type="HBoxContainer" parent="Panel/Margin/Content/FateView"]
+layout_mode = 2
+
+[node name="PreviewView" type="VBoxContainer" parent="Panel/Margin/Content"]
+visible = false
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/Content/PreviewView"]
+layout_mode = 2
+text = "다음 전투 예고"
+
+[node name="SummaryLabel" type="Label" parent="Panel/Margin/Content/PreviewView"]
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="StartButton" type="Button" parent="Panel/Margin/Content/PreviewView"]
+layout_mode = 2
+text = "전투 시작"
+
+[node name="CompleteView" type="VBoxContainer" parent="Panel/Margin/Content"]
+visible = false
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/Content/CompleteView"]
+layout_mode = 2
+text = "MVP-3 LOOP COMPLETE"
+
+[node name="SummaryLabel" type="Label" parent="Panel/Margin/Content/CompleteView"]
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="RestartButton" type="Button" parent="Panel/Margin/Content/CompleteView"]
+layout_mode = 2
+text = "RESTART"
