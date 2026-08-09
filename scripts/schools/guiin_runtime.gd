@@ -49,11 +49,6 @@ func _process(delta: float) -> void:
 	if ultimate_time_remaining > 0.0:
 		ultimate_time_remaining = maxf(ultimate_time_remaining - delta, 0.0)
 
-	_pulse_remaining -= delta
-	if _pulse_remaining <= TIMER_EPSILON:
-		perform_melee_pulse()
-		_pulse_remaining = current_pulse_interval()
-
 	var previous_time_since_gain := time_since_gain
 	time_since_gain += delta
 	var previous_decay_time := maxf(previous_time_since_gain - DECAY_DELAY, 0.0)
@@ -61,6 +56,11 @@ func _process(delta: float) -> void:
 	var decay_delta := maxf(current_decay_time - previous_decay_time, 0.0)
 	if decay_delta > 0.0 and gwihyeol > 0.0:
 		_set_gwihyeol(gwihyeol - DECAY_PER_SECOND * decay_delta, false)
+
+	_pulse_remaining -= delta
+	if _pulse_remaining <= TIMER_EPSILON:
+		perform_melee_pulse()
+		_pulse_remaining = current_pulse_interval()
 
 	_emit_ultimate_ready_if_changed()
 
