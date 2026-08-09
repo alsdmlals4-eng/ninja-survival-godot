@@ -1,6 +1,8 @@
 extends Node2D
 class_name MainController
 
+const DEATH_COUNTED_META := &"ninja_main_death_counted"
+
 @export var reward_orb_scene: PackedScene
 
 var game_over: bool = false
@@ -78,8 +80,11 @@ func _set_combat_enabled(enabled: bool) -> void:
 
 
 func _on_enemy_died(enemy: Node) -> void:
-	if game_over:
+	if game_over or not is_instance_valid(enemy):
 		return
+	if enemy.has_meta(DEATH_COUNTED_META):
+		return
+	enemy.set_meta(DEATH_COUNTED_META, true)
 
 	var death_position := Vector2.ZERO
 	if enemy is Node2D:
