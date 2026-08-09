@@ -25,6 +25,9 @@ var world: Node2D
 var selected_school_id: StringName = &""
 var selected_school_name: String = ""
 var active_runtime: SchoolRuntimeBase
+var combat_resolver: CombatResolver
+var contribution_tracker: CombatContributionTracker
+var run_modifiers := RunModifierSet.new()
 
 
 func configure(new_player: PlayerController, new_world: Node2D) -> void:
@@ -33,6 +36,24 @@ func configure(new_player: PlayerController, new_world: Node2D) -> void:
 	for child in get_children():
 		if child is SchoolRuntimeBase:
 			(child as SchoolRuntimeBase).configure(player, world)
+
+
+func configure_run_systems(
+	resolver: CombatResolver,
+	tracker: CombatContributionTracker
+) -> void:
+	combat_resolver = resolver
+	contribution_tracker = tracker
+	for child in get_children():
+		if child is SchoolRuntimeBase:
+			(child as SchoolRuntimeBase).configure_run_systems(resolver, tracker)
+
+
+func apply_run_modifiers(modifiers: RunModifierSet) -> void:
+	run_modifiers = modifiers.copy_values() if modifiers != null else RunModifierSet.new()
+	for child in get_children():
+		if child is SchoolRuntimeBase:
+			(child as SchoolRuntimeBase).apply_run_modifiers(run_modifiers)
 
 
 func select_school(school_id: StringName) -> bool:
@@ -50,6 +71,8 @@ func select_school(school_id: StringName) -> bool:
 			(child as SchoolRuntimeBase).deactivate()
 
 	runtime.configure(player, world)
+	runtime.configure_run_systems(combat_resolver, contribution_tracker)
+	runtime.apply_run_modifiers(run_modifiers)
 	_connect_runtime(runtime)
 	runtime.activate()
 	active_runtime = runtime
