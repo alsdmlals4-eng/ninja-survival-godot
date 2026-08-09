@@ -2,6 +2,7 @@ extends SchoolRuntimeBase
 class_name CheonsulRuntime
 
 const CAST_INTERVAL := 1.80
+const CAST_EPSILON := 0.000001
 const FLAME_RADIUS := 90.0
 const FLAME_DAMAGE := 6
 const FIELD_VISUAL_DURATION := 0.60
@@ -53,7 +54,7 @@ func _process(delta: float) -> void:
 	_tick_field_visuals(delta)
 
 	_cast_remaining -= delta
-	if _cast_remaining <= 0.0:
+	if _cast_remaining <= CAST_EPSILON:
 		var target := _nearest_enemy()
 		if target == null:
 			_cast_remaining = 0.1
