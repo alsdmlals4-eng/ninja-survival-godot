@@ -24,7 +24,7 @@ func _make_runtime():
 func _familiar_children(runtime: Node) -> Array[Node]:
 	var result: Array[Node] = []
 	for child in runtime.get_children():
-		if child.name.to_lower().begins_with("familiar"):
+		if child.name.to_lower().begins_with("familiar") and not child.is_queued_for_deletion():
 			result.append(child)
 	return result
 
