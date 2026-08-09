@@ -10,6 +10,7 @@ const REQUIRED_SCRIPTS := [
 	"res://scripts/ui/hud.gd",
 ]
 const MVP1_TRACKER_PATH := "res://scripts/combat/combat_ddd_tracker.gd"
+const MVP1_REWARD_ORB_PATH := "res://scripts/combat/reward_orb.gd"
 
 
 func test_mvp0_script_resources_exist() -> void:
@@ -19,6 +20,10 @@ func test_mvp0_script_resources_exist() -> void:
 
 func test_mvp1_tracker_resource_exists() -> void:
 	assert_true(ResourceLoader.exists(MVP1_TRACKER_PATH), "Missing MVP-1 tracker script")
+
+
+func test_mvp1_reward_orb_resource_exists() -> void:
+	assert_true(ResourceLoader.exists(MVP1_REWARD_ORB_PATH), "Missing MVP-1 reward orb script")
 
 
 func test_game_state_contract() -> void:
@@ -92,6 +97,19 @@ func test_combat_ddd_tracker_contract() -> void:
 	assert_true(_has_property(tracker, "reward_count"))
 	assert_true(_has_property(tracker, "combo_time_remaining"))
 	tracker.free()
+
+
+func test_reward_orb_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP1_REWARD_ORB_PATH), "Missing MVP-1 reward orb script")
+	if not ResourceLoader.exists(MVP1_REWARD_ORB_PATH):
+		return
+	var orb = load(MVP1_REWARD_ORB_PATH).new()
+	assert_true(orb.has_method("configure"))
+	assert_true(_has_property(orb, "target"))
+	assert_true(_has_property(orb, "move_speed"))
+	assert_true(_has_property(orb, "collect_radius"))
+	assert_true(_has_property(orb, "lifetime"))
+	orb.free()
 
 
 func test_hud_contract() -> void:
