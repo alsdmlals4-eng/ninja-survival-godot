@@ -59,4 +59,7 @@ jobs:
         run: |
           set -euo pipefail
           ./Godot_v4.7.1-stable_linux.x86_64 --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests -ginclude_subdirs -gexit 2>&1 | tee gut-output.log
+          if grep -E "SCRIPT ERROR:|ERROR:" gut-output.log; then
+            exit 1
+          fi
           grep -q "test_script_contracts.gd" gut-output.log
