@@ -25,6 +25,19 @@ func test_spawn_wave_only_fills_remaining_capacity() -> void:
 	assert_eq(_living_enemy_children(context.spawn_parent).size(), 3)
 
 
+func test_queued_enemy_no_longer_occupies_wave_capacity() -> void:
+	var context = _make_context()
+	if context.is_empty():
+		return
+	var spawner = context.spawner
+	spawner.max_active_enemies = 2
+	var leaving_enemy = _add_enemy(context.spawn_parent)
+	_add_enemy(context.spawn_parent)
+	leaving_enemy.queue_free()
+	assert_eq(spawner.spawn_wave(), 1)
+	assert_eq(_living_enemy_children(context.spawn_parent).size(), 2)
+
+
 func test_spawn_wave_does_nothing_at_cap() -> void:
 	var context = _make_context()
 	if context.is_empty():
