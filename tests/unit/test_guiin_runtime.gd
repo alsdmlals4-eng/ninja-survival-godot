@@ -123,17 +123,23 @@ func test_guiin_form_cost_duration_interval_radius_and_rounding() -> void:
 	assert_false(runtime.try_use_ultimate())
 
 
-func test_ultimate_ends_after_six_seconds_but_resource_loop_continues() -> void:
+func test_ultimate_ends_after_six_seconds_and_resource_gain_still_works() -> void:
 	var runtime = _make_runtime()
 	if runtime == null:
 		return
 	runtime.gwihyeol = 100.0
 	assert_true(runtime.try_use_ultimate())
 	runtime._pulse_remaining = 999.0
-	runtime._process(6.0)
+	var enemy := Node.new()
+	runtime.on_enemy_died(enemy)
+	enemy.free()
+	assert_almost_eq(runtime.gwihyeol, 12.0, 0.001)
+	runtime._process(0.5)
+	assert_almost_eq(runtime.gwihyeol, 12.0, 0.001)
+	assert_almost_eq(runtime.ultimate_time_remaining, 5.5, 0.001)
+	runtime._process(5.5)
 	assert_almost_eq(runtime.ultimate_time_remaining, 0.0, 0.001)
 	assert_almost_eq(runtime.current_pulse_interval(), 0.90, 0.001)
-	assert_gt(runtime.gwihyeol, 0.0)
 
 
 func test_deactivated_runtime_does_not_pulse_or_decay() -> void:
