@@ -170,3 +170,20 @@ func test_automatic_cast_waits_one_point_eight_seconds_and_alternates_tokens() -
 	assert_true(runtime.has_status(enemy, &"wet"))
 	runtime._process(1.80)
 	assert_eq(runtime.reaction_count, 1)
+
+
+func test_automatic_shock_prioritizes_existing_wet_target() -> void:
+	var runtime = _make_runtime()
+	if runtime == null:
+		return
+	var wet_enemy = _enemy(runtime.world, Vector2(110, 0), 200)
+	var fresh_near_enemy = _enemy(runtime.world, Vector2.ZERO, 200)
+	assert_false(runtime.apply_token(wet_enemy, &"wet"))
+	runtime._next_token = &"shock"
+	runtime._cast_remaining = 0.0
+
+	runtime._process(0.01)
+
+	assert_eq(runtime.reaction_count, 1, "SHOCK should chase a live WET target so reaction charge progresses reliably")
+	assert_lt(wet_enemy.health, 200)
+	assert_eq(fresh_near_enemy.health, 200, "The closer fresh enemy should not steal the SHOCK cast from an existing WET target")
