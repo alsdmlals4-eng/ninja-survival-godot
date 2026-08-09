@@ -1,0 +1,170 @@
+extends GutTest
+
+const RUNTIME_PATH := "res://scripts/schools/cheonsul_runtime.gd"
+const BADGE_SCRIPT_PATH := "res://scripts/ui/enemy_effect_badge.gd"
+const BADGE_SCENE_PATH := "res://scenes/ui/enemy_effect_badge.tscn"
+const PLAYER_PATH := "res://scripts/player/player_controller.gd"
+const ENEMY_PATH := "res://scripts/enemies/enemy_chaser.gd"
+
+
+func _make_runtime():
+	assert_true(ResourceLoader.exists(RUNTIME_PATH), "Cheonsul runtime script must exist")
+	assert_true(ResourceLoader.exists(BADGE_SCENE_PATH), "Enemy effect badge scene must exist")
+	if not ResourceLoader.exists(RUNTIME_PATH) or not ResourceLoader.exists(BADGE_SCENE_PATH):
+		return null
+	var world := Node2D.new()
+	add_child_autofree(world)
+	var player = load(PLAYER_PATH).new()
+	world.add_child(player)
+	var runtime = load(RUNTIME_PATH).new()
+	runtime.badge_scene = load(BADGE_SCENE_PATH)
+	world.add_child(runtime)
+	runtime.configure(player, world)
+	runtime.activate()
+	return runtime
+
+
+func _enemy(world: Node2D, position: Vector2, maximum_health: int = 100):
+	var enemy = load(ENEMY_PATH).new()
+	enemy.max_health = maximum_health
+	enemy.global_position = position
+	world.add_child(enemy)
+	return enemy
+
+
+func test_enemy_effect_badge_is_minimal_text_view() -> void:
+	assert_true(ResourceLoader.exists(BADGE_SCRIPT_PATH), "Enemy effect badge script must exist")
+	assert_true(ResourceLoader.exists(BADGE_SCENE_PATH), "Enemy effect badge scene must exist")
+	if not ResourceLoader.exists(BADGE_SCENE_PATH):
+		return
+	var badge = load(BADGE_SCENE_PATH).instantiate()
+	add_child_autofree(badge)
+	assert_true(badge.has_method("set_text"))
+	badge.set_text("BURN/WET")
+	assert_eq(badge.text, "BURN/WET")
+
+
+func test_flame_cast_hits_radius_and_burn_ticks_once_per_second() -> void:
+	var runtime = _make_runtime()
+	if runtime == null:
+		return
+	var near_enemy = _enemy(runtime.world, Vector2(40, 0))
+	var far_enemy = _enemy(runtime.world, Vector2(140, 0))
+
+	assert_eq(runtime.apply_flame_cast(Vector2.ZERO), 1)
+	assert_eq(near_enemy.health, 94)
+	assert_eq(far_enemy.health, 100)
+	assert_true(runtime.has_status(near_enemy, &"burn"))
+
+	runtime._process(1.0)
+	assert_eq(near_enemy.health, 92)
+	runtime._process(1.0)
+	assert_eq(near_enemy.health, 90)
+
+
+func test_same_token_refreshes_four_second_duration() -> void:
+	var runtime = _make_runtime()
+	if runtime == null:
+		return
+	var enemy = _enemy(runtime.world, Vector2.ZERO)
+	assert_false(runtime.apply_token(enemy, &"wet"))
+	runtime._process(3.5)
+	assert_true(runtime.has_status(enemy, &"wet"))
+	assert_false(runtime.apply_token(enemy, &"wet"))
+	runtime._process(3.5)
+	assert_true(runtime.has_status(enemy, &"wet"))
+	runtime._process(0.6)
+	assert_false(runtime.has_status(enemy, &"wet"))
+
+
+func test_wet_then_shock_reacts_once_and_chain_is_non_recursive() -> void:
+	var runtime = _make_runtime()
+	if runtime == null:
+		return
+	var target = _enemy(runtime.world, Vector2.ZERO)
+	var chain = _enemy(runtime.world, Vector2(80, 0))
+	var far_enemy = _enemy(runtime.world, Vector2(180, 0))
+
+	assert_false(runtime.apply_token(target, &"wet"))
+	assert_true(runtime.apply_token(target, &"shock"))
+	assert_eq(target.health, 90)
+	assert_eq(chain.health, 94)
+	assert_eq(far_enemy.health, 100)
+	assert_eq(runtime.reaction_count, 1)
+	assert_false(runtime.has_status(target, &"wet"))
+	assert_false(runtime.has_status(target, &"shock"))
+	assert_false(runtime.has_status(chain, &"wet"))
+	assert_false(runtime.has_status(chain, &"shock"))
+
+
+func test_shock_then_wet_waits_for_next_shock() -> void:
+	var runtime = _make_runtime()
+	if runtime == null:
+		return
+	var enemy = _enemy(runtime.world, Vector2.ZERO)
+	assert_false(runtime.apply_token(enemy, &"shock"))
+	assert_false(runtime.apply_token(enemy, &"wet"))
+	assert_eq(runtime.reaction_count, 0)
+	assert_true(runtime.has_status(enemy, &"shock"))
+	assert_true(runtime.has_status(enemy, &"wet"))
+	assert_true(runtime.apply_token(enemy, &"shock"))
+	assert_eq(runtime.reaction_count, 1)
+
+
+func test_reaction_charge_clamps_at_three_and_ultimate_clears_statuses() -> void:
+	var runtime = _make_runtime()
+	if runtime == null:
+		return
+	var enemy = _enemy(runtime.world, Vector2.ZERO, 300)
+	for _index in range(4):
+		runtime.apply_token(enemy, &"wet")
+		runtime.apply_token(enemy, &"shock")
+	assert_eq(runtime.reaction_count, 3)
+	assert_true(runtime.is_ultimate_ready())
+
+	runtime.apply_token(enemy, &"wet")
+	var health_before: int = enemy.health
+	assert_true(runtime.try_use_ultimate())
+	assert_eq(enemy.health, health_before - 18)
+	assert_eq(runtime.reaction_count, 0)
+	assert_false(runtime.has_status(enemy, &"wet"))
+	assert_false(runtime.is_ultimate_ready())
+
+
+func test_ultimate_without_status_target_preserves_ready_charge() -> void:
+	var runtime = _make_runtime()
+	if runtime == null:
+		return
+	runtime.reaction_count = 3
+	assert_true(runtime.is_ultimate_ready())
+	assert_false(runtime.try_use_ultimate())
+	assert_eq(runtime.reaction_count, 3)
+
+
+func test_deactivate_clears_owned_state_and_badges() -> void:
+	var runtime = _make_runtime()
+	if runtime == null:
+		return
+	var enemy = _enemy(runtime.world, Vector2.ZERO)
+	runtime.apply_token(enemy, &"wet")
+	assert_true(runtime.has_status(enemy, &"wet"))
+	var badge := enemy.get_node_or_null("EnemyEffectBadge")
+	assert_not_null(badge)
+
+	runtime.deactivate()
+	assert_false(runtime.has_status(enemy, &"wet"))
+	assert_true(badge == null or badge.is_queued_for_deletion())
+
+
+func test_automatic_cast_waits_one_point_eight_seconds_and_alternates_tokens() -> void:
+	var runtime = _make_runtime()
+	if runtime == null:
+		return
+	var enemy = _enemy(runtime.world, Vector2(30, 0), 200)
+	runtime._process(1.79)
+	assert_eq(enemy.health, 200)
+	runtime._process(0.01)
+	assert_eq(enemy.health, 194)
+	assert_true(runtime.has_status(enemy, &"wet"))
+	runtime._process(1.80)
+	assert_eq(runtime.reaction_count, 1)
