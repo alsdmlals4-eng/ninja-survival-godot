@@ -154,6 +154,21 @@ func test_alive_ui_accept_uses_selected_ultimate() -> void:
 	assert_almost_eq(bongma.ultimate_time_remaining, 6.0, 0.001)
 
 
+func test_restart_button_is_wired_while_player_is_alive() -> void:
+	var main = MAIN_SCENE.instantiate()
+	add_child_autofree(main)
+	await get_tree().process_frame
+	var hud = main.get_node("HUD")
+	assert_true(hud.has_signal("restart_requested"), "HUD restart signal must exist")
+	assert_true(main.has_method("_restart_run"), "Main must expose one restart path for button and game-over Enter")
+	if not hud.has_signal("restart_requested") or not main.has_method("_restart_run"):
+		return
+	assert_true(
+		hud.is_connected("restart_requested", Callable(main, "_restart_run")),
+		"Live restart button must stay wired before death"
+	)
+
+
 func test_game_over_deactivates_school_runtime_and_freezes_school_effects() -> void:
 	var main = MAIN_SCENE.instantiate()
 	add_child_autofree(main)
