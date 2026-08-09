@@ -47,7 +47,7 @@ func test_process_pause_and_resume_preserve_selected_school_identity_and_runtime
 		main._on_school_selected(school_id)
 		var host = main.get_node("SchoolRuntimeHost")
 		var runtime = host.active_runtime
-		var marker_before := _resource_marker(runtime, school_id)
+		var marker_before: Variant = _resource_marker(runtime, school_id)
 		main._set_combat_enabled(false)
 		assert_eq(host.selected_school_id, school_id)
 		assert_true(runtime.active)
