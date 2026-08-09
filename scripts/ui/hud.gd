@@ -6,10 +6,15 @@ class_name HUDController
 @onready var combo_label: Label = $ComboLabel
 @onready var style_label: Label = $StyleLabel
 @onready var reward_label: Label = $RewardLabel
+@onready var school_label: Label = $SchoolLabel
+@onready var school_resource_label: Label = $SchoolResourceLabel
+@onready var ultimate_label: Label = $UltimateLabel
+@onready var school_feedback_label: Label = $SchoolFeedbackLabel
 @onready var combo_title_label: Label = $ComboTitleLabel
 @onready var game_over_panel: Control = $GameOverPanel
 
 var _title_generation: int = 0
+var _school_feedback_generation: int = 0
 
 
 func _ready() -> void:
@@ -37,6 +42,27 @@ func set_stylish_score(score: int) -> void:
 
 func set_reward_count(count: int) -> void:
 	reward_label.text = "ORBS %d" % count
+
+
+func set_school(name: String) -> void:
+	school_label.text = "SCHOOL %s" % name
+
+
+func set_school_resource(label: String, current: float, maximum: float) -> void:
+	school_resource_label.text = "%s %d / %d" % [label, roundi(current), roundi(maximum)]
+
+
+func set_ultimate_ready(ready: bool) -> void:
+	ultimate_label.text = "ULT READY" if ready else "ULT charging"
+
+
+func show_school_feedback(text: String) -> void:
+	_school_feedback_generation += 1
+	var generation := _school_feedback_generation
+	school_feedback_label.text = text
+	await get_tree().create_timer(1.0).timeout
+	if generation == _school_feedback_generation:
+		school_feedback_label.text = ""
 
 
 func show_combo_title(title: String) -> void:
