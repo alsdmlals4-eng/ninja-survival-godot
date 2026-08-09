@@ -47,15 +47,18 @@ func set_target(new_target: Node2D) -> void:
 	target = new_target
 
 
-func take_damage(amount: int) -> void:
+func take_damage(amount: int) -> int:
 	if amount <= 0 or _dead:
-		return
+		return 0
 
+	var before := health
 	health = max(health - amount, 0)
+	var actual_damage := before - health
 	if health == 0:
 		_dead = true
 		died.emit(self)
 		queue_free()
+	return actual_damage
 
 
 func is_dead() -> bool:
