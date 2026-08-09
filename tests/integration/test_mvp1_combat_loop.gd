@@ -29,7 +29,6 @@ func test_enemy_death_updates_combo_and_spawns_one_reward_orb() -> void:
 	var death_position: Vector2 = enemy.global_position
 	var kills_before: int = game_state.kill_count
 	enemy.take_damage(enemy.max_health)
-	await get_tree().process_frame
 
 	assert_eq(game_state.kill_count, kills_before + 1)
 	assert_eq(tracker.combo_count, 1)
