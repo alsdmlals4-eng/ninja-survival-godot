@@ -127,7 +127,7 @@ func has_fate(fate_id: StringName) -> bool:
 	return selected_fates.has(fate_id)
 
 
-func get_modifiers():
+func get_modifiers() -> RunModifierSet:
 	return _modifiers.copy_values()
 
 
