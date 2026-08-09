@@ -39,7 +39,7 @@ func test_attack_once_hits_at_most_three_nearest_enemies() -> void:
 	for distance in [40, 10, 30, 20]:
 		enemies.append(_enemy(runtime.world, Vector2(distance, 0)))
 	runtime.set_rng_seed(7)
-	var hit := runtime.attack_once()
+	var hit: Array = runtime.attack_once()
 	assert_eq(hit.size(), 3)
 	assert_eq(hit[0].global_position.x, 10.0)
 	assert_eq(hit[1].global_position.x, 20.0)
