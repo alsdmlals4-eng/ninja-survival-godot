@@ -72,6 +72,27 @@ offset_top = 312.0
 offset_right = 340.0
 offset_bottom = 346.0
 
+[node name="StageLabel" type="Label" parent="."]
+offset_left = 20.0
+offset_top = 352.0
+offset_right = 240.0
+offset_bottom = 380.0
+text = "SEGMENT 1/3"
+
+[node name="StageTimeLabel" type="Label" parent="."]
+offset_left = 20.0
+offset_top = 384.0
+offset_right = 240.0
+offset_bottom = 412.0
+text = "TIME 05:00"
+
+[node name="GoldLabel" type="Label" parent="."]
+offset_left = 20.0
+offset_top = 416.0
+offset_right = 240.0
+offset_bottom = 444.0
+text = "GOLD 0"
+
 [node name="RestartButton" type="Button" parent="."]
 anchors_preset = 1
 anchor_left = 1.0
