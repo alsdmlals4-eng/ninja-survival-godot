@@ -31,14 +31,14 @@ func test_fortune_talisman_uses_fractional_normal_kill_gold_carry() -> void:
 		return
 	state.grant_gold(100)
 	assert_true(state.buy_item(&"fortune_talisman"))
-	var before := state.gold
+	var before: int = int(state.gold)
 	for _i in range(4):
 		state.grant_normal_kill_gold()
 	assert_eq(state.gold - before, 5)
 	assert_eq(state.grant_boss_gold(), 25)
 
 	assert_true(state.buy_item(&"fortune_talisman"))
-	before = state.gold
+	before = int(state.gold)
 	for _i in range(2):
 		state.grant_normal_kill_gold()
 	assert_eq(state.gold - before, 3)
@@ -51,7 +51,7 @@ func test_inventory_caps_and_failed_buy_are_atomic() -> void:
 	state.grant_gold(1000)
 	assert_true(state.buy_item(&"taijutsu_training"))
 	assert_true(state.buy_item(&"taijutsu_training"))
-	var gold_before := state.gold
+	var gold_before: int = int(state.gold)
 	assert_false(state.buy_item(&"taijutsu_training"))
 	assert_eq(state.item_count(&"taijutsu_training"), 2)
 	assert_eq(state.gold, gold_before)
@@ -59,7 +59,7 @@ func test_inventory_caps_and_failed_buy_are_atomic() -> void:
 	for item_id in [&"protection_talisman", &"fortune_talisman", &"ninjutsu_training", &"enlightenment"]:
 		assert_true(state.buy_item(item_id))
 	assert_eq(state.total_item_count(), 6)
-	gold_before = state.gold
+	gold_before = int(state.gold)
 	assert_false(state.buy_item(&"regeneration_scroll"))
 	assert_eq(state.total_item_count(), 6)
 	assert_eq(state.gold, gold_before)
@@ -83,12 +83,12 @@ func test_sale_refunds_half_and_recomputes_item_modifier() -> void:
 	assert_true(state.buy_item(&"taijutsu_training"))
 	assert_true(state.buy_item(&"taijutsu_training"))
 	assert_almost_eq(state.get_modifiers().move_speed_pct, 0.20, 0.001)
-	var before_sale := state.gold
+	var before_sale: int = int(state.gold)
 	assert_true(state.sell_item(&"taijutsu_training"))
 	assert_eq(state.gold - before_sale, 10)
 	assert_eq(state.item_count(&"taijutsu_training"), 1)
 	assert_almost_eq(state.get_modifiers().move_speed_pct, 0.10, 0.001)
-	before_sale = state.gold
+	before_sale = int(state.gold)
 	assert_false(state.sell_item(&"missing"))
 	assert_eq(state.gold, before_sale)
 
