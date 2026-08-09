@@ -177,7 +177,7 @@ func test_automatic_shock_prioritizes_existing_wet_target() -> void:
 	if runtime == null:
 		return
 	var wet_enemy = _enemy(runtime.world, Vector2(110, 0), 200)
-	var fresh_near_enemy = _enemy(runtime.world, Vector2.ZERO, 200)
+	var fresh_near_enemy = _enemy(runtime.world, Vector2(-20, 0), 200)
 	assert_false(runtime.apply_token(wet_enemy, &"wet"))
 	runtime._next_token = &"shock"
 	runtime._cast_remaining = 0.0
