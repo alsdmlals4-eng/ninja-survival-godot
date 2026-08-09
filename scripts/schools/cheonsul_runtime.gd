@@ -55,7 +55,7 @@ func _process(delta: float) -> void:
 
 	_cast_remaining -= delta
 	if _cast_remaining <= CAST_EPSILON:
-		var target := _nearest_enemy()
+		var target := _select_cast_target()
 		if target == null:
 			_cast_remaining = 0.1
 		else:
@@ -368,6 +368,28 @@ func _valid_enemies() -> Array[Node2D]:
 		if _is_valid_enemy(candidate):
 			result.append(candidate as Node2D)
 	return result
+
+
+func _select_cast_target() -> Node2D:
+	if _next_token == &"shock":
+		var wet_target := _nearest_enemy_with_status(&"wet")
+		if wet_target != null:
+			return wet_target
+	return _nearest_enemy()
+
+
+func _nearest_enemy_with_status(token: StringName) -> Node2D:
+	var nearest: Node2D = null
+	var nearest_distance: float = INF
+	var origin: Vector2 = player.global_position if is_instance_valid(player) else Vector2.ZERO
+	for enemy in _valid_enemies():
+		if not has_status(enemy, token):
+			continue
+		var distance: float = origin.distance_squared_to(enemy.global_position)
+		if distance < nearest_distance:
+			nearest_distance = distance
+			nearest = enemy
+	return nearest
 
 
 func _nearest_enemy() -> Node2D:
