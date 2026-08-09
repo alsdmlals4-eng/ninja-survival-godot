@@ -55,6 +55,7 @@ func test_flame_cast_hits_radius_and_burn_ticks_once_per_second() -> void:
 	assert_eq(near_enemy.health, 94)
 	assert_eq(far_enemy.health, 100)
 	assert_true(runtime.has_status(near_enemy, &"burn"))
+	runtime._cast_remaining = 999.0
 
 	runtime._process(1.0)
 	assert_eq(near_enemy.health, 92)
@@ -67,6 +68,7 @@ func test_same_token_refreshes_four_second_duration() -> void:
 	if runtime == null:
 		return
 	var enemy = _enemy(runtime.world, Vector2.ZERO)
+	runtime._cast_remaining = 999.0
 	assert_false(runtime.apply_token(enemy, &"wet"))
 	runtime._process(3.5)
 	assert_true(runtime.has_status(enemy, &"wet"))
