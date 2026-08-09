@@ -3,6 +3,13 @@ class_name SchoolSelectionUI
 
 signal school_selected(school_id: StringName)
 
+const VALID_SCHOOL_IDS := {
+	&"bongma": true,
+	&"cheonsul": true,
+	&"guiin": true,
+	&"heukyeong": true,
+}
+
 var _selected: bool = false
 
 
@@ -41,7 +48,7 @@ func _connect_button(path: NodePath, school_id: StringName) -> void:
 
 
 func _choose(school_id: StringName) -> void:
-	if _selected:
+	if _selected or not VALID_SCHOOL_IDS.has(school_id):
 		return
 	_selected = true
 	visible = false
