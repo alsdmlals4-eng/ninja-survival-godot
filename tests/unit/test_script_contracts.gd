@@ -15,6 +15,8 @@ const MVP1_WAVE_SPAWNER_PATH := "res://scripts/spawning/wave_spawner.gd"
 const MVP2_RUNTIME_BASE_PATH := "res://scripts/schools/school_runtime_base.gd"
 const MVP2_RUNTIME_HOST_PATH := "res://scripts/schools/school_runtime_host.gd"
 const MVP2_SELECTOR_PATH := "res://scripts/ui/school_selection_ui.gd"
+const MVP2_BONGMA_RUNTIME_PATH := "res://scripts/schools/bongma_runtime.gd"
+const MVP2_BONGMA_FAMILIAR_PATH := "res://scripts/schools/bongma_familiar.gd"
 
 
 func test_mvp0_script_resources_exist() -> void:
@@ -164,6 +166,29 @@ func test_school_runtime_host_contract() -> void:
 	for property_name in ["selected_school_id", "selected_school_name", "active_runtime"]:
 		assert_true(_has_property(host, property_name), "Missing host property: %s" % property_name)
 	host.free()
+
+
+func test_bongma_runtime_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP2_BONGMA_RUNTIME_PATH), "Missing Bongma runtime")
+	if not ResourceLoader.exists(MVP2_BONGMA_RUNTIME_PATH):
+		return
+	var runtime = load(MVP2_BONGMA_RUNTIME_PATH).new()
+	assert_true(runtime.has_method("try_use_ultimate"))
+	for property_name in ["spirit", "spirit_maximum", "ward_center", "ward_time_remaining", "ultimate_time_remaining"]:
+		assert_true(_has_property(runtime, property_name), "Missing Bongma property: %s" % property_name)
+	runtime.free()
+
+
+func test_bongma_familiar_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP2_BONGMA_FAMILIAR_PATH), "Missing Bongma familiar")
+	if not ResourceLoader.exists(MVP2_BONGMA_FAMILIAR_PATH):
+		return
+	var familiar = load(MVP2_BONGMA_FAMILIAR_PATH).new()
+	for method_name in ["configure", "set_attack_interval", "attack_once"]:
+		assert_true(familiar.has_method(method_name), "Missing familiar method: %s" % method_name)
+	assert_true(_has_property(familiar, "attack_interval"))
+	assert_true(_has_property(familiar, "damage"))
+	familiar.free()
 
 
 func test_hud_contract() -> void:
