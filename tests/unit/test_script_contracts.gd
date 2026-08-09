@@ -9,11 +9,26 @@ const REQUIRED_SCRIPTS := [
 	"res://scripts/combat/projectile.gd",
 	"res://scripts/ui/hud.gd",
 ]
+const MVP1_TRACKER_PATH := "res://scripts/combat/combat_ddd_tracker.gd"
+const MVP1_REWARD_ORB_PATH := "res://scripts/combat/reward_orb.gd"
+const MVP1_WAVE_SPAWNER_PATH := "res://scripts/spawning/wave_spawner.gd"
 
 
 func test_mvp0_script_resources_exist() -> void:
 	for path in REQUIRED_SCRIPTS:
 		assert_true(ResourceLoader.exists(path), "Missing MVP-0 script: %s" % path)
+
+
+func test_mvp1_tracker_resource_exists() -> void:
+	assert_true(ResourceLoader.exists(MVP1_TRACKER_PATH), "Missing MVP-1 tracker script")
+
+
+func test_mvp1_reward_orb_resource_exists() -> void:
+	assert_true(ResourceLoader.exists(MVP1_REWARD_ORB_PATH), "Missing MVP-1 reward orb script")
+
+
+func test_mvp1_wave_spawner_resource_exists() -> void:
+	assert_true(ResourceLoader.exists(MVP1_WAVE_SPAWNER_PATH), "Missing MVP-1 wave spawner script")
 
 
 func test_game_state_contract() -> void:
@@ -72,6 +87,50 @@ func test_projectile_contract() -> void:
 	assert_true(_has_property(projectile, "damage"))
 	assert_true(_has_property(projectile, "lifetime"))
 	projectile.free()
+
+
+func test_combat_ddd_tracker_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP1_TRACKER_PATH), "Missing MVP-1 tracker script")
+	if not ResourceLoader.exists(MVP1_TRACKER_PATH):
+		return
+	var tracker = load(MVP1_TRACKER_PATH).new()
+	assert_true(tracker.has_method("register_kill"))
+	assert_true(tracker.has_method("register_reward_collected"))
+	assert_true(_has_property(tracker, "combo_count"))
+	assert_true(_has_property(tracker, "max_combo"))
+	assert_true(_has_property(tracker, "stylish_score"))
+	assert_true(_has_property(tracker, "reward_count"))
+	assert_true(_has_property(tracker, "combo_time_remaining"))
+	tracker.free()
+
+
+func test_reward_orb_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP1_REWARD_ORB_PATH), "Missing MVP-1 reward orb script")
+	if not ResourceLoader.exists(MVP1_REWARD_ORB_PATH):
+		return
+	var orb = load(MVP1_REWARD_ORB_PATH).new()
+	assert_true(orb.has_method("configure"))
+	assert_true(_has_property(orb, "target"))
+	assert_true(_has_property(orb, "move_speed"))
+	assert_true(_has_property(orb, "collect_radius"))
+	assert_true(_has_property(orb, "lifetime"))
+	orb.free()
+
+
+func test_wave_spawner_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP1_WAVE_SPAWNER_PATH), "Missing MVP-1 wave spawner script")
+	if not ResourceLoader.exists(MVP1_WAVE_SPAWNER_PATH):
+		return
+	var spawner = load(MVP1_WAVE_SPAWNER_PATH).new()
+	assert_true(spawner.has_method("configure"))
+	assert_true(spawner.has_method("spawn_wave"))
+	assert_true(spawner.has_method("set_spawning_enabled"))
+	assert_true(_has_property(spawner, "enemy_scene"))
+	assert_true(_has_property(spawner, "wave_interval"))
+	assert_true(_has_property(spawner, "batch_size"))
+	assert_true(_has_property(spawner, "max_active_enemies"))
+	assert_true(_has_property(spawner, "spawn_distance"))
+	spawner.free()
 
 
 func test_hud_contract() -> void:

@@ -3,7 +3,7 @@ extends GutTest
 const MAIN_SCENE := "res://scenes/main/main_scene.tscn"
 
 
-func test_enemy_kill_spawns_replacement_to_keep_pressure() -> void:
+func test_enemy_kill_is_not_replaced_immediately() -> void:
 	var packed: PackedScene = load(MAIN_SCENE)
 	assert_not_null(packed)
 	if packed == null:
@@ -26,7 +26,7 @@ func test_enemy_kill_spawns_replacement_to_keep_pressure() -> void:
 	await get_tree().process_frame
 
 	var enemies_after := _living_enemies(main)
-	assert_eq(enemies_after.size(), initial_count, "enemy pressure should be replenished after a kill")
+	assert_eq(enemies_after.size(), initial_count - 1, "MVP-1 must wait for a timed wave instead of instant replacement")
 
 
 func _living_enemies(main: Node) -> Array[Node]:
