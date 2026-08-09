@@ -12,6 +12,15 @@ const REQUIRED_SCRIPTS := [
 const MVP1_TRACKER_PATH := "res://scripts/combat/combat_ddd_tracker.gd"
 const MVP1_REWARD_ORB_PATH := "res://scripts/combat/reward_orb.gd"
 const MVP1_WAVE_SPAWNER_PATH := "res://scripts/spawning/wave_spawner.gd"
+const MVP2_RUNTIME_BASE_PATH := "res://scripts/schools/school_runtime_base.gd"
+const MVP2_RUNTIME_HOST_PATH := "res://scripts/schools/school_runtime_host.gd"
+const MVP2_SELECTOR_PATH := "res://scripts/ui/school_selection_ui.gd"
+const MVP2_BONGMA_RUNTIME_PATH := "res://scripts/schools/bongma_runtime.gd"
+const MVP2_BONGMA_FAMILIAR_PATH := "res://scripts/schools/bongma_familiar.gd"
+const MVP2_CHEONSUL_RUNTIME_PATH := "res://scripts/schools/cheonsul_runtime.gd"
+const MVP2_GUIIN_RUNTIME_PATH := "res://scripts/schools/guiin_runtime.gd"
+const MVP2_HEUKYEONG_RUNTIME_PATH := "res://scripts/schools/heukyeong_runtime.gd"
+const MVP2_BADGE_PATH := "res://scripts/ui/enemy_effect_badge.gd"
 
 
 func test_mvp0_script_resources_exist() -> void:
@@ -29,6 +38,11 @@ func test_mvp1_reward_orb_resource_exists() -> void:
 
 func test_mvp1_wave_spawner_resource_exists() -> void:
 	assert_true(ResourceLoader.exists(MVP1_WAVE_SPAWNER_PATH), "Missing MVP-1 wave spawner script")
+
+
+func test_mvp2_shared_school_resources_exist() -> void:
+	for path in [MVP2_RUNTIME_BASE_PATH, MVP2_RUNTIME_HOST_PATH, MVP2_SELECTOR_PATH]:
+		assert_true(ResourceLoader.exists(path), "Missing MVP-2 shared script: %s" % path)
 
 
 func test_game_state_contract() -> void:
@@ -131,6 +145,96 @@ func test_wave_spawner_contract() -> void:
 	assert_true(_has_property(spawner, "max_active_enemies"))
 	assert_true(_has_property(spawner, "spawn_distance"))
 	spawner.free()
+
+
+func test_school_runtime_base_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP2_RUNTIME_BASE_PATH), "Missing MVP-2 runtime base script")
+	if not ResourceLoader.exists(MVP2_RUNTIME_BASE_PATH):
+		return
+	var runtime = load(MVP2_RUNTIME_BASE_PATH).new()
+	for method_name in ["configure", "activate", "deactivate", "on_enemy_died", "try_use_ultimate", "is_ultimate_ready"]:
+		assert_true(runtime.has_method(method_name), "Missing runtime method: %s" % method_name)
+	for signal_name in ["resource_changed", "ultimate_ready_changed", "school_feedback"]:
+		assert_true(runtime.has_signal(signal_name), "Missing runtime signal: %s" % signal_name)
+	assert_true(_has_property(runtime, "active"))
+	runtime.free()
+
+
+func test_school_runtime_host_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP2_RUNTIME_HOST_PATH), "Missing MVP-2 runtime host script")
+	if not ResourceLoader.exists(MVP2_RUNTIME_HOST_PATH):
+		return
+	var host = load(MVP2_RUNTIME_HOST_PATH).new()
+	for method_name in ["configure", "select_school", "forward_enemy_died", "try_use_ultimate", "deactivate"]:
+		assert_true(host.has_method(method_name), "Missing host method: %s" % method_name)
+	for property_name in ["selected_school_id", "selected_school_name", "active_runtime"]:
+		assert_true(_has_property(host, property_name), "Missing host property: %s" % property_name)
+	host.free()
+
+
+func test_bongma_runtime_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP2_BONGMA_RUNTIME_PATH), "Missing Bongma runtime")
+	if not ResourceLoader.exists(MVP2_BONGMA_RUNTIME_PATH):
+		return
+	var runtime = load(MVP2_BONGMA_RUNTIME_PATH).new()
+	assert_true(runtime.has_method("try_use_ultimate"))
+	for property_name in ["spirit", "spirit_maximum", "ward_center", "ward_time_remaining", "ultimate_time_remaining"]:
+		assert_true(_has_property(runtime, property_name), "Missing Bongma property: %s" % property_name)
+	runtime.free()
+
+
+func test_bongma_familiar_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP2_BONGMA_FAMILIAR_PATH), "Missing Bongma familiar")
+	if not ResourceLoader.exists(MVP2_BONGMA_FAMILIAR_PATH):
+		return
+	var familiar = load(MVP2_BONGMA_FAMILIAR_PATH).new()
+	for method_name in ["configure", "set_attack_interval", "attack_once"]:
+		assert_true(familiar.has_method(method_name), "Missing familiar method: %s" % method_name)
+	assert_true(_has_property(familiar, "attack_interval"))
+	assert_true(_has_property(familiar, "damage"))
+	familiar.free()
+
+
+func test_cheonsul_runtime_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP2_CHEONSUL_RUNTIME_PATH), "Missing Cheonsul runtime")
+	if not ResourceLoader.exists(MVP2_CHEONSUL_RUNTIME_PATH):
+		return
+	var runtime = load(MVP2_CHEONSUL_RUNTIME_PATH).new()
+	for method_name in ["apply_flame_cast", "apply_token", "has_status", "try_use_ultimate", "is_ultimate_ready"]:
+		assert_true(runtime.has_method(method_name), "Missing Cheonsul method: %s" % method_name)
+	assert_true(_has_property(runtime, "reaction_count"))
+	runtime.free()
+
+
+func test_guiin_runtime_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP2_GUIIN_RUNTIME_PATH), "Missing Guiin runtime")
+	if not ResourceLoader.exists(MVP2_GUIIN_RUNTIME_PATH):
+		return
+	var runtime = load(MVP2_GUIIN_RUNTIME_PATH).new()
+	for method_name in ["perform_melee_pulse", "current_pulse_interval", "current_pulse_radius", "current_pulse_damage", "try_use_ultimate", "is_ultimate_ready"]:
+		assert_true(runtime.has_method(method_name), "Missing Guiin method: %s" % method_name)
+	for property_name in ["gwihyeol", "time_since_gain", "ultimate_time_remaining"]:
+		assert_true(_has_property(runtime, property_name), "Missing Guiin property: %s" % property_name)
+	runtime.free()
+
+
+func test_heukyeong_runtime_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP2_HEUKYEONG_RUNTIME_PATH), "Missing Heukyeong runtime")
+	if not ResourceLoader.exists(MVP2_HEUKYEONG_RUNTIME_PATH):
+		return
+	var runtime = load(MVP2_HEUKYEONG_RUNTIME_PATH).new()
+	for method_name in ["set_rng_seed", "attack_once", "apply_needle_hit", "get_mark_count", "get_total_active_marks", "get_critical_chance", "try_use_ultimate", "is_ultimate_ready"]:
+		assert_true(runtime.has_method(method_name), "Missing Heukyeong method: %s" % method_name)
+	runtime.free()
+
+
+func test_enemy_effect_badge_contract() -> void:
+	assert_true(ResourceLoader.exists(MVP2_BADGE_PATH), "Missing enemy effect badge")
+	if not ResourceLoader.exists(MVP2_BADGE_PATH):
+		return
+	var badge = load(MVP2_BADGE_PATH).new()
+	assert_true(badge.has_method("set_text"))
+	badge.free()
 
 
 func test_hud_contract() -> void:

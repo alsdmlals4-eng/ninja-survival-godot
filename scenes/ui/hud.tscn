@@ -39,11 +39,49 @@ offset_right = 220.0
 offset_bottom = 176.0
 text = "ORBS 0"
 
-[node name="ComboTitleLabel" type="Label" parent="."]
+[node name="SchoolLabel" type="Label" parent="."]
 offset_left = 20.0
 offset_top = 180.0
-offset_right = 320.0
-offset_bottom = 214.0
+offset_right = 280.0
+offset_bottom = 208.0
+text = "SCHOOL -"
+
+[node name="SchoolResourceLabel" type="Label" parent="."]
+offset_left = 20.0
+offset_top = 212.0
+offset_right = 280.0
+offset_bottom = 240.0
+text = "RESOURCE 0 / 0"
+
+[node name="UltimateLabel" type="Label" parent="."]
+offset_left = 20.0
+offset_top = 244.0
+offset_right = 280.0
+offset_bottom = 272.0
+text = "ULT charging"
+
+[node name="SchoolFeedbackLabel" type="Label" parent="."]
+offset_left = 20.0
+offset_top = 276.0
+offset_right = 340.0
+offset_bottom = 306.0
+
+[node name="ComboTitleLabel" type="Label" parent="."]
+offset_left = 20.0
+offset_top = 312.0
+offset_right = 340.0
+offset_bottom = 346.0
+
+[node name="RestartButton" type="Button" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -140.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 56.0
+grow_horizontal = 0
+text = "RESTART"
 
 [node name="GameOverPanel" type="Control" parent="."]
 visible = false

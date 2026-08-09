@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/school_selection_ui.gd" id="1_selector"]
+
+[node name="SchoolSelectionUI" type="CanvasLayer"]
+script = ExtResource("1_selector")
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 120
+theme_override_constants/margin_top = 80
+theme_override_constants/margin_right = 120
+theme_override_constants/margin_bottom = 80
+
+[node name="Choices" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Panel/Margin/Choices"]
+layout_mode = 2
+text = "유파 선택"
+horizontal_alignment = 1
+
+[node name="BongmaButton" type="Button" parent="Panel/Margin/Choices"]
+layout_mode = 2
+text = "1 — 봉마류  |  소환과 결계로 진지를 만든다"
+
+[node name="CheonsulButton" type="Button" parent="Panel/Margin/Choices"]
+layout_mode = 2
+text = "2 — 천술류  |  속성 상태를 겹쳐 반응을 터뜨린다"
+
+[node name="GuiinButton" type="Button" parent="Panel/Margin/Choices"]
+layout_mode = 2
+text = "3 — 귀인류  |  가까이 붙고 위험할수록 강해진다"
+
+[node name="HeukyeongButton" type="Button" parent="Panel/Margin/Choices"]
+layout_mode = 2
+text = "4 — 흑영류  |  원거리 표식을 쌓아 연쇄 폭발시킨다"

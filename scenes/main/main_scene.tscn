@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://scripts/core/game_state.gd" id="1_state"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
@@ -8,6 +8,14 @@
 [ext_resource type="Script" path="res://scripts/combat/combat_ddd_tracker.gd" id="6_ddd"]
 [ext_resource type="Script" path="res://scripts/spawning/wave_spawner.gd" id="7_wave"]
 [ext_resource type="PackedScene" path="res://scenes/rewards/reward_orb.tscn" id="8_orb"]
+[ext_resource type="Script" path="res://scripts/schools/school_runtime_host.gd" id="9_school_host"]
+[ext_resource type="Script" path="res://scripts/schools/bongma_runtime.gd" id="10_bongma"]
+[ext_resource type="Script" path="res://scripts/schools/cheonsul_runtime.gd" id="11_cheonsul"]
+[ext_resource type="Script" path="res://scripts/schools/guiin_runtime.gd" id="12_guiin"]
+[ext_resource type="Script" path="res://scripts/schools/heukyeong_runtime.gd" id="13_heukyeong"]
+[ext_resource type="PackedScene" path="res://scenes/schools/bongma_familiar.tscn" id="14_familiar"]
+[ext_resource type="PackedScene" path="res://scenes/ui/enemy_effect_badge.tscn" id="15_badge"]
+[ext_resource type="PackedScene" path="res://scenes/ui/school_selection_ui.tscn" id="16_selector"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("4_main")
@@ -25,6 +33,28 @@ script = ExtResource("6_ddd")
 script = ExtResource("7_wave")
 enemy_scene = ExtResource("5_enemy")
 
+[node name="SchoolRuntimeHost" type="Node" parent="."]
+script = ExtResource("9_school_host")
+
+[node name="Bongma" type="Node" parent="SchoolRuntimeHost"]
+process_mode = 4
+script = ExtResource("10_bongma")
+familiar_scene = ExtResource("14_familiar")
+
+[node name="Cheonsul" type="Node" parent="SchoolRuntimeHost"]
+process_mode = 4
+script = ExtResource("11_cheonsul")
+badge_scene = ExtResource("15_badge")
+
+[node name="Guiin" type="Node" parent="SchoolRuntimeHost"]
+process_mode = 4
+script = ExtResource("12_guiin")
+
+[node name="Heukyeong" type="Node" parent="SchoolRuntimeHost"]
+process_mode = 4
+script = ExtResource("13_heukyeong")
+badge_scene = ExtResource("15_badge")
+
 [node name="EnemyEast" parent="." instance=ExtResource("5_enemy")]
 position = Vector2(320, 0)
 
@@ -38,3 +68,5 @@ position = Vector2(0, 320)
 position = Vector2(0, -320)
 
 [node name="HUD" parent="." instance=ExtResource("3_hud")]
+
+[node name="SchoolSelectionUI" parent="." instance=ExtResource("16_selector")]

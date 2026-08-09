@@ -1,0 +1,2 @@
+extends Label
+class_name EnemyEffectBadge
