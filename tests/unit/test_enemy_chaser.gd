@@ -44,6 +44,15 @@ func test_damage_reduces_health_and_dies_once() -> void:
 	assert_eq(death_count, 1)
 
 
+func test_take_damage_returns_actual_hp_loss_including_overkill() -> void:
+	var enemy = EnemyScript.new()
+	enemy.max_health = 20
+	add_child_autofree(enemy)
+	assert_eq(enemy.take_damage(7), 7)
+	assert_eq(enemy.take_damage(99), 13)
+	assert_eq(enemy.take_damage(1), 0)
+
+
 func test_set_target_stores_target() -> void:
 	var enemy = EnemyScript.new()
 	add_child_autofree(enemy)
