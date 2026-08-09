@@ -66,7 +66,7 @@ After selection, player/enemies/waves activate. The legacy `AutoAttackController
 No shared `project.godot` InputMap changes are required.
 
 - Selection overlay consumes keyboard keys `1`-`4` directly and also supports button click.
-- While alive and after selection, `ui_accept` (Enter/Space under Godot defaults) attempts the selected school's ultimate.
+- While alive and after selection, `ui_accept` attempts the selected school's ultimate.
 - At game over, the existing `ui_accept` behavior remains restart and takes precedence over ultimate input.
 
 An ultimate attempt that is not ready has no gameplay effect.
@@ -90,7 +90,7 @@ Shared signals:
 - `ultimate_ready_changed(ready: bool)`
 - `school_feedback(text: String)`
 
-Each runtime keeps its spawned gameplay/feedback nodes beneath itself so disabling the runtime also freezes its effects.
+Runtime-owned attack/effect nodes normally remain below the runtime so disabling it freezes them. `EnemyEffectBadge` is the deliberate exception: it is attached to an enemy for positioning, but the owning runtime tracks every badge it creates and removes/clears them on deactivate or when the enemy becomes invalid.
 
 ### `SchoolRuntimeHost`
 
@@ -114,7 +114,7 @@ A `CanvasLayer` that emits `school_selected(school_id: StringName)` once. It con
 
 ### `EnemyEffectBadge`
 
-A minimal shared child UI attached to an enemy only when a school needs readable enemy state. It displays short text above the enemy, for example `BURN`, `WET`, `SHOCK`, or `MARK 2`.
+A minimal shared child UI attached to an enemy only when a school needs readable enemy state. It displays compact state text above the enemy, for example `BURN/WET`, `SHOCK`, or `MARK 2`.
 
 It does not own combat logic. Cheonsul and Heukyeong runtimes own their own dictionaries keyed by enemy instance id and update/remove badges as state changes. Dead/invalid enemies are pruned safely.
 
@@ -127,7 +127,7 @@ It will:
 1. start the scene in selection mode,
 2. receive one school id from `SchoolSelectionUI`,
 3. activate that school in `SchoolRuntimeHost`,
-4. disable the legacy default auto attack for the run,
+4. keep the legacy default auto attack disabled for the run,
 5. activate player, existing enemies, and `WaveSpawner`,
 6. continue registering GameState kills and MVP-1 combo/orb feedback,
 7. additionally forward enemy deaths to the active school runtime,
@@ -146,20 +146,24 @@ Keep all existing MVP-1 HUD information. Add a compact school block:
 - `ULT READY` / `ULT charging`
 - one transient feedback line for events such as `백귀야행`, `WET + SHOCK`, `귀인화`, or `MARK BURST`
 
-The school feedback line clears after exactly 1.0 second using the same generation-guard pattern as the MVP-1 combo-title feedback so an older timeout cannot erase newer feedback.
+The school feedback line clears after exactly `1.0 s` using the same generation-guard pattern as the MVP-1 combo-title feedback so an older timeout cannot erase newer feedback.
+
+## Shared damage rule
+
+Existing `EnemyChaser.take_damage()` accepts integer damage. Whenever a school applies multipliers that produce a floating-point result, the final positive hit is converted with `roundi()` and clamped to at least `1`. Tests assert the resulting integer damage, not floating-point internals.
 
 ## School 1 — 봉마류
 
 ### Combat ninjutsu: 공격형 식신
 
-A `BongmaFamiliar` Node2D follows the player with a small offset and attacks the nearest valid enemy automatically.
+A `BongmaFamiliar` Node2D follows the player and attacks the nearest valid enemy automatically.
 
 Baseline:
 
 - one familiar,
 - attack interval: `0.70 s`,
 - damage: `8`,
-- familiar keeps within `72 px` of the player,
+- familiar follows when farther than `72 px` from the player,
 - target search uses the existing `enemies` group and ignores dead/invalid nodes.
 
 Attacks are represented with simple placeholder geometry/brief hit feedback; no complex summon AI or pathfinding is added.
@@ -168,7 +172,7 @@ Attacks are represented with simple placeholder geometry/brief hit feedback; no 
 
 Always active:
 
-- spirit maximum becomes `120`,
+- spirit maximum is `120`,
 - passive spirit regeneration is `5 / s`.
 
 ### Unique resource: 영력
@@ -180,9 +184,14 @@ Always active:
 
 ### Representative synergy: 소환 + 결계
 
-A visible circular 봉인진 centered on the player has radius `140 px`. A familiar inside the ward uses a `0.50 s` attack interval instead of `0.70 s`.
+To make the formation bonus observable instead of permanently active, the MVP runtime automatically places a stationary 봉인진 at the player's current position every `8.0 s`. Each ward:
 
-The ward is deliberately player-centered for MVP-2; stationary ward placement is deferred.
+- has radius `140 px`,
+- lasts `4.0 s`,
+- does not follow the player after placement,
+- allows any familiar currently inside it to use a `0.50 s` attack interval instead of `0.70 s`.
+
+Only one normal ward exists at a time. Manual ward placement and deeper installation controls are deferred.
 
 ### Ultimate: 백귀야행
 
@@ -191,8 +200,9 @@ Ready at `100` spirit. Activation:
 - consumes exactly `100` spirit,
 - lasts `6.0 s`,
 - adds one temporary second familiar,
-- all familiars use `0.30 s` attack interval while the ultimate is active,
+- all familiars use `0.30 s` attack interval while the ultimate is active regardless of ward position,
 - temporary familiar is removed at the end,
+- spirit continues normal regeneration/kill gain during the effect,
 - cannot activate again while already active.
 
 ## School 2 — 천술류
@@ -217,13 +227,16 @@ Successful 염옥진 casts alternate a secondary elemental token applied to hit 
 
 This is an MVP device for testing elemental reaction rhythm; it is not a claim that the final 화둔 skill intrinsically applies water/lightning.
 
-If `SHOCK` is applied to an enemy that already has `WET`:
+`WET` and unreacted `SHOCK` each last `4.0 s`; reapplying the same token refreshes its duration. Applying `SHOCK` to an enemy that currently has `WET`:
 
-- consume that enemy's `WET`,
-- deal `10` reaction damage to it,
-- deal `6` chain damage to other valid enemies within `120 px`,
-- show `WET + SHOCK`,
-- increment the run's reaction counter.
+- consumes that enemy's `WET` and `SHOCK` tokens after the reaction,
+- deals `10` reaction damage to it,
+- deals `6` chain damage to other valid enemies within `120 px`,
+- chain damage does **not** apply tokens or recursively trigger reactions,
+- shows `WET + SHOCK`,
+- increments the run's reaction counter.
+
+Applying `WET` to an enemy that already has `SHOCK` does not trigger the representative reaction; the next qualifying `SHOCK` application can do so while WET remains valid.
 
 오행순환's representative synergy is the visible wet-to-shock chain reaction. No generalized elemental-combination engine is introduced.
 
@@ -238,13 +251,14 @@ HUD shows `REACTION n / 3`.
 
 ### Ultimate: 오행폭주
 
-When reaction count is `3`, activation:
+When reaction count is `3`, activation succeeds only if at least one valid enemy currently carries a Cheonsul status. On success it:
 
 - damages every currently valid enemy carrying any Cheonsul status for `18`,
 - clears Cheonsul statuses/badges from affected enemies,
 - resets reaction count to `0`,
-- shows `오행폭주`,
-- is unavailable if no reaction charge is ready.
+- shows `오행폭주`.
+
+If no valid status-bearing enemy exists, the attempt does nothing and preserves the `3 / 3` charge.
 
 ## School 3 — 귀인류
 
@@ -263,7 +277,7 @@ Baseline:
 When current HP is at or below `50%` of max HP:
 
 - 혈난무 radius becomes `110 px`,
-- damage becomes `15`.
+- base pulse damage becomes `15` before later multipliers.
 
 No new armor, healing, shield, invulnerability, or defensive subsystem is introduced in MVP-2.
 
@@ -275,7 +289,7 @@ No new armor, healing, shield, invulnerability, or defensive subsystem is introd
 - after no gain for `1.0 s`, decays at `6 / s`,
 - clamps to `[0, 100]`.
 
-At `75+` 귀혈, the representative `근접 + 생존` synergy further increases current 혈난무 damage by `20%` after the 광전사 calculation.
+At `75+` 귀혈, the representative `근접 + 생존` synergy applies a `1.20x` multiplier to current 혈난무 damage after the normal/광전사 base value.
 
 ### Ultimate: 귀인화
 
@@ -284,9 +298,12 @@ Ready at `100` 귀혈. Activation:
 - consumes the full `100`,
 - lasts `6.0 s`,
 - attack interval becomes `0.45 s`,
-- radius is at least `130 px`,
-- damage receives a further `25%` multiplier after normal/광전사/귀혈 calculations,
+- radius becomes at least `130 px`,
+- damage receives a further `1.25x` multiplier after normal/광전사/귀혈 calculations,
+- 귀혈 continues normal gain/decay from `0` while the effect is active,
 - cannot activate again while active.
+
+Final damage uses the shared integer rounding rule.
 
 ## School 4 — 흑영류
 
@@ -311,7 +328,7 @@ The increased critical chance against already-marked targets is the always-on su
 
 ### Unique resource/rule: 암영표식
 
-Each enemy has `0-3` marks, shown with `MARK 1` or `MARK 2` before detonation.
+Each enemy has `0-3` marks, shown with `MARK 1` or `MARK 2` before detonation. Marks have no time expiry in MVP-2; they are removed only by burst, ultimate, enemy death, runtime deactivation, or scene reload.
 
 When a hit reaches or exceeds `3` marks:
 
@@ -355,7 +372,7 @@ School mechanics must not directly register a kill themselves, preventing double
 
 All runtime loops guard invalid/dead enemies. State dictionaries prune invalid nodes before calculations. Repeated death signals, repeated selection, and repeated ultimate input must be idempotent or ignored.
 
-On player death:
+On runtime deactivate, school-specific state and any enemy-attached badges created by that runtime are cleared. On player death:
 
 - MainController keeps the existing game-over guard,
 - WaveSpawner is disabled,
@@ -408,7 +425,7 @@ Tests should prefer deterministic direct method calls and seeded RNG over frame 
 - existing and wave-spawned enemies still receive player targeting/death wiring,
 - every school-caused kill still produces exactly one GameState kill, one DDD kill registration, and one reward orb,
 - school feedback does not erase newer feedback due to an old timeout,
-- game over disables the active school runtime/effects,
+- game over disables the active school runtime/effects and clears enemy-attached school badges,
 - Enter at game over restarts to selection mode,
 - all MVP-0/MVP-1 tests remain green unless an old test is intentionally updated to reflect the approved start-selection flow.
 
@@ -430,14 +447,14 @@ Run four short sessions, selecting each school from a fresh start.
 
 - familiar visibly follows and attacks for the player,
 - spirit rises over time and on kills,
-- ward visibly improves familiar rhythm,
+- stationary ward windows visibly improve familiar rhythm while the familiar remains inside,
 - 백귀야행 creates a temporary second familiar and obvious attack-speed burst.
 
 ### Cheonsul
 
 - flame fields and BURN are visible,
 - WET/SHOCK badges are readable,
-- WET + SHOCK produces obvious chain reaction feedback,
+- WET + SHOCK produces obvious non-recursive chain reaction feedback,
 - three reactions ready 오행폭주 and the ultimate clears/explodes current elemental states.
 
 ### Guiin
@@ -465,12 +482,13 @@ Before readiness, explicitly attack these failure modes:
 - old AutoAttackController fires alongside school offense,
 - death callbacks double-count kills/resources,
 - school state holds freed enemy references,
+- Bongma ward bonus is accidentally permanent instead of positional/time-bounded,
 - Cheonsul chained damage recursively creates unintended reactions,
-- Guiin resource continues gaining/decaying after death,
+- Guiin resource continues processing after death,
 - Heukyeong random tests are flaky or marks survive freed enemies,
 - ultimate input triggers restart or vice versa,
 - old HUD timer clears newer school feedback,
-- school-spawned children continue after game over,
+- school-spawned children or enemy badges continue after game over,
 - local `project.godot`/`addons/` state leaks into the feature branch.
 
 ## Completion gate
