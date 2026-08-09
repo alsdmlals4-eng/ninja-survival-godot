@@ -80,6 +80,7 @@ func test_wave_spawned_enemies_are_wired_to_player() -> void:
 		fail_test("MVP-1 main integration contract is missing")
 		return
 
+	_start_combat_if_mvp2(main)
 	var player = main.get_node("Player")
 	var spawner = main.get_node("WaveSpawner")
 	var count_before := _living_enemies(main).size()
@@ -112,6 +113,11 @@ func test_game_over_disables_wave_spawner_and_live_reward_orbs() -> void:
 	if orbs.size() == 1:
 		assert_eq(orbs[0].process_mode, Node.PROCESS_MODE_DISABLED)
 	assert_ne(main.process_mode, Node.PROCESS_MODE_DISABLED)
+
+
+func _start_combat_if_mvp2(main: Node) -> void:
+	if main.has_node("SchoolSelectionUI"):
+		main.get_node("SchoolSelectionUI")._choose(&"guiin")
 
 
 func _has_mvp1_main_contract(main: Node) -> bool:
