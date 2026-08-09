@@ -93,6 +93,22 @@ func test_gwihyeol_waits_one_second_then_decays_six_per_second() -> void:
 	assert_almost_eq(runtime.gwihyeol, 47.0, 0.001)
 
 
+func test_pulse_gain_is_not_aged_by_same_process_delta() -> void:
+	var runtime = _make_runtime()
+	if runtime == null:
+		return
+	var enemy = _enemy(runtime.world, Vector2(20, 0))
+	runtime.gwihyeol = 0.0
+	runtime.time_since_gain = 0.0
+	runtime._pulse_remaining = 0.0
+
+	runtime._process(2.0)
+
+	assert_eq(enemy.health, 90)
+	assert_almost_eq(runtime.gwihyeol, 4.0, 0.001)
+	assert_almost_eq(runtime.time_since_gain, 0.0, 0.001)
+
+
 func test_high_gwihyeol_multiplier_applies_after_berserker_base() -> void:
 	var runtime = _make_runtime()
 	if runtime == null:
