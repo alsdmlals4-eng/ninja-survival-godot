@@ -29,6 +29,22 @@ var _ward_visual: Polygon2D
 var _last_ultimate_ready: bool = false
 
 
+func configure_run_systems(
+	resolver: CombatResolver,
+	tracker: CombatContributionTracker
+) -> void:
+	super.configure_run_systems(resolver, tracker)
+	for familiar in [_base_familiar, _temporary_familiar]:
+		if is_instance_valid(familiar):
+			familiar.set_combat_resolver(resolver)
+
+
+func apply_run_modifiers(modifiers: RunModifierSet) -> void:
+	super.apply_run_modifiers(modifiers)
+	if active:
+		_refresh_familiar_intervals()
+
+
 func activate() -> void:
 	if active:
 		return
@@ -39,6 +55,7 @@ func activate() -> void:
 	ward_time_remaining = 0.0
 	ultimate_time_remaining = 0.0
 	_spawn_base_familiar()
+	_refresh_familiar_intervals()
 	_emit_resource()
 	_emit_ultimate_ready_if_changed(true)
 
@@ -129,7 +146,8 @@ func _spawn_familiar(node_name: String) -> BongmaFamiliar:
 	familiar.name = node_name
 	add_child(familiar)
 	familiar.global_position = player.global_position + Vector2(48.0, 0.0)
-	familiar.configure(player, BASE_ATTACK_INTERVAL, FAMILIAR_DAMAGE)
+	familiar.configure(player, BASE_ATTACK_INTERVAL, FAMILIAR_DAMAGE, combat_resolver)
+	familiar.set_damage_kind(&"ultimate" if ultimate_time_remaining > 0.0 else &"normal")
 	return familiar
 
 
@@ -159,6 +177,8 @@ func _clear_ward_visual() -> void:
 
 
 func _refresh_familiar_intervals() -> void:
+	var interval_multiplier := maxf(1.0 + run_modifiers.bongma_familiar_interval_pct, 0.05)
+	var damage_kind: StringName = &"ultimate" if ultimate_time_remaining > 0.0 else &"normal"
 	for familiar in [_base_familiar, _temporary_familiar]:
 		if not is_instance_valid(familiar):
 			continue
@@ -167,14 +187,17 @@ func _refresh_familiar_intervals() -> void:
 			interval = ULTIMATE_ATTACK_INTERVAL
 		elif ward_time_remaining > 0.0 and familiar.global_position.distance_squared_to(ward_center) <= WARD_RADIUS * WARD_RADIUS:
 			interval = WARD_ATTACK_INTERVAL
-		familiar.set_attack_interval(interval)
+		familiar.set_attack_interval(interval * interval_multiplier)
+		familiar.set_damage_kind(damage_kind)
 
 
 func _add_spirit(amount: float) -> void:
 	if amount <= 0.0:
 		return
+	var gain_multiplier := maxf(1.0 + run_modifiers.school_resource_gain_pct, 0.0)
+	gain_multiplier *= maxf(1.0 + run_modifiers.ultimate_charge_gain_pct, 0.0)
 	var previous := spirit
-	spirit = clampf(spirit + amount, 0.0, spirit_maximum)
+	spirit = clampf(spirit + amount * gain_multiplier, 0.0, spirit_maximum)
 	if not is_equal_approx(previous, spirit):
 		_emit_resource()
 		_emit_ultimate_ready_if_changed()
