@@ -4,7 +4,7 @@
 > 제품 결정 전문은 `docs/CURRENT_CONFIRMED_DECISIONS.md`를 본다.
 > 과거 대화보다 현재 GitHub/프로젝트/현재 정본을 우선한다.
 
-Last updated: 2026-08-10 11:53 KST
+Last updated: 2026-08-10 12:05 KST
 
 ## Baseline
 
@@ -12,6 +12,8 @@ Last updated: 2026-08-10 11:53 KST
 project: alsdmlals4-eng/ninja-survival-godot
 main_sha: 7ef8eeaec1e5e4bad65a7bf00061274b60641e6a
 current_handoff_branch: docs/mvp4-handoff-20260810
+handoff_pr: 5
+handoff_pr_state: OPEN_DRAFT
 active_product_pr: NONE
 mvp4_implementation_branch: NONE
 mvp4_implementation_pr: NONE
@@ -38,6 +40,12 @@ The previous integrated milestone is MVP-3. Project `main@7ef8ee...` contains th
 - MVP-3 stage result/rest/shop/fate integrated on `main@7ef8ee...`.
 - MVP-4 design Sections 1–5 have been discussed and approved at the product-rule level; consolidated approved decisions are in `docs/CURRENT_CONFIRMED_DECISIONS.md`.
 
+### COMPLETED_NOT_MERGED
+
+- Handoff/continuation-state documentation is persisted on branch `docs/mvp4-handoff-20260810` and Draft PR #5.
+- The branch also synchronizes `AGENTS.md`, `MVP_ROADMAP.md`, and `docs/DOCUMENTATION_MAP.md` with the approved MVP-4 rotation/shape/timing decisions.
+- Integration is intentionally not performed without explicit project merge approval.
+
 ### IN_PROGRESS
 
 - MVP-4 design is not yet closed.
@@ -45,21 +53,23 @@ The previous integrated milestone is MVP-3. Project `main@7ef8ee...` contains th
 
 ### READY_NEXT
 
-1. Re-read `AGENTS.md`, `docs/CURRENT_CONFIRMED_DECISIONS.md`, this file, and the handoff snapshot.
-2. Before the next material design question, perform fresh backpack-genre / industry benchmarking as requested by the user.
-3. Continue brainstorming with one material question/design section at a time.
-4. Finish the remaining design sections.
-5. Present the complete MVP-4 design for final approval.
-6. Only after final design approval, write the canonical MVP-4 design spec under `docs/superpowers/specs/` using the current Base L2 Game Feature Design Spec hierarchy as a reference where useful.
-7. Self-review the written spec for placeholder/contradiction/scope/ambiguity issues.
-8. Ask the user to review the written spec.
-9. Only after written-spec approval, transition to `writing-plans` and create the implementation plan.
+1. Re-read `AGENTS.md`, `docs/CURRENT_CONFIRMED_DECISIONS.md`, this file, and the handoff snapshot from PR #5 (or main if #5 has since been merged).
+2. Re-query latest main/open PRs before resuming; do not assume the saved SHA is still current.
+3. Before the next material design question, perform fresh backpack-genre / industry benchmarking as requested by the user.
+4. Continue brainstorming with one material question/design section at a time.
+5. Finish the remaining design sections.
+6. Present the complete MVP-4 design for final approval.
+7. Only after final design approval, write the canonical MVP-4 design spec under `docs/superpowers/specs/` using the current Base L2 Game Feature Design Spec hierarchy as a reference where useful.
+8. Self-review the written spec for placeholder/contradiction/scope/ambiguity issues.
+9. Ask the user to review the written spec.
+10. Only after written-spec approval, transition to `writing-plans` and create the implementation plan.
 
 ### BLOCKED / USER_DECISION_REQUIRED
 
-None for the next design step.
+- Draft PR #5 merge/integration requires explicit project merge approval.
+- No user decision is required to continue the next design section.
 
-A new user decision is required only if the next work changes already-approved core rules or expands scope materially.
+A new product decision is required only if the next work changes already-approved core rules or expands scope materially.
 
 ### NOT_STARTED
 
@@ -94,11 +104,11 @@ See `docs/CURRENT_CONFIRMED_DECISIONS.md`. The most regression-sensitive decisio
 
 ## Repository truth and known drift
 
-### Project docs that are stale relative to current approvals
+### Project documentation synchronization
 
-`AGENTS.md` and `MVP_ROADMAP.md` still contain older exclusions such as item rotation / complex backpack shapes being excluded, and older `5/10/15-minute midboss` terminology.
+On `main@7ef8ee...`, `AGENTS.md` and `MVP_ROADMAP.md` still contain older exclusions such as item rotation / complex backpack shapes being excluded, and older `5/10/15-minute midboss` terminology.
 
-Do **not** interpret those older lines as overturning the newer approved MVP-4 decisions. They need a synchronization pass before implementation planning.
+Draft PR #5 synchronizes those documents with the latest approved MVP-4 direction. Until #5 is merged, use `docs/CURRENT_CONFIRMED_DECISIONS.md` on the PR branch as the decision source and do not silently restore the older exclusions.
 
 ### Base drift
 
@@ -134,7 +144,9 @@ Current MVP-3 files that MVP-4 is expected to integrate with:
 ## Verification state
 
 ```yaml
-handoff_document_creation: IN_PROGRESS_ON_DOC_BRANCH
+handoff_document_creation: COMPLETE_ON_DOC_BRANCH
+handoff_pr_created: PASS
+handoff_pr_merged: NOT_RUN_USER_APPROVAL_REQUIRED
 mvp4_code_tests: NOT_RUN
 mvp4_godot_runtime: NOT_RUN
 mvp4_human_qa: NOT_RUN
@@ -189,14 +201,15 @@ No Base `[수정제안서]` is required from this checkpoint.
 
 ## Resume read order
 
-1. `AGENTS.md`
-2. `docs/CURRENT_CONFIRMED_DECISIONS.md`
-3. `docs/ACTIVE_CONTEXT.md`
-4. `docs/handoffs/2026-08-10-mvp4-backpack-design-handoff.md`
-5. `MVP_ROADMAP.md` — read with the documented stale-scope warning
-6. `docs/superpowers/specs/2026-08-10-mvp3-stage-result-rest-design.md`
-7. current MVP-3 code surfaces listed above
-8. current planning Google Sheet tabs if available: MVP범위 / 백팩 / 인법과조합 / 휴식구간흐름 / 결과화면구조 / 상태와태그
+1. current GitHub `main` + open PR list
+2. `AGENTS.md` from the active source (PR #5 branch until merged)
+3. `docs/CURRENT_CONFIRMED_DECISIONS.md`
+4. `docs/ACTIVE_CONTEXT.md`
+5. `docs/handoffs/2026-08-10-mvp4-backpack-design-handoff.md`
+6. `MVP_ROADMAP.md`
+7. `docs/superpowers/specs/2026-08-10-mvp3-stage-result-rest-design.md`
+8. current MVP-3 code surfaces listed above
+9. current planning Google Sheet tabs if available: MVP범위 / 백팩 / 인법과조합 / 휴식구간흐름 / 결과화면구조 / 상태와태그
 
 ## Next executable step
 
