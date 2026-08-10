@@ -13,11 +13,14 @@ The Unity archive is reference material only. Future implementation must use God
 1. Latest user instruction
 2. This `AGENTS.md`
 3. `docs/BASE_RULES_VERSION.md`
-4. `docs/DOCUMENTATION_MAP.md`
-5. Project-local Base rules
-6. Project-specific docs and README
-7. Current Issue / Goal
-8. Actual repository files
+4. `docs/CURRENT_CONFIRMED_DECISIONS.md` for the latest approved project/product decisions
+5. `docs/DOCUMENTATION_MAP.md`
+6. Project-local Base rules
+7. Project-specific docs and README
+8. Current Issue / Goal
+9. Actual repository files
+
+For resume/handoff work, also read `docs/ACTIVE_CONTEXT.md` when it exists. It is a state router, not a substitute for the decision/document owners above.
 
 ## Superpowers Replacement Workflow
 
@@ -66,6 +69,8 @@ Before new planning or implementation work, check the current benchmark notes an
 
 Do not copy benchmarked games directly. Convert observed patterns into the confirmed `닌자 서바이벌` loop.
 
+For material MVP-4 backpack questions, the user explicitly requires fresh backpack-genre/current-practice benchmarking before the next question or design action. Distinguish benchmark fact, Ninja Survival adaptation, and what must not be copied.
+
 ## Current Planning MVP Scope
 
 The older initial MVP scope is now treated as `MVP-0: basic combat foundation`.
@@ -75,10 +80,10 @@ The current planning MVP is a staged validation slice, not a finished game. It v
 - Basic combat foundation
 - Combat DDD: kill combo, stylish score, reward absorption feedback
 - Four shallow ninja schools: 봉마류, 천술류, 귀인류, 흑영류
-- Stage structure: 5/10/15 minute mid-boss checks and a 20 minute final boss target
+- Stage structure: 5-minute combat segments, one elite/midboss around the 3-minute mark, a segment boss around the 5-minute mark, and a 20-minute final boss target for the later final-loop slice
 - Stage-end result cards for damage, healing, defense, status application, and combo/kill contribution
 - Rest phase: combat summary, loot, backpack cleanup, combination hints, shop/upgrade, fate/mission choice, next-stage preview
-- Backpack basics: temporary storage, slot limit, adjacency synergy, combination hints
+- Backpack basics: temporary storage/work buffer, usable-space limit, bag expansion, item/bag rotation, adjacency synergy, selected non-rectangular bag shapes, combination hints
 - Fate choices that change the rules of the current run
 - Final result: ninja rank, stylish score, MVP ninjutsu/equipment, fate result, short ending text, Ninja Soul reward
 
@@ -99,11 +104,14 @@ For the current staged MVP, exclude:
 
 - Full skill pools for all four schools
 - Second/third-stage combinations
-- Complex backpack shapes, rotation, deep set effects, and deep curse systems
+- Arbitrary complex item polyomino/deep shape systems beyond the approved MVP-4 rectangular items and selected L/T bag shapes
+- Deep set effects and deep curse systems
 - Full ending branches or ending CGs
 - Complete shop economy, reroll economy, or final balance tuning
 - Polished UI animation and full art production
 - Complex boss pattern sets
+
+MVP-4 specifically **does include 90-degree rotation for both items and bags** plus selected non-rectangular bag shapes. Do not restore the older rotation exclusion; see `docs/CURRENT_CONFIRMED_DECISIONS.md`.
 
 Use card/text/placeholder UI where it is enough to validate the loop.
 
