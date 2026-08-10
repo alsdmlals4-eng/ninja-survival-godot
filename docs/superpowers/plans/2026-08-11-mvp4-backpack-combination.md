@@ -30,6 +30,7 @@
 - Do not add a save system, autoload, deep rarity, 2nd/3rd-tier combination, arbitrary polyomino regular items, deep set/curse, MVP-5 final loop, or unrelated refactor.
 - Do not modify `.github/workflows/gut.yml` without a separately demonstrated verification gap. Current CI imports, smoke-runs main scene, then runs full GUT.
 - Do not add shared `project.godot` InputMap entries for Workbench by default. Current project has no InputMap section; prefer `Control` GUI events, `_unhandled_key_input`, and visible UI actions.
+- `scripts/spawning/wave_spawner.gd` is a **read-only dependency** for MVP-4 planning: its existing `set_spawning_enabled()` and `spawn_distance` are sufficient. Do not edit it merely to add the elite.
 - Never stage local `addons/`, `.godot/`, unrelated plugin files, or use `git add .`, `git add -A`, or destructive clean/reset operations.
 - Google Sheet write `403` is an external documentation-sync blocker, not a reason to weaken GitHub canon or stop independent implementation work after `기획 완료`.
 
@@ -79,6 +80,18 @@ Representative combinations remain:
 
 The non-shop starting 4x3 ninja bag begins at `Vector2i(1, 1)` as an implementation default so the initial board can demonstrate whole-layout translation in every direction.
 
+### Stage elite tuning
+
+Current normal `EnemyChaser` defaults are `20 HP / 90 speed / 10 contact damage`; current StageBoss tiers start at `200 HP / 70 speed / 15 damage`. The MVP-4 elite should sit clearly between them without adding a bespoke phase system.
+
+| segment | max HP | move speed | contact damage | visual scale |
+|---:|---:|---:|---:|---:|
+| 1 | 80 | 90 | 12 | 1.30x |
+| 2 | 120 | 95 | 14 | 1.35x |
+| 3 | 160 | 100 | 16 | 1.40x |
+
+These values are tuning defaults. Human combat evidence may retune them without changing the approved elite→chest-token role or ~3-minute cadence.
+
 ## File Structure
 
 **New data/domain**
@@ -109,8 +122,8 @@ The non-shop starting 4x3 ninja bag begins at `Vector2i(1, 1)` as an implementat
 - `scripts/core/shop_controller.gd`
 - `scripts/core/stage_flow_controller.gd`
 - `scripts/core/main_controller.gd`
-- `scripts/spawning/wave_spawner.gd`
-- `scripts/enemies/stage_boss.gd` only if a shared elite/boss identity helper is demonstrably needed; otherwise leave unchanged
+- `scripts/spawning/wave_spawner.gd` — read-only API dependency unless a future RED test proves a missing capability
+- `scripts/enemies/stage_boss.gd` — read-only comparison/reference unless a future RED test proves a shared identity API is required
 - `scripts/ui/rest_flow_ui.gd`
 - `scenes/ui/rest_flow_ui.tscn`
 - `scenes/main/main_scene.tscn`
@@ -126,7 +139,6 @@ The non-shop starting 4x3 ninja bag begins at `Vector2i(1, 1)` as an implementat
 - existing `tests/unit/test_run_build_state.gd`
 - existing `tests/unit/test_shop_controller.gd`
 - existing `tests/unit/test_stage_flow_controller.gd`
-- existing `tests/unit/test_wave_spawner.gd`
 - `tests/unit/test_stage_elite.gd`
 - `tests/integration/test_mvp4_workbench_ui.gd`
 - `tests/integration/test_mvp4_input_parity.gd`
@@ -418,6 +430,7 @@ func begin_rest(segment_index: int, selected_school_id: StringName, chest_tokens
 func boss_reward_options() -> Array[StringName]
 func choose_boss_reward(index: int) -> bool
 func chest_count() -> int
+func grant_chest_token(amount: int = 1) -> int
 func open_chest() -> bool
 func buy_shop_item(index: int) -> bool
 func buy_shop_bag() -> bool
@@ -427,7 +440,7 @@ func has_pending_boss_reward() -> bool
 ```
 
 - [ ] **Step 1: RED boss reward:** 3 distinct options, at least one school-related candidate, one free buffer slot required, repeated choice cannot duplicate.
-- [ ] **Step 2: RED chest:** one token → exactly two seeded items only with two free buffer slots; failed open preserves token.
+- [ ] **Step 2: RED chest:** `grant_chest_token()` increments pending chest count once per call; one token → exactly two seeded items only with two free buffer slots; failed open preserves token.
 - [ ] **Step 3: RED shop:** 3 distinct item offers + 1 bag; purchase validates GOLD and capacity before spend; bag purchase validates one-bag/rest cap; reroll remains 5→10→15; purchase does not change committed combat modifiers.
 - [ ] **Step 4: Run RED; implement validation-before-mutation ordering; run GREEN.**
 - [ ] **Step 5: Existing shop/GOLD regression.**
@@ -451,9 +464,8 @@ git commit -m "feat: route REST rewards into workbench"
 - Modify `scripts/core/stage_flow_controller.gd`
 - Modify `tests/unit/test_stage_flow_controller.gd`
 - Modify `scripts/core/main_controller.gd`
-- Modify `scripts/spawning/wave_spawner.gd`
-- Modify `tests/unit/test_wave_spawner.gd`
-- Do **not** modify `scripts/enemies/stage_boss.gd` unless a new RED test proves a shared identity API is required.
+- Read but do not modify `scripts/spawning/wave_spawner.gd`; reuse existing `spawn_distance` and leave normal spawning enabled during elite.
+- Read but do not modify `scripts/enemies/stage_boss.gd`; keep existing five-minute boss behavior.
 
 **Target phase/signal contract:**
 
@@ -480,26 +492,33 @@ signal boss_requested(tier: int)
 # stage_elite.gd
 extends EnemyChaser
 class_name StageElite
+
+const SEGMENT_STATS := {
+    1: {"max_health": 80, "move_speed": 90.0, "contact_damage": 12, "visual_scale": 1.30},
+    2: {"max_health": 120, "move_speed": 95.0, "contact_damage": 14, "visual_scale": 1.35},
+    3: {"max_health": 160, "move_speed": 100.0, "contact_damage": 16, "visual_scale": 1.40},
+}
 var segment_index: int = 1
-func configure_segment(new_segment: int) -> void:
-    segment_index = maxi(new_segment, 1)
+func configure_segment(new_segment: int) -> bool
 func is_stage_elite() -> bool:
     return true
 ```
 
-`MainController` preloads `res://scenes/enemies/stage_elite.tscn`, spawns one on `elite_requested` at the same `wave_spawner.spawn_distance` boundary used by the boss, and keeps normal wave spawning enabled during the elite. Elite death passes through existing `_on_enemy_died` exactly once; that path grants one chest token through `RestRewardController` (or a narrow pending-token counter owned by it) without granting boss GOLD. The existing StageBoss path remains the five-minute gate.
+`configure_segment()` rejects ids outside `1..3`; for a valid id it applies the exact table above and returns `true`.
 
-- [ ] **Step 1: RED timing tests:** elite signal fires once when elapsed segment time crosses injected elite threshold, COMBAT continues, boss fires once at segment end.
-- [ ] **Step 2: RED `StageElite` tests:** identity true, segment configuration stable, normal `EnemyChaser` death contract retained.
-- [ ] **Step 3: RED integration seam:** `_on_enemy_died` distinguishes elite from stage boss; elite kill creates exactly one chest token; elite spawn without kill creates none; normal kill creates none.
+`MainController` preloads `res://scenes/enemies/stage_elite.tscn`, spawns one on `elite_requested` at `player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance`, wires it through the same `_wire_enemy()` path, and **does not disable normal waves**. `_on_enemy_died()` distinguishes `is_stage_elite()` from `is_stage_boss()`: elite kill grants normal non-boss kill handling plus exactly one chest token through `RestRewardController.grant_chest_token(1)`; it never calls `grant_boss_gold()` or boss settlement. StageBoss behavior remains the five-minute gate and still disables normal spawning through the existing `_on_boss_requested()` path.
+
+- [ ] **Step 1: RED timing tests:** elite signal fires once when elapsed segment time crosses injected elite threshold, COMBAT continues, boss fires once at segment end, starting the next segment resets elite one-shot state.
+- [ ] **Step 2: RED `StageElite` tests:** segment 1/2/3 apply exact table values; invalid segment returns false without mutation; identity returns true; normal `EnemyChaser` death contract remains.
+- [ ] **Step 3: RED integration seam:** `_on_enemy_died` recognizes elite separately from boss; one elite death grants exactly one chest token; an un-killed elite grants none; a normal enemy grants no chest token; boss grants no elite token.
 - [ ] **Step 4: RED phase tests:** `BOSS -> RESULT -> BOSS_REWARD -> REST -> FATE -> PREVIEW/COMPLETE`; REST cannot skip forced boss reward.
 - [ ] **Step 5: Run RED.**
-- [ ] **Step 6: Implement one-shot elite flag in `StageFlowController`, exact scene spawn/wiring in `MainController`, and only the minimal `WaveSpawner` API needed to preserve normal spawning during elite and stop it for the boss.**
-- [ ] **Step 7: Run GREEN + existing MVP-3 accelerated stage-loop regression, updating only assertions superseded by BOSS_REWARD/REST.**
-- [ ] **Step 8: Commit exact paths.**
+- [ ] **Step 6: Implement one-shot elite timing in `StageFlowController`, `StageElite` scene/script, and exact spawn/death wiring in `MainController`.** Reuse WaveSpawner as-is.
+- [ ] **Step 7: Run GREEN + existing MVP-3 accelerated stage-loop and `test_wave_spawner.gd` regression.** `test_wave_spawner.gd` remains unchanged and proves the reused spawn API did not regress.
+- [ ] **Step 8: Commit exact changed paths only.**
 
 ```bash
-git add scripts/enemies/stage_elite.gd scenes/enemies/stage_elite.tscn tests/unit/test_stage_elite.gd scripts/core/stage_flow_controller.gd tests/unit/test_stage_flow_controller.gd scripts/core/main_controller.gd scripts/spawning/wave_spawner.gd tests/unit/test_wave_spawner.gd
+git add scripts/enemies/stage_elite.gd scenes/enemies/stage_elite.tscn tests/unit/test_stage_elite.gd scripts/core/stage_flow_controller.gd tests/unit/test_stage_flow_controller.gd scripts/core/main_controller.gd
 git commit -m "feat: add MVP-4 elite and REST phases"
 ```
 
@@ -680,7 +699,9 @@ After every task: focused RED observed → focused GREEN → relevant prior-task
 ## Self-Review
 
 - Spec coverage: AC-01..AC-15 map through the L3 packet to T01–T12.
-- Placeholder scan: **no executable placeholder tokens remain**. Task 8 names the exact existing owners `scripts/spawning/wave_spawner.gd`, `scripts/core/main_controller.gd`, and the new `StageElite` files.
+- Placeholder scan: no executable placeholder token remains.
+- Existing-solution-first: current `WaveSpawner` is reused read-only; the plan does not add a second spawn system or unnecessary WaveSpawner API.
+- Elite tuning: exact initial defaults are stated and are clearly `RECOMMENDED_DEFAULT`, not new immutable product canon.
 - Type consistency: `BackpackState → BackpackResolver → RestBackpackSession → committed RunModifierSet` is stable across tasks.
 - Authority: UI renders snapshots/emits intent; resolver/session own spatial rules; RunBuildState owns committed combat modifiers + Fate.
 - Transaction safety: reward/combination/Fate paths validate before mutation and include duplicate guards.
