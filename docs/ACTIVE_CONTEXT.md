@@ -13,9 +13,10 @@ Last updated: 2026-08-11 06:13 KST
 project: alsdmlals4-eng/ninja-survival-godot
 main_sha_observed: 9b85cf65a3ca4278f7d8ec1a7e527ecc857cbad1
 active_design_branch: docs/mvp4-design-finalization-20260811
-active_design_pr: PENDING_CREATION
+active_design_pr: 7
+active_design_pr_state: OPEN_DRAFT_WRITTEN_SPEC_REVIEW
 prior_handoff_pr_5: MERGED_CLOSED
-prior_state_reconciliation_pr_6: OPEN_TO_BE_SUPERSEDED_IF_DESIGN_PR_CREATED
+prior_state_reconciliation_pr_6: CLOSED_SUPERSEDED_BY_7
 mvp4_implementation_branch: NONE
 mvp4_implementation_pr: NONE
 base_repo: alsdmlals4-eng/Base
@@ -32,7 +33,7 @@ project_sheet_write: BLOCKED_USER_ACTION_403
 
 Implementation status: `NOT_STARTED`
 
-The previous integrated runtime milestone remains MVP-3 on project `main@9b85cf65...`. The current design branch contains documentation/design work only; it does not claim MVP-4 runtime implementation.
+The previous integrated runtime milestone remains MVP-3 on project `main@9b85cf65...`. Draft PR #7 contains documentation/design work only; it does not claim MVP-4 runtime implementation.
 
 ## Progress classification
 
@@ -46,24 +47,24 @@ The previous integrated runtime milestone remains MVP-3 on project `main@9b85cf6
 - `DEC-2026-08-11-001`: integrated Persistent Workbench approach approved by the user.
 - Section 6 UI/input/preview/combination-hint direction closed using the approved Persistent Workbench plus in-scope safety defaults.
 - Transaction failure, deterministic testability, automated test matrix, human QA scope, and completion criteria are defined.
-- `docs/CURRENT_CONFIRMED_DECISIONS.md` updated on the current design branch.
-- `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md` written on the current design branch.
+- `docs/CURRENT_CONFIRMED_DECISIONS.md` updated on Draft PR #7.
+- `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md` written on Draft PR #7.
 - written spec placeholder/contradiction/scope/ambiguity self-review completed with no surviving MUST_FIX finding.
-- README / PROJECT_BRIEF / DESIGN_INTENT / SYSTEM_MAP / DOCUMENTATION_MAP / BASE_RULES_VERSION freshness gaps identified and reconciled on the design branch.
+- README / PROJECT_BRIEF / DESIGN_INTENT / SYSTEM_MAP / DOCUMENTATION_MAP / BASE_RULES_VERSION freshness gaps identified and reconciled on Draft PR #7.
+- stale PR #6 closed as superseded because PR #7 absorbs its `ACTIVE_CONTEXT` correction and advances the state further.
 
 ### IN_PROGRESS
 
+- Draft PR #7 exact-head CI/status/thread/adversarial diff review.
 - Superpowers brainstorming `user reviews written spec` gate.
-- Design branch PR creation and exact-head documentation/CI review.
 
 ### READY_NEXT
 
-1. Create a draft PR for `docs/mvp4-design-finalization-20260811`.
-2. Reconcile/supersede stale PR #6 because this branch contains its post-merge state correction plus newer design state.
-3. Run PR exact-head CI/status/thread checks and adversarial diff review.
-4. Present the written spec to the user for review.
-5. Only after written-spec approval: invoke Superpowers `writing-plans` and create `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination-implementation.md`.
-6. Still do not implement production code until the project instruction's explicit planning-complete transition condition is satisfied.
+1. Re-query Draft PR #7 exact HEAD, changed files, CI runs, and review threads.
+2. Run adversarial diff/freshness review against current main and current Base relevance.
+3. Present the written spec to the user for review.
+4. Only after written-spec approval: invoke Superpowers `writing-plans` and create `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination-implementation.md`.
+5. Still do not implement production code until the project instruction's explicit planning-complete transition condition is satisfied.
 
 ### BLOCKED / DEFERRED
 
@@ -154,6 +155,8 @@ mvp4_product_design: COMPLETE_PENDING_WRITTEN_SPEC_REVIEW
 mvp4_decision_sync_on_design_branch: PASS
 mvp4_written_design_spec: WRITTEN_SELF_REVIEW_PASS
 mvp4_user_written_spec_review: PENDING
+mvp4_design_pr: OPEN_DRAFT_7
+mvp4_design_pr_exact_head_review: IN_PROGRESS
 mvp4_implementation_plan: NOT_WRITTEN
 mvp4_code: NOT_STARTED
 mvp4_gut_tests: NOT_RUN
@@ -188,4 +191,4 @@ No MVP-4 runtime PASS claim is valid yet.
 
 ## Next executable step
 
-**Create and adversarially validate the MVP-4 design-finalization draft PR, then stop at the user written-spec review gate. Do not write the implementation plan or production code yet.**
+**Adversarially validate Draft PR #7, then stop at the user written-spec review gate. Do not write the implementation plan or production code yet.**
