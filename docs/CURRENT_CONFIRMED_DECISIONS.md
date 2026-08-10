@@ -5,7 +5,7 @@
 > 구현 완료 상태는 이 파일이 아니라 `docs/ACTIVE_CONTEXT.md`가 소유한다.
 
 Last updated: 2026-08-11
-Current project baseline observed for this update: `main@655ec26a5ac9946c0ec08f81f389ddfe66e72b65`
+Current project baseline observed for this update: `main@360e8652b51e8125c63b7a5cdc2288092bb8e096`
 
 ## MVP-4 — Backpack / Combination Basics
 
@@ -17,6 +17,7 @@ written_spec: docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design
 written_spec_status: APPROVED_BY_USER_2026-08-11
 traceability: docs/traceability/2026-08-11-mvp4-backpack-combination-traceability.md
 implementation_plan: docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md
+planning_integration: MERGED_PR_8_360e8652b51e8125c63b7a5cdc2288092bb8e096
 production_gate: EXPLICIT_USER_DECLARATION_기획_완료_REQUIRED
 ```
 
@@ -218,7 +219,7 @@ RunModifierSet
 
 - 위 MVP-4 제품/설계 방향과 `DEC-2026-08-11-001`은 사용자 승인 상태다.
 - L2 written spec은 2026-08-11 사용자 승인으로 `APPROVED`다.
-- L3 traceability와 Superpowers implementation plan 작성은 승인된 계획 범위다.
+- L3 traceability와 Superpowers implementation plan은 PR #8로 `main@360e8652...`에 통합됐다.
 - **Godot/Codex production BUILD는 사용자가 프로젝트 계약의 전환 문구 `기획 완료`를 명시적으로 선언하기 전까지 시작하지 않는다.**
 - 새 핵심 플레이 규칙, 새로운 경제 축, 새로운 획득처, 새 조합 계층, 기존 보호 범위 폐기는 별도 `USER_DECISION_REQUIRED`다.
 - exact UI spacing/theme, 초기 balance tuning, 내부 파일 분할처럼 승인된 결과를 바꾸지 않는 사항은 `RECOMMENDED_DEFAULT`로 조정할 수 있다.
@@ -226,10 +227,10 @@ RunModifierSet
 ## Synchronization state
 
 ```yaml
-project_main_design_checkpoint: 655ec26a5ac9946c0ec08f81f389ddfe66e72b65
+project_main_planning_checkpoint: 360e8652b51e8125c63b7a5cdc2288092bb8e096
 mvp4_design_pr_7: MERGED_CLOSED
-mvp4_design_post_merge_gut: PASS_RUN_31434691578
-active_planning_branch: docs/mvp4-traceability-plan-20260811
+mvp4_planning_pr_8: MERGED_CLOSED
+mvp4_planning_post_merge_gut: PASS_RUN_31437135591
 project_sheet_sync: GITHUB_UPDATE_PENDING_SHEET
 project_sheet_write: BLOCKED_USER_ACTION_403
 ```
