@@ -4,21 +4,24 @@
 > 제품 결정 전문은 `docs/CURRENT_CONFIRMED_DECISIONS.md`를 본다.
 > 과거 대화보다 현재 GitHub/프로젝트/현재 정본을 우선한다.
 
-Last updated: 2026-08-10 12:05 KST
+Last updated: 2026-08-10 12:48 KST
 
 ## Baseline
 
 ```yaml
 project: alsdmlals4-eng/ninja-survival-godot
-main_sha: 7ef8eeaec1e5e4bad65a7bf00061274b60641e6a
-current_handoff_branch: docs/mvp4-handoff-20260810
+main_sha: 9b85cf65a3ca4278f7d8ec1a7e527ecc857cbad1
+current_handoff_branch: NONE_MERGED_TO_MAIN
 handoff_pr: 5
-handoff_pr_state: OPEN_DRAFT
+handoff_pr_state: MERGED_CLOSED
+handoff_merge_commit: 9b85cf65a3ca4278f7d8ec1a7e527ecc857cbad1
+handoff_post_merge_ci: PASS_RUN_31352074021
 active_product_pr: NONE
 mvp4_implementation_branch: NONE
 mvp4_implementation_pr: NONE
 base_repo: alsdmlals4-eng/Base
-base_main_observed: 637dad32c773c56a27d44d847518580848dee493
+base_main_observed: 3ff790116bc08f49e126cd286ec453bf6e46376e
+base_bcp_013: SUBMITTED_ON_MAIN
 project_base_rules_file_points_to: 499c20eb9b449241864f5ada0c915fba8a7806ac
 ```
 
@@ -28,7 +31,7 @@ project_base_rules_file_points_to: 499c20eb9b449241864f5ada0c915fba8a7806ac
 
 Implementation status: `NOT_STARTED`
 
-The previous integrated milestone is MVP-3. Project `main@7ef8ee...` contains the stage result/rest/shop/fate loop that MVP-4 will extend.
+The previous integrated runtime milestone is MVP-3. Project `main@9b85cf65...` also contains the merged MVP-4 design/handoff checkpoint from PR #5; no MVP-4 production code is claimed by that documentation merge.
 
 ## Progress classification
 
@@ -37,14 +40,11 @@ The previous integrated milestone is MVP-3. Project `main@7ef8ee...` contains th
 - MVP-0 basic combat foundation integrated.
 - MVP-1 combat DDD integrated.
 - MVP-2 four shallow schools integrated.
-- MVP-3 stage result/rest/shop/fate integrated on `main@7ef8ee...`.
+- MVP-3 stage result/rest/shop/fate integrated.
 - MVP-4 design Sections 1–5 have been discussed and approved at the product-rule level; consolidated approved decisions are in `docs/CURRENT_CONFIRMED_DECISIONS.md`.
-
-### COMPLETED_NOT_MERGED
-
-- Handoff/continuation-state documentation is persisted on branch `docs/mvp4-handoff-20260810` and Draft PR #5.
-- The branch also synchronizes `AGENTS.md`, `MVP_ROADMAP.md`, and `docs/DOCUMENTATION_MAP.md` with the approved MVP-4 rotation/shape/timing decisions.
-- Integration is intentionally not performed without explicit project merge approval.
+- MVP-4 handoff/continuation documentation was squash-merged through PR #5 to `main@9b85cf65a3ca4278f7d8ec1a7e527ecc857cbad1`.
+- The post-merge `main` GUT workflow run `31352074021` completed successfully.
+- `AGENTS.md`, `MVP_ROADMAP.md`, and `docs/DOCUMENTATION_MAP.md` on main now include the approved MVP-4 rotation/shape/timing synchronization from PR #5.
 
 ### IN_PROGRESS
 
@@ -53,7 +53,7 @@ The previous integrated milestone is MVP-3. Project `main@7ef8ee...` contains th
 
 ### READY_NEXT
 
-1. Re-read `AGENTS.md`, `docs/CURRENT_CONFIRMED_DECISIONS.md`, this file, and the handoff snapshot from PR #5 (or main if #5 has since been merged).
+1. Re-read `AGENTS.md`, `docs/CURRENT_CONFIRMED_DECISIONS.md`, this file, and `docs/handoffs/2026-08-10-mvp4-backpack-design-handoff.md` from current main.
 2. Re-query latest main/open PRs before resuming; do not assume the saved SHA is still current.
 3. Before the next material design question, perform fresh backpack-genre / industry benchmarking as requested by the user.
 4. Continue brainstorming with one material question/design section at a time.
@@ -66,10 +66,10 @@ The previous integrated milestone is MVP-3. Project `main@7ef8ee...` contains th
 
 ### BLOCKED / USER_DECISION_REQUIRED
 
-- Draft PR #5 merge/integration requires explicit project merge approval.
+- No current handoff-integration blocker remains; PR #5 is merged.
 - No user decision is required to continue the next design section.
 
-A new product decision is required only if the next work changes already-approved core rules or expands scope materially.
+A new product decision is required only if the next work changes already-approved core rules or expands scope materially. Any future PR merge still requires explicit project integration approval.
 
 ### NOT_STARTED
 
@@ -106,13 +106,13 @@ See `docs/CURRENT_CONFIRMED_DECISIONS.md`. The most regression-sensitive decisio
 
 ### Project documentation synchronization
 
-On `main@7ef8ee...`, `AGENTS.md` and `MVP_ROADMAP.md` still contain older exclusions such as item rotation / complex backpack shapes being excluded, and older `5/10/15-minute midboss` terminology.
+PR #5 is merged. Current `main@9b85cf65...` contains the synchronized `AGENTS.md`, `MVP_ROADMAP.md`, `docs/CURRENT_CONFIRMED_DECISIONS.md`, handoff snapshot, and documentation map. The older rotation exclusion and older `5/10/15-minute midboss` wording are no longer the current main guidance.
 
-Draft PR #5 synchronizes those documents with the latest approved MVP-4 direction. Until #5 is merged, use `docs/CURRENT_CONFIRMED_DECISIONS.md` on the PR branch as the decision source and do not silently restore the older exclusions.
+The current decision source is `docs/CURRENT_CONFIRMED_DECISIONS.md` on main. The dated handoff remains a historical snapshot; this `ACTIVE_CONTEXT.md` is the mutable continuation-state router.
 
 ### Base drift
 
-`docs/BASE_RULES_VERSION.md` still records Base commit `499c20e...` from 2026-07-10, while current Base `main` observed during this handoff is `637dad3...`.
+`docs/BASE_RULES_VERSION.md` still records Base commit `499c20e...` from 2026-07-10, while current Base `main` observed during this reconciliation is `3ff790116bc08f49e126cd286ec453bf6e46376e`.
 
 Relevant newer Base capabilities already exist:
 
@@ -120,7 +120,9 @@ Relevant newer Base capabilities already exist:
 - `maintaining-project-context-and-handoff` owner;
 - L2 `GAME_FEATURE_DESIGN_SPEC` hierarchy implemented by BCP-2026-011.
 
-This handoff uses those patterns by REUSE, but **full Base rule synchronization is NOT_RUN** and should not be falsely claimed.
+From this project handoff, Base BCP-2026-013 `Post-Merge Continuation-State Reconciliation` was submitted and merged to Base main as a proposal. Its status remains `SUBMITTED`; it has not changed active Base behavior yet.
+
+This handoff uses the existing Base patterns by REUSE, but **full Base rule synchronization is NOT_RUN** and should not be falsely claimed.
 
 ## Existing implementation surfaces to inspect before coding
 
@@ -144,9 +146,14 @@ Current MVP-3 files that MVP-4 is expected to integrate with:
 ## Verification state
 
 ```yaml
-handoff_document_creation: COMPLETE_ON_DOC_BRANCH
+handoff_document_creation: INTEGRATED_ON_MAIN
 handoff_pr_created: PASS
-handoff_pr_merged: NOT_RUN_USER_APPROVAL_REQUIRED
+handoff_pr_merged: PASS
+handoff_merge_commit: 9b85cf65a3ca4278f7d8ec1a7e527ecc857cbad1
+handoff_post_merge_ci: PASS_RUN_31352074021
+base_bcp_013_submission: MERGED_TO_BASE_MAIN_3ff790116bc08f49e126cd286ec453bf6e46376e
+base_bcp_013_status: SUBMITTED
+base_post_merge_ci: PASS_RUN_31352996749
 mvp4_code_tests: NOT_RUN
 mvp4_godot_runtime: NOT_RUN
 mvp4_human_qa: NOT_RUN
@@ -155,7 +162,7 @@ mvp4_written_design_spec: NOT_WRITTEN
 mvp4_implementation_plan: NOT_WRITTEN
 ```
 
-Do not report any MVP-4 implementation or verification as PASS.
+Do not report any MVP-4 implementation or runtime verification as PASS.
 
 ## Benchmarking contract for resume
 
@@ -181,7 +188,7 @@ PROJECT_ONLY:
   - all MVP-4 backpack geometry, budgets, item pool, reward cadence, combination rules
   - elite around 3 minutes and boss around 5 minutes
 BASE_CANDIDATE:
-  - none identified that need a new Base proposal
+  - BCP-2026-013 post-merge continuation-state reconciliation: SUBMITTED
 REUSE:
   - maintaining-project-context-and-handoff
   - current Base feature-design-spec hierarchy for the eventual written spec
@@ -189,7 +196,7 @@ NO_PROMOTION:
   - backpack product rules are project-specific
 ```
 
-No Base `[수정제안서]` is required from this checkpoint.
+No additional Base `[수정제안서]` is identified from this checkpoint beyond BCP-2026-013.
 
 ## Protected scope
 
@@ -197,12 +204,12 @@ No Base `[수정제안서]` is required from this checkpoint.
 - Do not silently revert the approved rotation / non-rectangular bag / one-cell special-bag overlap decisions.
 - Do not commit local `addons/` or local plugin activation in `project.godot`.
 - Do not use `git add .`, `git add -A`, or destructive clean operations in local execution.
-- Do not merge an MVP-4 or handoff PR without the project's required explicit integration approval.
+- Do not merge an MVP-4 or handoff/state PR without the project's required explicit integration approval.
 
 ## Resume read order
 
 1. current GitHub `main` + open PR list
-2. `AGENTS.md` from the active source (PR #5 branch until merged)
+2. `AGENTS.md` from current main
 3. `docs/CURRENT_CONFIRMED_DECISIONS.md`
 4. `docs/ACTIVE_CONTEXT.md`
 5. `docs/handoffs/2026-08-10-mvp4-backpack-design-handoff.md`
