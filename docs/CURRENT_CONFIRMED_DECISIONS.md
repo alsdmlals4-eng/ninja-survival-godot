@@ -28,7 +28,9 @@ Status: `DESIGN_COMPLETE_PENDING_WRITTEN_SPEC_REVIEW / IMPLEMENTATION_NOT_STARTE
 - 비정사각형 직사각형 아이템은 회전으로 `1x2 ↔ 2x1`, `1x3 ↔ 3x1`, `2x3 ↔ 3x2` 등이 된다.
 - 일반 아이템은 MVP-4에서 직사각형 중심으로 유지한다.
 - 가방은 일부 L/T형 비정형 형태를 허용한다.
-- 방향키는 현재 모든 가방+배치 아이템의 상대 배치를 유지한 채 전체 묶음을 1칸 이동한다.
+- 전체 가방+배치 아이템의 상대 배치를 유지한 채 전체 묶음을 1칸 이동하는 `전체 이동` 조작을 제공한다.
+- 키보드/게임패드에서는 **명시적 `전체 이동 모드`가 활성화된 동안** 방향키/D-pad가 전체 묶음을 1칸 이동한다. 일반 Workbench 상태의 방향 입력은 focus/선택 셀 탐색에 사용한다.
+- Touch에서는 `전체 이동` 액션을 선택한 뒤 화면 방향 버튼 또는 동등한 명시 조작으로 같은 기능을 제공한다.
 - 전체 이동/회전 결과가 보드 밖, 충돌, 비활성 셀, 연결성 파괴를 만들면 전체 조작을 취소한다.
 - 휴식 구간에서만 백팩 편집/회전을 허용한다.
 
@@ -82,11 +84,13 @@ Recommended MVP-4 budget table:
 #### Input paths
 
 - Mouse: drag/drop + click selection.
-- Keyboard/gamepad: focus 이동 → 선택/집기 → 셀 이동 → 배치, 별도 회전 액션, 취소 액션을 제공한다.
-- Touch: tap-select → tap-place를 완전한 기본 경로로 제공하고 drag는 보조 경로로 둔다.
+- Keyboard/gamepad 기본 상태: 방향 입력으로 예측 가능한 focus/선택 셀 탐색 → 선택/집기 → 셀 이동 → 배치, 별도 회전 액션, 취소 액션을 제공한다.
+- Keyboard/gamepad `전체 이동 모드`: 화면에 모드 상태를 명확히 표시하고, 모드가 활성화된 동안만 방향키/D-pad가 전체 가방+아이템 layout을 1칸 이동한다. 취소/완료 시 일반 focus 탐색으로 즉시 복귀한다.
+- Touch: tap-select → tap-place를 완전한 기본 경로로 제공하고 drag는 보조 경로로 둔다. `전체 이동`은 명시 액션 + 화면 방향 컨트롤로 수행한다.
 - 핵심 기능을 long-press, 정밀 drag, hover에만 의존시키지 않는다.
-- 회전, Undo, Redo, 조합, 취소는 화면상 명시 버튼을 제공하며 PC shortcut은 추가 경로로 둔다.
+- 회전, 전체 이동, Undo, Redo, 조합, 취소는 화면상 명시 버튼을 제공하며 PC shortcut은 추가 경로로 둔다.
 - focus 이동은 명시적 neighbor를 우선해 예측 가능하게 유지하고 modal/bottom-sheet 종료 뒤 직전 의미 있는 focus로 복귀한다.
+- `전체 이동 모드`와 일반 focus 탐색은 동시에 활성화되지 않는다. 모드 표시가 보이지 않는 상태에서 방향 입력이 layout을 이동시키지 않는다.
 
 #### Information hierarchy
 
@@ -102,6 +106,7 @@ Recommended MVP-4 budget table:
 - 인접 시너지: 두 대상과 접촉 edge를 연결해 어떤 관계가 생기는지 표시.
 - 특수 가방 효과: 적용되는 bag region과 대상 item을 함께 표시.
 - 조합 가능: 재료 쌍을 강조하고 `조합 가능` 액션을 노출하되 자동 변환하지 않는다.
+- `전체 이동 모드`: mode label/icon/border로 현재 방향 입력의 의미가 바뀌었음을 명확히 표시한다.
 - 색상만으로 상태를 전달하지 않고 outline/icon/text를 함께 사용한다.
 - 자주 반복되는 이동/hover 피드백은 낮은 강도로 유지하고, 확정/실패/조합 성공만 더 강한 피드백을 사용한다.
 
@@ -220,6 +225,7 @@ Approved representative combinations:
 - 상점 offer, boss reward, chest reward처럼 무작위 후보를 만드는 컴포넌트는 주입 가능한 RNG 또는 seed를 사용해 deterministic test가 가능해야 한다.
 - `BackpackResolver`의 점유, 충돌, 연결성, 인접, 특수 가방 overlap, 조합 자격 계산은 UI/Scene과 분리된 deterministic rule layer로 유지한다.
 - `RestBackpackSession` Undo/Redo와 preview는 동일 입력에서 동일 결과를 만들어야 한다.
+- `전체 이동 모드` 진입/해제, 일반 focus 탐색과 방향 입력의 배타성, 모드 중 전체 이동 atomicity를 deterministic input/session test로 검증한다.
 - UI test는 규칙 정답을 재구현하지 않고 resolver/session snapshot과 signal/event 경계를 검증한다.
 
 ### Architecture direction
@@ -244,7 +250,7 @@ RunModifierSet
 
 - `BackpackState`: 6x6 보드, 배치된 아이템/가방 인스턴스, 좌표, 회전의 런타임 source of truth.
 - `BackpackResolver`: 점유 셀, 충돌, 활성 셀, 연결성, 인접 그래프, 특수 가방 겹침, 조합 가능성, 활성 효과 계산 전담.
-- `RestBackpackSession`: 휴식 작업 버퍼, 드래그/회전 미리보기, 전체 이동, Undo/Redo, 조합 미리보기 같은 편집 상태 전담.
+- `RestBackpackSession`: 휴식 작업 버퍼, 드래그/회전 미리보기, 전체 이동 모드, 전체 이동, Undo/Redo, 조합 미리보기 같은 편집 상태 전담.
 - `RunBuildState`: GOLD, 유파, Fate, 최종 전투 modifier 조합 책임 유지.
 - 기존 `owned_items: Dictionary`의 개수 기반 모델은 MVP-4의 백팩 source of truth가 아니다.
 - REST 중에는 실제 Player/Combat runtime modifier를 계속 흔들지 않고 `BuildPreviewSnapshot` 성격의 계산 결과만 보여주며, Fate/다음 전투 확정 시 실제 runtime에 동기화한다.
@@ -267,6 +273,7 @@ Automated contract coverage must include at minimum:
 - bag connectivity and invalid disconnect rejection
 - item/bag collision and active-cell checks
 - whole-layout translation success/failure atomicity
+- normal focus navigation vs `전체 이동 모드` directional-input exclusivity
 - orthogonal-only adjacency and one-effect-per-pair rule
 - one-cell special-bag overlap and multi-bag stacking
 - work-buffer activation exclusion and zero-before-combat gate
@@ -280,8 +287,8 @@ Automated contract coverage must include at minimum:
 Human QA must separately validate:
 
 - Windows mouse+keyboard path
-- Windows gamepad focus path
-- Android touch path on a real device
+- Windows gamepad focus path, including visible `전체 이동 모드` transition
+- Android touch path on a real device, including touch `전체 이동` control
 - smallest supported layout and long Korean text
 - valid/invalid placement comprehension without relying on color alone
 - first-time recipe hint comprehension without exposing the full recipe too early
@@ -294,12 +301,12 @@ Human/run evidence remains `NOT_RUN` until the later implementation build exists
 
 - PR #5 already synchronized current `AGENTS.md`, `MVP_ROADMAP.md`, `docs/CURRENT_CONFIRMED_DECISIONS.md`, handoff snapshot, and documentation map with the approved rotation/shape/timing direction.
 - Project Google Sheets still contains stale pre-PR-#5 wording in multiple tabs. A write attempt on 2026-08-11 returned Google Sheets `403 PERMISSION_DENIED`; Sheet synchronization is therefore `GITHUB_UPDATE_PENDING_SHEET / BLOCKED_USER_ACTION` and must not be reported as `SYNCED`.
-- Open PR #6 still targets post-merge `ACTIVE_CONTEXT` reconciliation and must be revalidated against the current Base HEAD before integration or supersession.
+- PR #6 was closed unmerged as superseded by Draft PR #7, which absorbs its `ACTIVE_CONTEXT` correction and advances the design state.
 
 ## Remaining gate
 
-- Canonical MVP-4 written design spec must be committed under `docs/superpowers/specs/`.
-- The written spec must pass placeholder / contradiction / scope / ambiguity self-review.
+- Canonical MVP-4 written design spec must remain synchronized with this decision source.
+- The written spec must pass placeholder / contradiction / scope / ambiguity self-review and exact-head adversarial review.
 - User written-spec review is required by the active Superpowers brainstorming overlay.
 - `writing-plans` and any MVP-4 production code remain blocked until that written-spec review closes.
 
@@ -307,6 +314,6 @@ Human/run evidence remains `NOT_RUN` until the later implementation build exists
 
 - Sections 1–5 are prior approved product rules.
 - `DEC-2026-08-11-001` approves the integrated Persistent Workbench direction.
-- Input/accessibility/error/test details above are in-scope technical/UX safety defaults applied under `[연속작업] 진행해`; they do not add a new core system, economy axis, acquisition source, or combination tier.
+- Input/accessibility/error/test details above, including explicit `전체 이동 모드`, are in-scope technical/UX safety defaults applied under `[연속작업] 진행해`; they preserve the already-approved whole-layout translation behavior while preventing ambiguous directional input.
 - 새 핵심 플레이 규칙, 새로운 경제 축, 새로운 획득처, 새 조합 계층, 또는 MVP 범위 확대는 별도 사용자 결정이 필요하다.
-- 설계 문서 written-spec review 전 구현 금지.
+- written-spec review 전 구현 금지.
