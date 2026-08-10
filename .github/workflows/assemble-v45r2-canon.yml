@@ -1,0 +1,113 @@
+name: Assemble v4.5 r2 Canon
+
+on:
+  push:
+    branches:
+      - docs/adopt-v4.5-r2-delivery-contract-clean-20260811
+
+permissions:
+  contents: write
+
+jobs:
+  assemble:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reconstruct byte-exact r2 source and clean assembler
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64
+          import hashlib
+          import json
+          import os
+          import urllib.parse
+          import urllib.request
+
+          upstream_repo = "alsdmlals4-eng/Switchy-Express-Cargo-Puzzle"
+          upstream_commit = "87760a37f610184b241edf44afee900207c42016"
+          parts = [
+              ("docs/work-instructions/v4.5_r2/payload.part01.md", 13494, "13b457a6fc3a704ca7ee4f534af803b600c0a3d8e457ec92538c707dcf379828"),
+              ("docs/work-instructions/v4.5_r2/payload.part02.md", 13492, "78b2a048ec9d929553bc95e47f86d1cc3a399bb24ab26ea523c67bcda55c7102"),
+              ("docs/work-instructions/v4.5_r2/payload.part03.md", 13486, "a6a0319723fbdf8901a7afacf0bb8d3c0eac75247dc430d1cb534393bf51b6ea"),
+              ("docs/work-instructions/v4.5_r2/payload.part04.md", 13463, "2f8ec2950d8ce6067939da381c7188ecc6e83dfcbc88e460442276fa506e5dd7"),
+              ("docs/work-instructions/v4.5_r2/payload.part04.eof-lf", 1, "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"),
+              ("docs/work-instructions/v4.5_r2/payload.part05.md", 13485, "c138ede7b8210136948112a97acff646c7f1be27ca917a2bd625a8c58750eef4"),
+              ("docs/work-instructions/v4.5_r2/payload.part06.md", 10313, "3ae42f63a2ba263149e6d5b9fa613ff7b2a05aa2115d08b32fa1a532453f9f80"),
+          ]
+          chunks = []
+          for path, expected_bytes, expected_sha in parts:
+              quoted = urllib.parse.quote(path, safe="/")
+              url = f"https://raw.githubusercontent.com/{upstream_repo}/{upstream_commit}/{quoted}"
+              with urllib.request.urlopen(url, timeout=30) as response:
+                  data = response.read()
+              assert len(data) == expected_bytes, (path, len(data), expected_bytes)
+              assert hashlib.sha256(data).hexdigest() == expected_sha, path
+              chunks.append(data)
+
+          payload = b"".join(chunks)
+          expected_sha256 = "3f898b7e2749a2e1900e9df48183f02d4fbc735fd0e80297f28bb09317144de4"
+          assert len(payload) == 77734, len(payload)
+          assert payload.count(b"\n") == 2849, payload.count(b"\n")
+          assert hashlib.sha256(payload).hexdigest() == expected_sha256
+
+          repo = os.environ["REPOSITORY"]
+          branch = os.environ["BRANCH"]
+          token = os.environ["GH_TOKEN"]
+          api = f"https://api.github.com/repos/{repo}/contents"
+          headers = {
+              "Accept": "application/vnd.github+json",
+              "Authorization": f"Bearer {token}",
+              "X-GitHub-Api-Version": "2022-11-28",
+              "Content-Type": "application/json",
+          }
+
+          def request_json(method, url, body=None):
+              data = None if body is None else json.dumps(body).encode("utf-8")
+              req = urllib.request.Request(url, data=data, headers=headers, method=method)
+              with urllib.request.urlopen(req, timeout=30) as response:
+                  return json.loads(response.read().decode("utf-8"))
+
+          target = "PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION_v4.5_r2.md"
+          target_url = f"{api}/{urllib.parse.quote(target, safe='/')}"
+          try:
+              current = request_json("GET", f"{target_url}?ref={urllib.parse.quote(branch, safe='')}")
+              current_sha = current["sha"]
+          except urllib.error.HTTPError as exc:
+              if exc.code == 404:
+                  current_sha = None
+              else:
+                  raise
+
+          body = {
+              "message": "docs: install byte-exact v4.5 r2 delivery contract",
+              "content": base64.b64encode(payload).decode("ascii"),
+              "branch": branch,
+          }
+          if current_sha:
+              body["sha"] = current_sha
+          created = request_json("PUT", target_url, body)
+          assert created["content"]["sha"] == "de7c6f818a4c96d2a02edea5eaff33bb1c39e8da"
+
+          verify = request_json("GET", f"{target_url}?ref={urllib.parse.quote(branch, safe='')}")
+          assert verify["sha"] == "de7c6f818a4c96d2a02edea5eaff33bb1c39e8da"
+
+          workflow_path = ".github/workflows/assemble-v45r2-canon.yml"
+          workflow_url = f"{api}/{urllib.parse.quote(workflow_path, safe='/')}"
+          workflow = request_json("GET", f"{workflow_url}?ref={urllib.parse.quote(branch, safe='')}")
+          request_json("DELETE", workflow_url, {
+              "message": "chore: remove one-shot r2 assembler",
+              "sha": workflow["sha"],
+              "branch": branch,
+          })
+          print(json.dumps({
+              "bytes": len(payload),
+              "lf_count": payload.count(b"\n"),
+              "sha256": hashlib.sha256(payload).hexdigest(),
+              "git_blob_sha1": verify["sha"],
+          }, sort_keys=True))
+          PY
