@@ -2,85 +2,194 @@
 
 ## 목적
 
-이 문서는 `닌자 서바이벌` Godot 버전의 시스템 구조와 파일 역할을 정리한다.
+이 문서는 `닌자 서바이벌` Godot 버전의 **현재 실제 시스템 책임과 다음 MVP-4 확장 경계**를 연결한다.
 
-## 현재 MVP 해석
+현재 제품 결정은 `docs/CURRENT_CONFIRMED_DECISIONS.md`, 구현/검증 상태는 `docs/ACTIVE_CONTEXT.md`가 우선한다. 이 문서는 상태/책임을 찾는 지도이며 동일 규칙을 별도 정본으로 복제하지 않는다.
 
-기존 최소 전투 루프는 `MVP-0` 기반 전투로 유지한다.
+## 현재 baseline
 
-현재 기획 MVP는 완성판이 아니라 핵심 재미 검증판이다. 각 시스템은 한 번에 완성하지 않고 단계형 Codex Goal로 구현한다.
+Project main baseline observed for this map: `9b85cf65a3ca4278f7d8ec1a7e527ecc857cbad1`.
 
-## MVP 단계별 시스템 맵
+- MVP-0~MVP-3 runtime is integrated.
+- MVP-4 design is complete pending written-spec review.
+- MVP-4 production implementation has not started.
 
-| 단계 | 시스템 | Godot 파일/씬 후보 | 역할 | 상태 |
-|---|---|---|---|---|
-| MVP-0 | 게임 상태 | `scripts/core/game_state.gd` | 점수, 시간, 진행 상태 관리 | 예정 |
-| MVP-0 | 메인 씬 | `scenes/main/main_scene.tscn` | 테스트 실행 루트 | 예정 |
-| MVP-0 | 플레이어 | `scenes/player/player.tscn` / `scripts/player/player_controller.gd` | 이동, 방향, 기본 상태 | 예정 |
-| MVP-0 | 카메라 | `Camera2D` child or main scene camera | 플레이어 추적 | 예정 |
-| MVP-0 | 적 | `scenes/enemies/enemy_basic.tscn` / `scripts/enemies/enemy_chaser.gd` | 플레이어 추적, 피격 | 예정 |
-| MVP-0 | 자동 공격 | `scripts/combat/auto_attack_controller.gd` | 주기적으로 투사체 생성 | 예정 |
-| MVP-0 | 투사체 | `scenes/projectiles/projectile_basic.tscn` / `scripts/combat/projectile.gd` | 이동, 충돌, 적 피격 | 예정 |
-| MVP-0 | HUD | `scenes/ui/hud.tscn` / `scripts/ui/hud.gd` | HP, 점수, 기본 상태 표시 | 예정 |
-| MVP-1 | 처치 콤보 | `scripts/combat/kill_combo_tracker.gd` | 연속 처치, 최대 콤보, 콤보 타이머 관리 | 예정 |
-| MVP-1 | 스타일리쉬 점수 | `scripts/results/stylish_score.gd` | 콤보/처치/전투 성과를 점수/랭크 후보로 변환 | 예정 |
-| MVP-1 | 보상 흡수 | `scenes/pickups/pickup_orb.tscn` / `scripts/pickups/pickup_orb.gd` | 경험치/골드/보상 흡수감 | 예정 |
-| MVP-2 | 유파 선택 | `scenes/ui/school_select.tscn` / `scripts/schools/school_selector.gd` | 4유파 선택 | 예정 |
-| MVP-2 | 유파 데이터 | `data/schools/schools.json` | 봉마류/천술류/귀인류/흑영류 최소 구성 | 예정 |
-| MVP-2 | 유파 규칙 | `scripts/schools/school_runtime.gd` | 영력, 오행 반응, 귀혈, 표식 등 얕은 고유 규칙 | 예정 |
-| MVP-2 | 오의 | `scripts/combat/ultimate_controller.gd` | 유파별 기본 오의 발동 | 예정 |
-| MVP-3 | 스테이지 타이머 | `scripts/stages/stage_timer.gd` | 5/10/15/20분 흐름 관리 | 예정 |
-| MVP-3 | 중간보스 체크 | `scripts/stages/midboss_trigger.gd` | 스테이지 종료 조건과 휴식 진입 | 예정 |
-| MVP-3 | 전투 기여도 | `scripts/results/combat_contribution_tracker.gd` | 딜/힐/방어/상태이상/콤보 기여도 집계 | 예정 |
-| MVP-3 | 중간 결과 UI | `scenes/results/stage_result_screen.tscn` / `scripts/results/stage_result_screen.gd` | 스테이지 종료 카드형 요약 | 예정 |
-| MVP-3 | 휴식 루프 | `scenes/rest/rest_screen.tscn` / `scripts/rest/rest_flow.gd` | 전투 결과→전리품→백팩→조합→상점→운명→다음 전투 | 예정 |
-| MVP-3 | 운명 선택 | `scenes/rest/fate_select.tscn` / `scripts/rest/fate_controller.gd` | 보상+대가가 있는 한 판 규칙 변경 | 예정 |
-| MVP-4 | 백팩 | `scenes/rest/backpack_panel.tscn` / `scripts/rest/backpack_model.gd` | 칸 제한, 임시 보관함, 아이템 배치 | 예정 |
-| MVP-4 | 인접 시너지 | `scripts/rest/adjacency_synergy.gd` | 배치에 따른 시너지 후보/활성화 | 예정 |
-| MVP-4 | 조합 힌트 | `scripts/rest/combination_hint.gd` | 대표 1차 조합 가능성 표시 | 예정 |
-| MVP-5 | 최종 보스 흐름 | `scripts/stages/final_boss_flow.gd` | 20분 최종 전투 진입/종료 | 예정 |
-| MVP-5 | 최종 결과 UI | `scenes/results/final_result_screen.tscn` / `scripts/results/final_result_screen.gd` | 랭크, MVP, 운명 결과, 결말문, 닌자소울 | 예정 |
-| MVP-5 | 닌자소울 | `scripts/meta/ninja_soul.gd` | 획득/표시/간단한 해금 틀 | 예정 |
+## 현재 구현 책임
 
-## 데이터 후보
+| 영역 | 현재 파일/씬 | 현재 책임 | 상태 |
+|---|---|---|---|
+| Main orchestration | `scripts/core/main_controller.gd` | 전투/학교/스테이지/휴식 controller wiring | MVP-3 integrated |
+| Game state | `scripts/core/game_state.gd` | score/kill 등 기본 run state | integrated |
+| Stage flow | `scripts/core/stage_flow_controller.gd` | `SCHOOL_SELECT → COMBAT → BOSS → RESULT → SHOP → FATE → PREVIEW/COMPLETE` | MVP-3 integrated, MVP-4 target differs |
+| Build state | `scripts/core/run_build_state.gd` | GOLD, non-spatial `owned_items`, Fate, derived modifiers | MVP-3 integrated; spatial ownership 예정 |
+| Shop | `scripts/core/shop_controller.gd` | 3 item offer, buy/sell/reroll, injectable RNG | MVP-3 integrated; MVP-4 intake semantics 변경 예정 |
+| Fate | `scripts/core/fate_controller.gd` | Fate candidate/selection | integrated |
+| Contribution | `scripts/combat/combat_contribution_tracker.gd` | damage/healing/defense/status/kill-combo segment snapshot | integrated |
+| Combat modifier resolution | `scripts/combat/combat_resolver.gd` | run modifier를 전투 damage path에 적용 | integrated |
+| Rest UI | `scripts/ui/rest_flow_ui.gd` + `scenes/ui/rest_flow_ui.tscn` | RESULT/SHOP/FATE/PREVIEW view, intent signal | MVP-3 integrated; Persistent Workbench 예정 |
+| Item definition | `scripts/data/item_definition.gd` | MVP-3 item id/price/tag/effect | integrated; footprint/rotation data 없음 |
+| Catalog | `scripts/data/mvp3_catalog.gd` | 현재 item/fate catalog | integrated; MVP-4 pool 확장 예정 |
+| Stage boss | `scripts/enemies/stage_boss.gd` + `scenes/enemies/stage_boss.tscn` | 5분 경계 boss runtime | MVP-3 integrated |
+| Tests | `tests/unit/`, `tests/integration/`, `.github/workflows/gut.yml` | GUT unit/integration/CI | active |
 
-| 데이터 | 후보 경로 | 목적 |
-|---|---|---|
-| 적 | `data/enemies/enemies.json` | 적 기본 수치와 타입 |
-| 무기 | `data/weapons/weapons.json` | 자동 공격/장비 후보 |
-| 인법 | `data/ninjutsu/ninjutsu.json` | 대표 전투/보조 인법 |
-| 유파 | `data/schools/schools.json` | 4유파 최소 구성 |
-| 스테이지 | `data/stages/stages.json` | 5분 루프, 보스, 보상 흐름 |
-| 운명 | `data/fates/fates.json` | 보상/대가/결과 경향 |
-| 조합 | `data/combinations/combinations.json` | 대표 1차 조합 후보 |
+## MVP-4 target responsibility map
 
-## 스테이지 중간 결과 지표
+MVP-4는 UI에 공간 규칙을 넣지 않고 다음 책임을 분리한다.
 
-스테이지 종료 중간 결과 화면은 다음 지표를 카드형으로 표시한다.
+```text
+ItemDefinition / BagDefinition
+        ↓
+ItemInstance / BagInstance
+        ↓
+BackpackState
+        ↓
+BackpackResolver
+        ↓
+BuildPreviewSnapshot
+        ↓
+RunBuildState + Fate
+        ↓
+RunModifierSet / combat runtime
 
-- 딜량 1위
-- 힐량 1위
-- 방어량 1위
-- 상태이상 부여 1위
-- 콤보/처치 1위
-- 최대 콤보
-- 주요 획득물
-- 추천 성장 힌트 1~2개
+REST editing side:
+RestBackpackSession
+  ├─ 6-slot work buffer
+  ├─ placement/rotation preview
+  ├─ whole-layout translation
+  ├─ Undo/Redo
+  ├─ pending bag
+  └─ combination preview/transaction
+
+UI side:
+Persistent Workbench UI
+  └─ snapshot 표시 + intent signal/event만 반환
+```
+
+### `BackpackState`
+
+Target responsibility:
+
+- fixed `6x6` board,
+- bag/item instances,
+- coordinates and rotation,
+- canonical committed spatial state.
+
+### `BackpackResolver`
+
+Target responsibility:
+
+- occupied cells,
+- board bounds,
+- active cells,
+- bag connectivity,
+- collision,
+- orthogonal adjacency graph,
+- special-bag overlap,
+- combination eligibility,
+- active placement effects.
+
+Resolver는 UI/Scene과 분리된 deterministic rule layer여야 한다.
+
+### `RestBackpackSession`
+
+Target responsibility:
+
+- 6-slot REST-only work buffer,
+- move/rotate/drop preview,
+- whole-layout translation,
+- placement Undo/Redo,
+- pending bag placement,
+- combination preview and atomic commit,
+- Fate commit readiness.
+
+### Persistent Workbench UI
+
+Target responsibility:
+
+- central backpack board를 REST 동안 지속 표시,
+- chest/shop/buffer/combination을 같은 session 안에서 왕복,
+- Windows rail/panel과 Android bottom-sheet/tab adapter,
+- mouse/keyboard/gamepad/touch intent 전달,
+- valid/invalid/synergy/hint/commit feedback.
+
+UI는 BackpackState, 경제, reward roll, combination legality를 재계산하지 않는다.
+
+## MVP-4 stage/reward target
+
+```text
+COMBAT
+→ ~3 min ELITE
+   └─ kill: chest token
+→ ~5 min SEGMENT BOSS
+→ RESULT
+→ BOSS_REWARD 3 choose 1
+→ PERSISTENT REST WORKBENCH
+→ FATE commit
+→ PREVIEW / COMPLETE
+```
+
+MVP-3의 현재 StageFlow 구현은 실제 baseline으로 남아 있고, 위 흐름은 MVP-4 implementation target이다. 문서가 target을 현재 구현 완료로 표현하지 않는다.
+
+## MVP-4 데이터 경계
+
+### Confirmed
+
+- 6x6 board / 4x3 start area.
+- item+bag 90° rotation.
+- rectangular regular items; selected L/T bags.
+- 6-slot work buffer.
+- orthogonal adjacency.
+- one-cell special-bag overlap activation.
+- representative combinations: 물안개 / 뇌명도 / 폭렬탄.
+- boss/shop/chest acquisition pillars.
+
+### Planned authoring additions
+
+Implementation plan에서 기존 `ItemDefinition` 확장과 별도 `BagDefinition`, instance model, combination data의 정확한 파일 split을 결정한다. 새 파일 경로를 이 System Map이 선행 확정하지 않는다.
+
+## 검증 구조
+
+MVP-4 implementation은 최소 다음 계층으로 검증한다.
+
+```text
+unit
+- geometry / rotation
+- collision / connectivity
+- adjacency / special-bag overlap
+- buffer / Undo-Redo boundaries
+- combination atomicity
+- seeded reward generation
+
+integration
+- stage reward → buffer → placement → Fate commit
+- shop/chest/boss-reward transaction
+- RunBuildState modifier commit boundary
+- Rest UI intent ↔ session snapshot
+
+human
+- Windows mouse+keyboard
+- Windows gamepad focus
+- Android real-device touch
+- long Korean text / smallest supported layout
+- REST fatigue and comprehension
+```
+
+실행되지 않은 MVP-4 test/runtime/human evidence는 `NOT_RUN`이다.
 
 ## 설계 원칙
 
 - 상태 소유자를 중복시키지 않는다.
-- 플레이어, 적, 투사체, UI, 결과 집계, 휴식 흐름의 책임을 분리한다.
-- 첫 구현 Goal 하나에 현재 기획 MVP 전체를 넣지 않는다.
-- MVP-0은 실행 가능한 전투 기반을 우선한다.
-- MVP-1 이후부터 전투 DDD, 유파, 휴식, 백팩, 운명을 단계적으로 붙인다.
-- 저장/완전한 경제/전체 조합/정교한 엔딩 분기는 후속 MVP로 분리한다.
+- UI는 domain 규칙의 authority가 아니다.
+- REST preview와 actual combat modifier commit을 분리한다.
+- transaction failure는 partial mutation 없이 fail closed한다.
+- random reward path는 seeded/injectable test가 가능해야 한다.
+- 첫 구현 Goal 하나에 MVP-4 전체를 무리하게 넣지 않고 implementation plan에서 독립 testable package로 나눈다.
+- save system, 2차/3차 조합, arbitrary item polyomino, 깊은 set/curse, final economy는 MVP-4에서 새로 만들지 않는다.
 
-## Unity 분석 후 갱신할 항목
+## 다음 책임 원본
 
-- Unity 스크립트명
-- 기존 구현 기능
-- Godot 대응 파일
-- 유지/변경/삭제 여부
-- 이식 우선순위
-- 위험 요소
+- 제품 결정: `docs/CURRENT_CONFIRMED_DECISIONS.md`
+- MVP-4 detailed design: `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`
+- 단계 범위: `MVP_ROADMAP.md`
+- 현재 상태: `docs/ACTIVE_CONTEXT.md`
+- 구현 전 최종 작업 분해: written-spec review 뒤 생성할 Superpowers implementation plan
