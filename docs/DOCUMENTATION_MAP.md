@@ -8,7 +8,8 @@
 
 | 문서 | 역할 | 상태 |
 |---|---|---|
-| `AGENTS.md` | AI/Codex 최상위 작업 규칙, 단계형 MVP·안전·실행 경계 | current |
+| `AGENTS.md` | AI/Codex 최상위 프로젝트 규칙, 프로젝트별 override, 단계형 MVP·안전·실행 경계 | current |
+| `PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION_v4.5_r2.md` | Base current-main thin-adapter 방식의 활성 실행/검수/병합/로컬 전달 계약 | `ACTIVE / v4.5 / 2026-08-11-r2` |
 | `README.md` | 저장소 소개와 현재 MVP 요약 | MVP-4 design sync |
 | `PROJECT_BRIEF.md` | 프로젝트 약속, 장르, 핵심 경험, 4유파와 핵심 loop | MVP-4 design sync |
 | `DESIGN_INTENT.md` | 전투 DDD, 휴식/백팩 설계 원칙, 벤치마킹 반영 | MVP-4 design sync |
@@ -16,7 +17,7 @@
 | `docs/CURRENT_CONFIRMED_DECISIONS.md` | 최신 사용자 승인 제품/설계 Decision 복원 원장 | MVP-4 `DESIGN_APPROVED` |
 | `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md` | MVP-4 L2 detailed design: 규칙·UX·입력·오류·검증 계약 | `APPROVED` |
 | `docs/traceability/2026-08-11-mvp4-backpack-combination-traceability.md` | 승인 Spec Requirement/AC를 구현 Task·path·Verification에 연결하는 L3 packet | written, `coverage_status: GAP` until implementation evidence exists |
-| `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md` | TDD 기반 MVP-4 implementation plan | written / production gate pending `기획 완료` |
+| `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md` | TDD 기반 MVP-4 implementation plan | written / Phase B readiness review required after `기획 완료` |
 | `docs/ACTIVE_CONTEXT.md` | 현재 baseline, 구현/검증 상태, next executable step resume router | current planning state |
 | `docs/handoffs/*.md` | 날짜별 session/handoff snapshot | history / resume evidence |
 | `TEST_CHECKLIST.md` | 공용 실행/검수 체크리스트 | existing; MVP-4 actual evidence는 L3/validation records가 소유 |
@@ -26,16 +27,37 @@
 | `docs/SYSTEM_MAP.md` | 실제 시스템 책임과 MVP-4 확장 경계 | MVP-4 design sync |
 | `docs/CODEX_GOAL_MVP_001.md` | 과거 MVP-0 실행 지시문 | historical executed goal |
 
-## MVP-4 현재 문서 체인
+## v4.5 r2 source identity / project binding
+
+```yaml
+canonical_contract: PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION_v4.5_r2.md
+contract_version: 4.5
+contract_revision: 2026-08-11-r2
+source_bytes: 77734
+source_lf_count: 2849
+source_sha256: 3f898b7e2749a2e1900e9df48183f02d4fbc735fd0e80297f28bb09317144de4
+source_git_blob_sha1: de7c6f818a4c96d2a02edea5eaff33bb1c39e8da
+source_storage: BYTE_EXACT_ROOT_FILE
+project_binding: AGENTS.md
+```
+
+원문 r2는 그대로 보존한다. r2 §4에 남아 있는 `Switchy-Express-Cargo-Puzzle` local/Godot path는 이 프로젝트에서 `STALE_FOREIGN_PROJECT_INPUT / NON_EXECUTABLE_FOR_NINJA_SURVIVAL`이며, `AGENTS.md`의 Ninja Survival 경로 override가 실행 입력을 소유한다.
+
+## MVP-4 현재 문서/실행 체인
 
 ```text
-latest user approval
+latest user instruction
+→ AGENTS.md / project safety-engine-data override
+→ v4.5 r2 active delivery contract
 → docs/CURRENT_CONFIRMED_DECISIONS.md
 → approved L2 feature spec
 → L3 traceability packet
 → Superpowers implementation plan
 → explicit user `기획 완료`
-→ production BUILD / executed verification
+→ PHASE B — Final Planning Review / Definition of Ready
+→ PHASE B PASS
+→ PHASE C — PowerShell / Codex / Godot BUILD
+→ TDD task execution / exact verification / merge / readback
 ```
 
 - `CURRENT_CONFIRMED_DECISIONS.md`는 현재 Decision과 보호 범위를 복원하며 상세 Spec을 장문 복제하지 않는다.
@@ -44,25 +66,30 @@ latest user approval
 - Implementation Plan은 실행 순서·파일·TDD cycle을 정의하지만 구현 완료나 검증 PASS를 소유하지 않는다.
 - `ACTIVE_CONTEXT.md`는 mutable state/router다.
 - 실제 code/Scene/data/test 상태가 계획과 다르면 계획을 구현 사실처럼 우선하지 않는다.
+- `기획 완료`는 Phase A 종료 신호이며 production BUILD의 즉시 시작 신호가 아니다. Phase B Definition of Ready가 닫힌 뒤에만 Phase C로 넘어간다.
 
 ## 현재 단계
 
 ```yaml
+active_delivery_contract: V4_5_R2
 mvp4_design: APPROVED
 mvp4_written_spec: APPROVED
 mvp4_traceability: WRITTEN_COVERAGE_GAP
 mvp4_implementation_plan: WRITTEN
-mvp4_production_build: BLOCKED_PENDING_EXPLICIT_기획_완료
+user_planning_complete_gate: NOT_GRANTED
+phase_b_final_planning_review: NOT_RUN
+phase_c_production_build: BLOCKED
 mvp4_runtime_verification: NOT_RUN
 ```
 
-사용자의 written-spec 승인은 L3/implementation planning을 허용한다. 프로젝트 delivery instruction의 production 전환 조건은 별도이며, **`기획 완료` 선언 전 Godot/Codex production BUILD를 시작하지 않는다.**
+사용자의 written-spec 승인은 L3/implementation planning을 허용했다. 이번 r2 정본 교체 승인은 계약 설치·정합화·검증·병합을 허용한다. 어느 것도 별도의 **`기획 완료`** 선언으로 확장 해석하지 않는다.
 
 ## 권위 충돌 처리
 
 ```text
-latest user approval
-→ AGENTS / project safety rules
+latest user instruction
+→ AGENTS / project safety-engine-data rules
+→ active v4.5 r2 delivery contract
 → docs/CURRENT_CONFIRMED_DECISIONS.md
 → current detailed feature/domain canon
 → docs/ACTIVE_CONTEXT.md for mutable state
@@ -82,7 +109,7 @@ MVP-4 회귀 민감 규칙:
 - normal directional navigation and explicit visible `전체 이동 모드` are mutually exclusive;
 - UI never becomes spatial/economy/reward/combination authority.
 
-과거 활성 문서에 `rotation excluded`, 현재 규칙처럼 쓰인 `5/10/15 midboss`, 또는 `owned_items` count를 MVP-4 최종 modifier authority로 복원하는 표현이 나오면 freshness finding으로 처리한다.
+과거 활성 문서에 `rotation excluded`, 현재 규칙처럼 쓰인 `5/10/15 midboss`, `owned_items` count를 MVP-4 최종 modifier authority로 복원하는 표현, 또는 `기획 완료 → 즉시 T01 BUILD` 표현이 나오면 freshness finding으로 처리한다.
 
 ## Google Sheets 상태
 
@@ -101,9 +128,9 @@ write_state: BLOCKED_USER_ACTION_403
 
 - 과거 문서만으로 현재 구현 완료를 추정하지 않는다.
 - Godot 구현 문서는 Godot/GDScript 용어로 작성한다.
-- 최신 Base와 프로젝트 current canon은 작업에 필요한 범위에서 대조한다.
+- 작업 시작마다 r2 계약대로 최신 Base current `main`과 프로젝트 current canon을 필요한 범위에서 다시 조회한다.
 - 벤치마크는 표면 복제가 아니라 문제·trade-off 검증에 사용한다.
 - 승인 Decision 변경은 Decision 원장과 상세 Spec을 먼저 갱신한 뒤 Traceability/Plan을 재대조한다.
-- Plan의 파일명·API가 actual repository와 충돌하면 BUILD 전에 plan을 고친다.
+- Plan의 파일명·API가 actual repository와 충돌하면 Phase C 전에 Phase B에서 고친다.
 - Handoff/ActiveContext가 repository truth와 충돌하면 repository truth로 교정한다.
-- production BUILD는 explicit `기획 완료` 전 금지한다.
+- production BUILD는 explicit `기획 완료` + Phase B PASS 전 금지한다.
