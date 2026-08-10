@@ -28,7 +28,9 @@ contract_source_bytes: 77734
 contract_source_lf_count: 2849
 contract_source_sha256: 3f898b7e2749a2e1900e9df48183f02d4fbc735fd0e80297f28bb09317144de4
 contract_source_git_blob_sha1: de7c6f818a4c96d2a02edea5eaff33bb1c39e8da
-contract_adoption_state: ACTIVE_PROJECT_CANON_PENDING_CURRENT_PR_MERGE
+contract_adoption_state: ACTIVE_PROJECT_CANON_INTEGRATED_PR_10
+contract_adoption_merge_commit: 653ec714b1698e8d768a07d171737c7d3d8898d0
+contract_adoption_post_merge_gut: PASS_RUN_31442268566
 contract_source_path_conflict: SWITCHY_EXPRESS_STALE_PATH_OVERRIDDEN_BY_AGENTS
 ninja_survival_local_and_godot_path: C:/Users/user/Documents/GitHub/Ninza/ninja-survival-godot
 base_repo: alsdmlals4-eng/Base
@@ -41,11 +43,11 @@ project_sheet_write: BLOCKED_USER_ACTION_403
 
 ## Current stage
 
-`MVP-4 Backpack / Combination Basics — DESIGN_APPROVED / TRACEABILITY_AND_IMPLEMENTATION_PLAN_INTEGRATED / PENDING_EXPLICIT_기획_완료`
+`MVP-4 Backpack / Combination Basics — DESIGN_APPROVED / TRACEABILITY_AND_IMPLEMENTATION_PLAN_INTEGRATED / V4_5_R2_CANON_INTEGRATED / PENDING_EXPLICIT_기획_완료`
 
 Implementation status: `NOT_STARTED`
 
-The approved L2 design, L3 traceability packet and 12-task Superpowers TDD implementation plan are integrated at planning checkpoint `360e8652...`. The project is adopting the byte-exact v4.5 r2 execution/delivery contract. This contract replacement is planning/governance work only; it does **not** verify or start any MVP-4 production behavior.
+The approved L2 design, L3 traceability packet and 12-task Superpowers TDD implementation plan are integrated at planning checkpoint `360e8652...`. The byte-exact v4.5 r2 execution/delivery contract is integrated through PR #10 at `653ec714...`, and the post-merge GUT run `31442268566` completed successfully. These are planning/governance and existing-regression evidence only; they do **not** verify or start any MVP-4 production behavior.
 
 ## Active v4.5 r2 binding
 
@@ -60,7 +62,7 @@ git_blob_sha1: de7c6f818a4c96d2a02edea5eaff33bb1c39e8da
 
 The r2 source is preserved verbatim. Its §4 `Switchy-Express-Cargo-Puzzle` local/Godot paths are not silently rewritten; for this repository `AGENTS.md` classifies them as `STALE_FOREIGN_PROJECT_INPUT / NON_EXECUTABLE_FOR_NINJA_SURVIVAL` and supplies the authoritative Ninja Survival path.
 
-The r2 phase boundary is now authoritative:
+The r2 phase boundary is authoritative:
 
 ```text
 PHASE A — GPT CHAT PLANNING
@@ -87,6 +89,8 @@ The user's approval to replace the GitHub work-instruction canon and continue ap
 - Implementation plan contains 12 ordered RED→GREEN tasks and exact planned paths.
 - Adversarial plan review removed an executable placeholder, removed an unnecessary WaveSpawner modification, named exact `StageElite` files, added deterministic elite tuning defaults, tightened L3 paths, and restored regression-sensitive Decision details.
 - PR #8 exact planning head passed GUT and merged; post-merge main GUT also passed.
+- PR #10 installed the byte-exact v4.5 r2 root contract and project adapters; exact PR head GUT and post-merge main GUT both passed.
+- The source's foreign Switchy path defect remains visible in the source and is bounded by the explicit Ninja Survival override in `AGENTS.md` rather than silently rewritten.
 
 ## Production gate under v4.5 r2
 
@@ -120,7 +124,7 @@ Project GDD Sheets still contain stale older rotation/timing wording. The 2026-0
 classification: LOCAL_TASK_BLOCKER
 state: GITHUB_UPDATE_PENDING_SHEET
 required_user_action: grant the connected Google account edit permission or reconnect a writer-capable account
-independent_work: CONTRACT_CANON_REPLACEMENT_CONTINUES
+independent_work: V4_5_R2_CANON_INTEGRATED / WAITING_FOR_EXPLICIT_PLANNING_GATE
 ```
 
 Do not report Sheets as `SYNCED` until a write and reread succeed.
@@ -179,7 +183,8 @@ mvp4_implementation_plan: INTEGRATED_IMPLEMENTATION_READY_FOR_PHASE_B_REVIEW
 mvp4_design_pr_7: MERGED
 mvp4_planning_pr_8: MERGED
 mvp4_planning_post_merge_ci: PASS_RUN_31437135591
-active_delivery_contract_v4_5_r2: BYTE_EXACT_INSTALLED_ON_ADOPTION_BRANCH
+active_delivery_contract_v4_5_r2: BYTE_EXACT_INTEGRATED_PR_10
+active_delivery_contract_v4_5_r2_post_merge_ci: PASS_RUN_31442268566
 mvp4_explicit_planning_complete_declaration: NOT_RECEIVED
 phase_b_final_planning_review: NOT_RUN
 phase_c_build: BLOCKED
@@ -219,4 +224,4 @@ No MVP-4 runtime PASS claim is valid yet.
 
 ## Next executable step
 
-**Finish exact-head validation and integration of the v4.5 r2 work-instruction canon replacement. After that, remain at the explicit `기획 완료` gate. When that declaration arrives, run PHASE B Final Planning Review / Definition of Ready before any Phase C production implementation.**
+**Remain at the explicit `기획 완료` gate. When that declaration arrives, run PHASE B Final Planning Review / Definition of Ready against current repository/Base/Sheet evidence. Only after PHASE B PASS may PHASE C production implementation begin with T01 RED.**
