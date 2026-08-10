@@ -36,6 +36,8 @@ production_gate: EXPLICIT_USER_DECLARATION_기획_완료_REQUIRED
 ### Decision — movement and edit semantics
 
 - 휴식 구간에서만 백팩 편집/회전을 허용한다.
+- 개별 가방을 집어 이동할 때 그 가방 영역과 최소 1칸 겹쳐 있는 아이템은 함께 이동 후보가 된다.
+- 그 아이템이 다른 가방에도 걸쳐 있더라도 **다른 가방까지 연쇄 이동시키지 않는다**.
 - 전체 가방+배치 아이템의 상대 배치를 유지한 채 한 칸씩 옮기는 whole-layout translation을 제공한다.
 - 전체 이동 결과 하나라도 보드 밖/충돌/비활성 셀/연결성 파괴를 만들면 전체 조작을 취소한다.
 - Keyboard/gamepad의 방향 입력은 일반 상태에서 focus/선택 셀 탐색에 사용한다.
@@ -60,6 +62,7 @@ production_gate: EXPLICIT_USER_DECLARATION_기획_완료_REQUIRED
 
 - 큰 아이템은 배치가 어렵지만 칸당 기본 효율이 조금 높다.
 - 같은 면적이면 기본 예산은 같고 모양이 공간적 가치를 만든다.
+- 조합 결과는 두 원본을 실제 백팩에 배치·인접시키는 공간 비용을 이미 지불하므로 일반 크기 예산 상한의 예외가 될 수 있다.
 - 조합 결과 초기 예산은 원본 합계 대비 약 `+12%` 프리미엄을 권장한다.
 - 특수 가방 보조 효과는 대략 `0.4~0.6` 예산을 권장한다.
 
@@ -84,6 +87,7 @@ production_gate: EXPLICIT_USER_DECLARATION_기획_완료_REQUIRED
 
 1. **Boss reward = quality / choice**
    - 각 5분 세그먼트 보스 격파 후 `3 options → choose 1`.
+   - 일반 아이템 풀을 사용하되 **고가치 아이템과 조합 핵심재료의 후보 가중치를 높인다**.
    - 현재 유파와 직접 관련된 후보를 최소 1개 보장한다.
    - 선택 전 REST 진입 불가.
 
