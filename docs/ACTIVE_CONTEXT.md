@@ -1,7 +1,7 @@
 # ACTIVE_CONTEXT
 
 > 다음 작업자가 현재 GitHub 상태를 빠르게 복원하기 위한 mutable router다.
-> 제품 결정은 `docs/CURRENT_CONFIRMED_DECISIONS.md`, 승인 MVP-4 상세 설계는 `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`, 구현 연결은 `docs/traceability/2026-08-11-mvp4-backpack-combination-traceability.md`, TDD 실행 계획은 `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md`를 본다.
+> 최상위 프로젝트 규칙은 `AGENTS.md`, 활성 실행/전달 계약은 `PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION_v4.5_r2.md`, 제품 결정은 `docs/CURRENT_CONFIRMED_DECISIONS.md`, 승인 MVP-4 상세 설계는 `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`, 구현 연결은 `docs/traceability/2026-08-11-mvp4-backpack-combination-traceability.md`, TDD 실행 계획은 `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md`를 본다.
 > 이 파일은 자기 자신이 포함된 최종 `main` SHA를 소유하지 않는다. 재개 시 GitHub `main`을 항상 재조회한다.
 
 Last updated: 2026-08-11
@@ -21,8 +21,18 @@ mvp4_planning_post_merge_gut: PASS_RUN_31437135591
 state_reconciliation_scope: PR_9_POST_PLANNING_MERGE_METADATA_ONLY
 mvp4_implementation_branch: NONE
 mvp4_implementation_pr: NONE
+active_delivery_contract: PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION_v4.5_r2.md
+contract_version: 4.5
+contract_revision: 2026-08-11-r2
+contract_source_bytes: 77734
+contract_source_lf_count: 2849
+contract_source_sha256: 3f898b7e2749a2e1900e9df48183f02d4fbc735fd0e80297f28bb09317144de4
+contract_source_git_blob_sha1: de7c6f818a4c96d2a02edea5eaff33bb1c39e8da
+contract_adoption_state: ACTIVE_PROJECT_CANON_PENDING_CURRENT_PR_MERGE
+contract_source_path_conflict: SWITCHY_EXPRESS_STALE_PATH_OVERRIDDEN_BY_AGENTS
+ninja_survival_local_and_godot_path: C:/Users/user/Documents/GitHub/Ninza/ninja-survival-godot
 base_repo: alsdmlals4-eng/Base
-base_main_observed_during_planning: 315c66eea9614c284b9c11c4d522141065dfa4b0
+base_main_observed_at_contract_adoption: 315c66eea9614c284b9c11c4d522141065dfa4b0
 project_base_rules_last_explicit_sync: 499c20eb9b449241864f5ada0c915fba8a7806ac
 full_base_rule_sync: NOT_RUN
 project_sheet_sync: GITHUB_UPDATE_PENDING_SHEET
@@ -35,7 +45,33 @@ project_sheet_write: BLOCKED_USER_ACTION_403
 
 Implementation status: `NOT_STARTED`
 
-The approved L2 design, L3 traceability packet and 12-task Superpowers TDD implementation plan are integrated at planning checkpoint `360e8652...`. The post-merge main GUT run `31437135591` completed successfully. This evidence verifies the documentation checkpoint and existing repository regression only; it does **not** verify any MVP-4 production behavior because MVP-4 production code has not started.
+The approved L2 design, L3 traceability packet and 12-task Superpowers TDD implementation plan are integrated at planning checkpoint `360e8652...`. The project is adopting the byte-exact v4.5 r2 execution/delivery contract. This contract replacement is planning/governance work only; it does **not** verify or start any MVP-4 production behavior.
+
+## Active v4.5 r2 binding
+
+The tracked contract source identity is:
+
+```yaml
+bytes: 77734
+lf_count: 2849
+sha256: 3f898b7e2749a2e1900e9df48183f02d4fbc735fd0e80297f28bb09317144de4
+git_blob_sha1: de7c6f818a4c96d2a02edea5eaff33bb1c39e8da
+```
+
+The r2 source is preserved verbatim. Its §4 `Switchy-Express-Cargo-Puzzle` local/Godot paths are not silently rewritten; for this repository `AGENTS.md` classifies them as `STALE_FOREIGN_PROJECT_INPUT / NON_EXECUTABLE_FOR_NINJA_SURVIVAL` and supplies the authoritative Ninja Survival path.
+
+The r2 phase boundary is now authoritative:
+
+```text
+PHASE A — GPT CHAT PLANNING
+→ explicit user `기획 완료`
+→ PHASE B — FINAL PLANNING REVIEW / DEFINITION OF READY
+→ PHASE B PASS
+→ PHASE C — POWERSHELL / CODEX / GODOT BUILD
+→ T01 RED → GREEN ...
+```
+
+The user's approval to replace the GitHub work-instruction canon and continue approved documentation work is **not** the separate `기획 완료` declaration.
 
 ## Completed planning checkpoint
 
@@ -52,22 +88,29 @@ The approved L2 design, L3 traceability packet and 12-task Superpowers TDD imple
 - Adversarial plan review removed an executable placeholder, removed an unnecessary WaveSpawner modification, named exact `StageElite` files, added deterministic elite tuning defaults, tightened L3 paths, and restored regression-sensitive Decision details.
 - PR #8 exact planning head passed GUT and merged; post-merge main GUT also passed.
 
-## Production gate
+## Production gate under v4.5 r2
 
-The sole phase-transition gate now is the project delivery instruction's explicit user declaration:
+Until the user explicitly declares:
 
 ```text
 기획 완료
 ```
-
-Until that planning-complete intent is received:
 
 - do not create an MVP-4 production implementation branch;
 - do not write Godot production code/scenes/data;
 - do not run the implementation plan as BUILD;
 - do not claim MVP-4 GUT/runtime/human QA PASS.
 
-After `기획 완료`, re-query current `main`, open PRs, relevant Base state and connected Sheet state; then read Decision → this router → L2 → L3 → plan and begin **T01** with strict TDD: focused RED first, production GREEN second.
+After `기획 완료`, **do not jump directly to T01**. Execute PHASE B first:
+
+1. re-query current GitHub `main`, all open/draft same-goal PRs, current relevant Base `main`, and connected Sheet state;
+2. reread `AGENTS.md` → active r2 contract → Decision → this router → approved L2 → L3 → implementation plan;
+3. decompose the approved feature into implementation units and reclassify each relevant current code/data/scene/test surface as current / already-reflected / conflicting-stale / missing;
+4. revalidate benchmark/industry evidence only where it can materially change implementation detail, without reopening approved product rules by default;
+5. verify task order, dependencies, protected scope, rollback boundaries, exact file/API paths, and required verification targets against the current repository tree;
+6. run required adversarial review / Superpowers planning checks and close all `MUST_FIX` readiness findings;
+7. close Definition of Ready with explicit evidence that no material Phase B blocker remains;
+8. only after PHASE B PASS enter PHASE C and begin T01 with a focused failing GUT test before production GREEN code.
 
 ## Deferred local blocker — Google Sheets
 
@@ -77,7 +120,7 @@ Project GDD Sheets still contain stale older rotation/timing wording. The 2026-0
 classification: LOCAL_TASK_BLOCKER
 state: GITHUB_UPDATE_PENDING_SHEET
 required_user_action: grant the connected Google account edit permission or reconnect a writer-capable account
-independent_work: PLANNING_CHECKPOINT_COMPLETE
+independent_work: CONTRACT_CANON_REPLACEMENT_CONTINUES
 ```
 
 Do not report Sheets as `SYNCED` until a write and reread succeed.
@@ -124,7 +167,7 @@ The runtime at the planning checkpoint is intentionally still MVP-3:
 - `RestFlowUI` still has separate Result/Shop/Fate/Preview views;
 - no spatial backpack classes, elite/chest token, forced boss-reward layer or Persistent Workbench runtime exists.
 
-These are T01–T11 implementation targets, not already-fixed bugs. Re-query current code before BUILD rather than assuming no later change occurred.
+These are T01–T11 implementation targets, not already-fixed bugs. Re-query current code before Phase B/BUILD rather than assuming no later change occurred.
 
 ## Verification state
 
@@ -132,11 +175,14 @@ These are T01–T11 implementation targets, not already-fixed bugs. Re-query cur
 mvp4_product_design: APPROVED
 mvp4_written_design_spec: APPROVED_AND_INTEGRATED
 mvp4_traceability_packet: INTEGRATED_COVERAGE_GAP
-mvp4_implementation_plan: INTEGRATED_IMPLEMENTATION_READY
+mvp4_implementation_plan: INTEGRATED_IMPLEMENTATION_READY_FOR_PHASE_B_REVIEW
 mvp4_design_pr_7: MERGED
 mvp4_planning_pr_8: MERGED
 mvp4_planning_post_merge_ci: PASS_RUN_31437135591
+active_delivery_contract_v4_5_r2: BYTE_EXACT_INSTALLED_ON_ADOPTION_BRANCH
 mvp4_explicit_planning_complete_declaration: NOT_RECEIVED
+phase_b_final_planning_review: NOT_RUN
+phase_c_build: BLOCKED
 mvp4_code_at_planning_checkpoint: NOT_STARTED
 mvp4_gut_tests: NOT_RUN
 mvp4_godot_runtime: NOT_RUN
@@ -149,7 +195,8 @@ No MVP-4 runtime PASS claim is valid yet.
 
 ## Protected scope
 
-- Do not execute MVP-4 production code before explicit `기획 완료`.
+- Do not execute MVP-4 production code before explicit `기획 완료` **and PHASE B PASS**.
+- Do not silently rewrite the r2 source to hide its foreign-project path defect; use the bounded `AGENTS.md` project override.
 - Do not silently revert approved rotation, non-rectangular bag, overlap-item movement, one-cell special-bag overlap, reward cadence/weighting, atomic combination, Persistent Workbench or whole-layout-mode decisions.
 - Do not create a second backpack/modifier authority.
 - Reuse current `WaveSpawner` API; do not invent a second wave system for the elite.
@@ -158,17 +205,18 @@ No MVP-4 runtime PASS claim is valid yet.
 
 ## Resume read order
 
-1. re-query current GitHub `main` and open PRs
+1. re-query current GitHub `main` and open/draft PRs
 2. `AGENTS.md`
-3. `docs/CURRENT_CONFIRMED_DECISIONS.md`
-4. this file
-5. approved L2 spec
-6. L3 traceability packet
-7. implementation plan
-8. current implementation hotspots from the re-queried `main`
-9. project Google Sheet when writer/read access is available
-10. current Base main only for relevant contract drift
+3. `PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION_v4.5_r2.md`
+4. `docs/CURRENT_CONFIRMED_DECISIONS.md`
+5. this file
+6. approved L2 spec
+7. L3 traceability packet
+8. implementation plan
+9. current implementation hotspots from the re-queried `main`
+10. project Google Sheet when writer/read access is available
+11. current Base main for relevant contract drift
 
 ## Next executable step
 
-**Stop at the planning-complete gate. When the user explicitly declares `기획 완료`, begin implementation-plan Task T01 with a focused failing GUT test before any MVP-4 production code.**
+**Finish exact-head validation and integration of the v4.5 r2 work-instruction canon replacement. After that, remain at the explicit `기획 완료` gate. When that declaration arrives, run PHASE B Final Planning Review / Definition of Ready before any Phase C production implementation.**
