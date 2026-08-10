@@ -118,6 +118,7 @@ human_status: HUMAN_NOT_RUN
 | inspect | 아이템/가방 선택 | 이 물건이 현재 빌드에 왜 필요한가 | 크기, 효과, 시너지, 조합 힌트 |
 | move | drag 또는 pick/move/place | 이 위치가 더 좋은가 | footprint preview, valid/invalid |
 | rotate | 90도 회전 | 공간을 더 잘 쓰거나 인접을 만들 수 있는가 | 회전 footprint와 결과 preview |
+| translate layout | `전체 이동 모드` → 방향 입력 | 전체 상대 배치를 보존한 채 보드 위치를 바꿀 필요가 있는가 | mode indicator + full-layout preview |
 | expand | 가방 구매/배치 | GOLD를 공간에 투자할 가치가 있는가 | 활성 셀 증가와 연결성 |
 | store | backpack↔buffer 이동 | 당장 비활성화하고 공간을 재구성할 것인가 | buffer 상태와 effect disabled 표시 |
 | combine | 명시적 조합 액션 | 재료를 소비해 결과물로 바꿀 것인가 | result preview, 배치 성공 후 atomic commit |
@@ -133,6 +134,7 @@ human_status: HUMAN_NOT_RUN
 | Entry | 세그먼트 boss 처치 후 RESULT와 강제 boss reward 완료 | Persistent Workbench 진입 | 현재 backpack, buffer, chest, shop 상태 표시 |
 | Exit | Fate commit checklist 전체 통과 + Fate 선택 | next preview/complete로 이동 | 확정 build preview와 Fate 요약 |
 | Cancel move/rotate | preview 중 취소 | canonical placement 미변경 | 원위치 복귀 |
+| Cancel layout mode | `전체 이동 모드` 중 취소/완료 | 일반 focus 탐색으로 복귀 | mode indicator 제거, focus 유지/복원 |
 | Cancel combination | result placement 전 취소 | 재료 보존 | 조합 취소 표시 |
 | Re-entry within REST | chest/shop/backpack/combination surface 왕복 | 같은 `RestBackpackSession` 유지 | 선택/포커스 문맥 복원 |
 
@@ -155,6 +157,7 @@ COMBAT
    ├─ shop / reroll / buy bag or items
    ├─ move rewards through 6-slot buffer
    ├─ place / rotate bags and items
+   ├─ optional `전체 이동 모드` → translate whole layout
    ├─ inspect adjacency / special-bag effects
    ├─ optional explicit combination
    └─ resolve pending states
@@ -174,7 +177,7 @@ REST 안에서는 chest/shop/backpack/combination의 순서를 강제하지 않�
 | State | 의미 | authority |
 |---|---|---|
 | `BackpackState` | bag/item instance, coordinate, rotation, board occupancy source | runtime domain |
-| `RestBackpackSession` | buffer, preview, edit history, pending combination/bag | REST edit domain |
+| `RestBackpackSession` | buffer, preview, edit history, pending combination/bag, input edit mode | REST edit domain |
 | `BuildPreviewSnapshot` | 현재 REST 편집 결과의 예상 modifier | derived, non-authoritative |
 | `RunBuildState` | GOLD, school, Fate, committed combat modifier composition | run domain |
 
@@ -193,8 +196,10 @@ REST 안에서는 chest/shop/backpack/combination의 순서를 강제하지 않�
 11. buffer item은 모든 전투/인접/special-bag/combination 효과가 비활성이다.
 12. combat 진입 전 buffer는 0이어야 한다.
 13. whole-layout translation은 상대 배치를 유지한 채 1칸 이동하며 하나라도 불법이면 전체 취소한다.
-14. combination은 실제 backpack에 유효 배치된 두 재료의 직교 인접 + explicit action을 요구한다.
-15. combination 재료는 result placement 성공 시에만 atomic consume한다.
+14. keyboard/gamepad에서는 `전체 이동 모드`가 활성화된 동안에만 방향키/D-pad가 Rule 13을 수행한다. 그 외 방향 입력은 focus/선택 셀 탐색용이다. 두 의미는 동시에 활성화되지 않는다.
+15. touch에서는 명시적 `전체 이동` 액션 뒤 화면 방향 컨트롤로 Rule 13을 수행한다.
+16. combination은 실제 backpack에 유효 배치된 두 재료의 직교 인접 + explicit action을 요구한다.
+17. combination 재료는 result placement 성공 시에만 atomic consume한다.
 
 ---
 
@@ -204,7 +209,9 @@ REST 안에서는 chest/shop/backpack/combination의 순서를 강제하지 않�
 |---|---|---|---|---|
 | move item/bag | target footprint legal | resolver preview → session commit | new placement + preview snapshot | canonical state unchanged + reason |
 | rotate | rotated footprint legal | resolver preview | rotated placement | unchanged + invalid cells |
-| whole translate | all bags/items legal after offset | one atomic translation | translated layout | all-or-nothing cancel |
+| enter layout mode | no incompatible modal/transaction | session input-mode switch | visible `전체 이동 모드` | stay in normal focus mode |
+| whole translate | layout mode active + all bags/items legal after offset | one atomic translation | translated layout | all-or-nothing cancel; mode remains visible |
+| exit layout mode | layout mode active | session input-mode switch | normal focus/navigation restored | no domain mutation |
 | open chest | token exists + buffer free slots ≥2 | seeded reward roll | 2 items to buffer | no token consume |
 | buy item | offer valid + GOLD + limits + buffer capacity | transaction | GOLD spend + item to buffer | no partial spend |
 | buy bag | bag offer valid + GOLD + rest bag cap | pending bag acquisition | bag available for placement | no partial spend |
@@ -228,7 +235,8 @@ UI는 이 규칙을 재계산하지 않고 resolver/session의 결과를 표시�
 1. Always: board, active/inactive cells, buffer count, GOLD, chest count, Fate commit readiness.
 2. Selected: name, footprint, rotation, effect, current synergies, special-bag effects, hint stage.
 3. Preview: target footprint, valid/invalid, adjacency changes, special-bag overlap, combination possibility, modifier delta.
-4. Irreversible action: explicit result/cost and cancel boundary.
+4. Input mode: `전체 이동 모드`가 활성화되면 방향 입력의 의미가 바뀌었다는 label/icon/border와 종료 방법을 보인다.
+5. Irreversible action: explicit result/cost and cancel boundary.
 
 ### State channels
 
@@ -238,6 +246,7 @@ UI는 이 규칙을 재계산하지 않고 resolver/session의 결과를 표시�
 - adjacency는 관련 두 item과 접촉 edge를 강조한다.
 - special-bag effect는 bag region과 affected item을 함께 표시한다.
 - combination 가능 상태는 pair를 강조하고 action을 노출하되 자동 실행하지 않는다.
+- `전체 이동 모드`는 일반 focus 탐색과 다른 시각 상태를 반드시 가진다.
 
 Animation/audio/haptic은 정보 전달을 보조하며 transaction authority가 아니다. 중단되거나 mute/reduced-motion이어도 결과가 바뀌지 않는다.
 
@@ -249,6 +258,8 @@ Animation/audio/haptic은 정보 전달을 보조하며 transaction authority가
 |---|---|---|---|
 | placement success | footprint/legal connection pass | canonical placement commit | Undo 가능 |
 | placement failure | rule 위반 | 상태 미변경 | 문제 셀/원인 수정 후 재시도 |
+| layout translation success | mode active + all shifted placements valid | whole layout commits atomically | Undo 가능 |
+| layout translation failure | any shifted placement invalid | entire layout unchanged | 다른 방향/배치 후 재시도 |
 | combination success | result placement valid | originals consumed + result placed atomically | 완료 조합은 Undo 대상 아님 |
 | combination cancel/failure | preview 취소 또는 invalid | originals remain | 위치 변경/공간 확보 후 재시도 |
 | chest blocked | buffer free <2 | token 유지 | buffer 비우기 |
@@ -262,6 +273,8 @@ Animation/audio/haptic은 정보 전달을 보조하며 transaction authority가
 |---|---|
 | GOLD 부족 | 구매/리롤 전 차단, GOLD 미변경 |
 | 빠른 연타/중복 click | transaction 1회만 처리 |
+| 방향 입력 의미 충돌 | normal state는 focus/셀 탐색, `전체 이동 모드`는 layout translation; 동시 처리 금지 |
+| layout mode 중 modal/panel 진입 | mode를 명시 종료하거나 해당 이동 입력을 잠금; hidden mode 지속 금지 |
 | drag 중 panel 전환 | preview 취소 또는 안정적으로 같은 session으로 복귀; half-commit 금지 |
 | bag 이동이 overlap item을 포함 | 해당 bag과 overlap한 item만 이동 candidate, 다른 bag 연쇄 이동 금지 |
 | item이 여러 special bag overlap | 각 bag instance 효과 1회씩 |
@@ -315,14 +328,15 @@ Animation/audio/haptic은 정보 전달을 보조하며 transaction authority가
 ### Input contract
 
 - Mouse: drag/drop + click select.
-- Keyboard/gamepad: predictable focus → pick/select → cell movement → place; rotate/cancel actions.
-- Touch: tap-select → tap-place is a complete path; drag is optional convenience.
+- Keyboard/gamepad normal mode: predictable focus/selected-cell navigation → pick/select → cell movement → place; rotate/cancel actions.
+- Keyboard/gamepad layout mode: a visible `전체 이동` action enters a mutually exclusive mode; while active, arrows/D-pad translate the entire layout. Exit/cancel restores normal focus navigation immediately.
+- Touch: tap-select → tap-place is a complete path; drag is optional convenience. Whole-layout translation uses an explicit `전체 이동` action plus visible directional controls.
 - long-press, hover, precision drag alone cannot gate a required action.
-- rotate/Undo/Redo/combine/cancel have visible controls; keyboard shortcuts are additive.
+- rotate/whole-layout move/Undo/Redo/combine/cancel have visible controls; keyboard shortcuts are additive.
 
 ### Focus
 
-Godot `Control` focus neighbors should be explicit for workbench-critical paths rather than relying only on nearest-control heuristics. Modal/bottom-sheet close returns to the previous meaningful focus target.
+Godot `Control` focus neighbors should be explicit for workbench-critical paths rather than relying only on nearest-control heuristics. Modal/bottom-sheet close returns to the previous meaningful focus target. A hidden `전체 이동 모드` may not survive modal/sheet transitions.
 
 ### Touch
 
@@ -334,6 +348,7 @@ Interactive controls should target at least approximately `48dp x 48dp` on Andro
 |---|---|---|
 | valid/invalid | color | outline + icon + text |
 | focus | highlight | border/shape + stable focus order |
+| layout input mode | mode label/border | explicit text + exit control |
 | success/error | animation/audio | persistent text/state |
 | recipe relation | line/highlight | pair labels + hint text |
 | drag | pointer/touch drag | select→move/place actions |
@@ -348,7 +363,7 @@ Required minimum visual assets:
 
 - distinguishable item/bag cards or placeholders,
 - active/inactive/invalid cell states,
-- selection/focus/preview states,
+- selection/focus/preview/input-mode states,
 - combination/hint icon or textual fallback.
 
 ---
@@ -362,6 +377,8 @@ Required minimum visual assets:
 - actual combat modifiers are not continuously mutated during REST; use preview snapshot until commit.
 - MVP-4 does not add a new save system.
 - Windows and Android UX share domain semantics but may use different layout adapters.
+- The provided Godot `gui_multiple_resolutions` reference demonstrates Full Rect controls, aspect-ratio constraints, `canvas_items` stretching and `expand` behavior across resolutions. Treat it as a **TEST/REFERENCE**, not a mandate for one base resolution or stretch configuration.
+- Workbench QA must exercise narrow/wide desktop windows and the declared Android orientation/layout; exact project base resolution and stretch settings remain implementation-plan decisions constrained by existing project settings and actual device evidence.
 
 ---
 
@@ -390,9 +407,10 @@ Access date: 2026-08-11.
 | Backpack Battles Steam official page | 구매뿐 아니라 배치와 shape/size, combination을 핵심 build decision으로 설명 | marketing description, usability study 아님 | ADAPT | board를 REST의 지속 중심으로 유지 |
 | Backpack Hero Steam official page | item placement가 성능에 큰 영향을 주는 inventory-management identity | turn-based 구조라 전투 리듬이 다름 | ADAPT | 공간을 단순 수납이 아니라 전투 성능 판단으로 연결 |
 | God of Weapons Steam official page | 제한 inventory에서 무기/장신구 정리가 생존 전략의 핵심 | 3D action pacing, system details differ | ADAPT | 제한 공간 tradeoff를 유지하되 REST로 전투와 관리 분리 |
-| Godot 4.7 Control docs | focus neighbor, drag/drop, accessibility drag 경로를 제공 | engine primitive이지 UX 답 자체는 아님 | ADOPT | pointer + keyboard/gamepad/touch 동등 경로 설계 |
-| Microsoft XAG 112/113 | UI navigation consistency와 predictable/visible focus 권장 | Xbox guideline, Android 전용 규칙 아님 | ADAPT | focus 순서와 현재 focus를 항상 명확하게 표시 |
-| Android accessibility guidance | interactive target 약 48dp 권장 | device/layout별 실제 QA 필요 | ADOPT | touch control hit area 최소 기준으로 사용 |
+| Godot 4.7 Control docs | focus neighbor, drag/drop, accessibility drag 경로를 제공 | engine primitive이지 UX 답 자체는 아님 | ADOPT | pointer + keyboard/gamepad/touch 동등 경로 설계, directional input mode 충돌 회피 |
+| Microsoft XAG 112/113 | UI navigation consistency와 predictable/visible focus 권장 | Xbox guideline, Android 전용 규칙 아님 | ADAPT | focus 순서와 현재 focus, 입력 mode를 명확히 표시 |
+| Android general app accessibility guidance | interactive touch target을 최소 48dp x 48dp로 권장 | 실제 게임 device/layout QA를 대신하지 않음 | ADOPT | touch control hit area 최소 기준으로 사용 |
+| provided Godot multiple-resolutions demo | Full Rect, aspect constraints, stretch mode/aspect를 조합해 다양한 화면을 테스트 | demo 설정을 프로젝트에 그대로 복사하면 안 됨 | TEST | central board와 주변 panels의 aspect-ratio 회귀 QA에 사용 |
 
 Reference URLs:
 
@@ -403,7 +421,7 @@ Reference URLs:
 - https://docs.godotengine.org/en/4.7/tutorials/inputs/controllers_gamepads_joysticks.html
 - https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/112
 - https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/113
-- https://developer.android.com/training/wearables/accessibility
+- https://developer.android.com/guide/topics/ui/accessibility/apps.html
 
 No benchmark UI, icon, brand expression, recipe, balance table, or content is copied directly.
 
@@ -428,6 +446,7 @@ result: BLOCKED_UNVERIFIED_UNTIL_MVP4_BUILD
 | Risk | Impact | Mitigation |
 |---|---|---|
 | visual noise from many overlays | high | contextual layers, not all highlights at once |
+| directional input ambiguity | high | explicit mutually exclusive `전체 이동 모드` |
 | drag-only input barrier | high | complete select/place + focus path |
 | recipe hints spoil discovery | medium | progressive hint states |
 | state desync / partial transactions | high | resolver authority + atomic commits |
@@ -453,6 +472,7 @@ result: BLOCKED_UNVERIFIED_UNTIL_MVP4_BUILD
 - **AC-12 Input parity:** Core REST completion is possible by Windows mouse+keyboard, Windows gamepad, and Android touch without requiring hover/precision-drag-only behavior.
 - **AC-13 Determinism:** With the same seed and state, resolver and reward candidate tests produce the same result.
 - **AC-14 Duplicate guard:** Rapid duplicate activation of purchase/open/combine/commit produces at most one domain transaction.
+- **AC-15 Layout mode:** Given normal keyboard/gamepad focus navigation, when `전체 이동 모드` is explicitly entered, then the mode is visibly indicated and directional input translates the whole layout only; when the mode exits, the same directional input returns to focus/navigation behavior without an accidental layout move.
 
 ---
 
@@ -461,6 +481,7 @@ result: BLOCKED_UNVERIFIED_UNTIL_MVP4_BUILD
 | Question | Observation | Success signal | Rethink signal |
 |---|---|---|---|
 | 공간 규칙을 이해하는가 | invalid placement 후 다음 행동 | reason을 이해하고 스스로 복구 | 같은 오류 반복 |
+| 방향 입력 의미를 이해하는가 | focus 탐색 ↔ 전체 이동 mode 전환 | mode를 말로 설명하고 오조작 없이 복귀 | 의도치 않은 layout 이동 반복 |
 | 배치가 전략으로 느껴지는가 | item 선택 전/후 설명 | 위치/인접/공간 tradeoff를 말함 | 단순 최고수치 선택만 함 |
 | 조합 힌트가 적절한가 | first recipe discovery | 힌트로 시도하되 결과를 미리 다 알지 않음 | 전혀 못 찾거나 즉시 스포일러 |
 | REST가 피곤한가 | REST 체류·망설임·다음 전투 기대 | 정리 후 바로 전투 검증 욕구 | 관리 포기/자동정리 요구 |
@@ -479,7 +500,7 @@ Cut-down 우선순위:
 3. MVP-4 대표 content 수를 줄인다 — geometry/transaction/combination contract 보존.
 4. L/T bag 종류 수를 줄인다 — 최소 1개 대표 non-rectangular bag은 유지.
 
-다음은 cut-down 대상이 아니다: 6x6 board, 4x3 start, 90° rotation, orthogonal adjacency, work buffer gate, explicit atomic combination, Persistent Workbench decision.
+다음은 cut-down 대상이 아니다: 6x6 board, 4x3 start, 90° rotation, orthogonal adjacency, work buffer gate, explicit atomic combination, Persistent Workbench decision, unambiguous whole-layout translation.
 
 Rollback은 MVP-3 `RESULT → SHOP → FATE → PREVIEW` runtime baseline을 안전 기준으로 삼되, MVP-4 branch가 통합되기 전까지는 MVP-3 main 동작을 변경하지 않는다.
 
@@ -490,6 +511,7 @@ Rollback은 MVP-3 `RESULT → SHOP → FATE → PREVIEW` runtime baseline을 안
 | Decision | 상태 | 처리 |
 |---|---|---|
 | Persistent Workbench layout | CONFIRMED — DEC-2026-08-11-001 | A안 적용 |
+| whole-layout directional input conflict | RECOMMENDED_DEFAULT_RESOLVED | explicit mutually exclusive `전체 이동 모드` |
 | exact UI spacing/theme/art | RECOMMENDED_DEFAULT / later polish | 기능 검증 후 조정 |
 | effect-budget numeric tuning | RECOMMENDED_DEFAULT | playtest 후 retune 가능 |
 | exact REST time target | HYPOTHESIS / HUMAN_NOT_RUN | 첫 MVP-4 human QA에서 측정 |
@@ -523,8 +545,11 @@ Implementation handoff가 반드시 추적할 것:
 - Board/rotation/connectivity/adjacency/special-bag rules: internally consistent.
 - Buffer and combination atomicity: failure paths preserve canonical state.
 - Mouse/keyboard/gamepad/touch: complete core paths declared.
+- Directional-input collision: resolved through explicit mutually exclusive `전체 이동 모드` with visible state and regression criteria.
 - Color/audio/motion-only information: prohibited.
 - Save/load: explicitly out of MVP-4 rather than silently assumed.
+- Android touch-target evidence: upgraded from Wear-only material to general Android app accessibility guidance.
+- Provided multiple-resolutions demo: used only as layout QA/reference; no base-resolution/stretch setting copied into canon.
 - Benchmark evidence: adapted, not copied; limitations recorded.
 - Human evidence: remains `HUMAN_NOT_RUN` / `BLOCKED_UNVERIFIED` until a build exists.
 - No new core system, economy axis, acquisition source, or deeper combination tier introduced during continuous-work defaults.
