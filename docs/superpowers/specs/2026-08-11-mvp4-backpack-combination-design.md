@@ -6,7 +6,7 @@
 feature_id: MVP-4-BACKPACK-COMBINATION
 feature_name: Backpack / Combination Basics
 work_level: L2
-status: PROPOSED_WRITTEN_SPEC_REVIEW
+status: APPROVED
 owner: ninja-survival-godot game design
 canonical_path: docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md
 related_decision_ids:
@@ -22,6 +22,7 @@ related_specialized_sources:
     authority: implementation/verification state only
 created_at: 2026-08-11
 updated_at: 2026-08-11
+approval_reference: user written-spec approval in project chat on 2026-08-11; PR #7 design checkpoint merged as 655ec26a5ac9946c0ec08f81f389ddfe66e72b65
 ```
 
 ### Authority boundary
@@ -518,21 +519,26 @@ Rollback은 MVP-3 `RESULT → SHOP → FATE → PREVIEW` runtime baseline을 안
 | Google Sheet stale rows | BLOCKED_USER_ACTION | write permission 확보 후 GitHub canon 기준 동기화 |
 | new core/economy/acquisition/combo tier | USER_DECISION_REQUIRED if proposed | 현재 범위에 없음 |
 
-No unresolved user-only design decision blocks writing the implementation plan **after** this written spec is reviewed.
+No unresolved user-only design decision remains inside the approved MVP-4 design. Production BUILD is still gated by the project instruction's explicit `기획 완료` transition, not by another written-spec decision.
 
 ---
 
 ## 23. Handoff to Traceability
 
-Written-spec review가 승인되면 다음 단계에서 `FEATURE_SPEC_TRACEABILITY_PACKET`과 Superpowers `writing-plans`를 사용한다.
+Written-spec review was approved by the user on 2026-08-11. The next planning layer is therefore authorized and uses:
 
-Implementation handoff가 반드시 추적할 것:
+- `docs/traceability/2026-08-11-mvp4-backpack-combination-traceability.md`
+- `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md`
+
+Implementation handoff must track:
 
 - rule/acceptance IDs above,
 - `BackpackState`, `BackpackResolver`, `RestBackpackSession`, `BuildPreviewSnapshot` responsibilities,
 - existing `RunBuildState`, `ShopController`, `StageFlowController`, `RestFlowUI`, `MainController` integration hotspots,
 - deterministic GUT tests,
 - Windows/Android human QA gaps.
+
+This approval does not itself start production code. The project remains in planning until the user explicitly declares `기획 완료`.
 
 ---
 
@@ -554,4 +560,4 @@ Implementation handoff가 반드시 추적할 것:
 - Human evidence: remains `HUMAN_NOT_RUN` / `BLOCKED_UNVERIFIED` until a build exists.
 - No new core system, economy axis, acquisition source, or deeper combination tier introduced during continuous-work defaults.
 
-Result: `SPEC_SELF_REVIEW_PASS / USER_WRITTEN_SPEC_REVIEW_REQUIRED`.
+Result: `SPEC_APPROVED / IMPLEMENTATION_NOT_STARTED / PENDING_EXPLICIT_기획_완료`.
