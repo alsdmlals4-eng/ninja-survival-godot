@@ -2,6 +2,7 @@
 
 > 다음 작업자가 현재 GitHub 상태를 빠르게 복원하기 위한 mutable router다.
 > 제품 결정은 `docs/CURRENT_CONFIRMED_DECISIONS.md`, 승인 MVP-4 상세 설계는 `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`, 구현 연결은 `docs/traceability/2026-08-11-mvp4-backpack-combination-traceability.md`, TDD 실행 계획은 `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md`를 본다.
+> 이 파일은 자기 자신이 포함된 최종 `main` SHA를 소유하지 않는다. 재개 시 GitHub `main`을 항상 재조회한다.
 
 Last updated: 2026-08-11
 
@@ -9,17 +10,19 @@ Last updated: 2026-08-11
 
 ```yaml
 project: alsdmlals4-eng/ninja-survival-godot
-main_sha_observed: 360e8652b51e8125c63b7a5cdc2288092bb8e096
+planning_checkpoint_sha: 360e8652b51e8125c63b7a5cdc2288092bb8e096
+planning_checkpoint_meaning: PR_8_L2_L3_PLAN_INTEGRATED
 latest_integrated_runtime_milestone: MVP-3
 mvp4_design_pr_7: MERGED_CLOSED
 mvp4_design_merge_commit: 655ec26a5ac9946c0ec08f81f389ddfe66e72b65
 mvp4_planning_pr_8: MERGED_CLOSED
 mvp4_planning_merge_commit: 360e8652b51e8125c63b7a5cdc2288092bb8e096
 mvp4_planning_post_merge_gut: PASS_RUN_31437135591
+state_reconciliation_scope: PR_9_POST_PLANNING_MERGE_METADATA_ONLY
 mvp4_implementation_branch: NONE
 mvp4_implementation_pr: NONE
 base_repo: alsdmlals4-eng/Base
-base_main_observed: 315c66eea9614c284b9c11c4d522141065dfa4b0
+base_main_observed_during_planning: 315c66eea9614c284b9c11c4d522141065dfa4b0
 project_base_rules_last_explicit_sync: 499c20eb9b449241864f5ada0c915fba8a7806ac
 full_base_rule_sync: NOT_RUN
 project_sheet_sync: GITHUB_UPDATE_PENDING_SHEET
@@ -32,7 +35,7 @@ project_sheet_write: BLOCKED_USER_ACTION_403
 
 Implementation status: `NOT_STARTED`
 
-The approved L2 design, L3 traceability packet and 12-task Superpowers TDD implementation plan are integrated on `main@360e8652...`. The post-merge main GUT run `31437135591` completed successfully. This evidence verifies the documentation checkpoint and existing repository regression only; it does **not** verify any MVP-4 production behavior because MVP-4 production code has not started.
+The approved L2 design, L3 traceability packet and 12-task Superpowers TDD implementation plan are integrated at planning checkpoint `360e8652...`. The post-merge main GUT run `31437135591` completed successfully. This evidence verifies the documentation checkpoint and existing repository regression only; it does **not** verify any MVP-4 production behavior because MVP-4 production code has not started.
 
 ## Completed planning checkpoint
 
@@ -57,14 +60,14 @@ The sole phase-transition gate now is the project delivery instruction's explici
 기획 완료
 ```
 
-Until that exact planning-complete intent is received:
+Until that planning-complete intent is received:
 
 - do not create an MVP-4 production implementation branch;
 - do not write Godot production code/scenes/data;
 - do not run the implementation plan as BUILD;
 - do not claim MVP-4 GUT/runtime/human QA PASS.
 
-After `기획 완료`, re-query current `main`/open PRs/Base relevance, read this router + Decision + L2 + L3 + plan, then begin **T01** with strict TDD: focused RED first, production GREEN second.
+After `기획 완료`, re-query current `main`, open PRs, relevant Base state and connected Sheet state; then read Decision → this router → L2 → L3 → plan and begin **T01** with strict TDD: focused RED first, production GREEN second.
 
 ## Deferred local blocker — Google Sheets
 
@@ -113,7 +116,7 @@ Do not report Sheets as `SYNCED` until a write and reread succeed.
 
 ## Expected current runtime mismatch
 
-Current `main` runtime is intentionally still MVP-3:
+The runtime at the planning checkpoint is intentionally still MVP-3:
 
 - `RunBuildState.owned_items` count ownership exists;
 - shop purchase immediately creates owned item/modifier state;
@@ -121,7 +124,7 @@ Current `main` runtime is intentionally still MVP-3:
 - `RestFlowUI` still has separate Result/Shop/Fate/Preview views;
 - no spatial backpack classes, elite/chest token, forced boss-reward layer or Persistent Workbench runtime exists.
 
-These are T01–T11 implementation targets, not already-fixed bugs.
+These are T01–T11 implementation targets, not already-fixed bugs. Re-query current code before BUILD rather than assuming no later change occurred.
 
 ## Verification state
 
@@ -134,7 +137,7 @@ mvp4_design_pr_7: MERGED
 mvp4_planning_pr_8: MERGED
 mvp4_planning_post_merge_ci: PASS_RUN_31437135591
 mvp4_explicit_planning_complete_declaration: NOT_RECEIVED
-mvp4_code: NOT_STARTED
+mvp4_code_at_planning_checkpoint: NOT_STARTED
 mvp4_gut_tests: NOT_RUN
 mvp4_godot_runtime: NOT_RUN
 mvp4_human_qa: NOT_RUN
@@ -155,14 +158,14 @@ No MVP-4 runtime PASS claim is valid yet.
 
 ## Resume read order
 
-1. current GitHub `main` and open PRs
+1. re-query current GitHub `main` and open PRs
 2. `AGENTS.md`
 3. `docs/CURRENT_CONFIRMED_DECISIONS.md`
 4. this file
 5. approved L2 spec
 6. L3 traceability packet
 7. implementation plan
-8. current MVP-3 implementation hotspots
+8. current implementation hotspots from the re-queried `main`
 9. project Google Sheet when writer/read access is available
 10. current Base main only for relevant contract drift
 
