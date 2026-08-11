@@ -52,7 +52,7 @@ project_sheet_write: BLOCKED_USER_ACTION_403_RECONFIRMED_2026_08_11
 
 Implementation status: `NOT_STARTED`
 
-The approved L2 design, L3 traceability packet and 12-task Superpowers TDD implementation plan are integrated. `DEC-2026-08-11-002` additionally approves the hybrid content direction: all 19 base items remain useful alone, exactly 8 receive strong spatial rules in the initial authoring pass, 11 stay simple/one-condition, the 3 combination results are intentionally asymmetric power spikes, and tags are shared reward/shop/UI build vocabulary. Exact values remain `RECOMMENDED_DEFAULT` in the content-balance data document.
+The approved L2 design, L3 traceability packet and 12-task Superpowers TDD implementation plan are integrated. `DEC-2026-08-11-002` additionally approves the hybrid content direction: all 19 base items remain useful alone, strong-spatial items stay around 40% with an approved initial tuning range of 7–9, and the first authoring default uses 8 strong-spatial + 11 simple/one-condition items. The 3 combination results are intentionally asymmetric power spikes, and tags are shared reward/shop/UI build vocabulary. Exact values remain `RECOMMENDED_DEFAULT` in the content-balance data document.
 
 The byte-exact v4.5 r2 execution/delivery contract is integrated through PR #10 at `653ec714...`, and the post-merge GUT run `31442268566` completed successfully. These are planning/governance and existing-regression evidence only; they do **not** verify or start any MVP-4 production behavior.
 
@@ -91,7 +91,7 @@ The user's approval of the hybrid content recommendation and continuous planning
 - MVP-4 product rules are approved, including board, rotation, bag connectivity, overlap-item movement, adjacency, special bags, work buffer, acquisition pillars, elite/boss cadence, combinations and Persistent Workbench.
 - `DEC-2026-08-11-001` Persistent Workbench is approved.
 - `DEC-2026-08-11-002` Hybrid spatial item dependency A is approved by the user in project chat on 2026-08-11.
-- DEC-002 initial authoring shape is `19 base items = 8 strong-spatial + 11 simple/one-condition`; all 19 retain standalone value.
+- DEC-002 strong-spatial share is intentionally limited to about 40%; `7~9` is the initial tuning range and `8 strong-spatial + 11 simple/one-condition` is the first authoring default, not immutable core.
 - 3 combo results remain explicit-only and are authored as asymmetric multi-modifier outcomes rather than simple percentage copies.
 - 5 purchasable bags preserve the existing `normal 4 + special 1` product boundary; only `ninjutsu_l_pouch` has an initial special auxiliary effect.
 - Backpack/Survivors/industry evidence was refreshed with Backpack Battles, Backpack Hero, Deep Rock Galactic: Survivor, Sproggiwood postmortem, and Resogun postmortem; conclusions are ADAPT/AVOID project translations rather than benchmark-only decisions.
@@ -184,7 +184,7 @@ Do not report Sheets as `SYNCED` until a write and reread succeed.
 - UI displays domain snapshots and emits intent; it never owns geometry/economy/reward/combination rules;
 - Fate is the final REST commit boundary;
 - no new save system in MVP-4;
-- DEC-002 hybrid rule: all 19 base items standalone-useful, exactly 8 strong-spatial initial items, 11 simple/one-condition;
+- DEC-002 hybrid rule: all 19 base items standalone-useful; strong-spatial count stays in the approved initial `7~9` tuning range unless a new product decision changes the A-direction, with 8 as the first default;
 - combo results are asymmetric multi-axis outcomes but remain only 3 first-tier combinations;
 - tags are shared player-readable build vocabulary and lightweight reward/shop weighting inputs;
 - 5 bags remain 4 normal-behavior + 1 special-effect bag;
@@ -238,7 +238,7 @@ No MVP-4 runtime PASS claim is valid yet. The formative human targets in the con
 - Do not execute MVP-4 production code before explicit `기획 완료` **and PHASE B PASS**.
 - Do not silently rewrite the r2 source to hide its foreign-project path defect; use the bounded `AGENTS.md` project override.
 - Do not silently revert approved rotation, non-rectangular bag, overlap-item movement, one-cell special-bag overlap, reward cadence/weighting, atomic combination, Persistent Workbench or whole-layout-mode decisions.
-- Do not turn all 19 items into high-complexity spatial exceptions; preserve the DEC-002 8/11 initial authoring split unless a new product Decision changes it.
+- Do not turn all 19 items into high-complexity spatial exceptions; preserve the DEC-002 hybrid A-direction. The first default is 8 strong-spatial, but 7~9 is the approved tuning range and does not by itself reopen the product decision.
 - Do not turn reward weighting into guaranteed recipe completion or an auto-build system.
 - Do not create a second backpack/modifier authority.
 - Reuse current `WaveSpawner` API; do not invent a second wave system for the elite.
