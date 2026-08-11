@@ -11,15 +11,17 @@ Last updated: 2026-08-11
 
 ```yaml
 project: alsdmlals4-eng/ninja-survival-godot
-planning_checkpoint_sha: ac497904ad002974515c890dc55a4378f6e82680
-planning_checkpoint_meaning: V4_5_R2_CANON_INTEGRATED_BEFORE_DEC_002_PLANNING_PR
+planning_checkpoint_sha: 619cde1efb0a8d35485d810b29a4efa361fb2b19
+planning_checkpoint_meaning: PR_12_DEC_002_HYBRID_CONTENT_INTEGRATED
 latest_integrated_runtime_milestone: MVP-3
 mvp4_design_pr_7: MERGED_CLOSED
 mvp4_design_merge_commit: 655ec26a5ac9946c0ec08f81f389ddfe66e72b65
 mvp4_planning_pr_8: MERGED_CLOSED
 mvp4_planning_merge_commit: 360e8652b51e8125c63b7a5cdc2288092bb8e096
 mvp4_planning_post_merge_gut: PASS_RUN_31437135591
-mvp4_hybrid_content_decision: DEC_2026_08_11_002_APPROVED_PENDING_CURRENT_PLANNING_PR
+mvp4_hybrid_content_decision: INTEGRATED_PR_12
+mvp4_hybrid_content_merge_commit: 619cde1efb0a8d35485d810b29a4efa361fb2b19
+mvp4_hybrid_content_post_merge_gut: PASS_RUN_31449866658
 mvp4_content_balance_data: docs/planning/2026-08-11-mvp4-content-balance-v1.md
 mvp4_benchmark_evidence: docs/research/2026-08-11-mvp4-backpack-survivors-benchmark.md
 mvp4_content_data_contract: docs/planning/2026-08-11-mvp4-content-data-contract.md
@@ -48,13 +50,13 @@ project_sheet_write: BLOCKED_USER_ACTION_403_RECONFIRMED_2026_08_11
 
 ## Current stage
 
-`MVP-4 Backpack / Combination Basics — DESIGN_APPROVED / TRACEABILITY_AND_IMPLEMENTATION_PLAN_INTEGRATED / V4_5_R2_CANON_INTEGRATED / HYBRID_CONTENT_A_APPROVED / PENDING_PLANNING_PR_AND_EXPLICIT_기획_완료`
+`MVP-4 Backpack / Combination Basics — DESIGN_APPROVED / TRACEABILITY_AND_IMPLEMENTATION_PLAN_INTEGRATED / V4_5_R2_CANON_INTEGRATED / HYBRID_CONTENT_A_INTEGRATED / PENDING_EXPLICIT_기획_완료`
 
 Implementation status: `NOT_STARTED`
 
-The approved L2 design, L3 traceability packet and 12-task Superpowers TDD implementation plan are integrated. `DEC-2026-08-11-002` additionally approves the hybrid content direction: all 19 base items remain useful alone, strong-spatial items stay around 40% with an approved initial tuning range of 7–9, and the first authoring default uses 8 strong-spatial + 11 simple/one-condition items. The 3 combination results are intentionally asymmetric power spikes, and tags are shared reward/shop/UI build vocabulary. Exact values remain `RECOMMENDED_DEFAULT` in the content-balance data document.
+The approved L2 design, L3 traceability packet and 12-task Superpowers TDD implementation plan are integrated. `DEC-2026-08-11-002` hybrid content planning is integrated through PR #12. All 19 base items remain useful alone; strong-spatial items stay around 40% with an approved initial tuning range of 7–9, and the first authoring default uses 8 strong-spatial + 11 simple/one-condition items. The 3 combination results are intentionally asymmetric power spikes, and tags are shared reward/shop/UI build vocabulary. Exact values remain `RECOMMENDED_DEFAULT` in the content-balance data document.
 
-The byte-exact v4.5 r2 execution/delivery contract is integrated through PR #10 at `653ec714...`, and the post-merge GUT run `31442268566` completed successfully. These are planning/governance and existing-regression evidence only; they do **not** verify or start any MVP-4 production behavior.
+PR #12 merged as `619cde1...`; the post-merge GUT push run `31449866658` completed successfully. These are planning/governance and existing-regression evidence only; they do **not** verify or start any MVP-4 production behavior.
 
 ## Active v4.5 r2 binding
 
@@ -90,21 +92,19 @@ The user's approval of the hybrid content recommendation and continuous planning
 - MVP-3 result/rest/shop/fate runtime integrated and remains the rollback baseline.
 - MVP-4 product rules are approved, including board, rotation, bag connectivity, overlap-item movement, adjacency, special bags, work buffer, acquisition pillars, elite/boss cadence, combinations and Persistent Workbench.
 - `DEC-2026-08-11-001` Persistent Workbench is approved.
-- `DEC-2026-08-11-002` Hybrid spatial item dependency A is approved by the user in project chat on 2026-08-11.
+- `DEC-2026-08-11-002` Hybrid spatial item dependency A is approved and integrated through PR #12.
 - DEC-002 strong-spatial share is intentionally limited to about 40%; `7~9` is the initial tuning range and `8 strong-spatial + 11 simple/one-condition` is the first authoring default, not immutable core.
 - 3 combo results remain explicit-only and are authored as asymmetric multi-modifier outcomes rather than simple percentage copies.
 - 5 purchasable bags preserve the existing `normal 4 + special 1` product boundary; only `ninjutsu_l_pouch` has an initial special auxiliary effect.
 - Backpack/Survivors/industry evidence was refreshed with Backpack Battles, Backpack Hero, Deep Rock Galactic: Survivor, Sproggiwood postmortem, and Resogun postmortem; conclusions are ADAPT/AVOID project translations rather than benchmark-only decisions.
 - Initial reward weights, bag prices, item effects, combo result values, first-REST onboarding, formative playtest thresholds, telemetry candidates, and rollback signals are written as `RECOMMENDED_DEFAULT`, not final balance proof.
-- The current T01 single `effect_kind/effect_value` surface does not by itself encode DEC-002 multi-axis and strong-spatial values; a separate content-data readiness contract now forbids item-id hardcoding/double authority and requires concrete data encoding to close in Phase B before BUILD.
+- The current T01 single `effect_kind/effect_value` surface does not by itself encode DEC-002 multi-axis and strong-spatial values; the integrated content-data readiness contract forbids item-id hardcoding/double authority and requires concrete data encoding to close in Phase B before BUILD.
 - The directional-input collision is resolved by a visible mutually exclusive `전체 이동 모드`.
 - L2 feature spec status is `APPROVED`.
 - L3 traceability maps AC-01..AC-15 with no unmapped acceptance criterion; `coverage_status` remains `GAP` because actual implementation/evidence do not exist.
 - Implementation plan contains 12 ordered RED→GREEN tasks and exact planned paths.
-- Adversarial plan review removed an executable placeholder, removed an unnecessary WaveSpawner modification, named exact `StageElite` files, added deterministic elite tuning defaults, tightened L3 paths, and restored regression-sensitive Decision details.
-- PR #8 exact planning head passed GUT and merged; post-merge main GUT also passed.
-- PR #10 installed the byte-exact v4.5 r2 root contract and project adapters; exact PR head GUT and post-merge main GUT both passed.
-- The source's foreign Switchy path defect remains visible in the source and is bounded by the explicit Ninja Survival override in `AGENTS.md` rather than silently rewritten.
+- PR #12 exact planning head `0afc5fb7...` passed GUT run `31449617286`; merged main `619cde1...` passed GUT run `31449866658`.
+- No MVP-4 production implementation was created by the planning batch.
 
 ## Production gate under v4.5 r2
 
@@ -148,7 +148,7 @@ state: GITHUB_UPDATE_PENDING_SHEET
 read_status: PASS
 write_status: BLOCKED_USER_ACTION_403_RECONFIRMED_2026_08_11
 required_user_action: grant the connected Google account edit permission or reconnect a writer-capable account
-independent_work: CURRENT_PLANNING_GITHUB_CAN_CONTINUE
+independent_work: CURRENT_PLANNING_GITHUB_INTEGRATED
 ```
 
 Do not report Sheets as `SYNCED` until a write and reread succeed.
@@ -192,7 +192,7 @@ Do not report Sheets as `SYNCED` until a write and reread succeed.
 
 ## Expected current runtime mismatch
 
-The runtime at the planning checkpoint is intentionally still MVP-3:
+The runtime is intentionally still MVP-3:
 
 - `RunBuildState.owned_items` count ownership exists;
 - shop purchase immediately creates owned item/modifier state;
@@ -213,10 +213,12 @@ mvp4_implementation_plan: INTEGRATED_IMPLEMENTATION_READY_FOR_PHASE_B_REVIEW
 mvp4_design_pr_7: MERGED
 mvp4_planning_pr_8: MERGED
 mvp4_planning_post_merge_ci: PASS_RUN_31437135591
-mvp4_hybrid_content_decision: DEC_2026_08_11_002_APPROVED_PENDING_CURRENT_PLANNING_PR
-mvp4_hybrid_benchmark_industry_review: WRITTEN_CURRENT_PLANNING_BRANCH
-mvp4_content_balance_v1: WRITTEN_CURRENT_PLANNING_BRANCH
-mvp4_content_data_contract: WRITTEN_CURRENT_PLANNING_BRANCH_PHASE_B_MUST_REVALIDATE
+mvp4_hybrid_content_decision: DEC_2026_08_11_002_INTEGRATED_PR_12
+mvp4_hybrid_benchmark_industry_review: INTEGRATED_PR_12
+mvp4_content_balance_v1: INTEGRATED_PR_12
+mvp4_content_data_contract: INTEGRATED_PR_12_PHASE_B_MUST_REVALIDATE
+mvp4_hybrid_content_exact_head_ci: PASS_RUN_31449617286
+mvp4_hybrid_content_post_merge_ci: PASS_RUN_31449866658
 active_delivery_contract_v4_5_r2: BYTE_EXACT_INTEGRATED_PR_10
 active_delivery_contract_v4_5_r2_post_merge_ci: PASS_RUN_31442268566
 mvp4_explicit_planning_complete_declaration: NOT_RECEIVED
@@ -264,4 +266,4 @@ No MVP-4 runtime PASS claim is valid yet. The formative human targets in the con
 
 ## Next executable step
 
-**Finish the current DEC-002 planning/document PR review and merge gates. Then remain at the explicit `기획 완료` gate. When that declaration arrives, run PHASE B Final Planning Review / Definition of Ready against current repository/Base/Sheet evidence, including the content-data readiness contract. Only after PHASE B PASS may PHASE C production implementation begin with T01 RED.**
+**Remain at the explicit `기획 완료` gate. When that declaration arrives, run PHASE B Final Planning Review / Definition of Ready against current repository/Base/Sheet evidence, including the content-data readiness contract. Only after PHASE B PASS may PHASE C production implementation begin with T01 RED.**
