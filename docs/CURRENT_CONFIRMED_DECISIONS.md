@@ -224,13 +224,14 @@ RunModifierSet
 사용자 승인: **A안 — 하이브리드 공간 의존형**.
 
 - 19개 기본 획득 아이템은 모두 혼자 배치해도 의미 있는 standalone effect를 가진다.
-- 초기 19종 중 `8종`만 strong-spatial item으로 두고, 나머지 `11종`은 simple/one-condition item으로 둔다.
+- strong-spatial item은 전체의 약 40%로 제한하며 **초기 tuning 범위는 7~9종**으로 둔다. 첫 authoring default는 `8종 strong-spatial + 11종 simple/one-condition`이다.
+- `8종`은 초기 수치 기본값이지 불변 코어가 아니다. 7~9 범위 안의 조정은 A안의 핵심 방향을 유지하는 tuning으로 처리할 수 있다.
 - 조합 핵심재료는 완성 조합을 만들기 전에도 정상적인 선택지로 기능한다.
 - 3개 조합 결과는 단순한 원본 합계 `+12%` 복제가 아니라 여러 기존 modifier 축을 묶은 **기억나는 asymmetric power spike**로 만든다.
 - 태그는 내부 계산에만 쓰지 않고 boss/shop weighting, combo hint, Workbench UI가 공유하는 player-readable build vocabulary로 사용한다.
 - 공간 깊이를 얻기 위해 조작 난이도를 올리지 않는다. bag/item layer, explicit Undo/Redo, focus/touch parity를 유지한다.
 - 상점/백팩/조합 의사결정은 전투 중에 삽입하지 않고 승인된 boss 이후 REST Workbench에 남긴다.
-- `19종/8 strong-spatial/3 combo/5 bags(일반4+특수1)`의 exact 초기 수치·가격·가중치는 `docs/planning/2026-08-11-mvp4-content-balance-v1.md`의 `RECOMMENDED_DEFAULT`로 관리한다.
+- exact 초기 수치·가격·가중치와 첫 8종 roster는 `docs/planning/2026-08-11-mvp4-content-balance-v1.md`의 `RECOMMENDED_DEFAULT`로 관리한다.
 - 외부 벤치마크의 기능을 그대로 복사하지 않으며 근거와 ADAPT/AVOID 판정은 `docs/research/2026-08-11-mvp4-backpack-survivors-benchmark.md`가 기록한다.
 - rarity, 새 획득 축, 2차/3차 조합, 전투 중 인벤토리 편집은 이 Decision으로 추가하지 않는다.
 
