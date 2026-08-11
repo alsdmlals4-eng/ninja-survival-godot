@@ -32,6 +32,14 @@ phase_c_handoff_post_merge_gut: PASS_RUN_31454909432
 phase_c_handoff_postmerge_fix_main: 318d90efa0549d1e21266e011d63db98dfcade3d
 phase_c_handoff_postmerge_fix_gut: PASS_RUN_31455361366
 base_main_observed_phase_b: 315c66eea9614c284b9c11c4d522141065dfa4b0
+handoff_ci_fidelity_closure_pr: 18
+handoff_ci_fidelity_closure_main: b6c4b8a082a120f65e833b133684b899f00e05ba
+handoff_ci_fidelity_closure_gut: PASS_RUN_31514428025_BOOTSTRAP_ROUTE
+base_bcp_ci_source_fidelity: BCP-2026-021-ci-source-fidelity-for-vendored-dependencies
+base_bcp_proposal_pr: 291
+base_bcp_merge_main_observed: d7dedbc6548294ac6109c22548e40adb0d6d273a
+base_bcp_status: SUBMITTED
+base_bcp_implementation_authority: NOT_GRANTED_IN_THIS_STAGE
 mvp4_product_design: APPROVED
 mvp4_decision_001: INTEGRATED
 mvp4_decision_002: INTEGRATED_PR_12
@@ -218,19 +226,28 @@ Godot AI 3.1.4 is separate from Godot Engine 4.7.1. The local executor must fres
 LRN-NS-2026-08-12-001:
   classification: SPLIT
   project_application: .github/workflows/gut.yml
-  project_verification: EXACT_HANDOFF_CLOSURE_PR_CI_REQUIRED
+  project_verification: PASS_PR_18_RUN_31514428025_BOOTSTRAP_ROUTE
   base_candidate: CI_SOURCE_FIDELITY_FOR_VENDORED_DEPENDENCIES
+  base_proposal_id: BCP-2026-021-ci-source-fidelity-for-vendored-dependencies
+  base_proposal_pr: 291
+  base_proposal_merged: true
+  base_proposal_status: SUBMITTED
+  base_main_observed_after_proposal_merge: d7dedbc6548294ac6109c22548e40adb0d6d273a
+  base_implementation_authority: NOT_GRANTED_IN_THIS_STAGE
 LRN-NS-2026-08-12-002:
   classification: PROJECT_ONLY
   project_application: T00_BEFORE_T01_RESUME_ROUTE
   project_verification: ACTIVE_CONTEXT_AND_HANDOFF_REREAD
+  closure: CLOSED
 LRN-NS-2026-08-12-003:
   classification: NO_PROMOTION
   existing_base_owner: maintaining-project-context-and-handoff
+  project_application: APPLIED_IN_EXISTING_CONTINUATION_OWNERS
+  closure: CLOSED
 ```
 
-Any Base promotion from this checkpoint is proposal-only: `[수정제안서]/**`. Base active implementation is a separate stage and is not authorized by this handoff work.
+The reusable part of `LRN-NS-2026-08-12-001` is stored in Base as proposal-only BCP `BCP-2026-021-ci-source-fidelity-for-vendored-dependencies`, merged by Base PR #291 with status `SUBMITTED`. Proposal storage/merge is not Base implementation approval. Base active implementation remains a separate stage and is not authorized by this handoff work.
 
 ## Next executable step
 
-**Do not start T01. First finish and merge the project handoff/CI-fidelity closure, then submit/merge any validated reusable lesson as a collision-safe Base proposal-only PR. On later implementation resume, fetch latest main and PR #17, require the current project CI fidelity guard, revalidate T00 without `addons/gut/gut` or `UID duplicate detected`, perform adversarial review, merge T00 only if current gates pass, read back new main, refresh/recreate the T01 package baseline from that provider-integrated main, and only then observe focused T01 RED before production GREEN code.**
+**Do not start T01. The handoff/CI-fidelity closure and Base proposal storage are complete. On later implementation resume, fetch latest project main and PR #17, require the current project CI fidelity guard, revalidate the T00 vendored-GUT route without `addons/gut/gut` or `UID duplicate detected`, perform adversarial review, merge T00 only if all current gates pass, read back new main, refresh/recreate the T01 package baseline from that provider-integrated main, and only then observe focused T01 RED before production GREEN code.**
