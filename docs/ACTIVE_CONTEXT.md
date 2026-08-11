@@ -13,8 +13,9 @@
 7. Phase-B record: `docs/planning/2026-08-11-mvp4-phase-b-definition-of-ready.md`
 8. L3 traceability: `docs/traceability/2026-08-11-mvp4-backpack-combination-traceability.md`
 9. 12-task plan: `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md`
-10. Phase-C T01 handoff: `docs/handoffs/2026-08-11-mvp4-phase-c-t01-codex-handoff.md`
-11. actual current code/scenes/data/tests and current Base `main`
+10. T00 pause/current blocker handoff: `docs/handoffs/2026-08-12-t00-provider-adoption-pause-handoff.md`
+11. historical Phase-C T01 package handoff: `docs/handoffs/2026-08-11-mvp4-phase-c-t01-codex-handoff.md`
+12. actual current code/scenes/data/tests, current GitHub PR state, and current Base `main`
 
 The Phase-B record is a narrow later technical amendment to T01/T03/T07 and old phase-status wording. Product authority remains Decisions/L2. For mutable Google Sheet access/synchronization state, this router supersedes older pre-recovery `403` status snippets elsewhere; those older snippets are not current permission authority.
 
@@ -39,20 +40,26 @@ phase_a: COMPLETE
 phase_b_final_planning_review: PASS
 phase_b_open_must_fix: 0
 phase_b_open_user_decision_required: 0
-phase_c_build: AUTHORIZED_AWAITING_LOCAL_EXECUTOR
+phase_c_build: AUTHORIZED
+t00_provider_adoption_pr: 17
+t00_provider_adoption_branch: ops/godot471-provider-uid-adoption
+t00_provider_adoption_head_observed: bcd6d566de991fa1fe84aebf186e5dd654d6d274
+t00_provider_adoption_status: BLOCKED_PENDING_SOURCE_FAITHFUL_REVALIDATION
+t00_blocker: CI_UNCONDITIONALLY_OVERLAID_VENDORED_GUT_CREATING_ADDONS_GUT_GUT_AND_UID_DUPLICATES
+t00_handoff: docs/handoffs/2026-08-12-t00-provider-adoption-pause-handoff.md
 phase_c_t01_handoff: docs/handoffs/2026-08-11-mvp4-phase-c-t01-codex-handoff.md
 phase_c_t01_remote_branch: impl/mvp4-t01-spatial-data-contracts
 phase_c_t01_branch_base: 225d68e7545062e3c2bc720562263fe6a67131bd
-phase_c_t01_branch_policy: INTENTIONALLY_PINNED_TO_PHASE_B_BASELINE
-phase_c_t01_latest_operational_docs: READ_FROM_ORIGIN_MAIN_WITH_GIT_SHOW
-phase_c_t01_status: READY_FOR_LOCAL_REDGREEN_EXECUTION
+phase_c_t01_branch_policy: HISTORICAL_PHASE_B_PIN_AWAITING_POST_T00_REFRESH_DECISION
+phase_c_t01_latest_operational_docs: READ_FROM_ORIGIN_MAIN
+phase_c_t01_status: PAUSED_PENDING_T00_INTEGRATION_AND_BASELINE_REFRESH
 mvp4_production_code: NOT_STARTED
 mvp4_runtime_evidence: NOT_RUN
 mvp4_human_qa: NOT_RUN
 mvp4_android_device_qa: NOT_RUN
 ```
 
-`PHASE_B_PASS`, prepared branch and handoff are readiness evidence only. Do not claim T01 GREEN or MVP-4 runtime/human PASS until actual local execution evidence exists.
+`PHASE_B_PASS`, a prepared historical T01 branch, local T00 evidence, and a green workflow are readiness/evidence inputs only. Do not claim T00 merge readiness when the validation preparation changed the checked-out source shape, and do not claim T01 GREEN or MVP-4 runtime/human PASS until current exact validation exists.
 
 ## Phase chain
 
@@ -60,29 +67,49 @@ mvp4_android_device_qa: NOT_RUN
 PHASE A — planning [COMPLETE]
 → explicit `기획 완료` [RECEIVED]
 → PHASE B — Final Planning Review / DoR [PASS]
-→ PHASE C — PowerShell / Codex / Godot BUILD [AUTHORIZED]
-→ T01 focused RED [NEXT / NOT RUN]
+→ PHASE C — BUILD [AUTHORIZED]
+→ T00 provider/executor adoption [OPEN / SOURCE-FIDELITY REVALIDATION REQUIRED]
+→ T00 merge + new-main readback
+→ refresh/recreate T01 package baseline against provider-integrated main
+→ T01 focused RED [PAUSED / NOT RUN]
 → T01 GREEN + regression + package review
 → T02 ... T12
 ```
 
+## Current T00 prerequisite and CI fidelity gate
+
+PR #17 is the active Phase-C provider/executor prerequisite. Its observed package includes HiGodot 3.1.4, GUT 9.7.1, Hera Agent Godot 1.0.0, provider activation/autoload metadata, and project-owned Godot 4.7.1 UID sidecars.
+
+The first remote workflow for that PR ended green, but its dependency-preparation step unconditionally copied downloaded GUT into an already-vendored `addons/gut` directory. On Linux this produced `addons/gut/gut/**`, and Godot import reported many `UID duplicate detected` diagnostics. Therefore that green run is not source-faithful merge evidence.
+
+Current project CI must preserve both states safely:
+
+- when GUT is not vendored, bootstrap pinned GUT 9.7.1 once for CI;
+- when GUT is vendored, verify and reuse that tree rather than overlaying another copy;
+- reject a nested `addons/gut/gut` tree;
+- capture import diagnostics and fail on `UID duplicate detected`.
+
+The detailed recovery contract is in `docs/handoffs/2026-08-12-t00-provider-adoption-pause-handoff.md`.
+
 ## T01 baseline / operational-doc boundary
 
-The package branch is intentionally pinned to Phase-B implementation baseline:
+The historical package branch remains:
 
 `impl/mvp4-t01-spatial-data-contracts@225d68e7545062e3c2bc720562263fe6a67131bd`
 
-Phase-C operational documents were merged after that branch was created. Do not fast-forward the package branch just to acquire docs and do not create a self-referential package-baseline loop.
+It was intentionally pinned to the Phase-B implementation baseline before T00 provider adoption became the active prerequisite. The older handoff allowed only two operational-document drift paths before T01 execution. **That narrow preflight is now superseded for execution purposes once this T00/CI-fidelity handoff closure lands**, because current main legitimately gains CI/handoff operational changes and T00 is expected to add provider/UID paths.
 
-After `git fetch origin --prune`, the local executor must:
+Do not execute production T01 against the old drift assumption. After T00 is source-faithfully validated and merged:
 
-- read package canon from the branch working tree;
-- read latest `docs/ACTIVE_CONTEXT.md` and `docs/handoffs/2026-08-11-mvp4-phase-c-t01-codex-handoff.md` with `git show origin/main:<path>`;
-- compare `225d68e7...` to `origin/main`;
-- allow pre-execution main drift only in those two operational-document paths;
-- stop before editing if any other path has changed.
+- fetch latest `main` and current Phase-C contract;
+- read this router and the T00 pause handoff;
+- read the old T01 handoff as historical package scope/technical context, not as permission to ignore new main paths;
+- compare the intended T01 delta with the provider-integrated main;
+- refresh/recreate the T01 implementation package using the current approved branch policy;
+- preserve the T01 file boundary and technical contract unless current canon/approved plan explicitly changes them;
+- observe focused T01 RED before production GREEN code.
 
-This is an execution-safety rule, not permission to ignore future real code/canon drift. The Google Sheet synchronization performed after T01 branch creation changes the external Sheet plus this already-allowed `ACTIVE_CONTEXT.md` only; it does not add a new package-branch code/canon drift path.
+Do not force-update the old pinned branch merely to erase history. Preserve it as historical evidence until the current package refresh route is chosen from fresh main.
 
 ## T01 package boundary
 
@@ -171,7 +198,7 @@ Verified synchronized surfaces:
 
 Post-write searches returned zero matches for the stale active phrases `초기부터 전부 열지 않음`, `회전/복잡한 모양은 제외`, and `5/10/15분 보스 처치`; `후속 후보` correctly returns exactly the two future combination rows.
 
-Older `403 / GITHUB_UPDATE_PENDING_SHEET` snippets in `docs/CURRENT_CONFIRMED_DECISIONS.md` or `docs/DOCUMENTATION_MAP.md` describe the pre-permission-recovery observation and are stale as mutable access-state evidence. Do not use them to override this fresh verified Sheet state. They are intentionally not edited before T01 because the package branch preflight permits only the two existing operational-doc drift paths; product decisions in those files remain authoritative and unchanged.
+Older `403 / GITHUB_UPDATE_PENDING_SHEET` snippets in `docs/CURRENT_CONFIRMED_DECISIONS.md` or `docs/DOCUMENTATION_MAP.md` describe the pre-permission-recovery observation and are stale as mutable access-state evidence. Do not use them to override this fresh verified Sheet state. They are intentionally not edited before T01 because the product decisions in those files remain authoritative and unchanged.
 
 ## Environment facts
 
@@ -185,6 +212,25 @@ local_windows_powershell_codex_godot_execution_in_this_chat: UNAVAILABLE
 
 Godot AI 3.1.4 is separate from Godot Engine 4.7.1. The local executor must freshly verify Codex, Godot Engine, GUT and any Godot-AI/HiGodot/Hera route before use.
 
+## Learning / Base promotion state
+
+```yaml
+LRN-NS-2026-08-12-001:
+  classification: SPLIT
+  project_application: .github/workflows/gut.yml
+  project_verification: EXACT_HANDOFF_CLOSURE_PR_CI_REQUIRED
+  base_candidate: CI_SOURCE_FIDELITY_FOR_VENDORED_DEPENDENCIES
+LRN-NS-2026-08-12-002:
+  classification: PROJECT_ONLY
+  project_application: T00_BEFORE_T01_RESUME_ROUTE
+  project_verification: ACTIVE_CONTEXT_AND_HANDOFF_REREAD
+LRN-NS-2026-08-12-003:
+  classification: NO_PROMOTION
+  existing_base_owner: maintaining-project-context-and-handoff
+```
+
+Any Base promotion from this checkpoint is proposal-only: `[수정제안서]/**`. Base active implementation is a separate stage and is not authorized by this handoff work.
+
 ## Next executable step
 
-**On the user Windows machine, run the PowerShell preflight and Codex prompt from the latest `origin/main:docs/handoffs/2026-08-11-mvp4-phase-c-t01-codex-handoff.md`. The preflight must confirm the package branch is exactly `225d68e7...` and that `origin/main` drift is operational-doc-only before Codex edits. Observe focused T01 RED before any production GREEN code. After Codex pushes the package branch, GPT verifies the exact remote diff/evidence, creates the T01 PR, performs adversarial review and exact-head CI, merges only if all gates pass, then readbacks merged main before T02.**
+**Do not start T01. First finish and merge the project handoff/CI-fidelity closure, then submit/merge any validated reusable lesson as a collision-safe Base proposal-only PR. On later implementation resume, fetch latest main and PR #17, require the current project CI fidelity guard, revalidate T00 without `addons/gut/gut` or `UID duplicate detected`, perform adversarial review, merge T00 only if current gates pass, read back new main, refresh/recreate the T01 package baseline from that provider-integrated main, and only then observe focused T01 RED before production GREEN code.**

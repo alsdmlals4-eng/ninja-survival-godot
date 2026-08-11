@@ -31,19 +31,34 @@ jobs:
           chmod +x Godot_v4.7.1-stable_linux.x86_64
           ./Godot_v4.7.1-stable_linux.x86_64 --version
 
-      - name: Install GUT 9.7.1 for CI
+      - name: Prepare GUT 9.7.1 for CI
         shell: bash
         run: |
           set -euo pipefail
-          curl -L --fail -o gut.zip https://github.com/bitwes/Gut/archive/refs/tags/v9.7.1.zip
-          unzip -q gut.zip
-          mkdir -p addons
-          cp -R Gut-9.7.1/addons/gut addons/gut
-          rm -rf Gut-9.7.1 gut.zip
+          if [[ -f addons/gut/plugin.cfg ]]; then
+            echo "Using repository-vendored GUT."
+            grep -q 'version="9.7.1"' addons/gut/plugin.cfg
+            test -f addons/gut/gut_cmdln.gd
+            test ! -d addons/gut/gut
+          else
+            echo "GUT is not vendored on this revision; installing the pinned CI copy."
+            test ! -e addons/gut
+            curl -L --fail -o gut.zip https://github.com/bitwes/Gut/archive/refs/tags/v9.7.1.zip
+            unzip -q gut.zip
+            mkdir -p addons
+            cp -R Gut-9.7.1/addons/gut addons/gut
+            rm -rf Gut-9.7.1 gut.zip
+          fi
 
       - name: Import project
         shell: bash
-        run: ./Godot_v4.7.1-stable_linux.x86_64 --headless --path . --import
+        run: |
+          set -euo pipefail
+          ./Godot_v4.7.1-stable_linux.x86_64 --headless --path . --import 2>&1 | tee import-output.log
+          if grep -F "UID duplicate detected" import-output.log; then
+            echo "Godot UID duplicate detected during project import."
+            exit 1
+          fi
 
       - name: Smoke test main scene
         shell: bash
