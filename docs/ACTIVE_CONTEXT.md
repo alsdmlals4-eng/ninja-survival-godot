@@ -26,6 +26,8 @@ latest_integrated_runtime_milestone: MVP-3
 phase_b_review_baseline_main: 11a81208ec9ad7ca9f4a044d3226e1be0ea25f76
 phase_b_merge_main: 225d68e7545062e3c2bc720562263fe6a67131bd
 phase_b_post_merge_gut: PASS_RUN_31454048030
+phase_c_handoff_merge_main_before_postmerge_fix: 4d0b3f39581103500675ad5ac7e89da4805a6114
+phase_c_handoff_post_merge_gut: PASS_RUN_31454909432
 base_main_observed_phase_b: 315c66eea9614c284b9c11c4d522141065dfa4b0
 mvp4_product_design: APPROVED
 mvp4_decision_001: INTEGRATED
@@ -39,6 +41,8 @@ phase_c_build: AUTHORIZED_AWAITING_LOCAL_EXECUTOR
 phase_c_t01_handoff: docs/handoffs/2026-08-11-mvp4-phase-c-t01-codex-handoff.md
 phase_c_t01_remote_branch: impl/mvp4-t01-spatial-data-contracts
 phase_c_t01_branch_base: 225d68e7545062e3c2bc720562263fe6a67131bd
+phase_c_t01_branch_policy: INTENTIONALLY_PINNED_TO_PHASE_B_BASELINE
+phase_c_t01_latest_operational_docs: READ_FROM_ORIGIN_MAIN_WITH_GIT_SHOW
 phase_c_t01_status: READY_FOR_LOCAL_REDGREEN_EXECUTION
 mvp4_production_code: NOT_STARTED
 mvp4_runtime_evidence: NOT_RUN
@@ -46,7 +50,7 @@ mvp4_human_qa: NOT_RUN
 mvp4_android_device_qa: NOT_RUN
 ```
 
-`PHASE_B_PASS` and the prepared T01 branch/handoff are readiness evidence only. Do not claim T01 GREEN or any MVP-4 runtime/human PASS until actual local execution evidence exists.
+`PHASE_B_PASS`, prepared branch and handoff are readiness evidence only. Do not claim T01 GREEN or MVP-4 runtime/human PASS until actual local execution evidence exists.
 
 ## Phase chain
 
@@ -60,11 +64,25 @@ PHASE A — planning [COMPLETE]
 → T02 ... T12
 ```
 
+## T01 baseline / operational-doc boundary
+
+The package branch is intentionally pinned to Phase-B implementation baseline:
+
+`impl/mvp4-t01-spatial-data-contracts@225d68e7545062e3c2bc720562263fe6a67131bd`
+
+Phase-C operational documents were merged after that branch was created. Do not fast-forward the package branch just to acquire docs and do not create a self-referential package-baseline loop.
+
+After `git fetch origin --prune`, the local executor must:
+
+- read package canon from the branch working tree;
+- read latest `docs/ACTIVE_CONTEXT.md` and `docs/handoffs/2026-08-11-mvp4-phase-c-t01-codex-handoff.md` with `git show origin/main:<path>`;
+- compare `225d68e7...` to `origin/main`;
+- allow pre-execution main drift only in those two operational-document paths;
+- stop before editing if any other path has changed.
+
+This is an execution-safety rule, not permission to ignore future real code/canon drift.
+
 ## T01 package boundary
-
-Allowed package branch:
-
-`impl/mvp4-t01-spatial-data-contracts`
 
 Allowed modify:
 
@@ -82,7 +100,12 @@ Allowed create:
 - `scripts/data/mvp4_catalog.gd`
 - `tests/unit/test_mvp4_catalog.gd`
 
-Read-only regression references include `scripts/data/mvp3_catalog.gd`, `scripts/core/run_build_state.gd`, `tests/unit/test_run_build_state.gd`, and `project.godot`.
+Read-only regression references:
+
+- `scripts/data/mvp3_catalog.gd`
+- `scripts/core/run_build_state.gd`
+- `tests/unit/test_run_build_state.gd`
+- `project.godot`
 
 Codex may not create/switch branches, create/update/merge PRs, force-push, amend, change `project.godot`, modify UI/Scene/controllers, or begin T02 in this package. GPT reviews the pushed package branch and owns PR/merge after evidence.
 
@@ -118,7 +141,7 @@ Codex may not create/switch branches, create/update/merge PRs, force-push, amend
 
 ## Expected runtime before T01
 
-The current integrated runtime is intentionally MVP-3: legacy single-effect ItemDefinition, owned-count modifier authority, immediate shop activation, linear RESULT→SHOP→FATE→PREVIEW, and no spatial backpack/elite/chest/Workbench runtime. These are implementation targets, not already-fixed behavior.
+The integrated runtime remains MVP-3: legacy single-effect ItemDefinition, owned-count modifier authority, immediate shop activation, linear RESULT→SHOP→FATE→PREVIEW, and no spatial backpack/elite/chest/Workbench runtime. These are implementation targets, not already-fixed behavior.
 
 ## Google Sheet blocker
 
@@ -146,4 +169,4 @@ Godot AI 3.1.4 is separate from Godot Engine 4.7.1. The local executor must fres
 
 ## Next executable step
 
-**On the user Windows machine, execute the PowerShell preflight and Codex prompt in `docs/handoffs/2026-08-11-mvp4-phase-c-t01-codex-handoff.md`. Observe the focused T01 RED before any production GREEN code. After Codex pushes the allowed T01 branch, GPT must verify the exact remote diff/evidence, create the package PR, run adversarial review and exact-head CI, merge only if gates pass, then perform merged-main readback before preparing T02.**
+**On the user Windows machine, run the PowerShell preflight and Codex prompt from the latest `origin/main:docs/handoffs/2026-08-11-mvp4-phase-c-t01-codex-handoff.md`. The preflight must confirm the package branch is exactly `225d68e7...` and that `origin/main` drift is operational-doc-only before Codex edits. Observe focused T01 RED before any production GREEN code. After Codex pushes the package branch, GPT verifies the exact remote diff/evidence, creates the T01 PR, performs adversarial review and exact-head CI, merges only if all gates pass, then readbacks merged main before T02.**
