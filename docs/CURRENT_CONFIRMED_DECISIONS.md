@@ -5,7 +5,7 @@
 > 구현 완료 상태는 이 파일이 아니라 `docs/ACTIVE_CONTEXT.md`가 소유한다.
 
 Last updated: 2026-08-11
-Current project baseline observed for this update: `main@ac497904ad002974515c890dc55a4378f6e82680`
+Current project baseline observed for this update: `main@619cde1efb0a8d35485d810b29a4efa361fb2b19`
 
 ## MVP-4 — Backpack / Combination Basics
 
@@ -247,11 +247,12 @@ RunModifierSet
 ## Synchronization state
 
 ```yaml
-project_main_planning_checkpoint: ac497904ad002974515c890dc55a4378f6e82680
+project_main_planning_checkpoint: 619cde1efb0a8d35485d810b29a4efa361fb2b19
 mvp4_design_pr_7: MERGED_CLOSED
 mvp4_planning_pr_8: MERGED_CLOSED
 mvp4_planning_post_merge_gut: PASS_RUN_31437135591
-mvp4_hybrid_content_decision: DEC_2026_08_11_002_APPROVED_PENDING_CURRENT_PLANNING_PR
+mvp4_hybrid_content_decision: INTEGRATED_PR_12_619cde1efb0a8d35485d810b29a4efa361fb2b19
+mvp4_hybrid_content_post_merge_gut: PASS_RUN_31449866658
 project_sheet_read: READ_OK_2026_08_11
 project_sheet_sync: GITHUB_UPDATE_PENDING_SHEET
 project_sheet_write: BLOCKED_USER_ACTION_403_RECONFIRMED_2026_08_11
