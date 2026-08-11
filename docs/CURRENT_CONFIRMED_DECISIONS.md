@@ -5,7 +5,7 @@
 > 구현 완료 상태는 이 파일이 아니라 `docs/ACTIVE_CONTEXT.md`가 소유한다.
 
 Last updated: 2026-08-11
-Current project baseline observed for this update: `main@360e8652b51e8125c63b7a5cdc2288092bb8e096`
+Current project baseline observed for this update: `main@ac497904ad002974515c890dc55a4378f6e82680`
 
 ## MVP-4 — Backpack / Combination Basics
 
@@ -13,10 +13,14 @@ Current project baseline observed for this update: `main@360e8652b51e8125c63b7a5
 status: DESIGN_APPROVED
 implementation: NOT_STARTED
 primary_decision_id: DEC-2026-08-11-001
+secondary_decision_ids:
+  - DEC-2026-08-11-002
 written_spec: docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md
 written_spec_status: APPROVED_BY_USER_2026-08-11
 traceability: docs/traceability/2026-08-11-mvp4-backpack-combination-traceability.md
 implementation_plan: docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md
+content_balance_data: docs/planning/2026-08-11-mvp4-content-balance-v1.md
+benchmark_evidence: docs/research/2026-08-11-mvp4-backpack-survivors-benchmark.md
 planning_integration: MERGED_PR_8_360e8652b51e8125c63b7a5cdc2288092bb8e096
 production_gate: EXPLICIT_USER_DECLARATION_기획_완료_REQUIRED
 ```
@@ -215,9 +219,25 @@ RunModifierSet
 - 별도 희귀도/등급 시스템은 MVP-4에 추가하지 않는다.
 - 정확한 초기 footprint/id/bag cell 기본값은 승인 Spec을 보존하는 범위에서 implementation plan의 `RECOMMENDED_DEFAULT`를 사용하며 플레이테스트로 조정 가능하다.
 
+### Decision — Hybrid spatial item dependency — DEC-2026-08-11-002
+
+사용자 승인: **A안 — 하이브리드 공간 의존형**.
+
+- 19개 기본 획득 아이템은 모두 혼자 배치해도 의미 있는 standalone effect를 가진다.
+- strong-spatial item은 전체의 약 40%로 제한하며 **초기 tuning 범위는 7~9종**으로 둔다. 첫 authoring default는 `8종 strong-spatial + 11종 simple/one-condition`이다.
+- `8종`은 초기 수치 기본값이지 불변 코어가 아니다. 7~9 범위 안의 조정은 A안의 핵심 방향을 유지하는 tuning으로 처리할 수 있다.
+- 조합 핵심재료는 완성 조합을 만들기 전에도 정상적인 선택지로 기능한다.
+- 3개 조합 결과는 단순한 원본 합계 `+12%` 복제가 아니라 여러 기존 modifier 축을 묶은 **기억나는 asymmetric power spike**로 만든다.
+- 태그는 내부 계산에만 쓰지 않고 boss/shop weighting, combo hint, Workbench UI가 공유하는 player-readable build vocabulary로 사용한다.
+- 공간 깊이를 얻기 위해 조작 난이도를 올리지 않는다. bag/item layer, explicit Undo/Redo, focus/touch parity를 유지한다.
+- 상점/백팩/조합 의사결정은 전투 중에 삽입하지 않고 승인된 boss 이후 REST Workbench에 남긴다.
+- exact 초기 수치·가격·가중치와 첫 8종 roster는 `docs/planning/2026-08-11-mvp4-content-balance-v1.md`의 `RECOMMENDED_DEFAULT`로 관리한다.
+- 외부 벤치마크의 기능을 그대로 복사하지 않으며 근거와 ADAPT/AVOID 판정은 `docs/research/2026-08-11-mvp4-backpack-survivors-benchmark.md`가 기록한다.
+- rarity, 새 획득 축, 2차/3차 조합, 전투 중 인벤토리 편집은 이 Decision으로 추가하지 않는다.
+
 ## Approval and execution boundary
 
-- 위 MVP-4 제품/설계 방향과 `DEC-2026-08-11-001`은 사용자 승인 상태다.
+- 위 MVP-4 제품/설계 방향과 `DEC-2026-08-11-001`, `DEC-2026-08-11-002`는 사용자 승인 상태다.
 - L2 written spec은 2026-08-11 사용자 승인으로 `APPROVED`다.
 - L3 traceability와 Superpowers implementation plan은 PR #8로 `main@360e8652...`에 통합됐다.
 - **Godot/Codex production BUILD는 사용자가 프로젝트 계약의 전환 문구 `기획 완료`를 명시적으로 선언하기 전까지 시작하지 않는다.**
@@ -227,12 +247,14 @@ RunModifierSet
 ## Synchronization state
 
 ```yaml
-project_main_planning_checkpoint: 360e8652b51e8125c63b7a5cdc2288092bb8e096
+project_main_planning_checkpoint: ac497904ad002974515c890dc55a4378f6e82680
 mvp4_design_pr_7: MERGED_CLOSED
 mvp4_planning_pr_8: MERGED_CLOSED
 mvp4_planning_post_merge_gut: PASS_RUN_31437135591
+mvp4_hybrid_content_decision: DEC_2026_08_11_002_APPROVED_PENDING_CURRENT_PLANNING_PR
+project_sheet_read: READ_OK_2026_08_11
 project_sheet_sync: GITHUB_UPDATE_PENDING_SHEET
-project_sheet_write: BLOCKED_USER_ACTION_403
+project_sheet_write: BLOCKED_USER_ACTION_403_RECONFIRMED_2026_08_11
 ```
 
-Google Sheet에는 과거 회전 제외/5·10·15분 중간보스 표현이 남아 있으며 write 403이 해결되기 전까지 `SYNCED`로 보고하지 않는다.
+Google Sheet는 2026-08-11 재조회에 성공했지만, 동일 세션의 write 재시도도 `403 PERMISSION_DENIED`였다. 과거 회전 후단개방/5·10·15분 표현과 일부 후속 조합 후보의 MVP-4 범위 표기가 남아 있으므로 writer 권한이 해결되기 전까지 `SYNCED`로 보고하지 않는다.
