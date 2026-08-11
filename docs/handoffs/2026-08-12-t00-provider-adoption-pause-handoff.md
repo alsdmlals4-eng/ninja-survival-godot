@@ -4,15 +4,23 @@
 
 ## Purpose
 
-The user paused implementation work to perform a collision-safe handoff. This package preserves the exact T00 provider-adoption blocker, the CI fidelity repair applied in the handoff-closure PR, and the safe resume order. **Do not begin MVP-4 T01 from this handoff until T00 is source-faithfully revalidated and integrated.**
+The user paused implementation work to perform a collision-safe handoff. This package preserves the exact T00 provider-adoption blocker, the CI fidelity repair applied in the handoff-closure PR, the completed proposal-only Base promotion, and the safe resume order. **Do not begin MVP-4 T01 from this handoff until T00 is source-faithfully revalidated and integrated.**
 
 ## Observed baseline
 
 ```yaml
 source_project: alsdmlals4-eng/ninja-survival-godot
-state_observed_at_main: b4c2c91380df6b9835c58952edae10b8c558da55
+state_observed_at_main: b6c4b8a082a120f65e833b133684b899f00e05ba
 handoff_closure_branch: ops/handoff-t00-ci-fidelity-20260812
-handoff_closure_pr: PENDING_AT_DOCUMENT_CREATION
+handoff_closure_pr: 18
+handoff_closure_head: e1d7faef5f306d87c14d3074c44f0a303dfe0501
+handoff_closure_main: b6c4b8a082a120f65e833b133684b899f00e05ba
+handoff_closure_ci: PASS_RUN_31514428025_BOOTSTRAP_ROUTE
+base_proposal_id: BCP-2026-021-ci-source-fidelity-for-vendored-dependencies
+base_proposal_pr: 291
+base_proposal_merge_main_observed: d7dedbc6548294ac6109c22548e40adb0d6d273a
+base_proposal_status: SUBMITTED
+base_implementation_authority: NOT_GRANTED_IN_THIS_STAGE
 t00_pr: 17
 t00_branch: ops/godot471-provider-uid-adoption
 t00_head_observed: bcd6d566de991fa1fe84aebf186e5dd654d6d274
@@ -52,7 +60,7 @@ The workflow nevertheless continued through smoke and GUT tests and concluded su
 
 ### Root cause
 
-Current `main` CI historically assumed GUT was absent and always performed:
+The historical CI assumed GUT was absent and always performed:
 
 ```text
 cp -R Gut-9.7.1/addons/gut addons/gut
@@ -64,17 +72,17 @@ T00 makes `addons/gut/**` project-owned/vendored. On Linux, copying the download
 
 `workflow conclusion = success` was initially tempting as merge evidence. It must not be treated as PASS when the workflow preparation step creates a duplicate source tree and the engine reports duplicate resource identity.
 
-### Project resolution applied by this handoff closure
+### Project resolution applied by PR #18
 
-`.github/workflows/gut.yml` is changed so that:
+`.github/workflows/gut.yml` now behaves as follows:
 
 1. if `addons/gut/plugin.cfg` exists, CI verifies GUT 9.7.1 and reuses the vendored tree;
 2. the vendored route rejects `addons/gut/gut`;
-3. if GUT is absent, CI still bootstraps pinned GUT 9.7.1 for current-main compatibility;
+3. if GUT is absent, CI bootstraps pinned GUT 9.7.1 for current-main compatibility;
 4. a partial pre-existing `addons/gut` is rejected rather than overlaid;
 5. Godot import output is captured and `UID duplicate detected` makes the job fail.
 
-This is a project validation/workflow improvement, not a T00 provider-content change.
+PR #18 exact validation run `31514428025` passed Godot 4.7.1 installation, GUT preparation, project import, main-scene smoke and full GUT regression with 250/250 tests on the non-vendored/bootstrap route. The vendored route still requires exact current T00 validation before PR #17 can merge.
 
 ## Resume-first read order
 
@@ -96,7 +104,7 @@ fetch latest project main
 → confirm handoff-closure CI source-fidelity guard exists on current main
 → refresh/reconstruct only the T00 delta as required by current main
 → run exact current PR validation
-→ require no addons/gut/gut and no UID duplicate diagnostics
+→ require vendored-GUT route, no addons/gut/gut and no UID duplicate diagnostics
 → adversarial review of T00 scope, provider versions, project.godot activation, UID sidecars and runtime/export risks
 → merge T00 only if all current gates pass
 → read back new project main and post-merge CI
@@ -121,16 +129,24 @@ Do not fast-forward or rewrite the old pinned T01 branch merely to make this han
 
 ```yaml
 classification: SPLIT
-project_application: APPLIED_IN_HANDOFF_CLOSURE_PR
+project_application: APPLIED_AND_MERGED_PR_18
 project_owner: .github/workflows/gut.yml
-project_verification: EXACT_PR_CI_REQUIRED
-base_candidate: YES_AFTER_PROJECT_MERGE
-knowledge_state: VALIDATED_PATTERN_AFTER_EXACT_PR_CI
+project_verification: PASS_RUN_31514428025_BOOTSTRAP_ROUTE
+base_candidate: PROMOTED_PROPOSAL_ONLY
+base_proposal_id: BCP-2026-021-ci-source-fidelity-for-vendored-dependencies
+base_proposal_pr: 291
+base_proposal_merged: true
+base_proposal_status: SUBMITTED
+base_main_observed_after_merge: d7dedbc6548294ac6109c22548e40adb0d6d273a
+base_implementation_authority: NOT_GRANTED_IN_THIS_STAGE
+closure: CLOSED_FOR_HANDOFF_STAGE
 ```
 
 Project-specific part: detect/reuse vendored GUT 9.7.1 and fail Godot import on duplicate UID diagnostics.
 
 Reusable common principle: dependency preparation must not silently overlay a downloaded dependency into a path that the checked-out revision already owns; validation should fail when preparation creates duplicate source/resource identity that makes the tested tree differ materially from the intended repository state.
+
+The common principle is now stored in Base as proposal-only BCP `BCP-2026-021-ci-source-fidelity-for-vendored-dependencies`. This storage merge does not authorize active Base implementation.
 
 ### LRN-NS-2026-08-12-002 — T00 remains a prerequisite package
 
@@ -140,6 +156,7 @@ project_application: APPLIED
 project_owner: docs/ACTIVE_CONTEXT.md + this handoff
 verification: RESUME_ROUTE_RE_READ
 base_proposal: N/A
+closure: CLOSED
 ```
 
 T00 provider adoption stays separate from MVP-4 T01. T01 does not inherit a provider-integrated baseline until T00 is current-main reviewed, validated, merged, and read back.
@@ -152,6 +169,7 @@ project_application: APPLIED
 project_owner: docs/ACTIVE_CONTEXT.md + this handoff
 base_existing_solution: maintaining-project-context-and-handoff
 reason: existing Base owner already covers exact blocker/status/resume preservation; no new broad skill is warranted
+closure: CLOSED
 ```
 
 ## Recent applicable troubleshooting lesson
@@ -163,7 +181,7 @@ impact: false confidence in T00 merge readiness; tested source shape differs fro
 root_cause: CI unconditionally overlays downloaded GUT into a now-vendored addons/gut path
 failed_or_misleading_approach: treating workflow success alone as sufficient evidence
 resolution: vendored-aware dependency preparation plus duplicate-UID import failure gate
-verification: exact current handoff-closure PR CI, then exact current T00 PR CI after refresh
+verification: PR #18 bootstrap-route exact CI PASS; vendored route exact T00 CI remains required before PR #17 merge
 fast_recovery_steps:
   - inspect checked-out dependency path before installing anything
   - distinguish vendored/repository-owned from CI-only bootstrap dependency
@@ -172,23 +190,40 @@ fast_recovery_steps:
   - validate the exact current PR revision
 prevention_or_action_item: keep source-shape-aware GUT preparation and duplicate UID gate in project CI
 owner_source: .github/workflows/gut.yml
-knowledge_state: VALIDATED_PATTERN_AFTER_EXACT_PR_CI
+knowledge_state: VALIDATED_PROJECT_PATTERN_WITH_T00_VENDORED_ROUTE_PENDING
 ```
 
-## Base promotion boundary
+## Base promotion result and boundary
 
-After the project handoff-closure PR is merged and read back, the reusable part of `LRN-NS-2026-08-12-001` may be submitted to `alsdmlals4-eng/Base` **only under `[수정제안서]/**`**, using the then-current proposal schema and a fresh collision check against Base main and concurrent proposal PRs. Base active Skills/Docs/Templates/Tools/Tests/Workflows are read-only in this stage.
+```yaml
+base_proposal:
+  id: BCP-2026-021-ci-source-fidelity-for-vendored-dependencies
+  proposal_pr: https://github.com/alsdmlals4-eng/Base/pull/291
+  merged_to_base_main: true
+  base_main_observed_after_merge: d7dedbc6548294ac6109c22548e40adb0d6d273a
+  proposal_status: SUBMITTED
+  proposal_storage_merge_authority: GRANTED_BY_HANDOFF_INSTRUCTION_V5
+  base_implementation_authority: NOT_GRANTED_IN_THIS_STAGE
+  implementation_status: NOT_STARTED_IN_THIS_STAGE
+  implementation_boundary: SEPARATE_FOLLOWUP_STAGE
+  existing_solution_verdict: ABSORB
+  next_action: separate Base implementation stage only if later authorized
+```
+
+The proposal-only Base PR changed only `[수정제안서]/**`. Active Base Skills/Docs/Templates/Tools/Tests/Workflows were not modified in this stage.
 
 ## Continuation checkpoint
 
 ```yaml
 continuation_checkpoint:
-  state_observed_at_main: b4c2c91380df6b9835c58952edae10b8c558da55
-  work_merge_main_sha: PENDING_HANDOFF_CLOSURE_PR
-  closure_pr: PENDING_AT_DOCUMENT_CREATION
-  closure_head_sha: PENDING_EXACT_VALIDATION
+  state_observed_at_main: b6c4b8a082a120f65e833b133684b899f00e05ba
+  work_merge_main_sha: b6c4b8a082a120f65e833b133684b899f00e05ba
+  closure_pr: 18
+  closure_head_sha: e1d7faef5f306d87c14d3074c44f0a303dfe0501
+  base_proposal_pr: 291
+  base_proposal_main_observed: d7dedbc6548294ac6109c22548e40adb0d6d273a
   self_merge_sha_required_in_file: false
   resume_rule: FETCH_LATEST_MAIN_BEFORE_USE
 ```
 
-The handoff-closure PR's own merge SHA does not need a recursive writeback PR. GitHub history plus the latest `main` readback is authoritative for that final self-merge identity.
+This final Base-proposal sync is itself a continuation-state update. Its own future merge SHA is intentionally not written back through another recursive PR. GitHub history plus latest `main` readback remains authoritative for that self-merge identity.
