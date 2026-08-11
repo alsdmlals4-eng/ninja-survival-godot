@@ -2,87 +2,122 @@
 
 ```yaml
 planning_contract_id: DATA-CONTRACT-2026-08-11-MVP4
-status: PHASE_A_TECHNICAL_RECOMMENDATION
+status: PHASE_B_VALIDATED
 related_decision: DEC-2026-08-11-002
 related_balance_data: docs/planning/2026-08-11-mvp4-content-balance-v1.md
+phase_b_record: docs/planning/2026-08-11-mvp4-phase-b-definition-of-ready.md
 implementation_status: NOT_STARTED
-phase_b_status: MUST_REVALIDATE_BEFORE_BUILD
+phase_b_status: PASS
+validated_against_project_main: 11a81208ec9ad7ca9f4a044d3226e1be0ea25f76
+validated_godot_engine: 4.7.1
 ```
 
 ## 1. Problem this contract closes
 
-DEC-002의 first-pass content는 다음을 요구한다.
+DEC-2026-08-11-002 requires:
 
-- 일부 base item이 2개 이상의 `RunModifierSet` field를 동시에 제공한다.
-- 8개 strong-spatial item이 인접 tag/id, distinct-neighbor count, once/cap 조건에 따라 modifier를 추가한다.
-- 3개 combo result가 여러 modifier 축을 동시에 제공한다.
-- reward weighting이 school affinity / combo-core / active tag를 읽는다.
+- base items with one or more static `RunModifierSet` deltas;
+- strong-spatial items whose orthogonal neighbors add bounded modifiers;
+- 3 combo results with multi-axis modifier payloads;
+- reward weighting based on affinity / combo-core / active build tags;
+- deterministic seeded reward and resolver evidence.
 
-현재 MVP-3 `ItemDefinition`의 `effect_kind + effect_value` 한 쌍만으로는 이 내용을 모두 표현할 수 없다. 현재 MVP-4 implementation plan의 T01도 footprint/tag를 추가하지만 multi-modifier/spatial-rule encoding을 아직 명시하지 않는다.
+MVP-3 `ItemDefinition.effect_kind + effect_value` cannot encode this safely by itself. The implementation must not compensate with item-ID branches or a second hidden combat authority.
 
-이 차이를 구현자의 item-id 하드코딩으로 메우지 않는다.
+## 2. Concrete Phase-B representation
 
-## 2. Data-authority requirements
+### 2.1 `RunModifierSet` owns supported modifier fields
 
-Phase B에서 exact Godot 4.7.1 API 형태를 확정하되 다음 의미 계약은 고정한다.
+Add to `scripts/data/run_modifier_set.gd`:
 
-### 2.1 Static modifier payload
+```gdscript
+const SUPPORTED_FIELDS: Array[StringName] = [
+    &"move_speed_pct",
+    &"max_health_flat",
+    &"max_health_pct",
+    &"damage_taken_pct",
+    &"healing_pct",
+    &"normal_kill_gold_pct",
+    &"school_damage_pct",
+    &"non_ultimate_school_damage_pct",
+    &"school_resource_gain_pct",
+    &"ultimate_charge_gain_pct",
+    &"ultimate_power_pct",
+    &"school_status_effect_pct",
+    &"evasion_chance",
+    &"rest_start_heal_pct",
+    &"bongma_familiar_interval_pct",
+    &"cheonsul_reaction_damage_pct",
+    &"guiin_melee_radius_pct",
+    &"heukyeong_marked_crit_bonus",
+    &"heukyeong_mark_duration_pct",
+]
 
-모든 item definition은 최종적으로 **0개 이상 modifier field/value pair**를 데이터로 표현할 수 있어야 한다.
-
-Recommended semantic shape:
-
-```text
-static_modifier_payload:
-  <RunModifierSet field>: <float delta>
-  ...
+static func is_supported_field(field_name: StringName) -> bool
+func add_delta(field_name: StringName, amount: float) -> bool
 ```
 
 Requirements:
 
-- key는 실제 `RunModifierSet` field만 허용한다.
-- unknown field는 silent ignore가 아니라 catalog/test failure 대상으로 둔다.
-- 순서와 무관하게 동일 결과를 내야 한다.
-- 같은 definition 안에서 같은 field가 두 번 정의되는 표현은 허용하지 않는다.
+- this list is the single modifier-field validation authority;
+- unknown fields fail catalog/test validation and are never silently ignored;
+- `add_delta()` returns `false` for unsupported fields and performs no mutation;
+- order of payload entries does not change the result.
 
-### 2.2 Legacy compatibility
+### 2.2 `ItemDefinition` static modifier payload
 
-기존 MVP-3의 `effect_kind/effect_value`는 Task 1 전환 중 회귀 보호를 위해 남길 수 있다.
+Add:
 
-권장 fallback 의미:
+```gdscript
+var static_modifier_payload: Dictionary[StringName, float] = {}
+var spatial_rules: Array[SpatialRuleDefinition] = []
+```
+
+Legacy compatibility rule:
 
 ```text
 if static_modifier_payload is non-empty:
     static_modifier_payload is the static-effect authority
+else if effect_kind names a supported RunModifierSet field:
+    adapt effect_kind/effect_value to one static entry
 else:
-    legacy effect_kind/effect_value is adapted to one-entry payload
+    no static modifier entry
 ```
 
-**두 경로를 동시에 더하지 않는다.** 동일 아이템 효과가 두 번 적용되는 dual authority를 금지한다.
+`school_emblem` keeps its existing selected-school `school_payload` behavior. It is conditional school data, not a second copy of the static payload.
 
-기존 8개 MVP-3 아이템의 값은 migration regression test로 고정한다.
+**Never add legacy and static payloads together.** Existing MVP-3 eight-item values are migration regression targets.
 
-### 2.3 Spatial rule descriptor
+### 2.3 Bounded generic `SpatialRuleDefinition`
 
-`BackpackResolver` 안에서 다음과 같은 item-id 분기를 늘리지 않는다.
+Create `scripts/data/spatial_rule_definition.gd`:
 
-```text
-if item_id == katana ...
-if item_id == shuriken ...
+```gdscript
+extends Resource
+class_name SpatialRuleDefinition
+
+enum Aggregation {
+    ONCE_IF_ANY,
+    PER_DISTINCT_NEIGHBOR,
+}
+
+var required_neighbor_tags: Array[StringName] = []
+var required_neighbor_definition_ids: Array[StringName] = []
+var aggregation: Aggregation = Aggregation.ONCE_IF_ANY
+var max_matches: int = 1
+var modifier_payload: Dictionary[StringName, float] = {}
 ```
 
-대신 strong-spatial item은 definition/catalog가 다음 의미를 데이터로 제공한다.
+MVP-4 deliberately does **not** add an arbitrary relationship DSL. All item spatial rules use the already-approved orthogonal item adjacency relationship.
 
-```yaml
-spatial_rule:
-  relationship: ORTHOGONAL_ADJACENCY
-  required_neighbor_tags: []
-  required_neighbor_definition_ids: []
-  match_semantics: ANY
-  aggregation: ONCE_IF_ANY | PER_DISTINCT_NEIGHBOR
-  max_matches: 1
-  modifier_payload: {}
-```
+Match semantics:
+
+- tag/id requirements use `ANY` semantics;
+- contact edge count never multiplies one neighbor instance;
+- one neighbor matching multiple requirements still counts once for one rule;
+- `PER_DISTINCT_NEIGHBOR` counts distinct neighbor instances up to `max_matches`;
+- every `modifier_payload` key must pass `RunModifierSet.is_supported_field()`;
+- resolver behavior must be independent of item ID.
 
 Initial examples:
 
@@ -102,23 +137,19 @@ shuriken:
     non_ultimate_school_damage_pct: 0.03
 
 greater_summoning_circle:
-  required_neighbor_definition_ids: [school_emblem, barrier_art]
+  required_neighbor_definition_ids: [school_emblem]
+  required_neighbor_tags: [barrier]
   aggregation: ONCE_IF_ANY
   max_matches: 1
   modifier_payload:
     ultimate_charge_gain_pct: 0.12
 ```
 
-Rules:
-
-- contact edge count does not multiply matches.
-- distinct neighbor instance is the counting unit for `PER_DISTINCT_NEIGHBOR`.
-- one neighbor matching multiple required tags still counts once for one rule evaluation.
-- rule result is deterministic and UI-independent.
+The first authoring default remains 8 strong-spatial items, inside the approved 7–9 tuning range.
 
 ### 2.4 Special bag descriptor
 
-현재 planned `BagDefinition`의
+Keep the existing planned simple contract:
 
 ```text
 affected_item_tag
@@ -126,9 +157,7 @@ auxiliary_effect_kind
 auxiliary_effect_value
 ```
 
-는 MVP-4의 **특수 가방 1종** 요구에는 충분하다.
-
-`ninjutsu_l_pouch`:
+For `ninjutsu_l_pouch`:
 
 ```yaml
 affected_item_tag: ninjutsu
@@ -136,13 +165,13 @@ auxiliary_effect_kind: school_resource_gain_pct
 auxiliary_effect_value: 0.04
 ```
 
-여기서는 불필요한 generic rule engine을 추가하지 않는다. 향후 여러 종류의 복잡한 special bag이 실제로 필요할 때 별도 확장을 검토한다.
+One MVP-4 special bag does not justify a second generic rule engine.
 
-### 2.5 Acquisition metadata
+### 2.5 Acquisition metadata and pool boundaries
 
-별도 rarity를 만들지 않는다.
+Do not add rarity.
 
-Reward weighting에 필요한 정보는 가능한 한 기존/DEC-002 tags에서 파생한다.
+Affinity/combo/build metadata stays tag-based:
 
 ```text
 affinity_bongma
@@ -152,73 +181,86 @@ affinity_heukyeong
 combo_core
 ```
 
-`high_value`는 별도 영구 tag가 아니라 first-pass weighting에서 `price >= 40 OR footprint cells >= 4`로 파생한다.
+`high_value` remains derived for boss weighting from `price >= 40 OR footprint cells >= 4`.
 
-### 2.6 Combo-result acquisition exclusion
+`MVP4Catalog` must expose explicit boundaries:
 
-3개 combo result는 `MVP4Catalog`의 전체 item lookup에는 존재해야 하지만 boss/shop/chest base acquisition pool에는 들어가면 안 된다.
-
-권장 경계:
-
-```text
-all_item_definitions
-base_acquisition_item_ids
-combination_result_item_ids
+```gdscript
+static func build_items() -> Dictionary
+static func build_bags() -> Dictionary
+static func build_combinations() -> Dictionary
+static func base_acquisition_item_ids() -> Array[StringName]
+static func combination_result_item_ids() -> Array[StringName]
 ```
 
-`RestRewardController`가 모든 item dictionary를 그대로 random pool로 사용하지 않도록 RED test를 둔다.
+- `build_items()` contains the 19 base items plus 3 combo-result definitions for lookup.
+- `base_acquisition_item_ids()` contains only the 19 directly acquirable base items.
+- boss/shop/chest may not construct pools by blindly iterating all item definitions.
 
-## 3. Determinism requirements
+## 3. Deterministic reward requirements
 
-Reward weighting과 spatial resolution 모두 seed 기반 테스트가 재현 가능해야 한다.
+For every weighted draw:
 
-- candidate id ordering을 canonicalize한 뒤 weighted selection에 넣는다.
-- dictionary iteration order에 결과가 의존하지 않게 한다.
-- adjacency pair는 canonical instance-id ordering으로 deduplicate한다.
-- weighted candidate의 최종 weight는 `minimum..maximum` clamp 후 사용한다.
-- zero/negative effective weight candidate는 first-pass 규칙상 만들지 않는다.
+1. start from explicit eligible IDs;
+2. remove ineligible IDs;
+3. canonical-sort IDs by `StringName` text;
+4. calculate source-specific weight;
+5. clamp to the approved min/max;
+6. use injected/seeded `RandomNumberGenerator`;
+7. remove selected IDs for without-replacement draws.
 
-## 4. Required Phase B checks
+Dictionary iteration order must never determine result identity.
 
-`기획 완료` 뒤 Phase B에서 다음을 모두 닫아야 한다.
+The reusable weighted-selection helper may live in `MVP4Catalog` or `RestRewardController`, but only one authority may exist.
 
-1. Godot 4.7.1에서 선택한 concrete data representation이 Resource/RefCounted/catalog build 방식과 호환되는가.
-2. `RunModifierSet` field validation이 한 군데에 모여 있는가.
-3. legacy `effect_kind/effect_value`와 multi payload가 double-apply되지 않는가.
-4. strong-spatial 8종을 resolver의 item-id hardcode 없이 표현 가능한가.
-5. special bag은 현재 단순 contract로 충분하며 과설계하지 않았는가.
-6. combo result가 base acquisition pool에서 자동 제외되는가.
-7. reward weighting이 seed/injection 가능하고 candidate ordering이 deterministic한가.
-8. T01/T03/T07 RED tests가 위 계약을 직접 증명하는가.
+## 4. Phase-B validation results
 
-하나라도 닫히지 않으면 Phase B `MUST_FIX`이며 Phase C로 넘어가지 않는다.
+```yaml
+checks:
+  concrete_godot_representation: PASS
+  run_modifier_field_validation_single_owner: PASS
+  legacy_no_double_apply_contract: PASS
+  strong_spatial_without_item_id_hardcode: PASS
+  simple_special_bag_contract_sufficient: PASS
+  combo_result_base_pool_exclusion: PASS
+  deterministic_weighted_candidate_order: PASS
+  t01_t03_t07_red_coverage_defined: PASS
+open_must_fix: 0
+```
 
-## 5. Planned RED evidence additions
+Godot 4.7 documentation supports custom `Resource` classes, typed arrays and typed dictionaries. The catalog is code-authored, so this contract does not require Inspector-authored nested generic data.
 
-### T01 catalog
+## 5. Required RED evidence
 
-- multi-axis item payload가 정확한 field/value를 반환.
-- unknown modifier field를 가진 catalog fixture는 validation failure.
-- 기존 MVP-3 8종의 legacy 값이 migration 후 동일.
-- combo result ids는 all-item lookup에는 있고 base acquisition ids에는 없음.
+### T01 catalog / data
+
+- 19 base item IDs + 3 combo-result IDs unique/resolvable.
+- 5 purchasable bags + starting 4x3 bag unique/resolvable.
+- multi-axis static payload exact values.
+- unsupported modifier key makes catalog validation fail.
+- existing MVP-3 eight-item values unchanged through adapter semantics.
+- combo-result IDs exist in lookup but never in base acquisition IDs.
+- every spatial rule modifier key validates.
 
 ### T03 resolver
 
-- katana: element-style neighbor 1개/2개 모두 spatial bonus 1회.
-- shuriken: 3 distinct ninjutsu neighbors까지 증가, 4번째는 cap.
-- shared edge가 2개여도 same neighbor는 1회.
-- same geometry/input은 반복 resolve에서 byte-equivalent semantic output.
+- katana: one or multiple matching element-style neighbors → one bonus application.
+- shuriken: distinct ninjutsu neighbors accumulate to max 3.
+- same neighbor sharing multiple edges counts once.
+- same neighbor matching multiple declared requirements counts once.
+- no strong-spatial item requires resolver `if item_id == ...` behavior.
+- identical state/catalog inputs produce equivalent deterministic modifier output.
 
 ### T07 rewards
 
-- current-school guaranteed option.
-- fixed seed + same state → same 3 boss options.
-- combo result never appears in boss/shop/chest.
-- chest recipe-completion bonus는 0이고 boss/shop과 역할이 섞이지 않음.
+- boss options are 3 distinct IDs and include at least one current-school-affinity candidate.
+- fixed seed + same state produces identical ordered boss options.
+- combo results never appear in boss/shop/chest.
+- chest recipe-completion bonus remains zero.
+- source weighting rules remain distinct.
+- canonical candidate ordering occurs before random selection.
 
 ## 6. Scope guard
-
-이 contract는 새로운 product feature가 아니다.
 
 ```yaml
 new_rarity: false
@@ -226,7 +268,21 @@ new_acquisition_pillar: false
 new_combo_tier: false
 new_combat_system: false
 new_save_schema: false
+new_relationship_dsl: false
 resolver_item_id_hardcode: forbidden
+dual_modifier_authority: forbidden
 ```
 
-목표는 이미 승인된 DEC-002 콘텐츠를 **데이터 중심, deterministic, testable**하게 구현할 수 있도록 Phase B의 기술 선택 범위를 좁히는 것이다.
+This contract is a technical encoding of already-approved DEC-2026-08-11-002 content. It is not a new product feature.
+
+## 7. Phase transition
+
+```yaml
+phase_b_status: PASS
+phase_c_authorized: true
+next_execution: T01 focused RED
+runtime_evidence: NOT_RUN
+human_evidence: NOT_RUN
+```
+
+Phase C must still verify the fresh local execution identity before authoring and cannot claim runtime success from this planning validation.
