@@ -16,7 +16,7 @@
 10. Phase-C T01 handoff: `docs/handoffs/2026-08-11-mvp4-phase-c-t01-codex-handoff.md`
 11. actual current code/scenes/data/tests and current Base `main`
 
-The Phase-B record is a narrow later technical amendment to T01/T03/T07 and old phase-status wording. Product authority remains Decisions/L2.
+The Phase-B record is a narrow later technical amendment to T01/T03/T07 and old phase-status wording. Product authority remains Decisions/L2. For mutable Google Sheet access/synchronization state, this router supersedes older pre-recovery `403` status snippets elsewhere; those older snippets are not current permission authority.
 
 ## Current stage
 
@@ -28,6 +28,8 @@ phase_b_merge_main: 225d68e7545062e3c2bc720562263fe6a67131bd
 phase_b_post_merge_gut: PASS_RUN_31454048030
 phase_c_handoff_merge_main_before_postmerge_fix: 4d0b3f39581103500675ad5ac7e89da4805a6114
 phase_c_handoff_post_merge_gut: PASS_RUN_31454909432
+phase_c_handoff_postmerge_fix_main: 318d90efa0549d1e21266e011d63db98dfcade3d
+phase_c_handoff_postmerge_fix_gut: PASS_RUN_31455361366
 base_main_observed_phase_b: 315c66eea9614c284b9c11c4d522141065dfa4b0
 mvp4_product_design: APPROVED
 mvp4_decision_001: INTEGRATED
@@ -80,7 +82,7 @@ After `git fetch origin --prune`, the local executor must:
 - allow pre-execution main drift only in those two operational-document paths;
 - stop before editing if any other path has changed.
 
-This is an execution-safety rule, not permission to ignore future real code/canon drift.
+This is an execution-safety rule, not permission to ignore future real code/canon drift. The Google Sheet synchronization performed after T01 branch creation changes the external Sheet plus this already-allowed `ACTIVE_CONTEXT.md` only; it does not add a new package-branch code/canon drift path.
 
 ## T01 package boundary
 
@@ -143,17 +145,33 @@ Codex may not create/switch branches, create/update/merge PRs, force-push, amend
 
 The integrated runtime remains MVP-3: legacy single-effect ItemDefinition, owned-count modifier authority, immediate shop activation, linear RESULT→SHOP→FATE→PREVIEW, and no spatial backpack/elite/chest/Workbench runtime. These are implementation targets, not already-fixed behavior.
 
-## Google Sheet blocker
+## Google Sheet synchronization
+
+The connected project Google Sheet is now writable and synchronized for the MVP-4 planning surfaces that were previously stale.
 
 ```yaml
+spreadsheet_id: 1zGVjsvYQe057W6hiAEO2AkIdO1MBJdhVBYlGW92vd3A
 project_sheet_read: PASS
-project_sheet_sync: GITHUB_UPDATE_PENDING_SHEET
-project_sheet_write: BLOCKED_USER_ACTION_403
-classification: LOCAL_TASK_BLOCKER
-required_user_action: grant editor permission or reconnect a writer-capable Google account
+project_sheet_permission_observed: ANYONE_WRITER
+project_sheet_write_probe: PASS_2026_08_11
+project_sheet_write: PASS
+project_sheet_sync: SYNCED_TO_CURRENT_MVP4_CANON_2026_08_11
+classification: NO_BLOCKER
 ```
 
-Known stale Sheet areas include old staged rotation, future-combo labeling, historical 5/10/15 timing, and missing current benchmark rows. Do not report Sheet `SYNCED`; do not block independent Phase-C execution solely for this permission.
+Verified synchronized surfaces:
+
+- `핵심요약`: MVP-4 now explicitly includes size differences, item/bag 90° rotation and selected L/T bags; deep set/curse/arbitrary complex shapes remain later.
+- `백팩`: old staged-rotation wording removed; 6x6 / 4x3 / size / selected L/T bag / 90° rotation are marked MVP-4 basics; set/curse are future candidates.
+- `MVP범위`: old `회전/복잡한 모양은 제외` wording removed; regular items remain rectangular while selected L/T bags and 90° rotation are included.
+- `휴식구간흐름`: active flow now uses ~5-minute segment boss → RESULT → forced BOSS_REWARD → REST Workbench, with ~3-minute elite context.
+- `인법과조합`: only 물안개 / 뇌명도 / 폭렬탄 are marked MVP-4; 독무 / 번개걸음 remain clearly labeled `후속 후보`.
+- `벤치마킹`: refreshed Backpack Battles / Backpack Hero / DRG Survivor / Sproggiwood / Resogun evidence and DEC-2026-08-11-002 Hybrid A conclusion added.
+- `변경메모`: historical 2026-07-10 rows are preserved and new 2026-08-11 superseding rows record current rotation, combo, cadence, benchmark and sync decisions.
+
+Post-write searches returned zero matches for the stale active phrases `초기부터 전부 열지 않음`, `회전/복잡한 모양은 제외`, and `5/10/15분 보스 처치`; `후속 후보` correctly returns exactly the two future combination rows.
+
+Older `403 / GITHUB_UPDATE_PENDING_SHEET` snippets in `docs/CURRENT_CONFIRMED_DECISIONS.md` or `docs/DOCUMENTATION_MAP.md` describe the pre-permission-recovery observation and are stale as mutable access-state evidence. Do not use them to override this fresh verified Sheet state. They are intentionally not edited before T01 because the package branch preflight permits only the two existing operational-doc drift paths; product decisions in those files remain authoritative and unchanged.
 
 ## Environment facts
 
