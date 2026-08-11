@@ -2,7 +2,7 @@
 
 > 다음 작업자가 현재 GitHub 상태를 빠르게 복원하기 위한 mutable router다.
 > 최상위 프로젝트 규칙은 `AGENTS.md`, 활성 실행/전달 계약은 `PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION_v4.5_r2.md`, 제품 결정은 `docs/CURRENT_CONFIRMED_DECISIONS.md`, 승인 MVP-4 상세 설계는 `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`, 구현 연결은 `docs/traceability/2026-08-11-mvp4-backpack-combination-traceability.md`, TDD 실행 계획은 `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md`를 본다.
-> MVP-4 콘텐츠 수치 기본값은 `docs/planning/2026-08-11-mvp4-content-balance-v1.md`, 외부 비교 근거는 `docs/research/2026-08-11-mvp4-backpack-survivors-benchmark.md`를 본다.
+> MVP-4 콘텐츠 수치 기본값은 `docs/planning/2026-08-11-mvp4-content-balance-v1.md`, 외부 비교 근거는 `docs/research/2026-08-11-mvp4-backpack-survivors-benchmark.md`, 다중/공간 효과의 Phase-B 데이터 준비 계약은 `docs/planning/2026-08-11-mvp4-content-data-contract.md`를 본다.
 > 이 파일은 자기 자신이 포함된 최종 `main` SHA를 소유하지 않는다. 재개 시 GitHub `main`을 항상 재조회한다.
 
 Last updated: 2026-08-11
@@ -22,6 +22,7 @@ mvp4_planning_post_merge_gut: PASS_RUN_31437135591
 mvp4_hybrid_content_decision: DEC_2026_08_11_002_APPROVED_PENDING_CURRENT_PLANNING_PR
 mvp4_content_balance_data: docs/planning/2026-08-11-mvp4-content-balance-v1.md
 mvp4_benchmark_evidence: docs/research/2026-08-11-mvp4-backpack-survivors-benchmark.md
+mvp4_content_data_contract: docs/planning/2026-08-11-mvp4-content-data-contract.md
 mvp4_implementation_branch: NONE
 mvp4_implementation_pr: NONE
 active_delivery_contract: PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION_v4.5_r2.md
@@ -95,6 +96,7 @@ The user's approval of the hybrid content recommendation and continuous planning
 - 5 purchasable bags preserve the existing `normal 4 + special 1` product boundary; only `ninjutsu_l_pouch` has an initial special auxiliary effect.
 - Backpack/Survivors/industry evidence was refreshed with Backpack Battles, Backpack Hero, Deep Rock Galactic: Survivor, Sproggiwood postmortem, and Resogun postmortem; conclusions are ADAPT/AVOID project translations rather than benchmark-only decisions.
 - Initial reward weights, bag prices, item effects, combo result values, first-REST onboarding, formative playtest thresholds, telemetry candidates, and rollback signals are written as `RECOMMENDED_DEFAULT`, not final balance proof.
+- The current T01 single `effect_kind/effect_value` surface does not by itself encode DEC-002 multi-axis and strong-spatial values; a separate content-data readiness contract now forbids item-id hardcoding/double authority and requires concrete data encoding to close in Phase B before BUILD.
 - The directional-input collision is resolved by a visible mutually exclusive `전체 이동 모드`.
 - L2 feature spec status is `APPROVED`.
 - L3 traceability maps AC-01..AC-15 with no unmapped acceptance criterion; `coverage_status` remains `GAP` because actual implementation/evidence do not exist.
@@ -120,11 +122,11 @@ Until the user explicitly declares:
 After `기획 완료`, **do not jump directly to T01**. Execute PHASE B first:
 
 1. re-query current GitHub `main`, all open/draft PRs, current relevant Base `main`, and connected Sheet state;
-2. reread `AGENTS.md` → active r2 contract → Decision → this router → approved L2 → L3 → implementation plan → DEC-002 balance/benchmark docs;
+2. reread `AGENTS.md` → active r2 contract → Decision → this router → approved L2 → L3 → implementation plan → DEC-002 balance/benchmark/data-contract docs;
 3. decompose the approved feature into implementation units and reclassify each relevant current code/data/scene/test surface as current / already-reflected / conflicting-stale / missing;
 4. revalidate benchmark/industry evidence only where it can materially change implementation detail, without reopening approved product rules by default;
 5. verify task order, dependencies, protected scope, rollback boundaries, exact file/API paths, and required verification targets against the current repository tree;
-6. verify that the T01/T03/T07 plan can consume DEC-002 tags, spatial effects and acquisition weights without creating a second authority or unplanned combat schema;
+6. close every `docs/planning/2026-08-11-mvp4-content-data-contract.md` MUST_REVALIDATE item: multi-modifier static payload, generic spatial rule descriptor, legacy no-double-apply, combo-result pool exclusion, deterministic weighted candidate order and T01/T03/T07 RED coverage;
 7. run required adversarial review / Superpowers planning checks and close all `MUST_FIX` readiness findings;
 8. close Definition of Ready with explicit evidence that no material Phase B blocker remains;
 9. only after PHASE B PASS enter PHASE C and begin T01 with a focused failing GUT test before production GREEN code.
@@ -214,6 +216,7 @@ mvp4_planning_post_merge_ci: PASS_RUN_31437135591
 mvp4_hybrid_content_decision: DEC_2026_08_11_002_APPROVED_PENDING_CURRENT_PLANNING_PR
 mvp4_hybrid_benchmark_industry_review: WRITTEN_CURRENT_PLANNING_BRANCH
 mvp4_content_balance_v1: WRITTEN_CURRENT_PLANNING_BRANCH
+mvp4_content_data_contract: WRITTEN_CURRENT_PLANNING_BRANCH_PHASE_B_MUST_REVALIDATE
 active_delivery_contract_v4_5_r2: BYTE_EXACT_INTEGRATED_PR_10
 active_delivery_contract_v4_5_r2_post_merge_ci: PASS_RUN_31442268566
 mvp4_explicit_planning_complete_declaration: NOT_RECEIVED
@@ -252,12 +255,13 @@ No MVP-4 runtime PASS claim is valid yet. The formative human targets in the con
 6. approved L2 spec
 7. `docs/research/2026-08-11-mvp4-backpack-survivors-benchmark.md`
 8. `docs/planning/2026-08-11-mvp4-content-balance-v1.md`
-9. L3 traceability packet
-10. implementation plan
-11. current implementation hotspots from the re-queried `main`
-12. project Google Sheet when writer/read access is available
-13. current Base main for relevant contract drift
+9. `docs/planning/2026-08-11-mvp4-content-data-contract.md`
+10. L3 traceability packet
+11. implementation plan
+12. current implementation hotspots from the re-queried `main`
+13. project Google Sheet when writer/read access is available
+14. current Base main for relevant contract drift
 
 ## Next executable step
 
-**Finish the current DEC-002 planning/document PR review and merge gates. Then remain at the explicit `기획 완료` gate. When that declaration arrives, run PHASE B Final Planning Review / Definition of Ready against current repository/Base/Sheet evidence. Only after PHASE B PASS may PHASE C production implementation begin with T01 RED.**
+**Finish the current DEC-002 planning/document PR review and merge gates. Then remain at the explicit `기획 완료` gate. When that declaration arrives, run PHASE B Final Planning Review / Definition of Ready against current repository/Base/Sheet evidence, including the content-data readiness contract. Only after PHASE B PASS may PHASE C production implementation begin with T01 RED.**
