@@ -1,167 +1,126 @@
 # ACTIVE_CONTEXT
 
-> Mutable resume router for `ninja-survival-godot`. Re-query GitHub `main` every time; this file does not own the SHA of the commit that contains itself.
+> Mutable resume router for `ninja-survival-godot`. Always re-query current GitHub `main` and open/draft PRs; this file does not own the SHA of the commit containing itself.
 
-## Authority / read order
+## Read first
 
-1. current project `main` + open/draft PR inventory
-2. `AGENTS.md`
-3. `PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION_v4.5_r2.md`
-4. `docs/CURRENT_CONFIRMED_DECISIONS.md`
-5. approved L2: `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`
-6. DEC-002 defaults: `docs/planning/2026-08-11-mvp4-content-balance-v1.md`
-7. benchmark evidence: `docs/research/2026-08-11-mvp4-backpack-survivors-benchmark.md`
-8. validated data contract: `docs/planning/2026-08-11-mvp4-content-data-contract.md`
-9. Phase-B record: `docs/planning/2026-08-11-mvp4-phase-b-definition-of-ready.md`
-10. L3: `docs/traceability/2026-08-11-mvp4-backpack-combination-traceability.md`
-11. TDD plan: `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md`
-12. current actual code / scenes / data / tests
-13. connected Google Sheet where relevant
-14. current Base `main` for relevant contract drift
+1. `AGENTS.md`
+2. `PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION_v4.5_r2.md`
+3. `docs/CURRENT_CONFIRMED_DECISIONS.md`
+4. approved L2: `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`
+5. DEC-002 defaults: `docs/planning/2026-08-11-mvp4-content-balance-v1.md`
+6. validated data contract: `docs/planning/2026-08-11-mvp4-content-data-contract.md`
+7. Phase-B record: `docs/planning/2026-08-11-mvp4-phase-b-definition-of-ready.md`
+8. L3 traceability: `docs/traceability/2026-08-11-mvp4-backpack-combination-traceability.md`
+9. 12-task plan: `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md`
+10. Phase-C T01 handoff: `docs/handoffs/2026-08-11-mvp4-phase-c-t01-codex-handoff.md`
+11. actual current code/scenes/data/tests and current Base `main`
 
-The Phase-B record is a narrow later technical amendment to T01/T03/T07 and the phase-status sentence in the older plan. It does not replace Decisions/L2 product authority or the 12-task execution order.
+The Phase-B record is a narrow later technical amendment to T01/T03/T07 and old phase-status wording. Product authority remains Decisions/L2.
 
-Last updated: 2026-08-11
-
-## Current baseline / gates
+## Current stage
 
 ```yaml
 project: alsdmlals4-eng/ninja-survival-godot
-phase_b_entry_main: 11a81208ec9ad7ca9f4a044d3226e1be0ea25f76
-phase_b_entry_open_or_draft_prs: 0
-base_main_observed_phase_b: 315c66eea9614c284b9c11c4d522141065dfa4b0
 latest_integrated_runtime_milestone: MVP-3
+phase_b_review_baseline_main: 11a81208ec9ad7ca9f4a044d3226e1be0ea25f76
+phase_b_merge_main: 225d68e7545062e3c2bc720562263fe6a67131bd
+phase_b_post_merge_gut: PASS_RUN_31454048030
+base_main_observed_phase_b: 315c66eea9614c284b9c11c4d522141065dfa4b0
 mvp4_product_design: APPROVED
 mvp4_decision_001: INTEGRATED
 mvp4_decision_002: INTEGRATED_PR_12
-mvp4_l2: APPROVED_AND_INTEGRATED
-mvp4_l3: INTEGRATED_COVERAGE_GAP
-mvp4_implementation_plan: INTEGRATED_12_TASKS_WITH_PHASE_B_AMENDMENT
 mvp4_explicit_planning_complete_declaration: RECEIVED_2026_08_11
 phase_a: COMPLETE
 phase_b_final_planning_review: PASS
-phase_b_record: docs/planning/2026-08-11-mvp4-phase-b-definition-of-ready.md
 phase_b_open_must_fix: 0
 phase_b_open_user_decision_required: 0
-phase_c_build: AUTHORIZED_NOT_STARTED
-next_task: T01_SPATIAL_DATA_CONTRACTS_FOCUSED_RED
-mvp4_implementation_branch: NONE_AT_PHASE_B_ENTRY
-mvp4_implementation_pr: NONE_AT_PHASE_B_ENTRY
+phase_c_build: AUTHORIZED_AWAITING_LOCAL_EXECUTOR
+phase_c_t01_handoff: docs/handoffs/2026-08-11-mvp4-phase-c-t01-codex-handoff.md
+phase_c_t01_remote_branch: impl/mvp4-t01-spatial-data-contracts
+phase_c_t01_branch_base: 225d68e7545062e3c2bc720562263fe6a67131bd
+phase_c_t01_status: READY_FOR_LOCAL_REDGREEN_EXECUTION
 mvp4_production_code: NOT_STARTED
-mvp4_gut_runtime_evidence: NOT_RUN
+mvp4_runtime_evidence: NOT_RUN
 mvp4_human_qa: NOT_RUN
 mvp4_android_device_qa: NOT_RUN
 ```
 
-`PHASE_B_PASS` is readiness evidence only. Do not report T01 GREEN, MVP-4 runtime PASS, human usability PASS, Android PASS, or MVP-4 completion until the corresponding execution evidence exists.
+`PHASE_B_PASS` and the prepared T01 branch/handoff are readiness evidence only. Do not claim T01 GREEN or any MVP-4 runtime/human PASS until actual local execution evidence exists.
 
-## Active delivery contract
-
-```yaml
-active_delivery_contract: PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION_v4.5_r2.md
-contract_version: 4.5
-contract_revision: 2026-08-11-r2
-contract_source_bytes: 77734
-contract_source_lf_count: 2849
-contract_source_sha256: 3f898b7e2749a2e1900e9df48183f02d4fbc735fd0e80297f28bb09317144de4
-contract_source_git_blob_sha1: de7c6f818a4c96d2a02edea5eaff33bb1c39e8da
-contract_source_path_conflict: SWITCHY_EXPRESS_STALE_PATH_OVERRIDDEN_BY_AGENTS
-ninja_survival_local_and_godot_path: C:/Users/user/Documents/GitHub/Ninza/ninja-survival-godot
-```
-
-Authoritative phase chain:
+## Phase chain
 
 ```text
-PHASE A — planning
+PHASE A — planning [COMPLETE]
 → explicit `기획 완료` [RECEIVED]
-→ PHASE B — final planning review / DoR [PASS]
-→ PHASE C — PowerShell / Codex / Godot BUILD [AUTHORIZED, NOT STARTED]
-→ T01 RED → GREEN → ... → T12 verification/closure
+→ PHASE B — Final Planning Review / DoR [PASS]
+→ PHASE C — PowerShell / Codex / Godot BUILD [AUTHORIZED]
+→ T01 focused RED [NEXT / NOT RUN]
+→ T01 GREEN + regression + package review
+→ T02 ... T12
 ```
 
-## Phase-B technical closure
+## T01 package boundary
 
-The validated content-data contract now requires:
+Allowed package branch:
 
-- `RunModifierSet` owns the supported modifier field list and additive helper;
-- `ItemDefinition.static_modifier_payload: Dictionary[StringName, float]`;
-- `ItemDefinition.spatial_rules: Array[SpatialRuleDefinition]`;
-- new bounded `scripts/data/spatial_rule_definition.gd` for orthogonal adjacency only;
-- no resolver item-ID branches for strong-spatial content;
-- static payload wins over legacy `effect_kind/effect_value`; never double-apply;
-- existing `school_emblem.school_payload` remains selected-school conditional behavior;
-- explicit `base_acquisition_item_ids()` and `combination_result_item_ids()` boundaries;
-- canonical-sort candidate IDs before seeded weighted selection;
-- T01/T03/T07 RED tests directly prove those contracts.
+`impl/mvp4-t01-spatial-data-contracts`
 
-The first content authoring default remains 8 strong-spatial items, while the approved product tuning range remains 7–9.
+Allowed modify:
 
-## Expected current runtime mismatch
+- `scripts/data/item_definition.gd`
+- `scripts/data/run_modifier_set.gd`
+- `tests/unit/test_script_contracts.gd`
 
-At the Phase-B entry main, runtime is intentionally still MVP-3:
+Allowed create:
 
-- `ItemDefinition` has only legacy single-effect fields plus school payload;
-- `RunBuildState.owned_items` count recomputes item modifiers immediately;
-- shop purchase immediately affects owned/modifier state;
-- `StageFlowController` still uses `RESULT → SHOP → FATE → PREVIEW`;
-- `RestFlowUI` still uses separate Result/Shop/Fate/Preview views;
-- no BackpackState/Resolver/Session/CombinationResolver;
-- no RestRewardController, StageElite/chest token, forced boss reward, or Persistent Workbench;
-- no MVP-4 production tests.
+- `scripts/data/spatial_rule_definition.gd`
+- `scripts/data/bag_definition.gd`
+- `scripts/data/item_instance.gd`
+- `scripts/data/bag_instance.gd`
+- `scripts/data/combination_definition.gd`
+- `scripts/data/mvp4_catalog.gd`
+- `tests/unit/test_mvp4_catalog.gd`
 
-These are T01–T11 implementation targets, not planning defects. Re-query actual code before every Phase-C execution block.
+Read-only regression references include `scripts/data/mvp3_catalog.gd`, `scripts/core/run_build_state.gd`, `tests/unit/test_run_build_state.gd`, and `project.godot`.
 
-## Protected MVP-4 scope
+Codex may not create/switch branches, create/update/merge PRs, force-push, amend, change `project.godot`, modify UI/Scene/controllers, or begin T02 in this package. GPT reviews the pushed package branch and owns PR/merge after evidence.
+
+## Phase-B technical contract to preserve
+
+- `RunModifierSet` owns supported modifier fields and the additive helper.
+- `ItemDefinition.static_modifier_payload: Dictionary[StringName, float]`.
+- `ItemDefinition.spatial_rules: Array[SpatialRuleDefinition]`.
+- `SpatialRuleDefinition` is bounded to approved orthogonal-neighbor semantics; no general relationship DSL.
+- no resolver item-ID branches for strong-spatial content.
+- new static payload and legacy `effect_kind/effect_value` never double-apply.
+- `school_emblem.school_payload` remains selected-school conditional behavior.
+- `MVP4Catalog` separates base acquisition IDs from combo-result IDs.
+- candidate IDs are canonical-sorted before seeded weighted selection.
+- first catalog default = 8 strong-spatial; approved product tuning range = 7–9.
+
+## Protected MVP-4 product scope
 
 - fixed `6x6` board / starting `4x3` active area;
 - item and bag 90° rotation;
-- regular items rectangular; selected L/T bags only;
-- bags orthogonally connected, no overlap; items only on active cells;
-- individual bag move carries overlapping item candidates but never another bag;
-- orthogonal item adjacency; same pair effect once regardless shared-edge count;
-- special bag applies on at least one overlapped item cell; distinct special bags may each apply;
-- 6-slot REST work buffer; buffer contributes zero combat/spatial/combo effect and must be empty before Fate;
-- boss reward = quality/choice, shop = control/economy, chest = quantity/randomness;
-- ~3-minute elite opportunity, ~5-minute segment boss;
-- explicit atomic first-tier combinations: water_mist, thunder_blade, explosive_bomb;
-- Persistent Workbench with board central;
-- mouse, keyboard/gamepad and touch full paths;
-- visible mutually-exclusive whole-layout movement mode;
+- rectangular regular items and selected L/T bags;
+- connected orthogonal bag region, no bag overlap, items only on active cells;
+- 6-slot REST work buffer, zero-buffer Fate gate;
+- orthogonal adjacency, same pair once; one-cell special-bag overlap activation;
+- boss quality / shop control / chest quantity-random acquisition roles;
+- ~3-minute elite opportunity / ~5-minute segment boss;
+- 3 explicit atomic first-tier combinations only;
+- Persistent Workbench; mouse + keyboard/gamepad + touch completion paths;
+- visible mutually-exclusive whole-layout move mode;
 - UI renders snapshots/emits intent only;
-- Fate is final REST commit boundary;
-- DEC-002 hybrid direction: every base item useful alone, 7–9 strong-spatial tuning range, 8 first default;
-- 5 bags remain 4 normal + 1 special;
-- no new save system, rarity layer, deeper combo tiers, arbitrary polyomino regular items, deep set/curse system or unrelated refactor.
+- DEC-002 hybrid direction and 4-normal+1-special bag boundary;
+- no new save system, rarity layer, deeper combo tiers, arbitrary polyomino regular items or deep set/curse system.
 
-## Task order
+## Expected runtime before T01
 
-```text
-T01 data contracts/catalog
-→ T02 BackpackState
-→ T03 BackpackResolver
-→ T04 RestBackpackSession
-→ T05 CombinationResolver
-→ T06 committed modifier migration
-→ T07 boss/shop/chest acquisition
-→ T08 StageElite/cadence/phase flow
-→ T09 Persistent Workbench UI
-→ T10 input/responsive parity
-→ T11 full composition/Fate boundary
-→ T12 full verification/human evidence/traceability closure
-```
-
-Use strict focused RED → observe intended failure → minimal GREEN → relevant regression → exact diff review → commit explicit paths. Independent review checkpoints remain after T03, T07, T10 and T11.
+The current integrated runtime is intentionally MVP-3: legacy single-effect ItemDefinition, owned-count modifier authority, immediate shop activation, linear RESULT→SHOP→FATE→PREVIEW, and no spatial backpack/elite/chest/Workbench runtime. These are implementation targets, not already-fixed behavior.
 
 ## Google Sheet blocker
-
-The project Google Sheet is readable but write remains blocked by `403 PERMISSION_DENIED`; no attempted write is considered applied.
-
-Known stale areas include:
-
-- `백팩`: old staged rotation wording;
-- `인법과조합`: future combinations not clearly separated from current 3;
-- `변경메모`: old `5/10/15분` flow as historical text;
-- `벤치마킹`: missing current DEC-002 benchmark rows.
 
 ```yaml
 project_sheet_read: PASS
@@ -171,7 +130,7 @@ classification: LOCAL_TASK_BLOCKER
 required_user_action: grant editor permission or reconnect a writer-capable Google account
 ```
 
-Do not report Sheet `SYNCED` until a write and reread succeed. Do not block independent Phase-C implementation solely because of this Sheet permission.
+Known stale Sheet areas include old staged rotation, future-combo labeling, historical 5/10/15 timing, and missing current benchmark rows. Do not report Sheet `SYNCED`; do not block independent Phase-C execution solely for this permission.
 
 ## Environment facts
 
@@ -180,10 +139,11 @@ godot_engine_target: 4.7.1
 gut_target: 9.7.1
 godot_ai_user_reported_local_version: 3.1.4
 godot_ai_status: INFORMATIONAL_UNTIL_FRESH_LOCAL_VERIFICATION
+local_windows_powershell_codex_godot_execution_in_this_chat: UNAVAILABLE
 ```
 
-Godot AI 3.1.4 is separate from the Godot Engine version. Phase C must verify the fresh local PowerShell/Codex/Godot authoring route and any HiGodot/Hera/Godot-AI availability before using or claiming it.
+Godot AI 3.1.4 is separate from Godot Engine 4.7.1. The local executor must freshly verify Codex, Godot Engine, GUT and any Godot-AI/HiGodot/Hera route before use.
 
 ## Next executable step
 
-**Enter PHASE C only after this Phase-B readiness batch is integrated and current main is re-read. Start T01 with the focused RED tests required by the validated content-data contract. The current chat does not claim local Windows PowerShell/Codex/Godot process execution until that route is actually available and verified.**
+**On the user Windows machine, execute the PowerShell preflight and Codex prompt in `docs/handoffs/2026-08-11-mvp4-phase-c-t01-codex-handoff.md`. Observe the focused T01 RED before any production GREEN code. After Codex pushes the allowed T01 branch, GPT must verify the exact remote diff/evidence, create the package PR, run adversarial review and exact-head CI, merge only if gates pass, then perform merged-main readback before preparing T02.**
