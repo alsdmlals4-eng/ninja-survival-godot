@@ -4,9 +4,9 @@
 결정 ID: `DEC-2026-08-20-024`
 기준 branch: `docs/world-core-planning-20260820`
 
-선행 정본:
+관련 정본:
 
-- `docs/planning/2026-08-20-current-canon-checkpoint-dec014-023.md`
+- `docs/planning/2026-08-20-current-canon-checkpoint-dec014-024.md`
 - `docs/planning/2026-08-20-school-traces-ecosystems-progressive-gimmicks.md`
 - `docs/planning/2026-08-20-run-cadence-planning.md`
 - `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`
