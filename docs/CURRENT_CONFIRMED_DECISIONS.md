@@ -4,8 +4,8 @@
 > 상세 규칙 전문은 등록된 분야/기능 정본을 참조하며 이 파일에 중복 복제하지 않는다.
 > 구현 완료 상태는 이 파일이 아니라 `docs/ACTIVE_CONTEXT.md`가 소유한다.
 
-Last updated: 2026-08-11
-Current project baseline observed for this update: `main@619cde1efb0a8d35485d810b29a4efa361fb2b19`
+Last updated: 2026-08-20
+Current project baseline observed for this planning checkpoint: `main@a78cd84bac1a1d7e9b4fa5809622a28de859528e`
 
 ## MVP-4 — Backpack / Combination Basics
 
@@ -115,6 +115,7 @@ production_gate: EXPLICIT_USER_DECLARATION_기획_완료_REQUIRED
 - 실제로 처치했을 때만 chest token 1개를 획득한다.
 - **약 5분대에 세그먼트 보스**가 등장한다.
 - 과거 현재 문서의 `5/10/15분 중간보스` 표현은 `3분대 엘리트 + 5분 세그먼트 보스`로 대체된다.
+- 이 문구의 최신 시간 의미는 아래 `DEC-2026-08-20-013`이 우선한다: 보스는 세그먼트 내부 4분대에 진입해 5분대 결산을 목표로 하며, 5:00은 hard fail이 아니다.
 
 ### Decision — REST flow and commit boundary
 
@@ -259,3 +260,126 @@ project_sheet_write: BLOCKED_USER_ACTION_403_RECONFIRMED_2026_08_11
 ```
 
 Google Sheet는 2026-08-11 재조회에 성공했지만, 동일 세션의 write 재시도도 `403 PERMISSION_DENIED`였다. 과거 회전 후단개방/5·10·15분 표현과 일부 후속 조합 후보의 MVP-4 범위 표기가 남아 있으므로 writer 권한이 해결되기 전까지 `SYNCED`로 보고하지 않는다.
+
+---
+
+## 2026-08-20 World / Run Core Planning Checkpoint
+
+```yaml
+status: APPROVED_PLANNING_ACTIVE
+implementation: NOT_STARTED_BY_THIS_CHECKPOINT
+planning_branch: docs/world-core-planning-20260820
+main_observed_before_planning: a78cd84bac1a1d7e9b4fa5809622a28de859528e
+production_gate: EXPLICIT_USER_DECLARATION_기획_완료_REQUIRED
+notion_world_owner: 09 · 세계관 · 핵심 스토리
+notion_system_owner: 08 · 핵심 시스템 · 상세
+```
+
+이 checkpoint는 기존 MVP-0~3 integrated runtime과 승인된 MVP-4 백팩/Workbench 결정 위에 **세계관·플레이어 판타지·4유파 장기 정체성·첫 공세·런 cadence**를 추가한다. 제품 코드/Scene/Resource/runtime 변경 권한은 부여하지 않는다.
+
+### DEC-2026-08-20-003 · 「닌자의 신」 전설
+
+- 옛 전설에는 **천하가 난세에 빠질 때 「닌자의 신」이 나타나 혼란을 평정한다**는 이야기가 전해진다.
+- 플레이어는 태어날 때부터 선택된 구원자/예언의 혈통이 아니다.
+- 실제 생존·성장·빌드·평정의 업적 끝에 후대가 새로운 「닌자의 신」이라 부를 만한 전설이 된다.
+- 감정선: `살아남는다 → 강해진다 → 자기 방식을 만든다 → 난세를 평정한다 → 전설이 된다`.
+
+### DEC-2026-08-20-004 · 인간의 전란 → 금기 → 요괴/잠식
+
+- 현재 난세의 출발은 인간 군벌/닌자 세력의 전쟁이다.
+- 승리를 위한 금지 인법·주술·봉인된 힘의 남용이 봉인/영적 경계를 무너뜨린다.
+- 요괴·원혼·잠식이 확산되고 인간은 이를 막거나 이용하려 다시 더 큰 금기에 손대는 악순환이 발생한다.
+- 특정 유파 하나나 단일 흑막 한 명을 난세 전체의 원인으로 고정하지 않는다.
+
+### DEC-2026-08-20-005 / 006 · 20분 4구간을 무너진 지부 생존/반격으로 재해석
+
+- `약 20분 / 4×5분` 전투 골격은 유지한다.
+- 과거 `4개 독립 권역 순례` 해석은 폐기한다.
+- 시작점은 이미 무너지고 고립된 닌자 지부이며 첫 목표는 **적의 공세에서 살아남아 마지막 거점을 버티는 것**이다.
+- 4구간 의미: `즉각 생존 → 주변 전선 유지 → 반격/공세 근원 접근 → 최종 공세`.
+- 「닌자의 신」 전설은 플레이어를 지명하는 예언이 아니라 절망 속에서 스스로 붙잡는 희망/기준이다.
+
+### DEC-2026-08-20-007 · 패배 = 전투불능/후퇴
+
+- HP 0/Run 실패를 확정 사망으로 해석하지 않는다.
+- 패배는 `전투불능/후퇴 또는 구조 → 지부 재정비 → 재도전`이다.
+- 시간 회귀, 부활 비술, 세대교체를 현재 기본 코어로 추가하지 않는다.
+
+### DEC-2026-08-20-008 · 닌자소울 = 전승의 불씨 / 수평 메타 성장
+
+- 닌자소울은 문자 그대로의 영혼 추출물이 아니라 **의지·기량·깨달음·전승이 남긴 불씨**다.
+- 사용처는 지부 전승 복구와 인법/장비/가방/시작 변형/힌트/도감/편의/도전 조건 등의 수평적 가능성 확장이다.
+- 핵심 원칙: **`Run의 힘은 Run에서 만든다. Meta는 정답을 강하게 만드는 것이 아니라 더 많은 닌자 방식을 열어 준다.`**
+- 반복 구매형 공격력/체력 인플레이션은 주 성장축으로 두지 않는다.
+
+### DEC-2026-08-20-009 · 4유파 공동 변방 전선 지부
+
+- 무너진 지부는 특정 한 유파의 전용 본거지가 아니라 **네 유파가 위험 지역을 공동 감시하기 위해 운영하던 변방 전선 지부**다.
+- 폐허에는 네 유파의 전승/도구/기록 흔적이 모두 남아 있다.
+- 닌자소울을 사용한 지부 복구는 잃어버린 네 유파의 전승을 다시 이어 붙이는 메타 표현이다.
+- 유파 선택마다 지부 기능/동선을 4벌로 복제하지 않는다.
+
+### DEC-2026-08-20-010 · 4유파 = 서로 다른 위험 처리 철학
+
+| 유파 | 장기 제품 정체성 | 얕은 고유 앵커 |
+|---|---|---|
+| 봉마류 | **지속 장악** · 소환/결계로 공간을 준비하고 대신 싸우게 하며 버틴다 | 영력 |
+| 천술류 | **반응 연쇄** · 상태를 만들고 원소 반응으로 전장을 바꾼다 | 오행반응/오행순환 |
+| 귀인류 | **근접 지속** · 위험한 근접을 유지할수록 강해진다 | 귀혈 |
+| 흑영류 | **우선 처형** · 위험한 대상을 골라 먼저 제거한다 | 암영표식 |
+
+- 공통 전투/백팩/Workbench/Fate 프레임은 공유한다.
+- 새 유파별 전용 조작/대규모 UI/공간 알고리즘을 만들지 않는다.
+- 봉마 현재 고정 봉인진, 귀인 HP 50% 광전사, 흑영 가까운 적 우선은 현행 MVP-2 구현 증거이며 제품 정체성에 맞는지 후속 플레이테스트 조정 후보로 둔다.
+
+### DEC-2026-08-20-011 · 첫 5분 시그니처 경험
+
+```text
+시작 즉시 유파 시그니처
+→ 30초 안에 고유 앵커 첫 증명
+→ 약 3분 Elite에서 위험 처리 철학 시험
+→ 약 5분대 Boss에서 오의/핵심 루프 결산
+→ 보스 보상 3개 중 1개 (최소 1개 유파 관련)
+→ Workbench에서 다음 공세 설계
+```
+
+- 첫 Vertical Slice에는 별도 전투 중 드래프트나 시작 인법 2~3개 추가 선택을 필수화하지 않는다.
+
+### DEC-2026-08-20-012 · 공통 위협 3역할 + 유파 잔흔 보스
+
+- 일반 적 최소 문법은 `Swarm / Priority Threat / Anchor` 공통 3역할을 우선한다.
+- 약 3분 엘리트는 공통 `공세 선봉대장` 역할이며 증원 + 명확한 예고 공격을 사용한다.
+- 제1 공세 5분대 보스는 **공통 보스 골격 1개 + 선택 유파의 잠식 잔흔 키트 4개** 구조다.
+- 봉마 잔흔: 잠식 식신 + 짧은 봉인진.
+- 천술 잔흔: 원소 상태 영역 + 반응.
+- 귀인 잔흔: 근접 연속 압박 + 귀혈 잔흔.
+- 흑영 잔흔: 표식 축적 + 예고 처형.
+- 같은 유파 보스는 플레이어 기술을 무효화하는 상성 하드카운터가 아니라 **유파 철학이 잠식되어 왜곡된 거울상**이다.
+- 특정 유파 전체를 악역으로 고정하지 않는다.
+
+### DEC-2026-08-20-013 · 4×5분 active combat + soft overtime
+
+- `약 5분`은 일반전 종료 시각이 아니라 **해당 공세 보스까지 포함한 결산 목표 시간대**다.
+- 초기 튜닝 기준: 약 3:00 Elite, 약 4:30 Boss 진입, 5:00~5:30대 Boss 처치 목표.
+- `5:00`은 hard fail이 아니다. 보스가 살아 있으면 soft overtime으로 계속 싸운다.
+- overtime은 잠식 고조로 압박을 높일 수 있으나 회피 가능성을 제거하지 않는다.
+- `약 20분`은 **4개 세그먼트의 active combat target**이다.
+- RESULT / Workbench / Fate 판단 시간은 active combat clock에서 제외한다.
+- 현행 `StageFlowController`의 `300초 후 BOSS + 3세그먼트`는 구현 전 migration 대상으로 명시하며, 최신 제품 결정 권위가 아니다.
+
+### 2026-08-20 checkpoint protection
+
+- 현재 제품 코드·Scene·Resource·runtime은 이 checkpoint로 수정하지 않는다.
+- 기존 MVP-0~3 integrated evidence와 MVP-4 approved backpack/workbench product decisions를 보호한다.
+- 사용자가 **`기획 완료`**를 명시하기 전 Godot/Codex production BUILD로 전환하지 않는다.
+- 오늘 상세 planning owners:
+  - `docs/planning/2026-08-20-world-story-core.md`
+  - `docs/planning/2026-08-20-world-story-core-continuation.md`
+  - `docs/planning/2026-08-20-four-schools-signature-planning.md`
+  - `docs/planning/2026-08-20-first-assault-encounter-planning.md`
+  - `docs/planning/2026-08-20-dec012-school-trace-boss-amendment.md`
+  - `docs/planning/2026-08-20-run-cadence-planning.md`
+
+### Next pending planning decision
+
+`DEC-PENDING-WORLD-014`: 제1 공세의 선택 유파 거울상 이후, 제2~4 공세의 보스가 어떻게 확대되어 DEC-004의 `인간 전란 → 금기 → 요괴/잠식 → 복합 난세`를 전투 콘텐츠로 전달할지 확정한다.
