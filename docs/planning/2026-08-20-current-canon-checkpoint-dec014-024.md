@@ -21,8 +21,9 @@
 → 흔적 추적 이동 / 근접 자동 흡수
 → 기존 유파 기믹의 BossApproachProfile
 → 약 4분대 경고 / 유파 Boss
-→ Boss 평정 / 지부 귀환 / 흔적 안정화
-→ 기존 Boss Reward / Persistent Workbench / Fate
+→ Boss 평정
+→ RESULT / 기존 Boss Reward
+→ 공동 지부 귀환 / 흔적 안정화 / Persistent Workbench / Fate
 → 4유파 모두 한 번씩 완료 · 약 20분 active combat
 → 4흔적 결속 / 최종 결속 Workbench
 → 별도 Final Boss `난세 재앙핵`
@@ -119,7 +120,7 @@
 - 5:00은 hard fail이 아니며 실제 milestone에 따라 `OVERTIME · TRACE / BOSS WARNING / BOSS`를 표시한다.
 - 흔적은 `AVAILABLE → RECOVERED → STABILIZED`의 세 상태를 가진다.
 - `RECOVERED`는 Boss gate만 열며 전투 modifier나 전승 아이템 접근권을 주지 않는다.
-- Boss 격파 후 공동 지부 귀환에서 `STABILIZED`가 되어 해당 유파 signature access package를 연다.
+- Boss 격파 후 RESULT와 기존 Boss Reward를 처리하고 공동 지부로 귀환할 때 `STABILIZED`가 되어 해당 유파 signature access package를 연다.
 - 현재 RewardOrb의 추적/근접 판정 원리는 재사용할 수 있으나 5초 lifetime, DDD reward count, GOLD/STYLE 처리는 흔적에 재사용하지 않는다.
 - 상위 StageFlow와 별도로 `SchoolEncounterController` 또는 동등한 unit가 `WAVES → ELITE_WARNING → ELITE_ACTIVE → TRACE_AVAILABLE → BOSS_APPROACH → BOSS_WARNING → BOSS_ACTIVE → RESOLVED`를 소유한다.
 
