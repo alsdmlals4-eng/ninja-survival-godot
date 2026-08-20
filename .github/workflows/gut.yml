@@ -21,6 +21,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate Base reuse adoption manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          expected = {
+              "schema_version": 1,
+              "base_source_commit": "8553678f70e22f193a2336b591f677dcfa5a8965",
+              "modules": {
+                  "RM-TOOL-001": {"state": "planned"},
+                  "RM-SYS-001": {"state": "planned"},
+                  "RM-SYS-003": {"state": "planned"},
+                  "RM-VIS-001": {"state": "planned"},
+                  "RM-VIS-002": {"state": "planned"},
+              },
+          }
+          path = Path("docs/base-reuse-adoption.json")
+          actual = json.loads(path.read_text(encoding="utf-8"))
+          if actual != expected:
+              raise SystemExit(f"Base reuse adoption manifest mismatch: {actual!r}")
+          print("Base reuse adoption manifest PASS")
+          PY
+
       - name: Install Godot 4.7.1
         shell: bash
         run: |
