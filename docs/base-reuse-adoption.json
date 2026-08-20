@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "base_source_commit": "8553678f70e22f193a2336b591f677dcfa5a8965",
+  "modules": {
+    "RM-TOOL-001": {"state": "planned"},
+    "RM-SYS-001": {"state": "planned"},
+    "RM-SYS-003": {"state": "planned"},
+    "RM-VIS-001": {"state": "planned"},
+    "RM-VIS-002": {"state": "planned"}
+  }
+}
