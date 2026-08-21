@@ -6,7 +6,7 @@ updated_at: 2026-08-22 KST
 runtime_baseline: MVP_0_TO_3_INTEGRATED
 latest_product_canon: docs/canon/2026-08-21-dec014-025-product-canon.md
 latest_encounter_canon: docs/canon/2026-08-22-dec026-encounter-pattern-budget.md
-latest_migration_traceability: docs/traceability/2026-08-21-dec014-025-migration-traceability.md
+latest_migration_traceability: docs/traceability/2026-08-22-dec026-post-gate-traceability.md
 current_migration_plan: docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md
 next_product_gate: PHASE_B_REREVIEW_FOR_T08_TO_T14
 mvp4_production_implementation: NOT_STARTED
@@ -133,6 +133,10 @@ Old 2026-08-11 MVP-4 tasks:
 Current replacement plan:
 
 `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`.
+
+Current traceability:
+
+`docs/traceability/2026-08-22-dec026-post-gate-traceability.md`.
 
 New sequence is T08 RunRouteState -> T09 encounter/profile data -> T10 Elite/trace/Boss gate -> T11 access lanes -> T12 atomic commit -> T13 Workbench route preview -> T14 Cheonsul Vertical Slice -> T15 Human QA gate -> only then expand the remaining schools and full circuit.
 
