@@ -2,22 +2,22 @@
 
 ```yaml
 project: NINJA_SURVIVAL
-state_router_updated_at: 2026-08-21 KST
-resume_state: CANON_REBASELINED_TO_DEC014_025
-next_material_gate: DEC_026
-production_build_for_new_canon: BLOCKED_PENDING_DEC026_AND_PHASE_B_REREVIEW
+state_router_updated_at: 2026-08-22 KST
+resume_state: DEC026_APPROVED_PLAN_RECALCULATED
+next_material_gate: PHASE_B_DEFINITION_OF_READY_T08_TO_T14
+production_build_for_new_canon: BLOCKED_PENDING_PHASE_B_REREVIEW
 mvp0_to_mvp3_runtime: INTEGRATED
 mvp4_spatial_production: NOT_STARTED
 school_circuit_runtime: NOT_STARTED
 trace_runtime: NOT_STARTED
-final_calamity_runtime: NOT_STARTED
+dec026_encounter_runtime: NOT_STARTED
 release_near_vertical_slice_human_qa: NOT_RUN
 android_device_qa: NOT_RUN
 ```
 
 ## Purpose
 
-This file is the mutable resume router. Product rules live in `docs/CURRENT_CONFIRMED_DECISIONS.md` and the dated canon it references. Implementation facts live in actual code/scenes/tests and executed evidence.
+This file is the mutable resume router. Product rules live in `docs/CURRENT_CONFIRMED_DECISIONS.md` and dated canon files. Implementation facts live in actual code/scenes/tests and executed evidence.
 
 Do not reconstruct current state from older handoff status sentences without first reading current `main`, current PR inventory and this router.
 
@@ -27,36 +27,38 @@ Do not reconstruct current state from older handoff status sentences without fir
 2. active chat/user instruction
 3. `docs/CURRENT_CONFIRMED_DECISIONS.md`
 4. `docs/canon/2026-08-21-dec014-025-product-canon.md`
-5. `docs/traceability/2026-08-21-dec014-025-migration-traceability.md`
-6. `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md` for protected low-level spatial behavior
-7. `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md` **T01-T07 only**
-8. actual `scripts/`, `scenes/`, `tests/`, `.github/workflows/gut.yml`
-9. current Notion project home / Flow / Core System pages for human-facing product/visual context
-10. current Base `main` only when Base freshness materially affects the task
+5. `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`
+6. `docs/traceability/2026-08-21-dec014-025-migration-traceability.md`
+7. `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
+8. `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md` for protected low-level spatial behavior
+9. old `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md` **T01-T07 only**
+10. actual `scripts/`, `scenes/`, `tests/`, `.github/workflows/gut.yml`
+11. current Notion project home / Flow / Core System / Production Handoff
+12. current Base `main` when Base freshness materially affects the task
 
 ## Current integrated truth
 
 - MVP-0 basic combat is integrated.
 - MVP-1 combat DDD is integrated.
 - MVP-2 four-school shallow runtime is integrated.
-- MVP-3 result/GOLD/Shop/Fate/three-segment runtime is integrated and remains the rollback/regression baseline.
+- MVP-3 result/GOLD/Shop/Fate/three-segment runtime is integrated and remains rollback/regression baseline.
 - Existing CI has source-faithful GUT preparation and duplicate-UID failure protection.
-- The old MVP-3 three-segment flow is **implementation reality**, not the latest product target.
+- Old MVP-3 three-segment flow is implementation reality, not the latest product target.
 - MVP-4 spatial/backpack production code has not started.
-- DEC-014~025 changes are documented current product canon and have not been implemented yet.
+- DEC-014~025 and DEC-026 are approved product/planning canon and have not been implemented yet.
 
-Last observed pre-rebaseline PR-head regression evidence:
+Last observed regression evidence before this planning package:
 
 `Godot 4.7.1 import PASS -> main-scene smoke PASS -> GUT 34 scripts / 250 tests / 1624 assertions PASS`.
 
-Do not treat this as DEC-014~025 runtime evidence.
+Do not treat this as DEC-014~026 runtime evidence.
 
 ## Current product target
 
 ```text
 starting school
 -> choose unvisited school battlefield
--> Core Monsters / Stage gimmick
+-> Core Monsters / Stage profile
 -> ~3 min Elite
 -> chest token + trace
 -> recover trace
@@ -76,93 +78,77 @@ starting school
 
 `~20 minutes` ends the four-school active-combat circuit, not the full Run.
 
-## Old execution routes — historical only
+## DEC-026 encounter rule
 
-### PR #17
+Use a shared attack-primitive chassis with school-owned compositions. Do not create four separate combat engines or 16 hardcoded school×Stage controllers.
 
-PR #17 is closed and unmerged. It is **not** an active prerequisite and must not be reopened/merged or used as the base of current production work unless a future user explicitly names that PR and authorizes that action.
+School identity:
 
-### Historical T01 branch
+- 봉마: mobile prepared-space pressure.
+- 천술: setup -> elemental reaction.
+- 귀인: sustained proximity pressure with readable recovery windows.
+- 흑영: visible threat/mark -> delayed execution.
 
-`impl/mvp4-t01-spatial-data-contracts` is a historical prepared baseline. Do not execute production changes from that stale pinned baseline.
+Stage depth:
 
-Future production branches are created from fresh merged `main` after current canon/plan readback and current Phase-B readiness.
+- Stage 1 base signature;
+- Stage 2 interaction;
+- Stage 3 synergy/field;
+- Stage 4 mastery + one Boss capstone;
+- maximum two advanced gimmicks concurrently.
+
+Full canon: `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`.
 
 ## Plan reuse boundary
 
-### Still reusable
+### Reuse
+Old T01-T07 remain valid low-level direction for spatial data/state/resolvers/session/combination/committed modifiers/reward transaction foundation.
 
-The old 2026-08-11 MVP-4 T01-T07 direction remains valid for:
+### Replace
+Old T08-T12 remain non-executable.
 
-- spatial data/catalog contracts,
-- BackpackState,
-- BackpackResolver,
-- RestBackpackSession,
-- CombinationResolver,
-- committed RunBuildState modifier authority,
-- reward/shop/chest transaction foundation.
+Current replacement plan:
 
-DEC-021 access-lane and DEC-025 atomic-route inputs are bounded amendments to those domains, not reasons for a rewrite.
+`docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`.
 
-### Superseded for execution
+Execution path:
 
-Old T08-T12 are non-executable because they assume immediate Boss + three-segment completion.
-
-Current replacement requirements are MIG-01..MIG-08 in:
-
-`docs/traceability/2026-08-21-dec014-025-migration-traceability.md`.
-
-A detailed new T08+ code plan is blocked until DEC-026 resolves concrete Core Monster/Elite/Boss attack sets and Stage pattern budget.
+`T08 route state -> T09 encounter/profile data -> T10 Elite/trace/Boss gate -> T11 access lanes -> T12 atomic commit -> T13 Workbench route preview -> T14 Cheonsul release-near Vertical Slice -> T15 Human QA gate -> remaining schools/full circuit`.
 
 ## Next executable work
 
-### Current next Gate — PLAN
+### Current gate — fresh Phase B
 
-**DEC-026: four-school Core Monster / Elite / Boss concrete attack sets + Stage pattern budget.**
+Run a fresh Definition of Ready from merged main for T08–T14. Confirm:
 
-Before asking for implementation:
+1. no conflicting open PR;
+2. DEC-014~026 readback from merged main;
+3. unchanged MVP-0~3 regression baseline;
+4. concrete file/test ownership for T08–T14;
+5. no duplicate route/combat/reward authority;
+6. TDD order and rollback points;
+7. first Vertical Slice remains Cheonsul unless new evidence materially changes that choice.
 
-1. use current Notion world/core-system canon and benchmark evidence,
-2. design DEC-026 without adding a second combat game per school,
-3. preserve shared chassis + telegraph + Stage profile budgets,
-4. run required adversarial review,
-5. obtain user approval for the material product decision,
-6. write/recalculate the detailed T08+ implementation plan,
-7. run Phase-B Definition of Ready on fresh main,
-8. only then enter new Phase-C production packages.
+Only after Phase-B PASS should production implementation begin from a fresh branch.
 
-### Work that may continue independently before DEC-026
+## Historical routes
 
-- documentation/readback correction,
-- Notion/GitHub sync,
-- benchmark/evidence collection for DEC-026,
-- stale structured-metadata correction,
-- verification of the unchanged MVP-0~3 regression baseline.
+- PR #17 is closed/unmerged/historical and not a prerequisite.
+- `impl/mvp4-t01-spatial-data-contracts` is historical and not a production base.
+- historical PRs/handoffs remain evidence and are not rewritten.
 
-Do not claim new gameplay production is ready merely because these independent tasks are complete.
+## Human evidence rule
 
-## Human-evidence rule
+Before four-school multiplication, build and human-test one release-near representative Cheonsul slice:
 
-Technical placeholder/card UI may support spikes and automated tests. It cannot close the final player-experience gate.
+`signature <=30 sec -> Core -> Elite -> trace -> Boss -> reward -> Workbench -> next-route preview`.
 
-Before scaling all four school battlefields, build and human-test one release-near representative school slice with production-candidate UI/UX, visuals, animation/VFX and audio feedback:
-
-`signature <=30 sec -> Elite -> trace -> Boss -> reward -> Workbench -> next-route preview`.
-
-Measure school readability, pacing, telegraph fairness, trace clarity, Workbench comprehension/fatigue and Korean text readability before four-school content multiplication.
+Technical placeholder/card UI may support spikes/tests but cannot close final player-experience PASS.
 
 ## Runtime/tool boundary
 
-Notion currently records a dedicated Ninja Survival Godot slot/path, but the latest product-canon migration runtime remains `NOT_RUN`.
-
-Repository `project.godot` does not currently contain the old PR #17 provider adoption. Do not claim HiGodot/Hera/Godot-AI project integration from historical PR content.
-
-## Base freshness
-
-Current Base remote must be re-read when it affects a task. This router does not claim a full Base sync merely because current Base was observed during the canon audit.
+Notion may record a dedicated Godot slot/path, but latest product-canon migration runtime remains `NOT_RUN`. Repository `project.godot` does not inherit historical PR #17 provider integration merely because the old PR existed.
 
 ## Resume rule
 
-On every resume:
-
-`fetch/read latest main -> inspect open/recent merged PRs -> read current decisions/canon/traceability -> compare actual code/tests -> continue only from evidence-backed current state`.
+`fetch latest main -> inspect open/recent merged PRs -> read current decisions/canon/plan -> compare actual code/tests -> continue only from evidence-backed state`.
