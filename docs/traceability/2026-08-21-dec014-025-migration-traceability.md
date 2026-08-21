@@ -35,7 +35,28 @@ It is a traceability document, not an implementation-complete claim and not perm
 
 The old plan remains historical and authoritative for T01-T07 details unless a later approved decision explicitly changes those low-level contracts.
 
-## 3. New migration requirements
+## 3. Current implementation facts that constrain migration
+
+Current `RunBuildState`:
+
+- owns immediate `owned_items` counts,
+- recomputes combat modifiers from those counts,
+- immediately appends selected Fate.
+
+Current `ShopController`:
+
+- builds one flat eligible item pool from `_item_defs`,
+- buys directly into `RunBuildState`,
+- does not know access packages/lanes or Workbench buffer placement.
+
+Current `FateController`:
+
+- chooses from remaining Fate definitions,
+- immediately calls `RunBuildState.select_fate()` inside `choose()`.
+
+Therefore new DEC-021/025 behavior is a real migration, not a documentation rename. Do not claim the current controllers already provide atomic route/build/Fate semantics.
+
+## 4. New migration requirements
 
 ### MIG-01 — School circuit state ownership
 
@@ -79,14 +100,18 @@ Required behavior already approved:
 
 Required behavior:
 
-- Elite warning around 2:40 and Elite opportunity around 3:00,
+- current Core System authoring default: Elite warning `2:45`, Elite around `3:00`, Boss earliest warning around `4:20`, earliest Boss appearance around `4:30`, Boss clear target roughly `5:00~5:30` with soft overtime,
+- Flow Map's `~2:40` Elite-warning visualization is treated as approximate; exact pattern/timing budget is rechecked in DEC-026,
 - Elite actual death grants chest token exactly once,
 - separate non-expiring trace object/state,
-- trace auto-approach/close-range absorption and no ORB/STYLE/GOLD side effects,
+- trace pickup defaults: `settle 0.40s`, `homing delay 0.75s`, `260 px/s`, `48 px pickup radius`, infinite lifetime until collect/run end, fast homing after `6.0s`,
+- trace collection has no ORB/STYLE/GOLD side effects,
 - pause new normal spawns while trace is AVAILABLE without pausing combat clock/current hazards,
-- Boss requires Elite clear + trace recovered + earliest-time + warning complete,
+- Boss requires Elite clear + trace recovered + earliest-time + warning complete + not already spawned,
+- if recovered after 4:20 start approximately 10-second Boss warning,
 - late trace recovery produces soft overtime rather than hard fail,
-- access package opens only on Boss clear + branch return stabilization.
+- access package opens only on Boss clear + branch return stabilization,
+- Elite and school Boss are not active simultaneously.
 
 **Status:** `PLANNED / NOT_IMPLEMENTED`.
 
@@ -99,14 +124,25 @@ Required behavior:
 - distinguish access package, affinity/tag, reward lane and actual backpack power,
 - Run starts with Universal + starting-school package,
 - stabilized trace unlocks that school package,
+- authoring-default packages are:
+  - Universal 7: 행운 부적, 인법단련, 재생의 두루마리, 오의 비전서, 유파 증표, 금기의 부적, 폭탄,
+  - 봉마 3: 깨달음, 결계술, 대형 소환진,
+  - 천술 3: 수둔, 뇌둔, 화둔,
+  - 귀인 3: 체술단련, 호신 부적, 일본도,
+  - 흑영 3: 수리검, 은신술, 독침술,
+- these packages control access timing only and do not erase existing item affinity/cross-school combinations,
 - Boss/Shop/Chest choose lane/pool before item,
 - canonical item-ID deduplication across overlapping lanes,
 - combo-result IDs remain outside base acquisition unless a later decision says otherwise,
+- Chest keeps more randomness and gives no recipe-completion guarantee,
+- no automatic `schools used -> +N%` bonus,
 - preserve existing 19 item identities, 3 combinations and 5 bags.
+
+Current flat `_item_defs` Shop roll is therefore a migration target, not a reusable final algorithm.
 
 **Status:** `PLANNED / old T07 requires bounded amendment`.
 
-### MIG-05 — Route preview + atomic Fate commit
+### MIG-05 — Route preview + atomic Fate/build commit
 
 **Decision inputs:** DEC-015, DEC-025.
 
@@ -115,11 +151,18 @@ Required behavior:
 - show only unvisited schools,
 - expose readable risk/gimmick/reward/current-build links without exact hidden tuning values,
 - selection remains provisional through Workbench edits,
-- Fate commit is atomic for `backpack + fate + next_school`,
+- Fate transition atomically commits `backpack + fate + next_school`,
 - failed commit leaves all three unchanged,
 - route history remains visible and later feeds final support order.
 
-**Status:** `PLANNED / NOT_IMPLEMENTED`.
+**Single-authority constraint:**
+
+- do not let `FateController`, route UI and backpack session independently mutate their final committed states,
+- one transaction boundary must validate the final backpack snapshot, selected Fate and provisional route before any of them becomes committed,
+- current `FateController.choose()` immediate mutation is a migration constraint; fresh Phase-B must choose the smallest single owner/coordinator that preserves existing controller responsibilities,
+- do not invent that owner inside UI code or duplicate Fate/route state merely to satisfy the screen.
+
+**Status:** `PLANNED / NOT_IMPLEMENTED / TRANSACTION_OWNER_TO_CLOSE_IN_FRESH_PHASE_B`.
 
 ### MIG-06 — Final binding and final-battle routing
 
@@ -186,7 +229,7 @@ Placeholder/card-only UI can remain technical evidence but cannot close this hum
 
 **Status:** `NOT_RUN`.
 
-## 4. Verification matrix
+## 5. Verification matrix
 
 | Requirement | Automated evidence required | Human/runtime evidence | Current |
 |---|---|---|---|
@@ -199,7 +242,7 @@ Placeholder/card-only UI can remain technical evidence but cannot close this hum
 | MIG-07 | current school regression + focused tuning tests | school feel | NOT_RUN |
 | MIG-08 | technical slice smoke/regression | release-near human QA | NOT_RUN |
 
-## 5. Current protected regression baseline
+## 6. Current protected regression baseline
 
 Before any gameplay migration package:
 
@@ -211,7 +254,7 @@ Before any gameplay migration package:
 
 Last observed pre-rebaseline PR-head evidence: 34 scripts / 250 tests / 1624 assertions PASS.
 
-## 6. Executable-plan gate
+## 7. Executable-plan gate
 
 A detailed T08+ code implementation plan must not be marked ready while DEC-026 is unresolved because exact encounter attack sets/pattern budgets are a material product/content input.
 
