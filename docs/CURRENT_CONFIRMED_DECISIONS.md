@@ -7,8 +7,10 @@ runtime_baseline: MVP_0_TO_3_INTEGRATED
 latest_product_canon: docs/canon/2026-08-21-dec014-025-product-canon.md
 latest_encounter_canon: docs/canon/2026-08-22-dec026-encounter-pattern-budget.md
 latest_migration_traceability: docs/traceability/2026-08-22-dec026-post-gate-traceability.md
+latest_phase_b: docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md
 current_migration_plan: docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md
-next_product_gate: PHASE_B_REREVIEW_FOR_T08_TO_T14
+phase_b_verdict: PASS
+next_product_gate: T01_SPATIAL_DATA_CONTRACTS
 mvp4_production_implementation: NOT_STARTED
 new_school_circuit_runtime: NOT_STARTED
 ```
@@ -25,13 +27,9 @@ Current high-level Run:
 
 `~20 minutes` is the target active-combat time through the fourth school Boss, not the whole Run end.
 
-Full DEC-014~025 implementation-facing detail is owned by:
+Full DEC-014~025 implementation-facing detail is owned by `docs/canon/2026-08-21-dec014-025-product-canon.md`.
 
-`docs/canon/2026-08-21-dec014-025-product-canon.md`.
-
-DEC-026 encounter/pattern detail is owned by:
-
-`docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`.
+DEC-026 encounter/pattern detail is owned by `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`.
 
 ## 2. Protected integrated baseline
 
@@ -95,13 +93,7 @@ Current MVP-2 runtime is evidence and migration baseline, not something to delet
 
 Selected architecture: **shared attack primitives + school-owned encounter compositions**.
 
-Per school:
-
-- Core Monster x3,
-- Elite x1,
-- Boss x1,
-- bounded gimmick/pattern library,
-- one Stage 4 Boss capstone.
+Per school: Core Monster x3, Elite x1, Boss x1, bounded gimmick/pattern library and one Stage 4 Boss capstone.
 
 Shared primitive vocabulary is intentionally small: pursuit/contact, line dash, directional projectile, telegraphed zone, summon/proxy, mark/link, pulse/ring and barrier/lane. Schools differentiate by the movement/build question they pose, timing, visuals and composition rather than by owning separate combat engines.
 
@@ -119,32 +111,42 @@ School encounter language:
 - 귀인: committed rush/proximity pressure -> readable recovery windows.
 - 흑영: visible threat/mark -> delayed execution and positioning priority.
 
-First release-near Vertical Slice target is **천술류**, because current MVP-2 status/reaction runtime is the closest product-fit baseline and isolates new route/Elite/trace/Boss/Workbench migration risk.
+First release-near Vertical Slice target is **천술류** because the current MVP-2 status/reaction runtime is closest to the target philosophy.
 
 DEC-026 does not claim runtime implementation or final-calamity full attack script completion.
 
-## 7. Planning / implementation boundary
+## 7. Phase-B implementation boundary — PASS
 
-Old 2026-08-11 MVP-4 tasks:
+Fresh review on merged main passed. Exact authority/file/test boundaries are recorded in:
 
-- T01-T07: reuse as low-level spatial/domain direction, with bounded access-lane/route-commit amendments.
-- old T08-T12: superseded for execution.
+`docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`.
 
-Current replacement plan:
+Important execution correction: DEC-026 made T08+ plan-ready, but old T01~T07 were never implemented on production main. Therefore actual implementation begins at **T01**, not T08.
 
-`docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`.
+Executable order:
 
-Current traceability:
+`T01 -> T02 -> T03 -> T04 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
 
-`docs/traceability/2026-08-22-dec026-post-gate-traceability.md`.
+Key ownership:
 
-New sequence is T08 RunRouteState -> T09 encounter/profile data -> T10 Elite/trace/Boss gate -> T11 access lanes -> T12 atomic commit -> T13 Workbench route preview -> T14 Cheonsul Vertical Slice -> T15 Human QA gate -> only then expand the remaining schools and full circuit.
+- spatial legality: BackpackState/BackpackResolver;
+- pending REST edits: RestBackpackSession;
+- committed combat power: RunBuildState after T06;
+- school route/clear order: RunRouteState;
+- Elite/Trace/Boss lifecycle: bounded stage encounter state/coordinator;
+- access/reward eligibility: one reward resolver;
+- pending Fate: FateController;
+- final all-or-none build+Fate+route commit: RestCommitCoordinator;
+- integration only: MainController;
+- normal spawn actuation only: WaveSpawner.
+
+Old T08-T12 remain historical/non-executable. Current replacement plan is `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md` and current traceability is `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`.
 
 ## 8. Closed historical execution routes
 
 - PR #17 is closed and unmerged. Do not reopen/merge/treat it as prerequisite.
 - `impl/mvp4-t01-spatial-data-contracts` is a historical prepared baseline. Do not resume production work from it.
-- Future production packages branch from fresh merged `main` after current Phase-B readiness.
+- Production packages branch from fresh merged `main`.
 
 Historical PRs/handoffs remain evidence; they are not deleted.
 
@@ -153,6 +155,7 @@ Historical PRs/handoffs remain evidence; they are not deleted.
 ```yaml
 mvp0_to_mvp3: IMPLEMENTED_AUTOMATED_REGRESSION_BASELINE
 last_observed_regression: 34_TEST_SCRIPTS_250_TESTS_1624_ASSERTIONS_PASS
+phase_b_readiness: PASS
 mvp4_spatial_runtime: NOT_STARTED
 school_circuit_runtime: NOT_STARTED
 trace_runtime: NOT_STARTED
@@ -162,8 +165,10 @@ android_device_qa: NOT_RUN
 export_release: NOT_READY
 ```
 
-Do not promote a documented decision or implementation plan to runtime/test/human PASS without executed evidence.
+Do not promote a documented decision, Phase-B PASS or implementation plan to runtime/test/human PASS without executed evidence.
 
 ## 10. Next gate
 
-DEC-026 is approved. The next gate is a **fresh Phase-B Definition of Ready for T08–T14 on merged main**. If that review stays clean, implementation may begin from a fresh production branch with TDD, while preserving the MVP-0~3 regression baseline.
+**T01 — spatial data contracts/catalog** from a fresh production branch off merged main, TDD first.
+
+T01 must add the minimum 6x6/4x3 shape/rotation/bag/tag/combination data contracts while preserving current item identity and avoiding a duplicate item authority. After each production package, run focused tests + full GUT + Godot import/main smoke, review the diff, merge, and read back merged main before continuing.
