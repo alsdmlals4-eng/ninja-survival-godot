@@ -1,253 +1,168 @@
 # ACTIVE_CONTEXT
 
-> Mutable resume router for `ninja-survival-godot`. Always re-query current GitHub `main` and open/draft PRs; this file does not own the SHA of the commit containing itself.
+```yaml
+project: NINJA_SURVIVAL
+state_router_updated_at: 2026-08-21 KST
+resume_state: CANON_REBASELINED_TO_DEC014_025
+next_material_gate: DEC_026
+production_build_for_new_canon: BLOCKED_PENDING_DEC026_AND_PHASE_B_REREVIEW
+mvp0_to_mvp3_runtime: INTEGRATED
+mvp4_spatial_production: NOT_STARTED
+school_circuit_runtime: NOT_STARTED
+trace_runtime: NOT_STARTED
+final_calamity_runtime: NOT_STARTED
+release_near_vertical_slice_human_qa: NOT_RUN
+android_device_qa: NOT_RUN
+```
 
-## Read first
+## Purpose
+
+This file is the mutable resume router. Product rules live in `docs/CURRENT_CONFIRMED_DECISIONS.md` and the dated canon it references. Implementation facts live in actual code/scenes/tests and executed evidence.
+
+Do not reconstruct current state from older handoff status sentences without first reading current `main`, current PR inventory and this router.
+
+## Current read order
 
 1. `AGENTS.md`
-2. `PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION_v4.5_r2.md`
+2. active chat/user instruction
 3. `docs/CURRENT_CONFIRMED_DECISIONS.md`
-4. approved L2: `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`
-5. DEC-002 defaults: `docs/planning/2026-08-11-mvp4-content-balance-v1.md`
-6. validated data contract: `docs/planning/2026-08-11-mvp4-content-data-contract.md`
-7. Phase-B record: `docs/planning/2026-08-11-mvp4-phase-b-definition-of-ready.md`
-8. L3 traceability: `docs/traceability/2026-08-11-mvp4-backpack-combination-traceability.md`
-9. 12-task plan: `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md`
-10. T00 pause/current blocker handoff: `docs/handoffs/2026-08-12-t00-provider-adoption-pause-handoff.md`
-11. historical Phase-C T01 package handoff: `docs/handoffs/2026-08-11-mvp4-phase-c-t01-codex-handoff.md`
-12. actual current code/scenes/data/tests, current GitHub PR state, and current Base `main`
+4. `docs/canon/2026-08-21-dec014-025-product-canon.md`
+5. `docs/traceability/2026-08-21-dec014-025-migration-traceability.md`
+6. `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md` for protected low-level spatial behavior
+7. `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md` **T01-T07 only**
+8. actual `scripts/`, `scenes/`, `tests/`, `.github/workflows/gut.yml`
+9. current Notion project home / Flow / Core System pages for human-facing product/visual context
+10. current Base `main` only when Base freshness materially affects the task
 
-The Phase-B record is a narrow later technical amendment to T01/T03/T07 and old phase-status wording. Product authority remains Decisions/L2. For mutable Google Sheet access/synchronization state, this router supersedes older pre-recovery `403` status snippets elsewhere; those older snippets are not current permission authority.
+## Current integrated truth
 
-## Current stage
+- MVP-0 basic combat is integrated.
+- MVP-1 combat DDD is integrated.
+- MVP-2 four-school shallow runtime is integrated.
+- MVP-3 result/GOLD/Shop/Fate/three-segment runtime is integrated and remains the rollback/regression baseline.
+- Existing CI has source-faithful GUT preparation and duplicate-UID failure protection.
+- The old MVP-3 three-segment flow is **implementation reality**, not the latest product target.
+- MVP-4 spatial/backpack production code has not started.
+- DEC-014~025 changes are documented current product canon and have not been implemented yet.
 
-```yaml
-project: alsdmlals4-eng/ninja-survival-godot
-latest_integrated_runtime_milestone: MVP-3
-phase_b_review_baseline_main: 11a81208ec9ad7ca9f4a044d3226e1be0ea25f76
-phase_b_merge_main: 225d68e7545062e3c2bc720562263fe6a67131bd
-phase_b_post_merge_gut: PASS_RUN_31454048030
-phase_c_handoff_merge_main_before_postmerge_fix: 4d0b3f39581103500675ad5ac7e89da4805a6114
-phase_c_handoff_post_merge_gut: PASS_RUN_31454909432
-phase_c_handoff_postmerge_fix_main: 318d90efa0549d1e21266e011d63db98dfcade3d
-phase_c_handoff_postmerge_fix_gut: PASS_RUN_31455361366
-base_main_observed_phase_b: 315c66eea9614c284b9c11c4d522141065dfa4b0
-handoff_ci_fidelity_closure_pr: 18
-handoff_ci_fidelity_closure_main: b6c4b8a082a120f65e833b133684b899f00e05ba
-handoff_ci_fidelity_closure_gut: PASS_RUN_31514428025_BOOTSTRAP_ROUTE
-base_bcp_ci_source_fidelity: BCP-2026-021-ci-source-fidelity-for-vendored-dependencies
-base_bcp_proposal_pr: 291
-base_bcp_merge_main_observed: d7dedbc6548294ac6109c22548e40adb0d6d273a
-base_bcp_status: SUBMITTED
-base_bcp_implementation_authority: NOT_GRANTED_IN_THIS_STAGE
-mvp4_product_design: APPROVED
-mvp4_decision_001: INTEGRATED
-mvp4_decision_002: INTEGRATED_PR_12
-mvp4_explicit_planning_complete_declaration: RECEIVED_2026_08_11
-phase_a: COMPLETE
-phase_b_final_planning_review: PASS
-phase_b_open_must_fix: 0
-phase_b_open_user_decision_required: 0
-phase_c_build: AUTHORIZED
-t00_provider_adoption_pr: 17
-t00_provider_adoption_branch: ops/godot471-provider-uid-adoption
-t00_provider_adoption_head_observed: bcd6d566de991fa1fe84aebf186e5dd654d6d274
-t00_provider_adoption_status: BLOCKED_PENDING_SOURCE_FAITHFUL_REVALIDATION
-t00_blocker: CI_UNCONDITIONALLY_OVERLAID_VENDORED_GUT_CREATING_ADDONS_GUT_GUT_AND_UID_DUPLICATES
-t00_handoff: docs/handoffs/2026-08-12-t00-provider-adoption-pause-handoff.md
-phase_c_t01_handoff: docs/handoffs/2026-08-11-mvp4-phase-c-t01-codex-handoff.md
-phase_c_t01_remote_branch: impl/mvp4-t01-spatial-data-contracts
-phase_c_t01_branch_base: 225d68e7545062e3c2bc720562263fe6a67131bd
-phase_c_t01_branch_policy: HISTORICAL_PHASE_B_PIN_AWAITING_POST_T00_REFRESH_DECISION
-phase_c_t01_latest_operational_docs: READ_FROM_ORIGIN_MAIN
-phase_c_t01_status: PAUSED_PENDING_T00_INTEGRATION_AND_BASELINE_REFRESH
-mvp4_production_code: NOT_STARTED
-mvp4_runtime_evidence: NOT_RUN
-mvp4_human_qa: NOT_RUN
-mvp4_android_device_qa: NOT_RUN
-```
+Last observed pre-rebaseline PR-head regression evidence:
 
-`PHASE_B_PASS`, a prepared historical T01 branch, local T00 evidence, and a green workflow are readiness/evidence inputs only. Do not claim T00 merge readiness when the validation preparation changed the checked-out source shape, and do not claim T01 GREEN or MVP-4 runtime/human PASS until current exact validation exists.
+`Godot 4.7.1 import PASS -> main-scene smoke PASS -> GUT 34 scripts / 250 tests / 1624 assertions PASS`.
 
-## Phase chain
+Do not treat this as DEC-014~025 runtime evidence.
+
+## Current product target
 
 ```text
-PHASE A — planning [COMPLETE]
-→ explicit `기획 완료` [RECEIVED]
-→ PHASE B — Final Planning Review / DoR [PASS]
-→ PHASE C — BUILD [AUTHORIZED]
-→ T00 provider/executor adoption [OPEN / SOURCE-FIDELITY REVALIDATION REQUIRED]
-→ T00 merge + new-main readback
-→ refresh/recreate T01 package baseline against provider-integrated main
-→ T01 focused RED [PAUSED / NOT RUN]
-→ T01 GREEN + regression + package review
-→ T02 ... T12
+starting school
+-> choose unvisited school battlefield
+-> Core Monsters / Stage gimmick
+-> ~3 min Elite
+-> chest token + trace
+-> recover trace
+-> Boss warning / dual gate
+-> school Boss around five-minute boundary
+-> RESULT / Boss Reward
+-> joint branch / trace STABILIZED
+-> Persistent Workbench
+-> provisional next-school choice
+-> Shop / Chest / Backpack / Combination
+-> Fate atomically commits build + Fate + next route
+-> repeat until four schools cleared
+-> Final Binding Workbench
+-> separate final calamity Boss
+-> final result / Ninja Soul
 ```
 
-## Current T00 prerequisite and CI fidelity gate
+`~20 minutes` ends the four-school active-combat circuit, not the full Run.
 
-PR #17 is the active Phase-C provider/executor prerequisite. Its observed package includes HiGodot 3.1.4, GUT 9.7.1, Hera Agent Godot 1.0.0, provider activation/autoload metadata, and project-owned Godot 4.7.1 UID sidecars.
+## Old execution routes — historical only
 
-The first remote workflow for that PR ended green, but its dependency-preparation step unconditionally copied downloaded GUT into an already-vendored `addons/gut` directory. On Linux this produced `addons/gut/gut/**`, and Godot import reported many `UID duplicate detected` diagnostics. Therefore that green run is not source-faithful merge evidence.
+### PR #17
 
-Current project CI must preserve both states safely:
+PR #17 is closed and unmerged. It is **not** an active prerequisite and must not be reopened/merged or used as the base of current production work unless a future user explicitly names that PR and authorizes that action.
 
-- when GUT is not vendored, bootstrap pinned GUT 9.7.1 once for CI;
-- when GUT is vendored, verify and reuse that tree rather than overlaying another copy;
-- reject a nested `addons/gut/gut` tree;
-- capture import diagnostics and fail on `UID duplicate detected`.
+### Historical T01 branch
 
-The detailed recovery contract is in `docs/handoffs/2026-08-12-t00-provider-adoption-pause-handoff.md`.
+`impl/mvp4-t01-spatial-data-contracts` is a historical prepared baseline. Do not execute production changes from that stale pinned baseline.
 
-## T01 baseline / operational-doc boundary
+Future production branches are created from fresh merged `main` after current canon/plan readback and current Phase-B readiness.
 
-The historical package branch remains:
+## Plan reuse boundary
 
-`impl/mvp4-t01-spatial-data-contracts@225d68e7545062e3c2bc720562263fe6a67131bd`
+### Still reusable
 
-It was intentionally pinned to the Phase-B implementation baseline before T00 provider adoption became the active prerequisite. The older handoff allowed only two operational-document drift paths before T01 execution. **That narrow preflight is now superseded for execution purposes once this T00/CI-fidelity handoff closure lands**, because current main legitimately gains CI/handoff operational changes and T00 is expected to add provider/UID paths.
+The old 2026-08-11 MVP-4 T01-T07 direction remains valid for:
 
-Do not execute production T01 against the old drift assumption. After T00 is source-faithfully validated and merged:
+- spatial data/catalog contracts,
+- BackpackState,
+- BackpackResolver,
+- RestBackpackSession,
+- CombinationResolver,
+- committed RunBuildState modifier authority,
+- reward/shop/chest transaction foundation.
 
-- fetch latest `main` and current Phase-C contract;
-- read this router and the T00 pause handoff;
-- read the old T01 handoff as historical package scope/technical context, not as permission to ignore new main paths;
-- compare the intended T01 delta with the provider-integrated main;
-- refresh/recreate the T01 implementation package using the current approved branch policy;
-- preserve the T01 file boundary and technical contract unless current canon/approved plan explicitly changes them;
-- observe focused T01 RED before production GREEN code.
+DEC-021 access-lane and DEC-025 atomic-route inputs are bounded amendments to those domains, not reasons for a rewrite.
 
-Do not force-update the old pinned branch merely to erase history. Preserve it as historical evidence until the current package refresh route is chosen from fresh main.
+### Superseded for execution
 
-## T01 package boundary
+Old T08-T12 are non-executable because they assume immediate Boss + three-segment completion.
 
-Allowed modify:
+Current replacement requirements are MIG-01..MIG-08 in:
 
-- `scripts/data/item_definition.gd`
-- `scripts/data/run_modifier_set.gd`
-- `tests/unit/test_script_contracts.gd`
+`docs/traceability/2026-08-21-dec014-025-migration-traceability.md`.
 
-Allowed create:
+A detailed new T08+ code plan is blocked until DEC-026 resolves concrete Core Monster/Elite/Boss attack sets and Stage pattern budget.
 
-- `scripts/data/spatial_rule_definition.gd`
-- `scripts/data/bag_definition.gd`
-- `scripts/data/item_instance.gd`
-- `scripts/data/bag_instance.gd`
-- `scripts/data/combination_definition.gd`
-- `scripts/data/mvp4_catalog.gd`
-- `tests/unit/test_mvp4_catalog.gd`
+## Next executable work
 
-Read-only regression references:
+### Current next Gate — PLAN
 
-- `scripts/data/mvp3_catalog.gd`
-- `scripts/core/run_build_state.gd`
-- `tests/unit/test_run_build_state.gd`
-- `project.godot`
+**DEC-026: four-school Core Monster / Elite / Boss concrete attack sets + Stage pattern budget.**
 
-Codex may not create/switch branches, create/update/merge PRs, force-push, amend, change `project.godot`, modify UI/Scene/controllers, or begin T02 in this package. GPT reviews the pushed package branch and owns PR/merge after evidence.
+Before asking for implementation:
 
-## Phase-B technical contract to preserve
+1. use current Notion world/core-system canon and benchmark evidence,
+2. design DEC-026 without adding a second combat game per school,
+3. preserve shared chassis + telegraph + Stage profile budgets,
+4. run required adversarial review,
+5. obtain user approval for the material product decision,
+6. write/recalculate the detailed T08+ implementation plan,
+7. run Phase-B Definition of Ready on fresh main,
+8. only then enter new Phase-C production packages.
 
-- `RunModifierSet` owns supported modifier fields and the additive helper.
-- `ItemDefinition.static_modifier_payload: Dictionary[StringName, float]`.
-- `ItemDefinition.spatial_rules: Array[SpatialRuleDefinition]`.
-- `SpatialRuleDefinition` is bounded to approved orthogonal-neighbor semantics; no general relationship DSL.
-- no resolver item-ID branches for strong-spatial content.
-- new static payload and legacy `effect_kind/effect_value` never double-apply.
-- `school_emblem.school_payload` remains selected-school conditional behavior.
-- `MVP4Catalog` separates base acquisition IDs from combo-result IDs.
-- candidate IDs are canonical-sorted before seeded weighted selection.
-- first catalog default = 8 strong-spatial; approved product tuning range = 7–9.
+### Work that may continue independently before DEC-026
 
-## Protected MVP-4 product scope
+- documentation/readback correction,
+- Notion/GitHub sync,
+- benchmark/evidence collection for DEC-026,
+- stale structured-metadata correction,
+- verification of the unchanged MVP-0~3 regression baseline.
 
-- fixed `6x6` board / starting `4x3` active area;
-- item and bag 90° rotation;
-- rectangular regular items and selected L/T bags;
-- connected orthogonal bag region, no bag overlap, items only on active cells;
-- 6-slot REST work buffer, zero-buffer Fate gate;
-- orthogonal adjacency, same pair once; one-cell special-bag overlap activation;
-- boss quality / shop control / chest quantity-random acquisition roles;
-- ~3-minute elite opportunity / ~5-minute segment boss;
-- 3 explicit atomic first-tier combinations only;
-- Persistent Workbench; mouse + keyboard/gamepad + touch completion paths;
-- visible mutually-exclusive whole-layout move mode;
-- UI renders snapshots/emits intent only;
-- DEC-002 hybrid direction and 4-normal+1-special bag boundary;
-- no new save system, rarity layer, deeper combo tiers, arbitrary polyomino regular items or deep set/curse system.
+Do not claim new gameplay production is ready merely because these independent tasks are complete.
 
-## Expected runtime before T01
+## Human-evidence rule
 
-The integrated runtime remains MVP-3: legacy single-effect ItemDefinition, owned-count modifier authority, immediate shop activation, linear RESULT→SHOP→FATE→PREVIEW, and no spatial backpack/elite/chest/Workbench runtime. These are implementation targets, not already-fixed behavior.
+Technical placeholder/card UI may support spikes and automated tests. It cannot close the final player-experience gate.
 
-## Google Sheet synchronization
+Before scaling all four school battlefields, build and human-test one release-near representative school slice with production-candidate UI/UX, visuals, animation/VFX and audio feedback:
 
-The connected project Google Sheet is now writable and synchronized for the MVP-4 planning surfaces that were previously stale.
+`signature <=30 sec -> Elite -> trace -> Boss -> reward -> Workbench -> next-route preview`.
 
-```yaml
-spreadsheet_id: 1zGVjsvYQe057W6hiAEO2AkIdO1MBJdhVBYlGW92vd3A
-project_sheet_read: PASS
-project_sheet_permission_observed: ANYONE_WRITER
-project_sheet_write_probe: PASS_2026_08_11
-project_sheet_write: PASS
-project_sheet_sync: SYNCED_TO_CURRENT_MVP4_CANON_2026_08_11
-classification: NO_BLOCKER
-```
+Measure school readability, pacing, telegraph fairness, trace clarity, Workbench comprehension/fatigue and Korean text readability before four-school content multiplication.
 
-Verified synchronized surfaces:
+## Runtime/tool boundary
 
-- `핵심요약`: MVP-4 now explicitly includes size differences, item/bag 90° rotation and selected L/T bags; deep set/curse/arbitrary complex shapes remain later.
-- `백팩`: old staged-rotation wording removed; 6x6 / 4x3 / size / selected L/T bag / 90° rotation are marked MVP-4 basics; set/curse are future candidates.
-- `MVP범위`: old `회전/복잡한 모양은 제외` wording removed; regular items remain rectangular while selected L/T bags and 90° rotation are included.
-- `휴식구간흐름`: active flow now uses ~5-minute segment boss → RESULT → forced BOSS_REWARD → REST Workbench, with ~3-minute elite context.
-- `인법과조합`: only 물안개 / 뇌명도 / 폭렬탄 are marked MVP-4; 독무 / 번개걸음 remain clearly labeled `후속 후보`.
-- `벤치마킹`: refreshed Backpack Battles / Backpack Hero / DRG Survivor / Sproggiwood / Resogun evidence and DEC-2026-08-11-002 Hybrid A conclusion added.
-- `변경메모`: historical 2026-07-10 rows are preserved and new 2026-08-11 superseding rows record current rotation, combo, cadence, benchmark and sync decisions.
+Notion currently records a dedicated Ninja Survival Godot slot/path, but the latest product-canon migration runtime remains `NOT_RUN`.
 
-Post-write searches returned zero matches for the stale active phrases `초기부터 전부 열지 않음`, `회전/복잡한 모양은 제외`, and `5/10/15분 보스 처치`; `후속 후보` correctly returns exactly the two future combination rows.
+Repository `project.godot` does not currently contain the old PR #17 provider adoption. Do not claim HiGodot/Hera/Godot-AI project integration from historical PR content.
 
-Older `403 / GITHUB_UPDATE_PENDING_SHEET` snippets in `docs/CURRENT_CONFIRMED_DECISIONS.md` or `docs/DOCUMENTATION_MAP.md` describe the pre-permission-recovery observation and are stale as mutable access-state evidence. Do not use them to override this fresh verified Sheet state. They are intentionally not edited before T01 because the product decisions in those files remain authoritative and unchanged.
+## Base freshness
 
-## Environment facts
+Current Base remote must be re-read when it affects a task. This router does not claim a full Base sync merely because current Base was observed during the canon audit.
 
-```yaml
-godot_engine_target: 4.7.1
-gut_target: 9.7.1
-godot_ai_user_reported_local_version: 3.1.4
-godot_ai_status: INFORMATIONAL_UNTIL_FRESH_LOCAL_VERIFICATION
-local_windows_powershell_codex_godot_execution_in_this_chat: UNAVAILABLE
-```
+## Resume rule
 
-Godot AI 3.1.4 is separate from Godot Engine 4.7.1. The local executor must freshly verify Codex, Godot Engine, GUT and any Godot-AI/HiGodot/Hera route before use.
+On every resume:
 
-## Learning / Base promotion state
-
-```yaml
-LRN-NS-2026-08-12-001:
-  classification: SPLIT
-  project_application: .github/workflows/gut.yml
-  project_verification: PASS_PR_18_RUN_31514428025_BOOTSTRAP_ROUTE
-  base_candidate: CI_SOURCE_FIDELITY_FOR_VENDORED_DEPENDENCIES
-  base_proposal_id: BCP-2026-021-ci-source-fidelity-for-vendored-dependencies
-  base_proposal_pr: 291
-  base_proposal_merged: true
-  base_proposal_status: SUBMITTED
-  base_main_observed_after_proposal_merge: d7dedbc6548294ac6109c22548e40adb0d6d273a
-  base_implementation_authority: NOT_GRANTED_IN_THIS_STAGE
-LRN-NS-2026-08-12-002:
-  classification: PROJECT_ONLY
-  project_application: T00_BEFORE_T01_RESUME_ROUTE
-  project_verification: ACTIVE_CONTEXT_AND_HANDOFF_REREAD
-  closure: CLOSED
-LRN-NS-2026-08-12-003:
-  classification: NO_PROMOTION
-  existing_base_owner: maintaining-project-context-and-handoff
-  project_application: APPLIED_IN_EXISTING_CONTINUATION_OWNERS
-  closure: CLOSED
-```
-
-The reusable part of `LRN-NS-2026-08-12-001` is stored in Base as proposal-only BCP `BCP-2026-021-ci-source-fidelity-for-vendored-dependencies`, merged by Base PR #291 with status `SUBMITTED`. Proposal storage/merge is not Base implementation approval. Base active implementation remains a separate stage and is not authorized by this handoff work.
-
-## Next executable step
-
-**Do not start T01. The handoff/CI-fidelity closure and Base proposal storage are complete. On later implementation resume, fetch latest project main and PR #17, require the current project CI fidelity guard, revalidate the T00 vendored-GUT route without `addons/gut/gut` or `UID duplicate detected`, perform adversarial review, merge T00 only if all current gates pass, read back new main, refresh/recreate the T01 package baseline from that provider-integrated main, and only then observe focused T01 RED before production GREEN code.**
+`fetch/read latest main -> inspect open/recent merged PRs -> read current decisions/canon/traceability -> compare actual code/tests -> continue only from evidence-backed current state`.

@@ -2,194 +2,262 @@
 
 ## 목적
 
-이 문서는 `닌자 서바이벌` Godot 버전의 **현재 실제 시스템 책임과 다음 MVP-4 확장 경계**를 연결한다.
+현재 실제 runtime responsibility와 DEC-014~025 migration target을 한눈에 연결한다.
 
-현재 제품 결정은 `docs/CURRENT_CONFIRMED_DECISIONS.md`, 구현/검증 상태는 `docs/ACTIVE_CONTEXT.md`가 우선한다. 이 문서는 상태/책임을 찾는 지도이며 동일 규칙을 별도 정본으로 복제하지 않는다.
+- 제품 행동: `docs/CURRENT_CONFIRMED_DECISIONS.md` + dated product canon.
+- 현재 resume state: `docs/ACTIVE_CONTEXT.md`.
+- 구현 사실: actual scripts/scenes/tests.
+- 이 문서는 중복 정본이 아니라 responsibility / migration map이다.
 
-## 현재 baseline
+## 1. Current implementation baseline
 
-Project main baseline observed for this map: `9b85cf65a3ca4278f7d8ec1a7e527ecc857cbad1`.
-
-- MVP-0~MVP-3 runtime is integrated.
-- MVP-4 design is complete pending written-spec review.
-- MVP-4 production implementation has not started.
-
-## 현재 구현 책임
-
-| 영역 | 현재 파일/씬 | 현재 책임 | 상태 |
+| 영역 | 현재 owner | 구현 현실 | migration disposition |
 |---|---|---|---|
-| Main orchestration | `scripts/core/main_controller.gd` | 전투/학교/스테이지/휴식 controller wiring | MVP-3 integrated |
-| Game state | `scripts/core/game_state.gd` | score/kill 등 기본 run state | integrated |
-| Stage flow | `scripts/core/stage_flow_controller.gd` | `SCHOOL_SELECT → COMBAT → BOSS → RESULT → SHOP → FATE → PREVIEW/COMPLETE` | MVP-3 integrated, MVP-4 target differs |
-| Build state | `scripts/core/run_build_state.gd` | GOLD, non-spatial `owned_items`, Fate, derived modifiers | MVP-3 integrated; spatial ownership 예정 |
-| Shop | `scripts/core/shop_controller.gd` | 3 item offer, buy/sell/reroll, injectable RNG | MVP-3 integrated; MVP-4 intake semantics 변경 예정 |
-| Fate | `scripts/core/fate_controller.gd` | Fate candidate/selection | integrated |
-| Contribution | `scripts/combat/combat_contribution_tracker.gd` | damage/healing/defense/status/kill-combo segment snapshot | integrated |
-| Combat modifier resolution | `scripts/combat/combat_resolver.gd` | run modifier를 전투 damage path에 적용 | integrated |
-| Rest UI | `scripts/ui/rest_flow_ui.gd` + `scenes/ui/rest_flow_ui.tscn` | RESULT/SHOP/FATE/PREVIEW view, intent signal | MVP-3 integrated; Persistent Workbench 예정 |
-| Item definition | `scripts/data/item_definition.gd` | MVP-3 item id/price/tag/effect | integrated; footprint/rotation data 없음 |
-| Catalog | `scripts/data/mvp3_catalog.gd` | 현재 item/fate catalog | integrated; MVP-4 pool 확장 예정 |
-| Stage boss | `scripts/enemies/stage_boss.gd` + `scenes/enemies/stage_boss.tscn` | 5분 경계 boss runtime | MVP-3 integrated |
-| Tests | `tests/unit/`, `tests/integration/`, `.github/workflows/gut.yml` | GUT unit/integration/CI | active |
+| Main composition | `scripts/core/main_controller.gd` | MVP-3 integrated | reuse composition root; later wire circuit/trace/Workbench |
+| Game score/kill | `scripts/core/game_state.gd` | integrated | reuse |
+| Stage flow | `scripts/core/stage_flow_controller.gd` | 3-segment `SCHOOL_SELECT->COMBAT->BOSS->RESULT->SHOP->FATE->PREVIEW/COMPLETE` | baseline only; current product target differs |
+| Run build | `scripts/core/run_build_state.gd` | GOLD + non-spatial owned items + Fate modifiers | migrate to committed spatial authority |
+| Combat resolver | `scripts/combat/combat_resolver.gd` | run modifiers applied to damage | reuse |
+| Contribution | `scripts/combat/combat_contribution_tracker.gd` | segment contribution snapshot | reuse/extend only if new evidence needs it |
+| Wave spawning | `scripts/spawning/wave_spawner.gd` | timed/capped normal enemies | reuse API; do not create second wave system by default |
+| Stage Boss | `scripts/enemies/stage_boss.gd` | stat-tier Boss baseline | school-Boss/final-Boss migration reference, not current final implementation |
+| Four schools | `scripts/schools/*_runtime.gd` | four shallow identities integrated | preserve as baseline; bounded later tuning |
+| Shop | `scripts/core/shop_controller.gd` | immediate non-spatial purchase semantics | reuse economy/reroll pieces; route acquisition to Workbench/access lanes |
+| Fate | `scripts/core/fate_controller.gd` | one choice per rest | reuse; later atomic route/build commit integration |
+| Rest UI | `scripts/ui/rest_flow_ui.gd` + scene | RESULT/SHOP/FATE/PREVIEW/COMPLETE | outer shell baseline; Workbench/route preview target differs |
+| Item data | `scripts/data/item_definition.gd` + `mvp3_catalog.gd` | 8 current runtime items + fates | spatial/catalog migration planned |
+| Tests/CI | `tests/**`, `.github/workflows/gut.yml` | active regression baseline | protect; replace tests only with approved behavior RED/GREEN |
 
-## MVP-4 target responsibility map
-
-MVP-4는 UI에 공간 규칙을 넣지 않고 다음 책임을 분리한다.
+## 2. Protected spatial domain target
 
 ```text
-ItemDefinition / BagDefinition
-        ↓
+ItemDefinition / BagDefinition / CombinationDefinition
+          ↓
 ItemInstance / BagInstance
-        ↓
+          ↓
 BackpackState
-        ↓
+          ↓
 BackpackResolver
-        ↓
+          ↓
+RestBackpackSession ── CombinationResolver
+          ↓
 BuildPreviewSnapshot
-        ↓
-RunBuildState + Fate
-        ↓
-RunModifierSet / combat runtime
-
-REST editing side:
-RestBackpackSession
-  ├─ 6-slot work buffer
-  ├─ placement/rotation preview
-  ├─ whole-layout translation
-  ├─ Undo/Redo
-  ├─ pending bag
-  └─ combination preview/transaction
-
-UI side:
-Persistent Workbench UI
-  └─ snapshot 표시 + intent signal/event만 반환
+          ↓
+committed RunBuildState snapshot + Fate
+          ↓
+RunModifierSet / CombatResolver / SchoolRuntimeHost / player runtime
 ```
 
-### `BackpackState`
+Responsibilities:
 
-Target responsibility:
+### BackpackState
 
-- fixed `6x6` board,
-- bag/item instances,
-- coordinates and rotation,
-- canonical committed spatial state.
+- fixed 6x6 board,
+- bags/items and stable instance identity,
+- origin/rotation,
+- committed spatial state only.
 
-### `BackpackResolver`
+### BackpackResolver
 
-Target responsibility:
-
-- occupied cells,
-- board bounds,
-- active cells,
-- bag connectivity,
-- collision,
-- orthogonal adjacency graph,
+- bounds/occupancy,
+- active bag cells,
+- bag connectivity/collision,
+- orthogonal adjacency,
 - special-bag overlap,
-- combination eligibility,
-- active placement effects.
+- deterministic active modifier resolution.
 
-Resolver는 UI/Scene과 분리된 deterministic rule layer여야 한다.
+### RestBackpackSession
 
-### `RestBackpackSession`
+- six-slot work buffer,
+- preview placement/rotation,
+- whole-layout movement mode,
+- Undo/Redo edit history,
+- pending bag,
+- combination preview/transaction,
+- commit readiness.
 
-Target responsibility:
+### Workbench UI
 
-- 6-slot REST-only work buffer,
-- move/rotate/drop preview,
-- whole-layout translation,
-- placement Undo/Redo,
-- pending bag placement,
-- combination preview and atomic commit,
-- Fate commit readiness.
+- render snapshots,
+- expose intent/actions,
+- show legality/synergy/combination/route feedback,
+- never become geometry/economy/combination authority.
 
-### Persistent Workbench UI
+## 3. New Run-level circuit target
 
-Target responsibility:
+Current product canon requires a bounded owner above individual school runtimes.
 
-- central backpack board를 REST 동안 지속 표시,
-- chest/shop/buffer/combination을 같은 session 안에서 왕복,
-- Windows rail/panel과 Android bottom-sheet/tab adapter,
-- mouse/keyboard/gamepad/touch intent 전달,
-- valid/invalid/synergy/hint/commit feedback.
-
-UI는 BackpackState, 경제, reward roll, combination legality를 재계산하지 않는다.
-
-## MVP-4 stage/reward target
+Architecture direction:
 
 ```text
-COMBAT
-→ ~3 min ELITE
-   └─ kill: chest token
-→ ~5 min SEGMENT BOSS
-→ RESULT
-→ BOSS_REWARD 3 choose 1
-→ PERSISTENT REST WORKBENCH
-→ FATE commit
-→ PREVIEW / COMPLETE
+SchoolCircuitState / RunRouteState
+  ├─ cleared_schools in clear order
+  ├─ provisional_next_school
+  ├─ current_stage_index 1..4
+  ├─ trace states per school
+  ├─ access-package open state
+  └─ four-school-complete / final-routing state
+
+SchoolEncounterDefinition
+  + StageDifficultyProfile
+  + SchoolGimmickLibrary
+          ↓
+current battlefield encounter composition
 ```
 
-MVP-3의 현재 StageFlow 구현은 실제 baseline으로 남아 있고, 위 흐름은 MVP-4 implementation target이다. 문서가 target을 현재 구현 완료로 표현하지 않는다.
+Do not hardcode every route permutation or 16 school-stage variants in UI/MainController.
 
-## MVP-4 데이터 경계
+The exact new class/file split is not executable until DEC-026 and the fresh detailed T08+ plan are approved. The responsibility boundary above is planning architecture, not implementation evidence.
 
-### Confirmed
+## 4. Battlefield progression target
 
-- 6x6 board / 4x3 start area.
-- item+bag 90° rotation.
-- rectangular regular items; selected L/T bags.
-- 6-slot work buffer.
-- orthogonal adjacency.
-- one-cell special-bag overlap activation.
-- representative combinations: 물안개 / 뇌명도 / 폭렬탄.
-- boss/shop/chest acquisition pillars.
+```text
+COMBAT / Core Monsters
+-> ~2:40 Elite warning
+-> ~3:00 school Elite
+-> Elite death
+   -> chest token +1 exactly once
+   -> trace AVAILABLE
+-> trace auto-approach / close-range recovery
+-> TRACE RECOVERED
+-> BossApproachProfile + earliest-time/warning gate
+-> school Boss around five-minute boundary
+-> RESULT / Boss Reward
+-> return to joint branch
+-> trace STABILIZED / school access package OPEN
+-> Persistent Workbench
+-> provisional next-school route
+-> Fate commit
+```
 
-### Planned authoring additions
+Trace is separate from RewardOrb and must not grant ORB/STYLE/GOLD.
 
-Implementation plan에서 기존 `ItemDefinition` 확장과 별도 `BagDefinition`, instance model, combination data의 정확한 파일 split을 결정한다. 새 파일 경로를 이 System Map이 선행 확정하지 않는다.
+## 5. Access-package / reward-lane target
 
-## 검증 구조
+```text
+access package = when item can appear
+affinity/tag = what builds/schools it synergizes with
+reward lane = why this candidate is offered now
+actual power = only committed backpack placement/adjacency/combination
+```
 
-MVP-4 implementation은 최소 다음 계층으로 검증한다.
+Run start:
+
+`Universal + starting-school package open`.
+
+After school Boss + branch return:
+
+`that school's package opens`.
+
+Boss/Shop/Chest should select a lane/pool first, then item, and deduplicate by canonical item ID. Do not turn 19 existing items into mutually exclusive school-owned items.
+
+## 6. Route preview / commit target
+
+Workbench owns a player-facing comparison surface for unvisited schools.
+
+Route choice:
+
+- provisional while editing,
+- changeable before Fate,
+- Fate atomically commits `backpack + fate + next_school`,
+- failed commit mutates none of the three,
+- clear history remains visible and feeds final support order.
+
+Route card can reveal school philosophy, Stage gimmick depth, Elite/Boss main risk, access/reward meaning and real current-build links.
+
+Do not expose exact hidden tuning tables or AI win recommendations.
+
+## 7. Final binding / final battle target
+
+```text
+fourth school Boss
+-> RESULT / Boss Reward
+-> joint branch
+-> four traces bound
+-> Final Binding Persistent Workbench
+-> all access packages open
+-> final build + fourth Fate commit
+-> separate 난세 재앙핵 battle
+-> liberated-school support callbacks in clear order
+-> player build owns victory
+-> final result / Ninja Soul
+```
+
+Four-school support is risk relief/attack-window narrative payoff, not companion management or automatic victory.
+
+Final Boss reuses/recombines previously learned school languages. Exact attack/pattern implementation remains blocked by DEC-026 and later planning.
+
+## 8. Four-school runtime migration notes
+
+Current runtime is protected evidence:
+
+- 봉마: familiar + current fixed ward.
+- 천술: status/reaction loop.
+- 귀인: melee pulse + current low-HP berserker modifier.
+- 흑영: marks/crit/execution + current nearest-target attack.
+
+Long-term product tuning candidates:
+
+- 봉마 -> mobile stronghold expression.
+- 귀인 -> dangerous close-range presence rather than low HP alone.
+- 흑영 -> threat-priority execution while keeping auto-combat compatibility.
+- 천술 -> preserve reaction identity while expanding content later.
+
+Tune after one-school representative slice; do not rewrite all four simultaneously.
+
+## 9. Task reuse / supersession map
+
+Old `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md`:
+
+- T01-T07: reusable low-level direction.
+- T08-T12: historical/non-executable after DEC-014~025.
+
+Current replacement requirements:
+
+`docs/traceability/2026-08-21-dec014-025-migration-traceability.md`.
+
+Detailed new T08+ executable plan: **BLOCKED_DEC026**.
+
+## 10. Verification layers
 
 ```text
 unit
-- geometry / rotation
-- collision / connectivity
-- adjacency / special-bag overlap
-- buffer / Undo-Redo boundaries
+- backpack geometry/connectivity/adjacency
 - combination atomicity
-- seeded reward generation
+- access-package/reward-lane determinism
+- school-circuit state
+- trace state/gates
+- atomic route/build/Fate commit
 
 integration
-- stage reward → buffer → placement → Fate commit
-- shop/chest/boss-reward transaction
-- RunBuildState modifier commit boundary
-- Rest UI intent ↔ session snapshot
+- Core -> Elite -> trace -> Boss -> branch
+- reward -> Workbench -> route preview -> Fate commit
+- four schools exactly once -> final binding
+- regression with current combat/school/Fate/Shop ownership
+
+runtime
+- Godot import/main scene
+- representative battlefield pacing
+- real UI focus/input behavior
 
 human
-- Windows mouse+keyboard
-- Windows gamepad focus
-- Android real-device touch
-- long Korean text / smallest supported layout
-- REST fatigue and comprehension
+- one-school release-near Vertical Slice first
+- school identity/readability
+- telegraph fairness
+- trace comprehension
+- Workbench decision value/fatigue
+- Korean layout/readability
+- only after pass: four-school multiplication
 ```
 
-실행되지 않은 MVP-4 test/runtime/human evidence는 `NOT_RUN`이다.
+Automated GREEN and human PASS remain separate evidence classes.
 
-## 설계 원칙
+## 11. Current evidence ceiling
 
-- 상태 소유자를 중복시키지 않는다.
-- UI는 domain 규칙의 authority가 아니다.
-- REST preview와 actual combat modifier commit을 분리한다.
-- transaction failure는 partial mutation 없이 fail closed한다.
-- random reward path는 seeded/injectable test가 가능해야 한다.
-- 첫 구현 Goal 하나에 MVP-4 전체를 무리하게 넣지 않고 implementation plan에서 독립 testable package로 나눈다.
-- save system, 2차/3차 조합, arbitrary item polyomino, 깊은 set/curse, final economy는 MVP-4에서 새로 만들지 않는다.
+- MVP-0~3 integrated.
+- MVP-4 spatial production not started.
+- DEC-014~025 migration runtime not started.
+- release-near human QA not run.
+- Android/export not ready.
 
-## 다음 책임 원본
-
-- 제품 결정: `docs/CURRENT_CONFIRMED_DECISIONS.md`
-- MVP-4 detailed design: `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`
-- 단계 범위: `MVP_ROADMAP.md`
-- 현재 상태: `docs/ACTIVE_CONTEXT.md`
-- 구현 전 최종 작업 분해: written-spec review 뒤 생성할 Superpowers implementation plan
+Do not use this target map as proof that any missing runtime exists.
