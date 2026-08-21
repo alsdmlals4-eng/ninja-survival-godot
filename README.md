@@ -1,89 +1,137 @@
-# Ninja Survival Godot
+# Ninja Survival Godot — 닌자의 신
 
-`닌자 서바이벌`의 Godot 4.x 재구현 저장소다.
+Godot 4.x / GDScript로 재구성 중인 `닌자 서바이벌 (닌자의 신)` 저장소다. Unity 버전은 별도 아카이브 참고자료이며, 현재 구현 정본은 이 Godot 저장소다.
 
-기존 Unity 구현은 별도 아카이브 저장소에 보존하고, 이 저장소에서는 Godot + GDScript 기준으로 재설계한다.
+## 제품 약속
 
-## 관련 저장소
+> 네 유파 전장을 돌며 전승 접근권을 복구하고, 공간·회전·인접 기반 백팩 빌드를 완성해 난세 재앙핵을 평정하는 2D 서바이벌 로그라이크.
 
-- Unity 보존 저장소: `alsdmlals4-eng/ninja-survival-unity-archive-Unity-`
-- Godot 전환 저장소: `alsdmlals4-eng/ninja-survival-godot`
+플레이어 감정 목표:
 
-## 핵심 방향
+`살아남는다 -> 강해진다 -> 자기 방식을 만든다 -> 네 유파를 다시 잇는다 -> 이번 전선을 평정한다 -> 전설이 된다`.
 
-- Unity 코드를 그대로 번역하지 않는다.
-- Unity 구현은 참고 자료로만 사용한다.
-- Godot 4.x의 Scene/Node/GDScript 구조에 맞춰 재설계한다.
-- MVP는 완성판이 아니라 핵심 재미 검증판이다.
-- 각 Codex Goal은 작게 쪼개되, 전체 기획 MVP는 전투 DDD, 4유파, 휴식/백팩/운명/결과 루프까지 연결되는지 검증한다.
+## 현재 구현 상태
 
-## 핵심 소개
+| 영역 | 상태 |
+|---|---|
+| MVP-0 기본 전투 | integrated |
+| MVP-1 전투 DDD | integrated |
+| MVP-2 4유파 얕은 runtime | integrated |
+| MVP-3 결과/GOLD/상점/운명/3세그먼트 runtime | integrated rollback/regression baseline |
+| MVP-4 공간 백팩/조합 production | **not started** |
+| DEC-014~025 4유파 순회 migration | **documented / not implemented** |
+| release-near Vertical Slice human QA | **NOT_RUN** |
+| Android device/export | **NOT_RUN / NOT_READY** |
 
-`닌자 서바이벌`은 유파 인법을 모으고 백팩에 배치해 나만의 닌자 빌드를 완성하는 2D 서바이벌 로그라이크다.
+마지막 관찰된 pre-rebaseline 자동 회귀 기준선은 Godot 4.7.1 import + main-scene smoke + GUT `34 scripts / 250 tests / 1624 assertions PASS`다. 이것은 기존 MVP-0~3이 깨지지 않았다는 증거이지 DEC-014~025 구현 완료 증거가 아니다.
 
-보조 세계관 방향은 분열된 닌자 유파의 힘을 계승해 혼란한 세계를 바로잡는 인법 조합 로그라이크다.
+## 최신 Run 목표
 
-## 현재 단계
+```text
+시작 유파
+-> 미방문 유파 전장 선택
+-> Core Monster + Stage 기믹
+-> 약 3분 유파 Elite
+-> 상자 토큰 + 유파 흔적
+-> 흔적 회수
+-> Boss 접근 경고/이중 Gate
+-> 약 5분 유파 Boss
+-> RESULT / Boss Reward
+-> 4유파 공동 지부 귀환
+-> 흔적 STABILIZED / 전승 접근 package OPEN
+-> Persistent Workbench
+-> 다음 미방문 유파 provisional 선택
+-> Shop / Chest / Backpack / Combination
+-> Fate가 build + Fate + next route atomic commit
+-> 네 유파를 정확히 한 번씩 반복
+-> Final Binding Workbench
+-> 별도 최종전 `난세 재앙핵`
+-> 최종 결과 / Ninja Soul
+```
 
-- MVP-0 기본 전투 기반: integrated.
-- MVP-1 전투 DDD: integrated.
-- MVP-2 4유파 얕은 구현: integrated.
-- MVP-3 스테이지 결과/휴식/상점/운명: integrated.
-- MVP-4 백팩/조합: **design complete, written-spec review pending; implementation not started**.
-- MVP-5 최종 루프: not started.
+`약 20분`은 네 번째 유파 Boss까지의 active-combat 목표치다. 전체 Run 종료 시점이 아니다.
 
-구현/검증 상태는 `docs/ACTIVE_CONTEXT.md`, 현재 승인된 설계 결정은 `docs/CURRENT_CONFIRMED_DECISIONS.md`를 우선한다.
+## 핵심 시스템
 
-## 현재 MVP 정의
+### 자동 생존 전투 + DDD
 
-현재 MVP는 `MVP-0`부터 `MVP-5`까지 나누어 검증한다.
-
-| 단계 | 목표 | 핵심 검증 |
-|---|---|---|
-| MVP-0 | 기본 전투 기반 | 이동, 카메라, 적 추적, 자동 공격, 피격/처치, 게임오버 |
-| MVP-1 | 전투 DDD | 처치 콤보, 스타일리쉬 점수, 보상 흡수감 |
-| MVP-2 | 4유파 얕은 구현 | 봉마류/천술류/귀인류/흑영류의 플레이 감정 차이 |
-| MVP-3 | 스테이지/결과/휴식 | 5분 전투 세그먼트, 중간 결과, 휴식 판단, 운명 선택 |
-| MVP-4 | 백팩/조합 기초 | 6x6 보드, 4x3 시작 공간, 가방 확장, 회전, 인접 시너지, 작업 버퍼, 조합 |
-| MVP-5 | 최종 루프 | 20분 구조, 최종 보스, 최종 결과, 닌자소울 획득 |
-
-## MVP에 포함되는 핵심 시스템
-
-- 8방향 이동과 자동 공격 전투
-- 처치 콤보와 스타일리쉬 점수
+- 8방향 이동
+- 자동 공격
+- 처치 콤보 / MAX COMBO
+- stylish score
 - 보상 흡수 피드백
-- 4유파 선택과 얕은 고유 시스템
-- 각 5분 전투 세그먼트의 약 3분대 엘리트/중간보스와 5분대 세그먼트 보스
-- 딜량, 힐량, 방어량, 상태이상 부여, 콤보/처치 기여도 결과 카드
-- 보스 보상 `3 choose 1`
-- 휴식 Persistent Workbench: 상자, 상점, 백팩, 6-slot 작업 버퍼, 조합
-- 백팩: 고정 6x6 보드, 4x3 시작 공간, 가방 확장, 아이템/가방 90도 회전, 직교 인접 시너지, 일부 L/T형 가방
-- 명시적 1차 조합과 단계적 조합 힌트
-- 운명 선택: 보상과 대가가 함께 있는 한 판 규칙 변경
-- 최종 결과: 닌자 랭크, 스타일리쉬 점수, MVP 인법/장비, 운명 결과, 짧은 결말문, 닌자소울
+- 결과 기여도 추적
 
-## MVP에서 제외되는 것
+### 4유파
 
-- 4유파 전체 스킬풀
-- 2차/3차 조합
-- 임의의 복잡한 일반 아이템 polyomino 시스템
-- 깊은 세트/저주 시스템
-- 정교한 엔딩 분기와 엔딩 CG
-- 완전한 상점 경제와 최종 리롤 밸런스
-- 화려한 UI/애니메이션 전체 제작
-- 복잡한 보스 패턴 전체
+- **봉마:** 이동형 진지 · 식신/결계로 공간을 준비하고 대신 싸우게 한다.
+- **천술:** 상태를 만들고 순서/조합으로 원소 반응을 일으킨다.
+- **귀인:** 위험한 근접 체류를 유지해 난전 지속력과 폭발력을 얻는다.
+- **흑영:** 위험한 적을 표식/우선순위/처형으로 먼저 제거한다.
 
-MVP-4에는 **아이템/가방 90도 회전과 선택적 비정형 가방이 포함**된다. 과거의 회전 제외 문구를 복원하지 않는다.
+현재 MVP-2 runtime은 이 장기 정체성을 위한 검증된 baseline으로 유지한다. 봉마의 고정 ward, 귀인의 low-HP 보정, 흑영의 최근접 규칙은 향후 Vertical Slice에서 조정 후보지만 지금 즉시 폐기하지 않는다.
 
-## 현재 읽기 순서
+### 공간 백팩 / Persistent Workbench
+
+보호된 MVP-4 규칙:
+
+- 6x6 전체 보드
+- 4x3 시작 사용 영역
+- 가방 구매로 사용 영역 확장
+- 아이템/가방 90도 회전
+- 직교 인접 시너지
+- 일부 L/T형 가방
+- 6-slot REST 작업 버퍼
+- explicit atomic 1차 조합
+- Boss / Shop / Chest 획득 역할 분리
+- preview와 실제 combat commit 분리
+
+Architecture direction:
+
+`definitions -> BackpackState -> BackpackResolver -> RestBackpackSession/CombinationResolver -> committed RunBuildState -> combat`.
+
+### 흔적 / 전승 접근
+
+흔적은 자동 유파 버프가 아니다.
+
+`Elite -> trace AVAILABLE -> RECOVERED -> Boss -> branch return -> STABILIZED`
+
+`STABILIZED`는 해당 유파 인법/장비가 Boss Reward / Shop / Chest 후보 pool에 등장할 수 있게 하는 **Run 전승 접근권**이다. 실제 전투력은 플레이어가 획득하고 백팩에 배치·인접·조합한 결과가 결정한다.
+
+## 현재 개발 경계
+
+기존 2026-08-11 MVP-4 계획 중 **T01~T07 저수준 domain 방향은 재사용**한다.
+
+과거 T08~T12의 immediate-Boss/3세그먼트 조립 계획은 최신 제품 구조와 충돌하므로 실행하지 않는다. 현재 migration 요구사항은 `docs/traceability/2026-08-21-dec014-025-migration-traceability.md`를 따른다.
+
+상세 T08+ 구현 계획은 다음 제품 Gate가 확정되기 전 작성/실행하지 않는다:
+
+**DEC-026 — 4유파 Core Monster / Elite / Boss 실제 공격 세트와 Stage별 pattern budget.**
+
+## 역사 실행 경로 주의
+
+- PR #17은 **closed / unmerged** 역사 자료다. 재오픈·병합하거나 prerequisite로 사용하지 않는다.
+- `impl/mvp4-t01-spatial-data-contracts`는 오래된 prepared baseline이며 현재 구현 branch가 아니다.
+- 새 production package는 최신 canon/plan/Phase-B readback 뒤 fresh merged `main`에서 만든다.
+
+## 읽기 순서
 
 1. `AGENTS.md`
 2. `docs/CURRENT_CONFIRMED_DECISIONS.md`
 3. `docs/ACTIVE_CONTEXT.md`
-4. `MVP_ROADMAP.md`
-5. `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md` — written-spec review branch에서 사용
-6. 실제 코드/Scene/Test
+4. `docs/canon/2026-08-21-dec014-025-product-canon.md`
+5. `docs/traceability/2026-08-21-dec014-025-migration-traceability.md`
+6. MVP-4 spatial detail이 필요하면 `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`
+7. 실제 코드 / Scene / Test / CI
 
-## 실행 기준
+문서와 실제 구현이 다르면 구현 사실은 코드/테스트로 확인하되, 앞으로 구현해야 할 제품 행동은 최신 Decision/Canon을 따른다.
 
-Godot 4.x 기준으로 `project.godot`을 연다. 실제 MVP-4 구현은 written-spec review와 후속 implementation plan이 승인되기 전 시작하지 않는다.
+## Human play evidence
+
+placeholder/card UI는 기술 Spike와 자동 테스트에 사용할 수 있다. 최종 player-experience PASS에는 사용할 수 없다.
+
+4유파 전체를 한 번에 제작하기 전에 한 유파를 대상으로 다음 release-near Vertical Slice를 먼저 검증한다:
+
+`30초 내 유파 시그니처 -> Core 전투 -> ~3분 Elite -> trace -> ~5분 Boss -> 보상 -> Workbench -> 다음 route preview`.
+
+실제 사용 후보 UI/UX, 닌자/적 시각, animation/VFX, audio feedback을 연결해 재미·가독성·정비 피로를 확인한 뒤 콘텐츠를 4유파로 확장한다.
