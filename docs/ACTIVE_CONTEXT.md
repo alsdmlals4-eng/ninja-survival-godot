@@ -28,7 +28,7 @@ Do not reconstruct current state from older handoff status sentences without fir
 3. `docs/CURRENT_CONFIRMED_DECISIONS.md`
 4. `docs/canon/2026-08-21-dec014-025-product-canon.md`
 5. `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`
-6. `docs/traceability/2026-08-21-dec014-025-migration-traceability.md`
+6. `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`
 7. `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
 8. `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md` for protected low-level spatial behavior
 9. old `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md` **T01-T07 only**
@@ -110,6 +110,10 @@ Old T08-T12 remain non-executable.
 Current replacement plan:
 
 `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`.
+
+Current traceability:
+
+`docs/traceability/2026-08-22-dec026-post-gate-traceability.md`.
 
 Execution path:
 
