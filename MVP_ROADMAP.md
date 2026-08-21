@@ -2,292 +2,263 @@
 
 ## 목적
 
-이 문서는 `닌자 서바이벌` Godot 버전의 현재 MVP 범위를 단계별로 정리한다.
+`닌자의 신 / 닌자 서바이벌` Godot 버전의 **현재 구현 baseline과 앞으로 검증할 제품 slice**를 구분한다.
 
-MVP는 완성판이 아니라 핵심 재미 검증판이다. 각 단계는 작게 나누어 Codex Goal로 실행해야 한다.
+MVP 단계 이름은 역사와 회귀 추적을 위해 유지한다. 최신 DEC-014~025가 Run 구조를 확장했더라도 이미 병합된 MVP-0~3을 다시 이름 붙이거나 완료 사실을 지우지 않는다.
 
-## 작업 기준
+## 현재 상태
 
-- `AGENTS.md`의 spec-first workflow를 따른다.
-- 구현 전 Base/프로젝트 문서를 읽는다.
-- 벤치마킹은 표면 복제가 아니라 문제 해결 방식만 반영한다.
-- 사용자의 기획 의도는 좋은 작업 프롬프트로 변환한 뒤 진행한다.
-- 각 Goal은 완료 기준과 제외 범위를 명확히 가진다.
-- 현재 승인된 세부 결정은 `docs/CURRENT_CONFIRMED_DECISIONS.md`를 따른다.
-
-## 현재 MVP 정의
-
-현재 MVP는 아래 요소들이 서로 연결되는지 검증한다.
-
-```text
-기본 전투
-+ 전투 DDD
-+ 4유파 얕은 구현
-+ 스테이지 중간 결과
-+ 휴식 구간
-+ 백팩 기초
-+ 운명 선택
-+ 최종 결과/닌자소울
+```yaml
+MVP_0: INTEGRATED
+MVP_1: INTEGRATED
+MVP_2: INTEGRATED
+MVP_3: INTEGRATED_ROLLBACK_BASELINE
+MVP_4_SPATIAL: DESIGN_APPROVED_PRODUCTION_NOT_STARTED
+DEC014_025_CIRCUIT_MIGRATION: DOCUMENTED_NOT_IMPLEMENTED
+NEXT_PRODUCT_GATE: DEC_026
+RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 ```
 
-## MVP 전체 포함 범위
+## 전체 제품 검증 질문
 
-| 영역 | MVP 포함 | MVP 깊이 | 검증 목적 | 제외/후속 |
-|---|---|---|---|---|
-| 기본 전투 | 8방향 이동, 카메라 추적, 적 추적, 자동 공격, 피격/처치, 게임오버 | 기능 동작 중심 | 뱀서라이크 기본 조작과 전투 감각 확인 | 복잡한 적 패턴, 다수 보스 패턴 |
-| 전투 DDD | 처치 콤보, 스타일리쉬 점수, 보상 흡수 연출 | 표시/피드백 중심 | 전투 중 즉시 재미 확인 | 콤보 실패 페널티, 성능 보상 |
-| 스테이지 구조 | 5분 단위 전투, 약 3분대 엘리트/중간보스 1회, 5분대 세그먼트 보스, 20분 최종 보스 목표 | 시간 흐름과 루프 골격 | 전투→결과→휴식→다음 전투 리듬 확인 | 정교한 보스 패턴/연출 |
-| 스테이지 중간 결과 | 딜/힐/방어/상태이상/콤보 1위와 추천 성장 힌트 | 카드형 요약 | 무엇을 키울지 판단 가능한지 확인 | 상세 로그, 긴 연출 |
-| 최종 결과 | 닌자 랭크, 스타일리쉬 점수, MVP, 운명 결과, 결말문, 닌자소울 | 요약 결과 중심 | 한 판 기억과 다음 판 동기 확인 | 엔딩 CG, 장문 스토리 |
-| 4유파 | 봉마류, 천술류, 귀인류, 흑영류 선택 가능 | 각 유파 대표 구성 1개씩 | 유파별 감정 차이 검증 | 전체 스킬풀, 깊은 밸런스 |
-| 인법/조합 | 대표 인법과 대표 조합 후보 | 1차 조합 일부 | 인법 조합 반복 동기 확인 | 2차/3차 조합, 전체 도감 |
-| 백팩 | 6x6 전체 보드, 4x3 시작 사용 공간, 가방 확장, 6슬롯 임시 작업 버퍼, 아이템/가방 90도 회전, 인접 시너지, 선택적 비정형 가방, 조합 힌트 | 칸 제한 + 공간 확장 + 회전 + 인접 시너지 중심 | 휴식 중 배치가 다음 전투를 바꾸는지 확인 | 임의 복잡 아이템 폴리오미노, 세트/저주 심화 |
-| 휴식 구간 | 결과 요약, 보스 보상, 상자, 백팩, 조합, 상점, 운명, 다음 전투 예고 | 카드/텍스트 UI + 작업대 흐름 | 전투 보상이 다음 전략으로 전환되는지 확인 | 완성형 UI 연출 |
-| 운명/미션 | 한 판 규칙을 바꾸는 운명 3~4개 | 보상+대가+결과 경향 표시 | 매 판 다른 경험 확인 | 복잡한 엔딩 분기 |
-| 상점/강화 | 구매 후보, 판매, 대표 강화 후보, 가방 후보 | 후보 수 제한 | 휴식 중 선택 리듬 확인 | 완전한 가격/리롤 밸런스 |
-| 메타 성장 | 닌자소울 획득과 간단한 해금/편의성 강화 틀 | 획득/표시 중심 | 다음 판 동기 확인 | 공격력 영구 성장 심화 |
+MVP/Vertical Slice는 다음을 검증한다.
 
-## MVP 단계
+1. 자동 생존 전투와 DDD가 짧게 재미있는가?
+2. 네 유파가 이름/색만 다른 것이 아니라 위험을 처리하는 방식이 다른가?
+3. 전투 보상이 Workbench 판단으로 이어지는가?
+4. 백팩 공간·회전·인접·조합이 실제 빌드 기억을 만드는가?
+5. 다음 유파 경로 선택이 현재 빌드와 meaningful trade-off를 만드는가?
+6. 네 유파를 평정한 뒤 별도 최종전이 피로가 아니라 climax로 느껴지는가?
+7. 한 판 뒤 다른 유파/순서/빌드를 시험하고 싶어지는가?
 
-### MVP-0: 기본 전투 기반
+## Stage 0 — MVP-0 기본 전투 기반 · INTEGRATED
 
-목표:
+검증 범위:
 
-```text
-Godot 프로젝트가 기본 전투를 실행할 수 있게 한다.
-```
-
-포함:
-
-- 메인 씬
-- 플레이어 8방향 이동
-- 카메라 추적
+- 8방향 이동
+- 카메라
 - 적 추적
-- 자동 기본 공격
+- 자동 공격
 - 피격/처치
-- 점수/HUD
-- 게임오버
+- HUD
+- 게임오버/restart
 
-완료 기준:
+현재 구현/테스트를 회귀 보호한다.
 
-- Godot 프로젝트가 열린다.
-- 메인 씬이 실행된다.
-- 플레이어가 움직인다.
-- 적이 추적한다.
-- 자동 공격이 발사된다.
-- 적이 피격/제거된다.
-- 점수/HUD가 갱신된다.
-- 게임오버가 동작한다.
+## Stage 1 — MVP-1 Combat DDD · INTEGRATED
 
-제외:
+검증 범위:
 
-- 유파
-- 인법 조합
-- 백팩
-- 휴식
-- 운명
-- 오의 심화
+- kill combo / max combo
+- stylish score
+- reward absorption feedback
+- timed wave pressure
 
-### MVP-1: 전투 DDD
+성능 보상형 combo multiplier를 핵심으로 확장하지 않는다.
 
-목표:
+## Stage 2 — MVP-2 Four Schools · INTEGRATED BASELINE
 
-```text
-처치 연쇄와 보상 흡수만으로 전투가 짧게 재미있는지 확인한다.
-```
+현재 대표 runtime은 존재하고 자동화 회귀가 있다.
 
-포함:
+장기 제품 정체성:
 
-- 처치 콤보
-- 최대 콤보
-- 스타일리쉬 점수 후보
-- 경험치/골드/보상 흡수 피드백
-- 간단한 웨이브/스폰 압박
-
-완료 기준:
-
-- 처치 연쇄가 화면에 보인다.
-- 보상이 플레이어에게 흡수되는 감각이 있다.
-- 콤보 실패 페널티 없이 잘하면 더 멋지게 보인다.
-
-제외:
-
-- 콤보 성능 보상
-- 복잡한 랭크 계산
-- 최종 결과 전체
-
-### MVP-2: 4유파 얕은 구현
-
-목표:
-
-```text
-4유파가 같은 스킨이 아니라 다른 플레이 감정으로 느껴지는지 확인한다.
-```
-
-포함:
-
-| 유파 | 대표 구성 |
+| 유파 | 위험 처리 철학 |
 |---|---|
-| 봉마류 | 공격형 식신, 영력 순환, 영력, 백귀야행, 소환+설치 시너지 |
-| 천술류 | 화둔·염옥진, 오행순환, 오행 반응, 오행폭주, 젖음+감전 시너지 |
-| 귀인류 | 혈난무, 광전사, 귀혈, 귀인화, 근접+생존 시너지 |
-| 흑영류 | 만천화우, 암살교범, 암영표식, 암영처형, 원거리+암살 시너지 |
+| 봉마 | 이동형 진지 · 식신/결계로 공간을 준비하고 대신 싸우게 한다 |
+| 천술 | 상태를 만들고 원소 반응으로 전장을 바꾼다 |
+| 귀인 | 위험한 근접 체류를 유지할수록 강해진다 |
+| 흑영 | 위험 표적을 표식/우선순위/처형으로 먼저 제거한다 |
 
-완료 기준:
+현재 봉마 fixed ward / 귀인 low-HP bonus / 흑영 nearest-target rule은 삭제하지 않고 Vertical Slice tuning 후보로 둔다.
 
-- 4유파를 선택할 수 있다.
-- 각 유파는 대표 전투 방식이 다르게 보인다.
-- 고유 자원/규칙이 UI에서 확인된다.
+## Stage 3 — MVP-3 Result / Rest Skeleton · INTEGRATED ROLLBACK BASELINE
 
-제외:
+현재 구현은:
 
-- 전체 스킬풀
-- 세부 밸런스
-- 깊은 유파별 성장 트리
+`SCHOOL_SELECT -> COMBAT -> BOSS -> RESULT -> SHOP -> FATE -> PREVIEW -> three-segment COMPLETE`
 
-### MVP-3: 스테이지 결과와 휴식 루프
+이다.
 
-목표:
+이 흐름은 현재 production target이 아니라 **검증된 rollback/regression baseline**이다. 새 DEC 행동을 구현하는 TDD 단계에서 의도적으로 교체되기 전까지 테스트를 보호한다.
 
-```text
-스테이지 종료 결과를 보고 무엇을 키울지 판단할 수 있는지 확인한다.
-```
-
-포함:
-
-- 5분 단위 스테이지 흐름
-- 5/10/15분 중간 결과 화면
-- 딜량 1위
-- 힐량 1위
-- 방어량 1위
-- 상태이상 부여 1위
-- 콤보/처치 1위
-- 추천 성장 힌트
-- 휴식 구간 기본 흐름
-- 상점/운명/다음 전투 예고 틀
-
-완료 기준:
-
-- 중간 결과를 보고 어떤 인법/장비를 강화할지 감을 잡을 수 있다.
-- 휴식이 다음 전투 기대감으로 연결된다.
-
-제외:
-
-- 긴 전투 상세 로그
-- 화려한 결과 연출
-- 완전한 상점 경제
-
-### MVP-4: 백팩/조합 기초
+## Stage 4A — MVP-4 Spatial Domain · APPROVED / NOT_STARTED
 
 목표:
 
-```text
-휴식 중 백팩 배치가 다음 전투 성능을 바꾸는지 확인한다.
-```
+> 휴식 중 백팩의 공간 판단이 다음 전투 성능과 다음 경로 선택을 바꾸는지 검증한다.
 
-포함:
+보호 범위:
 
-- 6x6 전체 배치 보드
-- 기본 닌자 가방이 제공하는 4x3 시작 사용 가능 공간
-- 상점에서 가방을 구매해 사용 가능 공간 확장
-- 방향키로 현재 전체 가방+아이템 배치를 통째로 이동
-- 아이템과 가방의 90도 회전
-- 직사각형 일반 아이템 + 일부 L/T형 가방
-- 6슬롯 임시 보관함/휴식 작업 버퍼
-- 칸 제한
-- 상하좌우 인접 시너지
-- 특수 가방 1칸 이상 겹침 효과
-- 조합 가능성 힌트
-- 대표 1차 조합 일부
-- 보스/상점/상자 3축 아이템 획득
-- 약 3분대 엘리트/중간보스 1명, 5분대 세그먼트 보스
+- 6x6 board / 4x3 start
+- purchasable bag expansion
+- item + bag 90-degree rotation
+- rectangular regular items + selected L/T bags
+- six-slot REST work buffer
+- orthogonal adjacency
+- one-cell special-bag overlap
+- explicit atomic first-tier combinations
+- Boss / Shop / Chest acquisition pillars
+- Persistent Workbench
+- deterministic domain state/resolution separated from UI
+- mouse / keyboard-gamepad focus / touch completion paths
 
-완료 기준:
+기존 2026-08-11 구현 계획의 T01~T07 direction은 재사용한다.
 
-- 배치가 실제 전투 성능에 영향을 준다.
-- 큰 아이템의 높은 효과와 어려운 배치 사이에 의미 있는 선택이 생긴다.
-- 가방 구매/확장이 단순 슬롯 증가가 아니라 공간 구성 판단으로 작동한다.
-- 회전과 전체 이동이 공간 퍼즐을 만들되 재배치 노동으로만 느껴지지 않는다.
-- 조합 가능성 힌트가 선택을 돕지만 정답을 강제하지 않는다.
-- 보스/상점/상자가 각각 질/통제/우연성이라는 다른 보상 역할로 느껴진다.
+## Stage 4B — Four-School Circuit Migration · DOCUMENTED / NOT_STARTED
 
-제외:
-
-- 2차/3차 조합
-- 임의 복잡 일반 아이템 폴리오미노
-- 깊은 세트 효과
-- 깊은 저주 시스템
-- 전체 조합 도감
-- 희귀도/등급 배율 시스템 심화
-- 완성형 백팩 UI 아트/애니메이션
-
-### MVP-5: 최종 루프
-
-목표:
+최신 DEC-014~025 목표:
 
 ```text
-20분 한 판의 골격을 끝까지 경험하고 다시 시작할 이유가 있는지 확인한다.
+starting school
+-> choose unvisited school
+-> school battlefield
+-> ~3m Elite
+-> chest token + trace
+-> trace recovery
+-> ~5m school Boss
+-> RESULT / Boss Reward
+-> branch / trace STABILIZED
+-> Persistent Workbench
+-> provisional next school
+-> Fate commit
+-> repeat four schools exactly once
 ```
 
-포함:
+핵심 구조:
 
-- 20분 최종 보스 또는 최종 종료 조건
-- 최종 결과 화면
-- 닌자 랭크
-- 스타일리쉬 점수
-- 이번 판 MVP 인법/장비
-- 운명 결과
-- 짧은 결말문
-- 닌자소울 획득
-- 다시 시작
+- school = encounter identity,
+- Stage 1..4 = difficulty/gimmick-depth profile,
+- traces = tradition acquisition access, not automatic power,
+- next school = player-chosen among unvisited routes,
+- Fate atomically commits build + Fate + next route.
 
-완료 기준:
+상세 migration requirements: `docs/traceability/2026-08-21-dec014-025-migration-traceability.md`.
 
-- 한 판을 끝내고 결과를 확인할 수 있다.
-- 다음 판에 다른 유파/운명/빌드를 시험하고 싶어진다.
+## Stage 4C — One-School Release-Near Vertical Slice · NOT_RUN
 
-제외:
+4유파 콘텐츠를 모두 제작하기 전에 한 유파로 다음 end-to-end를 먼저 완성한다.
 
-- 정교한 엔딩 분기
-- 엔딩 CG
-- 완성형 메타 성장 트리
+```text
+signature within ~30 sec
+-> Core Monster pressure
+-> Elite
+-> trace
+-> Boss
+-> result/reward
+-> branch Workbench
+-> next-route preview
+```
 
-## MVP 성공 기준
+Human gate:
 
-MVP 전체는 다음 질문에 답할 수 있어야 한다.
+- school identity readability,
+- combat pacing/tension,
+- Elite/Boss telegraph fairness,
+- trace readability,
+- Workbench comprehension,
+- placement/combination decision value,
+- rest duration/fatigue,
+- Korean UI readability,
+- production-candidate visual/audio/VFX coherence.
 
-- 처치 콤보와 보상 흡수만으로 전투가 짧게 재미있는가?
-- 4유파가 같은 캐릭터 스킨이 아니라 다른 플레이 감정으로 느껴지는가?
-- 스테이지 종료 결과를 보고 무엇을 키울지 판단할 수 있는가?
-- 백팩/조합/상점/운명 선택이 다음 전투 기대감으로 이어지는가?
-- 배치와 인접 시너지가 다음 전투 성능을 바꾸는가?
-- 가방 확장과 회전이 다음 아이템을 위한 공간 선택으로 느껴지는가?
-- 운명 선택이 한 판의 규칙을 바꾼다는 느낌이 드는가?
-- 랭크, MVP, 결말문, 닌자소울이 다음 판 동기를 주는가?
+Card/text placeholder는 이 Human PASS를 대신할 수 없다.
 
-## Codex Goal 작성 원칙
+Vertical Slice가 재미/가독성 기준을 통과한 뒤 나머지 3유파 콘텐츠를 같은 framework로 확장한다.
 
-한 Goal에 `MVP-0`부터 `MVP-5`까지 모두 넣지 않는다.
+## Stage 5 — Four-School Content Expansion · BLOCKED_DEC026
 
-권장 Goal 분리:
+첫 콘텐츠 상한:
 
-1. `CODEX_GOAL_MVP_001` — MVP-0 기본 전투 기반
-2. `CODEX_GOAL_MVP_002` — MVP-1 전투 DDD
-3. `CODEX_GOAL_MVP_003` — MVP-2 4유파 얕은 구현
-4. `CODEX_GOAL_MVP_004` — MVP-3 스테이지 결과/휴식 루프
-5. `CODEX_GOAL_MVP_005` — MVP-4 백팩/조합 기초
-6. `CODEX_GOAL_MVP_006` — MVP-5 최종 루프
+- Core Monster 12 = 3 x 4 schools
+- Elite 4
+- School Boss 4
+- School gimmick libraries 4
 
-Each Goal must include:
+Stage gimmick depth:
 
-- `@Superpowers Use this repository's spec-first workflow.`
-- Documents to read first
-- Goal
-- Player experience
-- Implementation scope
-- Excluded scope
-- Likely files
-- Risks
-- Completion criteria
-- Test checklist
-- Final report format with Compound Review
+- Stage 1 base signature
+- Stage 2 + interaction gimmick
+- Stage 3 + synergy/field gimmick
+- Stage 4 mastery + one Boss advanced pattern
+- concurrent advanced-gimmick default cap 2
+
+**DEC-026**에서 concrete Core Monster / Elite / Boss attack sets와 Stage pattern budget을 확정하기 전 상세 구현 계획을 시작하지 않는다.
+
+## Stage 6 — Final Binding / Final Calamity · PARTIAL SPEC / NOT_STARTED
+
+Four-school circuit 완료 뒤:
+
+`fourth Boss -> RESULT -> Final Binding Workbench -> final Fate/build commit -> 난세 재앙핵`.
+
+보호 규칙:
+
+- 4흔적 결속은 새 자동 upgrade tree가 아니다.
+- 네 access package가 열린 마지막 Persistent Workbench다.
+- Final Boss는 앞서 배운 학교 문법을 재조합한다.
+- 해방된 4유파가 clear order에 따라 각 1회 짧게 지원한다.
+- 지원은 위험 완화/공격 창이며 자동 승리가 아니다.
+- 최종 승리와 결정타는 플레이어의 backpack build가 담당한다.
+
+정확한 final attack/pattern 구현은 DEC-026 및 후속 final-boss planning 이후다.
+
+## Stage 7 — Final Result / Ninja Soul / Replay · NOT_STARTED
+
+검증 범위:
+
+- final result
+- ninja rank / stylish result
+- MVP ninjutsu/equipment or build summary
+- Fate/route history
+- short ending callback
+- Ninja Soul horizontal/meta reward
+- restart/replay motivation
+
+Ninja Soul은 Run을 압도하는 영구 공격력/체력 누적보다 unlock/option/convenience 중심 수평 성장을 우선한다.
+
+## 구현 순서 보호
+
+```text
+current canon sync
+-> DEC-026 approval
+-> fresh Phase-B review
+-> reuse T01-T07 spatial domain packages
+-> recalculated circuit packages
+-> one-school release-near Vertical Slice
+-> human QA
+-> four-school expansion
+-> final binding/final calamity
+-> full-run QA / Android / export / release work
+```
+
+기존 `impl/mvp4-t01-spatial-data-contracts`나 closed-unmerged PR #17에서 구현을 재개하지 않는다.
+
+## MVP 제외 / 후속
+
+현재 검증 범위에서 제외하거나 후속으로 둔다.
+
+- four full deep skill trees
+- second/third-tier combinations
+- arbitrary complex regular-item polyomino system
+- deep set/curse/rarity layers
+- base-building/economy management core
+- permanent Meta stats that dominate Run choices
+- large branching ending campaign
+- full release balance before representative Vertical Slice proves the core
+
+## 성공/실패 판단
+
+성공:
+
+- 한 유파 Vertical Slice만으로도 전투→Elite→trace→Boss→Workbench의 감정 변화가 읽힌다.
+- backpack 배치가 실제 다음 전투/경로 기대를 바꾼다.
+- route order가 전략을 만들지만 정답 경로 하나로 고정되지 않는다.
+- 4유파 확장 후에도 같은 framework로 제작비가 통제된다.
+- final battle이 플레이어 build를 무력화하지 않는다.
+
+재검토:
+
+- 첫 유파 5분이 반복적이거나 의미 없이 길다.
+- Workbench가 매번 과도하게 길어져 Run 피로를 만든다.
+- school identity보다 common auto-combat가 더 강하게 느껴진다.
+- route order가 특정 school-last 정답으로 수렴한다.
+- content multiplication cost가 framework 재사용보다 빠르게 증가한다.
