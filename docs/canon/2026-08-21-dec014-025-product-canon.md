@@ -174,6 +174,16 @@ First Vertical Slice access-authoring model:
 - This is an **access package**, not an exclusive-affinity table.
 - Existing item IDs, prices, footprints, tags, multi-school affinities, 3 combinations and 5 bags remain the 2026-08-11 MVP-4 content canon unless later explicitly changed.
 
+Authoring-default access packages:
+
+- **Universal 7:** 행운 부적, 인법단련, 재생의 두루마리, 오의 비전서, 유파 증표, 금기의 부적, 폭탄.
+- **봉마 3:** 깨달음, 결계술, 대형 소환진.
+- **천술 3:** 수둔, 뇌둔, 화둔.
+- **귀인 3:** 체술단련, 호신 부적, 일본도.
+- **흑영 3:** 수리검, 은신술, 독침술.
+
+These are access-timing packages only. They do not erase existing multi-school affinity or cross-school combination meaning.
+
 At Run start:
 
 - Universal lane is open.
@@ -190,6 +200,13 @@ Boss Reward meaning should preserve three readable lanes when possible:
 3. bridge/universal/mixed-build option.
 
 Shop/Chest must not select from one flat global list that lets the largest category dominate probability. Choose lane/pool first, then item; deduplicate by canonical item ID.
+
+Additional protected reward behavior:
+
+- the first Shop after a newly liberated school may temporarily weight that school, but ignoring it and deepening the current build remains valid,
+- Chest preserves more randomness than Shop and does not guarantee recipe completion,
+- do not add an automatic `number of schools used -> +N%` multischool bonus,
+- pure/mixed power differences should emerge from footprint, adjacency, combination and effect budgets.
 
 Protected existing cross-school combinations include the current representative combinations such as `water_style + stealth_art` and `katana + lightning_style`.
 
@@ -218,15 +235,48 @@ Older unlimited-duration MVP-2 wording is historical only.
 
 ## 13. DEC-024 — Elite -> Trace -> Boss Gate
 
+Current Core System authoring timeline:
+
+```text
+0:00~0:30  Swarm / school signature first proof
+0:30~2:45  Priority + Anchor gradual mix
+2:45       Elite warning authoring default
+~3:00      school Elite appears
+3:00~3:30  Elite resolution target
+3:30~4:20  pressure rise / ultimate preparation
+4:20       earliest Boss warning target
+~4:30      earliest Boss appearance target
+5:00~5:30  Boss clear target; soft overtime if still alive
+Boss death -> RESULT -> Reward -> Workbench -> Fate
+```
+
+The UI Flow visual uses approximately `2:40` for the Elite warning while the later Core System timeline uses `2:45`; use `2:45` as the current authoring default and treat the Flow value as approximate presentation timing. Reconfirm exact warning/pattern budget in DEC-026 rather than hiding the discrepancy.
+
+Elite reward split:
+
+- **Chest token:** actual Elite death immediately grants `+1`; it is not a physical drop and feeds the existing next-Workbench chest rule (`token 1 -> item 2`).
+- **School trace:** required progression object at the Elite death position; it opens Boss approach after recovery but gives no immediate combat modifier/access package.
+
+Trace pickup authoring defaults:
+
+```yaml
+settle_seconds: 0.40
+homing_delay_seconds: 0.75
+homing_speed_px_per_second: 260
+pickup_radius_px: 48
+lifetime: INFINITE_UNTIL_COLLECTED_OR_RUN_END
+fast_homing_after_seconds: 6.0
+```
+
 Approved milestone sequence:
 
 ```text
-~2:40 Elite warning
+Elite warning
 -> ~3:00 school Elite
 -> Elite kill
    -> chest token +1 immediately
    -> non-expiring school trace appears
--> trace settles briefly, tracks the player and auto-absorbs at close range
+-> trace settle / homing / close-range auto pickup
 -> TRACE RECOVERED
 -> current Stage BossApproachProfile
 -> earliest-time + warning gate
@@ -240,8 +290,11 @@ Protected behavior:
 - Trace is non-expiring and cannot be collected twice.
 - While `TRACE_AVAILABLE`, new normal spawns stop but the combat clock and existing hazards/enemies continue.
 - Time alone cannot spawn the Boss; trace recovery alone cannot spawn the Boss.
-- Boss requires the approved gate set: Elite clear + trace recovered + earliest-time condition + warning completion.
-- Late recovery starts the Boss warning; `5:00` is not a hard failure.
+- Boss requires: Elite clear + trace recovered + earliest-time reached + warning completed + Boss not already spawned.
+- Earliest Boss warning target is about `4:20`; earliest Boss appearance target is about `4:30`.
+- If trace is recovered after `4:20`, immediately start an approximately `10s` Boss warning.
+- `5:00` is not a hard failure; HUD should show the actual overtime milestone such as TRACE / BOSS WARNING / BOSS.
+- Elite and school Boss are not active simultaneously.
 - `RECOVERED` alone does not open the tradition access package; stabilization requires Boss clear + branch return.
 - Trace collection must not increment ORB / STYLE / GOLD and must remain separate from the MVP-1 RewardOrb lifetime behavior.
 
@@ -310,7 +363,7 @@ Keep the previously approved MVP-4 T01-T07 domain direction:
 
 ### Recalculate before implementation
 
-The older T08-T12 assumed the obsolete linear three-segment/instant-boss composition. They are superseded for execution and must be replaced by the 2026-08-21 migration plan.
+The older T08-T12 assumed the obsolete linear three-segment/instant-boss composition. They are superseded for execution and must be replaced after DEC-026.
 
 ### Do not resume historical execution packages
 
