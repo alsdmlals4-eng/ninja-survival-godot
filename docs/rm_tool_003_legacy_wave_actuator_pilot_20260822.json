@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "pilot_id": "NINJA-RM-TOOL-003-LEGACY-WAVE-20260822",
+  "project_id": "NINJA_SURVIVAL",
+  "source_commit": "77f7e4dc1d0a5946acaa006b35d7003dc91cd718",
+  "source_runtime": "scripts/spawning/wave_spawner.gd",
+  "source_test": "tests/unit/test_wave_spawner.gd",
+  "contract": {
+    "batch_size": 2,
+    "max_active_enemies": 8,
+    "enabled_default": true,
+    "spawn_formula": "min(max(batch_size, 0), max(max_active_enemies - active_count, 0))",
+    "disabled_spawn_count": 0
+  },
+  "variants": {
+    "enabled_default_actuator": {
+      "cases": [
+        {"case_id": 0, "initial_active": 0, "spawn_count": 2, "final_active": 2, "cap_fill_ratio": 0.25},
+        {"case_id": 1, "initial_active": 1, "spawn_count": 2, "final_active": 3, "cap_fill_ratio": 0.375},
+        {"case_id": 2, "initial_active": 2, "spawn_count": 2, "final_active": 4, "cap_fill_ratio": 0.5},
+        {"case_id": 3, "initial_active": 3, "spawn_count": 2, "final_active": 5, "cap_fill_ratio": 0.625},
+        {"case_id": 4, "initial_active": 4, "spawn_count": 2, "final_active": 6, "cap_fill_ratio": 0.75},
+        {"case_id": 5, "initial_active": 5, "spawn_count": 2, "final_active": 7, "cap_fill_ratio": 0.875},
+        {"case_id": 6, "initial_active": 6, "spawn_count": 2, "final_active": 8, "cap_fill_ratio": 1.0},
+        {"case_id": 7, "initial_active": 7, "spawn_count": 1, "final_active": 8, "cap_fill_ratio": 1.0},
+        {"case_id": 8, "initial_active": 8, "spawn_count": 0, "final_active": 8, "cap_fill_ratio": 1.0}
+      ],
+      "summary": {
+        "mean_spawn_count": 1.6666666666666667,
+        "median_spawn_count": 2,
+        "mean_final_active": 5.666666666666667,
+        "median_final_active": 6,
+        "mean_cap_fill_ratio": 0.7083333333333334,
+        "cap_violation_count": 0
+      }
+    },
+    "disabled_actuator": {
+      "cases": [
+        {"case_id": 0, "initial_active": 0, "spawn_count": 0, "final_active": 0, "cap_fill_ratio": 0.0},
+        {"case_id": 1, "initial_active": 1, "spawn_count": 0, "final_active": 1, "cap_fill_ratio": 0.125},
+        {"case_id": 2, "initial_active": 2, "spawn_count": 0, "final_active": 2, "cap_fill_ratio": 0.25},
+        {"case_id": 3, "initial_active": 3, "spawn_count": 0, "final_active": 3, "cap_fill_ratio": 0.375},
+        {"case_id": 4, "initial_active": 4, "spawn_count": 0, "final_active": 4, "cap_fill_ratio": 0.5},
+        {"case_id": 5, "initial_active": 5, "spawn_count": 0, "final_active": 5, "cap_fill_ratio": 0.625},
+        {"case_id": 6, "initial_active": 6, "spawn_count": 0, "final_active": 6, "cap_fill_ratio": 0.75},
+        {"case_id": 7, "initial_active": 7, "spawn_count": 0, "final_active": 7, "cap_fill_ratio": 0.875},
+        {"case_id": 8, "initial_active": 8, "spawn_count": 0, "final_active": 8, "cap_fill_ratio": 1.0}
+      ],
+      "summary": {
+        "mean_spawn_count": 0.0,
+        "median_spawn_count": 0,
+        "mean_final_active": 4.0,
+        "median_final_active": 4,
+        "mean_cap_fill_ratio": 0.5,
+        "cap_violation_count": 0
+      }
+    }
+  },
+  "shared_record_mapping": {
+    "seed_or_case_id": "initial_active exhaustive deterministic case",
+    "variant": "enabled_default_actuator | disabled_actuator",
+    "metrics": ["spawn_count", "final_active", "cap_fill_ratio"],
+    "failure_tag": "CAP_VIOLATION when final_active > max_active_enemies"
+  },
+  "data_stage_state": "EMPTY_EXCEPT_GITKEEP",
+  "disposition": "LEGACY_ACTUATOR_COMPATIBLE_NEW_DEC026_BALANCE_DEFERRED",
+  "evidence_ceiling": [
+    "LEGACY_MVP3_ACTUATOR_CONTRACT_ONLY",
+    "DEC014_026_RUNTIME_NOT_STARTED",
+    "PRODUCT_BALANCE_NOT_EVALUATED",
+    "PRODUCT_RUNTIME_UNCHANGED",
+    "HUMAN_PLAYER_EVIDENCE_NOT_RUN"
+  ],
+  "mutates_project_data": false
+}
