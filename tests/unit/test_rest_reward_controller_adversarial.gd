@@ -8,6 +8,7 @@ const RESOLVER_PATH := "res://scripts/backpack/backpack_resolver.gd"
 const CATALOG_PATH := "res://scripts/data/mvp4_catalog.gd"
 const MVP3_CATALOG_PATH := "res://scripts/data/mvp3_catalog.gd"
 const MODIFIER_PATH := "res://scripts/data/run_modifier_set.gd"
+const SCHOOL_IDS: Array[StringName] = [&"bongma", &"cheonsul", &"guiin", &"heukyeong"]
 
 
 func test_catalog_acquisition_boundaries_win_over_price_heuristics() -> void:
@@ -154,6 +155,48 @@ func test_missing_mandatory_boss_reward_pool_remains_pending_fail_closed() -> vo
 	assert_false(bundle.controller.choose_boss_reward(0))
 
 
+func test_all_four_valid_schools_keep_distinct_affinity_boss_reward_contract() -> void:
+	var item_defs := _item_defs()
+	for index in range(SCHOOL_IDS.size()):
+		var school_id: StringName = SCHOOL_IDS[index]
+		var bundle := _bundle(300 + index)
+		bundle.controller.begin_rest(1, school_id, 0)
+		var options: Array[StringName] = bundle.controller.boss_reward_options()
+		assert_eq(options.size(), 3, "Boss reward option count mismatch for %s" % school_id)
+		assert_eq(_unique_count(options), 3, "Boss reward duplicates for %s" % school_id)
+		assert_true(bundle.controller.has_pending_boss_reward())
+		var affinity_tag := StringName("affinity_%s" % str(school_id))
+		var has_affinity := false
+		for item_id in options:
+			var definition = item_defs.get(item_id)
+			if definition != null and definition.tags.has(affinity_tag):
+				has_affinity = true
+		assert_true(has_affinity, "Boss reward lost selected-school affinity for %s" % school_id)
+
+
+func test_t04_commit_failure_gate_tracks_t07_pending_reward_and_chest_state() -> void:
+	var bundle := _bundle(310)
+	bundle.controller.begin_rest(1, &"bongma", 1)
+	var failures: Array[StringName] = bundle.session.commit_failures(
+		bundle.controller.chest_count(),
+		bundle.controller.has_pending_boss_reward(),
+		false
+	)
+	assert_true(failures.has(&"boss_reward_pending"))
+	assert_true(failures.has(&"chest_pending"))
+
+	assert_true(bundle.controller.choose_boss_reward(0))
+	assert_true(bundle.controller.open_chest())
+	failures = bundle.session.commit_failures(
+		bundle.controller.chest_count(),
+		bundle.controller.has_pending_boss_reward(),
+		false
+	)
+	assert_false(failures.has(&"boss_reward_pending"))
+	assert_false(failures.has(&"chest_pending"))
+	assert_true(failures.has(&"buffer_not_empty"), "Acquired rewards must still be placed before a later build commit")
+
+
 func _bundle(seed: int) -> Dictionary:
 	return _bundle_with_defs(seed, _item_defs(), _bag_defs())
 
@@ -194,6 +237,13 @@ func _item_defs() -> Dictionary:
 
 func _bag_defs() -> Dictionary:
 	return load(CATALOG_PATH).build_bags()
+
+
+func _unique_count(values: Array) -> int:
+	var seen := {}
+	for value in values:
+		seen[value] = true
+	return seen.size()
 
 
 func _buffer_identity(buffer_items: Array) -> Array[String]:
