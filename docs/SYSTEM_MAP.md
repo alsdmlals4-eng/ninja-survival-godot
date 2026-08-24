@@ -51,7 +51,18 @@ MVP4Catalog
   └─ 3 first-tier combination definitions
 ```
 
+Explicit acquisition boundaries prevent combination results from leaking into base reward pools.
+
 Existing `sell_price()` / RunBuildState/Shop sell runtime remains unchanged. T01 does not invent a second economy.
+
+Catalog validation owns:
+
+- supported modifier-key check through `RunModifierSet`,
+- legacy static adapter no-double-authority guard,
+- non-numeric static/spatial payload rejection,
+- item/bag/combination identity/reference integrity.
+
+A stricter exported typed-Dictionary variant was tried during adversarial review, caused a real Godot 4.7.1 import regression, and was rejected. Current storage is runtime-compatible `Dictionary` plus explicit validation and tests.
 
 ### T02 — committed BackpackState
 
@@ -214,7 +225,7 @@ Tune after one-school representative slice; do not rewrite all four simultaneous
 
 ## 10. Task reuse / supersession map
 
-- old 2026-08-11 plan T01: implemented / historical evidence after PR #27.
+- old 2026-08-11 plan T01: **implemented / historical evidence after PR #27**.
 - old plan T02: implemented / historical evidence after PR #29 where compatible with current Phase-B.
 - old T03-T07 low-level direction: reusable where current canon/Phase-B does not supersede it.
 - old T08-T12: historical/non-executable.
