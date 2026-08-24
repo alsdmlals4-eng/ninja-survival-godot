@@ -103,7 +103,7 @@ func buy_bag_offer() -> bool:
 	if not _spatial_mode or _build_state == null or _session == null:
 		transaction_failed.emit("가방 상점 상태가 준비되지 않았습니다")
 		return false
-	if _bag_bought_this_rest or bag_offer_id == &""):
+	if _bag_bought_this_rest or bag_offer_id == &"":
 		transaction_failed.emit("이번 휴식에서 가방을 더 구매할 수 없습니다")
 		return false
 	var definition = _bag_defs.get(bag_offer_id)
