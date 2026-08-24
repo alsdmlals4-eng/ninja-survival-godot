@@ -93,41 +93,22 @@ Full current detail:
 - MVP-1 combat DDD: integrated.
 - MVP-2 four-school shallow runtime: integrated.
 - MVP-3 result/GOLD/Shop/Fate/three-segment runtime: integrated rollback/regression baseline.
-- **MVP-4 T01 spatial data contracts/catalog: integrated.**
-- **MVP-4 T02 BackpackState committed spatial state: integrated.**
-- **MVP-4 T03 BackpackResolver deterministic spatial resolution: integrated.**
-- **MVP-4 T04 RestBackpackSession REST edit-session domain engine: integrated.**
-- **MVP-4 T05 CombinationResolver first-tier atomic combination transaction: integrated.**
-- Workbench UI / committed spatial combat integration: not started.
-- DEC-014~025 school-circuit/trace/final-calamity runtime: not started.
-- DEC-026 encounter/pattern runtime: not started.
-- release-near Vertical Slice human QA for current canon: NOT_RUN.
+- **MVP-4 T01~T05 spatial/REST/combination domain chain: merged on `main`.**
+- **MVP-4 T06~T11 domain integrations: code and relevant unit/adversarial test surfaces are present on current `main` (`265bab32da087c070ea2ea0d98a3bdace1e10f7f`).** This includes committed build state, route state, encounter catalog/state, REST reward/shop boundaries, and tradition-access reward lanes.
+- **T12 is an open draft PR (#43) from the current `main` baseline. It is read-only evidence here; do not treat it as merged or executable authority.**
+- A playable Workbench UI/input path, full production-candidate visual/audio feedback, device validation, and release-near human play validation: **NOT_RUN**.
 
-T01 proves the data foundation. T02 proves committed spatial-state primitives. T03 proves deterministic connectivity/adjacency/special-bag/spatial-modifier resolution and read-only previews. T04 proves the REST edit-session domain engine. T05 proves recipe eligibility/progressive hints and source-preserving atomic first-tier 2→1 combination. None proves playable Workbench UI, committed combat integration or Human experience.
-
-T01 merged as PR #27 / `7c9206702526f99dfadf44a617cd150853ec733f`. Exact final PR-head evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `263/263` tests and `1829` assertions PASS.
-
-T02 merged as PR #29 / `126e6c942d74f97166ef0c881afc5d79cae3d274`. Exact final PR-head `60adbb99886c96c687b20befe4a61e5e3bcb71f1` evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `274/274` tests and `1915` assertions PASS, T02 focused `11/11` PASS.
-
-T03 merged as PR #31 / `2dcf055d82df02d44335f209897436572efa6739`. Exact final PR-head `e0dacee9048a01e799012b8aca12760e07ca47ea` evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `292/292` tests and `2026` assertions PASS, T03 focused `18/18` PASS.
-
-T04 merged as PR #33 / `d07f16d6bae90a09bba0a5f0b8991216d006c966`. Exact final PR-head `6972e14cfa94dcce4d372a632db6d5e74809ee62` evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `309/309` tests and `2202` assertions PASS, T04 focused `17/17` PASS.
-
-T05 merged as PR #35 / `8cefce75456f8b72a8f69559857676cca67a6c5d`. Exact final PR-head `d14ff2e8702d610de1678c22737982bd5b73e22a` evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `329/329` tests and `2322` assertions PASS, T05 focused `20/20` PASS.
+T01~T11 source/test presence establishes only merged-domain and automated-evidence scope. It does **not** prove a player can complete the intended Workbench/combat/route loop, perceive the intended image/sound feedback, or pass Human/Device QA.
 
 ## 6. Current planning / implementation gate
 
 DEC-026 is **APPROVED** and the fresh post-DEC-026 Phase-B Definition of Ready is **PASS**.
 
-T01, T02, T03, T04 and T05 are complete. Current production execution begins at:
+Current merged-main implementation evidence runs through **T11**. The prior `T06 NEXT` language below is historical implementation detail, not a current router.
 
-**T06 — committed RunBuildState migration, from fresh merged `main`, TDD first.**
+**Current next review boundary: `T12_OPEN_DRAFT_READ_ONLY` (PR #43).** Before any new mutation, read current `main`, the draft PR, current code/tests, canon/traceability, and evidence limits together. Do not merge, rebase, or take ownership of the draft through documentation work.
 
-Remaining executable order:
-
-`T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
-
-Do not jump directly to T08. T06 must make one finalized spatial snapshot the committed combat modifier authority without double-applying legacy MVP-3 item modifiers. Do not pull T07 acquisition transactions or Workbench UI authority into T06.
+No document or test receipt may promote T01~T11 to actual playable, visual/audio-complete, device-ready, or Human QA PASS without separately executed evidence.
 
 Current planning owners:
 
