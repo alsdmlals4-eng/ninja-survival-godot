@@ -12,14 +12,14 @@
 ## 최신 원격 관찰
 
 ```yaml
-latest_base_main_observed: aa9a0d823db9c7373751d35d341489f64c62f7b9
-observed_at: 2026-08-21 KST
-observation_reason: DEC014_025_CANON_REBASELINE
+latest_base_main_observed: 2828a74f60c1ed09546171040f4178c8848ea686
+observed_at: 2026-08-24 KST
+observation_reason: CURRENT_STATE_RECONCILIATION_BEFORE_T01
 full_base_rule_sync: NOT_RUN
 selective_current_rule_read: PASS
 ```
 
-이번 canon rebaseline에서 최신 Base의 현재 `AGENTS.md`를 다시 읽고 다음 원칙을 적용했다.
+이번 current-state reconciliation에서 최신 Base의 현재 `AGENTS.md`, Work Mode/Skill routing, long-horizon execution, adversarial repository-audit owner를 다시 읽고 다음 원칙을 적용했다.
 
 - latest user instruction -> project AGENTS/security/engine/data -> project Active Context/approved contract -> actual code/data/assets/tests -> adopted Base -> Base remote 순서.
 - L1 이상에서 current main / current decisions / open+recent merged PR / actual implementation을 먼저 대조.
@@ -30,6 +30,7 @@ selective_current_rule_read: PASS
 - 중간보고 생략은 실제 조사/검증 축소가 아님.
 - 추가 비용 없는 경로를 기본으로 사용.
 - repository/Notion connected state를 실제 tool로 읽을 수 있으면 추정 대신 직접 검증.
+- required work 0은 completion candidate이며 correction rescan과 final clean review 뒤에만 완료로 판정.
 
 최신 Base 일부 규칙을 읽고 사용한 사실을 **프로젝트 전체 Base 동기화 완료**로 해석하지 않는다.
 
@@ -40,13 +41,14 @@ selective_current_rule_read: PASS
 3. 현재 작업에 명시된 사용자 제공 실행 계약/overlay
 4. `docs/CURRENT_CONFIRMED_DECISIONS.md`
 5. `docs/canon/2026-08-21-dec014-025-product-canon.md`
-6. `docs/ACTIVE_CONTEXT.md` for mutable resume state
-7. current traceability/plan
-8. actual code/Scene/data/tests
-9. adopted project-local Base patterns
-10. Base remote / external benchmark evidence
+6. `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`
+7. `docs/ACTIVE_CONTEXT.md` for mutable resume state
+8. current traceability/Phase-B/plan
+9. actual code/Scene/data/tests
+10. adopted project-local Base patterns
+11. Base remote / external benchmark evidence
 
-기존 byte-exact `PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION_v4.5_r2.md`는 저장소 안의 역사적 active adapter로 보존한다. 현재 채팅처럼 사용자가 더 최신 실행 계약을 직접 제공하면 **latest user instruction이 우선**하며, 그 사실만으로 r2 source bytes를 임의 수정하지 않는다.
+기존 byte-exact `PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION_v4.5_r2.md`는 저장소 안의 역사적 adapter로 보존한다. 현재 채팅처럼 사용자가 더 최신 실행 계약을 직접 제공하면 **latest user instruction이 우선**하며, 그 사실만으로 r2 source bytes를 임의 수정하지 않는다.
 
 ## 현재 프로젝트 상태
 
@@ -54,8 +56,11 @@ selective_current_rule_read: PASS
 mvp0_to_mvp3_runtime: INTEGRATED
 mvp4_spatial_production: NOT_STARTED
 latest_product_canon: DEC014_025
+latest_encounter_canon: DEC026_APPROVED
+phase_b: PASS
 school_circuit_runtime: NOT_STARTED
-next_material_product_gate: DEC026
+dec026_encounter_runtime: NOT_STARTED
+next_implementation_gate: T01_SPATIAL_DATA_CONTRACTS
 new_canon_human_qa: NOT_RUN
 ```
 
