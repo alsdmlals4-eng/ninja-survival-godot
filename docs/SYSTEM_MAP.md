@@ -2,9 +2,9 @@
 
 ## 목적
 
-현재 실제 runtime responsibility와 DEC-014~025 migration target을 한눈에 연결한다.
+현재 실제 runtime responsibility와 DEC-014~026 migration target을 한눈에 연결한다.
 
-- 제품 행동: `docs/CURRENT_CONFIRMED_DECISIONS.md` + dated product canon.
+- 제품 행동: `docs/CURRENT_CONFIRMED_DECISIONS.md` + dated product/encounter canon.
 - 현재 resume state: `docs/ACTIVE_CONTEXT.md`.
 - 구현 사실: actual scripts/scenes/tests.
 - 이 문서는 중복 정본이 아니라 responsibility / migration map이다.
@@ -22,8 +22,8 @@
 | Wave spawning | `scripts/spawning/wave_spawner.gd` | timed/capped normal enemies | reuse API; do not create second wave system by default |
 | Stage Boss | `scripts/enemies/stage_boss.gd` | stat-tier Boss baseline | school-Boss/final-Boss migration reference, not current final implementation |
 | Four schools | `scripts/schools/*_runtime.gd` | four shallow identities integrated | preserve as baseline; bounded later tuning |
-| Shop | `scripts/core/shop_controller.gd` | immediate non-spatial purchase semantics | reuse economy/reroll pieces; route acquisition to Workbench/access lanes |
-| Fate | `scripts/core/fate_controller.gd` | one choice per rest | reuse; later atomic route/build commit integration |
+| Shop | `scripts/core/shop_controller.gd` | immediate non-spatial purchase/sell semantics | reuse economy/reroll/sell pieces; route acquisition to Workbench/access lanes |
+| Fate | `scripts/core/fate_controller.gd` | one choice per rest | reuse candidates; later atomic route/build commit integration |
 | Rest UI | `scripts/ui/rest_flow_ui.gd` + scene | RESULT/SHOP/FATE/PREVIEW/COMPLETE | outer shell baseline; Workbench/route preview target differs |
 | Item data | `scripts/data/item_definition.gd` + `mvp3_catalog.gd` | 8 current runtime items + fates | spatial/catalog migration planned |
 | Tests/CI | `tests/**`, `.github/workflows/gut.yml` | active regression baseline | protect; replace tests only with approved behavior RED/GREEN |
@@ -87,27 +87,25 @@ Responsibilities:
 
 Current product canon requires a bounded owner above individual school runtimes.
 
-Architecture direction:
+Architecture direction approved by the fresh Phase-B review:
 
 ```text
-SchoolCircuitState / RunRouteState
+RunRouteState
   ├─ cleared_schools in clear order
   ├─ provisional_next_school
   ├─ current_stage_index 1..4
-  ├─ trace states per school
-  ├─ access-package open state
   └─ four-school-complete / final-routing state
 
 SchoolEncounterDefinition
-  + StageDifficultyProfile
-  + SchoolGimmickLibrary
+  + StageEncounterProfile
+  + school gimmick/pattern data
           ↓
-current battlefield encounter composition
+StageEncounterState / bounded coordinator
+  ├─ Elite / Trace / Boss lifecycle
+  └─ normal-spawn permission for existing WaveSpawner
 ```
 
-Do not hardcode every route permutation or 16 school-stage variants in UI/MainController.
-
-The exact new class/file split is not executable until DEC-026 and the fresh detailed T08+ plan are approved. The responsibility boundary above is planning architecture, not implementation evidence.
+Do not hardcode every route permutation or 16 school-stage variants in UI/MainController. DEC-026 and the fresh Phase-B record have approved these owner boundaries; runtime implementation remains NOT_STARTED and must follow the T01→T14 package order.
 
 ## 4. Battlefield progression target
 
@@ -151,6 +149,8 @@ After school Boss + branch return:
 
 Boss/Shop/Chest should select a lane/pool first, then item, and deduplicate by canonical item ID. Do not turn 19 existing items into mutually exclusive school-owned items.
 
+Existing Shop sell semantics are a protected runtime fact unless a later approved design changes them; LOW_VALUE_REWARD_RECOVERY does not invent a second dismantle/conversion economy.
+
 ## 6. Route preview / commit target
 
 Workbench owns a player-facing comparison surface for unvisited schools.
@@ -185,7 +185,7 @@ fourth school Boss
 
 Four-school support is risk relief/attack-window narrative payoff, not companion management or automatic victory.
 
-Final Boss reuses/recombines previously learned school languages. Exact attack/pattern implementation remains blocked by DEC-026 and later planning.
+Final Boss reuses/recombines previously learned school languages. DEC-026 supplies the bounded encounter vocabulary/pattern budget; the final calamity's exact full script remains a later implementation/planning responsibility and is not runtime evidence yet.
 
 ## 8. Four-school runtime migration notes
 
@@ -212,20 +212,25 @@ Old `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md`:
 - T01-T07: reusable low-level direction.
 - T08-T12: historical/non-executable after DEC-014~025.
 
-Current replacement requirements:
+Current execution owners:
 
-`docs/traceability/2026-08-21-dec014-025-migration-traceability.md`.
+- spatial specification: `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`
+- spatial data contract: `docs/planning/2026-08-11-mvp4-content-data-contract.md`
+- post-DEC-026 traceability: `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`
+- fresh Phase-B: `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
+- T08+ replacement plan: `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
 
-Detailed new T08+ executable plan: **BLOCKED_DEC026**.
+Current next implementation package: **T01 spatial data contracts/catalog**.
 
 ## 10. Verification layers
 
 ```text
 unit
+- catalog/shape/modifier validation
 - backpack geometry/connectivity/adjacency
 - combination atomicity
 - access-package/reward-lane determinism
-- school-circuit state
+- school-route state
 - trace state/gates
 - atomic route/build/Fate commit
 
@@ -255,8 +260,10 @@ Automated GREEN and human PASS remain separate evidence classes.
 ## 11. Current evidence ceiling
 
 - MVP-0~3 integrated.
+- DEC-014~026 planning canon approved.
+- fresh Phase-B PASS.
 - MVP-4 spatial production not started.
-- DEC-014~025 migration runtime not started.
+- DEC-014~026 migration runtime not started.
 - release-near human QA not run.
 - Android/export not ready.
 

@@ -16,37 +16,42 @@
 
 4. `CURRENT_CONFIRMED_DECISIONS.md`
 5. `canon/2026-08-21-dec014-025-product-canon.md`
+6. `canon/2026-08-22-dec026-encounter-pattern-budget.md`
 
 ### Current mutable state
 
-6. `ACTIVE_CONTEXT.md`
+7. `ACTIVE_CONTEXT.md`
 
-### Current migration coverage
+### Current migration / readiness / execution coverage
 
-7. `traceability/2026-08-21-dec014-025-migration-traceability.md`
+8. `traceability/2026-08-22-dec026-post-gate-traceability.md`
+9. `planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
+10. `superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
 
 ### Protected old spatial detail
 
-8. `superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`
-9. `superpowers/plans/2026-08-11-mvp4-backpack-combination.md` — **T01-T07 detail only for current execution planning**
-10. `planning/2026-08-11-mvp4-phase-b-definition-of-ready.md` — historical technical detail / prior DoR; fresh Phase-B is required after DEC-026
+11. `superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`
+12. `planning/2026-08-11-mvp4-content-data-contract.md`
+13. `superpowers/plans/2026-08-11-mvp4-backpack-combination.md` — **T01-T07 detail only for current execution**
 
 ### Actual implementation evidence
 
-11. `../scripts/**`
-12. `../scenes/**`
-13. `../tests/**`
-14. `../.github/workflows/gut.yml`
+14. `../scripts/**`
+15. `../scenes/**`
+16. `../tests/**`
+17. `../.github/workflows/gut.yml`
 
 ## 2. Current product / migration documents
 
 | Document | Role | Current state |
 |---|---|---|
 | `CURRENT_CONFIRMED_DECISIONS.md` | mutable approved-decision/protected-scope router | CURRENT |
-| `canon/2026-08-21-dec014-025-product-canon.md` | implementation-facing mirror of approved Notion DEC-014~025 | CURRENT |
-| `ACTIVE_CONTEXT.md` | resume/current-state router | CURRENT |
-| `traceability/2026-08-21-dec014-025-migration-traceability.md` | current reuse/supersession/migration coverage | CURRENT / GAP |
-| `superpowers/plans/2026-08-21-dec014-025-canon-rebaseline.md` | this documentation/authority rebaseline execution package | CURRENT PACKAGE |
+| `canon/2026-08-21-dec014-025-product-canon.md` | implementation-facing product canon | CURRENT |
+| `canon/2026-08-22-dec026-encounter-pattern-budget.md` | encounter/pattern canon | CURRENT / APPROVED |
+| `ACTIVE_CONTEXT.md` | resume/current-state router | CURRENT / T01 NEXT |
+| `traceability/2026-08-22-dec026-post-gate-traceability.md` | current reuse/supersession/migration coverage | CURRENT |
+| `planning/2026-08-22-dec026-phase-b-definition-of-ready.md` | fresh implementation readiness | CURRENT / PASS |
+| `superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md` | current T08+ migration plan after DEC-026 | CURRENT |
 | `SYSTEM_MAP.md` | responsibility and migration map | CURRENT |
 | `../MVP_ROADMAP.md` | staged validation roadmap | CURRENT |
 | `../README.md` | human/agent project entry summary | CURRENT |
@@ -60,10 +65,10 @@ These are not deleted because they contain approved low-level spatial contracts 
 | `superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md` | protected 6x6/4x3/rotation/adjacency/Workbench behavior |
 | `traceability/2026-08-11-mvp4-backpack-combination-traceability.md` | historical AC/T01-T12 mapping; T08+ superseded for execution |
 | `superpowers/plans/2026-08-11-mvp4-backpack-combination.md` | T01-T07 technical details reusable; T08-T12 historical |
-| `planning/2026-08-11-mvp4-phase-b-definition-of-ready.md` | prior technical DoR and data-contract reasoning; not current Phase-B PASS for DEC-014~025 |
-| `planning/2026-08-11-mvp4-content-data-contract.md` | old spatial data-authoring detail where not superseded |
+| `planning/2026-08-11-mvp4-phase-b-definition-of-ready.md` | prior technical DoR/data-contract reasoning; not current Phase-B owner |
+| `planning/2026-08-11-mvp4-content-data-contract.md` | approved spatial data-authoring detail where not superseded |
 
-If an old document says `three segments`, `third Fate -> COMPLETE`, `20m = full Run`, or PR #17/T01 is the next execution prerequisite, current DEC-014~025 canon/Active Context wins.
+If an old document says `three segments`, `third Fate -> COMPLETE`, `20m = full Run`, DEC-026 is still pending, or PR #17/T01 historical branch is a prerequisite, current Decision/Canon/Active Context/post-DEC-026 owners win.
 
 ## 4. Historical execution/handoff documents
 
@@ -73,6 +78,7 @@ Important classification:
 
 - PR #17 provider adoption: **closed / unmerged / historical**.
 - PR #18/#19: merged CI-fidelity/handoff history; the CI protection they introduced remains useful.
+- PR #21~#25: merged planning/evidence history; their dated statements remain historical evidence while current routers own present state.
 - old `impl/mvp4-t01-spatial-data-contracts`: historical prepared baseline, not current production branch.
 
 Do not reopen historical PRs or rewrite old handoffs simply to make their timestamps look current.
@@ -81,13 +87,15 @@ Do not reopen historical PRs or rewrite old handoffs simply to make their timest
 
 ```text
 DEC-014~025 canon rebaseline
--> DEC-026 concrete encounter/pattern decision
--> recalculate detailed T08+ implementation plan
--> fresh Phase-B Definition of Ready on latest main
--> Phase-C fresh production branch/packages
+-> DEC-026 APPROVED
+-> T08+ migration plan RECALCULATED
+-> fresh Phase-B Definition of Ready PASS
+-> T01 Spatial Data Contracts from fresh merged main
+-> T01~T14 TDD packages
+-> T15 Human QA gate
 ```
 
-T01-T07 spatial-domain direction may be reused in that fresh plan; no gameplay implementation completion is claimed by the current documentation package.
+T01-T07 spatial-domain direction is reused from the approved old spatial design/data contract. T08+ uses the current post-DEC-026 plan. No gameplay implementation completion is implied by planning readiness.
 
 ## 6. Notion role
 
@@ -95,7 +103,7 @@ Notion is the human-facing overall product/visual/flow/work-control surface for 
 
 Current important pages:
 
-- Project Home — `닌자 서바이벌 (닌자의 신)`
+- Project Home — `닌자 서바이벌 · Home`
 - `01 · 프로젝트 전체 작업계획`
 - `02 · 비주얼 바이블`
 - `03 · UI · 생존 Flow Map`
@@ -111,18 +119,19 @@ When GitHub implementation/evidence changes, update Notion status/handoff from t
 
 ## 7. Current evidence ceiling
 
-Documentation can prove current product intent and implementation boundaries only.
+Documentation can prove current product intent, DEC-026 approval and Phase-B readiness only.
 
 Actual current evidence remains:
 
 - MVP-0~3 runtime integrated/regression baseline,
 - MVP-4 spatial runtime NOT_STARTED,
 - new school-circuit/trace/final-calamity runtime NOT_STARTED,
+- DEC-026 encounter runtime NOT_STARTED,
 - release-near human QA NOT_RUN,
 - Android/export NOT_RUN/NOT_READY.
 
-## 8. Next document to create
+## 8. Next execution artifact
 
-Do **not** create a detailed executable new T08+ gameplay plan yet.
+Do **not** create another competing pre-T01 plan.
 
-Next material product artifact is DEC-026 in the planning/Notion product flow. After DEC-026 approval, create the fresh detailed implementation plan and Phase-B record from latest merged main.
+The next production artifact is **T01 spatial data contracts/catalog implementation** from fresh merged `main`, using the approved 2026-08-11 spatial spec/data contract plus the fresh 2026-08-22 Phase-B owner. RED/GREEN execution evidence and post-merge readback determine when T01 is complete.
