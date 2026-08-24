@@ -13,8 +13,9 @@ phase_b_verdict: PASS
 t01_spatial_data_contracts: INTEGRATED
 t02_backpack_state: INTEGRATED
 t03_backpack_resolver: INTEGRATED
-next_product_gate: T04_REST_BACKPACK_SESSION
-mvp4_production_implementation: IN_PROGRESS_T01_T02_T03_INTEGRATED
+t04_rest_backpack_session: INTEGRATED
+next_product_gate: T05_COMBINATION_RESOLVER
+mvp4_production_implementation: IN_PROGRESS_T01_T02_T03_T04_INTEGRATED
 new_school_circuit_runtime: NOT_STARTED
 ```
 
@@ -47,8 +48,9 @@ Keep and regression-protect until deliberately replaced by approved TDD behavior
 - **T01 spatial data foundation merged as PR #27 / `7c9206702526f99dfadf44a617cd150853ec733f`.**
 - **T02 committed BackpackState merged as PR #29 / `126e6c942d74f97166ef0c881afc5d79cae3d274`.**
 - **T03 deterministic BackpackResolver merged as PR #31 / `2dcf055d82df02d44335f209897436572efa6739`.**
+- **T04 RestBackpackSession merged as PR #33 / `d07f16d6bae90a09bba0a5f0b8991216d006c966`.**
 
-A green MVP-3 test does not mean the new DEC-014~026 Run is implemented. T01 proves the spatial definitions/catalog foundation. T02 proves committed backpack spatial state primitives. T03 proves deterministic spatial resolution and read-only previews. None proves playable Workbench interaction or final combat integration.
+A green MVP-3 test does not mean the new DEC-014~026 Run is implemented. T01 proves the spatial definitions/catalog foundation. T02 proves committed backpack spatial state primitives. T03 proves deterministic spatial resolution and read-only previews. T04 proves the REST edit-session domain engine. None proves playable Workbench UI or final committed combat integration.
 
 ## 3. Protected MVP-4 spatial decisions
 
@@ -70,7 +72,7 @@ Architecture direction remains:
 
 `Item/Bag definitions -> BackpackState -> BackpackResolver -> RestBackpackSession/CombinationResolver -> committed RunBuildState snapshot -> combat runtime`.
 
-T01 implements the definitions/catalog layer. T02 implements the committed `BackpackState` layer. T03 implements the deterministic `BackpackResolver` layer. T04 is the next pending REST editing/session layer.
+T01 implements the definitions/catalog layer. T02 implements the committed `BackpackState` layer. T03 implements the deterministic `BackpackResolver` layer. T04 implements the pending REST edit-session layer. T05 is the next explicit combination transaction layer.
 
 ### T02 integrated contract
 
@@ -83,9 +85,10 @@ T01 implements the definitions/catalog layer. T02 implements the committed `Back
 - atomic add/move/remove/rotate state transitions,
 - item-item and bag-bag collision rejection,
 - active-area expansion/shrink facts with orphan prevention,
-- defensive collection views and deep-copy isolation.
+- defensive collection views and deep-copy isolation,
+- T04-validated `restore_item_instance()` / `restore_bag_instance()` owner paths for buffered/reconstructed existing instances without exposing private interiors.
 
-T02 does not own orthogonal adjacency scoring, bag connectivity rules, special-bag modifier resolution, REST pending edits, GOLD/Fate, combination transaction, Workbench UI or combat modifier migration.
+T02 does not own orthogonal adjacency scoring, bag connectivity rules, special-bag modifier resolution, REST session policy, GOLD/Fate, combination transaction, Workbench UI or combat modifier migration.
 
 ### T03 integrated contract
 
@@ -102,7 +105,24 @@ T02 does not own orthogonal adjacency scoring, bag connectivity rules, special-b
 - all-or-nothing whole-layout translation preview,
 - deterministic failure cells and independent output snapshots.
 
-T03 does not own the six-slot REST work buffer, edit history, combination transaction, GOLD/Fate/economy, Workbench UI or final committed combat modifier migration.
+T03 does not own the REST work buffer/history, combination transaction, GOLD/Fate/economy, Workbench UI or final committed combat modifier migration.
+
+### T04 integrated contract
+
+`RestBackpackSession` now owns pending/edit-session state over T02/T03:
+
+- copy-on-begin separation from committed source state,
+- exact six-slot work buffer,
+- board-to-buffer removal that immediately removes spatial effects,
+- legal buffer-to-board placement preserving stable instance identity,
+- defensive `BuildPreviewSnapshot` with selected-school T03 modifier context,
+- deep edit history / undo / redo with new-edit redo clearing,
+- non-history pending-bag acquisition as a history barrier so undo cannot erase/refund it,
+- explicit mutually-exclusive whole-layout movement mode and atomic translation,
+- deterministic commit-readiness failure codes for non-empty buffer, pending bag, pending item preview, active whole-layout mode and invalid resolver state,
+- defensive public session/buffer/pending-bag/preview views.
+
+T04 does not own combination eligibility/result consumption, GOLD/Fate/economy orchestration, Workbench UI or final committed combat modifier migration.
 
 Detailed low-level spatial spec remains `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`.
 
@@ -161,16 +181,17 @@ Fresh review on merged main passed. Exact authority/file/test boundaries are rec
 
 `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`.
 
-T01, T02 and T03 are merged. Remaining executable order:
+T01, T02, T03 and T04 are merged. Remaining executable order:
 
-`T04 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
+`T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
 
 Key ownership:
 
 - T01 definitions/catalog: `ItemDefinition`, `MVP4Catalog`, `BagDefinition`, `CombinationDefinition`, `SpatialRuleDefinition`.
 - T02 committed spatial facts: `BackpackState`, `ItemInstance`, `BagInstance`.
 - T03 spatial resolution: `BackpackResolver` + `BackpackResolution` for connected layout legality, orthogonal adjacency, special-bag overlap and deterministic spatial modifiers.
-- T04 pending REST edits: `RestBackpackSession` + preview snapshot/buffer/history responsibility.
+- T04 pending REST edits: `RestBackpackSession` + `BuildPreviewSnapshot` for buffer/preview/history/whole-layout session responsibility.
+- T05 combinations: `CombinationResolver` for eligible orthogonal source pairs, progressive hints and atomic pending result transaction.
 - committed combat power: `RunBuildState` after T06;
 - school route/clear order: `RunRouteState`;
 - Elite/Trace/Boss lifecycle: bounded stage encounter state/coordinator;
@@ -182,7 +203,7 @@ Key ownership:
 
 Old T08-T12 remain historical/non-executable. Current replacement plan is `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md` and current traceability is `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`.
 
-## 8. T01/T02/T03 implementation evidence
+## 8. T01/T02/T03/T04 implementation evidence
 
 ### T01
 
@@ -230,6 +251,21 @@ Final exact-head `e0dacee9048a01e799012b8aca12760e07ca47ea` evidence:
 
 Adversarial review added direct coverage for distinct-neighbor caps and selector one-count semantics, proved data-driven/fail-closed/deterministic behavior, and found/fixed the null-state diagnostic misclassification before merge.
 
+### T04
+
+PR #33 merged as `d07f16d6bae90a09bba0a5f0b8991216d006c966`.
+
+Final exact-head `6972e14cfa94dcce4d372a632db6d5e74809ee62` evidence:
+
+- Base reuse manifest PASS,
+- Godot 4.7.1 import PASS,
+- main-scene smoke PASS,
+- GUT `309/309` tests PASS,
+- `2202` assertions PASS,
+- T04 focused `17/17` PASS.
+
+Adversarial review verified the non-history acquisition/history boundary and stable-ID restore authority, then found/fixed three control-state gaps: uncommitted visible preview could pass commit readiness, whole-layout mode allowed per-item edits, and active whole-layout mode did not initially block later commit.
+
 ## 9. Closed historical execution routes
 
 - PR #17 is closed and unmerged. Do not reopen/merge/treat it as prerequisite.
@@ -237,6 +273,7 @@ Adversarial review added direct coverage for distinct-neighbor caps and selector
 - PR #27 is merged T01 evidence.
 - PR #29 is merged T02 evidence.
 - PR #31 is merged T03 evidence.
+- PR #33 is merged T04 evidence.
 
 Historical PRs/handoffs remain evidence; they are not deleted.
 
@@ -247,12 +284,14 @@ mvp0_to_mvp3: IMPLEMENTED_AUTOMATED_REGRESSION_BASELINE
 t01_spatial_data_contracts: IMPLEMENTED_AUTOMATED_REGRESSION_EVIDENCE
 t02_backpack_state: IMPLEMENTED_AUTOMATED_REGRESSION_EVIDENCE
 t03_backpack_resolver: IMPLEMENTED_AUTOMATED_REGRESSION_EVIDENCE
+t04_rest_backpack_session: IMPLEMENTED_AUTOMATED_REGRESSION_EVIDENCE
 final_t01_regression: 36_TEST_SCRIPTS_263_TESTS_1829_ASSERTIONS_PASS
 final_t02_regression: 37_TEST_SCRIPTS_274_TESTS_1915_ASSERTIONS_PASS
 final_t03_regression: 39_TEST_SCRIPTS_292_TESTS_2026_ASSERTIONS_PASS
+final_t04_regression: 41_TEST_SCRIPTS_309_TESTS_2202_ASSERTIONS_PASS
 phase_b_readiness: PASS
 backpack_resolver_runtime: INTEGRATED
-rest_backpack_session_runtime: NOT_STARTED
+rest_backpack_session_runtime: INTEGRATED
 workbench_player_interaction: NOT_STARTED
 combination_transaction_runtime: NOT_STARTED
 committed_spatial_combat_integration: NOT_STARTED
@@ -264,10 +303,10 @@ android_device_qa: NOT_RUN
 export_release: NOT_READY
 ```
 
-Do not promote T03 domain-resolution evidence to REST session/Workbench/combat/Human PASS without executed evidence.
+Do not promote T04 edit-session domain evidence to combination/Workbench UI/combat/Human PASS without executed evidence.
 
 ## 11. Next gate
 
-**T04 — RestBackpackSession** from a fresh production branch off merged main.
+**T05 — CombinationResolver** from a fresh production branch off merged main.
 
-T04 owns pending REST edits over T02/T03: six-slot buffer, preview editing state, history/undo-redo, selected-school preview context and explicit whole-layout move preview. Do not pull T05 combination transactions, GOLD/Fate/economy, Workbench UI authority or T06 final committed combat authority into T04.
+T05 owns first-tier combination eligibility/progressive hints and an atomic pending-result transaction over T02/T03/T04. Source items remain untouched until result placement succeeds; invalid placement/cancel preserves both sources; a successful commit consumes exactly two sources once and creates one result. Do not pull GOLD/Fate/economy, Workbench UI authority or T06 final committed combat authority into T05.
