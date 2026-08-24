@@ -53,9 +53,7 @@ func test_t07_acquired_item_keeps_instance_identity_and_future_cursor_through_t1
 	assert_eq(created.size(), 1)
 	var acquired_id: int = created[0]
 	var cursor_after_acquire: int = fixture.session.state.next_instance_id
-	var preview = fixture.session.preview_buffer_item(0, Vector2i(2, 1), 0)
-	assert_true(preview.valid)
-	assert_true(fixture.session.commit_buffer_item_preview())
+	assert_true(fixture.session.place_buffer_item(0, Vector2i(2, 1), 0))
 	fixture.fate.begin_rest()
 	var fate_id: StringName = fixture.fate.candidate_ids[0]
 	assert_true(fixture.fate.choose_pending(fate_id))
