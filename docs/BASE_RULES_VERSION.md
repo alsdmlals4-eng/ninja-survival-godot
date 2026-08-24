@@ -19,7 +19,7 @@ full_base_rule_sync: NOT_RUN
 selective_current_rule_read: PASS
 ```
 
-이번 T01 실행에서 최신 Base의 현재 `AGENTS.md`, Work Mode/Skill routing, long-horizon execution, adversarial review/repository-audit, TDD/debugging/verification 원칙을 선택 적용했다.
+이 관찰값은 T01 실행에서 읽은 값이며, T02 후속 작업에서 Base 원격 전체를 다시 동기화했다고 해석하지 않는다. 이번 T02는 현재 프로젝트 AGENTS/Decision/Phase-B와 설치된 Superpowers TDD/debugging/verification 규칙을 적용했다.
 
 - latest user instruction -> project AGENTS/security/engine/data -> project Active Context/approved contract -> actual code/data/assets/tests -> adopted Base -> Base remote 순서.
 - L1 이상에서 current main / current decisions / open+recent merged PR / actual implementation을 먼저 대조.
@@ -56,16 +56,19 @@ selective_current_rule_read: PASS
 
 ```yaml
 mvp0_to_mvp3_runtime: INTEGRATED
-mvp4_spatial_production: T01_DATA_FOUNDATION_INTEGRATED
-backpack_state_runtime: NOT_STARTED
+mvp4_spatial_production: T01_T02_INTEGRATED
+backpack_state_runtime: INTEGRATED
+backpack_resolver_runtime: NOT_STARTED
 latest_product_canon: DEC014_025
 latest_encounter_canon: DEC026_APPROVED
 phase_b: PASS
 t01_merge_sha: 7c9206702526f99dfadf44a617cd150853ec733f
 t01_final_evidence: GODOT_IMPORT_PASS_MAIN_SMOKE_PASS_GUT_263_OF_263_1829_ASSERTIONS
+t02_merge_sha: 126e6c942d74f97166ef0c881afc5d79cae3d274
+t02_final_evidence: GODOT_IMPORT_PASS_MAIN_SMOKE_PASS_GUT_274_OF_274_1915_ASSERTIONS_T02_11_OF_11
 school_circuit_runtime: NOT_STARTED
 dec026_encounter_runtime: NOT_STARTED
-next_implementation_gate: T02_BACKPACK_STATE
+next_implementation_gate: T03_BACKPACK_RESOLVER
 new_canon_human_qa: NOT_RUN
 ```
 
@@ -75,8 +78,6 @@ new_canon_human_qa: NOT_RUN
 
 T01 적대적 검토 중 exported typed `Dictionary[StringName, float]` 후보를 실제로 시험했으나 현재 Godot 4.7.1 프로젝트 import를 회귀시켰다. 해당 후보는 force 없이 되돌렸고, 코드 저작 `Dictionary` + 단일 catalog validator + RED/GREEN tests가 현재 검증된 경로다.
 
-이 사건의 재사용 가능한 최소 원리는 다음이다.
-
 ```text
 문서상 더 강한 타입 표기
 != 현재 프로젝트의 실제 import-compatible 최선
@@ -85,7 +86,23 @@ T01 적대적 검토 중 exported typed `Dictionary[StringName, float]` 후보�
 = runtime-compatible representation + explicit validation + regression evidence
 ```
 
-새 광역 Base 규칙을 만들 필요는 없다. 기존 Implementation Reality / TDD / systematic debugging / evidence-first 원칙으로 충분히 처리된다.
+## T02 실행 교훈
+
+T02의 첫 GREEN은 기능 테스트를 통과했지만 적대적 검토에서 `BackpackState.items` / `bags`가 live instance object를 노출해 외부 consumer가 `move_*` / `rotate_*` validation을 우회할 수 있는 authority leak가 발견됐다.
+
+새 RED 반례로 이 우회를 고정한 뒤 public collection view를 defensive snapshot으로 바꿨고, final GREEN `274/274 · 1915 assertions`로 닫았다.
+
+재사용 가능한 최소 원리:
+
+```text
+single source of truth
+!= mutation function을 한 파일에 모아두는 것만으로 충분
+
+single source of truth
+= validated mutation path + 외부에 live mutable interior를 노출하지 않음 + copy/snapshot isolation test
+```
+
+이 역시 새 광역 Base 규칙을 만들기보다 기존 state ownership / adversarial review / TDD / evidence-first 원칙의 프로젝트 검증 사례로 유지한다. Base 승격이 필요하면 별도 collision/freshness 검토를 한다.
 
 ## 사용 규칙
 
