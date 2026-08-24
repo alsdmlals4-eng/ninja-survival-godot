@@ -52,10 +52,12 @@ func begin_rest(segment_index: int, selected_school_id: StringName, chest_tokens
 	_selected_school_id = selected_school_id
 	_chest_tokens = maxi(chest_tokens, 0)
 	_boss_reward_ids = _roll_boss_rewards(selected_school_id)
-	_boss_reward_pending = _boss_reward_ids.size() == 3
+	# Boss reward is mandatory. A pool/configuration failure is unresolved work,
+	# not permission to skip the reward gate. Only a successful choice clears it.
+	_boss_reward_pending = true
 	if _shop != null:
 		_shop.begin_rest()
-	if not _boss_reward_pending:
+	if _boss_reward_ids.size() != 3:
 		transaction_failed.emit(&"boss_reward_pool_unavailable")
 	rewards_changed.emit()
 
