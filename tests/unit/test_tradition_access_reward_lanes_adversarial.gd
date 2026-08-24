@@ -84,7 +84,6 @@ func test_failed_spatial_reroll_preserves_offer_ids_lane_ids_and_seeded_rng_stat
 	var before_items: Array[StringName] = controller.shop_item_options()
 	var before_lanes: Array[StringName] = controller.shop_item_lane_ids()
 	var control_rng = _seeded_rng(8201)
-	# Advance control RNG by replaying begin_rest on an equivalent controller.
 	var control_bundle: Dictionary = _base_bundle(8201, &"cheonsul")
 	var control_access = load(ACCESS_PATH).new()
 	assert_true(control_access.initialize(&"cheonsul"))
@@ -126,10 +125,13 @@ func test_access_progression_and_reward_generation_never_mutate_committed_combat
 	add_child_autofree(controller)
 	controller.configure(bundle.build_state, bundle.session, bundle.catalog.build_items(), bundle.catalog.build_bags(), _seeded_rng(8401), access)
 	controller.begin_rest(2, &"cheonsul", 1, &"bongma")
-	assert_eq(bundle.build_state.get_modifiers().damage_multiplier, before.damage_multiplier)
-	assert_eq(bundle.build_state.get_modifiers().max_health_multiplier, before.max_health_multiplier)
-	assert_eq(bundle.build_state.get_modifiers().move_speed_multiplier, before.move_speed_multiplier)
-	assert_eq(bundle.build_state.get_modifiers().school_damage_multiplier, before.school_damage_multiplier)
+	var after = bundle.build_state.get_modifiers()
+	assert_eq(after.move_speed_pct, before.move_speed_pct)
+	assert_eq(after.max_health_flat, before.max_health_flat)
+	assert_eq(after.max_health_pct, before.max_health_pct)
+	assert_eq(after.school_damage_pct, before.school_damage_pct)
+	assert_eq(after.school_resource_gain_pct, before.school_resource_gain_pct)
+	assert_eq(after.ultimate_power_pct, before.ultimate_power_pct)
 
 
 func test_access_packages_persist_across_rests_but_locked_school_stays_locked_until_stabilized() -> void:
@@ -156,13 +158,14 @@ func test_all_start_new_school_pairs_preserve_boss_lane_semantics_and_canonical_
 		for new_school in schools:
 			if new_school == start_school:
 				continue
-			var bundle: Dictionary = _base_bundle(8600 + schools.find(start_school) * 10 + schools.find(new_school), start_school)
+			var seed: int = 8600 + schools.find(start_school) * 10 + schools.find(new_school)
+			var bundle: Dictionary = _base_bundle(seed, start_school)
 			var access = load(ACCESS_PATH).new()
 			assert_true(access.initialize(start_school))
 			assert_true(access.stabilize_school(new_school))
 			var controller = load(REWARD_PATH).new()
 			add_child_autofree(controller)
-			controller.configure(bundle.build_state, bundle.session, bundle.catalog.build_items(), bundle.catalog.build_bags(), _seeded_rng(8600 + schools.find(start_school) * 10 + schools.find(new_school)), access)
+			controller.configure(bundle.build_state, bundle.session, bundle.catalog.build_items(), bundle.catalog.build_bags(), _seeded_rng(seed), access)
 			controller.begin_rest(2, start_school, 0, new_school)
 			var options: Array[StringName] = controller.boss_reward_options()
 			assert_eq(options.size(), 3)
