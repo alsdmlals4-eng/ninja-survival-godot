@@ -97,12 +97,13 @@ Full current detail:
 - **MVP-4 T02 BackpackState committed spatial state: integrated.**
 - **MVP-4 T03 BackpackResolver deterministic spatial resolution: integrated.**
 - **MVP-4 T04 RestBackpackSession REST edit-session domain engine: integrated.**
-- Combination transaction / Workbench UI / committed spatial combat integration: not started.
+- **MVP-4 T05 CombinationResolver first-tier atomic combination transaction: integrated.**
+- Workbench UI / committed spatial combat integration: not started.
 - DEC-014~025 school-circuit/trace/final-calamity runtime: not started.
 - DEC-026 encounter/pattern runtime: not started.
 - release-near Vertical Slice human QA for current canon: NOT_RUN.
 
-T01 proves the data foundation. T02 proves committed spatial-state primitives. T03 proves deterministic connectivity/adjacency/special-bag/spatial-modifier resolution and read-only previews. T04 proves the REST edit-session domain engine: six-slot buffer, preview separation, edit history/undo-redo, explicit whole-layout movement mode and deterministic commit-readiness checks. None proves playable Workbench UI, committed combat integration or Human experience.
+T01 proves the data foundation. T02 proves committed spatial-state primitives. T03 proves deterministic connectivity/adjacency/special-bag/spatial-modifier resolution and read-only previews. T04 proves the REST edit-session domain engine. T05 proves recipe eligibility/progressive hints and source-preserving atomic first-tier 2→1 combination. None proves playable Workbench UI, committed combat integration or Human experience.
 
 T01 merged as PR #27 / `7c9206702526f99dfadf44a617cd150853ec733f`. Exact final PR-head evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `263/263` tests and `1829` assertions PASS.
 
@@ -112,19 +113,21 @@ T03 merged as PR #31 / `2dcf055d82df02d44335f209897436572efa6739`. Exact final P
 
 T04 merged as PR #33 / `d07f16d6bae90a09bba0a5f0b8991216d006c966`. Exact final PR-head `6972e14cfa94dcce4d372a632db6d5e74809ee62` evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `309/309` tests and `2202` assertions PASS, T04 focused `17/17` PASS.
 
+T05 merged as PR #35 / `8cefce75456f8b72a8f69559857676cca67a6c5d`. Exact final PR-head `d14ff2e8702d610de1678c22737982bd5b73e22a` evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `329/329` tests and `2322` assertions PASS, T05 focused `20/20` PASS.
+
 ## 6. Current planning / implementation gate
 
 DEC-026 is **APPROVED** and the fresh post-DEC-026 Phase-B Definition of Ready is **PASS**.
 
-T01, T02, T03 and T04 are complete. Current production execution begins at:
+T01, T02, T03, T04 and T05 are complete. Current production execution begins at:
 
-**T05 — CombinationResolver, from fresh merged `main`, TDD first.**
+**T06 — committed RunBuildState migration, from fresh merged `main`, TDD first.**
 
 Remaining executable order:
 
-`T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
+`T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
 
-Do not jump directly to T08. Do not pull T06 committed combat modifier authority, GOLD/Fate/economy orchestration or Workbench UI authority into T05.
+Do not jump directly to T08. T06 must make one finalized spatial snapshot the committed combat modifier authority without double-applying legacy MVP-3 item modifiers. Do not pull T07 acquisition transactions or Workbench UI authority into T06.
 
 Current planning owners:
 
@@ -193,12 +196,29 @@ Adversarial review found and fixed a diagnostic contract defect where null state
 - pending item preview and active whole-layout mode block later commit readiness until explicitly resolved/exited
 - session state/buffer/pending-bag/preview views are defensive copies
 
-Adversarial review found and fixed two session-boundary defects before merge: an uncommitted visible preview could pass the commit gate, and per-item edits/commit could occur while whole-layout mode was active.
+Adversarial review found and fixed three T04 control-state gaps: an uncommitted visible preview could pass commit readiness, whole-layout mode initially allowed per-item edits, and active whole-layout mode initially did not block later commit.
 
-### Next T05-T07 direction
+### Integrated T05
 
-- T05 `CombinationResolver`: explicit atomic first-tier combination eligibility, progressive hints and pending result transaction over T02/T03/T04
-- T06 committed `RunBuildState` modifier migration
+- `CombinationResolver` reuses T01 recipe definitions instead of creating a second recipe catalog
+- only T03-valid orthogonally adjacent on-board source pairs are eligible; buffer sources are excluded
+- progressive `UNDISCOVERED / INGREDIENT_OWNED / READY / DISCOVERED` hint stages are deterministic
+- reversed source arguments are canonicalized to recipe A/B while stable source IDs are preserved
+- pending result preview does not consume source items
+- invalid result placement and cancel preserve both sources
+- success removes exactly two sources and creates exactly one result only after candidate-state placement and T03 resolution succeed
+- failed commit preserves future instance-ID cursor and pending state
+- success marks discovery once and repeated commit is ignored
+- success is an irreversible history barrier while cancel preserves prior edit history
+- pending combination blocks parallel REST edits and later Fate commit
+- pending/discovery views are defensive snapshots
+- state replacement remains in `RestBackpackSession` through underscore-prefixed internal project-contract methods; GDScript does not enforce access privacy
+
+Adversarial review found and fixed two T05 authority defects: public session transaction methods could bypass recipe authority, and stale discovery memory could resurrect a recipe removed from current authority.
+
+### Next T06-T07 direction
+
+- T06 committed `RunBuildState` modifier migration: one finalized T01~T05 spatial snapshot becomes combat modifier authority without legacy double application
 - T07 reward/shop/chest transaction foundation
 
 Old T08-T12 from the 2026-08-11 plan remain superseded for execution. Use the current post-DEC-026 plan for T08+.
@@ -213,6 +233,7 @@ Old T08-T12 from the 2026-08-11 plan remain superseded for execution. Use the cu
 - PR #29 is merged T02 evidence.
 - PR #31 is merged T03 evidence.
 - PR #33 is merged T04 evidence.
+- PR #35 is merged T05 evidence.
 - Future production work starts from fresh merged `main` after current readback.
 
 Do not rewrite historical PRs/handoffs just to make timestamps/status prose appear current.
@@ -224,6 +245,7 @@ Do not rewrite historical PRs/handoffs just to make timestamps/status prose appe
 - Prefer Scene/Node/signal/Resource/RefCounted composition appropriate to Godot.
 - Keep state ownership singular; UI must not duplicate domain/economy/geometry/combat authority.
 - Do not expose live mutable interiors that let consumers bypass the owning domain object's validated mutation path.
+- Treat underscore-prefixed GDScript methods as project-internal contracts, not language-enforced privacy; do not claim stronger encapsulation than tests and ownership rules provide.
 - Do not add a second wave system while the current WaveSpawner API is sufficient.
 - Do not add a new autoload/save/meta-power system without a demonstrated requirement and approval.
 - Do not claim local plugin/provider integration from historical branches; verify current `project.godot` and actual environment.

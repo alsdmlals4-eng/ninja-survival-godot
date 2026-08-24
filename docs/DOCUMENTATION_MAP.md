@@ -18,17 +18,17 @@
 10. `superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
 11. `superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`
 12. `planning/2026-08-11-mvp4-content-data-contract.md`
-13. old `superpowers/plans/2026-08-11-mvp4-backpack-combination.md` — **T05-T07 reusable detail only**
+13. old `superpowers/plans/2026-08-11-mvp4-backpack-combination.md` — **T06-T07 reusable detail only**
 14. actual `../scripts/**`, `../scenes/**`, `../tests/**`, `../.github/workflows/gut.yml`
 
 ## 2. Current product / migration / implementation documents
 
 | Document | Role | Current state |
 |---|---|---|
-| `CURRENT_CONFIRMED_DECISIONS.md` | mutable approved-decision/protected-scope router | CURRENT / T04 MERGED / T05 NEXT |
+| `CURRENT_CONFIRMED_DECISIONS.md` | mutable approved-decision/protected-scope router | CURRENT / T05 MERGED / T06 NEXT |
 | `canon/2026-08-21-dec014-025-product-canon.md` | implementation-facing product canon | CURRENT |
 | `canon/2026-08-22-dec026-encounter-pattern-budget.md` | encounter/pattern canon | CURRENT / APPROVED |
-| `ACTIVE_CONTEXT.md` | resume/current-state router | CURRENT / T04 MERGED / T05 NEXT |
+| `ACTIVE_CONTEXT.md` | resume/current-state router | CURRENT / T05 MERGED / T06 NEXT |
 | `traceability/2026-08-22-dec026-post-gate-traceability.md` | current reuse/supersession/migration coverage | CURRENT |
 | `planning/2026-08-22-dec026-phase-b-definition-of-ready.md` | fresh implementation readiness | CURRENT / PASS |
 | `superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md` | current T08+ migration plan after DEC-026 | CURRENT |
@@ -36,7 +36,7 @@
 | `../MVP_ROADMAP.md` | staged validation roadmap | CURRENT |
 | `../README.md` | human/agent project entry summary | CURRENT |
 
-## 3. T01/T02/T03/T04 implementation evidence
+## 3. T01/T02/T03/T04/T05 implementation evidence
 
 ### T01 — Spatial Data Contracts / Catalog
 
@@ -101,7 +101,22 @@ Evidence: exact head `6972e14cfa94dcce4d372a632db6d5e74809ee62` -> `Godot 4.7.1 
 
 T04 proves the REST edit-session domain engine: six-slot buffer, defensive preview, selected-school modifier context, edit history/undo-redo, explicit whole-layout mode/atomic translation and commit-readiness controls.
 
-It does **not** prove T05 combination transactions, actual Workbench UI/input UX, committed combat integration or player experience.
+### T05 — CombinationResolver
+
+PR #35 merged as `8cefce75456f8b72a8f69559857676cca67a6c5d`.
+
+Owners introduced/extended:
+
+- `scripts/backpack/combination_resolver.gd`
+- `scripts/backpack/rest_backpack_session.gd` internal modal/atomic transaction bridge
+- `tests/unit/test_combination_resolver.gd`
+- `tests/unit/test_combination_resolver_adversarial.gd`
+
+Evidence: exact head `d14ff2e8702d610de1678c22737982bd5b73e22a` -> `Godot 4.7.1 import PASS -> main smoke PASS -> GUT 329/329 PASS -> 2322 assertions PASS -> T05 focused 20/20 PASS`.
+
+T05 proves current-recipe eligibility, orthogonal on-board source pairing, progressive hint/discovery, source-preserving pending result and exact 2→1 atomic combination replacement. It also verifies failed placement/ID preservation, modal session ownership and defensive pending/discovery outputs.
+
+It does **not** prove T06 committed spatial combat integration, actual Workbench UI/input UX or player experience.
 
 ## 4. Historical-but-still-useful MVP-4 documents
 
@@ -109,11 +124,11 @@ It does **not** prove T05 combination transactions, actual Workbench UI/input UX
 |---|---|
 | `superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md` | protected 6x6/4x3/rotation/adjacency/Workbench behavior |
 | `traceability/2026-08-11-mvp4-backpack-combination-traceability.md` | historical AC/T01-T12 mapping; T08+ superseded for execution |
-| `superpowers/plans/2026-08-11-mvp4-backpack-combination.md` | T01/T02/T03/T04 historical implementation direction; T05-T07 detail reusable; old T08-T12 historical |
+| `superpowers/plans/2026-08-11-mvp4-backpack-combination.md` | T01~T05 historical implementation direction; T06-T07 detail reusable; old T08-T12 historical |
 | `planning/2026-08-11-mvp4-phase-b-definition-of-ready.md` | prior technical DoR/data-contract reasoning; not current Phase-B owner |
-| `planning/2026-08-11-mvp4-content-data-contract.md` | approved spatial data-authoring detail; T01 implemented, still useful for T05/T07 validation intent |
+| `planning/2026-08-11-mvp4-content-data-contract.md` | approved spatial data-authoring detail; T01/T05 implemented, still useful for T07 validation intent |
 
-If an old document says `three segments`, `third Fate -> COMPLETE`, `20m = full Run`, DEC-026 is pending, T01/T02/T03/T04 are not implemented, or BackpackState/Resolver/RestBackpackSession do not exist, current Decision/Canon/Active Context and actual main win.
+If an old document says `three segments`, `third Fate -> COMPLETE`, `20m = full Run`, DEC-026 is pending, T01~T05 are not implemented, or the current BackpackState/Resolver/RestBackpackSession/CombinationResolver owners do not exist, current Decision/Canon/Active Context and actual main win.
 
 ## 5. Historical execution/handoff documents
 
@@ -127,6 +142,8 @@ If an old document says `three segments`, `third Fate -> COMPLETE`, `20m = full 
 - PR #31: merged T03 implementation evidence.
 - PR #32: post-T03 current-router synchronization.
 - PR #33: merged T04 implementation evidence.
+- PR #34: post-T04 current-router synchronization.
+- PR #35: merged T05 implementation evidence.
 - old `impl/mvp4-t01-spatial-data-contracts`: historical prepared baseline, not current production branch.
 
 Do not reopen historical PRs or rewrite old handoffs simply to make their timestamps/status prose appear current.
@@ -141,12 +158,13 @@ DEC-014~025 APPROVED
 -> T02 BackpackState INTEGRATED
 -> T03 BackpackResolver INTEGRATED
 -> T04 RestBackpackSession INTEGRATED
--> T05 CombinationResolver NEXT
--> T06~T14 approved execution chain
+-> T05 CombinationResolver INTEGRATED
+-> T06 committed RunBuildState migration NEXT
+-> T07~T14 approved execution chain
 -> T15 Human QA gate
 ```
 
-Do not create another competing pre-T05 plan. T05 uses the already-approved spatial spec, T01 combination data, T02 committed state, T03 deterministic resolver, T04 edit session and fresh Phase-B boundary.
+Do not create another competing pre-T06 plan. T06 uses the approved spatial spec plus the already integrated T01 definitions, T02 committed state, T03 deterministic resolution, T04 edit session, T05 atomic combinations and fresh Phase-B boundary.
 
 ## 7. Notion role
 
@@ -173,7 +191,7 @@ When GitHub implementation/evidence changes, update Notion status/handoff from t
 - T02 committed BackpackState integrated with automated Godot/GUT evidence.
 - T03 deterministic BackpackResolver integrated with automated Godot/GUT evidence.
 - T04 REST edit-session domain engine integrated with automated Godot/GUT evidence.
-- T05 combination transaction NOT_STARTED.
+- T05 first-tier atomic combination transaction integrated with automated Godot/GUT evidence.
 - actual Workbench player interaction / committed spatial combat integration NOT_STARTED.
 - school-circuit/trace/final-calamity runtime NOT_STARTED.
 - release-near Human QA NOT_RUN.
@@ -181,4 +199,4 @@ When GitHub implementation/evidence changes, update Notion status/handoff from t
 
 ## 9. Next execution artifact
 
-The next production artifact is **T05 CombinationResolver** from fresh merged `main`, RED first. T05 consumes T01/T02/T03/T04 facts and owns eligible orthogonal source pairs, progressive hint stages and an atomic pending-result transaction. It must preserve both sources until legal result placement succeeds and must not pull T06 combat authority or economy/UI responsibilities forward.
+The next production artifact is **T06 committed RunBuildState migration** from fresh merged `main`, RED first. T06 consumes only a finalized T01~T05 spatial resolution as committed combat modifier input, prevents legacy spatial double application, preserves rollback-compatible economy behavior unless explicitly superseded, and must not pull T07 acquisition or Workbench UI authority forward.

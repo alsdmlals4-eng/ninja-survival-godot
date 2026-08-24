@@ -22,7 +22,8 @@ Godot 4.x / GDScript로 재구성 중인 `닌자 서바이벌 (닌자의 신)` �
 | MVP-4 T02 BackpackState committed spatial state | **integrated** |
 | MVP-4 T03 BackpackResolver spatial resolution | **integrated** |
 | MVP-4 T04 RestBackpackSession edit session | **integrated** |
-| MVP-4 Combination/Workbench UI/combat commit | **not started · T05 next** |
+| MVP-4 T05 CombinationResolver atomic combination | **integrated** |
+| MVP-4 Workbench UI/committed combat integration | **not started · T06 next** |
 | DEC-014~025 4유파 순회 migration runtime | **not implemented** |
 | DEC-026 encounter/pattern budget | **approved / not implemented** |
 | Fresh Phase-B | **PASS** |
@@ -37,7 +38,9 @@ T03은 PR #31로 `2dcf055d82df02d44335f209897436572efa6739`에 병합됐다. 최
 
 T04는 PR #33으로 `d07f16d6bae90a09bba0a5f0b8991216d006c966`에 병합됐다. 최종 exact-head `6972e14cfa94dcce4d372a632db6d5e74809ee62` 검증은 Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `309/309` tests / `2202` assertions PASS, T04 집중 테스트 `17/17` PASS다.
 
-현재는 6x6 committed state와 공간 효과 계산뿐 아니라 **6-slot REST 작업 버퍼, committed와 분리된 preview, undo/redo, 명시적 whole-layout 이동 모드와 commit-readiness 검사**까지 도메인 엔진으로 구현됐다. 다만 아직 실제 Workbench 화면/입력 UX, 조합 transaction, committed combat 반영이 완성됐다는 증거는 아니다.
+T05는 PR #35로 `8cefce75456f8b72a8f69559857676cca67a6c5d`에 병합됐다. 최종 exact-head `d14ff2e8702d610de1678c22737982bd5b73e22a` 검증은 Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `329/329` tests / `2322` assertions PASS, T05 집중 테스트 `20/20` PASS다.
+
+현재는 6x6 공간 배치와 REST 편집에 더해 **직교 인접된 유효 재료 2개를 감지하고, 결과 배치 성공 전까지 재료를 보존한 뒤 성공 시에만 정확히 2→1로 교체하는 1차 조합 transaction과 progressive hint/discovery**까지 도메인 엔진으로 구현됐다. 다만 아직 실제 Workbench 화면/입력 UX와 이 spatial snapshot을 다음 전투의 최종 `RunBuildState` 전투력으로 commit하는 T06은 구현 전이다.
 
 ## 최신 Run 목표
 
@@ -110,8 +113,9 @@ Architecture direction:
 - **T02:** 6x6 committed state, centered 4x3 starting area, stable item/bag instances, origin/quarter-turn rotation, atomic place/move/remove/rotate, item-item·bag-bag collision, active-area expansion/shrink, orphan prevention, defensive snapshot/copy isolation.
 - **T03:** connected active-layout validation, orthogonal adjacency pair, `SpatialRuleDefinition` aggregation, special-bag overlap activation, selected-school/static modifier snapshot, read-only candidate placement와 whole-layout translation preview.
 - **T04:** six-slot buffer, independent build preview snapshot, edit history/undo-redo, validated stable-ID board↔buffer round trip, explicit whole-layout mode, deterministic commit failure gate.
+- **T05:** on-board 직교 인접 recipe eligibility, `UNDISCOVERED → INGREDIENT_OWNED → READY → DISCOVERED`, source-preserving pending result, invalid/cancel no-op, 성공 시 exact 2→1 atomic replacement, discovery와 modal/defensive transaction 경계.
 
-다음 T05 `CombinationResolver`는 T01의 조합 정의와 T02/T03/T04 state/session을 사용해 **직교 인접된 유효 재료 2개 → pending result → 유효 배치 성공 시에만 원재료 2개를 정확히 한 번 소비하는 atomic transaction**과 progressive hint를 구현한다. T05에서 T06 committed combat authority, GOLD/Fate/economy orchestration이나 Workbench UI authority를 당겨오지 않는다.
+다음 T06은 **REST에서 완성된 spatial/combination snapshot을 `RunBuildState`의 committed combat modifier authority로 이관**합니다. 기존 MVP-3 비공간 소유/판매/economy baseline을 한 번에 삭제하지 않고, T01~T05가 계산한 최종 committed build를 전투에 중복 적용 없이 연결하는 migration package로 진행합니다. Workbench UI authority나 T07 획득 transaction은 T06에 당겨오지 않습니다.
 
 ### 흔적 / 전승 접근
 
@@ -123,15 +127,15 @@ Architecture direction:
 
 ## 현재 개발 경계
 
-DEC-026은 승인됐고 fresh Phase-B가 PASS했다. T01~T04는 병합 완료됐으며 현재 production은 **T05 CombinationResolver**부터 이어간다.
+DEC-026은 승인됐고 fresh Phase-B가 PASS했다. T01~T05는 병합 완료됐으며 현재 production은 **T06 committed RunBuildState migration**부터 이어간다.
 
 ```text
 T01 Spatial Data Contracts · INTEGRATED
 -> T02 BackpackState · INTEGRATED
 -> T03 BackpackResolver · INTEGRATED
 -> T04 RestBackpackSession · INTEGRATED
--> T05 CombinationResolver · NEXT
--> T06 committed RunBuildState migration
+-> T05 CombinationResolver · INTEGRATED
+-> T06 committed RunBuildState migration · NEXT
 -> T07 acquisition transaction foundation
 -> T08 ... T14 current post-DEC-026 migration packages
 -> T15 Human QA gate
@@ -147,6 +151,7 @@ T01 Spatial Data Contracts · INTEGRATED
 - PR #29는 병합된 T02 evidence다.
 - PR #31은 병합된 T03 evidence다.
 - PR #33은 병합된 T04 evidence다.
+- PR #35는 병합된 T05 evidence다.
 - 새 production package는 fresh merged `main`에서 만든다.
 
 ## 읽기 순서
