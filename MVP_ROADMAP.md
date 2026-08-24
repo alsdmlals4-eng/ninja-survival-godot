@@ -2,41 +2,44 @@
 
 ## 목적
 
-기존 `MVP-0~MVP-5` 번호를 유지하면서, 최신 DEC-014~026과 실제 구현 진행을 분리해 관리한다.
+기존 `MVP-0~MVP-5` 번호를 유지하면서 최신 DEC-014~026 제품 방향과 실제 merged implementation 상태를 분리해 관리한다.
 
-게임 내부의 `Stage 1~4`와 개발 로드맵 번호를 혼동하지 않는다.
+게임 내부 `Stage 1~4`와 개발 Task `T01~T19`를 혼동하지 않는다.
 
-## 현재 공식 MVP 상태
+## 현재 공식 상태 — 2026-08-25 재개
 
 ```yaml
+completed_main: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 MVP_0_BASIC_COMBAT: INTEGRATED
 MVP_1_COMBAT_DDD: INTEGRATED
-MVP_2_FOUR_SCHOOLS_SHALLOW: INTEGRATED
+MVP_2_FOUR_SCHOOLS_SHALLOW: INTEGRATED_MIGRATION_BASELINE
 MVP_3_RESULT_REST_SHOP_FATE: INTEGRATED_ROLLBACK_BASELINE
-MVP_4_BACKPACK_COMBINATION: T01_T02_T03_T04_T05_INTEGRATED_NEXT_T06
-MVP_5_FINAL_LOOP_META: NOT_STARTED
-DEC014_025_MIGRATION_OVERLAY: DOCUMENTED_NOT_IMPLEMENTED
-DEC026_ENCOUNTER_PATTERN_BUDGET: APPROVED_NOT_IMPLEMENTED
-PHASE_B: PASS
-NEXT_IMPLEMENTATION_GATE: T06_COMMITTED_RUN_BUILD_STATE_MIGRATION
+MVP_4_BACKPACK_COMBINATION_AND_ROUTE_FOUNDATION: T01_TO_T11_INTEGRATED
+MVP_5_FINAL_LOOP_META: NOT_STARTED_AS_COMPLETE_PRODUCT
+DEC014_025_MIGRATION_OVERLAY: APPROVED_PARTIAL_DOMAIN_IMPLEMENTATION
+DEC026_ENCOUNTER_PATTERN_BUDGET: APPROVED_PARTIAL_DOMAIN_IMPLEMENTATION
+NEXT_IMPLEMENTATION_GATE: T12_FRESH_ATOMIC_WORKBENCH_FATE_ROUTE_PACKAGE
+CLOSED_WIP_REFERENCES: PR_43_T12_AND_PR_44_FRONT_DOOR
 RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
+DEVICE_ANDROID_EXPORT: NOT_RUN
 ```
 
-최신 DEC-014~026은 기존 MVP 번호를 폐기하는 새 MVP 번호 체계가 아니라, **MVP-4/5가 실제 제품 Run과 연결될 때 따라야 할 migration/encounter overlay**다.
+`T01~T11 integrated`는 실제 code/test/domain evidence를 뜻한다. 새 Run 전체 playable, production-quality UI/visual/audio, Human/Player Experience, device/export PASS로 승격하지 않는다.
 
 ## 제품 전체 검증 질문
 
 1. 자동 생존 전투와 DDD가 짧게 재미있는가?
-2. 네 유파가 이름/색만 다른 것이 아니라 위험 처리 방식이 다른가?
-3. 전투 보상이 Workbench 판단으로 이어지는가?
-4. 백팩 공간·회전·인접·조합이 빌드 기억을 만드는가?
-5. 다음 유파 선택이 현재 빌드와 의미 있는 trade-off를 만드는가?
-6. 네 유파를 평정한 뒤 별도 최종전이 피로가 아니라 climax로 느껴지는가?
-7. 한 판 뒤 다른 시작 유파/순서/빌드를 시험하고 싶어지는가?
+2. 네 유파가 이름/색이 아니라 위험 처리 방식으로 구분되는가?
+3. Core→Elite→Trace→Boss의 5분 전장이 유파 학습과 결산을 만드는가?
+4. 전투 보상이 Workbench 판단으로 이어지는가?
+5. 백팩 공간·회전·인접·조합이 빌드 기억을 만드는가?
+6. 다음 유파 선택이 현재 빌드와 의미 있는 trade-off를 만드는가?
+7. 네 유파 평정 뒤 Final Binding과 별도 최종전이 피로가 아니라 climax인가?
+8. 한 판 뒤 다른 시작 유파/순서/빌드를 시험하고 싶어지는가?
 
 # MVP-0 — 기본 전투 기반 · INTEGRATED
 
-검증 범위:
+회귀 보호:
 
 - 8방향 이동
 - 카메라
@@ -44,360 +47,297 @@ RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 - 자동 공격
 - 피격/처치
 - HUD
-- 게임오버/restart
-
-현재 구현/테스트를 회귀 보호한다.
+- game over / restart
 
 # MVP-1 — Combat DDD · INTEGRATED
 
-검증 범위:
+회귀 보호:
 
 - kill combo / max combo
 - stylish score
 - reward absorption feedback
-- timed wave pressure
+- timed pressure
+- result contribution signals
 
-현재 회귀 baseline을 보호한다.
+이 증거는 combat feedback foundation이며 전체 Run 재미 PASS가 아니다.
 
-# MVP-2 — 4유파 얕은 구현 · INTEGRATED BASELINE
+# MVP-2 — 4유파 얕은 구현 · INTEGRATED MIGRATION BASELINE
 
-현재 대표 runtime은 존재한다.
-
-장기 제품 정체성:
+장기 정체성:
 
 | 유파 | 위험 처리 철학 |
 |---|---|
 | 봉마 | 이동형 진지 · 식신/결계로 공간을 준비하고 대신 싸우게 한다 |
-| 천술 | 상태를 만들고 원소 반응으로 전장을 바꾼다 |
+| 천술 | 상태를 만들고 순서/조합으로 원소 반응을 일으킨다 |
 | 귀인 | 위험한 근접 체류를 유지할수록 강해진다 |
 | 흑영 | 위험 표적을 표식/우선순위/처형으로 먼저 제거한다 |
 
-현재 봉마 fixed ward / 귀인 low-HP bonus / 흑영 nearest-target rule은 삭제하지 않고 대표 Vertical Slice tuning 후보로 둔다.
+기존 MVP-2 구현은 삭제 대상이 아니라 migration baseline이다. 유파별 완전 독립 시스템 4개를 만들지 않는다.
 
-# MVP-3 — 결과/휴식/상점/운명 skeleton · INTEGRATED ROLLBACK BASELINE
+# MVP-3 — 결과/휴식/상점/Fate skeleton · INTEGRATED ROLLBACK BASELINE
 
-현재 실제 구현:
+기존 `SCHOOL_SELECT -> COMBAT -> BOSS -> RESULT -> SHOP -> FATE -> PREVIEW -> three-segment COMPLETE` 흐름은 최신 제품 Run이 아니라 검증된 rollback/regression baseline이다.
 
-`SCHOOL_SELECT -> COMBAT -> BOSS -> RESULT -> SHOP -> FATE -> PREVIEW -> three-segment COMPLETE`.
+새 DEC 행동이 TDD package로 교체되기 전까지 기존 정상 경로를 회귀 보호한다.
 
-이 흐름은 최신 제품 Run target이 아니라 **검증된 rollback/regression baseline**이다.
-
-새 DEC 행동을 구현하는 TDD package에서 의도적으로 교체되기 전까지 해당 테스트를 보호한다.
-
-# MVP-4 — 백팩/조합 기초 · T01/T02/T03/T04/T05 INTEGRATED / T06 NEXT
+# MVP-4 — 공간 백팩 + 4유파 Run domain foundation · T01~T11 INTEGRATED
 
 목표:
 
-> 휴식 중 백팩의 공간 판단이 다음 전투 성능과 다음 경로 선택을 바꾸는지 검증한다.
+> 전투에서 얻은 보상과 유파 전승 접근이 6x6 백팩 공간 판단, 다음 Route, 다음 전투 성능을 실제로 바꾸는가?
 
 보호 범위:
 
-- 6x6 board / 4x3 start
+- 6x6 / 4x3 start
 - purchasable bag expansion
-- item + bag 90-degree rotation
-- rectangular regular items + selected L/T bags
-- six-slot REST work buffer
+- item + bag 90° rotation
 - orthogonal adjacency
-- one-cell special-bag overlap
-- explicit atomic first-tier combinations
+- selected L/T bags
+- six-slot REST buffer
+- explicit atomic first-tier combination
 - Boss / Shop / Chest acquisition pillars
-- Persistent Workbench
-- deterministic domain state/resolution separated from UI
-- mouse / keyboard-gamepad focus / touch completion paths
+- committed spatial snapshot as combat modifier authority
+- unvisited-school route state
+- Elite / trace / Boss lifecycle
+- tradition access packages / reward lanes
+- mouse / keyboard-gamepad focus / touch target paths
 
 ## T01 — Spatial Data Contracts / Catalog · INTEGRATED
 
-PR #27 merged as `7c9206702526f99dfadf44a617cd150853ec733f`.
+- existing `ItemDefinition` extended instead of second item authority
+- 19 base acquisition items + 3 combination-result lookup definitions
+- starting 4x3 bag + 5 purchasable bags
+- 8 strong-spatial item contracts
+- 3 first-tier combination definitions
+- modifier validation
 
-Implemented:
-
-- extend existing `ItemDefinition` instead of creating a second item authority,
-- `RunModifierSet` supported modifier-field validation,
-- bounded `SpatialRuleDefinition`,
-- one starting 4x3 bag + five purchasable bag definitions,
-- 19 base acquisition items + 3 combination-result lookup definitions,
-- 8 strong-spatial base-item contracts,
-- 3 first-tier combination definitions,
-- explicit base/result acquisition boundaries,
-- unsupported modifier key / non-numeric payload validation,
-- existing MVP-3 item values and sell runtime compatibility.
-
-Verification:
-
-`Godot 4.7.1 import PASS -> main smoke PASS -> GUT 263/263 PASS -> 1829 assertions PASS`.
-
-Evidence ceiling: **data foundation only**. Placement legality, adjacency resolution, REST editing and playable Workbench remain unimplemented at the T01 evidence level.
+Evidence ceiling: data/catalog foundation.
 
 ## T02 — BackpackState · INTEGRATED
 
-PR #29 merged as `126e6c942d74f97166ef0c881afc5d79cae3d274`.
+- one committed 6x6 spatial state
+- centered 4x3 starting area
+- stable item/bag instance IDs
+- atomic place/move/remove/rotate
+- collision/active-area/orphan protection
+- defensive snapshots
 
-Implemented:
-
-- `ItemInstance` / `BagInstance` value objects,
-- one committed `BackpackState` authority,
-- fixed 6x6 board and centered starting 4x3 active area,
-- shared monotonic item/bag instance ids,
-- origin and normalized 90-degree rotation,
-- atomic add/move/remove/rotate,
-- inactive-cell rejection and board bounds,
-- item-item / bag-bag collision rejection,
-- bag expansion/shrink active-area facts and orphan prevention,
-- defensive public collection snapshots and `copy_value()` isolation,
-- T04-validated stable-ID restore owner paths for buffered/reconstructed existing instances.
-
-Adversarial review found a live `items`/`bags` view mutation bypass and closed it before merge. T04 later verified the restore paths reject item↔bag shared-ID collisions and do not advance IDs on failed restore.
-
-Final exact-head verification:
-
-`Godot 4.7.1 import PASS -> main smoke PASS -> GUT 274/274 PASS -> 1915 assertions PASS -> T02 focused 11/11 PASS`.
-
-Evidence ceiling: **committed spatial-state domain engine only**. Adjacency/connectivity/special-bag resolution, REST editing, combinations, UI and Human play remain later gates.
+Evidence ceiling: committed spatial facts.
 
 ## T03 — BackpackResolver · INTEGRATED
 
-PR #31 merged as `2dcf055d82df02d44335f209897436572efa6739`.
+- connected active-layout validation
+- orthogonal adjacency canonicalization
+- spatial-rule aggregation
+- special-bag overlap
+- selected-school/static modifier snapshot
+- placement/whole-layout read-only previews
 
-Implemented:
-
-- read-only deterministic resolver over T02 defensive snapshots,
-- 4-neighbor connected active-layout legality,
-- orthogonal adjacency canonical once per distinct item pair,
-- data-driven T01 spatial-rule aggregation with distinct-neighbor caps,
-- one neighbor matching tag + definition id still counted once,
-- one-cell-or-more special-bag overlap activation once per distinct bag instance,
-- static + selected-school emblem modifier snapshot,
-- reasoned candidate item/bag legality previews,
-- all-or-nothing whole-layout translation preview,
-- deterministic failure cells and independent resolution snapshots,
-- fail-closed behavior for missing definitions.
-
-Adversarial review added direct coverage for rule caps/selector semantics and found/fixed the null-state diagnostic misclassification before merge.
-
-Final exact-head verification:
-
-`Godot 4.7.1 import PASS -> main smoke PASS -> GUT 292/292 PASS -> 2026 assertions PASS -> T03 focused 18/18 PASS`.
-
-Evidence ceiling: **deterministic spatial-resolution domain engine only**. REST editing/session history, combinations, playable Workbench UI, committed combat integration and Human play remain later gates.
+Evidence ceiling: deterministic spatial resolution.
 
 ## T04 — RestBackpackSession · INTEGRATED
 
-PR #33 merged as `d07f16d6bae90a09bba0a5f0b8991216d006c966`.
+- session-owned copy of committed state
+- six-slot buffer
+- defensive build preview
+- undo/redo
+- pending bag/item gates
+- explicit whole-layout mode
+- deterministic commit-readiness failures
 
-Implemented:
-
-- session-owned copy of committed T02 state,
-- exact six-slot REST work buffer,
-- board→buffer removing spatial effects and legal buffer→board restoring stable item identity,
-- defensive `BuildPreviewSnapshot` separated from committed/session state,
-- selected-school preview modifier context through T03,
-- deep edit history / undo / redo and new-edit redo clearing,
-- non-history pending-bag acquisition as an edit-history barrier,
-- explicit mutually-exclusive whole-layout movement mode,
-- all-or-nothing whole-layout translation preserving future instance-ID cursor,
-- deterministic commit-readiness failures for pending buffer/bag/preview, active whole-layout mode and invalid resolved state,
-- defensive public state/buffer/pending-bag/preview boundaries.
-
-Adversarial review found and fixed three session/control issues: a valid visible preview could pass the commit gate without being committed; whole-layout mode initially allowed per-item edits; and active whole-layout mode initially did not block later commit.
-
-Final exact-head verification:
-
-`Godot 4.7.1 import PASS -> main smoke PASS -> GUT 309/309 PASS -> 2202 assertions PASS -> T04 focused 17/17 PASS`.
-
-Evidence ceiling: **REST backpack edit-session domain engine only**. Combination transaction, actual Workbench UI/input UX, committed combat integration and Human play remain later gates.
+Evidence ceiling: REST edit-session domain engine.
 
 ## T05 — CombinationResolver · INTEGRATED
 
-PR #35 merged as `8cefce75456f8b72a8f69559857676cca67a6c5d`.
+- T01 recipe authority reused
+- valid on-board orthogonal source pair only
+- progressive `UNDISCOVERED -> INGREDIENT_OWNED -> READY -> DISCOVERED`
+- source-preserving pending result
+- success-only atomic exact 2→1 replacement
+- pending combination blocks conflicting edits/commit
 
-Implemented:
+Evidence ceiling: first-tier combination transaction.
 
-- T01 recipe authority reused without a second combination catalog,
-- only valid orthogonally adjacent on-board source pairs are eligible through T03 adjacency,
-- buffer sources are ineligible,
-- deterministic `UNDISCOVERED -> INGREDIENT_OWNED -> READY -> DISCOVERED` hint stages,
-- reversed source arguments canonicalize to recipe A/B without losing stable identity,
-- pending result preview keeps both source instances intact,
-- invalid result placement and cancel preserve both sources,
-- legal commit builds a candidate state, removes exactly two sources, creates exactly one result and swaps state only after T03 resolve succeeds,
-- failed commit preserves `next_instance_id`, sources and pending transaction,
-- repeated commit is ignored,
-- first successful combination marks discovery,
-- successful combination forms an irreversible REST history barrier; cancel preserves prior edit history,
-- pending combination blocks parallel backpack editing and later Fate commit,
-- pending/discovery views are defensive copies.
+## T06 — committed RunBuildState modifier authority · INTEGRATED
 
-Adversarial review found and fixed two authority defects: public session transaction methods could bypass `CombinationResolver` recipe authority, and stale discovery memory could resurrect a recipe removed from current combo authority. The session bridge is now underscore-prefixed internal project contract; GDScript does not enforce language-level privacy.
+One finalized spatial modifier snapshot is the combat authority. Legacy inventory/economy ownership must not double-apply item power.
 
-Final exact-head verification:
+## T07 — Boss / Shop / Chest spatial acquisition transactions · INTEGRATED
 
-`Godot 4.7.1 import PASS -> main smoke PASS -> GUT 329/329 PASS -> 2322 assertions PASS -> T05 focused 20/20 PASS`.
+Boss reward, Shop and Chest acquisition route through bounded REST spatial transactions while preserving identity/economy compatibility.
 
-Evidence ceiling: **first-tier atomic combination domain transaction only**. Actual Workbench UI/input UX, committed spatial combat integration, full rest/economy orchestration and Human play remain later gates.
+## T08 — RunRouteState · INTEGRATED
 
-## T06 — committed RunBuildState migration · NEXT
+- unvisited/provisional/active/cleared school facts
+- reject revisits
+- stage index separate from school identity
+- preserve clear order
+- fourth clear routes to Final Binding rather than Stage 5
 
-T06 consumes the final resolved T01~T05 backpack snapshot and migrates committed combat modifier authority into `RunBuildState` without double-applying the existing MVP-3 item modifier path.
+## T09 — Encounter definitions + Stage profiles · INTEGRATED
 
-T06 must preserve rollback-compatible GOLD/sell/Fate baseline behavior unless the approved migration explicitly replaces it. Do not pull T07 reward/shop/chest transaction ownership or Workbench UI authority into T06.
+- school Core x3 / Elite / Boss / pattern refs data contracts
+- shared Stage 1..4 axes
+- bounded shared primitive vocabulary
+- first-slice Cheonsul primitive data
 
-# MVP-5 — 최종 Run / 결과 / Ninja Soul · NOT_STARTED
+Evidence ceiling: encounter data/domain foundation, not playable encounter integration.
 
-기존 명칭은 유지하되 최신 DEC-014~026에 따라 최종 Run 구조를 다음처럼 해석한다.
+## T10 — Elite → Trace → Boss gate · INTEGRATED
+
+- Elite warning/active
+- chest token + non-expiring trace
+- trace recovery
+- Boss warning / dual gate
+- spawn permission facts
+- soft overtime / clear state
+
+Evidence ceiling: deterministic lifecycle/domain gate.
+
+## T11 — Tradition access packages + reward lanes · INTEGRATED
+
+- Run-level access state
+- Universal 7 + four school x3 authoring package over existing 19 item IDs
+- starting-school access
+- stabilization opens package
+- Boss continuity / newly liberated tradition / bridge-universal lanes
+- Shop/Chest lane-first selection
+- canonical item-ID dedupe
+
+Access does not create direct school combat stats; T06 remains combat modifier authority.
+
+# T12 — Atomic Workbench + Fate + next-route commit · NEXT FRESH PACKAGE
+
+Status: **NOT_MERGED / NOT_COMPLETED**.
+
+Closed PR #43 is historical WIP evidence only. Its useful findings may be ADAPTed after current-main revalidation, but the branch is not a resume baseline.
+
+Approved outcome:
+
+- Workbench route remains provisional until final commit.
+- one transaction validates final T04 backpack/session state + pending Fate + T08 provisional route before mutation.
+- failure mutates none of committed backpack/Fate/route state.
+- success commits exactly once.
+- existing domain owners remain singular.
+- UI/MainController T13 behavior is not silently absorbed.
+
+Implementation entry:
 
 ```text
-4유파 battlefield를 정확히 한 번씩 순회
+fresh completed main
+-> RED all-or-none contract
+-> minimal pending-Fate / transaction boundary
+-> full regression
+-> >=5 whole-state adversarial loops until clean
+-> exact-head PR gate
+-> merge + postmerge repository/Notion readback
+```
+
+# T13 — Persistent Workbench route-preview UI/input
+
+Goal:
+
+- unvisited-school route cards
+- risk/gimmick/reward/tag links
+- provisional selection and change before Fate
+- backpack remains central surface
+- mouse / keyboard-gamepad focus / touch complete paths
+- no hidden exact tuning values or AI recommendation score
+
+Human evidence still separate from automated UI tests.
+
+# T14 — Cheonsul one-school release-near Vertical Slice
+
+One production-candidate school loop:
+
+`signature <=30 sec -> Core -> ~3m Elite -> trace -> ~5m Boss -> result/reward -> Workbench -> next-route preview`.
+
+Requires representative UI, character/enemy visual language, animation/VFX and audio sufficient for human judgment.
+
+# T15 — Human QA Gate
+
+Measure:
+
+- 30s school identity readability
+- Core→Elite→Boss tension curve
+- telegraph fairness
+- trace clarity
+- backpack/route comprehension
+- Workbench fatigue
+- Korean readability
+- placement changes next-combat expectation
+
+If this fails, correct the shared chassis before multiplying content.
+
+# T16 — Expand 봉마 / 귀인 / 흑영
+
+After T15 PASS:
+
+- reuse shared encounter chassis
+- author school-owned Core x3 / Elite / Boss composition
+- preserve each school's risk-processing identity
+- keep concurrent advanced-gimmick cap 2
+
+# T17 — Four-school circuit integration
+
+- full free-order clear path
+- Stage 1..4 profile composition
+- trace/access progression
+- clear-order persistence
+- fourth-clear Final Binding routing
+
+# T18 — Final calamity package
+
+- exact final-boss script from learned four-school encounter languages
+- one short support callback per liberated school, default clear order
+- callbacks create relief/openings, not auto-win
+- player's backpack build owns actual victory
+
+Exact final Boss content may require a focused content decision before implementation.
+
+# T19 — Full-run verification
+
+- Godot import/main smoke/full GUT
+- deterministic route/reward/commit regression
+- release-near full-run human QA
+- run-duration/rest-fatigue evidence
+- platform/device/export checks when release scope requires them
+
+# MVP-5 — Final Run / result / Ninja Soul
+
+Latest interpretation:
+
+```text
+clear four school battlefields exactly once
 -> fourth school Boss
 -> Final Binding Workbench
 -> separate final calamity battle
 -> final result / Ninja Soul / replay motivation
 ```
 
-`약 20분`은 fourth school Boss까지의 active-combat 목표치이며, final rest/final battle은 별도 시간이다.
+Protected principles:
 
-보호 규칙:
+- four-trace binding is not a new automatic upgrade tree,
+- all four access packages are open at Final Binding,
+- final build uses existing items/placement/adjacency/combinations,
+- final Boss recombines previously learned school language rather than unrelated rules,
+- school support is situational/short and does not own victory,
+- Ninja Soul favors horizontal unlock/options/convenience over permanent stats that erase Run decisions.
 
-- 4흔적 결속은 새 자동 upgrade tree가 아니다.
-- Final Binding은 모든 access package가 열린 마지막 Persistent Workbench다.
-- Final Boss는 앞서 배운 학교 문법을 재조합한다.
-- 해방된 4유파가 clear order에 따라 각 1회 짧게 지원한다.
-- 지원은 위험 완화/공격 창이며 자동 승리가 아니다.
-- 실제 최종 승리와 결정타는 플레이어 backpack build가 담당한다.
-- Ninja Soul은 Run 결정을 압도하는 영구 공격력/체력 누적보다 horizontal unlock/option/convenience 방향을 우선한다.
+# Current Visual / Human Home milestone
 
-DEC-026은 학교별 encounter/pattern budget을 승인했지만 final calamity의 exact full attack script는 후속 final-boss planning/implementation 대상이다.
+2026-08-25 user decision:
 
-# DEC-014~026 Migration Overlay
+- master art style reference = first supplied image in the approval turn,
+- dark moonlit painterly ninja fantasy + ink/brush/calligraphy language,
+- dense parchment infographic style = supporting explanatory layout only,
+- do not generate more images unless user explicitly requests it.
 
-## Overlay A — Four-School Circuit
+Human Home should explain the full Run, four schools, backpack core data, world/promise and current evidence ceiling without exposing raw AI/System metadata as the main reading experience.
 
-```text
-starting school
--> choose unvisited school
--> school battlefield
--> Core Monsters + current Stage gimmick
--> ~3m Elite
--> chest token + trace
--> trace recovery
--> ~5m school Boss
--> RESULT / Boss Reward
--> joint branch / trace STABILIZED
--> Persistent Workbench
--> provisional next school
--> Fate commit
--> repeat until all four schools are cleared exactly once
-```
+# Historical branch/PR note
 
-핵심 구조:
-
-- `school` = encounter identity,
-- 게임 내부 `Stage 1~4` = difficulty/gimmick-depth profile,
-- trace = tradition acquisition access, not automatic power,
-- next school = player choice among unvisited routes,
-- Fate atomically commits build + Fate + next route.
-
-상세 요구사항: `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`.
-
-## Overlay B — Encounter Content Gate · DEC-026 APPROVED
-
-첫 콘텐츠 상한:
-
-- Core Monster 12 = 3 x 4 schools
-- Elite 4
-- School Boss 4
-- School gimmick libraries 4
-
-게임 내부 Stage gimmick depth:
-
-- Stage 1 base signature
-- Stage 2 + interaction gimmick
-- Stage 3 + synergy/field gimmick
-- Stage 4 mastery + one Boss capstone
-- concurrent advanced-gimmick default cap 2
-
-DEC-026 approved the **shared attack primitives + school-owned encounter compositions** architecture. Current runtime implementation remains NOT_STARTED.
-
-## Overlay C — One-School Release-Near Vertical Slice · NOT_RUN
-
-4유파 콘텐츠 전체를 제작하기 전에 **천술류**로 다음 end-to-end를 먼저 완성한다.
-
-```text
-signature within ~30 sec
--> Core Monster pressure
--> Elite
--> trace
--> Boss
--> result/reward
--> branch Workbench
--> next-route preview
-```
-
-Human gate:
-
-- school identity readability,
-- combat pacing/tension,
-- Elite/Boss telegraph fairness,
-- trace readability,
-- Workbench comprehension,
-- placement/combination decision value,
-- rest duration/fatigue,
-- Korean UI readability,
-- production-candidate visual/audio/VFX coherence.
-
-Card/text placeholder는 이 Human PASS를 대신할 수 없다.
-
-## Overlay D — Final Binding / Final Calamity · PARTIAL SPEC
-
-Four-school circuit 완료 뒤:
-
-`fourth Boss -> RESULT -> Final Binding Workbench -> final Fate/build commit -> 난세 재앙핵`.
-
-현재 approved structure와 DEC-026에서 재사용 가능한 encounter language를 보호하되, final calamity exact full script는 후속 구현/검증에서 닫는다.
-
-# 구현 순서
-
-```text
-T01 Spatial Data Contracts · INTEGRATED
--> T02 BackpackState · INTEGRATED
--> T03 BackpackResolver · INTEGRATED
--> T04 RestBackpackSession · INTEGRATED
--> T05 CombinationResolver · INTEGRATED
--> T06 committed RunBuildState migration · NEXT
--> T07 acquisition transaction foundation
--> T08~T14 post-DEC-026 packages
--> T15 human QA
--> remaining three-school content multiplication
--> final binding/final calamity implementation
--> full-run QA / Android / export / release work
-```
-
-새 package는 PR #35가 병합된 fresh `main`에서 시작한다.
-
-# 현재 제외 / 후속
-
-- full deep skill trees for all four schools
-- second/third-tier combinations
-- arbitrary complex regular-item polyomino system
-- deep set/curse/rarity layers
-- base-building/economy management core
-- permanent Meta stats that dominate Run choices
-- large branching ending campaign
-- full release balance before representative Vertical Slice proves the core
-
-# 성공/재검토 기준
-
-성공:
-
-- 한 유파 Vertical Slice만으로 전투->Elite->trace->Boss->Workbench 감정 변화가 읽힌다.
-- backpack 배치가 실제 다음 전투/경로 기대를 바꾼다.
-- route order가 전략을 만들지만 정답 경로 하나로 고정되지 않는다.
-- 4유파 확장 후에도 shared framework로 제작비가 통제된다.
-- final battle이 플레이어 build를 무력화하지 않는다.
-
-재검토:
-
-- 첫 유파 5분이 반복적이거나 의미 없이 길다.
-- Workbench가 매번 과도하게 길어져 Run 피로를 만든다.
-- school identity보다 common auto-combat가 더 강하게 느껴진다.
-- route order가 특정 school-last 정답으로 수렴한다.
-- content multiplication cost가 framework 재사용보다 빠르게 증가한다.
+- PR #43 T12: closed/unmerged historical WIP.
+- PR #44 front-door docs: closed/unmerged historical WIP.
+- neither is a current implementation baseline.
+- future production starts from fresh completed `main` and reuses only validated material.

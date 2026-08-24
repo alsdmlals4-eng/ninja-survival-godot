@@ -8,11 +8,9 @@ This repository is the Godot 4.x / GDScript rebuild of `닌자 서바이벌 (닌
 
 The Unity archive is reference material only. Do not line-by-line port Unity C#/MonoBehaviour/Prefab structures into the Godot product.
 
-Authoritative local project root:
+Project repository: `alsdmlals4-eng/ninja-survival-godot`.
 
-`C:/Users/user/Documents/GitHub/Ninza/ninja-survival-godot`
-
-Do not use historical foreign-project paths embedded in old generic contracts.
+The last recorded local project root is `C:/Users/user/Documents/GitHub/Ninza/ninja-survival-godot`, but local path/tool/session facts must be re-read before local mutation. Do not revive retired per-project Godot binary/port assumptions from historical records.
 
 ## 2. Authority order
 
@@ -31,30 +29,33 @@ Use the following order when sources differ:
 
 `docs/ACTIVE_CONTEXT.md` is a state router, not a replacement for Decision/Canon owners.
 
+Notion and repository use domain-split authority:
+
+- Notion Human Home / Flow / Visual Bible: human-facing game understanding and approved visual direction.
+- Repository: structured canon, code, data, Scene/Resource, tests and runtime evidence.
+- Project Registry / Production Handoff: AI/System execution metadata and evidence receipts.
+- Google Sheets: migration compatibility only when unique unmigrated material exists.
+
 ## 3. Delivery-contract boundary
 
-The repository still stores the byte-exact historical adapter:
+The repository stores the historical adapter `PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION_v4.5_r2.md`. Do not edit it merely to look current.
 
-`PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION_v4.5_r2.md`.
+When the user supplies a newer task execution contract in the current chat, the latest user instruction wins for that task. Treat the newer contract as an execution overlay unless the user separately authorizes replacing the repository-stored historical adapter.
 
-Do not edit its bytes merely to make it look current or project-specific.
-
-When the user supplies a newer task execution contract in the current chat, latest user instruction wins for that task. Treat the newer contract as an execution overlay unless the user separately authorizes replacing the repository-stored contract source.
-
-Core phase rule remains:
+Core phase rule:
 
 ```text
 PLAN / canon / product decision
--> explicit product decisions complete for the implementation package
--> fresh final planning review / Definition of Ready
--> Phase-B PASS
--> BUILD / TDD package
+-> explicit product decisions complete for the package
+-> Definition of Ready / implementation-ready gate
+-> BUILD / TDD or acceptance-evidence package
 -> exact verification
--> review / merge
--> post-merge readback
+-> adversarial review
+-> PR / merge
+-> post-merge repository + Notion readback
 ```
 
-Do not infer `planning complete` from an old Phase-B record after material product decisions changed.
+Do not infer current readiness from an old Phase-B record after material product decisions or implementation state changed.
 
 ## 4. Current product target
 
@@ -77,313 +78,296 @@ starting school
 -> clear all four schools exactly once
 -> Final Binding Workbench
 -> separate final calamity Boss
--> final result / Ninja Soul
+-> final result / Ninja Soul / legend
 ```
 
 `~20 minutes` is the target active-combat time through the fourth school Boss, not the entire Run end.
 
-Full current detail:
+Current product canon:
 
 - `docs/canon/2026-08-21-dec014-025-product-canon.md`
 - `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`
 
-## 5. Current implementation reality
+## 5. Current implementation reality — merged main through T11
+
+Authoritative completed-main baseline at this reactivation:
+
+`265bab32da087c070ea2ea0d98a3bdace1e10f7f` — `T11: add tradition access reward lanes`.
+
+Current facts:
 
 - MVP-0 basic combat: integrated.
 - MVP-1 combat DDD: integrated.
-- MVP-2 four-school shallow runtime: integrated.
+- MVP-2 four-school shallow runtime: integrated migration baseline.
 - MVP-3 result/GOLD/Shop/Fate/three-segment runtime: integrated rollback/regression baseline.
-- **MVP-4 T01 spatial data contracts/catalog: integrated.**
-- **MVP-4 T02 BackpackState committed spatial state: integrated.**
-- **MVP-4 T03 BackpackResolver deterministic spatial resolution: integrated.**
-- **MVP-4 T04 RestBackpackSession REST edit-session domain engine: integrated.**
-- **MVP-4 T05 CombinationResolver first-tier atomic combination transaction: integrated.**
-- Workbench UI / committed spatial combat integration: not started.
-- DEC-014~025 school-circuit/trace/final-calamity runtime: not started.
-- DEC-026 encounter/pattern runtime: not started.
-- release-near Vertical Slice human QA for current canon: NOT_RUN.
+- T01~T05 spatial data / BackpackState / resolver / REST session / atomic first-tier combination: merged.
+- T06 committed `RunBuildState` modifier authority: merged.
+- T07 Boss/Shop/Chest spatial acquisition transaction foundation: merged.
+- T08 `RunRouteState` four-school route domain: merged.
+- T09 encounter definitions + Stage profiles: merged.
+- T10 Elite -> Trace -> Boss lifecycle/domain gate: merged.
+- T11 tradition access packages + Boss/Shop/Chest lane-first reward selection: merged.
+- T12 atomic Workbench + Fate + next-route commit: **NOT_MERGED / NOT_COMPLETED**.
+- Persistent Workbench route-preview UI/input migration: not integrated.
+- Cheonsul release-near playable slice: not run.
+- Human Usability / Player Experience / device / Android-export validation: `NOT_RUN`.
 
-T01 proves the data foundation. T02 proves committed spatial-state primitives. T03 proves deterministic connectivity/adjacency/special-bag/spatial-modifier resolution and read-only previews. T04 proves the REST edit-session domain engine. T05 proves recipe eligibility/progressive hints and source-preserving atomic first-tier 2→1 combination. None proves playable Workbench UI, committed combat integration or Human experience.
+T01~T11 source/test evidence proves only its actual automated/domain scope. It does not prove that the intended new Run is already playable end-to-end or fun/readable to a human.
 
-T01 merged as PR #27 / `7c9206702526f99dfadf44a617cd150853ec733f`. Exact final PR-head evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `263/263` tests and `1829` assertions PASS.
+## 6. Current next product gate — fresh T12 package
 
-T02 merged as PR #29 / `126e6c942d74f97166ef0c881afc5d79cae3d274`. Exact final PR-head `60adbb99886c96c687b20befe4a61e5e3bcb71f1` evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `274/274` tests and `1915` assertions PASS, T02 focused `11/11` PASS.
+The previous T12 PR #43 and front-door docs PR #44 were intentionally **closed unmerged** during the 2026-08-25 pause handoff. They are historical/WIP read-only evidence.
 
-T03 merged as PR #31 / `2dcf055d82df02d44335f209897436572efa6739`. Exact final PR-head `e0dacee9048a01e799012b8aca12760e07ca47ea` evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `292/292` tests and `2026` assertions PASS, T03 focused `18/18` PASS.
+Do not reopen, merge, rebase, or resume their branches as current authority.
 
-T04 merged as PR #33 / `d07f16d6bae90a09bba0a5f0b8991216d006c966`. Exact final PR-head `6972e14cfa94dcce4d372a632db6d5e74809ee62` evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `309/309` tests and `2202` assertions PASS, T04 focused `17/17` PASS.
+If T12 implementation is resumed:
 
-T05 merged as PR #35 / `8cefce75456f8b72a8f69559857676cca67a6c5d`. Exact final PR-head `d14ff2e8702d610de1678c22737982bd5b73e22a` evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `329/329` tests and `2322` assertions PASS, T05 focused `20/20` PASS.
+```text
+fetch then-current completed main
+-> re-read Base + project authority
+-> inspect closed #43/#44 read-only
+-> compare actual current code/tests/canon
+-> reuse only still-valid material
+-> create a fresh current-task branch/PR
+-> TDD / exact-head verification / merge / readback
+```
 
-## 6. Current planning / implementation gate
+Approved T12 product boundary remains the current post-DEC-026 plan unless a newer decision supersedes it:
 
-DEC-026 is **APPROVED** and the fresh post-DEC-026 Phase-B Definition of Ready is **PASS**.
+- Workbench route remains provisional before commit.
+- Final backpack snapshot + pending Fate + provisional next school must commit all-or-none.
+- Existing domain owners remain singular; do not move geometry/economy/route/Fate authority into UI.
+- T13 UI and T14 playable encounter integration are not silently absorbed into T12.
 
-T01, T02, T03, T04 and T05 are complete. Current production execution begins at:
-
-**T06 — committed RunBuildState migration, from fresh merged `main`, TDD first.**
-
-Remaining executable order:
-
-`T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
-
-Do not jump directly to T08. T06 must make one finalized spatial snapshot the committed combat modifier authority without double-applying legacy MVP-3 item modifiers. Do not pull T07 acquisition transactions or Workbench UI authority into T06.
-
-Current planning owners:
-
-- `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`
-- `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`
-- `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
-- `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
-
-## 7. MVP-4 implementation boundary
-
-### Integrated T01
-
-- existing `ItemDefinition` extended rather than duplicated
-- `RunModifierSet` supported-field authority
-- bounded `SpatialRuleDefinition`
-- one starting 4x3 bag + five purchasable `BagDefinition`s
-- 19 base acquisition items + 3 combination-result lookup definitions
-- 8 strong-spatial base-item contracts
-- 3 `CombinationDefinition`s
-- explicit base/result acquisition boundaries
-- catalog validation for unsupported fields and non-numeric modifier payloads
-- existing MVP-3 item values and sell runtime preserved
-
-A stricter exported typed-Dictionary experiment caused an actual Godot import regression and was rejected. Runtime-compatible generic Dictionary storage remains protected by catalog validation and tests.
-
-### Integrated T02
-
-- `ItemInstance` and `BagInstance` value objects reference T01 definition IDs rather than duplicating item/bag authority
-- one `BackpackState` owns committed 6x6 board facts
-- centered starting 4x3 active area from the starting bag
-- shared monotonic item/bag instance IDs
-- origin and normalized quarter-turn rotation
-- atomic item/bag add, move, remove and rotate
-- inactive-cell, bounds, item-item and bag-bag collision rejection
-- bag expansion/shrink active-area facts and prevention of orphaned committed items
-- public item/bag collection views are defensive snapshots
-- `copy_value()` preserves snapshot isolation
-- T04 adds only validated `restore_item_instance()` / `restore_bag_instance()` owner paths so buffered/reconstructed existing instances retain identity without exposing live interiors
-
-Adversarial review found and fixed a live collection-view mutation bypass before T02 merge; T04 later verified restore paths reject shared item/bag ID collisions and preserve atomic ID advancement.
-
-### Integrated T03
-
-- `BackpackResolution` is a copied result value with validity/failure metadata, active/item cells, canonical adjacency pairs, special-bag hits and a derived `RunModifierSet`
-- `BackpackResolver` reads T02 defensive snapshots and does not mutate committed state
-- 4-neighbor BFS enforces connected active-cell layouts
-- item adjacency is orthogonal and canonical once per distinct item pair even across multiple touching edges
-- T01 spatial rules remain data-driven with `ANY` selector semantics and `PER_DISTINCT_NEIGHBOR` caps
-- one neighbor matching both tag and explicit definition id counts once
-- special-bag effects activate on one-cell-or-more overlap and apply once per distinct bag instance
-- static payload and selected-school emblem payload are resolved into deterministic modifier snapshots
-- candidate item/bag placement and whole-layout translation previews are read-only/all-or-nothing
-- corrupt/missing definition inputs fail closed; failure cells and snapshots are deterministic
-
-Adversarial review found and fixed a diagnostic contract defect where null state was initially reported as `missing_candidate`; state/candidate failures are now distinct.
-
-### Integrated T04
-
-- `RestBackpackSession` owns a copy of committed T02 state rather than mutating the source
-- exact six-slot REST work buffer; board -> buffer disables effects and legal buffer -> board preserves stable instance identity
-- `BuildPreviewSnapshot` holds defensive preview state and copied T03 resolution/modifier output
-- selected-school context is included in build preview resolution
-- backpack edit actions are deep-snapshot undoable/redoable; a new edit clears redo
-- non-history pending-bag acquisition cuts prior edit history so undo cannot silently erase/refund an irreversible acquisition
-- whole-layout movement is an explicit mutually-exclusive mode and uses T03 all-or-nothing translation
-- pending item preview and active whole-layout mode block later commit readiness until explicitly resolved/exited
-- session state/buffer/pending-bag/preview views are defensive copies
-
-Adversarial review found and fixed three T04 control-state gaps: an uncommitted visible preview could pass commit readiness, whole-layout mode initially allowed per-item edits, and active whole-layout mode initially did not block later commit.
-
-### Integrated T05
-
-- `CombinationResolver` reuses T01 recipe definitions instead of creating a second recipe catalog
-- only T03-valid orthogonally adjacent on-board source pairs are eligible; buffer sources are excluded
-- progressive `UNDISCOVERED / INGREDIENT_OWNED / READY / DISCOVERED` hint stages are deterministic
-- reversed source arguments are canonicalized to recipe A/B while stable source IDs are preserved
-- pending result preview does not consume source items
-- invalid result placement and cancel preserve both sources
-- success removes exactly two sources and creates exactly one result only after candidate-state placement and T03 resolution succeed
-- failed commit preserves future instance-ID cursor and pending state
-- success marks discovery once and repeated commit is ignored
-- success is an irreversible history barrier while cancel preserves prior edit history
-- pending combination blocks parallel REST edits and later Fate commit
-- pending/discovery views are defensive snapshots
-- state replacement remains in `RestBackpackSession` through underscore-prefixed internal project-contract methods; GDScript does not enforce access privacy
-
-Adversarial review found and fixed two T05 authority defects: public session transaction methods could bypass recipe authority, and stale discovery memory could resurrect a recipe removed from current authority.
-
-### Next T06-T07 direction
-
-- T06 committed `RunBuildState` modifier migration: one finalized T01~T05 spatial snapshot becomes combat modifier authority without legacy double application
-- T07 reward/shop/chest transaction foundation
-
-Old T08-T12 from the 2026-08-11 plan remain superseded for execution. Use the current post-DEC-026 plan for T08+.
-
-## 8. Historical PR/branch protection
-
-- Open/draft/ready PRs are read-only by default unless the user explicitly names the PR and allowed action.
-- Follow-up work normally targets merged `main` truth.
-- PR #17 is **closed / unmerged / historical**. Do not reopen, merge or use it as a prerequisite.
-- old `impl/mvp4-t01-spatial-data-contracts` is historical, not a current implementation branch.
-- PR #27 is merged T01 evidence.
-- PR #29 is merged T02 evidence.
-- PR #31 is merged T03 evidence.
-- PR #33 is merged T04 evidence.
-- PR #35 is merged T05 evidence.
-- Future production work starts from fresh merged `main` after current readback.
-
-Do not rewrite historical PRs/handoffs just to make timestamps/status prose appear current.
-
-## 9. Godot rules
-
-- Engine target: Godot 4.x; current tested authority is Godot 4.7.1 unless later approved otherwise.
-- Language: GDScript.
-- Prefer Scene/Node/signal/Resource/RefCounted composition appropriate to Godot.
-- Keep state ownership singular; UI must not duplicate domain/economy/geometry/combat authority.
-- Do not expose live mutable interiors that let consumers bypass the owning domain object's validated mutation path.
-- Treat underscore-prefixed GDScript methods as project-internal contracts, not language-enforced privacy; do not claim stronger encapsulation than tests and ownership rules provide.
-- Do not add a second wave system while the current WaveSpawner API is sufficient.
-- Do not add a new autoload/save/meta-power system without a demonstrated requirement and approval.
-- Do not claim local plugin/provider integration from historical branches; verify current `project.godot` and actual environment.
-
-## 10. Protected spatial rules
+## 7. Protected spatial / Workbench rules
 
 Do not regress these approved MVP-4 decisions:
 
-- 6x6 total board / 4x3 starting active area
+- fixed 6x6 total board / centered 4x3 starting active area
 - bag purchase expands usable area
 - item and bag 90-degree rotation
 - rectangular regular items; selected L/T bag shapes
 - orthogonal adjacency
-- special-bag one-cell-overlap activation
+- special-bag activation on one-cell-or-more overlap
 - six-slot REST work buffer
 - explicit atomic first-tier combinations
 - Boss / Shop / Chest acquisition pillars
 - preview/uncommitted items contribute zero combat power
-- committed spatial snapshot becomes combat authority
+- one committed spatial modifier snapshot is combat authority
 - whole-layout movement mode is explicit/visible
-- mouse, keyboard/gamepad-focus and touch each have a complete path
+- mouse, keyboard/gamepad focus and touch each need a complete core path
 
-## 11. Four-school product identity
+Architecture direction:
 
-- **봉마:** mobile stronghold; prepare space and let familiars/barriers fight.
-- **천술:** statuses + ordered elemental reactions.
-- **귀인:** dangerous close-range presence; low HP alone is not the universal identity.
-- **흑영:** threat-priority mark/execution; indirect targeting remains auto-combat compatible.
+`definitions -> BackpackState -> BackpackResolver -> RestBackpackSession/CombinationResolver -> committed RunBuildState -> combat`.
+
+UI renders snapshots and emits intents; domain objects own legality, economy, route and transaction rules.
+
+## 8. Four-school product identity
+
+The four schools are not elemental skins. They are distinct ways of handling danger:
+
+- **봉마류:** mobile stronghold — prepare space and let familiars/barriers fight.
+- **천술류:** statuses + ordered elemental reactions — set up and transform the field.
+- **귀인류:** dangerous close-range presence — sustain risky proximity for power; low HP alone is not the universal identity.
+- **흑영류:** threat-priority mark/execution — indirectly influence which dangerous target dies first while staying auto-combat compatible.
 
 Current MVP-2 implementations are migration baselines, not wholesale deletion targets.
 
-## 12. Trace / route rules
+## 9. Trace / route / reward rules
 
-Current trace authority:
+Trace authority:
 
-- Elite kill -> chest token + trace AVAILABLE.
-- trace is non-expiring Run progression and separate from RewardOrb.
-- recovery does not give ORB/STYLE/GOLD.
-- Boss needs Elite + trace + time + warning gates.
-- Boss clear + branch return -> STABILIZED.
-- STABILIZED opens a tradition acquisition package; it does not auto-buff the school.
-- actual power remains backpack acquisition/placement/adjacency/combination.
+- Elite kill -> chest token + trace `AVAILABLE`.
+- Trace is non-expiring Run progression and separate from RewardOrb.
+- Recovery does not give ORB/STYLE/GOLD or direct combat power.
+- Boss requires Elite + trace + time + warning gates.
+- Boss clear + branch return -> `STABILIZED`.
+- `STABILIZED` opens a tradition acquisition package.
+- Actual power still comes from acquire -> backpack placement -> adjacency -> combination -> committed modifier snapshot.
 
-Current route authority:
+Route authority:
 
 - choose only among unvisited schools,
-- Stage number and school identity are separate axes,
+- school identity and Stage 1..4 are separate axes,
 - Workbench route selection is provisional,
-- Fate atomically commits build + Fate + next school,
+- Fate is the final build + Fate + route commit boundary after T12 migration,
 - clear order is retained for final support callbacks.
 
-## 13. Benchmarking / alternative review
+Reward authority:
 
-For L1+ product/system decisions:
+- keep the existing 19 base-acquisition item IDs, 3 first-tier combinations and 5 purchasable bags unless explicitly changed,
+- access packages control eligibility/timing, not automatic school stats,
+- Boss reward preserves readable continuity / newly liberated tradition / bridge-universal lanes when possible,
+- Shop/Chest use lane-first selection and canonical item-ID dedupe rather than one flat oversized pool.
 
-1. inspect current project canon and implementation first,
-2. compare at least three materially distinct valid approaches when the decision warrants it,
-3. use official/primary/current benchmark evidence as evidence, not authority,
-4. record `ADOPT / ADAPT / REJECT`, trade-offs, long-term cost and rollback conditions,
-5. run the required adversarial review loop before clean exit.
+## 10. Encounter / Vertical Slice rules
 
-Do not copy another game's surface implementation/content directly.
+DEC-026 selected **shared attack primitives + school-owned encounter compositions**.
 
-## 14. Adversarial review
+Per school authoring target:
 
-For L1+ review/correction work, use the current Base requirement:
+- Core Monster x3
+- Elite x1
+- Boss x1
+- bounded gimmick/pattern library
 
-- minimum 5 full loops,
-- attack whole approved scope,
-- validate findings against sources/runtime,
-- apply approved bounded correction,
-- rerun regression/evidence checks,
-- attack the improved state again,
-- continue past 5 if a valid blocker/MUST_FIX remains.
+Stage budget:
 
-Do not count superficial rereads as full loops.
+- Stage 1: base signature, max 1 major hazard
+- Stage 2: one interaction pattern, max 1 advanced gimmick at once
+- Stage 3: one synergy/field layer, max 2 advanced gimmicks at once
+- Stage 4: mastery mix + one Boss capstone, still max 2 advanced gimmicks at once
 
-## 15. Test / evidence rules
+Before multiplying full production content across four schools, prove one **release-near Cheonsul slice**:
 
-Automated evidence classes remain separate:
+`signature <=30 sec -> Core pressure -> ~3m Elite -> trace -> ~5m Boss -> reward -> Persistent Workbench -> next-route preview`.
 
+Human validation must measure school readability, tension curve, telegraph fairness, trace clarity, Workbench comprehension/fatigue, backpack decision value, and Korean readability.
+
+## 11. Visual direction and image gate
+
+Current user-approved master style reference is the **first image supplied in the 2026-08-25 approval turn**.
+
+Approved style traits:
+
+- dark moonlit ninja fantasy
+- premium painterly anime illustration
+- strong silhouette/readability
+- ink/brush framing and Korean brush-calligraphy title language
+- black / deep navy / red / warm gold core palette
+- school-specific gold, elemental blue/orange, red, purple/black accents
+- dramatic but readable VFX and battlefield density
+
+The denser parchment infographic references are useful for **supporting explanatory layouts**, not the master game-art style.
+
+Do not generate or edit another project image unless the user explicitly asks. Image workflow:
+
+```text
+current canon + visual canon
+-> text brief
+-> STOP
+-> user explicitly approves generation
+-> generate exactly one result
+-> STOP
+-> user approves/revises result
+```
+
+A chat image is not a durable Notion asset until actual upload/attach + destination readback succeeds.
+
+## 12. Human Home / AI-System separation
+
+The Notion Human Home is a self-contained game-learning surface, not a raw production dashboard.
+
+Human Home should directly show:
+
+- one-line promise / player fantasy
+- full Run Flow
+- four-school philosophies
+- backpack/combination/Fate core data and decisions
+- world/story premise needed to understand `닌자의 신`
+- approved visual direction / actual approved visual anchor when durably attached
+- AI interpretation for user correction
+- human edit guide
+- compact implementation/evidence ceiling and next product gate
+
+Raw SHA, full PR/CI history, local path/ports/tool routing and detailed Txx receipts belong in Project Registry / Production Handoff / repository evidence.
+
+## 13. Historical PR / branch protection
+
+- Open/draft/ready PRs are read-only by default unless current-task continuation or explicit named authorization allows mutation.
+- PR #17: closed/unmerged historical.
+- PR #27/#29/#31/#33/#35 and T06~T11 implementation PRs: merged historical evidence.
+- PR #43: closed/unmerged T12 WIP; historical reference only.
+- PR #44: closed/unmerged front-door WIP; historical reference only.
+- Do not use old implementation branches as resume baselines.
+- New production work starts from fresh completed `main`.
+- No force push, direct-main push, admin/ruleset bypass, or unrelated PR takeover.
+
+## 14. Godot / toolchain rules
+
+- Engine family: Godot 4.x / GDScript.
+- The latest merged T11 evidence used Godot 4.7.1; that is an evidence identity, not proof that the current local shared host pin is still 4.7.1.
+- Before local Godot authoring/runtime, use the current Base fresh-shell route: exact project location -> git fetch -> safe ff-only reconciliation when clean -> official update check -> safe reviewed update when eligible -> exact Editor/project/session identity -> implementation/test/runtime.
+- Do not multiply per-project Godot binaries or ports by default. Current shared-host policy uses approved exact pins and exact project/editor/session isolation; local facts must be directly read before mutation.
+- GUT remains the project deterministic GDScript test framework where adopted.
+- Do not claim HiGodot/Godot AI/Hera/provider connection from historical records; verify callable/current session state.
+- Do not add a second wave system while current WaveSpawner responsibilities are sufficient.
+- Do not add a new autoload/save/meta-power system without demonstrated need and approval.
+
+## 15. Benchmarking / Existing Solution First
+
+For L1+ product/system/UX decisions:
+
+1. inspect current project canon and implementation,
+2. inspect existing internal solution and current Base owner,
+3. compare at least three materially distinct viable approaches when decision-relevant,
+4. use current official/primary evidence plus success/failure or mixed cases,
+5. classify evidence as `ADOPT / ADAPT / TEST / REJECT / REFERENCE_ONLY`,
+6. search again for a better alternative when new evidence/finding appears,
+7. judge long-term fit, maintenance cost, rollback and revisit conditions.
+
+Do not copy another game's surface content, trade dress, exact UI or tuning.
+
+## 16. Adversarial review / evidence rules
+
+For L1+ changes use current Base `running-adversarial-review-and-refinement` semantics:
+
+- minimum 5 full whole-state loops,
+- each loop re-attacks the full approved scope,
+- validate the critique before changing anything,
+- fix only validated findings,
+- verify/regress the changed state,
+- search for a better alternative and recheck long-term fit,
+- continue beyond 5 while any valid blocker/MUST_FIX remains.
+
+Evidence classes remain separate:
+
+- source/contract/static evidence
 - import/parse
 - headless main-scene smoke
-- focused GUT
-- full GUT regression
-- runtime/manual evidence
-- human player-experience evidence
-- device/export evidence
+- focused/full GUT
+- live runtime/render/input
+- Human Usability
+- Player Experience
+- device/export/platform
 
-Do not promote one class into another.
-
-Current CI source-fidelity protections must be preserved:
-
-- vendored GUT must be reused rather than overlaid,
-- nested `addons/gut/gut` must fail,
-- `UID duplicate detected` during import must fail,
-- script/error output must not be silently treated as green.
-
-## 16. Human Vertical Slice rule
-
-Placeholder/card/text UI is acceptable for spikes and automated technical evidence.
-
-It cannot close final player-experience PASS.
-
-Before multiplying content across four school battlefields, build one representative **release-near** school slice:
-
-`school signature <=30 sec -> Core pressure -> Elite -> trace -> Boss -> reward -> Persistent Workbench -> next-route preview`.
-
-Use production-candidate UI/UX, character/enemy visual language, animation/VFX and audio feedback sufficient to judge the intended experience.
-
-Measure:
-
-- first-impression school readability,
-- combat tension curve,
-- telegraph fairness,
-- trace clarity,
-- Workbench comprehension/fatigue,
-- backpack decision value,
-- Korean text/layout readability.
-
-Scale to all four schools only after this slice passes or the failed assumptions are corrected.
+Do not promote one class into another. `NOT_RUN` is not PASS.
 
 ## 17. Cost rule
 
-Default to zero incremental monetary cost. Do not introduce pay-as-you-go APIs, paid runners, extra SaaS subscriptions or metered services unless the user explicitly changes that policy.
+Default to zero incremental monetary cost. Do not introduce pay-as-you-go APIs, paid runners, additional SaaS subscriptions or separately metered services without explicit user approval.
 
-## 18. Reporting requirements
+## 18. Completion / reporting
 
-Every material implementation/review report must distinguish:
+`planned work = 0` is only a completion candidate.
 
-- sources inspected
-- actual files changed
-- why they changed
-- verification executed
-- evidence ceiling / NOT_RUN
-- remaining risks/blockers
-- rollback path
-- adversarial review result
-- reusable Base-promotion candidates vs project-only lessons
+Before completion:
 
-Never claim a test, runtime, render, merge, Notion sync or readback that was not actually executed.
+```text
+remaining-work recalculation
+-> implementation/canon/Notion/consumer/PR/evidence correction rescan
+-> valid finding? fix + verify + recalc
+-> final post-change adversarial loop lineage
+-> minimum five full loops and clean exit
+-> exact PR head gate
+-> merge when authorized
+-> new main readback
+-> Notion destination readback
+-> remaining work = 0 for current scope
+```
+
+Every material completion report must distinguish:
+
+- approved scope / exclusions / protected items
+- actual changed surfaces
+- BEFORE -> AFTER -> expected effect -> trade-off
+- alternatives and benchmark disposition
+- Implementation Reality evidence level
+- adversarial findings and corrections
+- exact PR/merge/new-main identity when applicable
+- Notion readback
+- `NOT_RUN` / blockers
+- next product gate / revisit conditions
+
+Never claim a test, runtime, render, merge, Notion sync, image attachment or human validation that was not actually executed.
