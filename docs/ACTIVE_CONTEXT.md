@@ -8,9 +8,7 @@ completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 completed_main_label: T11_TRADITION_ACCESS_REWARD_LANES
 resume_state: T11_MERGED_T12_NOT_MERGED
 next_product_gate: T12_FRESH_ATOMIC_WORKBENCH_FATE_ROUTE_PACKAGE
-current_docs_package: PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
-current_docs_branch: docs/planning-home-alignment-20260825
-preexisting_open_prs_at_reactivation: NONE
+latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 historical_closed_wip:
   - PR_43_T12_ATOMIC_WORKBENCH
   - PR_44_FRONT_DOOR_DOCS
@@ -24,8 +22,8 @@ player_experience: NOT_RUN
 device_export_android: NOT_RUN
 current_visual_style: USER_APPROVED_FIRST_IMAGE_2026_08_25
 visual_binary_notion_attachment: BLOCKED_TOOL_SURFACE_UNTIL_ACTUAL_UPLOAD_READBACK
-local_shared_godot_exact_pin: UNKNOWN_UNVERIFIED_IN_THIS_DOCS_TASK
-local_editor_session: NOT_RUN_NOT_REQUIRED_FOR_DOCS_TASK
+local_shared_godot_exact_pin: UNKNOWN_UNVERIFIED_IN_DOCS_ALIGNMENT
+local_editor_session: NOT_RUN_NOT_REQUIRED_FOR_DOCS_ALIGNMENT
 ```
 
 ## Purpose
@@ -147,23 +145,24 @@ Current approved T12 outcome remains:
 
 When T12 resumes, create a fresh current-task branch from then-current completed main and re-evaluate #43 rather than reviving it.
 
-## Current planning/documentation package
+## 2026-08-25 planning/documentation alignment
 
-User approved `Planning Canon & Human Home Alignment` on 2026-08-25.
+User approved `Planning Canon & Human Home Alignment`.
 
-This package is docs/Notion only:
+This alignment package defines the durable project front door after T11:
 
-- reconcile active repository front doors to T11 reality,
-- remove T05/T06 stale resume routing,
-- classify #43/#44 as closed historical WIP,
-- rebuild Human Home as self-contained game-flow/system/learning projection,
-- keep raw implementation receipts in System/Production surfaces,
-- record current approved visual style,
-- do not generate more images.
+- active repository routers state T11 merged / T12 fresh next,
+- T05/T06 stale resume routing is removed,
+- #43/#44 remain closed historical WIP,
+- Human Home is a self-contained game-flow/system/learning projection,
+- raw implementation receipts remain in System/Production surfaces,
+- current approved visual style is recorded without further image generation.
 
-Implementation plan:
+Implementation/decision locator:
 
 `docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md`.
+
+After this alignment is merged, it should be treated as completed front-door history; `next_product_gate` remains the current router for future work.
 
 ## Notion authority / Human Home
 
@@ -195,11 +194,11 @@ The approved chat image is **not yet a durable Notion attachment** because the c
 
 ## Local/toolchain evidence ceiling
 
-This planning/documentation task does not require Godot authoring/runtime, so local Editor/session startup is not forced.
+This planning/documentation alignment does not require Godot authoring/runtime, so local Editor/session startup is not forced.
 
 Historical Project Registry values for dedicated executable/ports are not current execution authority. The current shared-host Base policy must be applied only after a fresh local readback in a future Godot task.
 
-For this docs task:
+For this alignment:
 
 ```text
 LOCAL_SYNC: NOT_RUN
@@ -209,7 +208,7 @@ HUMAN_PLAY: NOT_RUN
 DEVICE_EXPORT: NOT_RUN
 ```
 
-## Remaining product sequence after this documentation package
+## Remaining product sequence
 
 ```text
 T12 fresh atomic Workbench/Fate/route package
