@@ -10,38 +10,6 @@ Godot 4.x / GDScript로 재구성 중인 `닌자 서바이벌 (닌자의 신)` �
 
 `살아남는다 -> 강해진다 -> 자기 방식을 만든다 -> 네 유파를 다시 잇는다 -> 이번 전선을 평정한다 -> 전설이 된다`.
 
-## 현재 구현 상태
-
-| 영역 | 상태 |
-|---|---|
-| MVP-0 기본 전투 | integrated |
-| MVP-1 전투 DDD | integrated |
-| MVP-2 4유파 얕은 runtime | integrated |
-| MVP-3 결과/GOLD/상점/운명/3세그먼트 runtime | integrated rollback/regression baseline |
-| MVP-4 T01 공간 데이터 계약/catalog | **integrated** |
-| MVP-4 T02 BackpackState committed spatial state | **integrated** |
-| MVP-4 T03 BackpackResolver spatial resolution | **integrated** |
-| MVP-4 T04 RestBackpackSession edit session | **integrated** |
-| MVP-4 T05 CombinationResolver atomic combination | **integrated** |
-| MVP-4 Workbench UI/committed combat integration | **not started · T06 next** |
-| DEC-014~025 4유파 순회 migration runtime | **not implemented** |
-| DEC-026 encounter/pattern budget | **approved / not implemented** |
-| Fresh Phase-B | **PASS** |
-| release-near Vertical Slice human QA | **NOT_RUN** |
-| Android device/export | **NOT_RUN / NOT_READY** |
-
-T01은 PR #27로 `7c9206702526f99dfadf44a617cd150853ec733f`에 병합됐다. 최종 검증은 Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `263/263` tests / `1829` assertions PASS다. 기존 MVP-3 아이템 identity/value와 판매 기능은 보존한다.
-
-T02는 PR #29로 `126e6c942d74f97166ef0c881afc5d79cae3d274`에 병합됐다. 최종 exact-head `60adbb99886c96c687b20befe4a61e5e3bcb71f1` 검증은 Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `274/274` tests / `1915` assertions PASS, T02 집중 테스트 `11/11` PASS다.
-
-T03은 PR #31로 `2dcf055d82df02d44335f209897436572efa6739`에 병합됐다. 최종 exact-head `e0dacee9048a01e799012b8aca12760e07ca47ea` 검증은 Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `292/292` tests / `2026` assertions PASS, T03 집중 테스트 `18/18` PASS다.
-
-T04는 PR #33으로 `d07f16d6bae90a09bba0a5f0b8991216d006c966`에 병합됐다. 최종 exact-head `6972e14cfa94dcce4d372a632db6d5e74809ee62` 검증은 Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `309/309` tests / `2202` assertions PASS, T04 집중 테스트 `17/17` PASS다.
-
-T05는 PR #35로 `8cefce75456f8b72a8f69559857676cca67a6c5d`에 병합됐다. 최종 exact-head `d14ff2e8702d610de1678c22737982bd5b73e22a` 검증은 Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `329/329` tests / `2322` assertions PASS, T05 집중 테스트 `20/20` PASS다.
-
-현재는 6x6 공간 배치와 REST 편집에 더해 **직교 인접된 유효 재료 2개를 감지하고, 결과 배치 성공 전까지 재료를 보존한 뒤 성공 시에만 정확히 2→1로 교체하는 1차 조합 transaction과 progressive hint/discovery**까지 도메인 엔진으로 구현됐다. 다만 아직 실제 Workbench 화면/입력 UX와 이 spatial snapshot을 다음 전투의 최종 `RunBuildState` 전투력으로 commit하는 T06은 구현 전이다.
-
 ## 최신 Run 목표
 
 ```text
@@ -63,89 +31,172 @@ T05는 PR #35로 `8cefce75456f8b72a8f69559857676cca67a6c5d`에 병합됐다. 최
 -> 네 유파를 정확히 한 번씩 반복
 -> Final Binding Workbench
 -> 별도 최종전 `난세 재앙핵`
--> 최종 결과 / Ninja Soul
+-> 최종 결과 / Ninja Soul / 전설
 ```
 
 `약 20분`은 네 번째 유파 Boss까지의 active-combat 목표치다. 전체 Run 종료 시점이 아니다.
+
+## 현재 구현 상태
+
+2026-08-25 재개 시 확인한 completed `main` 기준:
+
+`265bab32da087c070ea2ea0d98a3bdace1e10f7f` — `T11: add tradition access reward lanes`.
+
+| 영역 | 상태 |
+|---|---|
+| MVP-0 기본 전투 | integrated |
+| MVP-1 전투 DDD | integrated |
+| MVP-2 4유파 얕은 runtime | integrated migration baseline |
+| MVP-3 결과/GOLD/상점/Fate/3세그먼트 | integrated rollback/regression baseline |
+| T01 공간 데이터 계약/catalog | integrated |
+| T02 BackpackState | integrated |
+| T03 BackpackResolver | integrated |
+| T04 RestBackpackSession | integrated |
+| T05 CombinationResolver | integrated |
+| T06 committed RunBuildState modifier authority | integrated |
+| T07 Boss/Shop/Chest spatial acquisition transactions | integrated |
+| T08 RunRouteState four-school route domain | integrated |
+| T09 encounter definitions + Stage profiles | integrated |
+| T10 Elite → Trace → Boss lifecycle gate | integrated |
+| T11 tradition access packages + reward lanes | integrated |
+| T12 Atomic Workbench + Fate + next-route commit | **NOT_MERGED / NEXT FRESH PACKAGE** |
+| Persistent Workbench route UI/input | NOT_INTEGRATED |
+| Cheonsul release-near playable slice | NOT_RUN |
+| Human Usability / Player Experience | NOT_RUN |
+| device / Android export | NOT_RUN |
+
+T01~T11의 자동화/도메인 증거는 해당 범위의 구현·회귀 증거다. 실제 플레이 가능한 새 Run, 완성 후보 UI/Visual/Animation/VFX/Audio, Human/Device PASS를 뜻하지 않는다.
+
+2026-08-25 pause 때 닫힌 PR #43(T12)과 #44(front-door docs)는 **closed-unmerged historical/WIP**다. 재개 시 그대로 이어서 병합하지 않고 최신 completed `main`에서 여전히 유효한 부분만 재사용한다.
 
 ## 핵심 시스템
 
 ### 자동 생존 전투 + DDD
 
 - 8방향 이동
-- 자동 공격
+- 자동 기본 공격/전투 인법
+- 수동 보법/오의
 - 처치 콤보 / MAX COMBO
 - stylish score
 - 보상 흡수 피드백
 - 결과 기여도 추적
 
-### 4유파
+### 4유파 — 서로 다른 위험 처리 방식
 
-- **봉마:** 이동형 진지 · 식신/결계로 공간을 준비하고 대신 싸우게 한다.
-- **천술:** 상태를 만들고 순서/조합으로 원소 반응을 일으킨다.
-- **귀인:** 위험한 근접 체류를 유지해 난전 지속력과 폭발력을 얻는다.
-- **흑영:** 위험한 적을 표식/우선순위/처형으로 먼저 제거한다.
+- **봉마류:** 이동형 진지. 식신·결계로 공간을 준비하고 대신 싸우게 한다.
+- **천술류:** 상태를 만들고 순서/조합으로 원소 반응을 일으킨다.
+- **귀인류:** 위험한 근접 체류를 유지해 난전 지속력과 폭발력을 얻는다.
+- **흑영류:** 위험한 표적을 표식·우선순위·처형으로 먼저 제거한다.
 
-현재 MVP-2 runtime은 이 장기 정체성을 위한 검증된 baseline으로 유지한다. 봉마의 고정 ward, 귀인의 low-HP 보정, 흑영의 최근접 규칙은 향후 Vertical Slice에서 조정 후보지만 지금 즉시 폐기하지 않는다.
+유파는 색/스킬명만 다른 스킨이 아니다. 같은 공통 전투/백팩 프레임 안에서 플레이어가 위험을 처리하는 판단을 다르게 만드는 것이 목표다.
 
 ### 공간 백팩 / Persistent Workbench
 
-보호된 MVP-4 규칙:
+보호된 규칙:
 
 - 6x6 전체 보드
 - 4x3 시작 사용 영역
 - 가방 구매로 사용 영역 확장
 - 아이템/가방 90도 회전
+- 일반 아이템은 직사각형 중심, 선택적 L/T형 가방
 - 직교 인접 시너지
-- 일부 L/T형 가방
+- 특수 가방 one-cell-overlap activation
 - 6-slot REST 작업 버퍼
 - explicit atomic 1차 조합
 - Boss / Shop / Chest 획득 역할 분리
 - preview와 실제 combat commit 분리
 
-Architecture direction:
+Architecture:
 
 `definitions -> BackpackState -> BackpackResolver -> RestBackpackSession/CombinationResolver -> committed RunBuildState -> combat`.
 
-현재 구현:
+현재 T06까지 확정된 핵심은 **최종 committed spatial snapshot이 전투 modifier의 단일 authority**라는 점이다. 기존 `owned_items`는 경제/판매 호환 정보로 남을 수 있지만 전투력을 중복 적용하지 않는다.
 
-- **T01~T05:** spatial data, committed backpack state, deterministic resolver, REST edit-session, atomic combination domain chain.
-- **T06~T11:** current `main`에 committed build/route/encounter/reward-shop/tradition-access domain code와 관련 unit/adversarial test surface가 존재한다. 상세 ownership은 `scripts/`·`tests/`와 현재 merged commit을 우선한다.
-- **T12:** draft PR #43 (`T12: add atomic Workbench commit coordinator`)이며 아직 병합/실행 권한으로 승격하지 않는다.
-
-위는 자동화·도메인 증거 경계다. **실제 플레이 가능한 Workbench 입력, 완성 후보 이미지·애니메이션/VFX·사운드 피드백, 기기 검증, Human QA는 모두 `NOT_RUN`**이며 T01~T11 완료 문구로 대체할 수 없다.
-
-### 흔적 / 전승 접근
-
-흔적은 자동 유파 버프가 아니다.
-
-`Elite -> trace AVAILABLE -> RECOVERED -> Boss -> branch return -> STABILIZED`
-
-`STABILIZED`는 해당 유파 인법/장비가 Boss Reward / Shop / Chest 후보 pool에 등장할 수 있게 하는 **Run 전승 접근권**이다. 실제 전투력은 플레이어가 획득하고 백팩에 배치·인접·조합한 결과가 결정한다.
-
-## 현재 개발 경계
-
-DEC-026은 승인됐고 fresh Phase-B가 PASS했다. 현재 merged `main`의 도메인 증거는 **T11까지** 반영되어 있으며, 다음 검토 경계는 **`T12_OPEN_DRAFT_READ_ONLY`**다.
+### 흔적 / 전승 접근 / Reward Lane
 
 ```text
-T01~T05 spatial / REST / combination domain chain · MERGED_MAIN
--> T06~T11 committed-build / route / encounter / reward-access domain surfaces · PRESENT_ON_MAIN
--> T12 atomic Workbench commit coordinator · OPEN_DRAFT_READ_ONLY
--> playable candidate UI + visual/audio feedback + device/Human QA · NOT_RUN
+Elite kill
+-> chest token + trace AVAILABLE
+-> trace RECOVERED
+-> Boss gate
+-> Boss clear + branch return
+-> trace STABILIZED
+-> tradition access package OPEN
 ```
 
-현재 문서는 draft PR를 병합·실행 가능 상태로 승격하지 않는다. 다음 작업 전에는 current `main`, draft PR, canon/traceability, 코드/테스트, 실제 증거 한계를 함께 재검토한다.
+흔적 자체는 자동 버프가 아니다. 전승 접근권은 어떤 아이템이 등장할 수 있는지를 넓히고, 실제 힘은 획득한 아이템의 백팩 배치·인접·조합이 만든다.
 
-## 역사 실행 경로 주의
+첫 authoring 모델은 기존 19 base acquisition item을 유지한 `Universal 7 + 4유파 x 3` access package다. Boss/Shop/Chest는 하나의 평평한 전역 목록보다 lane/pool을 먼저 선택해 큰 카테고리가 확률을 독점하지 않게 한다.
 
-- PR #17은 **closed / unmerged** 역사 자료다. 재오픈·병합하거나 prerequisite로 사용하지 않는다.
-- old `impl/mvp4-t01-spatial-data-contracts`는 오래된 prepared baseline이다.
-- PR #27은 병합된 T01 evidence다.
-- PR #29는 병합된 T02 evidence다.
-- PR #31은 병합된 T03 evidence다.
-- PR #33은 병합된 T04 evidence다.
-- PR #35는 병합된 T05 evidence다.
-- 새 production package는 fresh merged `main`에서 만든다.
+### Route / Fate
+
+- 다음 유파는 미방문 유파 중 선택한다.
+- school identity와 Stage 1~4 difficulty/gimmick-depth는 별도 축이다.
+- Workbench에서 다음 유파 선택은 provisional이다.
+- 승인된 최종 구조에서는 Fate가 **최종 build + Fate + next route**를 atomic commit한다.
+- clear order는 최종전의 유파 지원 callback 순서에 연결된다.
+
+## 다음 제품 구현 Gate
+
+### T12 — Atomic Workbench + Fate + next-route commit
+
+닫힌 PR #43은 구현 아이디어·테스트·실패 교훈을 가진 역사 WIP지만 현재 실행 baseline이 아니다.
+
+새 T12를 시작할 때는:
+
+1. 당시 최신 completed `main` 재조회,
+2. Base/project authority와 실제 code/test 재감사,
+3. #43 read-only 비교,
+4. 여전히 유효한 coordinator/pending-Fate 원리만 ADAPT,
+5. fresh current-task branch에서 RED → GREEN → adversarial → exact-head → PR/merge/readback,
+6. T13 UI와 T14 playable encounter scope는 별도 유지.
+
+현재 post-DEC-026 계획의 큰 순서는:
+
+`T12 -> T13 -> T14 Cheonsul release-near slice -> T15 Human QA gate -> T16 remaining schools -> T17 full circuit -> T18 final calamity -> T19 full-run verification`.
+
+## Human play evidence
+
+placeholder/card/text UI는 기술 Spike와 자동 테스트에 사용할 수 있지만 Player Experience PASS에는 사용할 수 없다.
+
+4유파 전체 콘텐츠를 복제하기 전에 천술류로 다음 release-near Slice를 먼저 증명한다:
+
+`30초 내 유파 시그니처 -> Core -> ~3분 Elite -> trace -> ~5분 Boss -> reward -> Workbench -> next-route preview`.
+
+검증 축:
+
+- 첫 30초 유파 정체성 가독성
+- Core→Elite→Boss tension curve
+- telegraph fairness
+- trace 이해
+- 백팩/Route 이해
+- Workbench 피로
+- Korean readability
+- 배치 변경이 다음 전투 기대를 실제로 바꾸는가
+
+## 현재 승인 Visual 방향
+
+2026-08-25 사용자 승인 기준 **첫 번째 제공 이미지의 그림체**가 현재 master style reference다.
+
+- 어두운 달빛 닌자 판타지
+- 프리미엄 painterly anime illustration
+- 검정/남색/붉은색/금색 중심
+- 먹·붓·캘리그래피 프레이밍
+- 읽히는 캐릭터/적 실루엣과 과하지 않은 VFX
+- 봉마 금색 / 천술 원소 청·주황 / 귀인 적색 / 흑영 보라·흑색 accent
+
+밀도 높은 양피지 인포그래픽 구성은 학습/설명용 보조 표현으로 활용할 수 있지만 master gameplay art style은 아니다.
+
+새 이미지 생성은 사용자 명시 요청이 있을 때만 `text brief -> 승인 -> 1건 생성 -> 결과 승인` 순서로 진행한다.
+
+## 정본 / 사람용 workspace
+
+- 제품/시스템 structured canon: repository Markdown/data/code/test
+- 사람용 전체 게임 Flow·핵심 시스템·Visual 방향: Notion `닌자 서바이벌 · Home` 및 관련 Domain
+- 상세 구현 증거/운영 상태: Project Registry/System + `Production · Handoff`
+- Google Sheets: unique unmigrated material이 있을 때만 migration compatibility source
+
+Human Home은 raw PR/SHA/포트/내부 라우팅을 나열하는 개발 dashboard가 아니라, **게임 전체를 이해하고 비교·수정할 수 있는 사용자용 게임 지도**로 유지한다.
 
 ## 읽기 순서
 
@@ -156,17 +207,9 @@ T01~T05 spatial / REST / combination domain chain · MERGED_MAIN
 5. `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`
 6. `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`
 7. `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
-8. MVP-4 spatial detail이 필요하면 `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md` + `docs/planning/2026-08-11-mvp4-content-data-contract.md`
-9. 실제 코드 / Scene / Test / CI
+8. `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
+9. 실제 `scripts/`, `scenes/`, `data/`, `tests/`, workflow
+10. 정확한 Notion Human Home / Production Handoff / Visual surface
+11. 현재 작업에 영향을 주는 최신 Base owner
 
-문서와 실제 구현이 다르면 구현 사실은 코드/테스트로 확인하되, 앞으로 구현해야 할 제품 행동은 최신 Decision/Canon을 따른다.
-
-## Human play evidence
-
-placeholder/card UI는 기술 Spike와 자동 테스트에 사용할 수 있다. 최종 player-experience PASS에는 사용할 수 없다.
-
-4유파 전체를 한 번에 제작하기 전에 천술류를 대상으로 다음 release-near Vertical Slice를 먼저 검증한다:
-
-`30초 내 유파 시그니처 -> Core 전투 -> ~3분 Elite -> trace -> ~5분 Boss -> 보상 -> Workbench -> 다음 route preview`.
-
-실제 사용 후보 UI/UX, 닌자/적 시각, animation/VFX, audio feedback을 연결해 재미·가독성·정비 피로를 확인한 뒤 콘텐츠를 4유파로 확장한다.
+문서와 구현이 다르면 구현 사실은 실제 code/test/runtime evidence로 확인하고, 앞으로 구현할 제품 행동은 최신 승인 Decision/Canon을 따른다.
