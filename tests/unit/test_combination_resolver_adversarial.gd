@@ -73,6 +73,49 @@ func test_reversed_source_arguments_are_canonicalized_without_identity_loss() ->
 	assert_not_null(_find_definition(session.state, &"water_mist"))
 
 
+func test_begin_rejects_uncommitted_item_preview_and_whole_layout_mode() -> void:
+	var committed = _starting_state()
+	var water_id: int = committed.add_item(&"water_style", Vector2i(1, 1))
+	var stealth_id: int = committed.add_item(&"stealth_art", Vector2i(2, 1))
+	var spare_id: int = committed.add_item(&"shuriken", Vector2i(3, 1))
+	var session = _session(committed)
+	var resolver = _combination_resolver()
+
+	var preview = session.preview_item(spare_id, Vector2i(4, 1), 0)
+	assert_true(preview.valid)
+	assert_false(resolver.begin_result_preview(session, &"water_mist", water_id, stealth_id))
+	assert_false(session.combination_transaction_active)
+	assert_not_null(session.state.get_item(water_id))
+	assert_not_null(session.state.get_item(stealth_id))
+	assert_true(session.commit_item_preview())
+
+	var mode_session = _session(committed)
+	assert_true(mode_session.enter_whole_layout_move_mode())
+	assert_false(resolver.begin_result_preview(mode_session, &"water_mist", water_id, stealth_id))
+	assert_false(mode_session.combination_transaction_active)
+	mode_session.exit_whole_layout_move_mode()
+
+
+func test_cancel_preserves_prior_normal_edit_history() -> void:
+	var committed = _starting_state()
+	var water_id: int = committed.add_item(&"water_style", Vector2i(1, 1))
+	var stealth_id: int = committed.add_item(&"stealth_art", Vector2i(2, 1))
+	var spare_id: int = committed.add_item(&"shuriken", Vector2i(3, 1))
+	var session = _session(committed)
+	var resolver = _combination_resolver()
+
+	var preview = session.preview_item(spare_id, Vector2i(4, 1), 0)
+	assert_true(preview.valid)
+	assert_true(session.commit_item_preview())
+	assert_eq(session.state.get_item(spare_id).origin, Vector2i(4, 1))
+
+	assert_true(resolver.begin_result_preview(session, &"water_mist", water_id, stealth_id))
+	resolver.cancel_result(session)
+	assert_false(session.combination_transaction_active)
+	assert_true(session.undo(), "Cancelling a no-op combination preview must preserve earlier edit history")
+	assert_eq(session.state.get_item(spare_id).origin, Vector2i(3, 1))
+
+
 func _find_definition(state, definition_id: StringName):
 	for instance in state.items.values():
 		if instance.definition_id == definition_id:
