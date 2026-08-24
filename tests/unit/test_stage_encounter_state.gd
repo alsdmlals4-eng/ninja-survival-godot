@@ -52,10 +52,10 @@ func test_elite_clear_emits_chest_and_trace_once_and_pauses_only_new_normal_spaw
 	if state == null:
 		return
 	var chest_amounts: Array[int] = []
-	var trace_events: int = 0
+	var trace_events: Array[int] = [0]
 	var spawn_permissions: Array[bool] = []
 	state.chest_token_requested.connect(func(amount: int): chest_amounts.append(amount))
-	state.trace_spawn_requested.connect(func(): trace_events += 1)
+	state.trace_spawn_requested.connect(func(): trace_events[0] += 1)
 	state.normal_spawn_permission_changed.connect(func(allowed: bool): spawn_permissions.append(allowed))
 
 	var before: Dictionary = state.get_snapshot()
@@ -67,40 +67,40 @@ func test_elite_clear_emits_chest_and_trace_once_and_pauses_only_new_normal_spaw
 	assert_eq(state.state_name(), &"trace_available")
 	assert_false(state.normal_spawning_allowed())
 	assert_eq(chest_amounts, [1])
-	assert_eq(trace_events, 1)
+	assert_eq(trace_events[0], 1)
 	assert_eq(spawn_permissions, [false])
 
 	var after_clear: Dictionary = state.get_snapshot()
 	assert_false(state.mark_elite_cleared())
 	assert_eq(state.get_snapshot(), after_clear)
 	assert_eq(chest_amounts, [1])
-	assert_eq(trace_events, 1)
+	assert_eq(trace_events[0], 1)
 
 
 func test_trace_available_never_expires_and_clock_input_can_continue_without_spawning_boss() -> void:
 	var state = _new_state()
 	if state == null:
 		return
-	var boss_events: int = 0
-	state.boss_requested.connect(func(): boss_events += 1)
+	var boss_events: Array[int] = [0]
+	state.boss_requested.connect(func(): boss_events[0] += 1)
 	assert_true(state.sync_elapsed(180.0))
 	assert_true(state.mark_elite_cleared())
 	assert_true(state.sync_elapsed(3600.0))
 	assert_eq(state.state_name(), &"trace_available")
 	assert_almost_eq(float(state.get_snapshot()["elapsed_seconds"]), 3600.0, 0.001)
 	assert_false(state.normal_spawning_allowed())
-	assert_eq(boss_events, 0)
+	assert_eq(boss_events[0], 0)
 
 
 func test_early_trace_recovery_waits_for_earliest_warning_and_boss_gate() -> void:
 	var state = _new_state()
 	if state == null:
 		return
-	var warning_events: int = 0
-	var boss_events: int = 0
+	var warning_events: Array[int] = [0]
+	var boss_events: Array[int] = [0]
 	var spawn_permissions: Array[bool] = []
-	state.boss_warning_requested.connect(func(): warning_events += 1)
-	state.boss_requested.connect(func(): boss_events += 1)
+	state.boss_warning_requested.connect(func(): warning_events[0] += 1)
+	state.boss_requested.connect(func(): boss_events[0] += 1)
 	state.normal_spawn_permission_changed.connect(func(allowed: bool): spawn_permissions.append(allowed))
 
 	assert_true(state.sync_elapsed(180.0))
@@ -110,19 +110,19 @@ func test_early_trace_recovery_waits_for_earliest_warning_and_boss_gate() -> voi
 	assert_eq(state.state_name(), &"trace_recovered")
 	assert_true(state.normal_spawning_allowed())
 	assert_eq(spawn_permissions, [false, true])
-	assert_eq(warning_events, 0)
-	assert_eq(boss_events, 0)
+	assert_eq(warning_events[0], 0)
+	assert_eq(boss_events[0], 0)
 
 	assert_true(state.sync_elapsed(259.9))
-	assert_eq(warning_events, 0)
+	assert_eq(warning_events[0], 0)
 	assert_true(state.sync_elapsed(260.0))
 	assert_eq(state.state_name(), &"boss_warning")
-	assert_eq(warning_events, 1)
+	assert_eq(warning_events[0], 1)
 	assert_true(state.sync_elapsed(269.9))
-	assert_eq(boss_events, 0)
+	assert_eq(boss_events[0], 0)
 	assert_true(state.sync_elapsed(270.0))
 	assert_eq(state.state_name(), &"boss_active")
-	assert_eq(boss_events, 1)
+	assert_eq(boss_events[0], 1)
 	assert_false(state.normal_spawning_allowed())
 
 
@@ -130,10 +130,10 @@ func test_late_trace_recovery_starts_warning_immediately_and_allows_soft_overtim
 	var state = _new_state()
 	if state == null:
 		return
-	var warning_events: int = 0
-	var boss_events: int = 0
-	state.boss_warning_requested.connect(func(): warning_events += 1)
-	state.boss_requested.connect(func(): boss_events += 1)
+	var warning_events: Array[int] = [0]
+	var boss_events: Array[int] = [0]
+	state.boss_warning_requested.connect(func(): warning_events[0] += 1)
+	state.boss_requested.connect(func(): boss_events[0] += 1)
 
 	assert_true(state.sync_elapsed(180.0))
 	assert_true(state.mark_elite_cleared())
@@ -141,14 +141,14 @@ func test_late_trace_recovery_starts_warning_immediately_and_allows_soft_overtim
 	assert_eq(state.state_name(), &"trace_available")
 	assert_true(state.recover_trace())
 	assert_eq(state.state_name(), &"boss_warning")
-	assert_eq(warning_events, 1)
-	assert_eq(boss_events, 0)
+	assert_eq(warning_events[0], 1)
+	assert_eq(boss_events[0], 0)
 
 	assert_true(state.sync_elapsed(319.9))
-	assert_eq(boss_events, 0)
+	assert_eq(boss_events[0], 0)
 	assert_true(state.sync_elapsed(320.0))
 	assert_eq(state.state_name(), &"boss_active")
-	assert_eq(boss_events, 1)
+	assert_eq(boss_events[0], 1)
 	assert_gt(float(state.get_snapshot()["elapsed_seconds"]), 300.0, "Five minutes is not a hard failure")
 
 
@@ -156,52 +156,52 @@ func test_time_alone_or_trace_recovery_alone_cannot_spawn_boss() -> void:
 	var state = _new_state()
 	if state == null:
 		return
-	var boss_events: int = 0
-	state.boss_requested.connect(func(): boss_events += 1)
+	var boss_events: Array[int] = [0]
+	state.boss_requested.connect(func(): boss_events[0] += 1)
 
 	assert_false(state.recover_trace())
 	assert_true(state.sync_elapsed(600.0))
 	assert_eq(state.state_name(), &"elite_active")
-	assert_eq(boss_events, 0)
+	assert_eq(boss_events[0], 0)
 
 	assert_true(state.mark_elite_cleared())
 	assert_eq(state.state_name(), &"trace_available")
-	assert_eq(boss_events, 0)
+	assert_eq(boss_events[0], 0)
 	assert_true(state.recover_trace())
 	assert_eq(state.state_name(), &"boss_warning")
-	assert_eq(boss_events, 0)
+	assert_eq(boss_events[0], 0)
 	assert_true(state.sync_elapsed(609.9))
-	assert_eq(boss_events, 0)
+	assert_eq(boss_events[0], 0)
 	assert_true(state.sync_elapsed(610.0))
-	assert_eq(boss_events, 1)
+	assert_eq(boss_events[0], 1)
 
 
 func test_trace_recovery_is_single_use_and_separate_from_chest_reward() -> void:
 	var state = _new_state()
 	if state == null:
 		return
-	var chest_events: int = 0
-	var recovery_events: int = 0
-	state.chest_token_requested.connect(func(_amount: int): chest_events += 1)
-	state.trace_recovered.connect(func(): recovery_events += 1)
+	var chest_events: Array[int] = [0]
+	var recovery_events: Array[int] = [0]
+	state.chest_token_requested.connect(func(_amount: int): chest_events[0] += 1)
+	state.trace_recovered.connect(func(): recovery_events[0] += 1)
 	assert_true(state.sync_elapsed(180.0))
 	assert_true(state.mark_elite_cleared())
-	assert_eq(chest_events, 1)
-	assert_eq(recovery_events, 0)
+	assert_eq(chest_events[0], 1)
+	assert_eq(recovery_events[0], 0)
 	assert_true(state.recover_trace())
-	assert_eq(chest_events, 1)
-	assert_eq(recovery_events, 1)
+	assert_eq(chest_events[0], 1)
+	assert_eq(recovery_events[0], 1)
 	assert_false(state.recover_trace())
-	assert_eq(chest_events, 1)
-	assert_eq(recovery_events, 1)
+	assert_eq(chest_events[0], 1)
+	assert_eq(recovery_events[0], 1)
 
 
 func test_boss_and_elite_cannot_overlap_and_boss_clear_is_terminal_once() -> void:
 	var state = _new_state()
 	if state == null:
 		return
-	var cleared_events: int = 0
-	state.boss_cleared.connect(func(): cleared_events += 1)
+	var cleared_events: Array[int] = [0]
+	state.boss_cleared.connect(func(): cleared_events[0] += 1)
 	assert_true(state.sync_elapsed(180.0))
 	assert_eq(state.state_name(), &"elite_active")
 	assert_false(state.mark_boss_cleared())
@@ -214,9 +214,9 @@ func test_boss_and_elite_cannot_overlap_and_boss_clear_is_terminal_once() -> voi
 	assert_false(state.mark_elite_cleared(), "Elite cannot be cleared again while Boss is active")
 	assert_true(state.mark_boss_cleared())
 	assert_eq(state.state_name(), &"cleared")
-	assert_eq(cleared_events, 1)
+	assert_eq(cleared_events[0], 1)
 	assert_false(state.mark_boss_cleared())
-	assert_eq(cleared_events, 1)
+	assert_eq(cleared_events[0], 1)
 	assert_false(state.normal_spawning_allowed())
 
 
