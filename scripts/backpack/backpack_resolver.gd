@@ -20,7 +20,9 @@ func resolve(state, item_defs: Dictionary, bag_defs: Dictionary, selected_school
 
 
 func can_place_item(state, candidate, item_defs: Dictionary, bag_defs: Dictionary):
-	if state == null or candidate == null:
+	if state == null:
+		return BackpackResolutionScript.new().fail(&"missing_state")
+	if candidate == null:
 		return BackpackResolutionScript.new().fail(&"missing_candidate")
 	var items: Dictionary = state.items
 	var bags: Dictionary = state.bags
@@ -32,7 +34,9 @@ func can_place_item(state, candidate, item_defs: Dictionary, bag_defs: Dictionar
 
 
 func can_place_bag(state, candidate, item_defs: Dictionary, bag_defs: Dictionary):
-	if state == null or candidate == null:
+	if state == null:
+		return BackpackResolutionScript.new().fail(&"missing_state")
+	if candidate == null:
 		return BackpackResolutionScript.new().fail(&"missing_candidate")
 	var items: Dictionary = state.items
 	var bags: Dictionary = state.bags
