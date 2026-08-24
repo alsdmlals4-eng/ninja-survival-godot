@@ -49,53 +49,53 @@ static func build_school_encounters() -> Dictionary:
 		schools,
 		&"bongma",
 		[&"seal_chaser", &"shikigami_handler", &"barrier_carrier"],
-		["봉인 추적자", "식신술사", "결계 운반자"],
+		["봉인 추적자", "식신 사역자", "결계 운반자"],
 		&"mobile_array_caster",
-		"이동진법사",
+		"이동진 술사",
 		&"hundred_demon_array_master",
-		"백귀진주",
+		"백귀진 주재자",
 		[&"chase_contact", &"telegraphed_zone", &"summon_or_proxy", &"barrier_or_lane"],
 		&"triple_mobile_seal_array",
-		"삼중 이동 봉인진"
+		"삼중 이동봉진"
 	)
 	_add_school(
 		schools,
 		&"cheonsul",
 		[&"fire_mark_caster", &"water_vein_caster", &"lightning_chain_caster"],
-		["화인술사", "수맥술사", "뇌쇄술사"],
+		["화인 술사", "수맥 술사", "뇌쇄 술사"],
 		&"five_element_tuner",
-		"오행조율사",
+		"오행 조율자",
 		&"heavenly_change_taoist",
-		"천변도사",
+		"천변 도사",
 		[&"fan_or_arc_projectile", &"telegraphed_zone", &"mark_or_link"],
 		&"chained_five_element_shift",
-		"연쇄 오행 전환"
+		"연쇄 오행전환"
 	)
 	_add_school(
 		schools,
 		&"guiin",
 		[&"surge_fighter", &"pressure_monk", &"ghost_blood_chaser"],
-		["돌진투사", "압박승", "귀혈추적자"],
+		["쇄도 권객", "압박 승병", "귀혈 추적자"],
 		&"melee_chaos_captain",
-		"근접난전대장",
+		"난전 대장",
 		&"ghost_general",
-		"귀장군",
+		"귀신장",
 		[&"line_dash", &"pulse_or_ring", &"chase_contact"],
 		&"chained_ghost_blood_rush",
-		"연쇄 귀혈돌진"
+		"연속 귀혈쇄도"
 	)
 	_add_school(
 		schools,
 		&"heukyeong",
 		[&"shuriken_scout", &"poison_shadow_assassin", &"dark_mark_pursuer"],
-		["수리검척후", "독영암살자", "흑표추적자"],
+		["표창 척후", "독영 살수", "암표 추격자"],
 		&"shadow_chief",
-		"영두",
+		"그림자 두령",
 		&"night_executioner",
-		"야행처형자",
+		"야행 처형자",
 		[&"fan_or_arc_projectile", &"telegraphed_zone", &"mark_or_link", &"summon_or_proxy"],
 		&"triple_shadow_execution_line",
-		"삼중 그림자 처형선"
+		"삼영 처형선"
 	)
 	return schools
 
