@@ -199,7 +199,7 @@ t04_focused_tests: 17_OF_17_PASS
 human_evidence: NOT_RUN
 ```
 
-T04 uses bounded deep-state edit snapshots rather than introducing a second geometry state or inverse-command authority. Non-history pending-bag acquisition cuts prior edit history so Undo cannot silently erase/refund it. Adversarial review found and fixed two control-state leaks before merge: an uncommitted visible preview could pass commit readiness, and whole-layout mode allowed per-item edits / later commit until explicit mode gates were added.
+T04 uses bounded deep-state edit snapshots rather than introducing a second geometry state or inverse-command authority. Non-history pending-bag acquisition cuts prior edit history so Undo cannot silently erase/refund it. Adversarial review found and fixed three control-state gaps before merge: an uncommitted visible preview could pass commit readiness; whole-layout mode allowed per-item edits; and active whole-layout mode did not initially block later commit until explicit gates were added.
 
 ## Current product target
 
