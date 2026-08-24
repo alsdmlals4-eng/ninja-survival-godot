@@ -24,11 +24,14 @@
 | Shop | `scripts/core/shop_controller.gd` | immediate non-spatial buy/sell | preserve sell/economy baseline; migrate acquisition at T07/T11 |
 | Fate | `scripts/core/fate_controller.gd` | one choice per rest | later pending/atomic commit integration |
 | Rest UI | `scripts/ui/rest_flow_ui.gd` + scene | MVP-3 RESULT/SHOP/FATE/PREVIEW | outer-shell baseline |
-| **T01 item data** | `ItemDefinition` + `MVP4Catalog` + data definitions | **integrated** | canonical spatial data foundation |
-| Backpack state | future `BackpackState` | **NOT_STARTED** | T02 next |
+| **T01 item data** | `ItemDefinition` + `MVP4Catalog` + data definitions | **INTEGRATED** | canonical spatial data foundation |
+| **T02 backpack state** | `scripts/backpack/backpack_state.gd` + Item/Bag instances | **INTEGRATED** | committed spatial-state authority |
+| Backpack resolver | future `BackpackResolver` | **NOT_STARTED** | T03 next |
 | Tests/CI | `tests/**`, `.github/workflows/gut.yml` | active regression baseline | protect / extend TDD-first |
 
-## 2. T01 integrated spatial data foundation
+## 2. Integrated spatial foundation
+
+### T01 — definitions/catalog
 
 PR #27 / `7c9206702526f99dfadf44a617cd150853ec733f` integrated:
 
@@ -48,27 +51,41 @@ MVP4Catalog
   └─ 3 first-tier combination definitions
 ```
 
-Explicit acquisition boundaries prevent combination results from leaking into base reward pools.
-
 Existing `sell_price()` / RunBuildState/Shop sell runtime remains unchanged. T01 does not invent a second economy.
 
-Catalog validation owns:
+### T02 — committed BackpackState
 
-- supported modifier-key check through `RunModifierSet`,
-- legacy static adapter no-double-authority guard,
-- non-numeric static/spatial payload rejection,
-- item/bag/combination identity/reference integrity.
+PR #29 / `126e6c942d74f97166ef0c881afc5d79cae3d274` integrated:
 
-A stricter exported typed-Dictionary variant was tried during adversarial review, caused a real Godot 4.7.1 import regression, and was rejected. Current storage is runtime-compatible `Dictionary` plus explicit validation and tests.
+```text
+MVP4Catalog definitions
+        ↓ referenced by stable ids
+ItemInstance + BagInstance
+        ↓
+BackpackState
+  ├─ fixed 6x6 board
+  ├─ centered starting 4x3 active area
+  ├─ shared monotonic instance ids
+  ├─ origin + normalized quarter-turn rotation
+  ├─ atomic add/move/remove/rotate
+  ├─ item-item + bag-bag collision facts
+  ├─ active-area union / bag expansion-shrink
+  ├─ existing-item orphan prevention
+  └─ defensive collection snapshots / copy isolation
+```
+
+T02 adversarial review found that live public item/bag collections could bypass state validation. That path was removed; public collection views now return defensive copies.
+
+Final exact-head evidence: `Godot 4.7.1 import PASS -> main smoke PASS -> GUT 274/274 PASS -> 1915 assertions PASS -> T02 focused 11/11 PASS`.
 
 ## 3. Protected spatial domain target
 
 ```text
 T01 definitions/catalog · INTEGRATED
           ↓
-T02 BackpackState
+T02 BackpackState · INTEGRATED
           ↓
-T03 BackpackResolver
+T03 BackpackResolver · NEXT
           ↓
 T04 RestBackpackSession ── T05 CombinationResolver
           ↓
@@ -79,9 +96,9 @@ T06 committed RunBuildState snapshot + Fate
 RunModifierSet / CombatResolver / school runtime
 ```
 
-### T02 BackpackState — NEXT
+### T02 BackpackState — INTEGRATED
 
-Owns facts and state transitions only:
+Owns committed facts and state transitions only:
 
 - fixed 6x6 board,
 - T01 starting 4x3 active area,
@@ -89,14 +106,20 @@ Owns facts and state transitions only:
 - origin/rotation,
 - place/move/remove/rotate,
 - occupied-cell collision facts,
-- bag expansion state,
+- bag expansion/shrink state,
 - snapshot/copy isolation.
 
-No adjacency/special-bag calculation, GOLD/Fate/UI or combat modifier authority in T02.
+It intentionally does not calculate adjacency, connected-layout rules, special-bag effects, GOLD/Fate/UI or combat modifiers.
 
-### T03 BackpackResolver
+### T03 BackpackResolver — NEXT
 
-Future owner for bounds/usable cells, bag connectivity/collision, orthogonal adjacency, special-bag overlap and deterministic active modifier resolution.
+Future owner for deterministic resolution over T02 facts:
+
+- connected usable layout legality required by the approved spatial spec,
+- orthogonal adjacency,
+- special-bag one-cell-overlap activation,
+- deterministic active spatial modifier resolution,
+- no mutation of committed state during resolve.
 
 ### T04 RestBackpackSession
 
@@ -153,7 +176,7 @@ reward lane = why it is offered now
 actual power = committed backpack placement/adjacency/combination only
 ```
 
-T01 provides canonical item IDs/tags and base/result pool boundaries. It does **not** implement reward weighting or package eligibility; those belong to T07/T11.
+T01 provides canonical item IDs/tags and base/result pool boundaries. T02 provides committed positions/rotations only. Reward weighting/package eligibility belongs to T07/T11.
 
 ## 7. Route preview / atomic commit target
 
@@ -191,20 +214,21 @@ Tune after one-school representative slice; do not rewrite all four simultaneous
 
 ## 10. Task reuse / supersession map
 
-- old 2026-08-11 plan T01: **implemented / historical evidence after PR #27**.
-- old T02-T07 low-level direction: reusable where current canon/Phase-B does not supersede it.
+- old 2026-08-11 plan T01: implemented / historical evidence after PR #27.
+- old plan T02: implemented / historical evidence after PR #29 where compatible with current Phase-B.
+- old T03-T07 low-level direction: reusable where current canon/Phase-B does not supersede it.
 - old T08-T12: historical/non-executable.
 - post-DEC-026 traceability/Phase-B/T08+ plan: current.
 
-Current next implementation package: **T02 BackpackState**.
+Current next implementation package: **T03 BackpackResolver**.
 
 ## 11. Verification layers
 
 ```text
 unit
 - T01 catalog/shape/modifier validation · PASS
-- T02 backpack state transitions · NEXT
-- T03 geometry/adjacency
+- T02 backpack state transitions · PASS
+- T03 geometry/adjacency/special-bag resolution · NEXT
 - T05 combination atomicity
 - T08 route state
 - T10 trace gates
@@ -237,9 +261,10 @@ Automated GREEN and human PASS remain separate evidence classes.
 - DEC-014~026 planning canon approved.
 - fresh Phase-B PASS.
 - **T01 spatial data contracts/catalog integrated and automated-regression verified.**
-- BackpackState/Resolver/Workbench spatial runtime not started.
+- **T02 committed BackpackState integrated and automated-regression verified.**
+- BackpackResolver/REST session/Workbench interaction not started.
 - DEC-014~026 circuit/trace/encounter runtime not started.
 - release-near human QA not run.
 - Android/export not ready.
 
-Do not use T01 definitions as proof that playable backpack behavior exists.
+Do not use T02 state primitives as proof that adjacency effects or playable Workbench behavior exist.
