@@ -182,8 +182,16 @@ static func validate_school_encounters(schools: Dictionary) -> Array[String]:
 			errors.append("School elite/boss/capstone ids must be present: %s" % school_id)
 		if definition.elite_display_name.is_empty() or definition.boss_display_name.is_empty() or definition.stage4_boss_capstone_display_name.is_empty():
 			errors.append("School elite/boss/capstone display names must be present: %s" % school_id)
+		var role_ids: Array[StringName] = definition.core_monster_ids.duplicate()
+		role_ids.append(definition.elite_id)
+		role_ids.append(definition.boss_id)
+		role_ids.append(definition.stage4_boss_capstone_id)
+		if _unique_string_name_count(role_ids) != role_ids.size():
+			errors.append("School encounter identity collision: %s" % school_id)
 		if definition.pattern_refs.is_empty():
 			errors.append("School pattern refs must not be empty: %s" % school_id)
+		if _unique_string_name_count(definition.pattern_refs) != definition.pattern_refs.size():
+			errors.append("School pattern refs contain duplicate pattern ids: %s" % school_id)
 		for primitive_id in definition.pattern_refs:
 			if not SUPPORTED_PRIMITIVE_IDS.has(primitive_id):
 				errors.append("Unknown primitive ref %s on school %s" % [primitive_id, school_id])
@@ -209,8 +217,8 @@ static func validate_stage_profiles(profiles: Dictionary) -> Array[String]:
 			continue
 		if profile.stage_index != stage_index or profile.stage_index < 1 or profile.stage_index > 4:
 			errors.append("Invalid stage index: %d" % stage_index)
-		if profile.density_multiplier <= 0.0 or profile.stat_multiplier <= 0.0:
-			errors.append("Stage multipliers must be positive: %d" % stage_index)
+		if not is_finite(profile.density_multiplier) or not is_finite(profile.stat_multiplier) or profile.density_multiplier <= 0.0 or profile.stat_multiplier <= 0.0:
+			errors.append("Stage multipliers must be finite and positive: %d" % stage_index)
 		if profile.pattern_depth_tier != stage_index:
 			errors.append("Stage pattern depth must match stage index: %d" % stage_index)
 		var expected_concurrency := 1 if stage_index <= 2 else 2
@@ -249,11 +257,29 @@ static func validate_first_slice_patterns(patterns: Dictionary) -> Array[String]
 			errors.append("Primitive first-slice presentation hook missing: %s" % primitive_id)
 		if definition.telegraph_parameters.has("warning_seconds"):
 			errors.append("Primitive warning_seconds must remain a later tuning value: %s" % primitive_id)
+		if not _has_required_fair_telegraph(primitive_id, definition.telegraph_parameters):
+			errors.append("Primitive telegraph fairness contract mismatch: %s" % primitive_id)
 	for raw_id in patterns.keys():
 		var primitive_id := StringName(raw_id)
 		if not FIRST_SLICE_PATTERN_IDS.has(primitive_id):
 			errors.append("Unexpected first-slice primitive definition: %s" % primitive_id)
 	return errors
+
+
+static func _has_required_fair_telegraph(primitive_id: StringName, parameters: Dictionary) -> bool:
+	match primitive_id:
+		&"fan_or_arc_projectile":
+			return bool(parameters.get("anticipation_required", false)) \
+				and bool(parameters.get("readable_origin", false)) \
+				and bool(parameters.get("readable_direction", false))
+		&"telegraphed_zone":
+			return bool(parameters.get("visible_boundary", false)) \
+				and bool(parameters.get("expiry_cue", false))
+		&"mark_or_link":
+			return bool(parameters.get("visible_ownership", false)) \
+				and bool(parameters.get("release_cue", false)) \
+				and not bool(parameters.get("hidden_target_selection", true))
+	return false
 
 
 static func _add_school(
