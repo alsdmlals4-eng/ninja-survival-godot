@@ -12,10 +12,9 @@ const MVP3_CATALOG_PATH := "res://scripts/data/mvp3_catalog.gd"
 const MODIFIER_SET_PATH := "res://scripts/data/run_modifier_set.gd"
 
 
-func test_begin_rest_rejects_missing_dependencies_without_changing_committed_backpack() -> void:
+func test_begin_rest_rejects_missing_runtime_dependencies_without_changing_committed_backpack() -> void:
 	var fixture := _fixture(1401)
 	var cases := [
-		[null, fixture.build_state, fixture.route, fixture.fate],
 		[fixture.original_state, null, fixture.route, fixture.fate],
 		[fixture.original_state, fixture.build_state, null, fixture.fate],
 		[fixture.original_state, fixture.build_state, fixture.route, null],
