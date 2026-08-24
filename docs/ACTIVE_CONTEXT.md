@@ -61,9 +61,25 @@ Do not reconstruct current state from older handoff status sentences without fir
 ```yaml
 t01_pr: 27
 t01_merge_sha: 7c9206702526f99dfadf44a617cd150853ec733f
+baseline_main: eafec9c9d8efed7869734ca0d4b0a3372017d1da
+red_1_head: b6b7f0b52f73a8354143c69c927c9e57db9d33c4
+red_1_workflow: 32688077232
+red_1_result: IMPORT_PASS_MAIN_SMOKE_PASS_OLD_250_PASS_NEW_T01_CONTRACTS_FAIL_AS_EXPECTED
+green_1_head: cbc431bea445da456f1bec5a5df15aca3ecdc3fe
+green_1_workflow: 32688283418
+green_1_result: 260_OF_260_PASS_1826_ASSERTIONS
+schema_experiment: EXPORTED_TYPED_DICTIONARY_REJECTED_AFTER_GODOT_IMPORT_REGRESSION
+red_2_head: 3c570d86898d817bf1ec5abd04463ccfc867490f
+red_2_workflow: 32688990852
+red_2_result: OLD_260_PASS_NEW_3_VALIDATION_CASES_FAIL_AS_EXPECTED
+final_head: 97b2258abdbbf5bcf2833e0e04174f5d0537a675
+final_workflow: 32689126286
+final_job: 97319490788
 final_result: GODOT_4_7_1_IMPORT_PASS_MAIN_SMOKE_PASS_GUT_263_OF_263_PASS_1829_ASSERTIONS
 human_evidence: NOT_RUN
 ```
+
+The stricter typed-Dictionary experiment was not retained because it caused an actual import regression. Current data uses Godot-compatible `Dictionary` storage with supported-key and numeric-value validation at the catalog boundary. This is an evidence-driven compatibility choice, not a relaxation of the validation requirement.
 
 ## T02 implementation receipt
 
@@ -72,12 +88,16 @@ t02_pr: 29
 t02_merge_sha: 126e6c942d74f97166ef0c881afc5d79cae3d274
 baseline_main: 9cf3f15b8c390bc412082f397500a58905bf5912
 red_1_head: 9635f923325b5b70fa1f37776f56512485de0738
+red_1_workflow: 32690539179
 red_1_result: IMPORT_PASS_MAIN_SMOKE_PASS_OLD_263_PASS_NEW_T02_RESOURCES_FAIL_AS_EXPECTED
 green_1_head: 5e6b1481009e96cec1b9f8e03da43f504b42ea0e
+green_1_workflow: 32690747727
 green_1_result: 271_OF_271_PASS_1894_ASSERTIONS
 authority_red_head: 1d4c94dc66e39d3689430ca42a694d04132eb774
+authority_red_workflow: 32690939823
 authority_finding: LIVE_ITEMS_AND_BAGS_VIEWS_COULD_BYPASS_COMMITTED_STATE_VALIDATION
 authority_green_head: 853ba62160637a16fff4a1438194b0e2d2988639
+authority_green_workflow: 32691023039
 authority_green_result: 272_OF_272_PASS_1897_ASSERTIONS
 final_head: 60adbb99886c96c687b20befe4a61e5e3bcb71f1
 final_workflow: 32691243156
