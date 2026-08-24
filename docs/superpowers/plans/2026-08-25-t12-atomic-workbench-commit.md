@@ -1,6 +1,6 @@
 # T12 Atomic Workbench + Fate + Next-Route Commit Implementation Plan
 
-> **Execution status:** Tasks 1-4 are implemented through adversarial Loop 4. The final clean Loop 5, PR closeout, merge/readback, and Notion sync remain.
+> **Execution status:** Tasks 1-4 are implementation-complete through five clean adversarial loops. Task 5 PR closeout, merge/readback, and Notion sync remain.
 
 **Goal:** Implement DEC-025 so one Workbench transaction validates and commits the finalized backpack snapshot, one pending Fate, and one provisional unvisited school all-or-none.
 
@@ -98,10 +98,11 @@ Alternatives considered:
 
 ### Loop 5 — final clean whole-state re-attack
 
-- [ ] Add `tests/unit/test_rest_commit_coordinator_clean_reattack.gd`.
-- [ ] Cover a full post-clear transaction, independent blocker families, legacy-vs-pending compatibility, T07 identity + coherent observer + defensive snapshot, duplicate commit, and authority/scope containment.
-- [ ] Require fresh exact-head import/main-smoke/full-GUT PASS.
-- [ ] If any new valid finding appears, fix minimally and continue to Loop 6+ before completion.
+- [x] Added `tests/unit/test_rest_commit_coordinator_clean_reattack.gd`.
+- [x] Head `fa1c4114965a53e37fd9a819d4b6620d55a020bf`.
+- [x] Godot import PASS · main smoke PASS · GUT **486/486** · **5880 assertions**.
+- [x] Clean suite **5/5 PASS** covering a full post-clear transaction, independent blocker families, legacy-vs-pending compatibility, T07 identity + coherent observer + defensive snapshot, duplicate commit, and authority/scope containment.
+- [x] No new valid finding appeared; minimum five whole-state adversarial loops are complete.
 
 ---
 
