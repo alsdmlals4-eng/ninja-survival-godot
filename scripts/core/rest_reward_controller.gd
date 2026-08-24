@@ -72,10 +72,10 @@ func choose_boss_reward(index: int) -> bool:
 		transaction_failed.emit(&"session_unavailable")
 		return false
 	var item_id: StringName = _boss_reward_ids[index]
-	if not _session.can_acquire_items_to_buffer([item_id]):
+	if not _session._can_acquire_items_to_buffer([item_id]):
 		transaction_failed.emit(&"buffer_capacity")
 		return false
-	var created: Array[int] = _session.acquire_items_to_buffer([item_id])
+	var created: Array[int] = _session._acquire_items_to_buffer([item_id])
 	if created.size() != 1:
 		transaction_failed.emit(&"boss_reward_commit_failed")
 		return false
@@ -108,10 +108,10 @@ func open_chest() -> bool:
 		transaction_failed.emit(&"chest_pool_unavailable")
 		return false
 	var item_ids: Array[StringName] = _draw_distinct(pool, 2)
-	if not _session.can_acquire_items_to_buffer(item_ids):
+	if not _session._can_acquire_items_to_buffer(item_ids):
 		transaction_failed.emit(&"buffer_capacity")
 		return false
-	var created: Array[int] = _session.acquire_items_to_buffer(item_ids)
+	var created: Array[int] = _session._acquire_items_to_buffer(item_ids)
 	if created.size() != 2:
 		transaction_failed.emit(&"chest_commit_failed")
 		return false
