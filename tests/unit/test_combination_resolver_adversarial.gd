@@ -116,6 +116,17 @@ func test_cancel_preserves_prior_normal_edit_history() -> void:
 	assert_eq(session.state.get_item(spare_id).origin, Vector2i(3, 1))
 
 
+func test_hint_stage_rejects_stale_discovery_for_missing_recipe() -> void:
+	var resolver = _combination_resolver()
+	var state = _starting_state()
+	var resolution = _resolver().resolve(state, _item_defs(), _bag_defs(), &"")
+	assert_eq(
+		resolver.hint_stage(&"removed_recipe", state, resolution, {&"removed_recipe": true}, _combos()),
+		0,
+		"Discovery memory must not resurrect a recipe missing from current combo authority"
+	)
+
+
 func _find_definition(state, definition_id: StringName):
 	for instance in state.items.values():
 		if instance.definition_id == definition_id:
@@ -147,3 +158,7 @@ func _item_defs() -> Dictionary:
 
 func _bag_defs() -> Dictionary:
 	return load(CATALOG_PATH).build_bags()
+
+
+func _combos() -> Dictionary:
+	return load(CATALOG_PATH).build_combinations()
