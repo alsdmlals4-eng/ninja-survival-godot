@@ -20,7 +20,8 @@ Godot 4.x / GDScript로 재구성 중인 `닌자 서바이벌 (닌자의 신)` �
 | MVP-3 결과/GOLD/상점/운명/3세그먼트 runtime | integrated rollback/regression baseline |
 | MVP-4 T01 공간 데이터 계약/catalog | **integrated** |
 | MVP-4 T02 BackpackState committed spatial state | **integrated** |
-| MVP-4 BackpackResolver/Workbench interaction | **not started · T03 next** |
+| MVP-4 T03 BackpackResolver spatial resolution | **integrated** |
+| MVP-4 REST session/Workbench interaction | **not started · T04 next** |
 | DEC-014~025 4유파 순회 migration runtime | **not implemented** |
 | DEC-026 encounter/pattern budget | **approved / not implemented** |
 | Fresh Phase-B | **PASS** |
@@ -31,7 +32,9 @@ T01은 PR #27로 `7c9206702526f99dfadf44a617cd150853ec733f`에 병합됐다. 최
 
 T02는 PR #29로 `126e6c942d74f97166ef0c881afc5d79cae3d274`에 병합됐다. 최종 exact-head `60adbb99886c96c687b20befe4a61e5e3bcb71f1` 검증은 Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `274/274` tests / `1915` assertions PASS, T02 집중 테스트 `11/11` PASS다.
 
-T02로 실제 6x6 committed spatial state와 시작 4x3 active area, item/bag instance, 위치·회전, 배치/이동/제거/회전, 충돌·가방 확장 상태, snapshot/copy 격리까지 구현됐다. 이것은 **도메인 상태 엔진의 자동 검증**이며 아직 인접 시너지 계산이나 사람이 조작하는 Workbench가 완성됐다는 증거는 아니다.
+T03은 PR #31로 `2dcf055d82df02d44335f209897436572efa6739`에 병합됐다. 최종 exact-head `e0dacee9048a01e799012b8aca12760e07ca47ea` 검증은 Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `292/292` tests / `2026` assertions PASS, T03 집중 테스트 `18/18` PASS다.
+
+현재는 6x6 committed state뿐 아니라 **연결된 사용 영역 판정, 직교 인접 관계, 데이터 기반 공간 시너지, 특수가방 overlap 효과와 결정론적 modifier snapshot**까지 자동 계산할 수 있다. 다만 아직 사람이 실제 Workbench에서 아이템을 옮기고 버퍼·undo/redo를 사용하는 플레이 세션이 구현됐다는 증거는 아니다.
 
 ## 최신 Run 목표
 
@@ -102,8 +105,9 @@ Architecture direction:
 
 - **T01:** 19 base acquisition item, 3 combination-result lookup item, 1 starting 4x3 bag + 5 purchasable bag, 8 strong-spatial item data, 3 first-tier combination data와 modifier validation.
 - **T02:** 6x6 committed state, centered 4x3 starting area, stable item/bag instances, origin/quarter-turn rotation, atomic place/move/remove/rotate, item-item·bag-bag collision, active-area expansion/shrink, orphan prevention, defensive snapshot/copy isolation.
+- **T03:** connected active-layout validation, orthogonal adjacency pair, `SpatialRuleDefinition` aggregation, special-bag overlap activation, selected-school/static modifier snapshot, read-only candidate placement와 whole-layout translation preview.
 
-다음 T03 `BackpackResolver`는 T02 state를 읽어 연결된 usable layout, 직교 인접, 특수가방 1칸 overlap 활성화와 deterministic spatial modifier를 계산한다. T03에서 REST session, GOLD/Fate/UI, combination transaction, 최종 combat modifier authority를 당겨오지 않는다.
+다음 T04 `RestBackpackSession`은 T02/T03 위에서 6-slot 작업 버퍼, committed와 분리된 편집 preview, edit history/undo-redo, selected-school preview context, 명시적 whole-layout 이동 모드를 소유한다. T04에서 조합 transaction(T05), GOLD/Fate/economy, Workbench UI authority, 최종 combat modifier authority(T06)를 당겨오지 않는다.
 
 ### 흔적 / 전승 접근
 
@@ -115,13 +119,13 @@ Architecture direction:
 
 ## 현재 개발 경계
 
-DEC-026은 승인됐고 fresh Phase-B가 PASS했다. T01과 T02는 병합 완료됐으며 현재 production은 **T03 BackpackResolver**부터 이어간다.
+DEC-026은 승인됐고 fresh Phase-B가 PASS했다. T01~T03은 병합 완료됐으며 현재 production은 **T04 RestBackpackSession**부터 이어간다.
 
 ```text
 T01 Spatial Data Contracts · INTEGRATED
 -> T02 BackpackState · INTEGRATED
--> T03 BackpackResolver · NEXT
--> T04 RestBackpackSession
+-> T03 BackpackResolver · INTEGRATED
+-> T04 RestBackpackSession · NEXT
 -> T05 CombinationResolver
 -> T06 committed RunBuildState migration
 -> T07 acquisition transaction foundation
@@ -137,6 +141,7 @@ T01 Spatial Data Contracts · INTEGRATED
 - old `impl/mvp4-t01-spatial-data-contracts`는 오래된 prepared baseline이다.
 - PR #27은 병합된 T01 evidence다.
 - PR #29는 병합된 T02 evidence다.
+- PR #31은 병합된 T03 evidence다.
 - 새 production package는 fresh merged `main`에서 만든다.
 
 ## 읽기 순서
