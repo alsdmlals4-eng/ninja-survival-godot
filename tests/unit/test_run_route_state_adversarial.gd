@@ -6,20 +6,20 @@ const SCHOOL_IDS: Array[StringName] = [&"bongma", &"cheonsul", &"guiin", &"heuky
 
 func test_failed_operations_are_total_noops_across_initial_provisional_active_and_final_states() -> void:
 	var state = _new_state()
-	var initial := state.get_route_snapshot()
+	var initial: Dictionary = state.get_route_snapshot()
 	assert_false(state.set_provisional_next_school(&"missing"))
 	assert_false(state.commit_provisional_next_school())
 	assert_false(state.mark_active_school_cleared())
 	assert_eq(state.get_route_snapshot(), initial)
 
 	assert_true(state.set_provisional_next_school(&"bongma"))
-	var provisional := state.get_route_snapshot()
+	var provisional: Dictionary = state.get_route_snapshot()
 	assert_false(state.set_provisional_next_school(&"missing"))
 	assert_false(state.mark_active_school_cleared())
 	assert_eq(state.get_route_snapshot(), provisional)
 
 	assert_true(state.commit_provisional_next_school())
-	var active := state.get_route_snapshot()
+	var active: Dictionary = state.get_route_snapshot()
 	assert_false(state.set_provisional_next_school(&"cheonsul"))
 	assert_false(state.commit_provisional_next_school())
 	assert_eq(state.get_route_snapshot(), active)
@@ -27,7 +27,7 @@ func test_failed_operations_are_total_noops_across_initial_provisional_active_an
 	assert_true(state.mark_active_school_cleared())
 	for school_id in [&"cheonsul", &"guiin", &"heukyeong"]:
 		assert_true(_commit_and_clear(state, school_id))
-	var final := state.get_route_snapshot()
+	var final: Dictionary = state.get_route_snapshot()
 	assert_false(state.set_provisional_next_school(&"bongma"))
 	assert_false(state.commit_provisional_next_school())
 	assert_false(state.mark_active_school_cleared())
@@ -70,7 +70,7 @@ func test_final_binding_is_terminal_and_stage_never_exceeds_four() -> void:
 	var state = _new_state()
 	for school_id in [&"heukyeong", &"guiin", &"cheonsul", &"bongma"]:
 		assert_true(_commit_and_clear(state, school_id))
-	var final := state.get_route_snapshot()
+	var final: Dictionary = state.get_route_snapshot()
 	for school_id in SCHOOL_IDS:
 		assert_false(state.set_provisional_next_school(school_id))
 	assert_false(state.commit_provisional_next_school())
@@ -83,11 +83,11 @@ func test_final_binding_is_terminal_and_stage_never_exceeds_four() -> void:
 func test_public_route_views_never_expose_live_clear_order_authority() -> void:
 	var state = _new_state()
 	assert_true(_commit_and_clear(state, &"bongma"))
-	var school_ids := state.school_ids()
-	var unvisited := state.get_unvisited_schools()
-	var cleared := state.cleared_school_ids()
-	var order := state.clear_order()
-	var snapshot := state.get_route_snapshot()
+	var school_ids: Array[StringName] = state.school_ids()
+	var unvisited: Array[StringName] = state.get_unvisited_schools()
+	var cleared: Array[StringName] = state.cleared_school_ids()
+	var order: Array[StringName] = state.clear_order()
+	var snapshot: Dictionary = state.get_route_snapshot()
 
 	school_ids.clear()
 	unvisited.append(&"bongma")
@@ -126,7 +126,7 @@ func test_every_reported_route_identity_is_from_canonical_four_school_set() -> v
 	for school_id in [&"guiin", &"bongma"]:
 		assert_true(_commit_and_clear(state, school_id))
 	assert_true(state.set_provisional_next_school(&"heukyeong"))
-	var snapshot := state.get_route_snapshot()
+	var snapshot: Dictionary = state.get_route_snapshot()
 	for school_id in snapshot["school_ids"]:
 		assert_true(SCHOOL_IDS.has(school_id))
 	for school_id in snapshot["unvisited_school_ids"]:
