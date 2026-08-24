@@ -94,28 +94,31 @@ Full current detail:
 - MVP-2 four-school shallow runtime: integrated.
 - MVP-3 result/GOLD/Shop/Fate/three-segment runtime: integrated rollback/regression baseline.
 - **MVP-4 T01 spatial data contracts/catalog: integrated.**
-- BackpackState / BackpackResolver / REST spatial editing: not started.
+- **MVP-4 T02 BackpackState committed spatial state: integrated.**
+- BackpackResolver / REST spatial editing / Workbench interaction: not started.
 - DEC-014~025 school-circuit/trace/final-calamity runtime: not started.
 - DEC-026 encounter/pattern runtime: not started.
 - release-near Vertical Slice human QA for current canon: NOT_RUN.
 
-T01 proves the data foundation, not playable backpack behavior.
+T01 proves the data foundation. T02 proves committed spatial-state primitives. Neither proves adjacency resolution, playable Workbench interaction or Human experience.
 
 T01 merged as PR #27 / `7c9206702526f99dfadf44a617cd150853ec733f`. Exact final PR-head evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `263/263` tests and `1829` assertions PASS.
+
+T02 merged as PR #29 / `126e6c942d74f97166ef0c881afc5d79cae3d274`. Exact final PR-head `60adbb99886c96c687b20befe4a61e5e3bcb71f1` evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `274/274` tests and `1915` assertions PASS, T02 focused `11/11` PASS.
 
 ## 6. Current planning / implementation gate
 
 DEC-026 is **APPROVED** and the fresh post-DEC-026 Phase-B Definition of Ready is **PASS**.
 
-T01 is complete. Current production execution begins at:
+T01 and T02 are complete. Current production execution begins at:
 
-**T02 — BackpackState, from fresh merged `main`, TDD first.**
+**T03 — BackpackResolver, from fresh merged `main`, TDD first.**
 
 Remaining executable order:
 
-`T02 -> T03 -> T04 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
+`T03 -> T04 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
 
-Do not jump directly to T08. Do not pull T03 resolver behavior, economy/Fate/UI or combat modifier authority into T02.
+Do not jump directly to T08. Do not pull T04 REST session/economy/Fate/UI/combination or T06 combat modifier authority into T03.
 
 Current planning owners:
 
@@ -141,13 +144,27 @@ Current planning owners:
 
 A stricter exported typed-Dictionary experiment caused an actual Godot import regression and was rejected. Runtime-compatible generic Dictionary storage remains protected by catalog validation and tests.
 
-### Next T02-T07 direction
+### Integrated T02
 
-- T02 BackpackState
-- T03 BackpackResolver
-- T04 RestBackpackSession
-- T05 CombinationResolver
-- T06 committed RunBuildState modifier migration
+- `ItemInstance` and `BagInstance` value objects reference T01 definition IDs rather than duplicating item/bag authority
+- one `BackpackState` owns committed 6x6 board facts
+- centered starting 4x3 active area from the starting bag
+- shared monotonic item/bag instance IDs
+- origin and normalized quarter-turn rotation
+- atomic item/bag add, move, remove and rotate
+- inactive-cell, bounds, item-item and bag-bag collision rejection
+- bag expansion/shrink active-area facts and prevention of orphaned committed items
+- public item/bag collection views are defensive snapshots
+- `copy_value()` preserves snapshot isolation
+
+Adversarial review found and fixed a live collection-view mutation bypass before merge.
+
+### Next T03-T07 direction
+
+- T03 `BackpackResolver`: connected-layout legality, orthogonal adjacency, special-bag one-cell-overlap activation and deterministic active spatial modifier resolution over committed state
+- T04 `RestBackpackSession`
+- T05 `CombinationResolver`
+- T06 committed `RunBuildState` modifier migration
 - T07 reward/shop/chest transaction foundation
 
 Old T08-T12 from the 2026-08-11 plan remain superseded for execution. Use the current post-DEC-026 plan for T08+.
@@ -158,7 +175,9 @@ Old T08-T12 from the 2026-08-11 plan remain superseded for execution. Use the cu
 - Follow-up work normally targets merged `main` truth.
 - PR #17 is **closed / unmerged / historical**. Do not reopen, merge or use it as a prerequisite.
 - old `impl/mvp4-t01-spatial-data-contracts` is historical, not a current implementation branch.
-- PR #27 is merged T01 evidence. Future production work starts from fresh merged `main` after current readback.
+- PR #27 is merged T01 evidence.
+- PR #29 is merged T02 evidence.
+- Future production work starts from fresh merged `main` after current readback.
 
 Do not rewrite historical PRs/handoffs just to make timestamps/status prose appear current.
 
@@ -168,6 +187,7 @@ Do not rewrite historical PRs/handoffs just to make timestamps/status prose appe
 - Language: GDScript.
 - Prefer Scene/Node/signal/Resource/RefCounted composition appropriate to Godot.
 - Keep state ownership singular; UI must not duplicate domain/economy/geometry/combat authority.
+- Do not expose live mutable interiors that let consumers bypass the owning domain object's validated mutation path.
 - Do not add a second wave system while the current WaveSpawner API is sufficient.
 - Do not add a new autoload/save/meta-power system without a demonstrated requirement and approval.
 - Do not claim local plugin/provider integration from historical branches; verify current `project.godot` and actual environment.
