@@ -137,13 +137,17 @@ func reroll() -> bool:
 		transaction_failed.emit("상점 상태가 준비되지 않았습니다")
 		return false
 
+	var cost := get_reroll_cost()
+	if _build_state.gold < cost:
+		transaction_failed.emit("GOLD가 부족합니다")
+		return false
+
 	var rolled := _roll_offers()
 	var rolled_bag: StringName = _roll_bag_offer() if _spatial_mode else bag_offer_id
 	if rolled.size() < 3 or (_spatial_mode and rolled_bag == &""):
 		transaction_failed.emit("상점 후보가 부족합니다")
 		return false
 
-	var cost := get_reroll_cost()
 	if not _build_state.try_spend_gold(cost):
 		transaction_failed.emit("GOLD가 부족합니다")
 		return false
