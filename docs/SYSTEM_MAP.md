@@ -27,7 +27,8 @@
 | **T01 item data** | `ItemDefinition` + `MVP4Catalog` + data definitions | **INTEGRATED** | canonical spatial data foundation |
 | **T02 backpack state** | `scripts/backpack/backpack_state.gd` + Item/Bag instances | **INTEGRATED** | committed spatial-state authority |
 | **T03 backpack resolver** | `BackpackResolver` + `BackpackResolution` | **INTEGRATED** | deterministic derived spatial-resolution authority |
-| REST backpack session | future `RestBackpackSession` | **NOT_STARTED** | T04 next |
+| **T04 REST backpack session** | `RestBackpackSession` + `BuildPreviewSnapshot` | **INTEGRATED** | pending edit/buffer/history/mode authority |
+| Combination resolver | future `CombinationResolver` | **NOT_STARTED** | T05 next |
 | Tests/CI | `tests/**`, `.github/workflows/gut.yml` | active regression baseline | protect / extend TDD-first |
 
 ## 2. Integrated spatial foundation
@@ -80,15 +81,16 @@ BackpackState
   ├─ shared monotonic instance ids
   ├─ origin + normalized quarter-turn rotation
   ├─ atomic add/move/remove/rotate
+  ├─ validated existing-instance restore paths
   ├─ item-item + bag-bag collision facts
   ├─ active-area union / bag expansion-shrink
   ├─ existing-item orphan prevention
   └─ defensive collection snapshots / copy isolation
 ```
 
-T02 adversarial review found that live public item/bag collections could bypass state validation. That path was removed; public collection views now return defensive copies.
+T02 adversarial review found that live public item/bag collections could bypass state validation. That path was removed; public collection views now return defensive copies. T04 later added only validated owner restore APIs and proved shared item/bag identity collisions and failed-restore ID advancement are rejected/atomic.
 
-Final exact-head evidence: `Godot 4.7.1 import PASS -> main smoke PASS -> GUT 274/274 PASS -> 1915 assertions PASS -> T02 focused 11/11 PASS`.
+Final original T02 exact-head evidence: `Godot 4.7.1 import PASS -> main smoke PASS -> GUT 274/274 PASS -> 1915 assertions PASS -> T02 focused 11/11 PASS`.
 
 ### T03 — deterministic BackpackResolver
 
@@ -119,6 +121,34 @@ T03 keeps committed mutation in T02 and does not create a second state authority
 
 Adversarial review found and fixed a diagnostic error where null state was initially reported as `missing_candidate`. Final exact-head evidence: `Godot 4.7.1 import PASS -> main smoke PASS -> GUT 292/292 PASS -> 2026 assertions PASS -> T03 focused 18/18 PASS`.
 
+### T04 — REST backpack edit session
+
+PR #33 / `d07f16d6bae90a09bba0a5f0b8991216d006c966` integrated:
+
+```text
+committed BackpackState + BackpackResolver
+        ↓ copy-on-begin
+RestBackpackSession
+  ├─ exact six-slot buffer
+  ├─ board ↔ buffer stable-instance path
+  ├─ selected-school preview context
+  ├─ deep edit snapshot undo / redo
+  ├─ pending-bag placement + history barrier
+  ├─ explicit WHOLE_LAYOUT_MOVE mode
+  ├─ atomic whole-layout translation
+  └─ deterministic commit-readiness failures
+        ↓ defensive snapshots
+BuildPreviewSnapshot
+  ├─ preview state
+  ├─ resolution legality / failure cells
+  ├─ adjacency / special-bag facts
+  └─ copied RunModifierSet
+```
+
+T04 preserves committed-source isolation and does not become geometry, combination, economy, Fate or combat authority. Public state/buffer/pending-bag/preview values are defensive copies.
+
+Adversarial review found and fixed: uncommitted visible preview passing the commit gate; per-item edits during whole-layout mode; and active whole-layout mode not initially blocking later commit. Final exact-head evidence: `Godot 4.7.1 import PASS -> main smoke PASS -> GUT 309/309 PASS -> 2202 assertions PASS -> T04 focused 17/17 PASS`.
+
 ## 3. Protected spatial domain target
 
 ```text
@@ -128,9 +158,11 @@ T02 BackpackState · INTEGRATED
           ↓
 T03 BackpackResolver · INTEGRATED
           ↓
-T04 RestBackpackSession · NEXT ── T05 CombinationResolver
+T04 RestBackpackSession · INTEGRATED
           ↓
-BuildPreviewSnapshot
+T05 CombinationResolver · NEXT
+          ↓
+BuildPreviewSnapshot / pending result transaction
           ↓
 T06 committed RunBuildState snapshot + Fate
           ↓
@@ -139,18 +171,18 @@ RunModifierSet / CombatResolver / school runtime
 
 ### T02 BackpackState — INTEGRATED
 
-Owns committed facts and state transitions only:
+Owns committed facts and validated state transitions only:
 
 - fixed 6x6 board,
 - T01 starting 4x3 active area,
 - bags/items and stable instance identity,
 - origin/rotation,
-- place/move/remove/rotate,
+- place/move/remove/rotate/validated restore,
 - occupied-cell collision facts,
 - bag expansion/shrink state,
 - snapshot/copy isolation.
 
-It intentionally does not calculate adjacency, connected-layout rules, special-bag effects, GOLD/Fate/UI or combat modifiers.
+It intentionally does not calculate adjacency, connected-layout rules, special-bag effects, REST session policy, GOLD/Fate/UI or combat modifiers.
 
 ### T03 BackpackResolver — INTEGRATED
 
@@ -164,16 +196,28 @@ Owns deterministic resolution over T02 facts:
 - reasoned candidate placement and whole-layout translation previews,
 - no mutation of committed state during resolve.
 
-### T04 RestBackpackSession — NEXT
+### T04 RestBackpackSession — INTEGRATED
+
+Owns pending REST edit-session state:
+
+- six-slot buffer,
+- preview editing state separated from committed state,
+- selected-school preview context,
+- deep edit history / undo / redo,
+- pending-bag history boundary,
+- explicit mutually-exclusive whole-layout movement mode,
+- commit readiness without committing combat power itself.
+
+### T05 CombinationResolver — NEXT
 
 Future owner for:
 
-- six-slot buffer,
-- preview editing/history/pending states,
-- selected-school preview context,
-- undo/redo for backpack editing actions,
-- explicit whole-layout movement mode,
-- commit readiness without committing combat power itself.
+- eligible first-tier source pairs using T03 adjacency,
+- progressive combination hint stage,
+- pending result preview over T04 session,
+- atomic source preservation until valid result placement,
+- successful exact-two-source consumption + one-result creation,
+- discovery marking and repeated-commit protection.
 
 ### Workbench UI
 
@@ -226,7 +270,7 @@ reward lane = why it is offered now
 actual power = committed backpack placement/adjacency/combination only
 ```
 
-T01 provides canonical item IDs/tags and base/result pool boundaries. T02 provides committed positions/rotations. T03 derives spatial legality/effects. Reward weighting/package eligibility belongs to T07/T11.
+T01 provides canonical item IDs/tags and base/result pool boundaries. T02 provides committed positions/rotations. T03 derives spatial legality/effects. T04 owns pending editing only. Reward weighting/package eligibility belongs to T07/T11.
 
 ## 7. Route preview / atomic commit target
 
@@ -267,11 +311,12 @@ Tune after one-school representative slice; do not rewrite all four simultaneous
 - old 2026-08-11 plan T01: **implemented / historical evidence after PR #27**.
 - old plan T02: implemented / historical evidence after PR #29 where compatible with current Phase-B.
 - old plan T03: implemented / historical evidence after PR #31 where compatible with current Phase-B.
-- old T04-T07 low-level direction: reusable where current canon/Phase-B does not supersede it.
+- old plan T04: implemented / historical evidence after PR #33 where compatible with current Phase-B.
+- old T05-T07 low-level direction: reusable where current canon/Phase-B does not supersede it.
 - old T08-T12: historical/non-executable.
 - post-DEC-026 traceability/Phase-B/T08+ plan: current.
 
-Current next implementation package: **T04 RestBackpackSession**.
+Current next implementation package: **T05 CombinationResolver**.
 
 ## 11. Verification layers
 
@@ -280,8 +325,8 @@ unit
 - T01 catalog/shape/modifier validation · PASS
 - T02 backpack state transitions · PASS
 - T03 geometry/connectivity/adjacency/special-bag resolution · PASS
-- T04 REST buffer/edit history/preview · NEXT
-- T05 combination atomicity
+- T04 REST buffer/edit history/preview/mode · PASS
+- T05 combination atomicity · NEXT
 - T08 route state
 - T10 trace gates
 - T12 atomic commit
@@ -315,10 +360,11 @@ Automated GREEN and human PASS remain separate evidence classes.
 - **T01 spatial data contracts/catalog integrated and automated-regression verified.**
 - **T02 committed BackpackState integrated and automated-regression verified.**
 - **T03 deterministic BackpackResolver integrated and automated-regression verified.**
-- REST session/Workbench interaction not started.
-- combination transaction/committed spatial combat integration not started.
+- **T04 REST edit-session domain engine integrated and automated-regression verified.**
+- combination transaction not started.
+- actual Workbench interaction and committed spatial combat integration not started.
 - DEC-014~026 circuit/trace/encounter runtime not started.
 - release-near human QA not run.
 - Android/export not ready.
 
-Do not use T03 spatial-resolution evidence as proof that editable/playable Workbench or committed combat behavior exists.
+Do not use T04 edit-session evidence as proof that combinations, playable Workbench UI or committed combat behavior exist.

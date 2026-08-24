@@ -13,12 +13,12 @@ MVP_0_BASIC_COMBAT: INTEGRATED
 MVP_1_COMBAT_DDD: INTEGRATED
 MVP_2_FOUR_SCHOOLS_SHALLOW: INTEGRATED
 MVP_3_RESULT_REST_SHOP_FATE: INTEGRATED_ROLLBACK_BASELINE
-MVP_4_BACKPACK_COMBINATION: T01_T02_T03_INTEGRATED_NEXT_T04
+MVP_4_BACKPACK_COMBINATION: T01_T02_T03_T04_INTEGRATED_NEXT_T05
 MVP_5_FINAL_LOOP_META: NOT_STARTED
 DEC014_025_MIGRATION_OVERLAY: DOCUMENTED_NOT_IMPLEMENTED
 DEC026_ENCOUNTER_PATTERN_BUDGET: APPROVED_NOT_IMPLEMENTED
 PHASE_B: PASS
-NEXT_IMPLEMENTATION_GATE: T04_REST_BACKPACK_SESSION
+NEXT_IMPLEMENTATION_GATE: T05_COMBINATION_RESOLVER
 RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 ```
 
@@ -84,7 +84,7 @@ RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 
 새 DEC 행동을 구현하는 TDD package에서 의도적으로 교체되기 전까지 해당 테스트를 보호한다.
 
-# MVP-4 — 백팩/조합 기초 · T01/T02/T03 INTEGRATED / T04 NEXT
+# MVP-4 — 백팩/조합 기초 · T01/T02/T03/T04 INTEGRATED / T05 NEXT
 
 목표:
 
@@ -143,9 +143,10 @@ Implemented:
 - inactive-cell rejection and board bounds,
 - item-item / bag-bag collision rejection,
 - bag expansion/shrink active-area facts and orphan prevention,
-- defensive public collection snapshots and `copy_value()` isolation.
+- defensive public collection snapshots and `copy_value()` isolation,
+- T04-validated stable-ID restore owner paths for buffered/reconstructed existing instances.
 
-Adversarial review found a live `items`/`bags` view mutation bypass and closed it before merge.
+Adversarial review found a live `items`/`bags` view mutation bypass and closed it before merge. T04 later verified the restore paths reject item↔bag shared-ID collisions and do not advance IDs on failed restore.
 
 Final exact-head verification:
 
@@ -179,18 +180,45 @@ Final exact-head verification:
 
 Evidence ceiling: **deterministic spatial-resolution domain engine only**. REST editing/session history, combinations, playable Workbench UI, committed combat integration and Human play remain later gates.
 
-## T04 — RestBackpackSession · NEXT
+## T04 — RestBackpackSession · INTEGRATED
 
-T04 consumes T02/T03 and owns pending REST editing:
+PR #33 merged as `d07f16d6bae90a09bba0a5f0b8991216d006c966`.
 
-- six-slot work buffer,
-- editable preview state separated from committed state,
-- selected-school context for build preview,
-- backpack edit history / undo / redo,
-- explicit whole-layout move mode and all-or-nothing translation,
-- preview snapshot only; no committed combat power before later commit.
+Implemented:
 
-Do not move T05 combination transaction, GOLD/Fate/economy, Workbench UI authority or T06 final combat modifier authority into T04.
+- session-owned copy of committed T02 state,
+- exact six-slot REST work buffer,
+- board→buffer removing spatial effects and legal buffer→board restoring stable item identity,
+- defensive `BuildPreviewSnapshot` separated from committed/session state,
+- selected-school preview modifier context through T03,
+- deep edit history / undo / redo and new-edit redo clearing,
+- non-history pending-bag acquisition as an edit-history barrier,
+- explicit mutually-exclusive whole-layout movement mode,
+- all-or-nothing whole-layout translation preserving future instance-ID cursor,
+- deterministic commit-readiness failures for pending buffer/bag/preview, active whole-layout mode and invalid resolved state,
+- defensive public state/buffer/pending-bag/preview boundaries.
+
+Adversarial review found and fixed three session/control issues: a valid visible preview could pass the commit gate without being committed; whole-layout mode initially allowed per-item edits; and active whole-layout mode initially did not block later commit.
+
+Final exact-head verification:
+
+`Godot 4.7.1 import PASS -> main smoke PASS -> GUT 309/309 PASS -> 2202 assertions PASS -> T04 focused 17/17 PASS`.
+
+Evidence ceiling: **REST backpack edit-session domain engine only**. Combination transaction, actual Workbench UI/input UX, committed combat integration and Human play remain later gates.
+
+## T05 — CombinationResolver · NEXT
+
+T05 consumes T01/T02/T03/T04 and owns explicit first-tier combination transactions:
+
+- only valid orthogonally adjacent on-board source pairs are eligible,
+- progressive hints distinguish ingredient-owned / ready / discovered state,
+- begin result preview preserves both source instances,
+- invalid result placement and cancel preserve both sources,
+- legal commit consumes exactly two sources once and creates exactly one result,
+- repeated commit is ignored,
+- first success marks discovery.
+
+Do not move GOLD/Fate/economy orchestration, Workbench UI authority or T06 final combat modifier authority into T05.
 
 # MVP-5 — 최종 Run / 결과 / Ninja Soul · NOT_STARTED
 
@@ -311,8 +339,8 @@ Four-school circuit 완료 뒤:
 T01 Spatial Data Contracts · INTEGRATED
 -> T02 BackpackState · INTEGRATED
 -> T03 BackpackResolver · INTEGRATED
--> T04 RestBackpackSession · NEXT
--> T05 CombinationResolver
+-> T04 RestBackpackSession · INTEGRATED
+-> T05 CombinationResolver · NEXT
 -> T06 committed RunBuildState migration
 -> T07 acquisition transaction foundation
 -> T08~T14 post-DEC-026 packages
@@ -322,7 +350,7 @@ T01 Spatial Data Contracts · INTEGRATED
 -> full-run QA / Android / export / release work
 ```
 
-새 package는 PR #31이 병합된 fresh `main`에서 시작한다.
+새 package는 PR #33이 병합된 fresh `main`에서 시작한다.
 
 # 현재 제외 / 후속
 
