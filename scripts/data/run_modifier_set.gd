@@ -1,6 +1,28 @@
 extends RefCounted
 class_name RunModifierSet
 
+const SUPPORTED_FIELDS: Array[StringName] = [
+	&"move_speed_pct",
+	&"max_health_flat",
+	&"max_health_pct",
+	&"damage_taken_pct",
+	&"healing_pct",
+	&"normal_kill_gold_pct",
+	&"school_damage_pct",
+	&"non_ultimate_school_damage_pct",
+	&"school_resource_gain_pct",
+	&"ultimate_charge_gain_pct",
+	&"ultimate_power_pct",
+	&"school_status_effect_pct",
+	&"evasion_chance",
+	&"rest_start_heal_pct",
+	&"bongma_familiar_interval_pct",
+	&"cheonsul_reaction_damage_pct",
+	&"guiin_melee_radius_pct",
+	&"heukyeong_marked_crit_bonus",
+	&"heukyeong_mark_duration_pct",
+]
+
 var move_speed_pct: float = 0.0
 var max_health_flat: float = 0.0
 var max_health_pct: float = 0.0
@@ -20,6 +42,17 @@ var cheonsul_reaction_damage_pct: float = 0.0
 var guiin_melee_radius_pct: float = 0.0
 var heukyeong_marked_crit_bonus: float = 0.0
 var heukyeong_mark_duration_pct: float = 0.0
+
+
+static func is_supported_field(field_name: StringName) -> bool:
+	return SUPPORTED_FIELDS.has(field_name)
+
+
+func add_delta(field_name: StringName, amount: float) -> bool:
+	if not is_supported_field(field_name):
+		return false
+	set(field_name, float(get(field_name)) + amount)
+	return true
 
 
 func copy_values() -> RunModifierSet:
