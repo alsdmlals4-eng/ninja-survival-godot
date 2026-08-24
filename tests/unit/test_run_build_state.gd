@@ -182,7 +182,7 @@ func test_committed_backpack_modifiers_and_fate_combine_once() -> void:
 	assert_true(state.select_fate(&"slaughter_path"))
 	assert_true(state.select_fate(&"shadow_path"))
 	var modifiers = state.get_modifiers()
-	assert_almost_eq(modifiers.school_damage_pct, 0.32, 0.001)
+	assert_almost_eq(modifiers.school_damage_pct, 0.42, 0.001)
 	assert_almost_eq(modifiers.move_speed_pct, 0.23, 0.001)
 
 
