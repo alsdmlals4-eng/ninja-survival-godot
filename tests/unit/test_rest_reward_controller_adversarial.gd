@@ -120,6 +120,12 @@ func test_acquisition_is_blocked_during_whole_layout_mode_without_spending_gold(
 	assert_null(bundle.session.pending_bag)
 
 
+func test_session_has_no_public_generic_acquisition_or_sale_bypass() -> void:
+	var bundle := _bundle(207)
+	for method_name in [&"can_acquire_items_to_buffer", &"acquire_items_to_buffer", &"remove_item_for_sale"]:
+		assert_false(bundle.session.has_method(method_name), "REST transaction helper must remain an internal project contract: %s" % method_name)
+
+
 func _bundle(seed: int) -> Dictionary:
 	return _bundle_with_defs(seed, _item_defs(), _bag_defs())
 
