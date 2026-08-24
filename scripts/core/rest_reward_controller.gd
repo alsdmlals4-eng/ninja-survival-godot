@@ -74,7 +74,9 @@ func begin_rest(
 	_newly_stabilized_school_id = _resolve_newly_stabilized_school(newly_stabilized_school_id, selected_school_id)
 
 	_boss_reward_ids = _roll_boss_rewards(selected_school_id, _newly_stabilized_school_id)
-	_boss_reward_lane_ids = BOSS_REWARD_LANES.duplicate() if _boss_reward_ids.size() == 3 else []
+	_boss_reward_lane_ids.clear()
+	if _boss_reward_ids.size() == 3:
+		_boss_reward_lane_ids.append_array(BOSS_REWARD_LANES)
 	# Boss reward is mandatory. A pool/configuration failure is unresolved work,
 	# not permission to skip the reward gate. Only a successful choice clears it.
 	_boss_reward_pending = true
@@ -134,8 +136,8 @@ func open_chest() -> bool:
 		transaction_failed.emit(&"buffer_capacity")
 		return false
 	var rolled: Dictionary = _draw_lane_first(_eligible_lanes(), 2)
-	var item_ids: Array[StringName] = rolled.get("item_ids", [])
-	var lane_ids: Array[StringName] = rolled.get("lane_ids", [])
+	var item_ids: Array[StringName] = _string_name_array(rolled.get("item_ids", []))
+	var lane_ids: Array[StringName] = _string_name_array(rolled.get("lane_ids", []))
 	if item_ids.size() != 2 or lane_ids.size() != 2:
 		transaction_failed.emit(&"chest_pool_unavailable")
 		return false
@@ -363,6 +365,13 @@ func _unique_item_count(lanes: Array[Dictionary]) -> int:
 		for raw_id in Array(lane.get("item_ids", [])):
 			seen[StringName(raw_id)] = true
 	return seen.size()
+
+
+func _string_name_array(raw_values) -> Array[StringName]:
+	var result: Array[StringName] = []
+	for raw_value in Array(raw_values):
+		result.append(StringName(raw_value))
+	return result
 
 
 func _on_shop_transaction_failed(reason: String) -> void:
