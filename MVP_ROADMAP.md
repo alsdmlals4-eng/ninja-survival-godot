@@ -2,7 +2,7 @@
 
 ## 목적
 
-기존 `MVP-0~MVP-5` 번호를 유지하면서, 최신 DEC-014~025가 앞으로 어떤 구현/검증을 추가로 요구하는지 분리해 관리한다.
+기존 `MVP-0~MVP-5` 번호를 유지하면서, 최신 DEC-014~026이 앞으로 어떤 구현/검증을 추가로 요구하는지 분리해 관리한다.
 
 게임 내부의 `Stage 1~4`와 개발 로드맵 번호를 혼동하지 않는다.
 
@@ -16,11 +16,13 @@ MVP_3_RESULT_REST_SHOP_FATE: INTEGRATED_ROLLBACK_BASELINE
 MVP_4_BACKPACK_COMBINATION: DESIGN_APPROVED_PRODUCTION_NOT_STARTED
 MVP_5_FINAL_LOOP_META: NOT_STARTED
 DEC014_025_MIGRATION_OVERLAY: DOCUMENTED_NOT_IMPLEMENTED
-NEXT_PRODUCT_GATE: DEC_026
+DEC026_ENCOUNTER_PATTERN_BUDGET: APPROVED_NOT_IMPLEMENTED
+PHASE_B: PASS
+NEXT_IMPLEMENTATION_GATE: T01_SPATIAL_DATA_CONTRACTS
 RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 ```
 
-최신 DEC-014~025는 기존 MVP 번호를 폐기하는 새 MVP 번호 체계가 아니라, **MVP-4/5가 실제 제품 Run과 연결될 때 따라야 할 migration overlay**다.
+최신 DEC-014~026은 기존 MVP 번호를 폐기하는 새 MVP 번호 체계가 아니라, **MVP-4/5가 실제 제품 Run과 연결될 때 따라야 할 migration/encounter overlay**다.
 
 ## 제품 전체 검증 질문
 
@@ -105,11 +107,11 @@ RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 
 기존 2026-08-11 구현 계획의 T01~T07 저수준 domain 방향은 재사용한다.
 
-DEC-021 access package/lane과 DEC-025 route commit은 이후 bounded amendment로 연결한다.
+DEC-021 access package/lane과 DEC-025 route commit은 post-DEC-026 migration packages에서 연결한다.
 
 # MVP-5 — 최종 Run / 결과 / Ninja Soul · NOT_STARTED
 
-기존 명칭은 유지하되 최신 DEC-014~025에 따라 최종 Run 구조를 다음처럼 해석한다.
+기존 명칭은 유지하되 최신 DEC-014~026에 따라 최종 Run 구조를 다음처럼 해석한다.
 
 ```text
 4유파 battlefield를 정확히 한 번씩 순회
@@ -131,9 +133,9 @@ DEC-021 access package/lane과 DEC-025 route commit은 이후 bounded amendment�
 - 실제 최종 승리와 결정타는 플레이어 backpack build가 담당한다.
 - Ninja Soul은 Run 결정을 압도하는 영구 공격력/체력 누적보다 horizontal unlock/option/convenience 방향을 우선한다.
 
-정확한 final attack/pattern 구현은 DEC-026 및 후속 final-boss planning 이후다.
+DEC-026은 학교별 encounter/pattern budget을 승인했지만 final calamity의 exact full attack script는 후속 final-boss planning/implementation 대상이다.
 
-# DEC-014~025 Migration Overlay
+# DEC-014~026 Migration Overlay
 
 이 overlay는 MVP-4/5를 최신 제품 Run에 연결하기 위한 현재 실행 방향이다.
 
@@ -164,9 +166,9 @@ starting school
 - next school = player choice among unvisited routes,
 - Fate atomically commits build + Fate + next route.
 
-상세 요구사항: `docs/traceability/2026-08-21-dec014-025-migration-traceability.md`.
+상세 요구사항: `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`.
 
-## Overlay B — Encounter Content Gate · BLOCKED_DEC026
+## Overlay B — Encounter Content Gate · DEC-026 APPROVED
 
 첫 콘텐츠 상한:
 
@@ -180,14 +182,14 @@ starting school
 - Stage 1 base signature
 - Stage 2 + interaction gimmick
 - Stage 3 + synergy/field gimmick
-- Stage 4 mastery + one Boss advanced pattern
+- Stage 4 mastery + one Boss capstone
 - concurrent advanced-gimmick default cap 2
 
-**DEC-026**에서 concrete Core Monster / Elite / Boss attack sets와 Stage pattern budget을 확정하기 전 상세 T08+ 실행 계획을 만들지 않는다.
+DEC-026 approved the **shared attack primitives + school-owned encounter compositions** architecture. Current runtime implementation remains NOT_STARTED. Production starts at T01 rather than jumping to encounter implementation because the spatial foundation is still absent.
 
 ## Overlay C — One-School Release-Near Vertical Slice · NOT_RUN
 
-4유파 콘텐츠 전체를 제작하기 전에 한 유파로 다음 end-to-end를 먼저 완성한다.
+4유파 콘텐츠 전체를 제작하기 전에 **천술류**로 다음 end-to-end를 먼저 완성한다.
 
 ```text
 signature within ~30 sec
@@ -222,19 +224,19 @@ Four-school circuit 완료 뒤:
 
 `fourth Boss -> RESULT -> Final Binding Workbench -> final Fate/build commit -> 난세 재앙핵`.
 
-현재 approved structure만 보호하고, exact attacks/pattern/timing은 DEC-026 및 후속 planning 뒤에 확정한다.
+현재 approved structure와 DEC-026에서 재사용 가능한 encounter language를 보호하되, final calamity exact full script는 후속 구현/검증에서 닫는다.
 
 # 구현 순서
 
 ```text
 DEC-014~025 canon sync
--> DEC-026 approval
--> fresh Phase-B review
--> fresh implementation branches from merged main
--> reuse T01-T07 spatial domain direction
--> recalculated circuit/trace/route packages
--> one-school release-near Vertical Slice
--> human QA
+-> DEC-026 APPROVED
+-> T08+ migration plan RECALCULATED
+-> fresh Phase-B PASS
+-> T01 Spatial Data Contracts from fresh merged main
+-> T02~T13 bounded TDD packages
+-> T14 Cheonsul release-near Vertical Slice
+-> T15 human QA
 -> remaining three-school content multiplication
 -> final binding/final calamity implementation
 -> full-run QA / Android / export / release work
