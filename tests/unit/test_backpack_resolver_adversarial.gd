@@ -2,6 +2,8 @@ extends GutTest
 
 const RESOLVER_PATH := "res://scripts/backpack/backpack_resolver.gd"
 const STATE_PATH := "res://scripts/backpack/backpack_state.gd"
+const ITEM_INSTANCE_PATH := "res://scripts/data/item_instance.gd"
+const BAG_INSTANCE_PATH := "res://scripts/data/bag_instance.gd"
 const CATALOG_PATH := "res://scripts/data/mvp4_catalog.gd"
 const SPATIAL_RULE_PATH := "res://scripts/data/spatial_rule_definition.gd"
 
@@ -48,6 +50,22 @@ func test_disconnected_failure_cells_are_deterministic() -> void:
 	assert_eq(first.failure_code, &"disconnected_active_cells")
 	assert_eq(first.failure_cells, [Vector2i(0, 5), Vector2i(1, 5)])
 	assert_eq(second.failure_cells, first.failure_cells)
+
+
+func test_preview_failure_reasons_distinguish_missing_state_from_missing_candidate() -> void:
+	var resolver = _resolver()
+	var item_candidate = load(ITEM_INSTANCE_PATH).new()
+	item_candidate.definition_id = &"taijutsu_training"
+	item_candidate.origin = Vector2i(1, 1)
+	var bag_candidate = load(BAG_INSTANCE_PATH).new()
+	bag_candidate.definition_id = &"small_pouch"
+	bag_candidate.origin = Vector2i(1, 4)
+
+	assert_eq(resolver.can_place_item(null, item_candidate, _item_defs(), _bag_defs()).failure_code, &"missing_state")
+	assert_eq(resolver.can_place_bag(null, bag_candidate, _item_defs(), _bag_defs()).failure_code, &"missing_state")
+	var state = _starting_state()
+	assert_eq(resolver.can_place_item(state, null, _item_defs(), _bag_defs()).failure_code, &"missing_candidate")
+	assert_eq(resolver.can_place_bag(state, null, _item_defs(), _bag_defs()).failure_code, &"missing_candidate")
 
 
 func _resolver():
