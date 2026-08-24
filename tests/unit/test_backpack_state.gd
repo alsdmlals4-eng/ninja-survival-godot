@@ -97,7 +97,7 @@ func test_bag_move_remove_and_rotation_do_not_orphan_existing_items() -> void:
 	var item_id: int = state.add_item(&"taijutsu_training", Vector2i(4, 3))
 	assert_gt(item_id, 0)
 	assert_null(state.remove_bag(1))
-	assert_false(state.move_bag(1, Vector2i(2, 1)))
+	assert_false(state.move_bag(1, Vector2i(0, 1)))
 	assert_false(state.rotate_bag(1))
 	var starting_bag = state.get_bag(1)
 	assert_eq(starting_bag.origin, Vector2i(1, 1))
