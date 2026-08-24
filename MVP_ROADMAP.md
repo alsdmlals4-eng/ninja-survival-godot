@@ -13,12 +13,12 @@ MVP_0_BASIC_COMBAT: INTEGRATED
 MVP_1_COMBAT_DDD: INTEGRATED
 MVP_2_FOUR_SCHOOLS_SHALLOW: INTEGRATED
 MVP_3_RESULT_REST_SHOP_FATE: INTEGRATED_ROLLBACK_BASELINE
-MVP_4_BACKPACK_COMBINATION: T01_T02_T03_T04_INTEGRATED_NEXT_T05
+MVP_4_BACKPACK_COMBINATION: T01_T02_T03_T04_T05_INTEGRATED_NEXT_T06
 MVP_5_FINAL_LOOP_META: NOT_STARTED
 DEC014_025_MIGRATION_OVERLAY: DOCUMENTED_NOT_IMPLEMENTED
 DEC026_ENCOUNTER_PATTERN_BUDGET: APPROVED_NOT_IMPLEMENTED
 PHASE_B: PASS
-NEXT_IMPLEMENTATION_GATE: T05_COMBINATION_RESOLVER
+NEXT_IMPLEMENTATION_GATE: T06_COMMITTED_RUN_BUILD_STATE_MIGRATION
 RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 ```
 
@@ -84,7 +84,7 @@ RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 
 새 DEC 행동을 구현하는 TDD package에서 의도적으로 교체되기 전까지 해당 테스트를 보호한다.
 
-# MVP-4 — 백팩/조합 기초 · T01/T02/T03/T04 INTEGRATED / T05 NEXT
+# MVP-4 — 백팩/조합 기초 · T01/T02/T03/T04/T05 INTEGRATED / T06 NEXT
 
 목표:
 
@@ -206,19 +206,40 @@ Final exact-head verification:
 
 Evidence ceiling: **REST backpack edit-session domain engine only**. Combination transaction, actual Workbench UI/input UX, committed combat integration and Human play remain later gates.
 
-## T05 — CombinationResolver · NEXT
+## T05 — CombinationResolver · INTEGRATED
 
-T05 consumes T01/T02/T03/T04 and owns explicit first-tier combination transactions:
+PR #35 merged as `8cefce75456f8b72a8f69559857676cca67a6c5d`.
 
-- only valid orthogonally adjacent on-board source pairs are eligible,
-- progressive hints distinguish ingredient-owned / ready / discovered state,
-- begin result preview preserves both source instances,
+Implemented:
+
+- T01 recipe authority reused without a second combination catalog,
+- only valid orthogonally adjacent on-board source pairs are eligible through T03 adjacency,
+- buffer sources are ineligible,
+- deterministic `UNDISCOVERED -> INGREDIENT_OWNED -> READY -> DISCOVERED` hint stages,
+- reversed source arguments canonicalize to recipe A/B without losing stable identity,
+- pending result preview keeps both source instances intact,
 - invalid result placement and cancel preserve both sources,
-- legal commit consumes exactly two sources once and creates exactly one result,
+- legal commit builds a candidate state, removes exactly two sources, creates exactly one result and swaps state only after T03 resolve succeeds,
+- failed commit preserves `next_instance_id`, sources and pending transaction,
 - repeated commit is ignored,
-- first success marks discovery.
+- first successful combination marks discovery,
+- successful combination forms an irreversible REST history barrier; cancel preserves prior edit history,
+- pending combination blocks parallel backpack editing and later Fate commit,
+- pending/discovery views are defensive copies.
 
-Do not move GOLD/Fate/economy orchestration, Workbench UI authority or T06 final combat modifier authority into T05.
+Adversarial review found and fixed two authority defects: public session transaction methods could bypass `CombinationResolver` recipe authority, and stale discovery memory could resurrect a recipe removed from current combo authority. The session bridge is now underscore-prefixed internal project contract; GDScript does not enforce language-level privacy.
+
+Final exact-head verification:
+
+`Godot 4.7.1 import PASS -> main smoke PASS -> GUT 329/329 PASS -> 2322 assertions PASS -> T05 focused 20/20 PASS`.
+
+Evidence ceiling: **first-tier atomic combination domain transaction only**. Actual Workbench UI/input UX, committed spatial combat integration, full rest/economy orchestration and Human play remain later gates.
+
+## T06 — committed RunBuildState migration · NEXT
+
+T06 consumes the final resolved T01~T05 backpack snapshot and migrates committed combat modifier authority into `RunBuildState` without double-applying the existing MVP-3 item modifier path.
+
+T06 must preserve rollback-compatible GOLD/sell/Fate baseline behavior unless the approved migration explicitly replaces it. Do not pull T07 reward/shop/chest transaction ownership or Workbench UI authority into T06.
 
 # MVP-5 — 최종 Run / 결과 / Ninja Soul · NOT_STARTED
 
@@ -340,8 +361,8 @@ T01 Spatial Data Contracts · INTEGRATED
 -> T02 BackpackState · INTEGRATED
 -> T03 BackpackResolver · INTEGRATED
 -> T04 RestBackpackSession · INTEGRATED
--> T05 CombinationResolver · NEXT
--> T06 committed RunBuildState migration
+-> T05 CombinationResolver · INTEGRATED
+-> T06 committed RunBuildState migration · NEXT
 -> T07 acquisition transaction foundation
 -> T08~T14 post-DEC-026 packages
 -> T15 human QA
@@ -350,7 +371,7 @@ T01 Spatial Data Contracts · INTEGRATED
 -> full-run QA / Android / export / release work
 ```
 
-새 package는 PR #33이 병합된 fresh `main`에서 시작한다.
+새 package는 PR #35가 병합된 fresh `main`에서 시작한다.
 
 # 현재 제외 / 후속
 
