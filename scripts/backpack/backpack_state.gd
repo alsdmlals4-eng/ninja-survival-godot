@@ -57,6 +57,36 @@ func add_bag(definition_id: StringName, origin: Vector2i, rotation_quarters: int
 	return instance.instance_id
 
 
+func restore_item_instance(instance) -> bool:
+	if instance == null:
+		return false
+	var instance_id: int = int(instance.instance_id)
+	if instance_id <= 0 or _items.has(instance_id) or _bags.has(instance_id):
+		return false
+	var restored = instance.copy_value()
+	restored.rotation_quarters = posmod(restored.rotation_quarters, 4)
+	if not _can_place_item(restored.definition_id, restored.origin, restored.rotation_quarters, -1):
+		return false
+	_items[instance_id] = restored
+	next_instance_id = maxi(next_instance_id, instance_id + 1)
+	return true
+
+
+func restore_bag_instance(instance) -> bool:
+	if instance == null:
+		return false
+	var instance_id: int = int(instance.instance_id)
+	if instance_id <= 0 or _bags.has(instance_id) or _items.has(instance_id):
+		return false
+	var restored = instance.copy_value()
+	restored.rotation_quarters = posmod(restored.rotation_quarters, 4)
+	if not _can_place_bag(restored.definition_id, restored.origin, restored.rotation_quarters, -1):
+		return false
+	_bags[instance_id] = restored
+	next_instance_id = maxi(next_instance_id, instance_id + 1)
+	return true
+
+
 func move_item(instance_id: int, new_origin: Vector2i) -> bool:
 	var instance = _items.get(instance_id)
 	if instance == null:
