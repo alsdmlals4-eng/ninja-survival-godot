@@ -3,13 +3,14 @@
 ```yaml
 project: NINJA_SURVIVAL
 state_router_updated_at: 2026-08-24 KST
-resume_state: T02_INTEGRATED_READY_FOR_T03
-next_material_gate: T03_BACKPACK_RESOLVER
-production_build_for_new_canon: IN_PROGRESS_T02_BACKPACK_STATE_MERGED
+resume_state: T03_INTEGRATED_READY_FOR_T04
+next_material_gate: T04_REST_BACKPACK_SESSION
+production_build_for_new_canon: IN_PROGRESS_T03_BACKPACK_RESOLVER_MERGED
 mvp0_to_mvp3_runtime: INTEGRATED
-mvp4_spatial_production: T01_T02_INTEGRATED
+mvp4_spatial_production: T01_T02_T03_INTEGRATED
 backpack_state_runtime: INTEGRATED
-backpack_resolver_runtime: NOT_STARTED
+backpack_resolver_runtime: INTEGRATED
+rest_backpack_session_runtime: NOT_STARTED
 school_circuit_runtime: NOT_STARTED
 trace_runtime: NOT_STARTED
 dec026_encounter_runtime: NOT_STARTED
@@ -35,7 +36,7 @@ Do not reconstruct current state from older handoff status sentences without fir
 8. `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
 9. `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`
 10. `docs/planning/2026-08-11-mvp4-content-data-contract.md`
-11. old `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md` **T03-T07 reusable detail only**
+11. old `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md` **T04-T07 reusable detail only**
 12. actual `scripts/`, `scenes/`, `tests/`, `.github/workflows/gut.yml`
 13. current Notion project home / Flow / Core System / Production Handoff
 14. current Base `main` when Base freshness materially affects the task
@@ -50,9 +51,11 @@ Do not reconstruct current state from older handoff status sentences without fir
 - Old MVP-3 three-segment flow is implementation reality, not the latest product target.
 - **T01 spatial data contracts/catalog are integrated on main.**
 - **T02 BackpackState is integrated on main.**
+- **T03 BackpackResolver is integrated on main.**
 - T01 supplies canonical item/bag/combination/spatial-rule definitions and acquisition boundaries.
 - T02 adds committed 6x6 backpack spatial state: centered 4x3 starting area, stable item/bag instances, origin/rotation, atomic place/move/remove/rotate, item/item and bag/bag collision facts, active-area union, orphan prevention and defensive snapshot/copy isolation.
-- T02 deliberately does **not** implement orthogonal adjacency resolution, bag connectivity rule, special-bag overlap effects, REST editing, combination transactions, Workbench UI or combat modifier migration.
+- T03 reads T02 defensive snapshots and deterministically resolves connected active layouts, orthogonal adjacency, T01 spatial-rule aggregation, special-bag overlap effects, selected-school emblem/static modifiers, reasoned placement previews and all-or-nothing whole-layout translation without mutating committed state.
+- T03 deliberately does **not** implement the six-slot REST buffer/session/history, combination transactions, Workbench UI, GOLD/Fate/economy or final committed combat modifier migration.
 - DEC-014~025 and DEC-026 are approved product/planning canon; their school-circuit/trace/encounter runtime remains not implemented.
 - Fresh Phase-B remains the execution boundary for the T01~T14 chain.
 
@@ -109,6 +112,43 @@ human_evidence: NOT_RUN
 
 The adversarial authority finding was closed by moving live instance collections behind defensive public snapshots. Invalid definitions/ids/placements are atomic no-ops and failed additions do not consume shared instance IDs.
 
+## T03 implementation receipt
+
+```yaml
+t03_pr: 31
+t03_merge_sha: 2dcf055d82df02d44335f209897436572efa6739
+baseline_main: a7515e8bfe7ac3678ba6a10863361a681e822d0e
+red_1_head: f596f1bc3bacaee32fde7acc3eb40844db96da53
+red_1_workflow: 32692921634
+red_1_job: 97329698394
+red_1_result: BASE_MANIFEST_PASS_IMPORT_PASS_MAIN_SMOKE_PASS_OLD_274_PASS_NEW_T03_RESOURCES_FAIL_AS_EXPECTED
+green_1_head: 12b1fdf91fd9bca548869390ec39ff0a560c218b
+green_1_workflow: 32693124217
+green_1_job: 97330248507
+green_1_result: GUT_285_OF_285_PASS_1989_ASSERTIONS_T03_11_OF_11
+hardening_1_head: 6215ecea5809eb04dae0113912f30a96ea4e1096
+hardening_1_workflow: 32693300464
+hardening_1_job: 97330722718
+hardening_1_result: GUT_288_OF_288_PASS_2007_ASSERTIONS_T03_CORE_14_OF_14
+hardening_2_head: 664050e51845b93049664a79fc02fc342991af6e
+hardening_2_workflow: 32693403582
+hardening_2_job: 97331012865
+hardening_2_result: GUT_291_OF_291_PASS_2022_ASSERTIONS_T03_CORE_14_ADV_3
+diagnostic_red_head: 89940837b46e3f0579a36d67ff4b44dd69b0720b
+diagnostic_red_workflow: 32693526072
+diagnostic_red_job: 97331350057
+diagnostic_red_result: IMPORT_PASS_MAIN_SMOKE_PASS_291_OF_292_ONLY_MISSING_STATE_REASON_FAIL
+diagnostic_finding: NULL_STATE_MISREPORTED_AS_MISSING_CANDIDATE
+final_head: e0dacee9048a01e799012b8aca12760e07ca47ea
+final_workflow: 32693618582
+final_job: 97331600797
+final_result: GODOT_4_7_1_IMPORT_PASS_MAIN_SMOKE_PASS_GUT_292_OF_292_PASS_2026_ASSERTIONS
+t03_focused_tests: 18_OF_18_PASS
+human_evidence: NOT_RUN
+```
+
+T03 remained data-driven: spatial effects are resolved from T01 rule/bag data rather than item-id branches. Missing definitions fail closed without partial modifier output. The diagnostic finding was reproduced by RED and corrected so null state and null candidate now report distinct failure codes.
+
 ## Current product target
 
 ```text
@@ -149,8 +189,8 @@ Stage depth grows from signature -> interaction -> synergy -> mastery/capstone, 
 
 - `ItemDefinition` / `MVP4Catalog`: T01 data identity, footprint/tag/static/spatial metadata and explicit acquisition boundaries — **INTEGRATED**.
 - `BackpackState`: committed board/item/bag/origin/rotation/active-area/collision facts — **T02 INTEGRATED**.
-- `BackpackResolver`: deterministic connected-layout legality, orthogonal adjacency, special-bag overlap and active spatial modifier resolution — **T03 NEXT**.
-- `RestBackpackSession`: pending REST edits and six-slot buffer.
+- `BackpackResolver`: deterministic connected-layout legality, orthogonal adjacency, special-bag overlap and active spatial modifier resolution — **T03 INTEGRATED**.
+- `RestBackpackSession`: pending REST edits, six-slot buffer, edit history/undo-redo and whole-layout edit mode — **T04 NEXT**.
 - `CombinationResolver`: atomic combination rules.
 - `RunBuildState`: final committed combat modifier authority after T06 migration.
 - `RunRouteState`: school visit/provisional/clear order and Stage index.
@@ -166,27 +206,28 @@ Full review: `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`.
 
 ## Executable order
 
-T01 and T02 are complete. Remaining approved implementation order is:
+T01, T02 and T03 are complete. Remaining approved implementation order is:
 
-`T03 -> T04 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
+`T04 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
 
-Do not jump directly to T08; the remaining spatial/transaction foundation must still be implemented in order.
+Do not jump directly to T08; the remaining REST/transaction foundation must still be implemented in order.
 
-## Next executable work — T03
+## Next executable work — T04
 
-Create a **fresh production branch from merged main** and implement `BackpackResolver` with TDD.
+Create a **fresh production branch from merged main** and implement `RestBackpackSession` with TDD.
 
-T03 owns deterministic spatial rule resolution over committed `BackpackState` facts:
+T04 owns pending REST editing over T02/T03 domain facts:
 
-- connected usable-cell/layout legality required by the approved spatial spec,
-- orthogonal adjacency evaluation,
-- special-bag one-cell-overlap activation,
-- deterministic active spatial modifier resolution,
-- no mutation of the committed state while resolving.
+- six-slot work buffer,
+- editable preview state separated from committed state,
+- selected-school context for build previews,
+- edit history / undo / redo for backpack editing actions,
+- explicit whole-layout movement mode with all-or-nothing translation,
+- preview snapshots that contribute zero committed combat power until later commit.
 
-T03 must not absorb `RestBackpackSession`, GOLD/Fate, Workbench UI, combination transactions or final combat-modifier authority.
+T04 must not absorb combination transactions, GOLD/Fate/economy, Workbench UI authority or final committed combat-modifier migration.
 
-T03 close gate:
+T04 close gate:
 
 `red tests -> minimal implementation -> focused tests -> full GUT -> import -> main smoke -> diff/readback -> adversarial review -> merge -> merged-main readback`.
 
@@ -200,6 +241,7 @@ Current MVP-3 tests are rollback evidence. Do not delete conflicting tests just 
 - old `impl/mvp4-t01-spatial-data-contracts` is historical and not a production base.
 - PR #27 is merged T01 implementation evidence.
 - PR #29 is merged T02 implementation evidence.
+- PR #31 is merged T03 implementation evidence.
 - historical PRs/handoffs remain evidence and are not rewritten.
 
 ## Human evidence rule
@@ -212,7 +254,7 @@ Technical placeholder/card UI may support spikes/tests but cannot close final pl
 
 ## Runtime/tool boundary
 
-T01 data resources and T02 committed spatial state have actual Godot 4.7.1 import/main-smoke/full-GUT evidence. **Playable Workbench interaction remains NOT_RUN/NOT_STARTED because T03+ resolver/session/UI integration does not exist yet.** Android/export and Human QA remain release-near work and are not implied by T02 completion.
+T01 data resources, T02 committed spatial state and T03 deterministic resolver have actual Godot 4.7.1 import/main-smoke/full-GUT evidence. **Playable Workbench interaction remains NOT_RUN/NOT_STARTED because T04+ session/UI/commit integration does not exist yet.** Android/export and Human QA remain release-near work and are not implied by T03 completion.
 
 ## Resume rule
 
