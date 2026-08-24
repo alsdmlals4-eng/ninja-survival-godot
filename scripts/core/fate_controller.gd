@@ -37,7 +37,7 @@ func choose(fate_id: StringName) -> bool:
 		return false
 	if not candidate_ids.has(fate_id):
 		return false
-	if _build_state == null or not _build_state.select_fate(fate_id):
+	if _build_state == null or _build_state.has_fate(fate_id):
 		return false
 	selected_this_rest = fate_id
 	fate_selected.emit(fate_id)
@@ -46,6 +46,19 @@ func choose(fate_id: StringName) -> bool:
 
 func can_continue() -> bool:
 	return selected_this_rest != &""
+
+
+func _can_commit_pending() -> bool:
+	return _build_state != null \
+		and selected_this_rest != &"" \
+		and candidate_ids.has(selected_this_rest) \
+		and not _build_state.has_fate(selected_this_rest)
+
+
+func _commit_pending() -> bool:
+	if not _can_commit_pending():
+		return false
+	return _build_state.select_fate(selected_this_rest)
 
 
 func _roll_candidates() -> Array[StringName]:
