@@ -22,11 +22,11 @@ signal boss_requested
 signal boss_cleared
 signal normal_spawn_permission_changed(allowed: bool)
 
-var elite_warning_at_seconds: float = 165.0
-var elite_spawn_at_seconds: float = 180.0
-var boss_warning_earliest_at_seconds: float = 260.0
-var boss_appearance_earliest_at_seconds: float = 270.0
-var boss_warning_duration_seconds: float = 10.0
+var _elite_warning_at_seconds: float = 165.0
+var _elite_spawn_at_seconds: float = 180.0
+var _boss_warning_earliest_at_seconds: float = 260.0
+var _boss_appearance_earliest_at_seconds: float = 270.0
+var _boss_warning_duration_seconds: float = 10.0
 
 var _state: State = State.CORE
 var _elapsed_seconds: float = 0.0
@@ -55,11 +55,11 @@ func configure_timing(
 	):
 		return false
 
-	elite_warning_at_seconds = new_elite_warning_at_seconds
-	elite_spawn_at_seconds = new_elite_spawn_at_seconds
-	boss_warning_earliest_at_seconds = new_boss_warning_earliest_at_seconds
-	boss_appearance_earliest_at_seconds = new_boss_appearance_earliest_at_seconds
-	boss_warning_duration_seconds = new_boss_warning_duration_seconds
+	_elite_warning_at_seconds = new_elite_warning_at_seconds
+	_elite_spawn_at_seconds = new_elite_spawn_at_seconds
+	_boss_warning_earliest_at_seconds = new_boss_warning_earliest_at_seconds
+	_boss_appearance_earliest_at_seconds = new_boss_appearance_earliest_at_seconds
+	_boss_warning_duration_seconds = new_boss_warning_duration_seconds
 	return true
 
 
@@ -71,21 +71,21 @@ func sync_elapsed(new_elapsed_seconds: float) -> bool:
 
 	_elapsed_seconds = new_elapsed_seconds
 
-	if _state == State.CORE and _elapsed_seconds >= elite_warning_at_seconds:
+	if _state == State.CORE and _elapsed_seconds >= _elite_warning_at_seconds:
 		_state = State.ELITE_WARNING
 		elite_warning_requested.emit()
 
-	if _state == State.ELITE_WARNING and _elapsed_seconds >= elite_spawn_at_seconds:
+	if _state == State.ELITE_WARNING and _elapsed_seconds >= _elite_spawn_at_seconds:
 		_state = State.ELITE_ACTIVE
 		elite_requested.emit()
 
-	if _state == State.TRACE_RECOVERED and _elapsed_seconds >= boss_warning_earliest_at_seconds:
-		_start_boss_warning(boss_warning_earliest_at_seconds)
+	if _state == State.TRACE_RECOVERED and _elapsed_seconds >= _boss_warning_earliest_at_seconds:
+		_start_boss_warning(_boss_warning_earliest_at_seconds)
 
 	if _state == State.BOSS_WARNING:
 		var boss_ready_at := maxf(
-			boss_appearance_earliest_at_seconds,
-			_boss_warning_started_at + boss_warning_duration_seconds
+			_boss_appearance_earliest_at_seconds,
+			_boss_warning_started_at + _boss_warning_duration_seconds
 		)
 		if _elapsed_seconds >= boss_ready_at and not _boss_requested:
 			_boss_requested = true
@@ -117,7 +117,7 @@ func recover_trace() -> bool:
 	_set_normal_spawning_allowed(true)
 	trace_recovered.emit()
 
-	if _elapsed_seconds >= boss_warning_earliest_at_seconds:
+	if _elapsed_seconds >= _boss_warning_earliest_at_seconds:
 		_start_boss_warning(_elapsed_seconds)
 	return true
 
@@ -160,11 +160,11 @@ func get_snapshot() -> Dictionary:
 	return {
 		"state": state_name(),
 		"elapsed_seconds": _elapsed_seconds,
-		"elite_warning_at_seconds": elite_warning_at_seconds,
-		"elite_spawn_at_seconds": elite_spawn_at_seconds,
-		"boss_warning_earliest_at_seconds": boss_warning_earliest_at_seconds,
-		"boss_appearance_earliest_at_seconds": boss_appearance_earliest_at_seconds,
-		"boss_warning_duration_seconds": boss_warning_duration_seconds,
+		"elite_warning_at_seconds": _elite_warning_at_seconds,
+		"elite_spawn_at_seconds": _elite_spawn_at_seconds,
+		"boss_warning_earliest_at_seconds": _boss_warning_earliest_at_seconds,
+		"boss_appearance_earliest_at_seconds": _boss_appearance_earliest_at_seconds,
+		"boss_warning_duration_seconds": _boss_warning_duration_seconds,
 		"boss_warning_started_at_seconds": _boss_warning_started_at,
 		"elite_cleared": _elite_cleared,
 		"trace_recovered": _trace_recovered,
