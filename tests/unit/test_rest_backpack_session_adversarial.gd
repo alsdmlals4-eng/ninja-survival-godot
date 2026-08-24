@@ -90,6 +90,33 @@ func test_commit_gate_blocks_uncommitted_valid_item_preview() -> void:
 	assert_eq(session.state.get_item(item_id).origin, Vector2i(2, 1))
 
 
+func test_whole_layout_mode_rejects_per_item_and_pending_bag_edits_until_exit() -> void:
+	var committed = _starting_state()
+	var item_id: int = committed.add_item(&"shuriken", Vector2i(1, 1))
+	assert_gt(item_id, 0)
+	var session = _session(committed)
+	assert_true(session.enter_whole_layout_move_mode())
+
+	var preview = session.preview_item(item_id, Vector2i(2, 1), 0)
+	assert_false(preview.valid)
+	assert_eq(preview.failure_code, &"whole_layout_mode_active")
+	assert_false(session.commit_item_preview())
+	assert_false(session.rotate_item(item_id))
+	assert_false(session.move_item_to_buffer(item_id))
+
+	var pending = load(BAG_INSTANCE_PATH).new()
+	pending.definition_id = &"small_pouch"
+	assert_false(session.set_pending_bag(pending))
+	assert_null(session.pending_bag)
+	assert_eq(session.state.get_item(item_id).origin, Vector2i(1, 1))
+
+	session.exit_whole_layout_move_mode()
+	preview = session.preview_item(item_id, Vector2i(2, 1), 0)
+	assert_true(preview.valid)
+	assert_true(session.commit_item_preview())
+	assert_eq(session.state.get_item(item_id).origin, Vector2i(2, 1))
+
+
 func _session(committed_state):
 	var session = load(SESSION_PATH).new()
 	session.begin(committed_state, load(RESOLVER_PATH).new(), _item_defs(), _bag_defs(), &"")
