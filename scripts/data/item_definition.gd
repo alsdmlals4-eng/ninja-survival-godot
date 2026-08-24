@@ -11,7 +11,7 @@ const RunModifierSetScript = preload("res://scripts/data/run_modifier_set.gd")
 @export var effect_value: float = 0.0
 @export var school_payload: Dictionary = {}
 @export var footprint_size: Vector2i = Vector2i.ONE
-@export var static_modifier_payload: Dictionary = {}
+@export var static_modifier_payload: Dictionary[StringName, float] = {}
 @export var spatial_rules: Array[SpatialRuleDefinition] = []
 
 
@@ -30,9 +30,10 @@ func footprint(rotation_quarters: int) -> Array[Vector2i]:
 	return result
 
 
-func resolved_static_modifier_payload() -> Dictionary:
+func resolved_static_modifier_payload() -> Dictionary[StringName, float]:
 	if not static_modifier_payload.is_empty():
 		return static_modifier_payload.duplicate(true)
+	var payload: Dictionary[StringName, float] = {}
 	if RunModifierSetScript.is_supported_field(effect_kind):
-		return {effect_kind: effect_value}
-	return {}
+		payload[effect_kind] = effect_value
+	return payload
