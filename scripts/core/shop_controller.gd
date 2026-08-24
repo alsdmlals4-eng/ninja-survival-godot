@@ -65,8 +65,8 @@ func begin_rest() -> void:
 	_bag_bought_this_rest = false
 	rest_changes.clear()
 	var rolled: Dictionary = _roll_offer_bundle()
-	var rolled_ids: Array[StringName] = rolled.get("item_ids", [])
-	var rolled_lanes: Array[StringName] = rolled.get("lane_ids", [])
+	var rolled_ids: Array[StringName] = _string_name_array(rolled.get("item_ids", []))
+	var rolled_lanes: Array[StringName] = _string_name_array(rolled.get("lane_ids", []))
 	var rolled_bag: StringName = _roll_bag_offer() if _spatial_mode else &""
 	if rolled_ids.size() < 3 or (_spatial_mode and rolled_bag == &""):
 		offer_ids.clear()
@@ -158,8 +158,8 @@ func reroll() -> bool:
 		return false
 
 	var rolled: Dictionary = _roll_offer_bundle()
-	var rolled_ids: Array[StringName] = rolled.get("item_ids", [])
-	var rolled_lanes: Array[StringName] = rolled.get("lane_ids", [])
+	var rolled_ids: Array[StringName] = _string_name_array(rolled.get("item_ids", []))
+	var rolled_lanes: Array[StringName] = _string_name_array(rolled.get("lane_ids", []))
 	var rolled_bag: StringName = _roll_bag_offer() if _spatial_mode else bag_offer_id
 	if rolled_ids.size() < 3 or (_spatial_mode and rolled_bag == &""):
 		transaction_failed.emit("상점 후보가 부족합니다")
@@ -369,6 +369,13 @@ func _draw_distinct(pool: Array[StringName], count: int) -> Array[StringName]:
 		rolled.append(remaining[index])
 		remaining.remove_at(index)
 	return rolled
+
+
+func _string_name_array(raw_values) -> Array[StringName]:
+	var result: Array[StringName] = []
+	for raw_value in Array(raw_values):
+		result.append(StringName(raw_value))
+	return result
 
 
 func _record_change(action: String, item_id: StringName) -> void:
