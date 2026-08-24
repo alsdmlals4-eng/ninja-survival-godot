@@ -62,10 +62,12 @@ func eligible_pairs(state, resolution, combos: Dictionary) -> Array[Dictionary]:
 
 
 func hint_stage(combo_id: StringName, state, resolution, discovered: Dictionary, combos: Dictionary) -> int:
+	var combo = combos.get(combo_id)
+	if combo == null:
+		return HintStage.UNDISCOVERED
 	if bool(discovered.get(combo_id, false)) or _discovered_combinations.has(combo_id):
 		return HintStage.DISCOVERED
-	var combo = combos.get(combo_id)
-	if combo == null or state == null:
+	if state == null:
 		return HintStage.UNDISCOVERED
 	for pair in eligible_pairs(state, resolution, {combo_id: combo}):
 		if pair.get("combo_id") == combo_id:
