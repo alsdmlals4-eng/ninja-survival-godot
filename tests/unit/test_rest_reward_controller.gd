@@ -149,17 +149,17 @@ func test_shop_reroll_costs_five_ten_then_fifteen_and_keeps_distinct_offers() ->
 		return
 	bundle.controller.begin_rest(1, &"guiin", 0)
 	bundle.build_state.grant_gold(100)
-	var before := bundle.build_state.gold
+	var before: int = int(bundle.build_state.gold)
 	assert_true(bundle.controller.reroll_shop())
 	assert_eq(before - bundle.build_state.gold, 5)
 	assert_eq(_unique_count(bundle.controller.shop_item_options()), 3)
-	before = bundle.build_state.gold
+	before = int(bundle.build_state.gold)
 	assert_true(bundle.controller.reroll_shop())
 	assert_eq(before - bundle.build_state.gold, 10)
-	before = bundle.build_state.gold
+	before = int(bundle.build_state.gold)
 	assert_true(bundle.controller.reroll_shop())
 	assert_eq(before - bundle.build_state.gold, 15)
-	before = bundle.build_state.gold
+	before = int(bundle.build_state.gold)
 	assert_true(bundle.controller.reroll_shop())
 	assert_eq(before - bundle.build_state.gold, 15)
 
@@ -193,7 +193,7 @@ func test_new_rest_resets_one_bag_purchase_and_reroll_cost_but_preserves_chest_i
 	assert_true(bundle.controller.buy_shop_bag())
 	bundle.controller.begin_rest(2, &"bongma", 1)
 	assert_eq(bundle.controller.chest_count(), 1)
-	var before := bundle.build_state.gold
+	var before: int = int(bundle.build_state.gold)
 	assert_true(bundle.controller.reroll_shop())
 	assert_eq(before - bundle.build_state.gold, 5)
 	# Existing pending bag still has to be placed; a new rest cannot silently overwrite it.
