@@ -218,11 +218,16 @@ static func validate_items(items: Dictionary) -> Array[String]:
 			errors.append("Item key/id mismatch: %s != %s" % [item_id, definition.id])
 		if definition.footprint_size.x <= 0 or definition.footprint_size.y <= 0:
 			errors.append("Invalid footprint size: %s" % item_id)
+		if definition.effect_kind != &"" and definition.effect_kind != &"school_emblem" and not RunModifierSetScript.is_supported_field(definition.effect_kind):
+			errors.append("Unsupported legacy modifier %s on %s" % [definition.effect_kind, item_id])
 		if not definition.static_modifier_payload.is_empty() and RunModifierSetScript.is_supported_field(definition.effect_kind):
 			errors.append("Dual static modifier authority: %s" % item_id)
 		for field_name in definition.static_modifier_payload.keys():
 			if not RunModifierSetScript.is_supported_field(StringName(field_name)):
 				errors.append("Unsupported static modifier %s on %s" % [field_name, item_id])
+			var amount = definition.static_modifier_payload[field_name]
+			if typeof(amount) != TYPE_INT and typeof(amount) != TYPE_FLOAT:
+				errors.append("Non-numeric static modifier %s on %s" % [field_name, item_id])
 		for rule in definition.spatial_rules:
 			if rule == null:
 				errors.append("Null spatial rule on %s" % item_id)
@@ -234,6 +239,9 @@ static func validate_items(items: Dictionary) -> Array[String]:
 			for field_name in rule.modifier_payload.keys():
 				if not RunModifierSetScript.is_supported_field(StringName(field_name)):
 					errors.append("Unsupported spatial modifier %s on %s" % [field_name, item_id])
+				var amount = rule.modifier_payload[field_name]
+				if typeof(amount) != TYPE_INT and typeof(amount) != TYPE_FLOAT:
+					errors.append("Non-numeric spatial modifier %s on %s" % [field_name, item_id])
 
 	for result_id in COMBINATION_RESULT_IDS:
 		if BASE_ITEM_IDS.has(result_id):
