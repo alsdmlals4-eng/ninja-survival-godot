@@ -255,7 +255,7 @@ func current_resolution():
 	return _resolver.resolve(_state, _item_defs, _bag_defs, _selected_school_id)
 
 
-func begin_combination_transaction() -> bool:
+func _begin_combination_transaction() -> bool:
 	if _combination_transaction_active or input_mode != InputMode.NORMAL:
 		return false
 	if _state == null or _resolver == null:
@@ -266,11 +266,11 @@ func begin_combination_transaction() -> bool:
 	return true
 
 
-func cancel_combination_transaction() -> void:
+func _cancel_combination_transaction() -> void:
 	_combination_transaction_active = false
 
 
-func commit_combination_transaction(source_a_instance: int, source_b_instance: int, result_definition_id: StringName, origin: Vector2i, rotation_quarters: int = 0) -> int:
+func _commit_combination_transaction(source_a_instance: int, source_b_instance: int, result_definition_id: StringName, origin: Vector2i, rotation_quarters: int = 0) -> int:
 	if not _combination_transaction_active or input_mode != InputMode.NORMAL:
 		return 0
 	if _state == null or _resolver == null or source_a_instance <= 0 or source_b_instance <= 0:
