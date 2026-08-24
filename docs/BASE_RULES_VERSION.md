@@ -19,9 +19,9 @@ full_base_rule_sync: NOT_RUN
 selective_current_rule_read: PASS
 ```
 
-이 관찰값의 상세 rule read provenance는 T01 실행에서 만들어졌으며, T02/T03 후속 작업에서 Base 원격 전체 규칙을 다시 동기화했다고 해석하지 않는다. T03 시작 시 Base `main` SHA가 여전히 `2828a74f60c1ed09546171040f4178c8848ea686`임은 재확인했다.
+이 관찰값의 상세 rule read provenance는 T01 실행에서 만들어졌으며, T02/T03/T04 후속 작업에서 Base 원격 전체 규칙을 다시 동기화했다고 해석하지 않는다. T03 시작 시 Base `main` SHA가 여전히 `2828a74f60c1ed09546171040f4178c8848ea686`임은 재확인했다.
 
-이번 T01 실행에서 최신 Base의 현재 `AGENTS.md`, Work Mode/Skill routing, long-horizon execution, adversarial review/repository-audit, TDD/debugging/verification 원칙을 선택 적용했다. T02/T03는 현재 프로젝트 AGENTS/Decision/Phase-B와 설치된 Superpowers TDD/debugging/verification 규칙을 이어 적용했다.
+이번 T01 실행에서 최신 Base의 현재 `AGENTS.md`, Work Mode/Skill routing, long-horizon execution, adversarial review/repository-audit, TDD/debugging/verification 원칙을 선택 적용했다. T02/T03/T04는 현재 프로젝트 AGENTS/Decision/Phase-B와 설치된 Superpowers TDD/debugging/verification 규칙을 이어 적용했다.
 
 - latest user instruction -> project AGENTS/security/engine/data -> project Active Context/approved contract -> actual code/data/assets/tests -> adopted Base -> Base remote 순서.
 - L1 이상에서 current main / current decisions / open+recent merged PR / actual implementation을 먼저 대조.
@@ -58,10 +58,12 @@ selective_current_rule_read: PASS
 
 ```yaml
 mvp0_to_mvp3_runtime: INTEGRATED
-mvp4_spatial_production: T01_T02_T03_INTEGRATED
+mvp4_spatial_production: T01_T02_T03_T04_INTEGRATED
 backpack_state_runtime: INTEGRATED
 backpack_resolver_runtime: INTEGRATED
-rest_backpack_session_runtime: NOT_STARTED
+rest_backpack_session_runtime: INTEGRATED
+combination_transaction_runtime: NOT_STARTED
+committed_spatial_combat_integration: NOT_STARTED
 latest_product_canon: DEC014_025
 latest_encounter_canon: DEC026_APPROVED
 phase_b: PASS
@@ -71,9 +73,11 @@ t02_merge_sha: 126e6c942d74f97166ef0c881afc5d79cae3d274
 t02_final_evidence: GODOT_IMPORT_PASS_MAIN_SMOKE_PASS_GUT_274_OF_274_1915_ASSERTIONS_T02_11_OF_11
 t03_merge_sha: 2dcf055d82df02d44335f209897436572efa6739
 t03_final_evidence: GODOT_IMPORT_PASS_MAIN_SMOKE_PASS_GUT_292_OF_292_2026_ASSERTIONS_T03_18_OF_18
+t04_merge_sha: d07f16d6bae90a09bba0a5f0b8991216d006c966
+t04_final_evidence: GODOT_IMPORT_PASS_MAIN_SMOKE_PASS_GUT_309_OF_309_2202_ASSERTIONS_T04_17_OF_17
 school_circuit_runtime: NOT_STARTED
 dec026_encounter_runtime: NOT_STARTED
-next_implementation_gate: T04_REST_BACKPACK_SESSION
+next_implementation_gate: T05_COMBINATION_RESOLVER
 new_canon_human_qa: NOT_RUN
 ```
 
@@ -130,6 +134,26 @@ derived resolver
 ```
 
 이 원리도 현재 Base의 state ownership / evidence-first / adversarial review / TDD로 충분히 설명되므로 새 광역 Base rule로 자동 승격하지 않는다.
+
+## T04 실행 교훈
+
+T04는 bounded 6×6 REST 편집 상태에서 undo/redo를 구현할 때 **session-owned T02 state copy + deep-state edit snapshots**를 선택했다. Godot의 command-style `UndoRedo`나 별도 overlay/diff state도 비교했지만, 전자는 T05 이후 transaction의 inverse semantics가 복잡해지고 후자는 T02/T03 geometry authority를 중복시킬 위험이 있어 현재 범위에서는 기각했다.
+
+T04는 T02 private interiors에 접근하지 않고, 필요한 stable-ID board↔buffer/rebuild 경로를 owning `BackpackState`의 validated restore API로 추가했다. 또한 purchase/acquisition처럼 history에 들어가지 않는 변경 뒤에는 과거 edit history를 그대로 남기면 Undo가 비가역 변경을 논리적으로 건너뛸 수 있으므로 pending-bag acquisition에서 history barrier를 둔다.
+
+적대적 검토는 데이터 state뿐 아니라 **보이는 preview와 input/control state도 commit-readiness invariant에 포함돼야 한다**는 점을 실제 RED로 확인했다. 그 결과 `item_preview_pending`, `whole_layout_mode_active`를 명시적인 failure contract로 만들었고, whole-layout mode 중 per-item edit 진입도 차단했다.
+
+재사용 가능한 최소 원리:
+
+```text
+bounded edit session
+= committed source copy + defensive preview + atomic edit history
++ irreversible/non-history transition은 history boundary 명시
++ preview/input mode도 final commit invariant의 일부
++ private state 복원은 owner-validated API로만 수행
+```
+
+이 원리 역시 현재 Base의 state ownership / TDD / adversarial review / Implementation Reality 원칙으로 충분히 설명된다. T04 한 프로젝트 사례만으로 새 Base-wide 규칙을 자동 승격하지 않으며, 필요하면 별도 재사용성/충돌 검토를 거친다.
 
 ## 사용 규칙
 
