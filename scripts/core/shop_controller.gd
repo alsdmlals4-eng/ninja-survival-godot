@@ -181,18 +181,18 @@ func _buy_spatial_offer(index: int) -> bool:
 	if _build_state.gold < price:
 		transaction_failed.emit("GOLD가 부족합니다")
 		return false
-	if not _session.can_acquire_items_to_buffer([item_id]):
+	if not _session._can_acquire_items_to_buffer([item_id]):
 		transaction_failed.emit("작업 버퍼에 빈 칸이 없습니다")
 		return false
 
 	# Commit the session-side acquisition before GOLD emits its synchronous change signal.
 	# Validation above guarantees no observer can see a paid-but-not-yet-acquired half-state.
-	var created_ids: Array[int] = _session.acquire_items_to_buffer([item_id])
+	var created_ids: Array[int] = _session._acquire_items_to_buffer([item_id])
 	if created_ids.size() != 1:
 		transaction_failed.emit("구매 아이템을 작업 버퍼에 넣지 못했습니다")
 		return false
 	if not _build_state.try_spend_gold(price):
-		_session.remove_item_for_sale(created_ids[0])
+		_session._remove_item_for_sale(created_ids[0])
 		transaction_failed.emit("GOLD가 부족합니다")
 		return false
 	_record_change("구매", item_id)
@@ -211,7 +211,7 @@ func _sell_spatial_item(instance_id: int) -> bool:
 	if definition == null:
 		transaction_failed.emit("판매할 수 없습니다")
 		return false
-	var removed = _session.remove_item_for_sale(instance_id)
+	var removed = _session._remove_item_for_sale(instance_id)
 	if removed == null:
 		transaction_failed.emit("판매할 수 없습니다")
 		return false
