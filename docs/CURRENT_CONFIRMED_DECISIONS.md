@@ -251,6 +251,7 @@ final_t01_regression: 36_TEST_SCRIPTS_263_TESTS_1829_ASSERTIONS_PASS
 final_t02_regression: 37_TEST_SCRIPTS_274_TESTS_1915_ASSERTIONS_PASS
 final_t03_regression: 39_TEST_SCRIPTS_292_TESTS_2026_ASSERTIONS_PASS
 phase_b_readiness: PASS
+backpack_resolver_runtime: INTEGRATED
 rest_backpack_session_runtime: NOT_STARTED
 workbench_player_interaction: NOT_STARTED
 combination_transaction_runtime: NOT_STARTED
