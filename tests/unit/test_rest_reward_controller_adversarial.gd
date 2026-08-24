@@ -126,6 +126,26 @@ func test_session_has_no_public_generic_acquisition_or_sale_bypass() -> void:
 		assert_false(bundle.session.has_method(method_name), "REST transaction helper must remain an internal project contract: %s" % method_name)
 
 
+func test_failed_reroll_does_not_advance_seeded_rng_state() -> void:
+	var failed_first := _bundle(208)
+	var direct_success := _bundle(208)
+	failed_first.controller.begin_rest(1, &"guiin", 0)
+	direct_success.controller.begin_rest(1, &"guiin", 0)
+
+	var initial_items: Array[StringName] = failed_first.controller.shop_item_options()
+	var initial_bag: StringName = failed_first.controller.shop_bag_option()
+	assert_false(failed_first.controller.reroll_shop())
+	assert_eq(failed_first.controller.shop_item_options(), initial_items)
+	assert_eq(failed_first.controller.shop_bag_option(), initial_bag)
+
+	failed_first.build_state.grant_gold(100)
+	direct_success.build_state.grant_gold(100)
+	assert_true(failed_first.controller.reroll_shop())
+	assert_true(direct_success.controller.reroll_shop())
+	assert_eq(failed_first.controller.shop_item_options(), direct_success.controller.shop_item_options(), "A failed reroll must not consume future seeded item offers")
+	assert_eq(failed_first.controller.shop_bag_option(), direct_success.controller.shop_bag_option(), "A failed reroll must not consume the future seeded bag offer")
+
+
 func _bundle(seed: int) -> Dictionary:
 	return _bundle_with_defs(seed, _item_defs(), _bag_defs())
 
