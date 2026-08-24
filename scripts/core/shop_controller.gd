@@ -5,6 +5,7 @@ signal offers_changed(offer_ids: Array[StringName])
 signal transaction_failed(reason: String)
 
 const BagInstanceScript = preload("res://scripts/data/bag_instance.gd")
+const MVP4CatalogScript = preload("res://scripts/data/mvp4_catalog.gd")
 
 var offer_ids: Array[StringName] = []
 var bag_offer_id: StringName = &""
@@ -183,13 +184,16 @@ func _buy_spatial_offer(index: int) -> bool:
 	if not _session.can_acquire_items_to_buffer([item_id]):
 		transaction_failed.emit("작업 버퍼에 빈 칸이 없습니다")
 		return false
-	if not _build_state.try_spend_gold(price):
-		transaction_failed.emit("GOLD가 부족합니다")
-		return false
+
+	# Commit the session-side acquisition before GOLD emits its synchronous change signal.
+	# Validation above guarantees no observer can see a paid-but-not-yet-acquired half-state.
 	var created_ids: Array[int] = _session.acquire_items_to_buffer([item_id])
 	if created_ids.size() != 1:
-		_build_state.grant_gold(price)
 		transaction_failed.emit("구매 아이템을 작업 버퍼에 넣지 못했습니다")
+		return false
+	if not _build_state.try_spend_gold(price):
+		_session.remove_item_for_sale(created_ids[0])
+		transaction_failed.emit("GOLD가 부족합니다")
 		return false
 	_record_change("구매", item_id)
 	return true
@@ -233,16 +237,16 @@ func _roll_offers() -> Array[StringName]:
 	if _build_state == null or _rng == null:
 		return pool
 
-	for raw_id in _item_defs.keys():
-		var item_id := StringName(raw_id)
-		var definition = _item_defs.get(item_id)
-		if definition == null:
-			continue
-		if _spatial_mode:
-			if int(definition.base_price) > 0:
+	if _spatial_mode:
+		for item_id in MVP4CatalogScript.base_acquisition_item_ids():
+			if _item_defs.get(item_id) != null:
 				pool.append(item_id)
-		elif _build_state.item_count(item_id) < RunBuildState.MAX_DUPLICATE_ITEMS:
-			pool.append(item_id)
+	else:
+		for raw_id in _item_defs.keys():
+			var item_id := StringName(raw_id)
+			var definition = _item_defs.get(item_id)
+			if definition != null and _build_state.item_count(item_id) < RunBuildState.MAX_DUPLICATE_ITEMS:
+				pool.append(item_id)
 
 	if pool.size() < 3:
 		return []
@@ -254,10 +258,8 @@ func _roll_bag_offer() -> StringName:
 	if not _spatial_mode or _rng == null:
 		return &""
 	var pool: Array[StringName] = []
-	for raw_id in _bag_defs.keys():
-		var bag_id := StringName(raw_id)
-		var definition = _bag_defs.get(bag_id)
-		if definition != null and int(definition.base_price) > 0:
+	for bag_id in MVP4CatalogScript.purchasable_bag_ids():
+		if _bag_defs.get(bag_id) != null:
 			pool.append(bag_id)
 	if pool.is_empty():
 		return &""
