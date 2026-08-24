@@ -74,6 +74,22 @@ func test_restore_paths_preserve_shared_identity_and_are_atomic() -> void:
 	assert_eq(state.next_instance_id, 10, "Successful high-id restore must preserve monotonic future identity")
 
 
+func test_commit_gate_blocks_uncommitted_valid_item_preview() -> void:
+	var committed = _starting_state()
+	var item_id: int = committed.add_item(&"shuriken", Vector2i(1, 1))
+	assert_gt(item_id, 0)
+	var session = _session(committed)
+
+	var preview = session.preview_item(item_id, Vector2i(2, 1), 0)
+	assert_true(preview.valid)
+	assert_eq(session.state.get_item(item_id).origin, Vector2i(1, 1))
+	assert_eq(session.commit_failures(0, false, false), [&"item_preview_pending"])
+
+	assert_true(session.commit_item_preview())
+	assert_eq(session.commit_failures(0, false, false), [])
+	assert_eq(session.state.get_item(item_id).origin, Vector2i(2, 1))
+
+
 func _session(committed_state):
 	var session = load(SESSION_PATH).new()
 	session.begin(committed_state, load(RESOLVER_PATH).new(), _item_defs(), _bag_defs(), &"")
