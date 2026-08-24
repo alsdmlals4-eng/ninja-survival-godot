@@ -133,8 +133,8 @@ func test_remove_lookup_and_copy_are_value_isolated() -> void:
 func _starting_state():
 	if not ResourceLoader.exists(BACKPACK_STATE_PATH):
 		return null
-	var script = load(BACKPACK_STATE_PATH)
-	assert_true(script.has_method("create_starting_state"), "BackpackState must expose create_starting_state()")
-	if not script.has_method("create_starting_state"):
+	var seed = load(BACKPACK_STATE_PATH).new()
+	assert_true(seed.has_method("create_starting_state"), "BackpackState must expose create_starting_state()")
+	if not seed.has_method("create_starting_state"):
 		return null
-	return script.create_starting_state()
+	return seed.create_starting_state()
