@@ -105,6 +105,20 @@ func test_bag_move_remove_and_rotation_do_not_orphan_existing_items() -> void:
 	assert_not_null(state.get_item(item_id))
 
 
+func test_public_collection_views_cannot_mutate_committed_instances() -> void:
+	var state = _starting_state()
+	if state == null:
+		return
+	var item_id: int = state.add_item(&"taijutsu_training", Vector2i(1, 1))
+	var bag_id: int = state.add_bag(&"small_pouch", Vector2i(0, 0))
+	var item_view: Dictionary = state.items
+	var bag_view: Dictionary = state.bags
+	item_view[item_id].origin = Vector2i(4, 3)
+	bag_view[bag_id].origin = Vector2i(5, 5)
+	assert_eq(state.get_item(item_id).origin, Vector2i(1, 1), "Public item view must be defensive")
+	assert_eq(state.get_bag(bag_id).origin, Vector2i(0, 0), "Public bag view must be defensive")
+
+
 func test_remove_lookup_and_copy_are_value_isolated() -> void:
 	var state = _starting_state()
 	if state == null:
