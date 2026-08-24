@@ -15,9 +15,14 @@ t02_backpack_state: INTEGRATED
 t03_backpack_resolver: INTEGRATED
 t04_rest_backpack_session: INTEGRATED
 t05_combination_resolver: INTEGRATED
-next_product_gate: T06_COMMITTED_RUN_BUILD_STATE_MIGRATION
-mvp4_production_implementation: IN_PROGRESS_T01_T02_T03_T04_T05_INTEGRATED
-new_school_circuit_runtime: NOT_STARTED
+t06_to_t11_domain_surfaces: PRESENT_ON_MERGED_MAIN
+current_main_sha: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
+next_product_gate: T12_OPEN_DRAFT_REVIEW_ONLY
+mvp4_production_implementation: T01_TO_T11_DOMAIN_SURFACES_PRESENT_ON_MERGED_MAIN
+new_school_circuit_runtime: SOURCE_AND_TEST_SCOPE_ONLY
+playable_workbench_ui_input: NOT_RUN
+production_candidate_visual_audio_feedback: NOT_RUN
+human_device_validation: NOT_RUN
 ```
 
 This is the current mutable decision router. Historical detail remains in dated specs/plans/handoffs and merged PR history; do not use an older status sentence to override this file.
@@ -198,15 +203,15 @@ First release-near Vertical Slice target is **천술류** because the current MV
 
 DEC-026 does not claim runtime implementation or final-calamity full attack script completion.
 
-## 7. Phase-B implementation boundary — PASS
+## 7. Current implementation boundary — merged-main through T11
 
 Fresh review on merged main passed. Exact authority/file/test boundaries are recorded in:
 
 `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`.
 
-T01, T02, T03, T04 and T05 are merged. Remaining executable order:
+T01~T11 domain surfaces are represented in current merged `main`. The current head is `265bab32da087c070ea2ea0d98a3bdace1e10f7f` (`T11: add tradition access reward lanes`).
 
-`T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
+PR #43 (`T12: add atomic Workbench commit coordinator`) is an **open draft** from that baseline. It is read-only review evidence, not merged/executable authority.
 
 Key ownership:
 
@@ -215,7 +220,7 @@ Key ownership:
 - T03 spatial resolution: `BackpackResolver` + `BackpackResolution` for connected layout legality, orthogonal adjacency, special-bag overlap and deterministic spatial modifiers.
 - T04 pending REST edits: `RestBackpackSession` + `BuildPreviewSnapshot` for buffer/preview/history/whole-layout session responsibility.
 - T05 combinations: `CombinationResolver` for eligible orthogonal source pairs, progressive hints, pending result transaction and discovery.
-- T06 committed combat power: `RunBuildState` migration to one finalized spatial modifier snapshot without duplicate legacy item application;
+- T06+ current domain surfaces include `RunBuildState`, `RunRouteState`, encounter catalog/state, REST reward/shop boundaries, and tradition-access reward lanes; exact ownership must be read from current code/tests and merged history;
 - school route/clear order: `RunRouteState`;
 - Elite/Trace/Boss lifecycle: bounded stage encounter state/coordinator;
 - access/reward eligibility: one reward resolver;
@@ -224,7 +229,7 @@ Key ownership:
 - integration only: `MainController`;
 - normal spawn actuation only: `WaveSpawner`.
 
-Old T08-T12 remain historical/non-executable. Current replacement plan is `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md` and current traceability is `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`.
+The dated plan/traceability remains design context. It cannot by itself override current merged-main state or promote draft PR #43.
 
 ## 8. T01/T02/T03/T04/T05 implementation evidence
 
@@ -348,6 +353,6 @@ Do not promote T05 atomic-combination domain evidence to Workbench UI/committed 
 
 ## 11. Next gate
 
-**T06 — committed RunBuildState migration** from a fresh production branch off merged main.
+**T12 open-draft review only.** Read current `main`, PR #43, current code/tests, canon/traceability, and the evidence boundary before any mutation decision. Do not promote the draft to merged authority through this document.
 
-T06 makes a finalized T01~T05 backpack resolution the single committed spatial modifier input for combat while preventing duplicate application through the old MVP-3 owned-item path. Preserve rollback-compatible GOLD/sell/Fate behavior unless explicitly superseded. Do not pull T07 acquisition transactions, Workbench UI authority, route/trace/encounter runtime or Human evidence claims into T06.
+The T01~T11 source/test state does **not** prove playable Workbench input, production-quality image/animation/VFX/audio feedback, device readiness, or Human QA. Those remain `NOT_RUN` until separately executed and recorded.

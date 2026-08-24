@@ -109,13 +109,11 @@ Architecture direction:
 
 현재 구현:
 
-- **T01:** 19 base acquisition item, 3 combination-result lookup item, 1 starting 4x3 bag + 5 purchasable bag, 8 strong-spatial item data, 3 first-tier combination data와 modifier validation.
-- **T02:** 6x6 committed state, centered 4x3 starting area, stable item/bag instances, origin/quarter-turn rotation, atomic place/move/remove/rotate, item-item·bag-bag collision, active-area expansion/shrink, orphan prevention, defensive snapshot/copy isolation.
-- **T03:** connected active-layout validation, orthogonal adjacency pair, `SpatialRuleDefinition` aggregation, special-bag overlap activation, selected-school/static modifier snapshot, read-only candidate placement와 whole-layout translation preview.
-- **T04:** six-slot buffer, independent build preview snapshot, edit history/undo-redo, validated stable-ID board↔buffer round trip, explicit whole-layout mode, deterministic commit failure gate.
-- **T05:** on-board 직교 인접 recipe eligibility, `UNDISCOVERED → INGREDIENT_OWNED → READY → DISCOVERED`, source-preserving pending result, invalid/cancel no-op, 성공 시 exact 2→1 atomic replacement, discovery와 modal/defensive transaction 경계.
+- **T01~T05:** spatial data, committed backpack state, deterministic resolver, REST edit-session, atomic combination domain chain.
+- **T06~T11:** current `main`에 committed build/route/encounter/reward-shop/tradition-access domain code와 관련 unit/adversarial test surface가 존재한다. 상세 ownership은 `scripts/`·`tests/`와 현재 merged commit을 우선한다.
+- **T12:** draft PR #43 (`T12: add atomic Workbench commit coordinator`)이며 아직 병합/실행 권한으로 승격하지 않는다.
 
-다음 T06은 **REST에서 완성된 spatial/combination snapshot을 `RunBuildState`의 committed combat modifier authority로 이관**합니다. 기존 MVP-3 비공간 소유/판매/economy baseline을 한 번에 삭제하지 않고, T01~T05가 계산한 최종 committed build를 전투에 중복 적용 없이 연결하는 migration package로 진행합니다. Workbench UI authority나 T07 획득 transaction은 T06에 당겨오지 않습니다.
+위는 자동화·도메인 증거 경계다. **실제 플레이 가능한 Workbench 입력, 완성 후보 이미지·애니메이션/VFX·사운드 피드백, 기기 검증, Human QA는 모두 `NOT_RUN`**이며 T01~T11 완료 문구로 대체할 수 없다.
 
 ### 흔적 / 전승 접근
 
@@ -127,21 +125,16 @@ Architecture direction:
 
 ## 현재 개발 경계
 
-DEC-026은 승인됐고 fresh Phase-B가 PASS했다. T01~T05는 병합 완료됐으며 현재 production은 **T06 committed RunBuildState migration**부터 이어간다.
+DEC-026은 승인됐고 fresh Phase-B가 PASS했다. 현재 merged `main`의 도메인 증거는 **T11까지** 반영되어 있으며, 다음 검토 경계는 **`T12_OPEN_DRAFT_READ_ONLY`**다.
 
 ```text
-T01 Spatial Data Contracts · INTEGRATED
--> T02 BackpackState · INTEGRATED
--> T03 BackpackResolver · INTEGRATED
--> T04 RestBackpackSession · INTEGRATED
--> T05 CombinationResolver · INTEGRATED
--> T06 committed RunBuildState migration · NEXT
--> T07 acquisition transaction foundation
--> T08 ... T14 current post-DEC-026 migration packages
--> T15 Human QA gate
+T01~T05 spatial / REST / combination domain chain · MERGED_MAIN
+-> T06~T11 committed-build / route / encounter / reward-access domain surfaces · PRESENT_ON_MAIN
+-> T12 atomic Workbench commit coordinator · OPEN_DRAFT_READ_ONLY
+-> playable candidate UI + visual/audio feedback + device/Human QA · NOT_RUN
 ```
 
-과거 T08~T12 immediate-Boss/3세그먼트 조립 계획은 실행하지 않고 current post-DEC-026 traceability/plan을 사용한다.
+현재 문서는 draft PR를 병합·실행 가능 상태로 승격하지 않는다. 다음 작업 전에는 current `main`, draft PR, canon/traceability, 코드/테스트, 실제 증거 한계를 함께 재검토한다.
 
 ## 역사 실행 경로 주의
 
