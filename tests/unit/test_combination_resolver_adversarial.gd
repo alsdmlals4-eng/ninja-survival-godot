@@ -34,6 +34,52 @@ func test_session_has_no_public_recipe_bypass_methods() -> void:
 	assert_false(session.has_method("cancel_combination_transaction"), "Only CombinationResolver may close the pending recipe transaction")
 
 
+func test_pending_transaction_is_bound_to_original_session() -> void:
+	var committed = _starting_state()
+	var water_id: int = committed.add_item(&"water_style", Vector2i(1, 1))
+	var stealth_id: int = committed.add_item(&"stealth_art", Vector2i(2, 1))
+	var original_session = _session(committed)
+	var other_session = _session(committed)
+	var resolver = _combination_resolver()
+
+	assert_true(resolver.begin_result_preview(original_session, &"water_mist", water_id, stealth_id))
+	assert_false(resolver.commit_result(other_session, Vector2i(1, 1)))
+	resolver.cancel_result(other_session)
+	assert_true(original_session.combination_transaction_active)
+	assert_false(resolver.pending_result.is_empty())
+	assert_not_null(original_session.state.get_item(water_id))
+	assert_not_null(original_session.state.get_item(stealth_id))
+
+	resolver.cancel_result(original_session)
+	assert_false(original_session.combination_transaction_active)
+	assert_true(resolver.pending_result.is_empty())
+	assert_not_null(original_session.state.get_item(water_id))
+	assert_not_null(original_session.state.get_item(stealth_id))
+
+
+func test_reversed_source_arguments_are_canonicalized_without_identity_loss() -> void:
+	var committed = _starting_state()
+	var water_id: int = committed.add_item(&"water_style", Vector2i(1, 1))
+	var stealth_id: int = committed.add_item(&"stealth_art", Vector2i(2, 1))
+	var session = _session(committed)
+	var resolver = _combination_resolver()
+
+	assert_true(resolver.begin_result_preview(session, &"water_mist", stealth_id, water_id))
+	assert_eq(resolver.pending_result.get("source_a_instance"), water_id)
+	assert_eq(resolver.pending_result.get("source_b_instance"), stealth_id)
+	assert_true(resolver.commit_result(session, Vector2i(1, 1)))
+	assert_null(session.state.get_item(water_id))
+	assert_null(session.state.get_item(stealth_id))
+	assert_not_null(_find_definition(session.state, &"water_mist"))
+
+
+func _find_definition(state, definition_id: StringName):
+	for instance in state.items.values():
+		if instance.definition_id == definition_id:
+			return instance
+	return null
+
+
 func _combination_resolver():
 	return load(COMBINATION_RESOLVER_PATH).new()
 
