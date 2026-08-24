@@ -8,9 +8,17 @@ const BagInstanceScript = preload("res://scripts/data/bag_instance.gd")
 const BOARD_SIZE := Vector2i(6, 6)
 const STARTING_BAG_ORIGIN := Vector2i(1, 1)
 
-var bags: Dictionary = {}
-var items: Dictionary = {}
+var _bags: Dictionary = {}
+var _items: Dictionary = {}
 var next_instance_id: int = 1
+
+var bags: Dictionary:
+	get:
+		return _copy_bag_instances()
+
+var items: Dictionary:
+	get:
+		return _copy_item_instances()
 
 
 func create_starting_state():
@@ -30,7 +38,7 @@ func add_item(definition_id: StringName, origin: Vector2i, rotation_quarters: in
 	instance.definition_id = definition_id
 	instance.origin = origin
 	instance.rotation_quarters = rotation
-	items[instance.instance_id] = instance
+	_items[instance.instance_id] = instance
 	next_instance_id += 1
 	return instance.instance_id
 
@@ -44,13 +52,13 @@ func add_bag(definition_id: StringName, origin: Vector2i, rotation_quarters: int
 	instance.definition_id = definition_id
 	instance.origin = origin
 	instance.rotation_quarters = rotation
-	bags[instance.instance_id] = instance
+	_bags[instance.instance_id] = instance
 	next_instance_id += 1
 	return instance.instance_id
 
 
 func move_item(instance_id: int, new_origin: Vector2i) -> bool:
-	var instance = items.get(instance_id)
+	var instance = _items.get(instance_id)
 	if instance == null:
 		return false
 	if not _can_place_item(instance.definition_id, new_origin, instance.rotation_quarters, instance_id):
@@ -60,7 +68,7 @@ func move_item(instance_id: int, new_origin: Vector2i) -> bool:
 
 
 func rotate_item(instance_id: int) -> bool:
-	var instance = items.get(instance_id)
+	var instance = _items.get(instance_id)
 	if instance == null:
 		return false
 	var next_rotation := posmod(instance.rotation_quarters + 1, 4)
@@ -71,7 +79,7 @@ func rotate_item(instance_id: int) -> bool:
 
 
 func move_bag(instance_id: int, new_origin: Vector2i) -> bool:
-	var instance = bags.get(instance_id)
+	var instance = _bags.get(instance_id)
 	if instance == null:
 		return false
 	if not _can_place_bag(instance.definition_id, new_origin, instance.rotation_quarters, instance_id):
@@ -86,7 +94,7 @@ func move_bag(instance_id: int, new_origin: Vector2i) -> bool:
 
 
 func rotate_bag(instance_id: int) -> bool:
-	var instance = bags.get(instance_id)
+	var instance = _bags.get(instance_id)
 	if instance == null:
 		return false
 	var next_rotation := posmod(instance.rotation_quarters + 1, 4)
@@ -102,33 +110,33 @@ func rotate_bag(instance_id: int) -> bool:
 
 
 func remove_item(instance_id: int):
-	var instance = items.get(instance_id)
+	var instance = _items.get(instance_id)
 	if instance == null:
 		return null
-	items.erase(instance_id)
+	_items.erase(instance_id)
 	return instance.copy_value()
 
 
 func remove_bag(instance_id: int):
-	var instance = bags.get(instance_id)
+	var instance = _bags.get(instance_id)
 	if instance == null:
 		return null
 	var active_cells := _active_cells_with_replacement(instance_id, null)
 	if not _items_fit_active_cells(active_cells):
 		return null
-	bags.erase(instance_id)
+	_bags.erase(instance_id)
 	return instance.copy_value()
 
 
 func get_item(instance_id: int):
-	var instance = items.get(instance_id)
+	var instance = _items.get(instance_id)
 	if instance == null:
 		return null
 	return instance.copy_value()
 
 
 func get_bag(instance_id: int):
-	var instance = bags.get(instance_id)
+	var instance = _bags.get(instance_id)
 	if instance == null:
 		return null
 	return instance.copy_value()
@@ -141,12 +149,28 @@ func get_active_cells() -> Dictionary:
 func copy_value():
 	var copied = get_script().new()
 	copied.next_instance_id = next_instance_id
-	for raw_id in items.keys():
+	for raw_id in _items.keys():
 		var instance_id := int(raw_id)
-		copied.items[instance_id] = items[instance_id].copy_value()
-	for raw_id in bags.keys():
+		copied._items[instance_id] = _items[instance_id].copy_value()
+	for raw_id in _bags.keys():
 		var instance_id := int(raw_id)
-		copied.bags[instance_id] = bags[instance_id].copy_value()
+		copied._bags[instance_id] = _bags[instance_id].copy_value()
+	return copied
+
+
+func _copy_item_instances() -> Dictionary:
+	var copied := {}
+	for raw_id in _items.keys():
+		var instance_id := int(raw_id)
+		copied[instance_id] = _items[instance_id].copy_value()
+	return copied
+
+
+func _copy_bag_instances() -> Dictionary:
+	var copied := {}
+	for raw_id in _bags.keys():
+		var instance_id := int(raw_id)
+		copied[instance_id] = _bags[instance_id].copy_value()
 	return copied
 
 
@@ -190,11 +214,11 @@ func _can_place_bag(definition_id: StringName, origin: Vector2i, rotation_quarte
 func _occupied_item_cells(ignored_instance_id: int = -1) -> Dictionary:
 	var occupied := {}
 	var definitions: Dictionary = MVP4CatalogScript.build_items()
-	for raw_id in items.keys():
+	for raw_id in _items.keys():
 		var instance_id := int(raw_id)
 		if instance_id == ignored_instance_id:
 			continue
-		var instance = items[instance_id]
+		var instance = _items[instance_id]
 		var definition = definitions.get(instance.definition_id)
 		if definition == null:
 			continue
@@ -206,11 +230,11 @@ func _occupied_item_cells(ignored_instance_id: int = -1) -> Dictionary:
 func _occupied_bag_cells(ignored_instance_id: int = -1) -> Dictionary:
 	var occupied := {}
 	var definitions: Dictionary = MVP4CatalogScript.build_bags()
-	for raw_id in bags.keys():
+	for raw_id in _bags.keys():
 		var instance_id := int(raw_id)
 		if instance_id == ignored_instance_id:
 			continue
-		var instance = bags[instance_id]
+		var instance = _bags[instance_id]
 		var definition = definitions.get(instance.definition_id)
 		if definition == null:
 			continue
@@ -222,11 +246,11 @@ func _occupied_bag_cells(ignored_instance_id: int = -1) -> Dictionary:
 func _active_cells_with_replacement(replaced_instance_id: int, replacement) -> Dictionary:
 	var active := {}
 	var definitions: Dictionary = MVP4CatalogScript.build_bags()
-	for raw_id in bags.keys():
+	for raw_id in _bags.keys():
 		var instance_id := int(raw_id)
 		if instance_id == replaced_instance_id:
 			continue
-		var instance = bags[instance_id]
+		var instance = _bags[instance_id]
 		var definition = definitions.get(instance.definition_id)
 		if definition == null:
 			continue
@@ -244,7 +268,7 @@ func _active_cells_with_replacement(replaced_instance_id: int, replacement) -> D
 
 func _items_fit_active_cells(active_cells: Dictionary) -> bool:
 	var definitions: Dictionary = MVP4CatalogScript.build_items()
-	for instance in items.values():
+	for instance in _items.values():
 		var definition = definitions.get(instance.definition_id)
 		if definition == null:
 			return false
