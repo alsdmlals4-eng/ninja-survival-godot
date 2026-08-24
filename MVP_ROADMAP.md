@@ -13,12 +13,12 @@ MVP_0_BASIC_COMBAT: INTEGRATED
 MVP_1_COMBAT_DDD: INTEGRATED
 MVP_2_FOUR_SCHOOLS_SHALLOW: INTEGRATED
 MVP_3_RESULT_REST_SHOP_FATE: INTEGRATED_ROLLBACK_BASELINE
-MVP_4_BACKPACK_COMBINATION: T01_DATA_FOUNDATION_INTEGRATED_NEXT_T02
+MVP_4_BACKPACK_COMBINATION: T01_T02_INTEGRATED_NEXT_T03
 MVP_5_FINAL_LOOP_META: NOT_STARTED
 DEC014_025_MIGRATION_OVERLAY: DOCUMENTED_NOT_IMPLEMENTED
 DEC026_ENCOUNTER_PATTERN_BUDGET: APPROVED_NOT_IMPLEMENTED
 PHASE_B: PASS
-NEXT_IMPLEMENTATION_GATE: T02_BACKPACK_STATE
+NEXT_IMPLEMENTATION_GATE: T03_BACKPACK_RESOLVER
 RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 ```
 
@@ -84,7 +84,7 @@ RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 
 새 DEC 행동을 구현하는 TDD package에서 의도적으로 교체되기 전까지 해당 테스트를 보호한다.
 
-# MVP-4 — 백팩/조합 기초 · T01 INTEGRATED / T02 NEXT
+# MVP-4 — 백팩/조합 기초 · T01/T02 INTEGRATED / T03 NEXT
 
 목표:
 
@@ -126,22 +126,44 @@ Verification:
 
 `Godot 4.7.1 import PASS -> main smoke PASS -> GUT 263/263 PASS -> 1829 assertions PASS`.
 
-Evidence ceiling: **data foundation only**. Placement legality, adjacency resolution, REST editing and playable Workbench remain unimplemented.
+Evidence ceiling: **data foundation only**. Placement legality, adjacency resolution, REST editing and playable Workbench remain unimplemented at the T01 evidence level.
 
-## T02 — BackpackState · NEXT
+## T02 — BackpackState · INTEGRATED
 
-T02 owns committed spatial facts only:
+PR #29 merged as `126e6c942d74f97166ef0c881afc5d79cae3d274`.
 
-- 6x6 board state,
-- T01 starting 4x3 active area,
-- item/bag stable instance identity,
-- origin/rotation,
-- place/move/remove/rotate state transitions,
-- occupied-cell collision facts,
-- bag expansion state,
-- snapshot/copy isolation.
+Implemented:
 
-Do not move T03 adjacency/special-bag resolution, economy/Fate/UI or combat modifiers into T02.
+- `ItemInstance` / `BagInstance` value objects,
+- one committed `BackpackState` authority,
+- fixed 6x6 board and centered starting 4x3 active area,
+- shared monotonic item/bag instance ids,
+- origin and normalized 90-degree rotation,
+- atomic add/move/remove/rotate,
+- inactive-cell rejection and board bounds,
+- item-item / bag-bag collision rejection,
+- bag expansion/shrink active-area facts and orphan prevention,
+- defensive public collection snapshots and `copy_value()` isolation.
+
+Adversarial review found a live `items`/`bags` view mutation bypass and closed it before merge.
+
+Final exact-head verification:
+
+`Godot 4.7.1 import PASS -> main smoke PASS -> GUT 274/274 PASS -> 1915 assertions PASS -> T02 focused 11/11 PASS`.
+
+Evidence ceiling: **committed spatial-state domain engine only**. Adjacency/connectivity/special-bag resolution, REST editing, combinations, UI and Human play remain later gates.
+
+## T03 — BackpackResolver · NEXT
+
+T03 consumes T02 committed facts and owns deterministic spatial resolution:
+
+- connected usable layout legality required by the approved spatial spec,
+- orthogonal adjacency evaluation,
+- special-bag one-cell-overlap activation,
+- deterministic active spatial modifier resolution,
+- read-only resolution over committed state.
+
+Do not move REST session/buffer, GOLD/Fate/UI, combination transaction or final combat modifier authority into T03.
 
 # MVP-5 — 최종 Run / 결과 / Ninja Soul · NOT_STARTED
 
@@ -260,8 +282,8 @@ Four-school circuit 완료 뒤:
 
 ```text
 T01 Spatial Data Contracts · INTEGRATED
--> T02 BackpackState
--> T03 BackpackResolver
+-> T02 BackpackState · INTEGRATED
+-> T03 BackpackResolver · NEXT
 -> T04 RestBackpackSession
 -> T05 CombinationResolver
 -> T06 committed RunBuildState migration
@@ -273,7 +295,7 @@ T01 Spatial Data Contracts · INTEGRATED
 -> full-run QA / Android / export / release work
 ```
 
-새 package는 PR #27이 병합된 fresh `main`에서 시작한다.
+새 package는 PR #29가 병합된 fresh `main`에서 시작한다.
 
 # 현재 제외 / 후속
 

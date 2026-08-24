@@ -11,8 +11,9 @@ latest_phase_b: docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md
 current_migration_plan: docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md
 phase_b_verdict: PASS
 t01_spatial_data_contracts: INTEGRATED
-next_product_gate: T02_BACKPACK_STATE
-mvp4_production_implementation: IN_PROGRESS_T01_DATA_FOUNDATION_INTEGRATED
+t02_backpack_state: INTEGRATED
+next_product_gate: T03_BACKPACK_RESOLVER
+mvp4_production_implementation: IN_PROGRESS_T01_T02_INTEGRATED
 new_school_circuit_runtime: NOT_STARTED
 ```
 
@@ -43,8 +44,9 @@ Keep and regression-protect until deliberately replaced by approved TDD behavior
 - Godot 4.7.1 project/import/main-scene smoke path.
 - GUT 9.7.1 regression suite and source-fidelity / duplicate-UID CI guards.
 - **T01 spatial data foundation merged as PR #27 / `7c9206702526f99dfadf44a617cd150853ec733f`.**
+- **T02 committed BackpackState merged as PR #29 / `126e6c942d74f97166ef0c881afc5d79cae3d274`.**
 
-A green MVP-3 test does not mean the new DEC-014~026 Run is implemented. A green T01 test proves the data contracts/catalog foundation; it does not prove playable backpack behavior.
+A green MVP-3 test does not mean the new DEC-014~026 Run is implemented. T01 proves the spatial definitions/catalog foundation. T02 proves committed backpack spatial state primitives. Neither proves playable Workbench interaction or final combat integration.
 
 ## 3. Protected MVP-4 spatial decisions
 
@@ -66,7 +68,22 @@ Architecture direction remains:
 
 `Item/Bag definitions -> BackpackState -> BackpackResolver -> RestBackpackSession/CombinationResolver -> committed RunBuildState snapshot -> combat runtime`.
 
-T01 now implements the **definitions/catalog layer only**. `BackpackState` begins at T02.
+T01 implements the definitions/catalog layer. T02 implements the committed `BackpackState` layer. T03 is the next resolver layer.
+
+### T02 integrated contract
+
+`BackpackState` now owns:
+
+- fixed 6x6 board facts,
+- centered 4x3 starting active area from `starting_ninja_bag`,
+- shared stable item/bag instance identities,
+- origin and normalized quarter-turn rotation,
+- atomic add/move/remove/rotate state transitions,
+- item-item and bag-bag collision rejection,
+- active-area expansion/shrink facts with orphan prevention,
+- defensive collection views and deep-copy isolation.
+
+T02 does not own orthogonal adjacency scoring, bag connectivity rules, special-bag modifier resolution, REST pending edits, GOLD/Fate, combination transaction, Workbench UI or combat modifier migration.
 
 Detailed low-level spatial spec remains `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`.
 
@@ -125,14 +142,15 @@ Fresh review on merged main passed. Exact authority/file/test boundaries are rec
 
 `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`.
 
-T01 is now merged. Remaining executable order:
+T01 and T02 are merged. Remaining executable order:
 
-`T02 -> T03 -> T04 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
+`T03 -> T04 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
 
 Key ownership:
 
 - T01 definitions/catalog: `ItemDefinition`, `MVP4Catalog`, `BagDefinition`, `CombinationDefinition`, `SpatialRuleDefinition`.
-- spatial legality: BackpackState/BackpackResolver — starts T02/T03;
+- T02 committed spatial facts: `BackpackState`, `ItemInstance`, `BagInstance`.
+- T03 spatial resolution: BackpackResolver for connected layout legality, orthogonal adjacency, special-bag overlap and deterministic spatial modifiers.
 - pending REST edits: RestBackpackSession;
 - committed combat power: RunBuildState after T06;
 - school route/clear order: RunRouteState;
@@ -145,7 +163,9 @@ Key ownership:
 
 Old T08-T12 remain historical/non-executable. Current replacement plan is `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md` and current traceability is `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`.
 
-## 8. T01 implementation evidence
+## 8. T01/T02 implementation evidence
+
+### T01
 
 PR #27 merged to `main` as:
 
@@ -162,11 +182,26 @@ Final exact-head evidence before merge:
 
 A stricter exported typed-Dictionary experiment caused an actual import regression and was rejected. Current generic Dictionary storage is guarded by supported-key and numeric-value validation at the catalog boundary.
 
+### T02
+
+PR #29 merged as `126e6c942d74f97166ef0c881afc5d79cae3d274`.
+
+Final exact-head `60adbb99886c96c687b20befe4a61e5e3bcb71f1` evidence:
+
+- Godot 4.7.1 import PASS,
+- main-scene smoke PASS,
+- GUT `274/274` tests PASS,
+- `1915` assertions PASS,
+- T02 focused `11/11` PASS.
+
+Adversarial review found and fixed a live collection-view mutation bypass before merge; public item/bag views now return defensive snapshots.
+
 ## 9. Closed historical execution routes
 
 - PR #17 is closed and unmerged. Do not reopen/merge/treat it as prerequisite.
 - old `impl/mvp4-t01-spatial-data-contracts` is historical and not a production base.
-- PR #27 is merged T01 evidence; future packages start from fresh merged `main`.
+- PR #27 is merged T01 evidence.
+- PR #29 is merged T02 evidence.
 
 Historical PRs/handoffs remain evidence; they are not deleted.
 
@@ -175,10 +210,13 @@ Historical PRs/handoffs remain evidence; they are not deleted.
 ```yaml
 mvp0_to_mvp3: IMPLEMENTED_AUTOMATED_REGRESSION_BASELINE
 t01_spatial_data_contracts: IMPLEMENTED_AUTOMATED_REGRESSION_EVIDENCE
+t02_backpack_state: IMPLEMENTED_AUTOMATED_REGRESSION_EVIDENCE
 final_t01_regression: 36_TEST_SCRIPTS_263_TESTS_1829_ASSERTIONS_PASS
+final_t02_regression: 37_TEST_SCRIPTS_274_TESTS_1915_ASSERTIONS_PASS
 phase_b_readiness: PASS
-backpack_state_runtime: NOT_STARTED
 backpack_resolver_runtime: NOT_STARTED
+rest_backpack_session_runtime: NOT_STARTED
+workbench_player_interaction: NOT_STARTED
 school_circuit_runtime: NOT_STARTED
 trace_runtime: NOT_STARTED
 dec026_encounter_runtime: NOT_STARTED
@@ -187,10 +225,10 @@ android_device_qa: NOT_RUN
 export_release: NOT_READY
 ```
 
-Do not promote T01 data definitions, Phase-B PASS or implementation plans to playable backpack/runtime/Human PASS without executed evidence.
+Do not promote T02 domain-state evidence to adjacency/Workbench/combat/Human PASS without executed evidence.
 
 ## 11. Next gate
 
-**T02 — BackpackState** from a fresh production branch off merged main.
+**T03 — BackpackResolver** from a fresh production branch off merged main.
 
-T02 must own committed spatial facts and state transitions only: 6x6 board, T01 starting 4x3/bag/item definitions, stable instance identity, origin/rotation, placement/move/remove/rotate, collision facts, bag expansion state and snapshot isolation. Do not pull T03 resolver rules, GOLD/Fate/UI or combat modifier authority forward into T02.
+T03 owns deterministic spatial resolution over T02 committed facts: connected usable layout legality, orthogonal adjacency, special-bag one-cell-overlap activation and active spatial modifier resolution. Do not pull REST session/buffer, GOLD/Fate/UI, combination transaction or final combat authority into T03.
