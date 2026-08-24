@@ -155,7 +155,7 @@ func buffer_free_slots() -> int:
 	return maxi(BUFFER_CAPACITY - _buffer.size(), 0)
 
 
-func can_acquire_items_to_buffer(definition_ids: Array) -> bool:
+func _can_acquire_items_to_buffer(definition_ids: Array) -> bool:
 	if _combination_transaction_active or input_mode != InputMode.NORMAL or _state == null:
 		return false
 	if _pending_preview_state != null or definition_ids.is_empty():
@@ -168,9 +168,9 @@ func can_acquire_items_to_buffer(definition_ids: Array) -> bool:
 	return true
 
 
-func acquire_items_to_buffer(definition_ids: Array) -> Array[int]:
+func _acquire_items_to_buffer(definition_ids: Array) -> Array[int]:
 	var created_ids: Array[int] = []
-	if not can_acquire_items_to_buffer(definition_ids):
+	if not _can_acquire_items_to_buffer(definition_ids):
 		return created_ids
 
 	for raw_id in definition_ids:
@@ -190,7 +190,7 @@ func acquire_items_to_buffer(definition_ids: Array) -> Array[int]:
 	return created_ids
 
 
-func remove_item_for_sale(instance_id: int):
+func _remove_item_for_sale(instance_id: int):
 	if instance_id <= 0 or _combination_transaction_active or input_mode != InputMode.NORMAL or _state == null:
 		return null
 	if _pending_preview_state != null:
