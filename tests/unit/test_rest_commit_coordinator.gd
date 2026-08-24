@@ -22,7 +22,7 @@ func test_fate_choice_is_pending_until_atomic_commit() -> void:
 	var build_state = fixture.build_state
 	fate.begin_rest()
 	var fate_id: StringName = fate.candidate_ids[0]
-	assert_true(fate.choose(fate_id))
+	assert_true(fate.choose_pending(fate_id))
 	assert_eq(fate.selected_this_rest, fate_id)
 	assert_true(fate.can_continue())
 	assert_false(build_state.has_fate(fate_id), "Pending Fate must not mutate committed RunBuildState")
@@ -45,7 +45,7 @@ func test_missing_provisional_route_rejects_commit_without_mutating_any_committe
 		return
 	var fixture := _new_fixture(1205)
 	fixture.fate.begin_rest()
-	assert_true(fixture.fate.choose(fixture.fate.candidate_ids[0]))
+	assert_true(fixture.fate.choose_pending(fixture.fate.candidate_ids[0]))
 	var coordinator = _new_coordinator(fixture)
 	assert_true(coordinator.begin_rest(fixture.session))
 	var before := _committed_snapshot(fixture, coordinator)
@@ -58,7 +58,7 @@ func test_unresolved_workbench_buffer_rejects_commit_without_mutating_any_commit
 		return
 	var fixture := _new_fixture(1207)
 	fixture.fate.begin_rest()
-	assert_true(fixture.fate.choose(fixture.fate.candidate_ids[0]))
+	assert_true(fixture.fate.choose_pending(fixture.fate.candidate_ids[0]))
 	assert_true(fixture.route.set_provisional_next_school(&"cheonsul"))
 	assert_true(fixture.session.move_item_to_buffer(fixture.item_instance_id))
 	var coordinator = _new_coordinator(fixture)
@@ -77,7 +77,7 @@ func test_success_commits_final_backpack_fate_and_latest_provisional_route_exact
 	assert_true(fixture.session.commit_item_preview())
 	fixture.fate.begin_rest()
 	var fate_id: StringName = fixture.fate.candidate_ids[0]
-	assert_true(fixture.fate.choose(fate_id))
+	assert_true(fixture.fate.choose_pending(fate_id))
 	assert_true(fixture.route.set_provisional_next_school(&"cheonsul"))
 	assert_true(fixture.route.set_provisional_next_school(&"heukyeong"))
 
