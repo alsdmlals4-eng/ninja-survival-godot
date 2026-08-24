@@ -125,6 +125,13 @@ Stage budget:
 - Stage 3: one synergy/field layer, max 2 advanced gimmicks at once.
 - Stage 4: mastery mix + one Boss capstone, still max 2 advanced gimmicks at once.
 
+School encounter language:
+
+- 봉마: moving seals/proxies/barrier lanes -> mobile-space adaptation.
+- 천술: visible setup -> elemental reaction sequence.
+- 귀인: committed rush/proximity pressure -> readable recovery windows.
+- 흑영: visible threat/mark -> delayed execution and positioning priority.
+
 First release-near Vertical Slice target is **천술류** because the current MVP-2 status/reaction runtime is closest to the target philosophy.
 
 DEC-026 does not claim runtime implementation or final-calamity full attack script completion.
@@ -143,16 +150,16 @@ Key ownership:
 
 - T01 definitions/catalog: `ItemDefinition`, `MVP4Catalog`, `BagDefinition`, `CombinationDefinition`, `SpatialRuleDefinition`.
 - T02 committed spatial facts: `BackpackState`, `ItemInstance`, `BagInstance`.
-- T03 spatial resolution: `BackpackResolver` for connected layout legality, orthogonal adjacency, special-bag overlap and deterministic spatial modifiers.
-- pending REST edits: `RestBackpackSession`;
-- committed combat power: `RunBuildState` after T06;
-- school route/clear order: `RunRouteState`;
+- T03 spatial resolution: BackpackResolver for connected layout legality, orthogonal adjacency, special-bag overlap and deterministic spatial modifiers.
+- pending REST edits: RestBackpackSession;
+- committed combat power: RunBuildState after T06;
+- school route/clear order: RunRouteState;
 - Elite/Trace/Boss lifecycle: bounded stage encounter state/coordinator;
 - access/reward eligibility: one reward resolver;
-- pending Fate: `FateController`;
-- final all-or-none build+Fate+route commit: `RestCommitCoordinator`;
-- integration only: `MainController`;
-- normal spawn actuation only: `WaveSpawner`.
+- pending Fate: FateController;
+- final all-or-none build+Fate+route commit: RestCommitCoordinator;
+- integration only: MainController;
+- normal spawn actuation only: WaveSpawner.
 
 Old T08-T12 remain historical/non-executable. Current replacement plan is `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md` and current traceability is `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`.
 
@@ -160,14 +167,20 @@ Old T08-T12 remain historical/non-executable. Current replacement plan is `docs/
 
 ### T01
 
-PR #27 merged as `7c9206702526f99dfadf44a617cd150853ec733f`.
+PR #27 merged to `main` as:
 
-Final exact-head evidence:
+`7c9206702526f99dfadf44a617cd150853ec733f`.
+
+Final exact-head evidence before merge:
 
 - Godot 4.7.1 import PASS,
 - main-scene smoke PASS,
-- GUT `263/263` tests PASS,
-- `1829` assertions PASS.
+- full GUT `263/263` tests PASS,
+- `1829` assertions PASS,
+- existing MVP-3 item values and sell paths regression PASS,
+- new catalog/shape/bag/combination/modifier validation PASS.
+
+A stricter exported typed-Dictionary experiment caused an actual import regression and was rejected. Current generic Dictionary storage is guarded by supported-key and numeric-value validation at the catalog boundary.
 
 ### T02
 
@@ -198,6 +211,7 @@ Historical PRs/handoffs remain evidence; they are not deleted.
 mvp0_to_mvp3: IMPLEMENTED_AUTOMATED_REGRESSION_BASELINE
 t01_spatial_data_contracts: IMPLEMENTED_AUTOMATED_REGRESSION_EVIDENCE
 t02_backpack_state: IMPLEMENTED_AUTOMATED_REGRESSION_EVIDENCE
+final_t01_regression: 36_TEST_SCRIPTS_263_TESTS_1829_ASSERTIONS_PASS
 final_t02_regression: 37_TEST_SCRIPTS_274_TESTS_1915_ASSERTIONS_PASS
 phase_b_readiness: PASS
 backpack_resolver_runtime: NOT_STARTED
