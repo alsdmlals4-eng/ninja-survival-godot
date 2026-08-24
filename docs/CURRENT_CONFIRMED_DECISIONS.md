@@ -14,8 +14,9 @@ t01_spatial_data_contracts: INTEGRATED
 t02_backpack_state: INTEGRATED
 t03_backpack_resolver: INTEGRATED
 t04_rest_backpack_session: INTEGRATED
-next_product_gate: T05_COMBINATION_RESOLVER
-mvp4_production_implementation: IN_PROGRESS_T01_T02_T03_T04_INTEGRATED
+t05_combination_resolver: INTEGRATED
+next_product_gate: T06_COMMITTED_RUN_BUILD_STATE_MIGRATION
+mvp4_production_implementation: IN_PROGRESS_T01_T02_T03_T04_T05_INTEGRATED
 new_school_circuit_runtime: NOT_STARTED
 ```
 
@@ -49,8 +50,9 @@ Keep and regression-protect until deliberately replaced by approved TDD behavior
 - **T02 committed BackpackState merged as PR #29 / `126e6c942d74f97166ef0c881afc5d79cae3d274`.**
 - **T03 deterministic BackpackResolver merged as PR #31 / `2dcf055d82df02d44335f209897436572efa6739`.**
 - **T04 RestBackpackSession merged as PR #33 / `d07f16d6bae90a09bba0a5f0b8991216d006c966`.**
+- **T05 CombinationResolver merged as PR #35 / `8cefce75456f8b72a8f69559857676cca67a6c5d`.**
 
-A green MVP-3 test does not mean the new DEC-014~026 Run is implemented. T01 proves the spatial definitions/catalog foundation. T02 proves committed backpack spatial state primitives. T03 proves deterministic spatial resolution and read-only previews. T04 proves the REST edit-session domain engine. None proves playable Workbench UI or final committed combat integration.
+A green MVP-3 test does not mean the new DEC-014~026 Run is implemented. T01 proves the spatial definitions/catalog foundation. T02 proves committed backpack spatial state primitives. T03 proves deterministic spatial resolution and read-only previews. T04 proves the REST edit-session domain engine. T05 proves the first-tier atomic combination transaction. None proves playable Workbench UI or final committed spatial combat integration.
 
 ## 3. Protected MVP-4 spatial decisions
 
@@ -72,7 +74,7 @@ Architecture direction remains:
 
 `Item/Bag definitions -> BackpackState -> BackpackResolver -> RestBackpackSession/CombinationResolver -> committed RunBuildState snapshot -> combat runtime`.
 
-T01 implements the definitions/catalog layer. T02 implements the committed `BackpackState` layer. T03 implements the deterministic `BackpackResolver` layer. T04 implements the pending REST edit-session layer. T05 is the next explicit combination transaction layer.
+T01 implements the definitions/catalog layer. T02 implements the committed `BackpackState` layer. T03 implements the deterministic `BackpackResolver` layer. T04 implements the pending REST edit-session layer. T05 implements the explicit first-tier combination transaction layer. T06 is the next committed combat-authority migration layer.
 
 ### T02 integrated contract
 
@@ -109,7 +111,7 @@ T03 does not own the REST work buffer/history, combination transaction, GOLD/Fat
 
 ### T04 integrated contract
 
-`RestBackpackSession` now owns pending/edit-session state over T02/T03:
+`RestBackpackSession` owns pending/edit-session state over T02/T03:
 
 - copy-on-begin separation from committed source state,
 - exact six-slot work buffer,
@@ -122,7 +124,28 @@ T03 does not own the REST work buffer/history, combination transaction, GOLD/Fat
 - deterministic commit-readiness failure codes for non-empty buffer, pending bag, pending item preview, active whole-layout mode and invalid resolver state,
 - defensive public session/buffer/pending-bag/preview views.
 
-T04 does not own combination eligibility/result consumption, GOLD/Fate/economy orchestration, Workbench UI or final committed combat modifier migration.
+T04 does not own recipe eligibility/discovery, GOLD/Fate/economy orchestration, Workbench UI or final committed combat modifier migration.
+
+### T05 integrated contract
+
+`CombinationResolver` owns first-tier recipe interpretation over T01/T03/T04 facts:
+
+- valid orthogonally adjacent on-board source pairs only,
+- buffer sources are excluded,
+- deterministic `UNDISCOVERED / INGREDIENT_OWNED / READY / DISCOVERED` progression,
+- canonical recipe A/B instance ordering without changing stable source identity,
+- source-preserving pending result transaction,
+- invalid placement/cancel preserving both source instances,
+- successful result placement atomically consuming exactly two source instances once and creating exactly one result,
+- repeated commit protection and first-success discovery,
+- current recipe existence checked before historical discovery memory,
+- pending transaction blocks parallel backpack edits and later Fate commit,
+- successful combination clears edit history as an irreversible transaction while cancel preserves prior history,
+- pending/discovery outputs are defensive snapshots.
+
+State replacement remains in the owning `RestBackpackSession` through an underscore-prefixed internal project-contract bridge. GDScript does not enforce access privacy; therefore tests and ownership rules protect this boundary rather than claiming it is language-inaccessible.
+
+T05 does not own final committed combat modifier authority, GOLD/Fate/economy orchestration, Workbench UI/input, route or encounter logic.
 
 Detailed low-level spatial spec remains `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`.
 
@@ -181,9 +204,9 @@ Fresh review on merged main passed. Exact authority/file/test boundaries are rec
 
 `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`.
 
-T01, T02, T03 and T04 are merged. Remaining executable order:
+T01, T02, T03, T04 and T05 are merged. Remaining executable order:
 
-`T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
+`T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
 
 Key ownership:
 
@@ -191,8 +214,8 @@ Key ownership:
 - T02 committed spatial facts: `BackpackState`, `ItemInstance`, `BagInstance`.
 - T03 spatial resolution: `BackpackResolver` + `BackpackResolution` for connected layout legality, orthogonal adjacency, special-bag overlap and deterministic spatial modifiers.
 - T04 pending REST edits: `RestBackpackSession` + `BuildPreviewSnapshot` for buffer/preview/history/whole-layout session responsibility.
-- T05 combinations: `CombinationResolver` for eligible orthogonal source pairs, progressive hints and atomic pending result transaction.
-- committed combat power: `RunBuildState` after T06;
+- T05 combinations: `CombinationResolver` for eligible orthogonal source pairs, progressive hints, pending result transaction and discovery.
+- T06 committed combat power: `RunBuildState` migration to one finalized spatial modifier snapshot without duplicate legacy item application;
 - school route/clear order: `RunRouteState`;
 - Elite/Trace/Boss lifecycle: bounded stage encounter state/coordinator;
 - access/reward eligibility: one reward resolver;
@@ -203,7 +226,7 @@ Key ownership:
 
 Old T08-T12 remain historical/non-executable. Current replacement plan is `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md` and current traceability is `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`.
 
-## 8. T01/T02/T03/T04 implementation evidence
+## 8. T01/T02/T03/T04/T05 implementation evidence
 
 ### T01
 
@@ -266,6 +289,21 @@ Final exact-head `6972e14cfa94dcce4d372a632db6d5e74809ee62` evidence:
 
 Adversarial review verified the non-history acquisition/history boundary and stable-ID restore authority, then found/fixed three control-state gaps: uncommitted visible preview could pass commit readiness, whole-layout mode allowed per-item edits, and active whole-layout mode did not initially block later commit.
 
+### T05
+
+PR #35 merged as `8cefce75456f8b72a8f69559857676cca67a6c5d`.
+
+Final exact-head `d14ff2e8702d610de1678c22737982bd5b73e22a` evidence:
+
+- Base reuse manifest PASS,
+- Godot 4.7.1 import PASS,
+- main-scene smoke PASS,
+- GUT `329/329` tests PASS,
+- `2322` assertions PASS,
+- T05 focused `20/20` PASS.
+
+Adversarial review found/fixed two authority defects: public session transaction methods could bypass recipe authority, and stale discovery memory could resurrect a removed recipe. Additional adversarial cases verified exact-session ownership, canonical source ordering, modal collision rejection, cancel-history preservation, failed-commit ID preservation and defensive pending/discovery outputs.
+
 ## 9. Closed historical execution routes
 
 - PR #17 is closed and unmerged. Do not reopen/merge/treat it as prerequisite.
@@ -274,6 +312,7 @@ Adversarial review verified the non-history acquisition/history boundary and sta
 - PR #29 is merged T02 evidence.
 - PR #31 is merged T03 evidence.
 - PR #33 is merged T04 evidence.
+- PR #35 is merged T05 evidence.
 
 Historical PRs/handoffs remain evidence; they are not deleted.
 
@@ -285,15 +324,17 @@ t01_spatial_data_contracts: IMPLEMENTED_AUTOMATED_REGRESSION_EVIDENCE
 t02_backpack_state: IMPLEMENTED_AUTOMATED_REGRESSION_EVIDENCE
 t03_backpack_resolver: IMPLEMENTED_AUTOMATED_REGRESSION_EVIDENCE
 t04_rest_backpack_session: IMPLEMENTED_AUTOMATED_REGRESSION_EVIDENCE
+t05_combination_resolver: IMPLEMENTED_AUTOMATED_REGRESSION_EVIDENCE
 final_t01_regression: 36_TEST_SCRIPTS_263_TESTS_1829_ASSERTIONS_PASS
 final_t02_regression: 37_TEST_SCRIPTS_274_TESTS_1915_ASSERTIONS_PASS
 final_t03_regression: 39_TEST_SCRIPTS_292_TESTS_2026_ASSERTIONS_PASS
 final_t04_regression: 41_TEST_SCRIPTS_309_TESTS_2202_ASSERTIONS_PASS
+final_t05_regression: 43_TEST_SCRIPTS_329_TESTS_2322_ASSERTIONS_PASS
 phase_b_readiness: PASS
 backpack_resolver_runtime: INTEGRATED
 rest_backpack_session_runtime: INTEGRATED
+combination_transaction_runtime: INTEGRATED
 workbench_player_interaction: NOT_STARTED
-combination_transaction_runtime: NOT_STARTED
 committed_spatial_combat_integration: NOT_STARTED
 school_circuit_runtime: NOT_STARTED
 trace_runtime: NOT_STARTED
@@ -303,10 +344,10 @@ android_device_qa: NOT_RUN
 export_release: NOT_READY
 ```
 
-Do not promote T04 edit-session domain evidence to combination/Workbench UI/combat/Human PASS without executed evidence.
+Do not promote T05 atomic-combination domain evidence to Workbench UI/committed combat/Human PASS without executed evidence.
 
 ## 11. Next gate
 
-**T05 — CombinationResolver** from a fresh production branch off merged main.
+**T06 — committed RunBuildState migration** from a fresh production branch off merged main.
 
-T05 owns first-tier combination eligibility/progressive hints and an atomic pending-result transaction over T02/T03/T04. Source items remain untouched until result placement succeeds; invalid placement/cancel preserves both sources; a successful commit consumes exactly two sources once and creates one result. Do not pull GOLD/Fate/economy, Workbench UI authority or T06 final committed combat authority into T05.
+T06 makes a finalized T01~T05 backpack resolution the single committed spatial modifier input for combat while preventing duplicate application through the old MVP-3 owned-item path. Preserve rollback-compatible GOLD/sell/Fate behavior unless explicitly superseded. Do not pull T07 acquisition transactions, Workbench UI authority, route/trace/encounter runtime or Human evidence claims into T06.
