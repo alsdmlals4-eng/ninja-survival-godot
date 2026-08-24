@@ -19,9 +19,9 @@ full_base_rule_sync: NOT_RUN
 selective_current_rule_read: PASS
 ```
 
-이 관찰값의 상세 rule read provenance는 T01 실행에서 만들어졌으며, T02/T03/T04 후속 작업에서 Base 원격 전체 규칙을 다시 동기화했다고 해석하지 않는다. T03 시작 시 Base `main` SHA가 여전히 `2828a74f60c1ed09546171040f4178c8848ea686`임은 재확인했다.
+이 관찰값의 상세 rule read provenance는 T01 실행에서 만들어졌으며, T02/T03/T04/T05 후속 작업에서 Base 원격 전체 규칙을 다시 동기화했다고 해석하지 않는다. T03 시작 시 Base `main` SHA가 여전히 `2828a74f60c1ed09546171040f4178c8848ea686`임은 재확인했다.
 
-이번 T01 실행에서 최신 Base의 현재 `AGENTS.md`, Work Mode/Skill routing, long-horizon execution, adversarial review/repository-audit, TDD/debugging/verification 원칙을 선택 적용했다. T02/T03/T04는 현재 프로젝트 AGENTS/Decision/Phase-B와 설치된 Superpowers TDD/debugging/verification 규칙을 이어 적용했다.
+이번 T01 실행에서 최신 Base의 현재 `AGENTS.md`, Work Mode/Skill routing, long-horizon execution, adversarial review/repository-audit, TDD/debugging/verification 원칙을 선택 적용했다. T02/T03/T04/T05는 현재 프로젝트 AGENTS/Decision/Phase-B와 설치된 Superpowers TDD/debugging/verification 규칙을 이어 적용했다.
 
 - latest user instruction -> project AGENTS/security/engine/data -> project Active Context/approved contract -> actual code/data/assets/tests -> adopted Base -> Base remote 순서.
 - L1 이상에서 current main / current decisions / open+recent merged PR / actual implementation을 먼저 대조.
@@ -58,11 +58,11 @@ selective_current_rule_read: PASS
 
 ```yaml
 mvp0_to_mvp3_runtime: INTEGRATED
-mvp4_spatial_production: T01_T02_T03_T04_INTEGRATED
+mvp4_spatial_production: T01_T02_T03_T04_T05_INTEGRATED
 backpack_state_runtime: INTEGRATED
 backpack_resolver_runtime: INTEGRATED
 rest_backpack_session_runtime: INTEGRATED
-combination_transaction_runtime: NOT_STARTED
+combination_transaction_runtime: INTEGRATED
 committed_spatial_combat_integration: NOT_STARTED
 latest_product_canon: DEC014_025
 latest_encounter_canon: DEC026_APPROVED
@@ -75,9 +75,11 @@ t03_merge_sha: 2dcf055d82df02d44335f209897436572efa6739
 t03_final_evidence: GODOT_IMPORT_PASS_MAIN_SMOKE_PASS_GUT_292_OF_292_2026_ASSERTIONS_T03_18_OF_18
 t04_merge_sha: d07f16d6bae90a09bba0a5f0b8991216d006c966
 t04_final_evidence: GODOT_IMPORT_PASS_MAIN_SMOKE_PASS_GUT_309_OF_309_2202_ASSERTIONS_T04_17_OF_17
+t05_merge_sha: 8cefce75456f8b72a8f69559857676cca67a6c5d
+t05_final_evidence: GODOT_IMPORT_PASS_MAIN_SMOKE_PASS_GUT_329_OF_329_2322_ASSERTIONS_T05_20_OF_20
 school_circuit_runtime: NOT_STARTED
 dec026_encounter_runtime: NOT_STARTED
-next_implementation_gate: T05_COMBINATION_RESOLVER
+next_implementation_gate: T06_COMMITTED_RUN_BUILD_STATE_MIGRATION
 new_canon_human_qa: NOT_RUN
 ```
 
@@ -154,6 +156,29 @@ bounded edit session
 ```
 
 이 원리 역시 현재 Base의 state ownership / TDD / adversarial review / Implementation Reality 원칙으로 충분히 설명된다. T04 한 프로젝트 사례만으로 새 Base-wide 규칙을 자동 승격하지 않으며, 필요하면 별도 재사용성/충돌 검토를 거친다.
+
+## T05 실행 교훈
+
+T05는 recipe interpretation과 state mutation을 분리했다. `CombinationResolver`는 **현재 recipe/eligibility/hint/pending/discovery**를 소유하고, 실제 source→result state replacement는 `RestBackpackSession`이 candidate copy에서 수행한 뒤 T03 resolve가 성공한 경우에만 swap한다. 이로써 실패한 result placement는 source, pending state, future instance ID를 모두 보존한다.
+
+첫 GREEN 뒤 적대적 검토에서 session에 공개된 combination transaction 메서드가 recipe 검증을 우회해 임의 source/result 치환에 사용될 수 있음을 RED로 재현했다. 메서드를 underscore-prefixed internal project contract로 축소했지만, **GDScript는 이를 언어 차원에서 private로 강제하지 않는다.** 따라서 이 경계는 naming/ownership/test contract이며 보안 격리로 과장하지 않는다.
+
+또한 오래된 discovery memory를 current recipe existence보다 먼저 신뢰하면 삭제된 recipe가 `DISCOVERED`로 되살아나는 authority inversion이 RED로 발견됐다. 현재 recipe authority를 먼저 확인하도록 순서를 고쳐 fail-closed로 닫았다.
+
+재사용 가능한 최소 원리:
+
+```text
+domain transaction
+= current rule authority validates eligibility
++ owning state object performs candidate-copy mutation
++ success only after full validation/resolve
++ failure consumes no identity and mutates nothing
++ irreversible success is a history barrier; cancel/no-op preserves history
++ stale memory/history never outranks current definition authority
++ public pending/result views are defensive snapshots
+```
+
+이 역시 기존 Base의 single-source ownership / TDD / adversarial review / fail-closed / Implementation Reality 원칙으로 설명 가능하다. T05 한 사례만으로 새 Base-wide 규칙을 자동 승격하지 않으며, 별도 재사용성·충돌 검토 전에는 project-local lesson으로 유지한다.
 
 ## 사용 규칙
 
