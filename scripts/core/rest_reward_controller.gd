@@ -5,6 +5,7 @@ signal rewards_changed
 signal transaction_failed(reason: StringName)
 
 const ShopControllerScript = preload("res://scripts/core/shop_controller.gd")
+const MVP4CatalogScript = preload("res://scripts/data/mvp4_catalog.gd")
 
 var _build_state: RunBuildState
 var _session = null
@@ -199,10 +200,8 @@ func _roll_boss_rewards(selected_school_id: StringName) -> Array[StringName]:
 
 func _base_item_pool() -> Array[StringName]:
 	var pool: Array[StringName] = []
-	for raw_id in _item_defs.keys():
-		var item_id := StringName(raw_id)
-		var definition = _item_defs.get(item_id)
-		if definition != null and int(definition.base_price) > 0:
+	for item_id in MVP4CatalogScript.base_acquisition_item_ids():
+		if _item_defs.get(item_id) != null:
 			pool.append(item_id)
 	pool.sort_custom(func(a, b): return str(a) < str(b))
 	return pool
