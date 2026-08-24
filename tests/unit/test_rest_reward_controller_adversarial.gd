@@ -50,13 +50,13 @@ func test_paid_item_is_present_before_gold_changed_observers_run() -> void:
 func test_batch_acquisition_failure_preserves_buffer_and_instance_cursor() -> void:
 	var bundle := _bundle(203)
 	var next_before: int = bundle.session.state.next_instance_id
-	assert_false(bundle.session.can_acquire_items_to_buffer([&"shuriken", &"missing_item"]))
-	var failed_ids: Array[int] = bundle.session.acquire_items_to_buffer([&"shuriken", &"missing_item"])
+	assert_false(bundle.session._can_acquire_items_to_buffer([&"shuriken", &"missing_item"]))
+	var failed_ids: Array[int] = bundle.session._acquire_items_to_buffer([&"shuriken", &"missing_item"])
 	assert_true(failed_ids.is_empty())
 	assert_eq(bundle.session.buffer.size(), 0)
 	assert_eq(bundle.session.state.next_instance_id, next_before)
 
-	var created_ids: Array[int] = bundle.session.acquire_items_to_buffer([&"shuriken", &"water_style"])
+	var created_ids: Array[int] = bundle.session._acquire_items_to_buffer([&"shuriken", &"water_style"])
 	assert_eq(created_ids, [next_before, next_before + 1])
 	assert_eq(bundle.session.state.next_instance_id, next_before + 2)
 
