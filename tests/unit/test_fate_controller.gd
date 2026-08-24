@@ -24,7 +24,7 @@ func test_begin_rest_offers_three_unique_unselected_fates() -> void:
 	assert_false(fate.can_continue())
 
 
-func test_choose_requires_current_candidate_and_only_one_pending_choice_per_rest() -> void:
+func test_choose_keeps_legacy_immediate_commit_for_current_main_controller() -> void:
 	var fixture := _new_fixture(37)
 	if fixture.is_empty():
 		return
@@ -37,7 +37,7 @@ func test_choose_requires_current_candidate_and_only_one_pending_choice_per_rest
 	assert_true(fate.choose(chosen))
 	assert_true(fate.can_continue())
 	assert_eq(fate.selected_this_rest, chosen)
-	assert_false(state.has_fate(chosen), "DEC-025 keeps Fate pending until atomic Workbench commit")
+	assert_true(state.has_fate(chosen), "Legacy MainController compatibility must keep immediate Fate commit until T13 migration")
 	var selected_count: int = state.selected_fates.size()
 	var second: StringName = fate.candidate_ids[1]
 	assert_false(fate.choose(second))
@@ -45,7 +45,25 @@ func test_choose_requires_current_candidate_and_only_one_pending_choice_per_rest
 	assert_false(state.has_fate(second))
 
 
-func test_new_rest_resets_pending_choice_and_excludes_committed_fate() -> void:
+func test_choose_pending_keeps_fate_uncommitted_for_t12_atomic_commit() -> void:
+	var fixture := _new_fixture(39)
+	if fixture.is_empty():
+		return
+	var state = fixture.state
+	var fate = fixture.fate
+	fate.begin_rest()
+	var chosen: StringName = fate.candidate_ids[0]
+	var second: StringName = fate.candidate_ids[1]
+	assert_true(fate.choose_pending(chosen))
+	assert_true(fate.can_continue())
+	assert_eq(fate.selected_this_rest, chosen)
+	assert_false(state.has_fate(chosen), "T12 pending path must not mutate committed RunBuildState")
+	assert_true(fate._can_commit_pending())
+	assert_false(fate.choose_pending(second))
+	assert_false(state.has_fate(second))
+
+
+func test_new_rest_resets_local_choice_and_excludes_previous_legacy_fate() -> void:
 	var fixture := _new_fixture(41)
 	if fixture.is_empty():
 		return
@@ -54,14 +72,29 @@ func test_new_rest_resets_pending_choice_and_excludes_committed_fate() -> void:
 	fate.begin_rest()
 	var first: StringName = fate.candidate_ids[0]
 	assert_true(fate.choose(first))
-	assert_false(state.has_fate(first))
-	assert_true(state.select_fate(first), "Fixture simulates the external T12 commit boundary")
+	assert_true(state.has_fate(first))
 	fate.begin_rest()
 	assert_eq(fate.selected_this_rest, &"")
 	assert_false(fate.can_continue())
 	assert_false(fate.candidate_ids.has(first))
 	assert_eq(fate.candidate_ids.size(), 3)
 	assert_eq(_unique_count(fate.candidate_ids), 3)
+
+
+func test_begin_rest_discards_abandoned_pending_choice_without_committing_it() -> void:
+	var fixture := _new_fixture(42)
+	if fixture.is_empty():
+		return
+	var state = fixture.state
+	var fate = fixture.fate
+	fate.begin_rest()
+	var abandoned: StringName = fate.candidate_ids[0]
+	assert_true(fate.choose_pending(abandoned))
+	assert_true(fate._can_commit_pending())
+	fate.begin_rest()
+	assert_false(state.has_fate(abandoned))
+	assert_eq(fate.selected_this_rest, &"")
+	assert_false(fate._can_commit_pending())
 
 
 func test_third_rest_offers_exact_three_remaining_fates() -> void:
@@ -92,6 +125,7 @@ func test_already_selected_fate_cannot_be_selected_again_even_if_requested() -> 
 	assert_true(state.select_fate(&"shadow_path"))
 	fate.begin_rest()
 	assert_false(fate.choose(&"shadow_path"))
+	assert_false(fate.choose_pending(&"shadow_path"))
 	assert_eq(state.selected_fates.size(), 1)
 	assert_false(fate.can_continue())
 
