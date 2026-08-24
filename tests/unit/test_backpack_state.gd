@@ -57,6 +57,37 @@ func test_invalid_item_placement_rejects_inactive_cells_and_collision_without_co
 	assert_eq(state.add_item(&"fortune_talisman", Vector2i(2, 1)), 3)
 
 
+func test_unknown_definitions_and_instance_ids_are_atomic_noops() -> void:
+	var state = _starting_state()
+	if state == null:
+		return
+	var next_id_before := state.next_instance_id
+	assert_eq(state.add_item(&"not_an_item", Vector2i(1, 1)), 0)
+	assert_eq(state.add_bag(&"not_a_bag", Vector2i(0, 0)), 0)
+	assert_eq(state.next_instance_id, next_id_before)
+	assert_false(state.move_item(999, Vector2i(1, 1)))
+	assert_false(state.rotate_item(999))
+	assert_null(state.remove_item(999))
+	assert_null(state.get_item(999))
+	assert_false(state.move_bag(999, Vector2i(0, 0)))
+	assert_false(state.rotate_bag(999))
+	assert_null(state.remove_bag(999))
+	assert_null(state.get_bag(999))
+	assert_eq(state.next_instance_id, next_id_before)
+
+
+func test_rotation_inputs_normalize_to_quarter_turns() -> void:
+	var state = _starting_state()
+	if state == null:
+		return
+	var katana_id: int = state.add_item(&"katana", Vector2i(1, 1), 5)
+	var pouch_id: int = state.add_bag(&"small_pouch", Vector2i(0, 4), -1)
+	assert_gt(katana_id, 0)
+	assert_gt(pouch_id, 0)
+	assert_eq(state.get_item(katana_id).rotation_quarters, 1)
+	assert_eq(state.get_bag(pouch_id).rotation_quarters, 3)
+
+
 func test_item_move_and_rotation_are_atomic_against_collision_and_active_area() -> void:
 	var state = _starting_state()
 	if state == null:
