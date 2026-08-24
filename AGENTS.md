@@ -95,30 +95,33 @@ Full current detail:
 - MVP-3 result/GOLD/Shop/Fate/three-segment runtime: integrated rollback/regression baseline.
 - **MVP-4 T01 spatial data contracts/catalog: integrated.**
 - **MVP-4 T02 BackpackState committed spatial state: integrated.**
-- BackpackResolver / REST spatial editing / Workbench interaction: not started.
+- **MVP-4 T03 BackpackResolver deterministic spatial resolution: integrated.**
+- REST spatial editing / six-slot buffer / Workbench interaction: not started.
 - DEC-014~025 school-circuit/trace/final-calamity runtime: not started.
 - DEC-026 encounter/pattern runtime: not started.
 - release-near Vertical Slice human QA for current canon: NOT_RUN.
 
-T01 proves the data foundation. T02 proves committed spatial-state primitives. Neither proves adjacency resolution, playable Workbench interaction or Human experience.
+T01 proves the data foundation. T02 proves committed spatial-state primitives. T03 proves deterministic connectivity/adjacency/special-bag/spatial-modifier resolution and read-only previews. None proves playable Workbench interaction, committed combat integration or Human experience.
 
 T01 merged as PR #27 / `7c9206702526f99dfadf44a617cd150853ec733f`. Exact final PR-head evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `263/263` tests and `1829` assertions PASS.
 
 T02 merged as PR #29 / `126e6c942d74f97166ef0c881afc5d79cae3d274`. Exact final PR-head `60adbb99886c96c687b20befe4a61e5e3bcb71f1` evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `274/274` tests and `1915` assertions PASS, T02 focused `11/11` PASS.
 
+T03 merged as PR #31 / `2dcf055d82df02d44335f209897436572efa6739`. Exact final PR-head `e0dacee9048a01e799012b8aca12760e07ca47ea` evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `292/292` tests and `2026` assertions PASS, T03 focused `18/18` PASS.
+
 ## 6. Current planning / implementation gate
 
 DEC-026 is **APPROVED** and the fresh post-DEC-026 Phase-B Definition of Ready is **PASS**.
 
-T01 and T02 are complete. Current production execution begins at:
+T01, T02 and T03 are complete. Current production execution begins at:
 
-**T03 — BackpackResolver, from fresh merged `main`, TDD first.**
+**T04 — RestBackpackSession, from fresh merged `main`, TDD first.**
 
 Remaining executable order:
 
-`T03 -> T04 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
+`T04 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
 
-Do not jump directly to T08. Do not pull T04 REST session/economy/Fate/UI/combination or T06 combat modifier authority into T03.
+Do not jump directly to T08. Do not pull T05 combination transactions, GOLD/Fate/economy or T06 committed combat modifier authority into T04.
 
 Current planning owners:
 
@@ -159,10 +162,24 @@ A stricter exported typed-Dictionary experiment caused an actual Godot import re
 
 Adversarial review found and fixed a live collection-view mutation bypass before merge.
 
-### Next T03-T07 direction
+### Integrated T03
 
-- T03 `BackpackResolver`: connected-layout legality, orthogonal adjacency, special-bag one-cell-overlap activation and deterministic active spatial modifier resolution over committed state
-- T04 `RestBackpackSession`
+- `BackpackResolution` is a copied result value with validity/failure metadata, active/item cells, canonical adjacency pairs, special-bag hits and a derived `RunModifierSet`
+- `BackpackResolver` reads T02 defensive snapshots and does not mutate committed state
+- 4-neighbor BFS enforces connected active-cell layouts
+- item adjacency is orthogonal and canonical once per distinct item pair even across multiple touching edges
+- T01 spatial rules remain data-driven with `ANY` selector semantics and `PER_DISTINCT_NEIGHBOR` caps
+- one neighbor matching both tag and explicit definition id counts once
+- special-bag effects activate on one-cell-or-more overlap and apply once per distinct bag instance
+- static payload and selected-school emblem payload are resolved into deterministic modifier snapshots
+- candidate item/bag placement and whole-layout translation previews are read-only/all-or-nothing
+- corrupt/missing definition inputs fail closed; failure cells and snapshots are deterministic
+
+Adversarial review found and fixed a diagnostic contract defect where null state was initially reported as `missing_candidate`; state/candidate failures are now distinct.
+
+### Next T04-T07 direction
+
+- T04 `RestBackpackSession`: six-slot buffer, pending/edit preview state, history/undo-redo and explicit whole-layout move mode over T02/T03
 - T05 `CombinationResolver`
 - T06 committed `RunBuildState` modifier migration
 - T07 reward/shop/chest transaction foundation
@@ -177,6 +194,7 @@ Old T08-T12 from the 2026-08-11 plan remain superseded for execution. Use the cu
 - old `impl/mvp4-t01-spatial-data-contracts` is historical, not a current implementation branch.
 - PR #27 is merged T01 evidence.
 - PR #29 is merged T02 evidence.
+- PR #31 is merged T03 evidence.
 - Future production work starts from fresh merged `main` after current readback.
 
 Do not rewrite historical PRs/handoffs just to make timestamps/status prose appear current.

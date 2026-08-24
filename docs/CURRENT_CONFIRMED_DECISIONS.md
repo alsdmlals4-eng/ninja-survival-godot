@@ -12,8 +12,9 @@ current_migration_plan: docs/superpowers/plans/2026-08-22-dec026-t08-plus-migrat
 phase_b_verdict: PASS
 t01_spatial_data_contracts: INTEGRATED
 t02_backpack_state: INTEGRATED
-next_product_gate: T03_BACKPACK_RESOLVER
-mvp4_production_implementation: IN_PROGRESS_T01_T02_INTEGRATED
+t03_backpack_resolver: INTEGRATED
+next_product_gate: T04_REST_BACKPACK_SESSION
+mvp4_production_implementation: IN_PROGRESS_T01_T02_T03_INTEGRATED
 new_school_circuit_runtime: NOT_STARTED
 ```
 
@@ -45,8 +46,9 @@ Keep and regression-protect until deliberately replaced by approved TDD behavior
 - GUT 9.7.1 regression suite and source-fidelity / duplicate-UID CI guards.
 - **T01 spatial data foundation merged as PR #27 / `7c9206702526f99dfadf44a617cd150853ec733f`.**
 - **T02 committed BackpackState merged as PR #29 / `126e6c942d74f97166ef0c881afc5d79cae3d274`.**
+- **T03 deterministic BackpackResolver merged as PR #31 / `2dcf055d82df02d44335f209897436572efa6739`.**
 
-A green MVP-3 test does not mean the new DEC-014~026 Run is implemented. T01 proves the spatial definitions/catalog foundation. T02 proves committed backpack spatial state primitives. Neither proves playable Workbench interaction or final combat integration.
+A green MVP-3 test does not mean the new DEC-014~026 Run is implemented. T01 proves the spatial definitions/catalog foundation. T02 proves committed backpack spatial state primitives. T03 proves deterministic spatial resolution and read-only previews. None proves playable Workbench interaction or final combat integration.
 
 ## 3. Protected MVP-4 spatial decisions
 
@@ -68,7 +70,7 @@ Architecture direction remains:
 
 `Item/Bag definitions -> BackpackState -> BackpackResolver -> RestBackpackSession/CombinationResolver -> committed RunBuildState snapshot -> combat runtime`.
 
-T01 implements the definitions/catalog layer. T02 implements the committed `BackpackState` layer. T03 is the next resolver layer.
+T01 implements the definitions/catalog layer. T02 implements the committed `BackpackState` layer. T03 implements the deterministic `BackpackResolver` layer. T04 is the next pending REST editing/session layer.
 
 ### T02 integrated contract
 
@@ -84,6 +86,23 @@ T01 implements the definitions/catalog layer. T02 implements the committed `Back
 - defensive collection views and deep-copy isolation.
 
 T02 does not own orthogonal adjacency scoring, bag connectivity rules, special-bag modifier resolution, REST pending edits, GOLD/Fate, combination transaction, Workbench UI or combat modifier migration.
+
+### T03 integrated contract
+
+`BackpackResolver` now owns derived/read-only spatial resolution over T02 facts:
+
+- fixed-board item/bag geometry revalidation against T01 definitions,
+- 4-neighbor connected active-layout legality,
+- orthogonal adjacency canonicalized once per distinct item pair,
+- data-driven `SpatialRuleDefinition` aggregation with `ANY` selector semantics and `PER_DISTINCT_NEIGHBOR` caps,
+- one neighbor matching both tag and explicit definition id still counts once,
+- special-bag effects on one-cell-or-more overlap, once per distinct bag instance,
+- static item payload + selected-school emblem payload into a deterministic `RunModifierSet` snapshot,
+- reasoned read-only item/bag placement preview,
+- all-or-nothing whole-layout translation preview,
+- deterministic failure cells and independent output snapshots.
+
+T03 does not own the six-slot REST work buffer, edit history, combination transaction, GOLD/Fate/economy, Workbench UI or final committed combat modifier migration.
 
 Detailed low-level spatial spec remains `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`.
 
@@ -142,28 +161,28 @@ Fresh review on merged main passed. Exact authority/file/test boundaries are rec
 
 `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`.
 
-T01 and T02 are merged. Remaining executable order:
+T01, T02 and T03 are merged. Remaining executable order:
 
-`T03 -> T04 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
+`T04 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
 
 Key ownership:
 
 - T01 definitions/catalog: `ItemDefinition`, `MVP4Catalog`, `BagDefinition`, `CombinationDefinition`, `SpatialRuleDefinition`.
 - T02 committed spatial facts: `BackpackState`, `ItemInstance`, `BagInstance`.
-- T03 spatial resolution: BackpackResolver for connected layout legality, orthogonal adjacency, special-bag overlap and deterministic spatial modifiers.
-- pending REST edits: RestBackpackSession;
-- committed combat power: RunBuildState after T06;
-- school route/clear order: RunRouteState;
+- T03 spatial resolution: `BackpackResolver` + `BackpackResolution` for connected layout legality, orthogonal adjacency, special-bag overlap and deterministic spatial modifiers.
+- T04 pending REST edits: `RestBackpackSession` + preview snapshot/buffer/history responsibility.
+- committed combat power: `RunBuildState` after T06;
+- school route/clear order: `RunRouteState`;
 - Elite/Trace/Boss lifecycle: bounded stage encounter state/coordinator;
 - access/reward eligibility: one reward resolver;
-- pending Fate: FateController;
-- final all-or-none build+Fate+route commit: RestCommitCoordinator;
-- integration only: MainController;
-- normal spawn actuation only: WaveSpawner.
+- pending Fate: `FateController`;
+- final all-or-none build+Fate+route commit: `RestCommitCoordinator`;
+- integration only: `MainController`;
+- normal spawn actuation only: `WaveSpawner`.
 
 Old T08-T12 remain historical/non-executable. Current replacement plan is `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md` and current traceability is `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`.
 
-## 8. T01/T02 implementation evidence
+## 8. T01/T02/T03 implementation evidence
 
 ### T01
 
@@ -196,12 +215,28 @@ Final exact-head `60adbb99886c96c687b20befe4a61e5e3bcb71f1` evidence:
 
 Adversarial review found and fixed a live collection-view mutation bypass before merge; public item/bag views now return defensive snapshots.
 
+### T03
+
+PR #31 merged as `2dcf055d82df02d44335f209897436572efa6739`.
+
+Final exact-head `e0dacee9048a01e799012b8aca12760e07ca47ea` evidence:
+
+- Base reuse manifest PASS,
+- Godot 4.7.1 import PASS,
+- main-scene smoke PASS,
+- GUT `292/292` tests PASS,
+- `2026` assertions PASS,
+- T03 focused `18/18` PASS.
+
+Adversarial review added direct coverage for distinct-neighbor caps and selector one-count semantics, proved data-driven/fail-closed/deterministic behavior, and found/fixed the null-state diagnostic misclassification before merge.
+
 ## 9. Closed historical execution routes
 
 - PR #17 is closed and unmerged. Do not reopen/merge/treat it as prerequisite.
 - old `impl/mvp4-t01-spatial-data-contracts` is historical and not a production base.
 - PR #27 is merged T01 evidence.
 - PR #29 is merged T02 evidence.
+- PR #31 is merged T03 evidence.
 
 Historical PRs/handoffs remain evidence; they are not deleted.
 
@@ -211,12 +246,16 @@ Historical PRs/handoffs remain evidence; they are not deleted.
 mvp0_to_mvp3: IMPLEMENTED_AUTOMATED_REGRESSION_BASELINE
 t01_spatial_data_contracts: IMPLEMENTED_AUTOMATED_REGRESSION_EVIDENCE
 t02_backpack_state: IMPLEMENTED_AUTOMATED_REGRESSION_EVIDENCE
+t03_backpack_resolver: IMPLEMENTED_AUTOMATED_REGRESSION_EVIDENCE
 final_t01_regression: 36_TEST_SCRIPTS_263_TESTS_1829_ASSERTIONS_PASS
 final_t02_regression: 37_TEST_SCRIPTS_274_TESTS_1915_ASSERTIONS_PASS
+final_t03_regression: 39_TEST_SCRIPTS_292_TESTS_2026_ASSERTIONS_PASS
 phase_b_readiness: PASS
-backpack_resolver_runtime: NOT_STARTED
+backpack_resolver_runtime: INTEGRATED
 rest_backpack_session_runtime: NOT_STARTED
 workbench_player_interaction: NOT_STARTED
+combination_transaction_runtime: NOT_STARTED
+committed_spatial_combat_integration: NOT_STARTED
 school_circuit_runtime: NOT_STARTED
 trace_runtime: NOT_STARTED
 dec026_encounter_runtime: NOT_STARTED
@@ -225,10 +264,10 @@ android_device_qa: NOT_RUN
 export_release: NOT_READY
 ```
 
-Do not promote T02 domain-state evidence to adjacency/Workbench/combat/Human PASS without executed evidence.
+Do not promote T03 domain-resolution evidence to REST session/Workbench/combat/Human PASS without executed evidence.
 
 ## 11. Next gate
 
-**T03 — BackpackResolver** from a fresh production branch off merged main.
+**T04 — RestBackpackSession** from a fresh production branch off merged main.
 
-T03 owns deterministic spatial resolution over T02 committed facts: connected usable layout legality, orthogonal adjacency, special-bag one-cell-overlap activation and active spatial modifier resolution. Do not pull REST session/buffer, GOLD/Fate/UI, combination transaction or final combat authority into T03.
+T04 owns pending REST edits over T02/T03: six-slot buffer, preview editing state, history/undo-redo, selected-school preview context and explicit whole-layout move preview. Do not pull T05 combination transactions, GOLD/Fate/economy, Workbench UI authority or T06 final committed combat authority into T04.

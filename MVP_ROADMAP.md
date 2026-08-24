@@ -13,12 +13,12 @@ MVP_0_BASIC_COMBAT: INTEGRATED
 MVP_1_COMBAT_DDD: INTEGRATED
 MVP_2_FOUR_SCHOOLS_SHALLOW: INTEGRATED
 MVP_3_RESULT_REST_SHOP_FATE: INTEGRATED_ROLLBACK_BASELINE
-MVP_4_BACKPACK_COMBINATION: T01_T02_INTEGRATED_NEXT_T03
+MVP_4_BACKPACK_COMBINATION: T01_T02_T03_INTEGRATED_NEXT_T04
 MVP_5_FINAL_LOOP_META: NOT_STARTED
 DEC014_025_MIGRATION_OVERLAY: DOCUMENTED_NOT_IMPLEMENTED
 DEC026_ENCOUNTER_PATTERN_BUDGET: APPROVED_NOT_IMPLEMENTED
 PHASE_B: PASS
-NEXT_IMPLEMENTATION_GATE: T03_BACKPACK_RESOLVER
+NEXT_IMPLEMENTATION_GATE: T04_REST_BACKPACK_SESSION
 RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 ```
 
@@ -84,7 +84,7 @@ RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 
 새 DEC 행동을 구현하는 TDD package에서 의도적으로 교체되기 전까지 해당 테스트를 보호한다.
 
-# MVP-4 — 백팩/조합 기초 · T01/T02 INTEGRATED / T03 NEXT
+# MVP-4 — 백팩/조합 기초 · T01/T02/T03 INTEGRATED / T04 NEXT
 
 목표:
 
@@ -153,17 +153,44 @@ Final exact-head verification:
 
 Evidence ceiling: **committed spatial-state domain engine only**. Adjacency/connectivity/special-bag resolution, REST editing, combinations, UI and Human play remain later gates.
 
-## T03 — BackpackResolver · NEXT
+## T03 — BackpackResolver · INTEGRATED
 
-T03 consumes T02 committed facts and owns deterministic spatial resolution:
+PR #31 merged as `2dcf055d82df02d44335f209897436572efa6739`.
 
-- connected usable layout legality required by the approved spatial spec,
-- orthogonal adjacency evaluation,
-- special-bag one-cell-overlap activation,
-- deterministic active spatial modifier resolution,
-- read-only resolution over committed state.
+Implemented:
 
-Do not move REST session/buffer, GOLD/Fate/UI, combination transaction or final combat modifier authority into T03.
+- read-only deterministic resolver over T02 defensive snapshots,
+- 4-neighbor connected active-layout legality,
+- orthogonal adjacency canonical once per distinct item pair,
+- data-driven T01 spatial-rule aggregation with distinct-neighbor caps,
+- one neighbor matching tag + definition id still counted once,
+- one-cell-or-more special-bag overlap activation once per distinct bag instance,
+- static + selected-school emblem modifier snapshot,
+- reasoned candidate item/bag legality previews,
+- all-or-nothing whole-layout translation preview,
+- deterministic failure cells and independent resolution snapshots,
+- fail-closed behavior for missing definitions.
+
+Adversarial review added direct coverage for rule caps/selector semantics and found/fixed the null-state diagnostic misclassification before merge.
+
+Final exact-head verification:
+
+`Godot 4.7.1 import PASS -> main smoke PASS -> GUT 292/292 PASS -> 2026 assertions PASS -> T03 focused 18/18 PASS`.
+
+Evidence ceiling: **deterministic spatial-resolution domain engine only**. REST editing/session history, combinations, playable Workbench UI, committed combat integration and Human play remain later gates.
+
+## T04 — RestBackpackSession · NEXT
+
+T04 consumes T02/T03 and owns pending REST editing:
+
+- six-slot work buffer,
+- editable preview state separated from committed state,
+- selected-school context for build preview,
+- backpack edit history / undo / redo,
+- explicit whole-layout move mode and all-or-nothing translation,
+- preview snapshot only; no committed combat power before later commit.
+
+Do not move T05 combination transaction, GOLD/Fate/economy, Workbench UI authority or T06 final combat modifier authority into T04.
 
 # MVP-5 — 최종 Run / 결과 / Ninja Soul · NOT_STARTED
 
@@ -283,8 +310,8 @@ Four-school circuit 완료 뒤:
 ```text
 T01 Spatial Data Contracts · INTEGRATED
 -> T02 BackpackState · INTEGRATED
--> T03 BackpackResolver · NEXT
--> T04 RestBackpackSession
+-> T03 BackpackResolver · INTEGRATED
+-> T04 RestBackpackSession · NEXT
 -> T05 CombinationResolver
 -> T06 committed RunBuildState migration
 -> T07 acquisition transaction foundation
@@ -295,7 +322,7 @@ T01 Spatial Data Contracts · INTEGRATED
 -> full-run QA / Android / export / release work
 ```
 
-새 package는 PR #29가 병합된 fresh `main`에서 시작한다.
+새 package는 PR #31이 병합된 fresh `main`에서 시작한다.
 
 # 현재 제외 / 후속
 

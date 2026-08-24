@@ -19,9 +19,9 @@ full_base_rule_sync: NOT_RUN
 selective_current_rule_read: PASS
 ```
 
-이 관찰값은 T01 실행에서 읽은 값이며, T02 후속 작업에서 Base 원격 전체를 다시 동기화했다고 해석하지 않는다.
+이 관찰값의 상세 rule read provenance는 T01 실행에서 만들어졌으며, T02/T03 후속 작업에서 Base 원격 전체 규칙을 다시 동기화했다고 해석하지 않는다. T03 시작 시 Base `main` SHA가 여전히 `2828a74f60c1ed09546171040f4178c8848ea686`임은 재확인했다.
 
-이번 T01 실행에서 최신 Base의 현재 `AGENTS.md`, Work Mode/Skill routing, long-horizon execution, adversarial review/repository-audit, TDD/debugging/verification 원칙을 선택 적용했다. 이번 T02는 현재 프로젝트 AGENTS/Decision/Phase-B와 설치된 Superpowers TDD/debugging/verification 규칙을 이어 적용했다.
+이번 T01 실행에서 최신 Base의 현재 `AGENTS.md`, Work Mode/Skill routing, long-horizon execution, adversarial review/repository-audit, TDD/debugging/verification 원칙을 선택 적용했다. T02/T03는 현재 프로젝트 AGENTS/Decision/Phase-B와 설치된 Superpowers TDD/debugging/verification 규칙을 이어 적용했다.
 
 - latest user instruction -> project AGENTS/security/engine/data -> project Active Context/approved contract -> actual code/data/assets/tests -> adopted Base -> Base remote 순서.
 - L1 이상에서 current main / current decisions / open+recent merged PR / actual implementation을 먼저 대조.
@@ -58,9 +58,10 @@ selective_current_rule_read: PASS
 
 ```yaml
 mvp0_to_mvp3_runtime: INTEGRATED
-mvp4_spatial_production: T01_T02_INTEGRATED
+mvp4_spatial_production: T01_T02_T03_INTEGRATED
 backpack_state_runtime: INTEGRATED
-backpack_resolver_runtime: NOT_STARTED
+backpack_resolver_runtime: INTEGRATED
+rest_backpack_session_runtime: NOT_STARTED
 latest_product_canon: DEC014_025
 latest_encounter_canon: DEC026_APPROVED
 phase_b: PASS
@@ -68,9 +69,11 @@ t01_merge_sha: 7c9206702526f99dfadf44a617cd150853ec733f
 t01_final_evidence: GODOT_IMPORT_PASS_MAIN_SMOKE_PASS_GUT_263_OF_263_1829_ASSERTIONS
 t02_merge_sha: 126e6c942d74f97166ef0c881afc5d79cae3d274
 t02_final_evidence: GODOT_IMPORT_PASS_MAIN_SMOKE_PASS_GUT_274_OF_274_1915_ASSERTIONS_T02_11_OF_11
+t03_merge_sha: 2dcf055d82df02d44335f209897436572efa6739
+t03_final_evidence: GODOT_IMPORT_PASS_MAIN_SMOKE_PASS_GUT_292_OF_292_2026_ASSERTIONS_T03_18_OF_18
 school_circuit_runtime: NOT_STARTED
 dec026_encounter_runtime: NOT_STARTED
-next_implementation_gate: T03_BACKPACK_RESOLVER
+next_implementation_gate: T04_REST_BACKPACK_SESSION
 new_canon_human_qa: NOT_RUN
 ```
 
@@ -109,6 +112,24 @@ single source of truth
 ```
 
 이 역시 새 광역 Base 규칙을 만들기보다 기존 state ownership / adversarial review / TDD / evidence-first 원칙의 프로젝트 검증 사례로 유지한다. Base 승격이 필요하면 별도 collision/freshness 검토를 한다.
+
+## T03 실행 교훈
+
+T03는 T02 상태를 복제하거나 다시 소유하지 않고 defensive snapshot을 읽는 **pure derived resolver**로 구현했다. 세 가지 대안 중 `T02 mutation logic 복제`, `T02를 resolver로 재작성`은 second authority/churn 위험 때문에 기각했고, T02를 그대로 두고 T03가 파생 결과만 계산하는 경계를 선택했다.
+
+적대적 검토에서 rule cap/selector 의미를 직접 테스트로 고정하고, item-id 하드코딩 없이 임의 주입 spatial rule도 동일 경로로 계산되는지 검증했다. missing definition은 partial modifier를 내지 않고 fail-closed하며, null state를 `missing_candidate`로 잘못 분류하던 작은 진단 결함은 RED로 재현 후 수정했다.
+
+재사용 가능한 최소 원리:
+
+```text
+derived resolver
+= source-of-truth snapshot을 읽고 결정론적 결과만 반환
++ content rule은 data-driven
++ corrupt input은 fail-closed
++ reason code도 acceptance contract로 검증
+```
+
+이 원리도 현재 Base의 state ownership / evidence-first / adversarial review / TDD로 충분히 설명되므로 새 광역 Base rule로 자동 승격하지 않는다.
 
 ## 사용 규칙
 
