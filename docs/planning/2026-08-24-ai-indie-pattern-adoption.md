@@ -56,7 +56,7 @@ RECIPE_PATH_VALUE
 FUTURE_REARRANGEMENT_VALUE
 ```
 
-새 통화나 자동 분해 시스템을 이번 적용만으로 추가하지 않는다. 현재 프로젝트에 없는 sell/convert를 “회복”이라는 이유로 발명하지 않는다.
+현재 MVP-3에는 `sell_item()` 기반 판매/환금 경로가 이미 존재하므로 그것을 없는 기능처럼 취급하지 않는다. 다만 LOW_VALUE_REWARD_RECOVERY를 이유로 **별도 자동 분해, 신규 변환 화폐, 두 번째 sell/convert 경제 시스템**을 추가하지 않는다. 기존 판매 기능은 향후 Workbench/acquisition migration에서 명시적으로 supersede되지 않는 한 호환 대상으로 보존한다.
 
 ## 4. 보상 Agency
 
@@ -115,7 +115,7 @@ readability / cue
 
 이 문서는 런타임 변경 자체를 수행하지 않는다. 향후 승인된 Phase-C 범위에서:
 
-1. Reward candidate마다 위 `minimum meaning`을 data/test로 표현할 수 있는지 검사.
+1. Reward candidate마다 위 `minimum meaning`을 기존 data/test로 파생 검증할 수 있는지 검사하고, 별도 의미 taxonomy를 새 authority로 만들지 않는다.
 2. 동일 seed reward sequence를 replay하여 dead-offer 비율과 repeated-build 비율을 측정.
 3. Balance Scenario에서 school/tag/recipe weighting의 과적합을 탐지.
 4. REST telemetry에 decision time과 invalid placement retry를 분리해 기록.
@@ -138,7 +138,7 @@ readability / cue
 
 현재 주장 가능:
 - 기존 백팩 정본과 모순 없이 RNG agency/recovery가 프로젝트용 계약으로 변형됨.
-- 새 화폐/분해/런타임 AI 없이 기존 standalone/spatial/tag/recipe 구조를 활용함.
+- 기존 판매 기능을 보존하면서 새 화폐/자동 분해/두 번째 변환 경제/런타임 AI 없이 standalone/spatial/tag/recipe 구조를 활용하도록 경계를 정리함.
 
 현재 주장 불가:
 - 보상 체감이 개선됨.
@@ -148,7 +148,7 @@ readability / cue
 
 ## 10. 적대적 검토 5회
 
-1. **기능 팽창** — 새 currency/convert 없이 기존 구조만 사용: PASS.
+1. **기능 팽창** — 기존 sell은 보존하고 새 currency/자동 분해/두 번째 convert 경제는 만들지 않음: PASS.
 2. **자동빌드** — weighting은 weak bias, 정답 추천 금지: PASS.
 3. **죽은 보상** — standalone 가치 + 복수 의미 경로 요구: PASS.
 4. **인지부하** — breadth는 Human evidence 뒤에만 확장: PASS.
