@@ -13,6 +13,39 @@ const FIRST_SLICE_PATTERN_IDS: Array[StringName] = [
 ]
 
 
+func test_dec026_display_names_are_preserved_exactly() -> void:
+	var catalog = load(CATALOG_PATH)
+	var schools: Dictionary = catalog.build_school_encounters()
+	_assert_names(
+		schools[&"bongma"],
+		["봉인 추적자", "식신 사역자", "결계 운반자"],
+		"이동진 술사",
+		"백귀진 주재자",
+		"삼중 이동봉진"
+	)
+	_assert_names(
+		schools[&"cheonsul"],
+		["화인 술사", "수맥 술사", "뇌쇄 술사"],
+		"오행 조율자",
+		"천변 도사",
+		"연쇄 오행전환"
+	)
+	_assert_names(
+		schools[&"guiin"],
+		["쇄도 권객", "압박 승병", "귀혈 추적자"],
+		"난전 대장",
+		"귀신장",
+		"연속 귀혈쇄도"
+	)
+	_assert_names(
+		schools[&"heukyeong"],
+		["표창 척후", "독영 살수", "암표 추격자"],
+		"그림자 두령",
+		"야행 처형자",
+		"삼영 처형선"
+	)
+
+
 func test_fairness_corruption_fails_closed_instead_of_becoming_valid_pattern_data() -> void:
 	var catalog = load(CATALOG_PATH)
 	var patterns: Dictionary = catalog.build_first_slice_patterns()
@@ -109,6 +142,13 @@ func test_resource_copy_values_are_deeply_isolated() -> void:
 	pattern_copy.presentation_hooks[&"cheonsul"] = &"mutated"
 	assert_false(pattern.telegraph_parameters["hidden_target_selection"])
 	assert_ne(pattern.presentation_hooks[&"cheonsul"], &"mutated")
+
+
+func _assert_names(definition, core_names: Array[String], elite_name: String, boss_name: String, capstone_name: String) -> void:
+	assert_eq(definition.core_monster_display_names, core_names)
+	assert_eq(definition.elite_display_name, elite_name)
+	assert_eq(definition.boss_display_name, boss_name)
+	assert_eq(definition.stage4_boss_capstone_display_name, capstone_name)
 
 
 func _contains_fragment(errors: Array, fragment: String) -> bool:
