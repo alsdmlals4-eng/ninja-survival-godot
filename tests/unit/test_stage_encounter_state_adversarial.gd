@@ -56,9 +56,12 @@ func test_external_observers_never_see_half_committed_elite_or_boss_transitions(
 	var state = _new_state()
 	var elite_clear_views: Array[Dictionary] = []
 	var boss_views: Array[Dictionary] = []
-	state.chest_token_requested.connect(func(_amount: int): elite_clear_views.append(state.get_snapshot()))
-	state.trace_spawn_requested.connect(func(): elite_clear_views.append(state.get_snapshot()))
-	state.boss_requested.connect(func(): boss_views.append(state.get_snapshot()))
+	var on_chest := func(_amount: int): elite_clear_views.append(state.get_snapshot())
+	var on_trace := func(): elite_clear_views.append(state.get_snapshot())
+	var on_boss := func(): boss_views.append(state.get_snapshot())
+	state.chest_token_requested.connect(on_chest)
+	state.trace_spawn_requested.connect(on_trace)
+	state.boss_requested.connect(on_boss)
 
 	assert_true(state.sync_elapsed(180.0))
 	assert_true(state.mark_elite_cleared())
@@ -75,6 +78,10 @@ func test_external_observers_never_see_half_committed_elite_or_boss_transitions(
 	assert_eq(boss_views[0]["state"], &"boss_active")
 	assert_true(bool(boss_views[0]["boss_requested"]))
 	assert_false(bool(boss_views[0]["normal_spawning_allowed"]))
+
+	state.chest_token_requested.disconnect(on_chest)
+	state.trace_spawn_requested.disconnect(on_trace)
+	state.boss_requested.disconnect(on_boss)
 
 
 func test_wave_spawner_remains_an_actuator_of_permission_facts_not_gate_authority() -> void:
