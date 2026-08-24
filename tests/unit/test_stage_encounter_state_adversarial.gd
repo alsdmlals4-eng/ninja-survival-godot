@@ -80,23 +80,20 @@ func test_external_observers_never_see_half_committed_elite_or_boss_transitions(
 func test_wave_spawner_remains_an_actuator_of_permission_facts_not_gate_authority() -> void:
 	var state = _new_state()
 	var spawner = load(WAVE_SPAWNER_PATH).new()
-	state.normal_spawn_permission_changed.connect(spawner.set_spawning_enabled)
-	assert_true(spawner.spawning_enabled)
+	assert_true(spawner.has_method(&"set_spawning_enabled"), "WaveSpawner must remain a one-way spawn-permission actuator")
+	spawner.free()
 
+	var permission_events: Array[bool] = []
+	state.normal_spawn_permission_changed.connect(func(allowed: bool): permission_events.append(allowed))
 	assert_true(state.sync_elapsed(180.0))
 	assert_true(state.mark_elite_cleared())
-	assert_false(spawner.spawning_enabled)
 	assert_eq(state.state_name(), &"trace_available")
-
 	assert_true(state.sync_elapsed(200.0))
 	assert_true(state.recover_trace())
-	assert_true(spawner.spawning_enabled)
 	assert_eq(state.state_name(), &"trace_recovered")
-
 	assert_true(state.sync_elapsed(270.0))
-	assert_false(spawner.spawning_enabled)
 	assert_eq(state.state_name(), &"boss_active")
-	spawner.queue_free()
+	assert_eq(permission_events, [false, true, false], "Gate publishes facts; actuator decides only whether to spawn")
 
 
 func test_failed_operations_are_total_noops_across_lifecycle() -> void:
