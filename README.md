@@ -20,10 +20,13 @@ Godot 4.x / GDScript로 재구성 중인 `닌자 서바이벌 (닌자의 신)` �
 | MVP-3 결과/GOLD/상점/운명/3세그먼트 runtime | integrated rollback/regression baseline |
 | MVP-4 공간 백팩/조합 production | **not started** |
 | DEC-014~025 4유파 순회 migration | **documented / not implemented** |
+| DEC-026 encounter/pattern budget | **approved / not implemented** |
+| Fresh Phase-B | **PASS** |
+| Next implementation | **T01 Spatial Data Contracts** |
 | release-near Vertical Slice human QA | **NOT_RUN** |
 | Android device/export | **NOT_RUN / NOT_READY** |
 
-마지막 관찰된 pre-rebaseline 자동 회귀 기준선은 Godot 4.7.1 import + main-scene smoke + GUT `34 scripts / 250 tests / 1624 assertions PASS`다. 이것은 기존 MVP-0~3이 깨지지 않았다는 증거이지 DEC-014~025 구현 완료 증거가 아니다.
+마지막 관찰된 자동 회귀 기준선은 Godot 4.7.1 import + main-scene smoke + GUT `34 scripts / 250 tests / 1624 assertions PASS`다. 이것은 기존 MVP-0~3이 깨지지 않았다는 증거이지 DEC-014~026 구현 완료 증거가 아니다.
 
 ## 최신 Run 목표
 
@@ -100,13 +103,17 @@ Architecture direction:
 
 ## 현재 개발 경계
 
-기존 2026-08-11 MVP-4 계획 중 **T01~T07 저수준 domain 방향은 재사용**한다.
+DEC-026은 승인됐고 fresh Phase-B가 PASS했다. 현재 production은 **T01부터 시작**한다.
 
-과거 T08~T12의 immediate-Boss/3세그먼트 조립 계획은 최신 제품 구조와 충돌하므로 실행하지 않는다. 현재 migration 요구사항은 `docs/traceability/2026-08-21-dec014-025-migration-traceability.md`를 따른다.
+기존 2026-08-11 MVP-4 계획 중 **T01~T07 저수준 domain 방향은 재사용**한다. 과거 T08~T12 immediate-Boss/3세그먼트 조립 계획은 실행하지 않고, current post-DEC-026 traceability/plan을 사용한다.
 
-상세 T08+ 구현 계획은 다음 제품 Gate가 확정되기 전 작성/실행하지 않는다:
+```text
+T01 -> T02 -> T03 -> T04 -> T05 -> T06 -> T07
+-> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14
+-> T15 Human QA gate
+```
 
-**DEC-026 — 4유파 Core Monster / Elite / Boss 실제 공격 세트와 Stage별 pattern budget.**
+현재 T01은 6x6/4x3 shape, rotation, bag, tag, combination data contract를 추가하되 기존 ItemDefinition identity를 가능한 한 확장 재사용하고 중복 item authority를 만들지 않는 package다.
 
 ## 역사 실행 경로 주의
 
@@ -120,9 +127,11 @@ Architecture direction:
 2. `docs/CURRENT_CONFIRMED_DECISIONS.md`
 3. `docs/ACTIVE_CONTEXT.md`
 4. `docs/canon/2026-08-21-dec014-025-product-canon.md`
-5. `docs/traceability/2026-08-21-dec014-025-migration-traceability.md`
-6. MVP-4 spatial detail이 필요하면 `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`
-7. 실제 코드 / Scene / Test / CI
+5. `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`
+6. `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`
+7. `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
+8. MVP-4 spatial detail이 필요하면 `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md` + `docs/planning/2026-08-11-mvp4-content-data-contract.md`
+9. 실제 코드 / Scene / Test / CI
 
 문서와 실제 구현이 다르면 구현 사실은 코드/테스트로 확인하되, 앞으로 구현해야 할 제품 행동은 최신 Decision/Canon을 따른다.
 
@@ -130,7 +139,7 @@ Architecture direction:
 
 placeholder/card UI는 기술 Spike와 자동 테스트에 사용할 수 있다. 최종 player-experience PASS에는 사용할 수 없다.
 
-4유파 전체를 한 번에 제작하기 전에 한 유파를 대상으로 다음 release-near Vertical Slice를 먼저 검증한다:
+4유파 전체를 한 번에 제작하기 전에 천술류를 대상으로 다음 release-near Vertical Slice를 먼저 검증한다:
 
 `30초 내 유파 시그니처 -> Core 전투 -> ~3분 Elite -> trace -> ~5분 Boss -> 보상 -> Workbench -> 다음 route preview`.
 
