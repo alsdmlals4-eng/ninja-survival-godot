@@ -2,201 +2,216 @@
 
 ## 목적
 
-현재 작업자가 어떤 문서를 어떤 목적으로 읽어야 하는지와 역사 문서를 현재 실행 정본으로 오해하지 않도록 라우팅한다.
+현재 작업자가 **어떤 정보를 어디서 읽고 수정해야 하는지** 빠르게 판단하고, 역사 문서·AI 작업 로그·사람용 기획면·실제 구현 증거가 서로 정본을 침범하지 않도록 라우팅한다.
+
+이 문서는 제품 규칙 자체의 정본이 아니라 **정본 위치와 읽기 순서를 설명하는 navigation contract**다.
 
 ## 1. Mandatory current read path
 
-1. `../AGENTS.md`
-2. active user/chat instruction
-3. `BASE_RULES_VERSION.md` when Base freshness matters
-4. `CURRENT_CONFIRMED_DECISIONS.md`
-5. `canon/2026-08-21-dec014-025-product-canon.md`
-6. `canon/2026-08-22-dec026-encounter-pattern-budget.md`
-7. `ACTIVE_CONTEXT.md`
-8. `traceability/2026-08-22-dec026-post-gate-traceability.md`
-9. `planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
-10. `superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
-11. `superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`
-12. `planning/2026-08-11-mvp4-content-data-contract.md`
-13. old `superpowers/plans/2026-08-11-mvp4-backpack-combination.md` — **T06-T07 reusable detail only**
-14. actual `../scripts/**`, `../scenes/**`, `../tests/**`, `../.github/workflows/gut.yml`
+새 작업은 과거 handoff 문장만으로 현재 상태를 복원하지 않는다.
 
-## 2. Current product / migration / implementation documents
+1. `../AGENTS.md`
+2. 현재 사용자 지시 / active task contract
+3. `CURRENT_CONFIRMED_DECISIONS.md`
+4. `canon/2026-08-21-dec014-025-product-canon.md`
+5. `canon/2026-08-22-dec026-encounter-pattern-budget.md`
+6. `ACTIVE_CONTEXT.md`
+7. `traceability/2026-08-22-dec026-post-gate-traceability.md`
+8. `planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
+9. `superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
+10. 실제 `../scripts/**`, `../scenes/**`, `../data/**`, `../tests/**`, `../.github/workflows/**`
+11. Notion `닌자 서바이벌 · Home` + 필요한 Detail Canon / AI-System surface
+12. 현재 작업에 Base freshness가 materially 필요할 때 최신 Base owner
+
+## 2. Current product / implementation router
+
+현재 제품 구현 baseline은 **T11까지 merged-domain/automated scope**다.
+
+```text
+MVP-0~3 baseline · INTEGRATED
+-> T01~T05 spatial / backpack / REST / combination · INTEGRATED
+-> T06 committed RunBuildState modifier authority · INTEGRATED
+-> T07 Boss/Shop/Chest spatial acquisition foundation · INTEGRATED
+-> T08 RunRouteState / four-school route domain · INTEGRATED
+-> T09 encounter definitions + Stage profiles · INTEGRATED
+-> T10 Elite -> Trace -> Boss lifecycle gate · INTEGRATED
+-> T11 tradition access packages + reward lanes · INTEGRATED
+-> T12 Atomic Workbench + Fate + next-route commit · NEXT FRESH PACKAGE
+-> T13 Persistent Workbench route-preview UI/input
+-> T14 Cheonsul release-near playable slice
+-> T15 Human QA gate
+-> remaining schools / full circuit / final calamity / full-run verification
+```
+
+Important:
+
+- repository `main` may advance through documentation-only corrections while the latest **product implementation baseline** remains T11.
+- closed PR #43 (T12 WIP) and #44 (old front-door docs) are **closed / unmerged / historical read-only**.
+- T12 must start from the then-current completed `main`; inspect #43 read-only and ADAPT only material that still matches current canon/code/tests.
+- Human Usability / Player Experience / device / Android evidence are not implied by T01~T11 automated evidence.
+
+## 3. Authority map — Human Home / Detail Canon / AI Workspace / GitHub
+
+### A. Project Main Home — 사람용 Living GDD + Visual Dashboard
+
+Notion `닌자 서바이벌 · Home`은 링크 허브나 raw 개발 dashboard가 아니다.
+
+**최상위 Acceptance Criterion:**
+
+> Main Home만 보면 무엇을 만들 게임인지와 어떻게 만들 것인지 판단할 수 있고, AI/System Workspace를 보면 그것을 실제로 구현·검증하는 데 필요한 세부 데이터가 부족하지 않아야 한다.
+
+Home은 스크롤하면서 다음 순서가 읽혀야 한다.
+
+```text
+PROJECT NORTH STAR
+-> HOW THE GAME WORKS
+-> HOW IT SHOULD LOOK
+-> CORE GAME DATA
+-> CONTENT & DESIGN
+-> DEVELOPMENT REALITY
+-> DETAIL LIBRARY & AI WORKSPACE
+```
+
+최상단 시각자료는 장식용 Concept Art보다 **게임 구조·시스템·화면·플레이 방법을 설명하는 Visual GDD**를 우선한다.
+
+Home에서 직접 보여야 하는 정보:
+
+- 한 줄 제품 약속 / 플레이어 판타지
+- Core Gameplay Loop와 전체 Run Flow
+- 4유파의 위험 처리 철학
+- 5분 전장 cadence
+- 6x6 / 4x3 / 회전 / 직교 인접 / 조합 / Workbench / Fate 핵심 규칙
+- 사람이 판단해야 하는 주요 수치·경제·콘텐츠 상한
+- 현재 승인 Visual 방향과 승인 Asset linked view
+- 사람이 알아야 할 수준의 구현 현실 / 다음 Gate / Human evidence ceiling
+
+Home 금지:
+
+- raw SHA / PR 번호 / CI receipt / 포트 / local tool routing을 주 reading flow에 노출
+- `소개 몇 줄 + 상세 링크 목록`으로 축소
+- 핵심 데이터를 상세 페이지에만 숨김
+- 승인되지 않은 예시 이미지를 정본 Asset으로 승격
+- Home용 복사 데이터를 별도 유지해 정본 drift 생성
+
+### B. Detail Pages / Master Databases — 사람용 상세 정본
+
+Home에 보이는 정보를 더 자세히 authoring하는 사람용 owner다.
+
+주요 surface:
+
+- `01 · Direction · Planning`
+- `02 · Combat · Schools · Backpack`
+  - `08 · 핵심 시스템 · 상세`
+- `03 · World · Story · Content`
+  - `09 · 세계관 · 핵심 스토리`
+- `04 · Visual · UX · Assets`
+  - `02 · 비주얼 바이블`
+  - `03 · UI · 생존 Flow Map`
+  - `04 · 에셋 라이브러리`
+- `05 · Production · Validation`
+- `06 · Reference · Benchmark`
+
+Home에서 대량 데이터를 보여줄 때는 별도 복사본을 만들지 않고 **Master DB의 filtered Linked View**를 사용한다.
+
+현재 Home의 대표 Linked View:
+
+- `ASSET LIBRARY · Master` -> `Project=NINJA_SURVIVAL AND Approved=true AND Status=APPROVED`
+- `CORE SYSTEM · Master` -> `Project=NINJA_SURVIVAL AND Status=CONFIRMED`, 사람용 필드만 표시
+
+Notion 공식 linked-database 동작과 동일하게, view의 filter/sort/layout은 Home 전용으로 두되 원본 row/property 수정은 같은 Master data에 반영되는 구조를 사용한다.
+
+### C. AI/System Workspace — AI 구현·검증 작업면
+
+사람이 게임을 이해하기 위해 볼 필요가 없는 다음 정보는 Project Registry/System, Production Handoff, repository planning/evidence에 충분히 보존한다.
+
+- schema / field ID / internal ID
+- source mapping / source path / source SHA
+- assumption / provenance / unresolved conflict
+- implementation status / task log / handoff
+- PR / issue / test / CI / validation evidence
+- tool/runtime/session binding
+
+단, 사람에게 필요한 유파·시스템·경제·아이템·콘텐츠·Visual 데이터까지 AI/System으로 숨기지 않는다.
+
+### D. GitHub — implementation reality
+
+GitHub repository는 다음의 구현 사실 정본이다.
+
+- Markdown structured canon
+- JSON / data
+- GDScript code
+- Scene / Resource
+- tests / workflow
+- 실제 merged implementation evidence
+
+Notion 문구가 GitHub 실제 구현과 충돌할 때 **구현 사실**은 code/data/test/runtime evidence로 재확인한다. 앞으로 만들 제품 행동은 최신 approved Decision/Canon을 따른다.
+
+## 4. Current product canon owners
 
 | Document | Role | Current state |
 |---|---|---|
-| `CURRENT_CONFIRMED_DECISIONS.md` | mutable approved-decision/protected-scope router | CURRENT / T05 MERGED / T06 NEXT |
-| `canon/2026-08-21-dec014-025-product-canon.md` | implementation-facing product canon | CURRENT |
-| `canon/2026-08-22-dec026-encounter-pattern-budget.md` | encounter/pattern canon | CURRENT / APPROVED |
-| `ACTIVE_CONTEXT.md` | resume/current-state router | CURRENT / T05 MERGED / T06 NEXT |
-| `traceability/2026-08-22-dec026-post-gate-traceability.md` | current reuse/supersession/migration coverage | CURRENT |
-| `planning/2026-08-22-dec026-phase-b-definition-of-ready.md` | fresh implementation readiness | CURRENT / PASS |
-| `superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md` | current T08+ migration plan after DEC-026 | CURRENT |
-| `SYSTEM_MAP.md` | responsibility and migration map | CURRENT |
+| `CURRENT_CONFIRMED_DECISIONS.md` | mutable approved-decision / protected-scope ledger | CURRENT · T11 integrated / T12 fresh next |
+| `ACTIVE_CONTEXT.md` | mutable resume-state router | CURRENT · T11 integrated / T12 fresh next |
+| `canon/2026-08-21-dec014-025-product-canon.md` | four-school / route / trace / Workbench / final-binding product canon | CURRENT |
+| `canon/2026-08-22-dec026-encounter-pattern-budget.md` | encounter / gimmick / pattern budget canon | CURRENT · APPROVED |
+| `traceability/2026-08-22-dec026-post-gate-traceability.md` | reuse / supersession / migration coverage | CURRENT DESIGN CONTEXT |
+| `planning/2026-08-22-dec026-phase-b-definition-of-ready.md` | approved domain-sequence readiness record | HISTORICAL GATE CONTEXT; re-check before new package |
+| `superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md` | post-DEC-026 package sequence | CURRENT MIGRATION CONTEXT |
 | `../MVP_ROADMAP.md` | staged validation roadmap | CURRENT |
-| `../README.md` | human/agent project entry summary | CURRENT |
+| `../README.md` | repository human/agent entry summary | CURRENT |
 
-## 3. T01/T02/T03/T04/T05 implementation evidence
+## 5. Historical-but-useful material
 
-### T01 — Spatial Data Contracts / Catalog
+Historical documents remain useful as evidence or detailed rationale but cannot override current Decision/Canon/Active Context or actual merged main.
 
-PR #27 merged as `7c9206702526f99dfadf44a617cd150853ec733f`.
+Examples:
 
-Owners introduced/extended:
+- `superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md` — protected 6x6/4x3/rotation/adjacency/Workbench rationale.
+- `planning/2026-08-11-mvp4-content-data-contract.md` — spatial authoring rationale.
+- old `superpowers/plans/2026-08-11-mvp4-backpack-combination.md` — lower-level historical implementation detail; old T08+ sequence is superseded.
+- PR #17 — closed/unmerged provider-adoption history.
+- PR #27~#42 — merged T01~T11 implementation evidence.
+- PR #43 — closed/unmerged T12 WIP, read-only comparison material.
+- PR #44 — closed/unmerged old front-door WIP.
+- PR #45/#46 — Planning Canon + Human Home alignment and execution-receipt correction; docs/Notion work, not new gameplay implementation.
 
-- `scripts/data/item_definition.gd`
-- `scripts/data/run_modifier_set.gd`
-- `scripts/data/spatial_rule_definition.gd`
-- `scripts/data/bag_definition.gd`
-- `scripts/data/combination_definition.gd`
-- `scripts/data/mvp4_catalog.gd`
-- `tests/unit/test_mvp4_catalog.gd`
-- `tests/unit/test_mvp4_catalog_validation.gd`
+Do not rewrite historical artifacts merely to make their old status sentences look current.
 
-Evidence: `Godot 4.7.1 import PASS -> main smoke PASS -> GUT 263/263 PASS -> 1829 assertions PASS`.
+## 6. Current evidence ceiling
 
-### T02 — BackpackState
+Verified implementation scope:
 
-PR #29 merged as `126e6c942d74f97166ef0c881afc5d79cae3d274`.
+- MVP-0~3 integrated baseline.
+- T01~T11 domain / automated evidence integrated on product implementation baseline.
 
-Owners introduced:
+Not yet proven by that evidence:
 
-- `scripts/data/item_instance.gd`
-- `scripts/data/bag_instance.gd`
-- `scripts/backpack/backpack_state.gd`
-- `tests/unit/test_backpack_state.gd`
+- intended new four-school Run end-to-end playability
+- production-candidate Persistent Workbench UI/input
+- release-near Cheonsul Slice Human Usability / Player Experience
+- device / Android export readiness
+- final full-run experience
 
-Evidence: exact head `60adbb99886c96c687b20befe4a61e5e3bcb71f1` -> `Godot 4.7.1 import PASS -> main smoke PASS -> GUT 274/274 PASS -> 1915 assertions PASS -> T02 focused 11/11 PASS`.
+`NOT_RUN` is not PASS.
 
-T02 proves committed state primitives: 6x6 board, centered 4x3 start, stable item/bag identity, origin/rotation, atomic transitions, collision/active-area facts and defensive snapshot/copy isolation. T04 later adds only validated stable-instance restore owner paths, preserving T02 authority.
+## 7. Next execution artifact
 
-### T03 — BackpackResolver
+Next separate product package:
 
-PR #31 merged as `2dcf055d82df02d44335f209897436572efa6739`.
+**T12 — Atomic Workbench + Fate + next-route commit**.
 
-Owners introduced:
-
-- `scripts/backpack/backpack_resolution.gd`
-- `scripts/backpack/backpack_resolver.gd`
-- `tests/unit/test_backpack_resolver.gd`
-- `tests/unit/test_backpack_resolver_adversarial.gd`
-
-Evidence: exact head `e0dacee9048a01e799012b8aca12760e07ca47ea` -> `Godot 4.7.1 import PASS -> main smoke PASS -> GUT 292/292 PASS -> 2026 assertions PASS -> T03 focused 18/18 PASS`.
-
-T03 proves deterministic connected-layout, orthogonal-adjacency, data-driven spatial-rule, special-bag overlap and modifier-snapshot resolution plus read-only placement/translation previews.
-
-### T04 — RestBackpackSession
-
-PR #33 merged as `d07f16d6bae90a09bba0a5f0b8991216d006c966`.
-
-Owners introduced/extended:
-
-- `scripts/backpack/build_preview_snapshot.gd`
-- `scripts/backpack/rest_backpack_session.gd`
-- `scripts/backpack/backpack_state.gd` validated restore owner paths
-- `tests/unit/test_rest_backpack_session.gd`
-- `tests/unit/test_rest_backpack_session_adversarial.gd`
-
-Evidence: exact head `6972e14cfa94dcce4d372a632db6d5e74809ee62` -> `Godot 4.7.1 import PASS -> main smoke PASS -> GUT 309/309 PASS -> 2202 assertions PASS -> T04 focused 17/17 PASS`.
-
-T04 proves the REST edit-session domain engine: six-slot buffer, defensive preview, selected-school modifier context, edit history/undo-redo, explicit whole-layout mode/atomic translation and commit-readiness controls.
-
-### T05 — CombinationResolver
-
-PR #35 merged as `8cefce75456f8b72a8f69559857676cca67a6c5d`.
-
-Owners introduced/extended:
-
-- `scripts/backpack/combination_resolver.gd`
-- `scripts/backpack/rest_backpack_session.gd` internal modal/atomic transaction bridge
-- `tests/unit/test_combination_resolver.gd`
-- `tests/unit/test_combination_resolver_adversarial.gd`
-
-Evidence: exact head `d14ff2e8702d610de1678c22737982bd5b73e22a` -> `Godot 4.7.1 import PASS -> main smoke PASS -> GUT 329/329 PASS -> 2322 assertions PASS -> T05 focused 20/20 PASS`.
-
-T05 proves current-recipe eligibility, orthogonal on-board source pairing, progressive hint/discovery, source-preserving pending result and exact 2→1 atomic combination replacement. It also verifies failed placement/ID preservation, modal session ownership and defensive pending/discovery outputs.
-
-It does **not** prove T06 committed spatial combat integration, actual Workbench UI/input UX or player experience.
-
-## 4. Historical-but-still-useful MVP-4 documents
-
-| Document | Current use |
-|---|---|
-| `superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md` | protected 6x6/4x3/rotation/adjacency/Workbench behavior |
-| `traceability/2026-08-11-mvp4-backpack-combination-traceability.md` | historical AC/T01-T12 mapping; T08+ superseded for execution |
-| `superpowers/plans/2026-08-11-mvp4-backpack-combination.md` | T01~T05 historical implementation direction; T06-T07 detail reusable; old T08-T12 historical |
-| `planning/2026-08-11-mvp4-phase-b-definition-of-ready.md` | prior technical DoR/data-contract reasoning; not current Phase-B owner |
-| `planning/2026-08-11-mvp4-content-data-contract.md` | approved spatial data-authoring detail; T01/T05 implemented, still useful for T07 validation intent |
-
-If an old document says `three segments`, `third Fate -> COMPLETE`, `20m = full Run`, DEC-026 is pending, T01~T05 are not implemented, or the current BackpackState/Resolver/RestBackpackSession/CombinationResolver owners do not exist, current Decision/Canon/Active Context and actual main win.
-
-## 5. Historical execution/handoff documents
-
-- PR #17 provider adoption: **closed / unmerged / historical**.
-- PR #18/#19: merged CI-fidelity/handoff history.
-- PR #21~#26: merged planning/reconciliation history.
-- PR #27: merged T01 implementation evidence.
-- PR #28: post-T01 current-router synchronization.
-- PR #29: merged T02 implementation evidence.
-- PR #30: post-T02 current-router synchronization.
-- PR #31: merged T03 implementation evidence.
-- PR #32: post-T03 current-router synchronization.
-- PR #33: merged T04 implementation evidence.
-- PR #34: post-T04 current-router synchronization.
-- PR #35: merged T05 implementation evidence.
-- old `impl/mvp4-t01-spatial-data-contracts`: historical prepared baseline, not current production branch.
-
-Do not reopen historical PRs or rewrite old handoffs simply to make their timestamps/status prose appear current.
-
-## 6. Current Plan/Build gate
+Start rule:
 
 ```text
-DEC-014~025 APPROVED
--> DEC-026 APPROVED
--> fresh Phase-B PASS
--> T01 Spatial Data Contracts INTEGRATED
--> T02 BackpackState INTEGRATED
--> T03 BackpackResolver INTEGRATED
--> T04 RestBackpackSession INTEGRATED
--> T05 CombinationResolver INTEGRATED
--> T06 committed RunBuildState migration NEXT
--> T07~T14 approved execution chain
--> T15 Human QA gate
+then-current completed main
+-> current Base/project authority readback
+-> current code/tests/canon inspection
+-> closed PR #43 read-only comparison
+-> fresh current-task branch
+-> exact package scope
+-> TDD / adversarial review / exact-head CI
+-> PR / merge
+-> post-merge GitHub + Notion readback
 ```
 
-Do not create another competing pre-T06 plan. T06 uses the approved spatial spec plus the already integrated T01 definitions, T02 committed state, T03 deterministic resolution, T04 edit session, T05 atomic combinations and fresh Phase-B boundary.
-
-## 7. Notion role
-
-Notion is the human-facing overall product/visual/flow/work-control surface for this project.
-
-Current important pages:
-
-- Project Home — `닌자 서바이벌 · Home`
-- `01 · 프로젝트 전체 작업계획`
-- `02 · 비주얼 바이블`
-- `03 · UI · 생존 Flow Map`
-- `04 · 에셋 라이브러리`
-- `05 · Reference · Benchmark 도서관`
-- `06 · Production · Handoff`
-- `08 · 핵심 시스템 · 상세`
-- `09 · 세계관 · 핵심 스토리`
-
-When GitHub implementation/evidence changes, update Notion status/handoff from the actual merged SHA and read back both sides before reporting `SYNCED`.
-
-## 8. Current evidence ceiling
-
-- MVP-0~3 runtime integrated/regression baseline.
-- T01 spatial data contracts/catalog integrated with automated Godot/GUT evidence.
-- T02 committed BackpackState integrated with automated Godot/GUT evidence.
-- T03 deterministic BackpackResolver integrated with automated Godot/GUT evidence.
-- T04 REST edit-session domain engine integrated with automated Godot/GUT evidence.
-- T05 first-tier atomic combination transaction integrated with automated Godot/GUT evidence.
-- actual Workbench player interaction / committed spatial combat integration NOT_STARTED.
-- school-circuit/trace/final-calamity runtime NOT_STARTED.
-- release-near Human QA NOT_RUN.
-- Android/export NOT_RUN/NOT_READY.
-
-## 9. Next execution artifact
-
-The next production artifact is **T06 committed RunBuildState migration** from fresh merged `main`, RED first. T06 consumes only a finalized T01~T05 spatial resolution as committed combat modifier input, prevents legacy spatial double application, preserves rollback-compatible economy behavior unless explicitly superseded, and must not pull T07 acquisition or Workbench UI authority forward.
+T12 must not silently absorb T13 UI or T14 playable encounter scope.
