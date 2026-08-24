@@ -24,6 +24,7 @@ var _selected_school_id: StringName = &""
 var _undo_stack: Array = []
 var _redo_stack: Array = []
 var _pending_preview_state = null
+var _combination_transaction_active: bool = false
 
 var state:
 	get:
@@ -41,6 +42,10 @@ var pending_bag:
 			return null
 		return _pending_bag.copy_value()
 
+var combination_transaction_active: bool:
+	get:
+		return _combination_transaction_active
+
 
 func begin(committed_state, resolver, item_defs: Dictionary, bag_defs: Dictionary, selected_school_id: StringName) -> void:
 	_state = committed_state.copy_value() if committed_state != null else null
@@ -54,9 +59,12 @@ func begin(committed_state, resolver, item_defs: Dictionary, bag_defs: Dictionar
 	_undo_stack.clear()
 	_redo_stack.clear()
 	_pending_preview_state = null
+	_combination_transaction_active = false
 
 
 func preview_item(instance_id: int, origin: Vector2i, rotation_quarters: int):
+	if _combination_transaction_active:
+		return _snapshot(_state, BackpackResolutionScript.new().fail(&"combination_transaction_active"))
 	_pending_preview_state = null
 	if input_mode != InputMode.NORMAL:
 		return _snapshot(_state, BackpackResolutionScript.new().fail(&"whole_layout_mode_active"))
@@ -87,7 +95,7 @@ func preview_item(instance_id: int, origin: Vector2i, rotation_quarters: int):
 
 
 func commit_item_preview() -> bool:
-	if input_mode != InputMode.NORMAL or _pending_preview_state == null:
+	if _combination_transaction_active or input_mode != InputMode.NORMAL or _pending_preview_state == null:
 		return false
 	_record_edit()
 	_state = _pending_preview_state.copy_value()
@@ -96,7 +104,7 @@ func commit_item_preview() -> bool:
 
 
 func rotate_item(instance_id: int) -> bool:
-	if input_mode != InputMode.NORMAL or _state == null:
+	if _combination_transaction_active or input_mode != InputMode.NORMAL or _state == null:
 		return false
 	var current = _state.get_item(instance_id)
 	if current == null:
@@ -108,7 +116,7 @@ func rotate_item(instance_id: int) -> bool:
 
 
 func move_item_to_buffer(instance_id: int) -> bool:
-	if input_mode != InputMode.NORMAL or _state == null or _buffer.size() >= BUFFER_CAPACITY:
+	if _combination_transaction_active or input_mode != InputMode.NORMAL or _state == null or _buffer.size() >= BUFFER_CAPACITY:
 		return false
 	var candidate_state = _state.copy_value()
 	var removed = candidate_state.remove_item(instance_id)
@@ -122,7 +130,7 @@ func move_item_to_buffer(instance_id: int) -> bool:
 
 
 func place_buffer_item(buffer_index: int, origin: Vector2i, rotation_quarters: int = 0) -> bool:
-	if input_mode != InputMode.NORMAL or _state == null or _resolver == null:
+	if _combination_transaction_active or input_mode != InputMode.NORMAL or _state == null or _resolver == null:
 		return false
 	if buffer_index < 0 or buffer_index >= _buffer.size():
 		return false
@@ -143,7 +151,7 @@ func place_buffer_item(buffer_index: int, origin: Vector2i, rotation_quarters: i
 
 
 func set_pending_bag(bag) -> bool:
-	if input_mode != InputMode.NORMAL or bag == null or _pending_bag != null:
+	if _combination_transaction_active or input_mode != InputMode.NORMAL or bag == null or _pending_bag != null:
 		return false
 	if not _bag_defs.has(bag.definition_id):
 		return false
@@ -157,7 +165,7 @@ func set_pending_bag(bag) -> bool:
 
 
 func place_pending_bag(origin: Vector2i, rotation_quarters: int = 0) -> bool:
-	if input_mode != InputMode.NORMAL or _state == null or _resolver == null or _pending_bag == null:
+	if _combination_transaction_active or input_mode != InputMode.NORMAL or _state == null or _resolver == null or _pending_bag == null:
 		return false
 	var candidate_state = _state.copy_value()
 	var pending = _pending_bag.copy_value()
@@ -181,7 +189,7 @@ func place_pending_bag(origin: Vector2i, rotation_quarters: int = 0) -> bool:
 
 
 func enter_whole_layout_move_mode() -> bool:
-	if _state == null or _resolver == null:
+	if _combination_transaction_active or _state == null or _resolver == null:
 		return false
 	if input_mode != InputMode.NORMAL:
 		return false
@@ -192,7 +200,7 @@ func enter_whole_layout_move_mode() -> bool:
 
 
 func translate_whole_layout(delta: Vector2i) -> bool:
-	if input_mode != InputMode.WHOLE_LAYOUT_MOVE or _state == null or _resolver == null:
+	if _combination_transaction_active or input_mode != InputMode.WHOLE_LAYOUT_MOVE or _state == null or _resolver == null:
 		return false
 	if delta == Vector2i.ZERO:
 		return false
@@ -220,7 +228,7 @@ func exit_whole_layout_move_mode() -> void:
 
 
 func undo() -> bool:
-	if _undo_stack.is_empty():
+	if _combination_transaction_active or _undo_stack.is_empty():
 		return false
 	_redo_stack.append(_capture_edit_snapshot())
 	var snapshot: Dictionary = _undo_stack.pop_back()
@@ -230,13 +238,69 @@ func undo() -> bool:
 
 
 func redo() -> bool:
-	if _redo_stack.is_empty():
+	if _combination_transaction_active or _redo_stack.is_empty():
 		return false
 	_undo_stack.append(_capture_edit_snapshot())
 	var snapshot: Dictionary = _redo_stack.pop_back()
 	_restore_edit_snapshot(snapshot)
 	_pending_preview_state = null
 	return true
+
+
+func current_resolution():
+	if _state == null:
+		return BackpackResolutionScript.new().fail(&"missing_state")
+	if _resolver == null:
+		return BackpackResolutionScript.new().fail(&"missing_resolver")
+	return _resolver.resolve(_state, _item_defs, _bag_defs, _selected_school_id)
+
+
+func _begin_combination_transaction() -> bool:
+	if _combination_transaction_active or input_mode != InputMode.NORMAL:
+		return false
+	if _state == null or _resolver == null:
+		return false
+	if _pending_bag != null or _pending_preview_state != null:
+		return false
+	_combination_transaction_active = true
+	return true
+
+
+func _cancel_combination_transaction() -> void:
+	_combination_transaction_active = false
+
+
+func _commit_combination_transaction(source_a_instance: int, source_b_instance: int, result_definition_id: StringName, origin: Vector2i, rotation_quarters: int = 0) -> int:
+	if not _combination_transaction_active or input_mode != InputMode.NORMAL:
+		return 0
+	if _state == null or _resolver == null or source_a_instance <= 0 or source_b_instance <= 0:
+		return 0
+	if source_a_instance == source_b_instance:
+		return 0
+	if not _item_defs.has(result_definition_id):
+		return 0
+
+	var candidate_state = _state.copy_value()
+	var source_a = candidate_state.remove_item(source_a_instance)
+	if source_a == null:
+		return 0
+	var source_b = candidate_state.remove_item(source_b_instance)
+	if source_b == null:
+		return 0
+	var result_instance_id: int = candidate_state.add_item(result_definition_id, origin, rotation_quarters)
+	if result_instance_id <= 0:
+		return 0
+	var resolution = _resolver.resolve(candidate_state, _item_defs, _bag_defs, _selected_school_id)
+	if not resolution.valid:
+		return 0
+
+	_state = candidate_state
+	_pending_preview_state = null
+	_combination_transaction_active = false
+	# Completed combinations are irreversible REST transactions, not edit-history actions.
+	_undo_stack.clear()
+	_redo_stack.clear()
+	return result_instance_id
 
 
 func commit_failures(chest_count: int, boss_reward_pending: bool, combination_pending: bool) -> Array[StringName]:
@@ -261,7 +325,7 @@ func commit_failures(chest_count: int, boss_reward_pending: bool, combination_pe
 		var resolution = _resolver.resolve(_state, _item_defs, _bag_defs, _selected_school_id)
 		if not resolution.valid:
 			failures.append(resolution.failure_code if resolution.failure_code != &"" else &"invalid_backpack")
-	if combination_pending:
+	if _combination_transaction_active or combination_pending:
 		failures.append(&"combination_pending")
 	return failures
 
