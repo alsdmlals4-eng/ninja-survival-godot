@@ -4,6 +4,7 @@ class_name RestBackpackSession
 const BackpackStateScript = preload("res://scripts/backpack/backpack_state.gd")
 const BackpackResolutionScript = preload("res://scripts/backpack/backpack_resolution.gd")
 const BuildPreviewSnapshotScript = preload("res://scripts/backpack/build_preview_snapshot.gd")
+const ItemInstanceScript = preload("res://scripts/data/item_instance.gd")
 
 const BUFFER_CAPACITY := 6
 
@@ -148,6 +149,70 @@ func place_buffer_item(buffer_index: int, origin: Vector2i, rotation_quarters: i
 	_buffer.remove_at(buffer_index)
 	_pending_preview_state = null
 	return true
+
+
+func buffer_free_slots() -> int:
+	return maxi(BUFFER_CAPACITY - _buffer.size(), 0)
+
+
+func _can_acquire_items_to_buffer(definition_ids: Array) -> bool:
+	if _combination_transaction_active or input_mode != InputMode.NORMAL or _state == null:
+		return false
+	if _pending_preview_state != null or definition_ids.is_empty():
+		return false
+	if definition_ids.size() > buffer_free_slots():
+		return false
+	for raw_id in definition_ids:
+		if not _item_defs.has(StringName(raw_id)):
+			return false
+	return true
+
+
+func _acquire_items_to_buffer(definition_ids: Array) -> Array[int]:
+	var created_ids: Array[int] = []
+	if not _can_acquire_items_to_buffer(definition_ids):
+		return created_ids
+
+	for raw_id in definition_ids:
+		var instance = ItemInstanceScript.new()
+		instance.instance_id = _state.next_instance_id
+		instance.definition_id = StringName(raw_id)
+		instance.origin = Vector2i.ZERO
+		instance.rotation_quarters = 0
+		_state.next_instance_id += 1
+		_buffer.append(instance)
+		created_ids.append(instance.instance_id)
+
+	_pending_preview_state = null
+	# Acquisitions are irreversible REST transactions, so Undo cannot erase rewards or purchases.
+	_undo_stack.clear()
+	_redo_stack.clear()
+	return created_ids
+
+
+func _remove_item_for_sale(instance_id: int):
+	if instance_id <= 0 or _combination_transaction_active or input_mode != InputMode.NORMAL or _state == null:
+		return null
+	if _pending_preview_state != null:
+		return null
+
+	for index in range(_buffer.size()):
+		var buffered = _buffer[index]
+		if buffered != null and int(buffered.instance_id) == instance_id:
+			var removed_buffered = buffered.copy_value()
+			_buffer.remove_at(index)
+			_undo_stack.clear()
+			_redo_stack.clear()
+			return removed_buffered
+
+	var candidate_state = _state.copy_value()
+	var removed = candidate_state.remove_item(instance_id)
+	if removed == null:
+		return null
+	_state = candidate_state
+	_undo_stack.clear()
+	_redo_stack.clear()
+	return removed
 
 
 func set_pending_bag(bag) -> bool:
