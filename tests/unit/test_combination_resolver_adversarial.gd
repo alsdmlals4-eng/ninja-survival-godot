@@ -127,6 +127,57 @@ func test_hint_stage_rejects_stale_discovery_for_missing_recipe() -> void:
 	)
 
 
+func test_failed_result_commit_does_not_consume_future_instance_id() -> void:
+	var committed = _starting_state()
+	var water_id: int = committed.add_item(&"water_style", Vector2i(1, 1))
+	var stealth_id: int = committed.add_item(&"stealth_art", Vector2i(2, 1))
+	var session = _session(committed)
+	var resolver = _combination_resolver()
+	var before_next_id: int = session.state.next_instance_id
+
+	assert_true(resolver.begin_result_preview(session, &"water_mist", water_id, stealth_id))
+	assert_false(resolver.commit_result(session, Vector2i(0, 0)))
+	assert_eq(session.state.next_instance_id, before_next_id)
+	assert_true(session.combination_transaction_active)
+	assert_not_null(session.state.get_item(water_id))
+	assert_not_null(session.state.get_item(stealth_id))
+	resolver.cancel_result(session)
+
+
+func test_pending_result_view_is_defensive() -> void:
+	var committed = _starting_state()
+	var water_id: int = committed.add_item(&"water_style", Vector2i(1, 1))
+	var stealth_id: int = committed.add_item(&"stealth_art", Vector2i(2, 1))
+	var session = _session(committed)
+	var resolver = _combination_resolver()
+
+	assert_true(resolver.begin_result_preview(session, &"water_mist", water_id, stealth_id))
+	var external_view: Dictionary = resolver.pending_result
+	external_view["combo_id"] = &"explosive_bomb"
+	external_view["source_a_instance"] = 999
+	external_view["result_item"] = &"explosive_bomb"
+	assert_eq(resolver.pending_result.get("combo_id"), &"water_mist")
+	assert_eq(resolver.pending_result.get("source_a_instance"), water_id)
+	assert_eq(resolver.pending_result.get("result_item"), &"water_mist")
+	resolver.cancel_result(session)
+
+
+func test_discovered_combinations_view_is_defensive() -> void:
+	var committed = _starting_state()
+	var water_id: int = committed.add_item(&"water_style", Vector2i(1, 1))
+	var stealth_id: int = committed.add_item(&"stealth_art", Vector2i(2, 1))
+	var session = _session(committed)
+	var resolver = _combination_resolver()
+
+	assert_true(resolver.begin_result_preview(session, &"water_mist", water_id, stealth_id))
+	assert_true(resolver.commit_result(session, Vector2i(1, 1)))
+	var external_view: Dictionary = resolver.discovered_combinations
+	external_view.clear()
+	external_view[&"explosive_bomb"] = true
+	assert_true(resolver.discovered_combinations.has(&"water_mist"))
+	assert_false(resolver.discovered_combinations.has(&"explosive_bomb"))
+
+
 func _find_definition(state, definition_id: StringName):
 	for instance in state.items.values():
 		if instance.definition_id == definition_id:
