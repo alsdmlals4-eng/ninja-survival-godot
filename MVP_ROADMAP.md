@@ -13,12 +13,12 @@ MVP_0_BASIC_COMBAT: INTEGRATED
 MVP_1_COMBAT_DDD: INTEGRATED
 MVP_2_FOUR_SCHOOLS_SHALLOW: INTEGRATED
 MVP_3_RESULT_REST_SHOP_FATE: INTEGRATED_ROLLBACK_BASELINE
-MVP_4_BACKPACK_COMBINATION: T01_DATA_FOUNDATION_INTEGRATED_NEXT_T02
+MVP_4_BACKPACK_COMBINATION: T01_T02_INTEGRATED_NEXT_T03
 MVP_5_FINAL_LOOP_META: NOT_STARTED
 DEC014_025_MIGRATION_OVERLAY: DOCUMENTED_NOT_IMPLEMENTED
 DEC026_ENCOUNTER_PATTERN_BUDGET: APPROVED_NOT_IMPLEMENTED
 PHASE_B: PASS
-NEXT_IMPLEMENTATION_GATE: T02_BACKPACK_STATE
+NEXT_IMPLEMENTATION_GATE: T03_BACKPACK_RESOLVER
 RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 ```
 
@@ -36,34 +36,13 @@ RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 
 # MVP-0 — 기본 전투 기반 · INTEGRATED
 
-검증 범위:
-
-- 8방향 이동
-- 카메라
-- 적 추적
-- 자동 공격
-- 피격/처치
-- HUD
-- 게임오버/restart
-
-현재 구현/테스트를 회귀 보호한다.
+검증 범위: 8방향 이동, 카메라, 적 추적, 자동 공격, 피격/처치, HUD, 게임오버/restart. 현재 구현/테스트를 회귀 보호한다.
 
 # MVP-1 — Combat DDD · INTEGRATED
 
-검증 범위:
-
-- kill combo / max combo
-- stylish score
-- reward absorption feedback
-- timed wave pressure
-
-현재 회귀 baseline을 보호한다.
+검증 범위: kill combo / max combo, stylish score, reward absorption feedback, timed wave pressure. 현재 회귀 baseline을 보호한다.
 
 # MVP-2 — 4유파 얕은 구현 · INTEGRATED BASELINE
-
-현재 대표 runtime은 존재한다.
-
-장기 제품 정체성:
 
 | 유파 | 위험 처리 철학 |
 |---|---|
@@ -76,15 +55,11 @@ RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 
 # MVP-3 — 결과/휴식/상점/운명 skeleton · INTEGRATED ROLLBACK BASELINE
 
-현재 실제 구현:
+현재 실제 구현은 `SCHOOL_SELECT -> COMBAT -> BOSS -> RESULT -> SHOP -> FATE -> PREVIEW -> three-segment COMPLETE`다.
 
-`SCHOOL_SELECT -> COMBAT -> BOSS -> RESULT -> SHOP -> FATE -> PREVIEW -> three-segment COMPLETE`.
+이 흐름은 최신 제품 Run target이 아니라 **검증된 rollback/regression baseline**이다. 새 DEC 행동을 구현하는 TDD package에서 의도적으로 교체되기 전까지 해당 테스트를 보호한다.
 
-이 흐름은 최신 제품 Run target이 아니라 **검증된 rollback/regression baseline**이다.
-
-새 DEC 행동을 구현하는 TDD package에서 의도적으로 교체되기 전까지 해당 테스트를 보호한다.
-
-# MVP-4 — 백팩/조합 기초 · T01 INTEGRATED / T02 NEXT
+# MVP-4 — 백팩/조합 기초 · T01/T02 INTEGRATED / T03 NEXT
 
 목표:
 
@@ -111,7 +86,7 @@ PR #27 merged as `7c9206702526f99dfadf44a617cd150853ec733f`.
 
 Implemented:
 
-- extend existing `ItemDefinition` instead of creating a second item authority,
+- existing `ItemDefinition` extension instead of duplicate item authority,
 - `RunModifierSet` supported modifier-field validation,
 - bounded `SpatialRuleDefinition`,
 - one starting 4x3 bag + five purchasable bag definitions,
@@ -122,26 +97,42 @@ Implemented:
 - unsupported modifier key / non-numeric payload validation,
 - existing MVP-3 item values and sell runtime compatibility.
 
-Verification:
+Verification: `Godot 4.7.1 import PASS -> main smoke PASS -> GUT 263/263 PASS -> 1829 assertions PASS`.
 
-`Godot 4.7.1 import PASS -> main smoke PASS -> GUT 263/263 PASS -> 1829 assertions PASS`.
+## T02 — BackpackState · INTEGRATED
 
-Evidence ceiling: **data foundation only**. Placement legality, adjacency resolution, REST editing and playable Workbench remain unimplemented.
+PR #29 merged as `126e6c942d74f97166ef0c881afc5d79cae3d274`.
 
-## T02 — BackpackState · NEXT
+Implemented:
 
-T02 owns committed spatial facts only:
+- `ItemInstance` / `BagInstance` value objects,
+- one committed `BackpackState` authority,
+- fixed 6x6 board and centered starting 4x3 active area,
+- shared monotonic item/bag instance ids,
+- origin and normalized 90-degree rotation,
+- atomic add/move/remove/rotate,
+- inactive-cell rejection and board bounds,
+- item-item / bag-bag collision rejection,
+- bag expansion/shrink active-area facts and orphan prevention,
+- defensive public collection snapshots and `copy_value()` isolation.
 
-- 6x6 board state,
-- T01 starting 4x3 active area,
-- item/bag stable instance identity,
-- origin/rotation,
-- place/move/remove/rotate state transitions,
-- occupied-cell collision facts,
-- bag expansion state,
-- snapshot/copy isolation.
+Adversarial review found a live `items`/`bags` view mutation bypass and closed it before merge.
 
-Do not move T03 adjacency/special-bag resolution, economy/Fate/UI or combat modifiers into T02.
+Final exact-head verification: `Godot 4.7.1 import PASS -> main smoke PASS -> GUT 274/274 PASS -> 1915 assertions PASS -> T02 focused 11/11 PASS`.
+
+Evidence ceiling: committed spatial-state domain engine only. Adjacency/connectivity/special-bag resolution, REST editing, combinations, UI and Human play remain later gates.
+
+## T03 — BackpackResolver · NEXT
+
+T03 consumes T02 committed facts and owns deterministic spatial resolution:
+
+- connected usable layout legality required by the approved spatial spec,
+- orthogonal adjacency evaluation,
+- special-bag one-cell-overlap activation,
+- deterministic active spatial modifier resolution,
+- read-only resolution over committed state.
+
+Do not move REST session/buffer, GOLD/Fate/UI, combination transaction or final combat modifier authority into T03.
 
 # MVP-5 — 최종 Run / 결과 / Ninja Soul · NOT_STARTED
 
@@ -190,78 +181,36 @@ starting school
 -> repeat until all four schools are cleared exactly once
 ```
 
-핵심 구조:
-
-- `school` = encounter identity,
-- 게임 내부 `Stage 1~4` = difficulty/gimmick-depth profile,
-- trace = tradition acquisition access, not automatic power,
-- next school = player choice among unvisited routes,
-- Fate atomically commits build + Fate + next route.
+핵심 구조: `school`은 encounter identity, Stage 1~4는 difficulty/gimmick-depth profile, trace는 tradition access, next school은 미방문 경로 중 선택, Fate는 build+Fate+next route를 atomic commit한다.
 
 상세 요구사항: `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`.
 
 ## Overlay B — Encounter Content Gate · DEC-026 APPROVED
 
-첫 콘텐츠 상한:
+첫 콘텐츠 상한: Core Monster 12, Elite 4, School Boss 4, School gimmick libraries 4.
 
-- Core Monster 12 = 3 x 4 schools
-- Elite 4
-- School Boss 4
-- School gimmick libraries 4
-
-게임 내부 Stage gimmick depth:
-
-- Stage 1 base signature
-- Stage 2 + interaction gimmick
-- Stage 3 + synergy/field gimmick
-- Stage 4 mastery + one Boss capstone
-- concurrent advanced-gimmick default cap 2
+Stage depth: Stage 1 base signature -> Stage 2 interaction -> Stage 3 synergy/field -> Stage 4 mastery + Boss capstone, concurrent advanced-gimmick default cap 2.
 
 DEC-026 approved the **shared attack primitives + school-owned encounter compositions** architecture. Current runtime implementation remains NOT_STARTED.
 
 ## Overlay C — One-School Release-Near Vertical Slice · NOT_RUN
 
-4유파 콘텐츠 전체를 제작하기 전에 **천술류**로 다음 end-to-end를 먼저 완성한다.
+4유파 콘텐츠 전체를 제작하기 전에 **천술류**로 `signature within ~30 sec -> Core -> Elite -> trace -> Boss -> reward -> Workbench -> next-route preview`를 먼저 완성한다.
 
-```text
-signature within ~30 sec
--> Core Monster pressure
--> Elite
--> trace
--> Boss
--> result/reward
--> branch Workbench
--> next-route preview
-```
-
-Human gate:
-
-- school identity readability,
-- combat pacing/tension,
-- Elite/Boss telegraph fairness,
-- trace readability,
-- Workbench comprehension,
-- placement/combination decision value,
-- rest duration/fatigue,
-- Korean UI readability,
-- production-candidate visual/audio/VFX coherence.
-
-Card/text placeholder는 이 Human PASS를 대신할 수 없다.
+Human gate는 school identity/readability, pacing, telegraph fairness, trace comprehension, Workbench comprehension, placement/combination decision value, fatigue, Korean UI, production-candidate visual/audio/VFX coherence를 본다. Card/text placeholder는 Human PASS를 대신할 수 없다.
 
 ## Overlay D — Final Binding / Final Calamity · PARTIAL SPEC
 
-Four-school circuit 완료 뒤:
-
 `fourth Boss -> RESULT -> Final Binding Workbench -> final Fate/build commit -> 난세 재앙핵`.
 
-현재 approved structure와 DEC-026에서 재사용 가능한 encounter language를 보호하되, final calamity exact full script는 후속 구현/검증에서 닫는다.
+현재 approved structure와 DEC-026 encounter language를 보호하되, final calamity exact full script는 후속 구현/검증에서 닫는다.
 
 # 구현 순서
 
 ```text
 T01 Spatial Data Contracts · INTEGRATED
--> T02 BackpackState
--> T03 BackpackResolver
+-> T02 BackpackState · INTEGRATED
+-> T03 BackpackResolver · NEXT
 -> T04 RestBackpackSession
 -> T05 CombinationResolver
 -> T06 committed RunBuildState migration
@@ -273,7 +222,7 @@ T01 Spatial Data Contracts · INTEGRATED
 -> full-run QA / Android / export / release work
 ```
 
-새 package는 PR #27이 병합된 fresh `main`에서 시작한다.
+새 package는 PR #29가 병합된 fresh `main`에서 시작한다.
 
 # 현재 제외 / 후속
 
@@ -288,18 +237,6 @@ T01 Spatial Data Contracts · INTEGRATED
 
 # 성공/재검토 기준
 
-성공:
+성공: 한 유파 Vertical Slice에서 전투->Elite->trace->Boss->Workbench 감정 변화가 읽히고, backpack 배치와 route order가 의미 있는 선택을 만들며, shared framework로 4유파 확장 비용이 통제되고 final battle이 player build를 무력화하지 않는다.
 
-- 한 유파 Vertical Slice만으로 전투->Elite->trace->Boss->Workbench 감정 변화가 읽힌다.
-- backpack 배치가 실제 다음 전투/경로 기대를 바꾼다.
-- route order가 전략을 만들지만 정답 경로 하나로 고정되지 않는다.
-- 4유파 확장 후에도 shared framework로 제작비가 통제된다.
-- final battle이 플레이어 build를 무력화하지 않는다.
-
-재검토:
-
-- 첫 유파 5분이 반복적이거나 의미 없이 길다.
-- Workbench가 매번 과도하게 길어져 Run 피로를 만든다.
-- school identity보다 common auto-combat가 더 강하게 느껴진다.
-- route order가 특정 school-last 정답으로 수렴한다.
-- content multiplication cost가 framework 재사용보다 빠르게 증가한다.
+재검토: 첫 유파 5분이 반복적이거나 Workbench가 과도하게 길고, school identity보다 common auto-combat가 강하거나, route order가 하나의 정답으로 수렴하거나, content multiplication cost가 framework 재사용보다 빠르게 증가할 때.
