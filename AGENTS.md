@@ -21,7 +21,7 @@ Use the following order when sources differ:
 1. latest user instruction in the current task/chat
 2. this `AGENTS.md` and project safety/engine/data rules
 3. `docs/CURRENT_CONFIRMED_DECISIONS.md`
-4. `docs/canon/2026-08-21-dec014-025-product-canon.md`
+4. `docs/canon/2026-08-21-dec014-025-product-canon.md` + `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`
 5. `docs/ACTIVE_CONTEXT.md` for mutable resume state
 6. current migration traceability / approved implementation plan
 7. actual code / Scene / data / assets / tests for implementation reality
@@ -86,7 +86,8 @@ starting school
 
 Full current detail:
 
-`docs/canon/2026-08-21-dec014-025-product-canon.md`.
+- `docs/canon/2026-08-21-dec014-025-product-canon.md`
+- `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`
 
 ## 5. Current implementation reality
 
@@ -96,19 +97,31 @@ Full current detail:
 - MVP-3 result/GOLD/Shop/Fate/three-segment runtime: integrated rollback/regression baseline.
 - MVP-4 spatial/backpack production: not started.
 - DEC-014~025 school-circuit/trace/final-calamity runtime: not started.
+- DEC-026 encounter/pattern runtime: not started.
 - release-near Vertical Slice human QA for current canon: NOT_RUN.
 
 A green old test proves the old baseline still works. It does not prove the new product behavior exists.
 
-## 6. Current planning gate
+## 6. Current planning / implementation gate
 
-Next material product decision:
+DEC-026 is **APPROVED** and the fresh post-DEC-026 Phase-B Definition of Ready is **PASS**.
 
-**DEC-026 — four-school Core Monster / Elite / Boss concrete attack sets and Stage pattern budget.**
+Current production execution begins at:
 
-Do not invent DEC-026 attack/pattern content inside BUILD.
+**T01 — spatial data contracts/catalog, from fresh merged `main`, TDD first.**
 
-Detailed new T08+ gameplay implementation planning is blocked until DEC-026 is approved and current traceability is recalculated.
+Executable order:
+
+`T01 -> T02 -> T03 -> T04 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
+
+Do not jump directly to T08: T01~T07 are still absent from production runtime. Do not invent new DEC-026 encounter content inside BUILD; use the approved encounter canon and current migration plan.
+
+Current planning owners:
+
+- `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`
+- `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`
+- `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
+- `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
 
 ## 7. MVP-4 reuse boundary
 
@@ -124,15 +137,13 @@ The old `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md` is spli
 - committed RunBuildState modifier migration
 - reward/shop/chest transaction foundation
 
-These are protected because DEC-014~025 does not replace the 6x6/4x3/rotation/adjacency/combination domain.
+These are protected because DEC-014~026 does not replace the 6x6/4x3/rotation/adjacency/combination domain.
 
 ### Do not execute old T08-T12
 
 The old T08-T12 assume immediate Boss + three-segment completion and are superseded for execution.
 
-Use:
-
-`docs/traceability/2026-08-21-dec014-025-migration-traceability.md`.
+Use the current post-gate owners listed in section 6.
 
 ## 8. Historical PR/branch protection
 
