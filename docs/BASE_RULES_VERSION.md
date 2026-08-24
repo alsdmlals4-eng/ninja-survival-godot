@@ -14,19 +14,21 @@
 ```yaml
 latest_base_main_observed: 2828a74f60c1ed09546171040f4178c8848ea686
 observed_at: 2026-08-24 KST
-observation_reason: CURRENT_STATE_RECONCILIATION_BEFORE_T01
+observation_reason: T01_SPATIAL_DATA_IMPLEMENTATION_AND_POSTMERGE_SYNC
 full_base_rule_sync: NOT_RUN
 selective_current_rule_read: PASS
 ```
 
-이번 current-state reconciliation에서 최신 Base의 현재 `AGENTS.md`, Work Mode/Skill routing, long-horizon execution, adversarial repository-audit owner를 다시 읽고 다음 원칙을 적용했다.
+이번 T01 실행에서 최신 Base의 현재 `AGENTS.md`, Work Mode/Skill routing, long-horizon execution, adversarial review/repository-audit, TDD/debugging/verification 원칙을 선택 적용했다.
 
 - latest user instruction -> project AGENTS/security/engine/data -> project Active Context/approved contract -> actual code/data/assets/tests -> adopted Base -> Base remote 순서.
 - L1 이상에서 current main / current decisions / open+recent merged PR / actual implementation을 먼저 대조.
-- `OPEN_PR_READ_ONLY_BY_DEFAULT`: 열린 PR은 기본 read-only; 후속 수정 target은 merged main.
+- `OPEN_PR_READ_ONLY_BY_DEFAULT`: 열린 PR은 기본 read-only; current-task PR만 승인 범위와 exact-head gate 뒤 정상 병합.
 - 중요한 판단은 최소 3개 실질 대안 비교와 장기 적합성 비교.
 - evidence가 `NOT_RUN`이면 완료 증거로 승격하지 않음.
 - 적대적 검토는 최소 5회 full loop 후 clean exit.
+- 코드/계약 변경은 RED failure reason -> minimal GREEN -> regression.
+- 실패한 더 엄격한 후보를 고집하지 않고 실제 실행 증거에 따라 복구/기각.
 - 중간보고 생략은 실제 조사/검증 축소가 아님.
 - 추가 비용 없는 경로를 기본으로 사용.
 - repository/Notion connected state를 실제 tool로 읽을 수 있으면 추정 대신 직접 검증.
@@ -54,17 +56,36 @@ selective_current_rule_read: PASS
 
 ```yaml
 mvp0_to_mvp3_runtime: INTEGRATED
-mvp4_spatial_production: NOT_STARTED
+mvp4_spatial_production: T01_DATA_FOUNDATION_INTEGRATED
+backpack_state_runtime: NOT_STARTED
 latest_product_canon: DEC014_025
 latest_encounter_canon: DEC026_APPROVED
 phase_b: PASS
+t01_merge_sha: 7c9206702526f99dfadf44a617cd150853ec733f
+t01_final_evidence: GODOT_IMPORT_PASS_MAIN_SMOKE_PASS_GUT_263_OF_263_1829_ASSERTIONS
 school_circuit_runtime: NOT_STARTED
 dec026_encounter_runtime: NOT_STARTED
-next_implementation_gate: T01_SPATIAL_DATA_CONTRACTS
+next_implementation_gate: T02_BACKPACK_STATE
 new_canon_human_qa: NOT_RUN
 ```
 
 세부 구현/검증 상태는 `docs/ACTIVE_CONTEXT.md`가 책임진다.
+
+## T01 실행 교훈
+
+T01 적대적 검토 중 exported typed `Dictionary[StringName, float]` 후보를 실제로 시험했으나 현재 Godot 4.7.1 프로젝트 import를 회귀시켰다. 해당 후보는 force 없이 되돌렸고, 코드 저작 `Dictionary` + 단일 catalog validator + RED/GREEN tests가 현재 검증된 경로다.
+
+이 사건의 재사용 가능한 최소 원리는 다음이다.
+
+```text
+문서상 더 강한 타입 표기
+!= 현재 프로젝트의 실제 import-compatible 최선
+
+실행 가능한 contract
+= runtime-compatible representation + explicit validation + regression evidence
+```
+
+새 광역 Base 규칙을 만들 필요는 없다. 기존 Implementation Reality / TDD / systematic debugging / evidence-first 원칙으로 충분히 처리된다.
 
 ## 사용 규칙
 
