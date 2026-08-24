@@ -6,6 +6,7 @@ const SESSION_PATH := "res://scripts/backpack/rest_backpack_session.gd"
 const STATE_PATH := "res://scripts/backpack/backpack_state.gd"
 const RESOLVER_PATH := "res://scripts/backpack/backpack_resolver.gd"
 const CATALOG_PATH := "res://scripts/data/mvp4_catalog.gd"
+const MVP3_CATALOG_PATH := "res://scripts/data/mvp3_catalog.gd"
 const MODIFIER_PATH := "res://scripts/data/run_modifier_set.gd"
 
 
@@ -207,7 +208,7 @@ func _bundle(seed: int) -> Dictionary:
 	var catalog = load(CATALOG_PATH)
 	var build_state = load(BUILD_STATE_PATH).new()
 	add_child_autofree(build_state)
-	build_state.configure(catalog.build_items(), catalog.build_fates())
+	build_state.configure(catalog.build_items(), load(MVP3_CATALOG_PATH).build_fates())
 	var session = load(SESSION_PATH).new()
 	session.begin(load(STATE_PATH).new().create_starting_state(), load(RESOLVER_PATH).new(), catalog.build_items(), catalog.build_bags(), &"cheonsul")
 	var controller = load(CONTROLLER_PATH).new()
