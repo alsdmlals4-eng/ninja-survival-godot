@@ -58,8 +58,6 @@ Do not infer `planning complete` from an old Phase-B record after material produ
 
 ## 4. Current product target
 
-The current product is no longer the old three-segment final-loop target.
-
 ```text
 starting school
 -> choose one unvisited school battlefield
@@ -95,26 +93,29 @@ Full current detail:
 - MVP-1 combat DDD: integrated.
 - MVP-2 four-school shallow runtime: integrated.
 - MVP-3 result/GOLD/Shop/Fate/three-segment runtime: integrated rollback/regression baseline.
-- MVP-4 spatial/backpack production: not started.
+- **MVP-4 T01 spatial data contracts/catalog: integrated.**
+- BackpackState / BackpackResolver / REST spatial editing: not started.
 - DEC-014~025 school-circuit/trace/final-calamity runtime: not started.
 - DEC-026 encounter/pattern runtime: not started.
 - release-near Vertical Slice human QA for current canon: NOT_RUN.
 
-A green old test proves the old baseline still works. It does not prove the new product behavior exists.
+T01 proves the data foundation, not playable backpack behavior.
+
+T01 merged as PR #27 / `7c9206702526f99dfadf44a617cd150853ec733f`. Exact final PR-head evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `263/263` tests and `1829` assertions PASS.
 
 ## 6. Current planning / implementation gate
 
 DEC-026 is **APPROVED** and the fresh post-DEC-026 Phase-B Definition of Ready is **PASS**.
 
-Current production execution begins at:
+T01 is complete. Current production execution begins at:
 
-**T01 — spatial data contracts/catalog, from fresh merged `main`, TDD first.**
+**T02 — BackpackState, from fresh merged `main`, TDD first.**
 
-Executable order:
+Remaining executable order:
 
-`T01 -> T02 -> T03 -> T04 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
+`T02 -> T03 -> T04 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
 
-Do not jump directly to T08: T01~T07 are still absent from production runtime. Do not invent new DEC-026 encounter content inside BUILD; use the approved encounter canon and current migration plan.
+Do not jump directly to T08. Do not pull T03 resolver behavior, economy/Fate/UI or combat modifier authority into T02.
 
 Current planning owners:
 
@@ -123,35 +124,41 @@ Current planning owners:
 - `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
 - `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
 
-## 7. MVP-4 reuse boundary
+## 7. MVP-4 implementation boundary
 
-The old `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md` is split by current authority.
+### Integrated T01
 
-### Reuse T01-T07 direction
+- existing `ItemDefinition` extended rather than duplicated
+- `RunModifierSet` supported-field authority
+- bounded `SpatialRuleDefinition`
+- one starting 4x3 bag + five purchasable `BagDefinition`s
+- 19 base acquisition items + 3 combination-result lookup definitions
+- 8 strong-spatial base-item contracts
+- 3 `CombinationDefinition`s
+- explicit base/result acquisition boundaries
+- catalog validation for unsupported fields and non-numeric modifier payloads
+- existing MVP-3 item values and sell runtime preserved
 
-- spatial item/bag/catalog contracts
-- BackpackState
-- BackpackResolver
-- RestBackpackSession
-- CombinationResolver
-- committed RunBuildState modifier migration
-- reward/shop/chest transaction foundation
+A stricter exported typed-Dictionary experiment caused an actual Godot import regression and was rejected. Runtime-compatible generic Dictionary storage remains protected by catalog validation and tests.
 
-These are protected because DEC-014~026 does not replace the 6x6/4x3/rotation/adjacency/combination domain.
+### Next T02-T07 direction
 
-### Do not execute old T08-T12
+- T02 BackpackState
+- T03 BackpackResolver
+- T04 RestBackpackSession
+- T05 CombinationResolver
+- T06 committed RunBuildState modifier migration
+- T07 reward/shop/chest transaction foundation
 
-The old T08-T12 assume immediate Boss + three-segment completion and are superseded for execution.
-
-Use the current post-gate owners listed in section 6.
+Old T08-T12 from the 2026-08-11 plan remain superseded for execution. Use the current post-DEC-026 plan for T08+.
 
 ## 8. Historical PR/branch protection
 
 - Open/draft/ready PRs are read-only by default unless the user explicitly names the PR and allowed action.
 - Follow-up work normally targets merged `main` truth.
 - PR #17 is **closed / unmerged / historical**. Do not reopen, merge or use it as a prerequisite.
-- `impl/mvp4-t01-spatial-data-contracts` is an old prepared baseline, not a current implementation branch.
-- Future production work starts from fresh merged `main` after current canon/plan/DoR readback.
+- old `impl/mvp4-t01-spatial-data-contracts` is historical, not a current implementation branch.
+- PR #27 is merged T01 evidence. Future production work starts from fresh merged `main` after current readback.
 
 Do not rewrite historical PRs/handoffs just to make timestamps/status prose appear current.
 
