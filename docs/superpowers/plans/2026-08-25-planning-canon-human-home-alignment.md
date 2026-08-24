@@ -1,109 +1,158 @@
-# Planning Canon & Human Home Alignment Implementation Plan
+# Planning Canon & Human Home Alignment — Execution Receipt
 
-> **Execution route:** Superpowers brainstorming approval gate → writing-plans → executing-plans → current Base adversarial/validation/PR gates.
+**Status:** `COMPLETE_AS_PRIMARY_ALIGNMENT_PACKAGE`
 
 **Goal:** Reconcile Ninja Survival front-door planning canon with merged T11 reality and rebuild the Notion Human Home as a self-contained player-facing game-flow/learning surface without mixing AI/System operations into it.
 
-**Architecture:** Keep `main` code/runtime as implementation authority; update only active repository routers/front doors that materially misroute new work; keep closed PR #43/#44 read-only; project human-readable game meaning into the existing Human Home while exact implementation receipts remain in System/Production surfaces.
+**Primary baseline:** completed product-implementation `main` before this package was `265bab32da087c070ea2ea0d98a3bdace1e10f7f` (`T11: add tradition access reward lanes`).
 
-**Baseline:** completed `main` `265bab32da087c070ea2ea0d98a3bdace1e10f7f` (`T11: add tradition access reward lanes`).
+**Primary alignment PR:** `#45 · docs: align planning canon and Human Home to T11`
 
-**Spec owners:** `docs/canon/2026-08-21-dec014-025-product-canon.md`, `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`, `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`, and the user-approved 2026-08-25 alignment design.
+**Primary alignment merge:** `d207c237d3b52ee9a3c036cbbbe3ebc0fd59c79b`.
 
-## Global Constraints
+> This file is the historical execution receipt for the alignment package. Future current `main` identity must be read from GitHub/Project Registry rather than treating the primary alignment merge SHA above as a permanently current branch pointer.
 
-- T01~T11 are merged-domain/automated-evidence facts only; do not promote them to playable Workbench, Human Usability, Player Experience, device, Android/export, or release readiness.
-- Closed PR #43 and #44 remain historical/WIP read-only evidence; no reopen/merge/rebase/takeover.
-- T12 gameplay/code implementation is out of scope.
-- Human Home is self-contained game-flow/system/learning projection; raw SHA, PR/CI history, local Godot path/ports, internal routing and detailed Txx evidence remain System/Production drilldown.
-- Existing Flow/System/World/Production pages remain detailed owners; do not create duplicate canon.
-- Approved current visual style is the first user-supplied 2026-08-25 image. Record the style decision without further image generation.
-- Do not claim durable Notion visual attachment without actual upload + attach + readback.
+## Scope and constraints
+
+- T01~T11 remain merged-domain/automated-evidence facts only; they are not playable Workbench, Human Usability, Player Experience, device, Android/export or release-readiness claims.
+- Closed PR #43 and #44 remain historical/WIP read-only evidence; neither was reopened, rebased, merged or taken over.
+- T12 gameplay/code implementation was excluded.
+- Human Home is the whole-game flow/system/learning projection; raw SHA, PR/CI history, local Godot path/ports, internal routing and detailed Txx evidence remain System/Production responsibility.
+- Existing Flow/System/World/Production pages remain detailed owners; no duplicate product canon was created.
+- Current visual master-style decision = first user-supplied image in the 2026-08-25 approval turn.
+- No further image generation occurred after the user instructed image work to stop.
+- The approved chat image was not falsely claimed as a durable Notion file; binary attachment remains `BLOCKED_TOOL_SURFACE` until an actual upload/attach/readback route exists.
 - Zero incremental paid cost.
 
-## Task 1 — Repository front doors → T11
+## Completed work
 
-- [x] Re-read active front doors from exact T11 baseline.
-- [x] Inspected closed PR #44 read-only and reused only still-valid T11 reconciliation material on a fresh branch.
-- [x] Changed current resume routing to `T11 merged / T12 NOT_MERGED / fresh package next`.
-- [x] Preserved T01~T11 domain boundaries and Human/Player/device evidence ceilings.
-- [x] Restored bounded first-slice non-goals after review found scope guards weakened.
-- [x] Removed ambiguous README wording that could read as `T06 current` rather than T06's historical responsibility.
-- [x] Made `ACTIVE_CONTEXT` post-merge durable by removing transient “current docs branch” routing.
+### Repository front doors
 
-Changed front doors:
+- [x] `AGENTS.md` aligned to T11 merged / T12 fresh next.
+- [x] `README.md` aligned to T11 merged / T12 fresh next.
+- [x] `PROJECT_BRIEF.md` aligned to current product promise and bounded first-slice non-goals.
+- [x] `MVP_ROADMAP.md` rebaselined through T11 with T12~T19 remaining sequence.
+- [x] `docs/ACTIVE_CONTEXT.md` made post-merge durable and routed to fresh T12.
+- [x] `docs/CURRENT_CONFIRMED_DECISIONS.md` refreshed through T11 and the 2026-08-25 Human Home/Visual decisions.
+- [x] Repository delta stayed docs-only; no gameplay code/data/scene/test/workflow file was changed by the package.
 
-- `AGENTS.md`
-- `README.md`
-- `PROJECT_BRIEF.md`
-- `MVP_ROADMAP.md`
-- `docs/ACTIVE_CONTEXT.md`
-- `docs/CURRENT_CONFIRMED_DECISIONS.md`
+### Notion Human / System split
 
-## Task 2 — Notion Human Home projection
+- [x] `닌자 서바이벌 · Home` rebuilt as a self-contained whole-game learning surface.
+- [x] Full Run Flow, five-minute battlefield cadence, four-school philosophy, backpack core data, Workbench/Fate/Route, world/final-goal meaning, AI interpretation and human edit guide are directly visible on Home.
+- [x] Raw SHA/ports/PR logs were removed from the main Human Home reading flow.
+- [x] Existing six L2 Domain child pages were preserved.
+- [x] Project Registry/System retained machine identity, sync and execution metadata.
+- [x] Planning and Production retained operational/evidence history rather than copying it into Human Home.
+- [x] Benchmark library received current success/mixed/failure-oriented evidence with official fact vs analyst inference separation.
 
-- [x] Rebuilt `닌자 서바이벌 · Home` as a self-contained human-facing learning surface.
-- [x] Put full Run Flow and five-minute battlefield cadence directly on Home.
-- [x] Put four-school philosophy and 6x6/4x3/rotation/adjacency/buffer/combination core data directly on Home.
-- [x] Put Workbench/Fate/route and world/`닌자의 신` meaning directly on Home.
-- [x] Kept implementation status compact and raw evidence in Production/System.
-- [x] Preserved six L2 Domain child pages during replace/readback.
-- [x] Verified Home contains no raw T11 SHA, Godot Port, or PR-number log in the main reading surface.
+### Visual direction
 
-## Task 3 — Approved visual style, no new generation
+- [x] Visual Bible records the first user-supplied 2026-08-25 image as the master style reference.
+- [x] Master traits: dark moonlit ninja fantasy, painterly anime illustration, ink/brush/Korean calligraphy framing, black/deep-navy/red/warm-gold palette, readable silhouettes and bounded VFX.
+- [x] School accents: 봉마 gold, 천술 elemental blue/orange, 귀인 red, 흑영 purple/black.
+- [x] Dense parchment infographic language is supporting explanatory composition, not the master gameplay art style.
 
-- [x] Recorded the first user-supplied image as the current master style reference in Visual Bible.
-- [x] Recorded dark moonlit ninja fantasy / painterly anime / ink-brush-calligraphy / black-navy-red-gold language and school accents.
-- [x] Recorded dense parchment infographic as supporting explanatory style, not master gameplay art style.
-- [x] Generated no further image after the user's stop instruction.
-- [x] Kept chat-image binary attachment as `BLOCKED_TOOL_SURFACE`; no false Notion upload claim.
+## Adversarial review receipt
 
-## Task 4 — Planning/System/Production reactivation sync
+Seven whole-state loops were completed before PR integration, exceeding the minimum-five floor:
 
-- [x] Prepended current reactivation state to `01 · 프로젝트 전체 작업계획` while preserving pause history.
-- [x] Kept PR #43/#44 as closed-unmerged historical WIP.
-- [x] Set next product gate to a fresh T12 package from then-current completed main.
-- [x] Updated Project Registry to `ACTIVE`, pre-merge `REPO_UPDATE_REQUIRED`, `Godot Binding State=DEFERRED`, `Godot Runtime State=NOT_RUN`.
-- [x] Cleared retired per-project dedicated Godot executable/slot/ports from active binding metadata without inventing a replacement local session.
-- [x] Prepended reactivation state to Production Handoff.
-- [x] Added current benchmark synthesis to Ninja Reference/Benchmark.
-- [x] Read back Human Home, Visual Bible, Planning, Production, Registry and Benchmark destinations.
+1. **Authority/state:** found weakened first-slice non-goals in the refreshed Project Brief; restored them.
+2. **Human/System split:** no blocking finding.
+3. **Market/identity:** found ambiguous README wording that could make T06 sound current; narrowed it to T06's historical responsibility.
+4. **IRG/tool/evidence ceiling:** no blocking finding.
+5. **Long-term/completion:** found execution-plan state drift; corrected the execution checkpoint.
+6. **Post-merge durability preflight:** found transient branch routing in `ACTIVE_CONTEXT`; removed it.
+7. **Final pre-PR re-attack:** no new valid blocking finding.
 
-## Task 5 — Review / PR / merge / post-merge
+Post-merge review then found one Notion-only stale projection in Production Handoff (the pre-merge T11/current-branch snapshot still looked current). It was corrected in place and read back; no repository behavior change was needed.
 
-- [x] Candidate vs exact T11 main: repository delta is docs-only; no code/data/scene/test/workflow changes.
-- [x] **Loop 1:** authority/state — Project Brief non-goal regression found and fixed.
-- [x] **Loop 2:** Human/System split — no blocking finding.
-- [x] **Loop 3:** market/identity — ambiguous README T06 wording found and fixed.
-- [x] **Loop 4:** IRG/tool/evidence ceiling — no blocking finding.
-- [x] **Loop 5:** long-term/completion — execution-plan state drift found and fixed.
-- [x] **Loop 6:** whole-state re-attack — transient branch routing in `ACTIVE_CONTEXT` found and made post-merge durable.
-- [ ] **Loop 7:** final whole-state clean re-attack after all corrections.
-- [ ] Create one current-task PR from `docs/planning-home-alignment-20260825`.
-- [ ] Verify exact PR head, current `main`, mergeability, checks/reviews/threads/rules.
-- [ ] Merge without force/direct-main/admin/ruleset bypass if gates permit.
-- [ ] Read back new `main` and changed repository front doors.
-- [ ] Update Notion Registry/Planning/Production to merged identity and `SYNCED`.
-- [ ] Re-fetch Human Home/Visual/Production/Registry and recalculate remaining work.
-- [ ] Final post-merge adversarial/progress readback and completion report.
+## GitHub verification and merge evidence
 
-## Current Evidence Ceiling Before PR
+### Exact PR-head verification
 
-```yaml
-repository_baseline_main: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
-candidate_branch: docs/planning-home-alignment-20260825
-repository_change_class: DOCS_ONLY
-runtime_code_changed: false
-notion_human_home_readback: PASS
-notion_visual_bible_readback: PASS
-notion_planning_readback: PASS
-notion_production_readback: PASS
-notion_registry_readback: PASS
-notion_benchmark_readback: PASS
-approved_visual_style_recorded: PASS
-approved_visual_binary_attached_to_notion: BLOCKED_TOOL_SURFACE
-local_godot_editor_session: NOT_RUN_NOT_REQUIRED_FOR_DOCS_ALIGNMENT
-human_usability: NOT_RUN
-player_experience: NOT_RUN
-device_android_export: NOT_RUN
-```
+PR #45 exact head:
+
+`2cf56097143b9d7f9d128ed9b239733a570cb8ae`
+
+GUT workflow run `32789249550`, job `97627389768` completed `SUCCESS` on that exact head:
+
+- Base reuse adoption manifest PASS
+- Godot 4.7.1 install/version PASS
+- GUT 9.7.1 preparation PASS
+- project import PASS
+- main-scene smoke PASS
+- full GUT PASS
+
+PR gate immediately before merge:
+
+- `main` still `265bab32da087c070ea2ea0d98a3bdace1e10f7f`
+- PR #45 `mergeable=true`
+- review submissions: 0
+- unresolved review threads: 0
+- comments: 0
+- squash merge allowed
+- merge used expected-head SHA lock
+
+### Primary merge
+
+PR #45 squash merge result:
+
+`d207c237d3b52ee9a3c036cbbbe3ebc0fd59c79b`
+
+### Post-merge main verification
+
+Main push GUT workflow run `32789345787`, job `97627652462` completed `SUCCESS` on exact new main `d207c237d3b52ee9a3c036cbbbe3ebc0fd59c79b`:
+
+- Base reuse manifest PASS
+- Godot 4.7.1 install/version PASS
+- GUT 9.7.1 preparation PASS
+- project import PASS
+- main-scene smoke PASS
+- full GUT PASS
+
+## Notion destination readback
+
+Verified after the primary merge:
+
+- [x] Project Registry: `ACTIVE`, `SYNCED`, repo main set to the primary alignment main at the time of readback, old per-project dedicated executable/slot/ports no longer active binding values, `Godot Runtime State=NOT_RUN`.
+- [x] Planning: alignment marked merged, historical pause section preserved, fresh T12 named as next product gate.
+- [x] Production: PR #45/main-CI receipt recorded; pre-merge reactivation snapshot explicitly marked historical; current merge-basis projection corrected.
+- [x] Human Home: self-contained game flow remains intact.
+- [x] Visual Bible: approved master style remains recorded with binary-attachment evidence ceiling.
+- [x] Benchmark library: current evidence synthesis retained.
+
+## Implementation Reality Gate
+
+### Verified
+
+- repository front-door reconciliation exists on merged main
+- primary PR #45 merge
+- exact PR-head CI success
+- exact primary post-merge main CI success
+- GitHub→Notion sync/readback for Registry, Planning, Production and Human/Visual surfaces
+- user-approved master visual-style decision recorded
+- no further image generation after stop instruction
+
+### Not run / not claimed
+
+- local Godot Editor/session for this docs-only alignment (`NOT_RUN_NOT_REQUIRED`)
+- current future-authoring shared Godot exact pin/session (`UNKNOWN_UNVERIFIED` until a fresh local Godot task)
+- Human Usability (`NOT_RUN`)
+- Player Experience (`NOT_RUN`)
+- device / Android export (`NOT_RUN`)
+- durable Notion binary attachment of the approved chat image (`BLOCKED_TOOL_SURFACE`)
+
+## Remaining product work
+
+The alignment package itself has no remaining required product-design/documentation work after its post-merge correction/readback.
+
+The **next separate product implementation gate** is:
+
+`T12 fresh Atomic Workbench + Fate + next-route commit`
+
+Then:
+
+`T13 Persistent Workbench route-preview UI/input -> T14 Cheonsul release-near Vertical Slice -> T15 Human QA gate -> T16 remaining schools -> T17 four-school circuit -> T18 final calamity -> T19 full-run verification`.
+
+Closed PR #43 may be inspected read-only when T12 begins; only still-valid material may be ADAPTed into a fresh branch from then-current completed `main`.
