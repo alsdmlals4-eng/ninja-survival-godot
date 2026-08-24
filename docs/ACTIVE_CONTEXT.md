@@ -3,19 +3,22 @@
 ```yaml
 project: NINJA_SURVIVAL
 state_router_updated_at: 2026-08-24 KST
-resume_state: T05_INTEGRATED_READY_FOR_T06
-next_material_gate: T06_COMMITTED_RUN_BUILD_STATE_MIGRATION
-production_build_for_new_canon: IN_PROGRESS_T05_COMBINATION_RESOLVER_MERGED
+resume_state: T11_MERGED_MAIN_T12_OPEN_DRAFT_READ_ONLY
+next_material_gate: T12_OPEN_DRAFT_REVIEW_ONLY
+production_build_for_new_canon: T01_TO_T11_DOMAIN_SURFACES_PRESENT_ON_MERGED_MAIN
 mvp0_to_mvp3_runtime: INTEGRATED
 mvp4_spatial_production: T01_T02_T03_T04_T05_INTEGRATED
 backpack_state_runtime: INTEGRATED
 backpack_resolver_runtime: INTEGRATED
 rest_backpack_session_runtime: INTEGRATED
 combination_transaction_runtime: INTEGRATED
-committed_spatial_combat_integration: NOT_STARTED
-school_circuit_runtime: NOT_STARTED
-trace_runtime: NOT_STARTED
-dec026_encounter_runtime: NOT_STARTED
+t06_to_t11_domain_surfaces: PRESENT_ON_MERGED_MAIN
+committed_spatial_combat_integration: SOURCE_AND_TEST_SCOPE_ONLY
+school_circuit_runtime: SOURCE_AND_TEST_SCOPE_ONLY
+trace_runtime: SOURCE_AND_TEST_SCOPE_ONLY
+dec026_encounter_runtime: SOURCE_AND_TEST_SCOPE_ONLY
+playable_workbench_ui_input: NOT_RUN
+production_candidate_visual_audio_feedback: NOT_RUN
 release_near_vertical_slice_human_qa: NOT_RUN
 android_device_qa: NOT_RUN
 ```
@@ -56,14 +59,16 @@ Do not reconstruct current state from older handoff status sentences without fir
 - **T03 BackpackResolver is integrated on main.**
 - **T04 RestBackpackSession is integrated on main.**
 - **T05 CombinationResolver is integrated on main.**
+- **T06~T11 domain surfaces are present on current merged `main` (`265bab32da087c070ea2ea0d98a3bdace1e10f7f`): committed build, route, encounter, REST reward/shop, and tradition-access reward lanes.**
+- **PR #43 is a T12 draft. It is `OPEN_DRAFT_READ_ONLY`, not merged authority.**
 - T01 supplies canonical item/bag/combination/spatial-rule definitions and acquisition boundaries.
 - T02 adds committed 6x6 backpack spatial state: centered 4x3 starting area, stable item/bag instances, origin/rotation, atomic place/move/remove/rotate, item/item and bag/bag collision facts, active-area union, orphan prevention and defensive snapshot/copy isolation. T04 adds only validated stable-instance restore owner paths for buffer/rebuild use.
 - T03 reads T02 defensive snapshots and deterministically resolves connected active layouts, orthogonal adjacency, T01 spatial-rule aggregation, special-bag overlap effects, selected-school emblem/static modifiers, reasoned placement previews and all-or-nothing whole-layout translation without mutating committed state.
 - T04 owns a copy of committed state for REST editing: exact six-slot buffer, defensive build preview snapshot, selected-school preview context, deep edit history/undo-redo, pending-bag placement, explicit mutually-exclusive whole-layout mode, atomic translation and deterministic commit-readiness failures.
 - T05 reuses T01 recipes/T03 adjacency/T04 session state to resolve valid on-board source pairs, progressive combination hints and source-preserving pending result transactions; only a valid resolved result placement atomically consumes exactly two sources and creates one result.
-- T05 deliberately does **not** make the spatial snapshot the final combat modifier authority, implement Workbench UI/input, or absorb GOLD/Fate/economy orchestration.
-- DEC-014~025 and DEC-026 are approved product/planning canon; their school-circuit/trace/encounter runtime remains not implemented.
-- Fresh Phase-B remains the execution boundary for the T01~T14 chain.
+- T01~T11 source/test surfaces do not prove an actual playable Workbench UI/input path, production-candidate visual/audio feedback, device readiness, or Human experience. Those evidence states remain **NOT_RUN**.
+- DEC-014~025 and DEC-026 remain approved product/planning canon; no source/test receipt alone promotes the full release-near Vertical Slice.
+- Fresh Phase-B remains the planning boundary; the next source review boundary is the T12 draft, not an automatic implementation authorization.
 
 ## T01 implementation receipt
 
@@ -301,31 +306,11 @@ Stage depth grows from signature -> interaction -> synergy -> mastery/capstone, 
 
 Full review: `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`.
 
-## Executable order
+## Current source-review boundary
 
-T01, T02, T03, T04 and T05 are complete. Remaining approved implementation order is:
+`T01~T11` are represented in current merged `main` source/test surfaces. The next named package, `T12: add atomic Workbench commit coordinator`, is **open draft PR #43**.
 
-`T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
-
-Do not jump directly to T08; committed combat authority and acquisition transaction foundations must still be migrated in order.
-
-## Next executable work — T06
-
-Create a **fresh production branch from merged main** and migrate committed spatial combat authority into `RunBuildState` with TDD.
-
-T06 owns the bridge from the final resolved T01~T05 backpack state to combat modifiers:
-
-- consume only a committed/finalized spatial resolution, never preview or buffer state,
-- preserve one authoritative `RunModifierSet` snapshot for combat consumers,
-- prevent legacy MVP-3 owned-item modifiers and spatial modifiers from double-applying,
-- preserve rollback-compatible GOLD/sell/Fate behavior unless explicitly superseded by the approved migration,
-- keep UI as renderer/intent surface rather than combat authority.
-
-T06 must not absorb T07 Boss/Shop/Chest acquisition transactions, route/trace/encounter runtime or Workbench UI ownership.
-
-T06 close gate:
-
-`red tests -> minimal migration -> focused tests -> full GUT -> import -> main smoke -> diff/readback -> adversarial review -> merge -> merged-main readback`.
+Treat it as read-only review input. Before any later implementation decision, compare current `main`, the draft diff/receipts, current canon/traceability, code/tests, and the still-missing actual-play/visual/audio/device evidence. This router does not authorize draft merge, rebase, or runtime mutation.
 
 ## Regression replacement rule
 
