@@ -27,7 +27,7 @@ Godot 4.x / GDScript로 재구성 중인 `닌자 서바이벌 (닌자의 신)` �
 | release-near Vertical Slice human QA | **NOT_RUN** |
 | Android device/export | **NOT_RUN / NOT_READY** |
 
-T01은 PR #27로 `7c9206702526f99dfadf44a617cd150853ec733f`에 병합됐다. 최종 검증은 Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `263/263` tests / `1829` assertions PASS다.
+T01은 PR #27로 `7c9206702526f99dfadf44a617cd150853ec733f`에 병합됐다. 최종 검증은 Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `263/263` tests / `1829` assertions PASS다. 기존 MVP-3 아이템 identity/value와 판매 기능은 보존한다.
 
 T02는 PR #29로 `126e6c942d74f97166ef0c881afc5d79cae3d274`에 병합됐다. 최종 exact-head `60adbb99886c96c687b20befe4a61e5e3bcb71f1` 검증은 Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `274/274` tests / `1915` assertions PASS, T02 집중 테스트 `11/11` PASS다.
 
