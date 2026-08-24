@@ -2,12 +2,13 @@
 
 ```yaml
 project: NINJA_SURVIVAL
-state_router_updated_at: 2026-08-22 KST
-resume_state: PHASE_B_PASS_READY_FOR_T01
-next_material_gate: T01_SPATIAL_DATA_CONTRACTS
-production_build_for_new_canon: READY_WITH_TDD_FROM_FRESH_MAIN
+state_router_updated_at: 2026-08-24 KST
+resume_state: T01_INTEGRATED_READY_FOR_T02
+next_material_gate: T02_BACKPACK_STATE
+production_build_for_new_canon: IN_PROGRESS_T01_DATA_FOUNDATION_MERGED
 mvp0_to_mvp3_runtime: INTEGRATED
-mvp4_spatial_production: NOT_STARTED
+mvp4_spatial_production: T01_DATA_FOUNDATION_INTEGRATED
+backpack_state_runtime: NOT_STARTED
 school_circuit_runtime: NOT_STARTED
 trace_runtime: NOT_STARTED
 dec026_encounter_runtime: NOT_STARTED
@@ -32,10 +33,11 @@ Do not reconstruct current state from older handoff status sentences without fir
 7. `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
 8. `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
 9. `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`
-10. old `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md` **T01-T07 only**
-11. actual `scripts/`, `scenes/`, `tests/`, `.github/workflows/gut.yml`
-12. current Notion project home / Flow / Core System / Production Handoff
-13. current Base `main` when Base freshness materially affects the task
+10. `docs/planning/2026-08-11-mvp4-content-data-contract.md`
+11. old `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md` **T02-T07 reusable detail only**
+12. actual `scripts/`, `scenes/`, `tests/`, `.github/workflows/gut.yml`
+13. current Notion project home / Flow / Core System / Production Handoff
+14. current Base `main` when Base freshness materially affects the task
 
 ## Current integrated truth
 
@@ -45,15 +47,36 @@ Do not reconstruct current state from older handoff status sentences without fir
 - MVP-3 result/GOLD/Shop/Fate/three-segment runtime is integrated and remains rollback/regression baseline.
 - Existing CI has source-faithful GUT preparation and duplicate-UID failure protection.
 - Old MVP-3 three-segment flow is implementation reality, not the latest product target.
-- MVP-4 spatial/backpack production code has not started.
-- DEC-014~025 and DEC-026 are approved product/planning canon and have not been implemented yet.
-- Fresh Phase-B review has passed for the T01~T14 execution chain and explicitly starts production at T01.
+- **T01 spatial data contracts/catalog are integrated on main.**
+- T01 adds the data foundation only: 19 base acquisition items, 3 combination-result lookup items, one starting 4x3 bag + five purchasable bags, eight strong-spatial item definitions, three first-tier combination definitions, bounded spatial-rule data and modifier validation.
+- T01 does **not** implement BackpackState, spatial legality/resolution, REST editing, combination transactions, Workbench UI or playable backpack behavior.
+- DEC-014~025 and DEC-026 are approved product/planning canon; their school-circuit/trace/encounter runtime remains not implemented.
+- Fresh Phase-B remains the execution boundary for the T01~T14 chain.
 
-Last observed planning-PR regression evidence before production:
+## T01 implementation receipt
 
-`Godot 4.7.1 import/main smoke/full GUT workflow PASS`; the protected quantitative baseline remains `34 scripts / 250 tests / 1624 assertions` from the unchanged MVP-0~3 runtime.
+```yaml
+t01_pr: 27
+t01_merge_sha: 7c9206702526f99dfadf44a617cd150853ec733f
+baseline_main: eafec9c9d8efed7869734ca0d4b0a3372017d1da
+red_1_head: b6b7f0b52f73a8354143c69c927c9e57db9d33c4
+red_1_workflow: 32688077232
+red_1_result: IMPORT_PASS_MAIN_SMOKE_PASS_OLD_250_PASS_NEW_T01_CONTRACTS_FAIL_AS_EXPECTED
+green_1_head: cbc431bea445da456f1bec5a5df15aca3ecdc3fe
+green_1_workflow: 32688283418
+green_1_result: 260_OF_260_PASS_1826_ASSERTIONS
+schema_experiment: EXPORTED_TYPED_DICTIONARY_REJECTED_AFTER_GODOT_IMPORT_REGRESSION
+red_2_head: 3c570d86898d817bf1ec5abd04463ccfc867490f
+red_2_workflow: 32688990852
+red_2_result: OLD_260_PASS_NEW_3_VALIDATION_CASES_FAIL_AS_EXPECTED
+final_head: 97b2258abdbbf5bcf2833e0e04174f5d0537a675
+final_workflow: 32689126286
+final_job: 97319490788
+final_result: GODOT_4_7_1_IMPORT_PASS_MAIN_SMOKE_PASS_GUT_263_OF_263_PASS_1829_ASSERTIONS
+human_evidence: NOT_RUN
+```
 
-Do not treat this as DEC-014~026 runtime evidence.
+The stricter typed-Dictionary experiment was not retained because it caused an actual import regression. Current data uses Godot-compatible `Dictionary` storage with supported-key and numeric-value validation at the catalog boundary. This is an evidence-driven compatibility choice, not a relaxation of the validation requirement.
 
 ## Current product target
 
@@ -93,7 +116,8 @@ Stage depth grows from signature -> interaction -> synergy -> mastery/capstone, 
 
 ## Phase-B authority map
 
-- `BackpackState/BackpackResolver`: spatial legality and resolved spatial effects.
+- `ItemDefinition` / `MVP4Catalog`: T01 data identity, footprint/tag/static/spatial metadata and explicit acquisition boundaries.
+- `BackpackState/BackpackResolver`: spatial legality and resolved spatial effects — **T02/T03, not implemented yet**.
 - `RestBackpackSession`: pending REST edits and six-slot buffer.
 - `CombinationResolver`: atomic combination rules.
 - `RunBuildState`: final committed combat modifier authority after T06 migration.
@@ -110,19 +134,32 @@ Full review: `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`.
 
 ## Executable order
 
-`T01 -> T02 -> T03 -> T04 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
+T01 is complete. Remaining approved implementation order is:
 
-DEC-026 closed the T08+ planning blocker, but T01~T07 are still absent from production main. Therefore do not jump directly to T08.
+`T02 -> T03 -> T04 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
 
-## Next executable work — T01
+Do not jump directly to T08; the remaining spatial/transaction foundation must still be implemented in order.
 
-Create a **fresh production branch from merged main** and implement spatial data contracts/catalog with TDD.
+## Next executable work — T02
 
-T01 must preserve current item identity while adding only the data needed for 6x6/4x3 shapes, rotation, bag definitions, tags and protected combinations. Prefer extending existing ItemDefinition when backward-compatible instead of creating duplicate item authority.
+Create a **fresh production branch from merged main** and implement `BackpackState` with TDD.
 
-T01 close gate:
+T02 owns committed spatial facts only:
 
-`red tests -> minimal data implementation -> focused tests -> full GUT -> import -> main smoke -> diff/readback -> adversarial review -> merge -> merged-main readback`.
+- fixed 6x6 board,
+- starting 4x3 active area supplied by T01 catalog data,
+- stable item/bag instance identity,
+- origin/rotation,
+- place/move/remove/rotate state transitions,
+- occupied-cell collision facts,
+- bag expansion state,
+- snapshot/copy isolation.
+
+T02 must not absorb `BackpackResolver` adjacency/special-bag calculation, GOLD spending, Fate, UI or combat modifier authority.
+
+T02 close gate:
+
+`red tests -> minimal implementation -> focused tests -> full GUT -> import -> main smoke -> diff/readback -> adversarial review -> merge -> merged-main readback`.
 
 ## Regression replacement rule
 
@@ -132,6 +169,7 @@ Current MVP-3 tests are rollback evidence. Do not delete conflicting tests just 
 
 - PR #17 is closed/unmerged/historical and not a prerequisite.
 - `impl/mvp4-t01-spatial-data-contracts` is historical and not a production base.
+- PR #27 is the merged T01 implementation evidence; new packages branch from its merged main result, not from the old branch.
 - historical PRs/handoffs remain evidence and are not rewritten.
 
 ## Human evidence rule
@@ -144,7 +182,7 @@ Technical placeholder/card UI may support spikes/tests but cannot close final pl
 
 ## Runtime/tool boundary
 
-Latest product-canon migration runtime remains `NOT_RUN`. Android/export remain release-near work, not a Phase-B readiness condition.
+T01 data resources have actual Godot 4.7.1 import/main-smoke/full-GUT evidence. **Playable spatial backpack runtime remains NOT_RUN because T02+ does not exist yet.** Android/export and Human QA remain release-near work and are not implied by T01 completion.
 
 ## Resume rule
 

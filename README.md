@@ -18,15 +18,15 @@ Godot 4.x / GDScript로 재구성 중인 `닌자 서바이벌 (닌자의 신)` �
 | MVP-1 전투 DDD | integrated |
 | MVP-2 4유파 얕은 runtime | integrated |
 | MVP-3 결과/GOLD/상점/운명/3세그먼트 runtime | integrated rollback/regression baseline |
-| MVP-4 공간 백팩/조합 production | **not started** |
-| DEC-014~025 4유파 순회 migration | **documented / not implemented** |
+| MVP-4 T01 공간 데이터 계약/catalog | **integrated** |
+| MVP-4 BackpackState/Resolver/Workbench runtime | **not started · T02 next** |
+| DEC-014~025 4유파 순회 migration runtime | **not implemented** |
 | DEC-026 encounter/pattern budget | **approved / not implemented** |
 | Fresh Phase-B | **PASS** |
-| Next implementation | **T01 Spatial Data Contracts** |
 | release-near Vertical Slice human QA | **NOT_RUN** |
 | Android device/export | **NOT_RUN / NOT_READY** |
 
-마지막 관찰된 자동 회귀 기준선은 Godot 4.7.1 import + main-scene smoke + GUT `34 scripts / 250 tests / 1624 assertions PASS`다. 이것은 기존 MVP-0~3이 깨지지 않았다는 증거이지 DEC-014~026 구현 완료 증거가 아니다.
+T01은 PR #27로 `7c9206702526f99dfadf44a617cd150853ec733f`에 병합됐다. 최종 exact-head 검증은 Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `263/263` tests / `1829` assertions PASS다. 이것은 **공간 데이터 기반이 구현됐다는 증거**이며 실제 배치 가능한 백팩 플레이가 구현됐다는 증거는 아니다.
 
 ## 최신 Run 목표
 
@@ -93,6 +93,10 @@ Architecture direction:
 
 `definitions -> BackpackState -> BackpackResolver -> RestBackpackSession/CombinationResolver -> committed RunBuildState -> combat`.
 
+현재 **definitions/catalog 단계(T01)**까지 구현됐다. T01에는 19 base acquisition item, 3 combination-result lookup item, 1 starting 4x3 bag + 5 purchasable bag, 8 strong-spatial item data, 3 first-tier combination data와 modifier validation이 포함된다. 기존 MVP-3 아이템 identity/value와 판매 기능은 보존한다.
+
+다음 T02는 `BackpackState`로 실제 6x6 committed spatial state와 place/move/remove/rotate/snapshot을 구현하며, 인접 계산/특수가방 효과는 T03 `BackpackResolver`까지 당겨오지 않는다.
+
 ### 흔적 / 전승 접근
 
 흔적은 자동 유파 버프가 아니다.
@@ -103,23 +107,28 @@ Architecture direction:
 
 ## 현재 개발 경계
 
-DEC-026은 승인됐고 fresh Phase-B가 PASS했다. 현재 production은 **T01부터 시작**한다.
-
-기존 2026-08-11 MVP-4 계획 중 **T01~T07 저수준 domain 방향은 재사용**한다. 과거 T08~T12 immediate-Boss/3세그먼트 조립 계획은 실행하지 않고, current post-DEC-026 traceability/plan을 사용한다.
+DEC-026은 승인됐고 fresh Phase-B가 PASS했다. T01은 병합 완료됐으며 현재 production은 **T02 BackpackState**부터 이어간다.
 
 ```text
-T01 -> T02 -> T03 -> T04 -> T05 -> T06 -> T07
--> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14
+T01 Spatial Data Contracts · INTEGRATED
+-> T02 BackpackState
+-> T03 BackpackResolver
+-> T04 RestBackpackSession
+-> T05 CombinationResolver
+-> T06 committed RunBuildState migration
+-> T07 acquisition transaction foundation
+-> T08 ... T14 current post-DEC-026 migration packages
 -> T15 Human QA gate
 ```
 
-현재 T01은 6x6/4x3 shape, rotation, bag, tag, combination data contract를 추가하되 기존 ItemDefinition identity를 가능한 한 확장 재사용하고 중복 item authority를 만들지 않는 package다.
+과거 T08~T12 immediate-Boss/3세그먼트 조립 계획은 실행하지 않고 current post-DEC-026 traceability/plan을 사용한다.
 
 ## 역사 실행 경로 주의
 
 - PR #17은 **closed / unmerged** 역사 자료다. 재오픈·병합하거나 prerequisite로 사용하지 않는다.
-- `impl/mvp4-t01-spatial-data-contracts`는 오래된 prepared baseline이며 현재 구현 branch가 아니다.
-- 새 production package는 최신 canon/plan/Phase-B readback 뒤 fresh merged `main`에서 만든다.
+- old `impl/mvp4-t01-spatial-data-contracts`는 오래된 prepared baseline이다.
+- PR #27은 병합된 T01 evidence다.
+- 새 production package는 fresh merged `main`에서 만든다.
 
 ## 읽기 순서
 

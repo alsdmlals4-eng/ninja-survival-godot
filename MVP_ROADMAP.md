@@ -2,7 +2,7 @@
 
 ## 목적
 
-기존 `MVP-0~MVP-5` 번호를 유지하면서, 최신 DEC-014~026이 앞으로 어떤 구현/검증을 추가로 요구하는지 분리해 관리한다.
+기존 `MVP-0~MVP-5` 번호를 유지하면서, 최신 DEC-014~026과 실제 구현 진행을 분리해 관리한다.
 
 게임 내부의 `Stage 1~4`와 개발 로드맵 번호를 혼동하지 않는다.
 
@@ -13,12 +13,12 @@ MVP_0_BASIC_COMBAT: INTEGRATED
 MVP_1_COMBAT_DDD: INTEGRATED
 MVP_2_FOUR_SCHOOLS_SHALLOW: INTEGRATED
 MVP_3_RESULT_REST_SHOP_FATE: INTEGRATED_ROLLBACK_BASELINE
-MVP_4_BACKPACK_COMBINATION: DESIGN_APPROVED_PRODUCTION_NOT_STARTED
+MVP_4_BACKPACK_COMBINATION: T01_DATA_FOUNDATION_INTEGRATED_NEXT_T02
 MVP_5_FINAL_LOOP_META: NOT_STARTED
 DEC014_025_MIGRATION_OVERLAY: DOCUMENTED_NOT_IMPLEMENTED
 DEC026_ENCOUNTER_PATTERN_BUDGET: APPROVED_NOT_IMPLEMENTED
 PHASE_B: PASS
-NEXT_IMPLEMENTATION_GATE: T01_SPATIAL_DATA_CONTRACTS
+NEXT_IMPLEMENTATION_GATE: T02_BACKPACK_STATE
 RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 ```
 
@@ -84,7 +84,7 @@ RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 
 새 DEC 행동을 구현하는 TDD package에서 의도적으로 교체되기 전까지 해당 테스트를 보호한다.
 
-# MVP-4 — 백팩/조합 기초 · APPROVED / PRODUCTION NOT_STARTED
+# MVP-4 — 백팩/조합 기초 · T01 INTEGRATED / T02 NEXT
 
 목표:
 
@@ -105,9 +105,43 @@ RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 - deterministic domain state/resolution separated from UI
 - mouse / keyboard-gamepad focus / touch completion paths
 
-기존 2026-08-11 구현 계획의 T01~T07 저수준 domain 방향은 재사용한다.
+## T01 — Spatial Data Contracts / Catalog · INTEGRATED
 
-DEC-021 access package/lane과 DEC-025 route commit은 post-DEC-026 migration packages에서 연결한다.
+PR #27 merged as `7c9206702526f99dfadf44a617cd150853ec733f`.
+
+Implemented:
+
+- extend existing `ItemDefinition` instead of creating a second item authority,
+- `RunModifierSet` supported modifier-field validation,
+- bounded `SpatialRuleDefinition`,
+- one starting 4x3 bag + five purchasable bag definitions,
+- 19 base acquisition items + 3 combination-result lookup definitions,
+- 8 strong-spatial base-item contracts,
+- 3 first-tier combination definitions,
+- explicit base/result acquisition boundaries,
+- unsupported modifier key / non-numeric payload validation,
+- existing MVP-3 item values and sell runtime compatibility.
+
+Verification:
+
+`Godot 4.7.1 import PASS -> main smoke PASS -> GUT 263/263 PASS -> 1829 assertions PASS`.
+
+Evidence ceiling: **data foundation only**. Placement legality, adjacency resolution, REST editing and playable Workbench remain unimplemented.
+
+## T02 — BackpackState · NEXT
+
+T02 owns committed spatial facts only:
+
+- 6x6 board state,
+- T01 starting 4x3 active area,
+- item/bag stable instance identity,
+- origin/rotation,
+- place/move/remove/rotate state transitions,
+- occupied-cell collision facts,
+- bag expansion state,
+- snapshot/copy isolation.
+
+Do not move T03 adjacency/special-bag resolution, economy/Fate/UI or combat modifiers into T02.
 
 # MVP-5 — 최종 Run / 결과 / Ninja Soul · NOT_STARTED
 
@@ -136,8 +170,6 @@ DEC-021 access package/lane과 DEC-025 route commit은 post-DEC-026 migration pa
 DEC-026은 학교별 encounter/pattern budget을 승인했지만 final calamity의 exact full attack script는 후속 final-boss planning/implementation 대상이다.
 
 # DEC-014~026 Migration Overlay
-
-이 overlay는 MVP-4/5를 최신 제품 Run에 연결하기 위한 현재 실행 방향이다.
 
 ## Overlay A — Four-School Circuit
 
@@ -185,7 +217,7 @@ starting school
 - Stage 4 mastery + one Boss capstone
 - concurrent advanced-gimmick default cap 2
 
-DEC-026 approved the **shared attack primitives + school-owned encounter compositions** architecture. Current runtime implementation remains NOT_STARTED. Production starts at T01 rather than jumping to encounter implementation because the spatial foundation is still absent.
+DEC-026 approved the **shared attack primitives + school-owned encounter compositions** architecture. Current runtime implementation remains NOT_STARTED.
 
 ## Overlay C — One-School Release-Near Vertical Slice · NOT_RUN
 
@@ -216,8 +248,6 @@ Human gate:
 
 Card/text placeholder는 이 Human PASS를 대신할 수 없다.
 
-이 slice가 재미/가독성 기준을 통과한 뒤 동일 framework로 나머지 3유파 콘텐츠를 확장한다.
-
 ## Overlay D — Final Binding / Final Calamity · PARTIAL SPEC
 
 Four-school circuit 완료 뒤:
@@ -229,20 +259,21 @@ Four-school circuit 완료 뒤:
 # 구현 순서
 
 ```text
-DEC-014~025 canon sync
--> DEC-026 APPROVED
--> T08+ migration plan RECALCULATED
--> fresh Phase-B PASS
--> T01 Spatial Data Contracts from fresh merged main
--> T02~T13 bounded TDD packages
--> T14 Cheonsul release-near Vertical Slice
+T01 Spatial Data Contracts · INTEGRATED
+-> T02 BackpackState
+-> T03 BackpackResolver
+-> T04 RestBackpackSession
+-> T05 CombinationResolver
+-> T06 committed RunBuildState migration
+-> T07 acquisition transaction foundation
+-> T08~T14 post-DEC-026 packages
 -> T15 human QA
 -> remaining three-school content multiplication
 -> final binding/final calamity implementation
 -> full-run QA / Android / export / release work
 ```
 
-기존 `impl/mvp4-t01-spatial-data-contracts`나 closed-unmerged PR #17에서 구현을 재개하지 않는다.
+새 package는 PR #27이 병합된 fresh `main`에서 시작한다.
 
 # 현재 제외 / 후속
 
