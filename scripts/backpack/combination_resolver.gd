@@ -111,7 +111,7 @@ func begin_result_preview(session, combo_id: StringName, source_a_instance: int,
 	var canonical_pair := Vector2i(mini(canonical_a_id, canonical_b_id), maxi(canonical_a_id, canonical_b_id))
 	if not resolution.adjacency_pairs.has(canonical_pair):
 		return false
-	if not session.begin_combination_transaction():
+	if not session._begin_combination_transaction():
 		return false
 
 	_pending_session = session
@@ -128,7 +128,7 @@ func commit_result(session, origin: Vector2i, rotation_quarters: int = 0) -> boo
 	if session == null or session != _pending_session or _pending_result.is_empty():
 		return false
 	var combo_id := StringName(_pending_result.get("combo_id", &""))
-	var result_instance_id: int = session.commit_combination_transaction(
+	var result_instance_id: int = session._commit_combination_transaction(
 		int(_pending_result.get("source_a_instance", 0)),
 		int(_pending_result.get("source_b_instance", 0)),
 		StringName(_pending_result.get("result_item", &"")),
@@ -146,7 +146,7 @@ func commit_result(session, origin: Vector2i, rotation_quarters: int = 0) -> boo
 func cancel_result(session) -> void:
 	if session == null or session != _pending_session:
 		return
-	session.cancel_combination_transaction()
+	session._cancel_combination_transaction()
 	_pending_result.clear()
 	_pending_session = null
 
