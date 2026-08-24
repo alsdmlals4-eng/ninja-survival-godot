@@ -251,6 +251,8 @@ func commit_failures(chest_count: int, boss_reward_pending: bool, combination_pe
 		failures.append(&"pending_bag")
 	if _pending_preview_state != null:
 		failures.append(&"item_preview_pending")
+	if input_mode != InputMode.NORMAL:
+		failures.append(&"whole_layout_mode_active")
 	if _state == null:
 		failures.append(&"missing_state")
 	elif _resolver == null:
