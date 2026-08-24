@@ -10,4 +10,4 @@ enum Aggregation {
 @export var required_neighbor_definition_ids: Array[StringName] = []
 @export var aggregation: Aggregation = Aggregation.ONCE_IF_ANY
 @export var max_matches: int = 1
-@export var modifier_payload: Dictionary[StringName, float] = {}
+@export var modifier_payload: Dictionary = {}
