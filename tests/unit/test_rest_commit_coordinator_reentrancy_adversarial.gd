@@ -49,7 +49,7 @@ func test_synchronous_fate_changed_reentrant_begin_rest_cannot_keep_live_session
 
 func test_t07_acquired_item_keeps_instance_identity_and_future_cursor_through_t12_commit() -> void:
 	var fixture := _fixture(1505)
-	var created: Array[int] = fixture.session._acquire_items_to_buffer([&"movement_tabi"])
+	var created: Array[int] = fixture.session._acquire_items_to_buffer([&"shuriken"])
 	assert_eq(created.size(), 1)
 	var acquired_id: int = created[0]
 	var cursor_after_acquire: int = fixture.session.state.next_instance_id
@@ -65,7 +65,7 @@ func test_t07_acquired_item_keeps_instance_identity_and_future_cursor_through_t1
 	assert_true(coordinator.commit())
 	var committed = coordinator.committed_backpack_state()
 	assert_not_null(committed.get_item(acquired_id))
-	assert_eq(committed.get_item(acquired_id).definition_id, &"movement_tabi")
+	assert_eq(committed.get_item(acquired_id).definition_id, &"shuriken")
 	assert_eq(committed.get_item(acquired_id).origin, Vector2i(2, 1))
 	assert_eq(committed.next_instance_id, cursor_after_acquire, "T12 must preserve T07/T02 monotonic identity cursor")
 
