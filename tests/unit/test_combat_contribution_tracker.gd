@@ -3,6 +3,7 @@ extends GutTest
 const TRACKER_PATH := "res://scripts/combat/combat_contribution_tracker.gd"
 const STATE_PATH := "res://scripts/core/run_build_state.gd"
 const CATALOG_PATH := "res://scripts/data/mvp3_catalog.gd"
+const MODIFIER_PATH := "res://scripts/data/run_modifier_set.gd"
 
 
 func test_contribution_tracker_resource_exists() -> void:
@@ -110,6 +111,9 @@ func test_matching_build_modifier_can_supply_second_synergy_hint() -> void:
 	var state = _new_build_state()
 	state.grant_gold(100)
 	assert_true(state.buy_item(&"ninjutsu_training"))
+	var committed = load(MODIFIER_PATH).new()
+	committed.school_damage_pct = 0.12
+	state.set_committed_backpack_modifiers(committed)
 	tracker.reset_segment(0, state.gold)
 	tracker.record_damage(50)
 	var snapshot: Dictionary = tracker.freeze_snapshot(0, state.gold, state)

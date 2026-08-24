@@ -1,11 +1,12 @@
 extends GutTest
 
 const MAIN_SCENE := preload("res://scenes/main/main_scene.tscn")
+const MODIFIER_PATH := "res://scripts/data/run_modifier_set.gd"
 
 const SCHOOL_IDS := [&"bongma", &"cheonsul", &"guiin", &"heukyeong"]
 
 
-func test_each_school_receives_common_shop_fate_and_school_emblem_modifiers() -> void:
+func test_each_school_receives_committed_backpack_fate_and_school_modifiers() -> void:
 	for school_id in SCHOOL_IDS:
 		var main = MAIN_SCENE.instantiate()
 		add_child_autofree(main)
@@ -15,6 +16,15 @@ func test_each_school_receives_common_shop_fate_and_school_emblem_modifiers() ->
 		assert_true(state.buy_item(&"ninjutsu_training"), "Ninjutsu training purchase failed for %s" % school_id)
 		assert_true(state.buy_item(&"ultimate_treatise"), "Ultimate treatise purchase failed for %s" % school_id)
 		assert_true(state.buy_item(&"school_emblem"), "School emblem purchase failed for %s" % school_id)
+		var committed = load(MODIFIER_PATH).new()
+		committed.school_damage_pct = 0.12
+		committed.ultimate_charge_gain_pct = 0.25
+		match school_id:
+			&"bongma": committed.bongma_familiar_interval_pct = -0.15
+			&"cheonsul": committed.cheonsul_reaction_damage_pct = 0.20
+			&"guiin": committed.guiin_melee_radius_pct = 0.15
+			&"heukyeong": committed.heukyeong_marked_crit_bonus = 0.15
+		state.set_committed_backpack_modifiers(committed)
 		assert_true(state.select_fate(&"seal_path"), "Seal path selection failed for %s" % school_id)
 		main._sync_run_modifiers()
 

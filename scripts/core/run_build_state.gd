@@ -21,6 +21,7 @@ var selected_fates: Array[StringName] = []
 
 var _item_defs: Dictionary = {}
 var _fate_defs: Dictionary = {}
+var _committed_backpack_modifiers = RunModifierSetScript.new()
 var _modifiers = RunModifierSetScript.new()
 var _normal_gold_fraction: float = 0.0
 
@@ -127,22 +128,24 @@ func has_fate(fate_id: StringName) -> bool:
 	return selected_fates.has(fate_id)
 
 
+func set_committed_backpack_modifiers(modifiers) -> void:
+	if modifiers == null:
+		_committed_backpack_modifiers = RunModifierSetScript.new()
+	else:
+		_committed_backpack_modifiers = modifiers.copy_values()
+	_recompute_modifiers()
+
+
+func get_committed_backpack_modifiers():
+	return _committed_backpack_modifiers.copy_values()
+
+
 func get_modifiers() -> RunModifierSet:
 	return _modifiers.copy_values()
 
 
 func _recompute_modifiers() -> void:
-	var modifiers = RunModifierSetScript.new()
-
-	for item_id in owned_items.keys():
-		var definition = _item_defs.get(item_id)
-		if definition == null:
-			continue
-		var count := item_count(item_id)
-		if definition.effect_kind == &"school_emblem":
-			_apply_school_emblem(modifiers, definition, count)
-		else:
-			_add_modifier(modifiers, definition.effect_kind, float(definition.effect_value) * float(count))
+	var modifiers = _committed_backpack_modifiers.copy_values()
 
 	for fate_id in selected_fates:
 		var fate = _fate_defs.get(fate_id)
@@ -158,15 +161,6 @@ func _recompute_modifiers() -> void:
 	modifiers.evasion_chance = clampf(modifiers.evasion_chance, 0.0, 0.95)
 	modifiers.heukyeong_marked_crit_bonus = clampf(modifiers.heukyeong_marked_crit_bonus, 0.0, 1.0)
 	_modifiers = modifiers
-
-
-func _apply_school_emblem(modifiers, definition, count: int) -> void:
-	if selected_school_id == &"" or not definition.school_payload.has(selected_school_id):
-		return
-	var payload: Dictionary = definition.school_payload[selected_school_id]
-	var field_name: StringName = payload.get(&"field", &"")
-	var value := float(payload.get(&"value", 0.0)) * float(count)
-	_add_modifier(modifiers, field_name, value)
 
 
 func _add_modifier(modifiers, field_name: StringName, amount: float) -> void:
