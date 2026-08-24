@@ -2,317 +2,207 @@
 
 ## 목적
 
-현재 실제 runtime responsibility와 DEC-014~026 migration target을 한눈에 연결한다.
+현재 실제 runtime/domain responsibility와 DEC-014~026 제품 목표 사이의 연결을 한눈에 보여준다.
 
-- 제품 행동: `docs/CURRENT_CONFIRMED_DECISIONS.md` + dated product/encounter canon.
-- 현재 resume state: `docs/ACTIVE_CONTEXT.md`.
-- 구현 사실: actual scripts/scenes/tests.
-- 이 문서는 중복 정본이 아니라 responsibility / migration map이다.
+이 문서는 제품 규칙 자체의 정본이 아니다.
+
+- 제품 행동: `CURRENT_CONFIRMED_DECISIONS.md` + dated product/encounter canon.
+- 현재 resume state: `ACTIVE_CONTEXT.md`.
+- 문서/Notion authority routing: `DOCUMENTATION_MAP.md`.
+- 구현 사실: actual `scripts/`, `scenes/`, `data/`, `tests/`.
+- 정확한 merge/test receipt: Git history + Notion `Production · Handoff`.
 
 ## 1. Current implementation baseline
 
-| 영역 | 현재 owner | 구현 현실 | migration disposition |
+최신 제품 구현 baseline은 **T11까지 integrated domain/automated scope**다. 그 이후 repository `main`에는 docs-only alignment가 추가될 수 있으므로, repository SHA와 제품 구현 단계는 같은 개념으로 취급하지 않는다.
+
+| 영역 | 현재 owner / surface | 구현 현실 | 현재 disposition |
 |---|---|---|---|
-| Main composition | `scripts/core/main_controller.gd` | MVP-3 integrated | reuse composition root; later wire circuit/trace/Workbench |
-| Game score/kill | `scripts/core/game_state.gd` | integrated | reuse |
-| Stage flow | `scripts/core/stage_flow_controller.gd` | 3-segment baseline | current product target differs; preserve as rollback evidence |
-| Run build | `scripts/core/run_build_state.gd` | GOLD + non-spatial owned items + Fate modifiers | **T06 next**: migrate to committed spatial authority without double application |
-| Combat resolver | `scripts/combat/combat_resolver.gd` | run modifiers applied to damage | reuse consumer; receive one committed RunModifierSet path |
-| Wave spawning | `scripts/spawning/wave_spawner.gd` | timed/capped normal enemies | reuse API; no second wave system by default |
-| Stage Boss | `scripts/enemies/stage_boss.gd` | stat-tier Boss baseline | later school/final Boss migration reference |
-| Four schools | `scripts/schools/*_runtime.gd` | four shallow identities integrated | preserve baseline; bounded later tuning |
-| Shop | `scripts/core/shop_controller.gd` | immediate non-spatial buy/sell | preserve sell/economy baseline; migrate acquisition at T07/T11 |
-| Fate | `scripts/core/fate_controller.gd` | one choice per rest | later pending/atomic commit integration |
-| Rest UI | `scripts/ui/rest_flow_ui.gd` + scene | MVP-3 RESULT/SHOP/FATE/PREVIEW | outer-shell baseline |
-| **T01 item data** | `ItemDefinition` + `MVP4Catalog` + data definitions | **INTEGRATED** | canonical spatial data foundation |
-| **T02 backpack state** | `scripts/backpack/backpack_state.gd` + Item/Bag instances | **INTEGRATED** | committed spatial-state authority |
-| **T03 backpack resolver** | `BackpackResolver` + `BackpackResolution` | **INTEGRATED** | deterministic derived spatial-resolution authority |
-| **T04 REST backpack session** | `RestBackpackSession` + `BuildPreviewSnapshot` | **INTEGRATED** | pending edit/buffer/history/mode authority |
-| **T05 combination resolver** | `CombinationResolver` + T04 internal transaction bridge | **INTEGRATED** | recipe/hint/pending/discovery authority |
-| Tests/CI | `tests/**`, `.github/workflows/gut.yml` | active regression baseline | protect / extend TDD-first |
+| Main composition | `scripts/core/main_controller.gd` | MVP-3 playable composition baseline | preserve; T13/T14에서 새 Workbench/route/encounter 소비 연결 |
+| Game score / kill / contribution | `scripts/core/game_state.gd` | integrated baseline | reuse |
+| Stage flow | `scripts/core/stage_flow_controller.gd` | MVP-3 3-segment rollback baseline | 새 4유파 제품 흐름으로 migration 예정; 역사 동작 삭제 전 회귀 보호 |
+| Run build | `scripts/core/run_build_state.gd` | **T06 committed item/spatial modifier authority integrated** | combat power single-authority 보호 |
+| Combat resolver | `scripts/combat/combat_resolver.gd` | committed run modifier consumer | reuse consumer; legacy double-application 금지 |
+| Wave spawning | `scripts/spawning/wave_spawner.gd` | normal enemy spawn baseline | reuse API; 별도 wave system 만들지 않음 |
+| Four-school shallow runtime | `scripts/schools/*_runtime.gd` | MVP-2 migration baseline integrated | 4유파 철학에 맞춰 bounded tuning; wholesale rewrite 금지 |
+| REST outer UI | `scripts/ui/rest_flow_ui.gd` + scene | MVP-3 RESULT/SHOP/FATE/PREVIEW shell | T13에서 Persistent Workbench/route-preview input으로 migration |
+| Spatial data | T01 definitions/catalog | **INTEGRATED** | item/bag/recipe definition authority |
+| Backpack committed state | T02 `BackpackState` + item/bag instances | **INTEGRATED** | committed geometry/state authority |
+| Spatial resolution | T03 `BackpackResolver` + `BackpackResolution` | **INTEGRATED** | connectivity/adjacency/special-bag/modifier derived authority |
+| REST edit session | T04 `RestBackpackSession` + `BuildPreviewSnapshot` | **INTEGRATED** | pending edit/buffer/history/mode authority |
+| Combination | T05 `CombinationResolver` | **INTEGRATED** | recipe eligibility/hint/pending/atomic 2→1 authority |
+| Committed combat build | T06 `RunBuildState` migration | **INTEGRATED** | finalized spatial modifier snapshot combat authority |
+| Acquisition transactions | T07 Boss/Shop/Chest spatial acquisition foundation | **INTEGRATED** | exact acquisition transaction/domain boundary |
+| Route state | T08 `RunRouteState` | **INTEGRATED** | cleared order / provisional next school / route facts |
+| Encounter data | T09 encounter definitions + Stage profiles | **INTEGRATED** | school encounter/gimmick data authority |
+| Encounter lifecycle | T10 Elite → Trace → Boss domain gate | **INTEGRATED** | deterministic milestone/gate authority |
+| Tradition access / reward lanes | T11 Run-level access + Boss/Shop/Chest lane-first selection | **INTEGRATED** | acquisition eligibility/reward-lane authority; 직접 combat stat 아님 |
+| Tests / CI | `tests/**`, `.github/workflows/gut.yml` | active regression evidence | protect / extend exact-head |
 
-## 2. Integrated spatial foundation
-
-### T01 — definitions/catalog
-
-PR #27 / `7c9206702526f99dfadf44a617cd150853ec733f` integrated:
-
-```text
-MVP3Catalog existing 8 item definitions
-        ↓ reused / extended
-ItemDefinition + RunModifierSet field validation
-        + SpatialRuleDefinition
-        + BagDefinition
-        + CombinationDefinition
-        ↓
-MVP4Catalog
-  ├─ 19 base acquisition items
-  ├─ 3 combination-result lookup items
-  ├─ starting 4x3 bag + 5 purchasable bags
-  ├─ 8 strong-spatial item rules
-  └─ 3 first-tier combination definitions
-```
-
-Explicit acquisition boundaries prevent combination results from leaking into base reward pools.
-
-Existing `sell_price()` / RunBuildState/Shop sell runtime remains unchanged. T01 does not invent a second economy.
-
-Catalog validation owns:
-
-- supported modifier-key check through `RunModifierSet`,
-- legacy static adapter no-double-authority guard,
-- non-numeric static/spatial payload rejection,
-- item/bag/combination identity/reference integrity.
-
-A stricter exported typed-Dictionary variant was tried during adversarial review, caused a real Godot 4.7.1 import regression, and was rejected. Current storage is runtime-compatible `Dictionary` plus explicit validation and tests.
-
-### T02 — committed BackpackState
-
-PR #29 / `126e6c942d74f97166ef0c881afc5d79cae3d274` integrated:
-
-```text
-MVP4Catalog definitions
-        ↓ referenced by stable ids
-ItemInstance + BagInstance
-        ↓
-BackpackState
-  ├─ fixed 6x6 board
-  ├─ centered starting 4x3 active area
-  ├─ shared monotonic instance ids
-  ├─ origin + normalized quarter-turn rotation
-  ├─ atomic add/move/remove/rotate
-  ├─ validated existing-instance restore paths
-  ├─ item-item + bag-bag collision facts
-  ├─ active-area union / bag expansion-shrink
-  ├─ existing-item orphan prevention
-  └─ defensive collection snapshots / copy isolation
-```
-
-T02 adversarial review found that live public item/bag collections could bypass state validation. That path was removed; public collection views now return defensive copies. T04 later added only validated owner restore APIs and proved shared item/bag identity collisions and failed-restore ID advancement are rejected/atomic.
-
-Final original T02 exact-head evidence: `Godot 4.7.1 import PASS -> main smoke PASS -> GUT 274/274 PASS -> 1915 assertions PASS -> T02 focused 11/11 PASS`.
-
-### T03 — deterministic BackpackResolver
-
-PR #31 / `2dcf055d82df02d44335f209897436572efa6739` integrated:
-
-```text
-BackpackState defensive snapshots + T01 definitions
-        ↓ read-only
-BackpackResolver
-  ├─ board/item/bag geometry revalidation
-  ├─ 4-neighbor active-layout connectivity
-  ├─ orthogonal canonical adjacency pairs
-  ├─ data-driven SpatialRuleDefinition aggregation
-  ├─ distinct-neighbor caps / one-neighbor-one-count
-  ├─ special-bag overlap hits once per distinct bag
-  ├─ static + selected-school modifier resolution
-  ├─ candidate placement preview
-  └─ whole-layout translation preview
-        ↓
-BackpackResolution
-  ├─ valid / failure code / deterministic failure cells
-  ├─ active cells / item cells / adjacency pairs
-  ├─ special-bag hits
-  └─ independent RunModifierSet snapshot
-```
-
-T03 keeps committed mutation in T02 and does not create a second state authority. It fails closed on missing definitions and produces deterministic independent result snapshots.
-
-Adversarial review found and fixed a diagnostic error where null state was initially reported as `missing_candidate`. Final exact-head evidence: `Godot 4.7.1 import PASS -> main smoke PASS -> GUT 292/292 PASS -> 2026 assertions PASS -> T03 focused 18/18 PASS`.
-
-### T04 — REST backpack edit session
-
-PR #33 / `d07f16d6bae90a09bba0a5f0b8991216d006c966` integrated:
-
-```text
-committed BackpackState + BackpackResolver
-        ↓ copy-on-begin
-RestBackpackSession
-  ├─ exact six-slot buffer
-  ├─ board ↔ buffer stable-instance path
-  ├─ selected-school preview context
-  ├─ deep edit snapshot undo / redo
-  ├─ pending-bag placement + history barrier
-  ├─ explicit WHOLE_LAYOUT_MOVE mode
-  ├─ atomic whole-layout translation
-  └─ deterministic commit-readiness failures
-        ↓ defensive snapshots
-BuildPreviewSnapshot
-  ├─ preview state
-  ├─ resolution legality / failure cells
-  ├─ adjacency / special-bag facts
-  └─ copied RunModifierSet
-```
-
-T04 preserves committed-source isolation and does not become geometry, combination, economy, Fate or combat authority. Public state/buffer/pending-bag/preview values are defensive copies.
-
-Adversarial review found and fixed: uncommitted visible preview passing the commit gate; per-item edits during whole-layout mode; and active whole-layout mode not initially blocking later commit. Final exact-head evidence: `Godot 4.7.1 import PASS -> main smoke PASS -> GUT 309/309 PASS -> 2202 assertions PASS -> T04 focused 17/17 PASS`.
-
-### T05 — atomic CombinationResolver
-
-PR #35 / `8cefce75456f8b72a8f69559857676cca67a6c5d` integrated:
-
-```text
-T01 CombinationDefinition + T03 adjacency + T04 session
-        ↓
-CombinationResolver
-  ├─ current recipe eligibility
-  ├─ on-board orthogonal source-pair validation
-  ├─ progressive hint/discovery state
-  ├─ source-order canonicalization
-  ├─ pending result transaction
-  └─ defensive pending/discovery snapshots
-        ↓ internal project-contract bridge
-RestBackpackSession candidate state
-  ├─ keep sources during preview
-  ├─ remove exactly two only in candidate
-  ├─ create exactly one result
-  ├─ T03 resolve candidate
-  └─ swap state only on success
-```
-
-T05 does not access live `_state` directly from the resolver and does not create another recipe/geometry authority. State replacement remains with the owning session. The underscore bridge is project-internal by convention/contract; GDScript does not provide language-enforced privacy.
-
-Adversarial review found and fixed public transaction methods that bypassed recipe authority, and stale discovery that could resurrect a removed recipe. It also verified exact-session ownership, modal collision rejection, cancel-history preservation, failed-commit identity preservation and defensive outputs. Final exact-head evidence: `Godot 4.7.1 import PASS -> main smoke PASS -> GUT 329/329 PASS -> 2322 assertions PASS -> T05 focused 20/20 PASS`.
-
-## 3. Protected spatial domain target
+## 2. Spatial / Workbench ownership chain
 
 ```text
 T01 definitions/catalog · INTEGRATED
-          ↓
-T02 BackpackState · INTEGRATED
-          ↓
-T03 BackpackResolver · INTEGRATED
-          ↓
-T04 RestBackpackSession · INTEGRATED
-          ↓
-T05 CombinationResolver · INTEGRATED
-          ↓
-finalized BackpackResolution / RunModifierSet snapshot
-          ↓
-T06 RunBuildState committed combat migration · NEXT
-          ↓
-CombatResolver / school runtime
+        ↓
+T02 BackpackState · committed facts
+        ↓ read-only
+T03 BackpackResolver · legality/adjacency/special-bag/modifiers
+        ↓
+T04 RestBackpackSession · pending REST edits / buffer / history
+        ↘
+         T05 CombinationResolver · pending/atomic first-tier combination
+        ↓ finalized snapshot
+T06 RunBuildState · committed item/spatial combat modifier authority
+        ↓
+CombatResolver / school runtime consumers
 ```
 
-### T02 BackpackState — INTEGRATED
+Protected rules:
 
-Owns committed facts and validated state transitions only:
+- fixed 6x6 board / centered 4x3 starting active area,
+- item and bag 90-degree rotation,
+- orthogonal adjacency,
+- selected L/T bag shapes,
+- special-bag one-cell-or-more overlap,
+- exact six-slot REST buffer,
+- explicit first-tier atomic combination,
+- preview/uncommitted items contribute zero combat power,
+- one committed spatial modifier snapshot is the item/spatial combat authority.
 
-- fixed 6x6 board,
-- T01 starting 4x3 active area,
-- bags/items and stable instance identity,
-- origin/rotation,
-- place/move/remove/rotate/validated restore,
-- occupied-cell collision facts,
-- bag expansion/shrink state,
-- snapshot/copy isolation.
+UI는 snapshots를 렌더하고 intents를 보낼 뿐 geometry/economy/combination/combat authority가 되지 않는다.
 
-It intentionally does not calculate adjacency, connected-layout rules, special-bag effects, REST session policy, GOLD/Fate/UI or combat modifiers.
-
-### T03 BackpackResolver — INTEGRATED
-
-Owns deterministic resolution over T02 facts:
-
-- connected usable layout legality,
-- orthogonal adjacency canonical once per distinct item pair,
-- data-driven T01 spatial rules and distinct-neighbor caps,
-- special-bag one-cell-or-more overlap activation once per distinct bag instance,
-- deterministic static/selected-school/spatial modifier snapshots,
-- reasoned candidate placement and whole-layout translation previews,
-- no mutation of committed state during resolve.
-
-### T04 RestBackpackSession — INTEGRATED
-
-Owns pending REST edit-session state:
-
-- six-slot buffer,
-- preview editing state separated from committed state,
-- selected-school preview context,
-- deep edit history / undo / redo,
-- pending-bag history boundary,
-- explicit mutually-exclusive whole-layout movement mode,
-- commit readiness without committing combat power itself.
-
-### T05 CombinationResolver — INTEGRATED
-
-Owns:
-
-- eligible first-tier source pairs using current T01 recipes and T03 adjacency,
-- progressive combination hint/discovery state,
-- pending result preview bound to one T04 session,
-- source preservation until valid result placement,
-- successful exact-two-source consumption + one-result creation,
-- repeated-commit protection and fail-closed stale-discovery handling.
-
-### T06 RunBuildState committed combat migration — NEXT
-
-Future owner for:
-
-- accepting only finalized T01~T05 spatial modifier snapshots,
-- storing one committed combat modifier authority for consumers,
-- replacing/bridging the old MVP-3 owned-item modifier path without double application,
-- preserving rollback-compatible GOLD/sell/Fate behavior unless explicitly superseded.
-
-### Workbench UI
-
-Future UI renders snapshots/emits intents only; it never becomes geometry/economy/combination/combat authority.
-
-## 4. New Run-level circuit target
+## 3. Run route / encounter / reward ownership chain
 
 ```text
-RunRouteState
-  ├─ cleared_schools in clear order
+T08 RunRouteState
+  ├─ cleared_schools / clear order
   ├─ provisional_next_school
-  ├─ current_stage_index 1..4
-  └─ final-routing state
+  ├─ school identity vs Stage 1..4 separation
+  └─ final routing facts
 
-SchoolEncounterDefinition
-  + StageEncounterProfile
-  + school gimmick/pattern data
-          ↓
-StageEncounterState / bounded coordinator
+T09 encounter definitions + StageEncounterProfile
+        ↓
+T10 deterministic Elite -> Trace -> Boss lifecycle gate
+        ↓
+T11 tradition access state + reward-lane eligibility
 ```
 
-Do not hardcode route permutations or 16 school-stage controllers in UI/MainController. Runtime for these owners is still NOT_STARTED.
-
-## 5. Battlefield progression target
+Current product flow target:
 
 ```text
-COMBAT / Core Monsters
--> ~2:40 Elite warning
--> ~3:00 school Elite
+starting school
+-> choose unvisited school
+-> Core Monster + Stage gimmick
+-> ~3m Elite
 -> chest token + trace AVAILABLE
--> trace recovery / TRACE RECOVERED
--> BossApproachProfile + earliest-time/warning gate
--> school Boss around five-minute boundary
+-> trace RECOVERED
+-> Boss warning / time gate
+-> ~5m school Boss
 -> RESULT / Boss Reward
 -> joint branch
--> trace STABILIZED / access package OPEN
+-> trace STABILIZED / tradition access OPEN
 -> Persistent Workbench
--> provisional route
--> Fate commit
+-> provisional next school
+-> Shop / Chest / Backpack / Combination
+-> Fate atomically commits build + Fate + route
+-> repeat four schools exactly once
+-> Final Binding Workbench
+-> separate 난세 재앙핵
+-> final result / Ninja Soul / legend
 ```
 
-Trace is separate from RewardOrb and must not grant ORB/STYLE/GOLD.
+Trace는 RewardOrb와 별도이며 ORB/STYLE/GOLD/direct combat power를 주지 않는다. `STABILIZED`는 전승 item이 등장할 수 있는 접근을 열 뿐 자동 유파 버프가 아니다.
 
-## 6. Access-package / reward-lane target
+## 4. Current missing integration boundary
+
+T01~T11의 domain integration이 있다고 해서 새 제품 Run이 end-to-end playable하다는 뜻은 아니다.
+
+현재 다음 제품 패키지:
+
+### T12 — Atomic Workbench + Fate + next-route commit · NEXT FRESH PACKAGE
+
+목표:
+
+- finalized T04/T05 Workbench state,
+- pending Fate,
+- T08 provisional next-school route
+
+를 **all-or-none**으로 검증/commit하는 단일 final REST transaction boundary를 확립한다.
+
+T12에서 하지 않는 것:
+
+- Persistent Workbench production UI/input migration (T13),
+- MainController 새 Run 조립 전체 (T13/T14),
+- Cheonsul release-near encounter slice (T14),
+- Human QA (T15).
+
+Closed PR #43은 historical/WIP read-only다. 새 T12는 then-current completed `main`에서 fresh branch/package로 시작하고 #43에서 여전히 유효한 material만 ADAPT한다.
+
+## 5. T13~T15 integration target
 
 ```text
-access package = when item can appear
-affinity/tag = what it synergizes with
-reward lane = why it is offered now
-actual power = committed backpack placement/adjacency/combination only
+T12 atomic REST commit domain
+        ↓
+T13 Persistent Workbench route-preview UI/input
+        ↓
+T14 Cheonsul one-school release-near Vertical Slice
+  signature <=30s
+  -> Core pressure
+  -> ~3m Elite
+  -> trace
+  -> ~5m Boss
+  -> reward
+  -> Persistent Workbench
+  -> next-route preview
+        ↓
+T15 Human QA gate
 ```
 
-T01 provides canonical item IDs/tags and base/result pool boundaries. T02 provides committed positions/rotations. T03 derives spatial legality/effects. T04 owns pending editing. T05 owns first-tier combination transaction. Reward weighting/package eligibility belongs to T07/T11.
+T14 전에는 4유파 전체 content를 먼저 복제하지 않는다.
 
-## 7. Route preview / atomic commit target
+Human QA는 다음을 실제 사람 플레이로 확인한다.
 
-Workbench route choice is provisional and changeable before Fate. Later `RestCommitCoordinator` must atomically validate/commit `backpack + fate + next_school` or mutate none.
+- 첫 30초 유파 정체성 가독성,
+- Core→Elite→Boss tension curve,
+- telegraph fairness,
+- trace 이해,
+- backpack/route 판단 가치,
+- Workbench comprehension/fatigue,
+- Korean layout/readability,
+- mouse / keyboard-gamepad / touch core completion paths.
 
-Do not expose exact hidden tuning tables or AI win recommendations.
+## 6. Four-school product identity
+
+공통 전투/백팩/Workbench/Fate 프레임을 공유하고, 유파는 서로 다른 **위험 처리 철학**으로 분리한다.
+
+| 유파 | 위험 처리 철학 | 공간/빌드 관계 |
+|---|---|---|
+| 봉마류 | 공간을 준비하고 식신·결계가 대신 싸우게 한다 | 소환 + 설치/결계 |
+| 천술류 | 상태를 만들고 순서대로 원소 반응을 일으킨다 | 서로 다른 원소/상태 |
+| 귀인류 | 위험한 근접 체류를 유지하며 힘을 끌어낸다 | 근접 무기 + 생존/회복 |
+| 흑영류 | 위험 표적을 표식·우선순위·처형으로 먼저 제거한다 | 투척/원거리 + 표식/독/처형 |
+
+고정 진지 강요, 직접 마우스 표적 지정, 저체력 단일 정체성처럼 자동전투/서바이버 이동 감정을 깨는 방향은 장기 제품 정체성으로 고정하지 않는다.
+
+## 7. Reward / economy boundary
+
+```text
+tradition access package = 언제 어떤 item이 등장 가능한가
+item affinity/tag        = 무엇과 시너지가 있는가
+reward lane              = 지금 왜 이 선택지가 제시되는가
+actual power             = 획득 후 committed backpack 배치/인접/조합
+```
+
+보호 범위:
+
+- 19 base-acquisition item IDs,
+- 3 first-tier combinations,
+- 5 purchasable bags,
+- Boss / Shop / Chest 획득 축,
+- lane-first selection + canonical item-ID dedupe,
+- existing sell/economy behavior unless explicitly superseded.
+
+Access state가 combat stat authority가 되지 않게 한다.
 
 ## 8. Final binding / final battle target
 
@@ -323,86 +213,69 @@ fourth school Boss
 -> four traces bound
 -> Final Binding Persistent Workbench
 -> final build + fourth Fate commit
--> separate 난세 재앙핵 battle
+-> separate 난세 재앙핵
 -> liberated-school support callbacks
--> player build owns victory
--> final result / Ninja Soul
+-> player backpack build owns victory
+-> final result / Ninja Soul / legend
 ```
 
-Final Boss reuses/recombines learned school languages. Exact full final script is later work.
+Final Boss는 네 유파에서 이미 학습한 encounter language를 재조합한다. 새로운 전혀 다른 전투 문법을 마지막에 갑자기 추가하지 않는다.
 
-## 9. Four-school runtime migration notes
+## 9. Human Home / Visual GDD projection
 
-Current protected MVP-2 evidence:
+Notion `닌자 서바이벌 · Home`은 이 system map을 그대로 복사하는 화면이 아니다.
 
-- 봉마: familiar + fixed ward.
-- 천술: status/reaction loop.
-- 귀인: melee pulse + low-HP modifier.
-- 흑영: marks/crit/execution + nearest-target attack.
+Home은 사람이 **게임 정체성 → 실제 플레이 → 핵심 시스템 → Visual → 핵심 데이터 → 콘텐츠 → 현재 개발 현실**을 스크롤로 이해하는 Living GDD projection이다.
 
-Tune after one-school representative slice; do not rewrite all four simultaneously.
+대량 데이터는 Master DB filtered Linked View로 노출해 중복 정본을 만들지 않는다.
 
-## 10. Task reuse / supersession map
+- 승인 Visual: `ASSET LIBRARY · Master` project/approved filter.
+- 사람용 시스템 데이터: `CORE SYSTEM · Master` project/confirmed filter + human-facing fields.
 
-- old 2026-08-11 plan T01: **implemented / historical evidence after PR #27**.
-- old plan T02: implemented / historical evidence after PR #29 where compatible with current Phase-B.
-- old plan T03: implemented / historical evidence after PR #31 where compatible with current Phase-B.
-- old plan T04: implemented / historical evidence after PR #33 where compatible with current Phase-B.
-- old plan T05: implemented / historical evidence after PR #35 where compatible with current Phase-B.
-- old T06-T07 low-level direction: reusable where current canon/Phase-B does not supersede it.
-- old T08-T12: historical/non-executable.
-- post-DEC-026 traceability/Phase-B/T08+ plan: current.
+AI용 source path/SHA/ID/PR/test/evidence는 Project Registry/System / Production Handoff / GitHub에 남긴다.
 
-Current next implementation package: **T06 committed RunBuildState migration**.
-
-## 11. Verification layers
+## 10. Verification layers / evidence ceiling
 
 ```text
-unit
-- T01 catalog/shape/modifier validation · PASS
-- T02 backpack state transitions · PASS
-- T03 geometry/connectivity/adjacency/special-bag resolution · PASS
-- T04 REST buffer/edit history/preview/mode · PASS
-- T05 combination atomicity/hints/discovery · PASS
-- T06 committed modifier migration / no double application · NEXT
-- T08 route state
-- T10 trace gates
-- T12 atomic commit
-
-integration
-- Core -> Elite -> trace -> Boss -> branch
-- reward -> Workbench -> route -> Fate commit
-- four schools exactly once -> final binding
-
-runtime
-- Godot import/main scene
-- representative battlefield pacing
-- UI focus/input behavior
-
-human
-- one-school release-near Vertical Slice first
-- school identity/readability
-- telegraph fairness
-- trace comprehension
-- Workbench decision value/fatigue
-- Korean layout/readability
+source / contract
+-> import / parse
+-> main-scene smoke
+-> focused/full GUT
+-> live runtime / render / input
+-> Human Usability
+-> Player Experience
+-> device / export
 ```
 
-Automated GREEN and human PASS remain separate evidence classes.
+현재 automated/domain evidence:
 
-## 12. Current evidence ceiling
+- MVP-0~3 baseline integrated.
+- T01~T11 domain chain integrated with automated evidence.
 
-- MVP-0~3 integrated.
-- DEC-014~026 planning canon approved.
-- fresh Phase-B PASS.
-- **T01 spatial data contracts/catalog integrated and automated-regression verified.**
-- **T02 committed BackpackState integrated and automated-regression verified.**
-- **T03 deterministic BackpackResolver integrated and automated-regression verified.**
-- **T04 REST edit-session domain engine integrated and automated-regression verified.**
-- **T05 first-tier atomic combination domain transaction integrated and automated-regression verified.**
-- actual Workbench interaction and committed spatial combat integration not started.
-- DEC-014~026 circuit/trace/encounter runtime not started.
-- release-near human QA not run.
-- Android/export not ready.
+아직 그 증거로 PASS라 말할 수 없는 것:
 
-Do not use T05 combination evidence as proof that playable Workbench UI or committed combat behavior exists.
+- intended new four-school Run end-to-end playability,
+- production-candidate Persistent Workbench UI/input,
+- Cheonsul release-near player experience,
+- device/Android readiness,
+- final full-run experience.
+
+`NOT_RUN`은 PASS가 아니다.
+
+## 11. Next execution artifact
+
+**T12 — Atomic Workbench + Fate + next-route commit**.
+
+```text
+then-current completed main
+-> current Base/project authority readback
+-> actual code/tests/canon inspection
+-> closed PR #43 read-only comparison
+-> fresh branch
+-> exact T12 boundary
+-> TDD / adversarial review / exact-head verification
+-> PR / merge
+-> post-merge GitHub + Notion readback
+```
+
+T12가 T13/T14 scope를 흡수하지 않게 한다.
