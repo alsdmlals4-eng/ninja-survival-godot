@@ -146,6 +146,14 @@ func test_failed_reroll_does_not_advance_seeded_rng_state() -> void:
 	assert_eq(failed_first.controller.shop_bag_option(), direct_success.controller.shop_bag_option(), "A failed reroll must not consume the future seeded bag offer")
 
 
+func test_missing_mandatory_boss_reward_pool_remains_pending_fail_closed() -> void:
+	var bundle := _bundle(209)
+	bundle.controller.begin_rest(1, &"missing_school", 0)
+	assert_true(bundle.controller.boss_reward_options().is_empty())
+	assert_true(bundle.controller.has_pending_boss_reward(), "Mandatory boss reward failure must remain unresolved instead of allowing the commit gate to skip it")
+	assert_false(bundle.controller.choose_boss_reward(0))
+
+
 func _bundle(seed: int) -> Dictionary:
 	return _bundle_with_defs(seed, _item_defs(), _bag_defs())
 
