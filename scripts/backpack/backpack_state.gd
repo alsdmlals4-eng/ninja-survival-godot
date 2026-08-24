@@ -15,7 +15,7 @@ var next_instance_id: int = 1
 
 func create_starting_state():
 	var state = get_script().new()
-	var starting_id := state.add_bag(MVP4CatalogScript.STARTING_BAG_ID, STARTING_BAG_ORIGIN, 0)
+	var starting_id: int = state.add_bag(MVP4CatalogScript.STARTING_BAG_ID, STARTING_BAG_ORIGIN, 0)
 	if starting_id == 0:
 		return null
 	return state
