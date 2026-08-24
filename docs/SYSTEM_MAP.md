@@ -15,159 +15,153 @@
 |---|---|---|---|
 | Main composition | `scripts/core/main_controller.gd` | MVP-3 integrated | reuse composition root; later wire circuit/trace/Workbench |
 | Game score/kill | `scripts/core/game_state.gd` | integrated | reuse |
-| Stage flow | `scripts/core/stage_flow_controller.gd` | 3-segment `SCHOOL_SELECT->COMBAT->BOSS->RESULT->SHOP->FATE->PREVIEW/COMPLETE` | baseline only; current product target differs |
-| Run build | `scripts/core/run_build_state.gd` | GOLD + non-spatial owned items + Fate modifiers | migrate to committed spatial authority |
+| Stage flow | `scripts/core/stage_flow_controller.gd` | 3-segment baseline | current product target differs; preserve as rollback evidence |
+| Run build | `scripts/core/run_build_state.gd` | GOLD + non-spatial owned items + Fate modifiers | migrate at T06 to committed spatial authority |
 | Combat resolver | `scripts/combat/combat_resolver.gd` | run modifiers applied to damage | reuse |
-| Contribution | `scripts/combat/combat_contribution_tracker.gd` | segment contribution snapshot | reuse/extend only if new evidence needs it |
-| Wave spawning | `scripts/spawning/wave_spawner.gd` | timed/capped normal enemies | reuse API; do not create second wave system by default |
-| Stage Boss | `scripts/enemies/stage_boss.gd` | stat-tier Boss baseline | school-Boss/final-Boss migration reference, not current final implementation |
-| Four schools | `scripts/schools/*_runtime.gd` | four shallow identities integrated | preserve as baseline; bounded later tuning |
-| Shop | `scripts/core/shop_controller.gd` | immediate non-spatial purchase/sell semantics | reuse economy/reroll/sell pieces; route acquisition to Workbench/access lanes |
-| Fate | `scripts/core/fate_controller.gd` | one choice per rest | reuse candidates; later atomic route/build commit integration |
-| Rest UI | `scripts/ui/rest_flow_ui.gd` + scene | RESULT/SHOP/FATE/PREVIEW/COMPLETE | outer shell baseline; Workbench/route preview target differs |
-| Item data | `scripts/data/item_definition.gd` + `mvp3_catalog.gd` | 8 current runtime items + fates | spatial/catalog migration planned |
-| Tests/CI | `tests/**`, `.github/workflows/gut.yml` | active regression baseline | protect; replace tests only with approved behavior RED/GREEN |
+| Wave spawning | `scripts/spawning/wave_spawner.gd` | timed/capped normal enemies | reuse API; no second wave system by default |
+| Stage Boss | `scripts/enemies/stage_boss.gd` | stat-tier Boss baseline | later school/final Boss migration reference |
+| Four schools | `scripts/schools/*_runtime.gd` | four shallow identities integrated | preserve baseline; bounded later tuning |
+| Shop | `scripts/core/shop_controller.gd` | immediate non-spatial buy/sell | preserve sell/economy baseline; migrate acquisition at T07/T11 |
+| Fate | `scripts/core/fate_controller.gd` | one choice per rest | later pending/atomic commit integration |
+| Rest UI | `scripts/ui/rest_flow_ui.gd` + scene | MVP-3 RESULT/SHOP/FATE/PREVIEW | outer-shell baseline |
+| **T01 item data** | `ItemDefinition` + `MVP4Catalog` + data definitions | **integrated** | canonical spatial data foundation |
+| Backpack state | future `BackpackState` | **NOT_STARTED** | T02 next |
+| Tests/CI | `tests/**`, `.github/workflows/gut.yml` | active regression baseline | protect / extend TDD-first |
 
-## 2. Protected spatial domain target
+## 2. T01 integrated spatial data foundation
+
+PR #27 / `7c9206702526f99dfadf44a617cd150853ec733f` integrated:
 
 ```text
-ItemDefinition / BagDefinition / CombinationDefinition
+MVP3Catalog existing 8 item definitions
+        ↓ reused / extended
+ItemDefinition + RunModifierSet field validation
+        + SpatialRuleDefinition
+        + BagDefinition
+        + CombinationDefinition
+        ↓
+MVP4Catalog
+  ├─ 19 base acquisition items
+  ├─ 3 combination-result lookup items
+  ├─ starting 4x3 bag + 5 purchasable bags
+  ├─ 8 strong-spatial item rules
+  └─ 3 first-tier combination definitions
+```
+
+Explicit acquisition boundaries prevent combination results from leaking into base reward pools.
+
+Existing `sell_price()` / RunBuildState/Shop sell runtime remains unchanged. T01 does not invent a second economy.
+
+Catalog validation owns:
+
+- supported modifier-key check through `RunModifierSet`,
+- legacy static adapter no-double-authority guard,
+- non-numeric static/spatial payload rejection,
+- item/bag/combination identity/reference integrity.
+
+A stricter exported typed-Dictionary variant was tried during adversarial review, caused a real Godot 4.7.1 import regression, and was rejected. Current storage is runtime-compatible `Dictionary` plus explicit validation and tests.
+
+## 3. Protected spatial domain target
+
+```text
+T01 definitions/catalog · INTEGRATED
           ↓
-ItemInstance / BagInstance
+T02 BackpackState
           ↓
-BackpackState
+T03 BackpackResolver
           ↓
-BackpackResolver
-          ↓
-RestBackpackSession ── CombinationResolver
+T04 RestBackpackSession ── T05 CombinationResolver
           ↓
 BuildPreviewSnapshot
           ↓
-committed RunBuildState snapshot + Fate
+T06 committed RunBuildState snapshot + Fate
           ↓
-RunModifierSet / CombatResolver / SchoolRuntimeHost / player runtime
+RunModifierSet / CombatResolver / school runtime
 ```
 
-Responsibilities:
+### T02 BackpackState — NEXT
 
-### BackpackState
+Owns facts and state transitions only:
 
 - fixed 6x6 board,
+- T01 starting 4x3 active area,
 - bags/items and stable instance identity,
 - origin/rotation,
-- committed spatial state only.
+- place/move/remove/rotate,
+- occupied-cell collision facts,
+- bag expansion state,
+- snapshot/copy isolation.
 
-### BackpackResolver
+No adjacency/special-bag calculation, GOLD/Fate/UI or combat modifier authority in T02.
 
-- bounds/occupancy,
-- active bag cells,
-- bag connectivity/collision,
-- orthogonal adjacency,
-- special-bag overlap,
-- deterministic active modifier resolution.
+### T03 BackpackResolver
 
-### RestBackpackSession
+Future owner for bounds/usable cells, bag connectivity/collision, orthogonal adjacency, special-bag overlap and deterministic active modifier resolution.
 
-- six-slot work buffer,
-- preview placement/rotation,
-- whole-layout movement mode,
-- Undo/Redo edit history,
-- pending bag,
-- combination preview/transaction,
-- commit readiness.
+### T04 RestBackpackSession
+
+Future owner for six-slot buffer, preview editing/history/pending states and commit readiness.
 
 ### Workbench UI
 
-- render snapshots,
-- expose intent/actions,
-- show legality/synergy/combination/route feedback,
-- never become geometry/economy/combination authority.
+Future UI renders snapshots/emits intents only; it never becomes geometry/economy/combination authority.
 
-## 3. New Run-level circuit target
-
-Current product canon requires a bounded owner above individual school runtimes.
-
-Architecture direction approved by the fresh Phase-B review:
+## 4. New Run-level circuit target
 
 ```text
 RunRouteState
   ├─ cleared_schools in clear order
   ├─ provisional_next_school
   ├─ current_stage_index 1..4
-  └─ four-school-complete / final-routing state
+  └─ final-routing state
 
 SchoolEncounterDefinition
   + StageEncounterProfile
   + school gimmick/pattern data
           ↓
 StageEncounterState / bounded coordinator
-  ├─ Elite / Trace / Boss lifecycle
-  └─ normal-spawn permission for existing WaveSpawner
 ```
 
-Do not hardcode every route permutation or 16 school-stage variants in UI/MainController. DEC-026 and the fresh Phase-B record have approved these owner boundaries; runtime implementation remains NOT_STARTED and must follow the T01→T14 package order.
+Do not hardcode route permutations or 16 school-stage controllers in UI/MainController. Runtime for these owners is still NOT_STARTED.
 
-## 4. Battlefield progression target
+## 5. Battlefield progression target
 
 ```text
 COMBAT / Core Monsters
 -> ~2:40 Elite warning
 -> ~3:00 school Elite
--> Elite death
-   -> chest token +1 exactly once
-   -> trace AVAILABLE
--> trace auto-approach / close-range recovery
--> TRACE RECOVERED
+-> chest token + trace AVAILABLE
+-> trace recovery / TRACE RECOVERED
 -> BossApproachProfile + earliest-time/warning gate
 -> school Boss around five-minute boundary
 -> RESULT / Boss Reward
--> return to joint branch
--> trace STABILIZED / school access package OPEN
+-> joint branch
+-> trace STABILIZED / access package OPEN
 -> Persistent Workbench
--> provisional next-school route
+-> provisional route
 -> Fate commit
 ```
 
 Trace is separate from RewardOrb and must not grant ORB/STYLE/GOLD.
 
-## 5. Access-package / reward-lane target
+## 6. Access-package / reward-lane target
 
 ```text
 access package = when item can appear
-affinity/tag = what builds/schools it synergizes with
-reward lane = why this candidate is offered now
-actual power = only committed backpack placement/adjacency/combination
+affinity/tag = what it synergizes with
+reward lane = why it is offered now
+actual power = committed backpack placement/adjacency/combination only
 ```
 
-Run start:
+T01 provides canonical item IDs/tags and base/result pool boundaries. It does **not** implement reward weighting or package eligibility; those belong to T07/T11.
 
-`Universal + starting-school package open`.
+## 7. Route preview / atomic commit target
 
-After school Boss + branch return:
-
-`that school's package opens`.
-
-Boss/Shop/Chest should select a lane/pool first, then item, and deduplicate by canonical item ID. Do not turn 19 existing items into mutually exclusive school-owned items.
-
-Existing Shop sell semantics are a protected runtime fact unless a later approved design changes them; LOW_VALUE_REWARD_RECOVERY does not invent a second dismantle/conversion economy.
-
-## 6. Route preview / commit target
-
-Workbench owns a player-facing comparison surface for unvisited schools.
-
-Route choice:
-
-- provisional while editing,
-- changeable before Fate,
-- Fate atomically commits `backpack + fate + next_school`,
-- failed commit mutates none of the three,
-- clear history remains visible and feeds final support order.
-
-Route card can reveal school philosophy, Stage gimmick depth, Elite/Boss main risk, access/reward meaning and real current-build links.
+Workbench route choice is provisional and changeable before Fate. Later `RestCommitCoordinator` must atomically validate/commit `backpack + fate + next_school` or mutate none.
 
 Do not expose exact hidden tuning tables or AI win recommendations.
 
-## 7. Final binding / final battle target
+## 8. Final binding / final battle target
 
 ```text
 fourth school Boss
@@ -175,75 +169,56 @@ fourth school Boss
 -> joint branch
 -> four traces bound
 -> Final Binding Persistent Workbench
--> all access packages open
 -> final build + fourth Fate commit
 -> separate 난세 재앙핵 battle
--> liberated-school support callbacks in clear order
+-> liberated-school support callbacks
 -> player build owns victory
 -> final result / Ninja Soul
 ```
 
-Four-school support is risk relief/attack-window narrative payoff, not companion management or automatic victory.
+Final Boss reuses/recombines learned school languages. Exact full final script is later work.
 
-Final Boss reuses/recombines previously learned school languages. DEC-026 supplies the bounded encounter vocabulary/pattern budget; the final calamity's exact full script remains a later implementation/planning responsibility and is not runtime evidence yet.
+## 9. Four-school runtime migration notes
 
-## 8. Four-school runtime migration notes
+Current protected MVP-2 evidence:
 
-Current runtime is protected evidence:
-
-- 봉마: familiar + current fixed ward.
+- 봉마: familiar + fixed ward.
 - 천술: status/reaction loop.
-- 귀인: melee pulse + current low-HP berserker modifier.
-- 흑영: marks/crit/execution + current nearest-target attack.
-
-Long-term product tuning candidates:
-
-- 봉마 -> mobile stronghold expression.
-- 귀인 -> dangerous close-range presence rather than low HP alone.
-- 흑영 -> threat-priority execution while keeping auto-combat compatibility.
-- 천술 -> preserve reaction identity while expanding content later.
+- 귀인: melee pulse + low-HP modifier.
+- 흑영: marks/crit/execution + nearest-target attack.
 
 Tune after one-school representative slice; do not rewrite all four simultaneously.
 
-## 9. Task reuse / supersession map
+## 10. Task reuse / supersession map
 
-Old `docs/superpowers/plans/2026-08-11-mvp4-backpack-combination.md`:
+- old 2026-08-11 plan T01: **implemented / historical evidence after PR #27**.
+- old T02-T07 low-level direction: reusable where current canon/Phase-B does not supersede it.
+- old T08-T12: historical/non-executable.
+- post-DEC-026 traceability/Phase-B/T08+ plan: current.
 
-- T01-T07: reusable low-level direction.
-- T08-T12: historical/non-executable after DEC-014~025.
+Current next implementation package: **T02 BackpackState**.
 
-Current execution owners:
-
-- spatial specification: `docs/superpowers/specs/2026-08-11-mvp4-backpack-combination-design.md`
-- spatial data contract: `docs/planning/2026-08-11-mvp4-content-data-contract.md`
-- post-DEC-026 traceability: `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`
-- fresh Phase-B: `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
-- T08+ replacement plan: `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
-
-Current next implementation package: **T01 spatial data contracts/catalog**.
-
-## 10. Verification layers
+## 11. Verification layers
 
 ```text
 unit
-- catalog/shape/modifier validation
-- backpack geometry/connectivity/adjacency
-- combination atomicity
-- access-package/reward-lane determinism
-- school-route state
-- trace state/gates
-- atomic route/build/Fate commit
+- T01 catalog/shape/modifier validation · PASS
+- T02 backpack state transitions · NEXT
+- T03 geometry/adjacency
+- T05 combination atomicity
+- T08 route state
+- T10 trace gates
+- T12 atomic commit
 
 integration
 - Core -> Elite -> trace -> Boss -> branch
-- reward -> Workbench -> route preview -> Fate commit
+- reward -> Workbench -> route -> Fate commit
 - four schools exactly once -> final binding
-- regression with current combat/school/Fate/Shop ownership
 
 runtime
 - Godot import/main scene
 - representative battlefield pacing
-- real UI focus/input behavior
+- UI focus/input behavior
 
 human
 - one-school release-near Vertical Slice first
@@ -252,19 +227,19 @@ human
 - trace comprehension
 - Workbench decision value/fatigue
 - Korean layout/readability
-- only after pass: four-school multiplication
 ```
 
 Automated GREEN and human PASS remain separate evidence classes.
 
-## 11. Current evidence ceiling
+## 12. Current evidence ceiling
 
 - MVP-0~3 integrated.
 - DEC-014~026 planning canon approved.
 - fresh Phase-B PASS.
-- MVP-4 spatial production not started.
-- DEC-014~026 migration runtime not started.
+- **T01 spatial data contracts/catalog integrated and automated-regression verified.**
+- BackpackState/Resolver/Workbench spatial runtime not started.
+- DEC-014~026 circuit/trace/encounter runtime not started.
 - release-near human QA not run.
 - Android/export not ready.
 
-Do not use this target map as proof that any missing runtime exists.
+Do not use T01 definitions as proof that playable backpack behavior exists.
