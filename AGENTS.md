@@ -96,12 +96,13 @@ Full current detail:
 - **MVP-4 T01 spatial data contracts/catalog: integrated.**
 - **MVP-4 T02 BackpackState committed spatial state: integrated.**
 - **MVP-4 T03 BackpackResolver deterministic spatial resolution: integrated.**
-- REST spatial editing / six-slot buffer / Workbench interaction: not started.
+- **MVP-4 T04 RestBackpackSession REST edit-session domain engine: integrated.**
+- Combination transaction / Workbench UI / committed spatial combat integration: not started.
 - DEC-014~025 school-circuit/trace/final-calamity runtime: not started.
 - DEC-026 encounter/pattern runtime: not started.
 - release-near Vertical Slice human QA for current canon: NOT_RUN.
 
-T01 proves the data foundation. T02 proves committed spatial-state primitives. T03 proves deterministic connectivity/adjacency/special-bag/spatial-modifier resolution and read-only previews. None proves playable Workbench interaction, committed combat integration or Human experience.
+T01 proves the data foundation. T02 proves committed spatial-state primitives. T03 proves deterministic connectivity/adjacency/special-bag/spatial-modifier resolution and read-only previews. T04 proves the REST edit-session domain engine: six-slot buffer, preview separation, edit history/undo-redo, explicit whole-layout movement mode and deterministic commit-readiness checks. None proves playable Workbench UI, committed combat integration or Human experience.
 
 T01 merged as PR #27 / `7c9206702526f99dfadf44a617cd150853ec733f`. Exact final PR-head evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `263/263` tests and `1829` assertions PASS.
 
@@ -109,19 +110,21 @@ T02 merged as PR #29 / `126e6c942d74f97166ef0c881afc5d79cae3d274`. Exact final P
 
 T03 merged as PR #31 / `2dcf055d82df02d44335f209897436572efa6739`. Exact final PR-head `e0dacee9048a01e799012b8aca12760e07ca47ea` evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `292/292` tests and `2026` assertions PASS, T03 focused `18/18` PASS.
 
+T04 merged as PR #33 / `d07f16d6bae90a09bba0a5f0b8991216d006c966`. Exact final PR-head `6972e14cfa94dcce4d372a632db6d5e74809ee62` evidence: Godot 4.7.1 import PASS, main-scene smoke PASS, GUT `309/309` tests and `2202` assertions PASS, T04 focused `17/17` PASS.
+
 ## 6. Current planning / implementation gate
 
 DEC-026 is **APPROVED** and the fresh post-DEC-026 Phase-B Definition of Ready is **PASS**.
 
-T01, T02 and T03 are complete. Current production execution begins at:
+T01, T02, T03 and T04 are complete. Current production execution begins at:
 
-**T04 — RestBackpackSession, from fresh merged `main`, TDD first.**
+**T05 — CombinationResolver, from fresh merged `main`, TDD first.**
 
 Remaining executable order:
 
-`T04 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
+`T05 -> T06 -> T07 -> T08 -> T09 -> T10 -> T11 -> T12 -> T13 -> T14 -> T15 Human QA gate`.
 
-Do not jump directly to T08. Do not pull T05 combination transactions, GOLD/Fate/economy or T06 committed combat modifier authority into T04.
+Do not jump directly to T08. Do not pull T06 committed combat modifier authority, GOLD/Fate/economy orchestration or Workbench UI authority into T05.
 
 Current planning owners:
 
@@ -159,8 +162,9 @@ A stricter exported typed-Dictionary experiment caused an actual Godot import re
 - bag expansion/shrink active-area facts and prevention of orphaned committed items
 - public item/bag collection views are defensive snapshots
 - `copy_value()` preserves snapshot isolation
+- T04 adds only validated `restore_item_instance()` / `restore_bag_instance()` owner paths so buffered/reconstructed existing instances retain identity without exposing live interiors
 
-Adversarial review found and fixed a live collection-view mutation bypass before merge.
+Adversarial review found and fixed a live collection-view mutation bypass before T02 merge; T04 later verified restore paths reject shared item/bag ID collisions and preserve atomic ID advancement.
 
 ### Integrated T03
 
@@ -177,10 +181,23 @@ Adversarial review found and fixed a live collection-view mutation bypass before
 
 Adversarial review found and fixed a diagnostic contract defect where null state was initially reported as `missing_candidate`; state/candidate failures are now distinct.
 
-### Next T04-T07 direction
+### Integrated T04
 
-- T04 `RestBackpackSession`: six-slot buffer, pending/edit preview state, history/undo-redo and explicit whole-layout move mode over T02/T03
-- T05 `CombinationResolver`
+- `RestBackpackSession` owns a copy of committed T02 state rather than mutating the source
+- exact six-slot REST work buffer; board -> buffer disables effects and legal buffer -> board preserves stable instance identity
+- `BuildPreviewSnapshot` holds defensive preview state and copied T03 resolution/modifier output
+- selected-school context is included in build preview resolution
+- backpack edit actions are deep-snapshot undoable/redoable; a new edit clears redo
+- non-history pending-bag acquisition cuts prior edit history so undo cannot silently erase/refund an irreversible acquisition
+- whole-layout movement is an explicit mutually-exclusive mode and uses T03 all-or-nothing translation
+- pending item preview and active whole-layout mode block later commit readiness until explicitly resolved/exited
+- session state/buffer/pending-bag/preview views are defensive copies
+
+Adversarial review found and fixed two session-boundary defects before merge: an uncommitted visible preview could pass the commit gate, and per-item edits/commit could occur while whole-layout mode was active.
+
+### Next T05-T07 direction
+
+- T05 `CombinationResolver`: explicit atomic first-tier combination eligibility, progressive hints and pending result transaction over T02/T03/T04
 - T06 committed `RunBuildState` modifier migration
 - T07 reward/shop/chest transaction foundation
 
@@ -195,6 +212,7 @@ Old T08-T12 from the 2026-08-11 plan remain superseded for execution. Use the cu
 - PR #27 is merged T01 evidence.
 - PR #29 is merged T02 evidence.
 - PR #31 is merged T03 evidence.
+- PR #33 is merged T04 evidence.
 - Future production work starts from fresh merged `main` after current readback.
 
 Do not rewrite historical PRs/handoffs just to make timestamps/status prose appear current.
