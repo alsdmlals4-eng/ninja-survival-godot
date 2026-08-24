@@ -84,6 +84,29 @@ func test_can_place_item_and_bag_return_reasoned_read_only_previews() -> void:
 	assert_eq(state.next_instance_id, original_next_id)
 
 
+func test_existing_instance_previews_replace_in_place_without_mutating_source() -> void:
+	if not _t03_ready():
+		return
+	var state = _starting_state()
+	var item_id: int = state.add_item(&"taijutsu_training", Vector2i(1, 1))
+	var bag_id: int = state.add_bag(&"small_pouch", Vector2i(1, 4))
+	assert_gt(item_id, 0)
+	assert_gt(bag_id, 0)
+	var resolver = _resolver()
+	var item_defs: Dictionary = _item_defs()
+	var bag_defs: Dictionary = _bag_defs()
+
+	var item_candidate = state.get_item(item_id)
+	item_candidate.origin = Vector2i(2, 1)
+	assert_true(resolver.can_place_item(state, item_candidate, item_defs, bag_defs).valid)
+	assert_eq(state.get_item(item_id).origin, Vector2i(1, 1))
+
+	var bag_candidate = state.get_bag(bag_id)
+	bag_candidate.origin = Vector2i(0, 4)
+	assert_true(resolver.can_place_bag(state, bag_candidate, item_defs, bag_defs).valid)
+	assert_eq(state.get_bag(bag_id).origin, Vector2i(1, 4))
+
+
 func test_irregular_rotated_bag_contributes_exact_active_cells() -> void:
 	if not _t03_ready():
 		return
@@ -148,6 +171,38 @@ func test_per_distinct_neighbor_rule_and_selected_school_static_payload_are_dete
 	assert_almost_eq(first.modifiers.school_resource_gain_pct, 0.15, 0.001)
 	assert_almost_eq(first.modifiers.school_status_effect_pct, 0.10, 0.001)
 	assert_almost_eq(second.modifiers.school_damage_pct, first.modifiers.school_damage_pct, 0.001)
+
+
+func test_per_distinct_neighbor_rule_caps_at_three_matches() -> void:
+	if not _t03_ready():
+		return
+	var state = _starting_state()
+	assert_gt(state.add_bag(&"small_pouch", Vector2i(1, 4)), 0)
+	var shuriken_id: int = state.add_item(&"shuriken", Vector2i(2, 2))
+	var water_id: int = state.add_item(&"water_style", Vector2i(1, 2))
+	var lightning_id: int = state.add_item(&"lightning_style", Vector2i(3, 2))
+	var fire_id: int = state.add_item(&"fire_style", Vector2i(1, 1), 1)
+	var training_id: int = state.add_item(&"ninjutsu_training", Vector2i(2, 3))
+	for instance_id in [shuriken_id, water_id, lightning_id, fire_id, training_id]:
+		assert_gt(instance_id, 0)
+	var resolution = _resolver().resolve(state, _item_defs(), _bag_defs(), &"")
+	assert_true(resolution.valid)
+	assert_almost_eq(resolution.modifiers.non_ultimate_school_damage_pct, 0.14, 0.001, "Shuriken static 0.05 + max three distinct ninjutsu bonuses")
+
+
+func test_one_neighbor_matching_tag_and_definition_id_counts_once_for_rule() -> void:
+	if not _t03_ready():
+		return
+	var state = _starting_state()
+	var summon_id: int = state.add_item(&"greater_summoning_circle", Vector2i(1, 1))
+	var emblem_id: int = state.add_item(&"school_emblem", Vector2i(3, 1))
+	assert_gt(summon_id, 0)
+	assert_gt(emblem_id, 0)
+	var item_defs: Dictionary = _item_defs()
+	item_defs[&"school_emblem"].tags.append(&"barrier")
+	var resolution = _resolver().resolve(state, item_defs, _bag_defs(), &"")
+	assert_true(resolution.valid)
+	assert_almost_eq(resolution.modifiers.ultimate_charge_gain_pct, 0.12, 0.001, "One neighbor matching both declared selectors must still count once")
 
 
 func test_special_bag_applies_once_when_item_overlaps_multiple_cells() -> void:
