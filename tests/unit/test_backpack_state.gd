@@ -61,7 +61,7 @@ func test_unknown_definitions_and_instance_ids_are_atomic_noops() -> void:
 	var state = _starting_state()
 	if state == null:
 		return
-	var next_id_before := state.next_instance_id
+	var next_id_before: int = state.next_instance_id
 	assert_eq(state.add_item(&"not_an_item", Vector2i(1, 1)), 0)
 	assert_eq(state.add_bag(&"not_a_bag", Vector2i(0, 0)), 0)
 	assert_eq(state.next_instance_id, next_id_before)
