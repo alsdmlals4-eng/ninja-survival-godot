@@ -24,7 +24,7 @@ func test_begin_rest_offers_three_unique_unselected_fates() -> void:
 	assert_false(fate.can_continue())
 
 
-func test_choose_requires_current_candidate_and_only_one_choice_per_rest() -> void:
+func test_choose_requires_current_candidate_and_only_one_pending_choice_per_rest() -> void:
 	var fixture := _new_fixture(37)
 	if fixture.is_empty():
 		return
@@ -37,7 +37,7 @@ func test_choose_requires_current_candidate_and_only_one_choice_per_rest() -> vo
 	assert_true(fate.choose(chosen))
 	assert_true(fate.can_continue())
 	assert_eq(fate.selected_this_rest, chosen)
-	assert_true(state.has_fate(chosen))
+	assert_false(state.has_fate(chosen), "DEC-025 keeps Fate pending until atomic Workbench commit")
 	var selected_count: int = state.selected_fates.size()
 	var second: StringName = fate.candidate_ids[1]
 	assert_false(fate.choose(second))
@@ -45,14 +45,17 @@ func test_choose_requires_current_candidate_and_only_one_choice_per_rest() -> vo
 	assert_false(state.has_fate(second))
 
 
-func test_new_rest_resets_local_choice_but_excludes_previous_fate() -> void:
+func test_new_rest_resets_pending_choice_and_excludes_committed_fate() -> void:
 	var fixture := _new_fixture(41)
 	if fixture.is_empty():
 		return
+	var state = fixture.state
 	var fate = fixture.fate
 	fate.begin_rest()
 	var first: StringName = fate.candidate_ids[0]
 	assert_true(fate.choose(first))
+	assert_false(state.has_fate(first))
+	assert_true(state.select_fate(first), "Fixture simulates the external T12 commit boundary")
 	fate.begin_rest()
 	assert_eq(fate.selected_this_rest, &"")
 	assert_false(fate.can_continue())
