@@ -117,6 +117,34 @@ func test_whole_layout_mode_rejects_per_item_and_pending_bag_edits_until_exit() 
 	assert_eq(session.state.get_item(item_id).origin, Vector2i(2, 1))
 
 
+func test_whole_layout_mode_blocks_commit_until_explicit_exit() -> void:
+	var session = _session(_starting_state())
+	assert_true(session.enter_whole_layout_move_mode())
+	assert_eq(session.commit_failures(0, false, false), [&"whole_layout_mode_active"])
+	session.exit_whole_layout_move_mode()
+	assert_eq(session.commit_failures(0, false, false), [])
+
+
+func test_whole_layout_rebuild_preserves_future_identity_cursor_with_buffered_high_id() -> void:
+	var committed = _starting_state()
+	var first_id: int = committed.add_item(&"shuriken", Vector2i(1, 1))
+	var second_id: int = committed.add_item(&"shuriken", Vector2i(2, 1))
+	var buffered_id: int = committed.add_item(&"shuriken", Vector2i(3, 1))
+	assert_eq([first_id, second_id, buffered_id], [2, 3, 4])
+	assert_eq(committed.next_instance_id, 5)
+	var session = _session(committed)
+	assert_true(session.move_item_to_buffer(buffered_id))
+	assert_eq(session.buffer[0].instance_id, buffered_id)
+	assert_eq(session.state.next_instance_id, 5)
+
+	assert_true(session.enter_whole_layout_move_mode())
+	assert_true(session.translate_whole_layout(Vector2i(-1, 0)))
+	assert_eq(session.state.next_instance_id, 5, "Whole-layout rebuild must preserve the future id cursor even when the highest id is buffered")
+	assert_eq(session.buffer[0].instance_id, buffered_id)
+	assert_eq(session.state.get_item(first_id).instance_id, first_id)
+	assert_eq(session.state.get_item(second_id).instance_id, second_id)
+
+
 func _session(committed_state):
 	var session = load(SESSION_PATH).new()
 	session.begin(committed_state, load(RESOLVER_PATH).new(), _item_defs(), _bag_defs(), &"")
