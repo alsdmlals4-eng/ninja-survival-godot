@@ -110,7 +110,7 @@ Architecture:
 
 `definitions -> BackpackState -> BackpackResolver -> RestBackpackSession/CombinationResolver -> committed RunBuildState -> combat`.
 
-현재 T06까지 확정된 핵심은 **최종 committed spatial snapshot이 전투 modifier의 단일 authority**라는 점이다. 기존 `owned_items`는 경제/판매 호환 정보로 남을 수 있지만 전투력을 중복 적용하지 않는다.
+**T06에서 확정된 핵심**은 최종 committed spatial snapshot이 전투 modifier의 단일 authority라는 점이다. 기존 `owned_items`는 경제/판매 호환 정보로 남을 수 있지만 전투력을 중복 적용하지 않는다.
 
 ### 흔적 / 전승 접근 / Reward Lane
 
