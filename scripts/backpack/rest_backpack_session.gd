@@ -58,6 +58,8 @@ func begin(committed_state, resolver, item_defs: Dictionary, bag_defs: Dictionar
 
 func preview_item(instance_id: int, origin: Vector2i, rotation_quarters: int):
 	_pending_preview_state = null
+	if input_mode != InputMode.NORMAL:
+		return _snapshot(_state, BackpackResolutionScript.new().fail(&"whole_layout_mode_active"))
 	if _state == null:
 		return _snapshot(_state, BackpackResolutionScript.new().fail(&"missing_state"))
 	if _resolver == null:
@@ -85,7 +87,7 @@ func preview_item(instance_id: int, origin: Vector2i, rotation_quarters: int):
 
 
 func commit_item_preview() -> bool:
-	if _pending_preview_state == null:
+	if input_mode != InputMode.NORMAL or _pending_preview_state == null:
 		return false
 	_record_edit()
 	_state = _pending_preview_state.copy_value()
@@ -94,7 +96,7 @@ func commit_item_preview() -> bool:
 
 
 func rotate_item(instance_id: int) -> bool:
-	if _state == null:
+	if input_mode != InputMode.NORMAL or _state == null:
 		return false
 	var current = _state.get_item(instance_id)
 	if current == null:
@@ -106,7 +108,7 @@ func rotate_item(instance_id: int) -> bool:
 
 
 func move_item_to_buffer(instance_id: int) -> bool:
-	if _state == null or _buffer.size() >= BUFFER_CAPACITY:
+	if input_mode != InputMode.NORMAL or _state == null or _buffer.size() >= BUFFER_CAPACITY:
 		return false
 	var candidate_state = _state.copy_value()
 	var removed = candidate_state.remove_item(instance_id)
@@ -120,7 +122,7 @@ func move_item_to_buffer(instance_id: int) -> bool:
 
 
 func place_buffer_item(buffer_index: int, origin: Vector2i, rotation_quarters: int = 0) -> bool:
-	if _state == null or _resolver == null:
+	if input_mode != InputMode.NORMAL or _state == null or _resolver == null:
 		return false
 	if buffer_index < 0 or buffer_index >= _buffer.size():
 		return false
@@ -141,7 +143,7 @@ func place_buffer_item(buffer_index: int, origin: Vector2i, rotation_quarters: i
 
 
 func set_pending_bag(bag) -> bool:
-	if bag == null or _pending_bag != null:
+	if input_mode != InputMode.NORMAL or bag == null or _pending_bag != null:
 		return false
 	if not _bag_defs.has(bag.definition_id):
 		return false
@@ -155,7 +157,7 @@ func set_pending_bag(bag) -> bool:
 
 
 func place_pending_bag(origin: Vector2i, rotation_quarters: int = 0) -> bool:
-	if _state == null or _resolver == null or _pending_bag == null:
+	if input_mode != InputMode.NORMAL or _state == null or _resolver == null or _pending_bag == null:
 		return false
 	var candidate_state = _state.copy_value()
 	var pending = _pending_bag.copy_value()
