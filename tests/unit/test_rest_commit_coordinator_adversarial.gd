@@ -62,6 +62,7 @@ func test_each_independent_rest_blocker_is_atomic_and_preserves_pending_inputs()
 
 func test_legacy_immediate_choose_never_satisfies_t12_pending_commit_gate() -> void:
 	var fixture := _base_fixture(1320)
+	_enter_post_clear_workbench(fixture.route)
 	fixture.fate.begin_rest()
 	var fate_id: StringName = fixture.fate.candidate_ids[0]
 	assert_true(fixture.fate.choose(fate_id))
@@ -78,6 +79,7 @@ func test_legacy_immediate_choose_never_satisfies_t12_pending_commit_gate() -> v
 
 func test_stale_pending_fate_that_was_committed_elsewhere_fails_closed() -> void:
 	var fixture := _base_fixture(1321)
+	_enter_post_clear_workbench(fixture.route)
 	fixture.fate.begin_rest()
 	var fate_id: StringName = fixture.fate.candidate_ids[0]
 	assert_true(fixture.fate.choose_pending(fate_id))
@@ -94,6 +96,7 @@ func test_stale_pending_fate_that_was_committed_elsewhere_fails_closed() -> void
 
 func test_abandoned_pending_fate_is_reset_and_cannot_be_committed_by_coordinator() -> void:
 	var fixture := _base_fixture(1322)
+	_enter_post_clear_workbench(fixture.route)
 	fixture.fate.begin_rest()
 	var abandoned: StringName = fixture.fate.candidate_ids[0]
 	assert_true(fixture.fate.choose_pending(abandoned))
@@ -123,6 +126,7 @@ func test_failed_preview_block_can_be_resolved_then_same_transaction_commits_onc
 	assert_true(coordinator.commit())
 	assert_true(fixture.build_state.has_fate(fixture.pending_fate_id))
 	assert_eq(fixture.route.active_school_id(), &"cheonsul")
+	assert_eq(fixture.route.stage_index(), 2)
 	assert_eq(coordinator.committed_backpack_state().get_item(fixture.item_instance_id).origin, Vector2i(2, 1))
 	var after := _whole_snapshot(fixture, coordinator)
 	assert_false(coordinator.commit())
@@ -131,6 +135,7 @@ func test_failed_preview_block_can_be_resolved_then_same_transaction_commits_onc
 
 func test_fate_changed_observer_sees_route_backpack_modifiers_and_fate_as_one_coherent_tuple() -> void:
 	var fixture := _base_fixture(1340)
+	_enter_post_clear_workbench(fixture.route)
 	var preview = fixture.session.preview_item(fixture.item_instance_id, Vector2i(2, 1), 0)
 	assert_true(preview.valid)
 	assert_true(fixture.session.commit_item_preview())
@@ -162,7 +167,6 @@ func test_fate_changed_observer_sees_route_backpack_modifiers_and_fate_as_one_co
 
 func test_representative_route_prefixes_commit_only_latest_legal_unvisited_school_without_advancing_stage() -> void:
 	var prefixes := [
-		[],
 		[&"bongma"],
 		[&"bongma", &"cheonsul"],
 		[&"bongma", &"cheonsul", &"guiin"],
@@ -244,6 +248,7 @@ func test_committed_backpack_is_defensive_and_coordinator_exposes_no_generic_aut
 
 func _prepared_fixture(seed_value: int, route_id: StringName = &"cheonsul") -> Dictionary:
 	var fixture := _base_fixture(seed_value)
+	_enter_post_clear_workbench(fixture.route)
 	fixture.fate.begin_rest()
 	fixture["pending_fate_id"] = fixture.fate.candidate_ids[0]
 	assert_true(fixture.fate.choose_pending(fixture.pending_fate_id))
@@ -285,6 +290,13 @@ func _base_fixture(seed_value: int) -> Dictionary:
 		"fate": fate,
 		"route": route,
 	}
+
+
+func _enter_post_clear_workbench(route, cleared_school_id: StringName = &"guiin") -> void:
+	assert_true(route.set_provisional_next_school(cleared_school_id))
+	assert_true(route.commit_provisional_next_school())
+	assert_true(route.mark_active_school_cleared())
+	assert_eq(route.stage_index(), 2)
 
 
 func _new_coordinator(fixture: Dictionary):
