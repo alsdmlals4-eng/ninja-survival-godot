@@ -4,7 +4,8 @@
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER
 updated_at: 2026-08-25 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
-current_completed_main: 675073df3d47248666d5ad378c242480cb57c547
+current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
+current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
 latest_product_canon: docs/canon/2026-08-21-dec014-025-product-canon.md
 latest_encounter_canon: docs/canon/2026-08-22-dec026-encounter-pattern-budget.md
 latest_migration_traceability: docs/traceability/2026-08-22-dec026-post-gate-traceability.md
