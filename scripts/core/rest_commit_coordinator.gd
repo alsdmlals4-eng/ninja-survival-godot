@@ -26,6 +26,8 @@ func configure(
 func begin_rest(session: RestBackpackSession) -> bool:
 	if session == null or _build_state == null or _route_state == null or _fate_controller == null:
 		return false
+	if not _fate_controller._is_bound_to_build_state(_build_state):
+		return false
 	_session = session
 	_committed_this_rest = false
 	return true
@@ -51,7 +53,9 @@ func commit_failures(
 
 	failures.append_array(_session.commit_failures(chest_count, boss_reward_pending, combination_pending))
 
-	if _fate_controller == null or not _fate_controller._can_commit_pending():
+	if _fate_controller == null \
+		or not _fate_controller._is_bound_to_build_state(_build_state) \
+		or not _fate_controller._can_commit_pending():
 		failures.append(&"fate_pending")
 
 	if _route_state == null:
@@ -82,8 +86,8 @@ func commit(
 	if candidate_state == null or resolution == null or not bool(resolution.valid):
 		return false
 
-	# All externally supplied inputs are validated above. These mutations do not emit
-	# a signal until Fate is committed, so observers cannot see a half-committed tuple.
+	# Every mutation below has a matching non-mutating prevalidation above. No signal
+	# is emitted until Fate is committed, so observers see one coherent final tuple.
 	if not _route_state.commit_provisional_next_school():
 		return false
 	_committed_backpack_state = candidate_state.copy_value()
