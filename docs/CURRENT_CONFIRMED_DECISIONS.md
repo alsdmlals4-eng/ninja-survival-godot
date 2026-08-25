@@ -4,7 +4,7 @@
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER
 updated_at: 2026-08-25 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
-current_completed_main: c0440e7043bcf3bb678f5cb7d1653883f93c07a2
+current_completed_main: 675073df3d47248666d5ad378c242480cb57c547
 latest_product_canon: docs/canon/2026-08-21-dec014-025-product-canon.md
 latest_encounter_canon: docs/canon/2026-08-22-dec026-encounter-pattern-budget.md
 latest_migration_traceability: docs/traceability/2026-08-22-dec026-post-gate-traceability.md
@@ -27,7 +27,7 @@ device_android_export: NOT_RUN
 visual_master_style_reference: HYBRID_MASTER_STYLE_2026_08_25
 visual_runtime_character_identity: ONE_FIXED_CHARACTER_PLUS_TRACE_LAYERS
 visual_trace_stage3_rule: STARTING_MAIN_SCHOOL_ONLY
-visual_binary_notion_attachment: HYBRID_KEYVISUAL_LOW_RES_SERVER_READBACK_PASS_SUPPLEMENTARY_PREVIEWS_PENDING_FINAL_READBACK
+visual_binary_notion_attachment: HYBRID_KEYVISUAL_AND_SUPPLEMENTARY_LOW_RES_SERVER_READBACK_PASS_ORIGINAL_AND_HUMAN_VISIBLE_NOT_PROVEN
 ```
 
 This is the current mutable decision router/ledger. Detailed rules live in the dated canon files; implementation reality lives in actual code/scenes/data/tests and executed evidence. Do not use an older status sentence or closed branch to override this file. Visual continuation detail lives in `docs/CURRENT_VISUAL_HANDOFF.md` and the Notion `02 · 비주얼 바이블`; if an older visual sentence elsewhere conflicts, this section and those current owners win.
