@@ -35,6 +35,7 @@ func test_missing_pending_fate_rejects_commit_without_mutating_any_committed_sta
 	if not ResourceLoader.exists(COORDINATOR_PATH):
 		return
 	var fixture := _new_fixture(1203)
+	_enter_post_clear_workbench(fixture.route)
 	assert_true(fixture.route.set_provisional_next_school(&"cheonsul"))
 	var coordinator = _new_coordinator(fixture)
 	assert_true(coordinator.begin_rest(fixture.session))
@@ -49,6 +50,7 @@ func test_missing_provisional_route_rejects_commit_without_mutating_any_committe
 	var fixture := _new_fixture(1205)
 	if not fixture.fate.has_method("choose_pending"):
 		return
+	_enter_post_clear_workbench(fixture.route)
 	fixture.fate.begin_rest()
 	assert_true(fixture.fate.choose_pending(fixture.fate.candidate_ids[0]))
 	var coordinator = _new_coordinator(fixture)
@@ -64,6 +66,7 @@ func test_unresolved_workbench_buffer_rejects_commit_without_mutating_any_commit
 	var fixture := _new_fixture(1207)
 	if not fixture.fate.has_method("choose_pending"):
 		return
+	_enter_post_clear_workbench(fixture.route)
 	fixture.fate.begin_rest()
 	assert_true(fixture.fate.choose_pending(fixture.fate.candidate_ids[0]))
 	assert_true(fixture.route.set_provisional_next_school(&"cheonsul"))
@@ -81,6 +84,7 @@ func test_success_commits_final_backpack_fate_and_latest_provisional_route_exact
 	var fixture := _new_fixture(1211)
 	if not fixture.fate.has_method("choose_pending"):
 		return
+	_enter_post_clear_workbench(fixture.route)
 	var preview = fixture.session.preview_item(fixture.item_instance_id, Vector2i(2, 1), 0)
 	assert_true(preview.valid)
 	assert_true(fixture.session.commit_item_preview())
@@ -103,6 +107,7 @@ func test_success_commits_final_backpack_fate_and_latest_provisional_route_exact
 	assert_eq(fixture.build_state.selected_fates.count(fate_id), 1)
 	assert_eq(fixture.route.active_school_id(), &"heukyeong")
 	assert_eq(fixture.route.provisional_school_id(), &"")
+	assert_eq(fixture.route.stage_index(), 2)
 	_assert_modifier_values_equal(fixture.build_state.get_committed_backpack_modifiers(), expected_modifiers)
 
 	committed.move_item(fixture.item_instance_id, Vector2i(3, 1))
@@ -117,6 +122,7 @@ func test_commit_failure_reasons_are_read_only_and_identify_missing_fate_and_rou
 	if not ResourceLoader.exists(COORDINATOR_PATH):
 		return
 	var fixture := _new_fixture(1213)
+	_enter_post_clear_workbench(fixture.route)
 	var coordinator = _new_coordinator(fixture)
 	assert_true(coordinator.begin_rest(fixture.session))
 	var before := _committed_snapshot(fixture, coordinator)
@@ -164,6 +170,13 @@ func _new_fixture(seed_value: int) -> Dictionary:
 		"fate": fate,
 		"route": route,
 	}
+
+
+func _enter_post_clear_workbench(route, cleared_school_id: StringName = &"guiin") -> void:
+	assert_true(route.set_provisional_next_school(cleared_school_id))
+	assert_true(route.commit_provisional_next_school())
+	assert_true(route.mark_active_school_cleared())
+	assert_eq(route.stage_index(), 2)
 
 
 func _new_coordinator(fixture: Dictionary):
