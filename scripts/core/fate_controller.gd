@@ -68,12 +68,16 @@ func can_continue() -> bool:
 	return selected_this_rest != &""
 
 
+func _is_bound_to_build_state(build_state: RunBuildState) -> bool:
+	return build_state != null and _build_state == build_state
+
+
 func _can_commit_pending() -> bool:
 	return _pending_for_atomic_commit \
 		and _build_state != null \
 		and selected_this_rest != &"" \
 		and candidate_ids.has(selected_this_rest) \
-		and not _build_state.has_fate(selected_this_rest)
+		and _build_state.can_select_fate(selected_this_rest)
 
 
 func _commit_pending() -> bool:
