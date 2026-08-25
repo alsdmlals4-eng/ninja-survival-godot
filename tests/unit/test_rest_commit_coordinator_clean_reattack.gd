@@ -48,6 +48,7 @@ func test_clean_full_post_clear_transaction_commits_backpack_fate_and_next_route
 
 func test_clean_independent_gate_families_fail_closed_without_committed_state_drift() -> void:
 	var missing_fate := _fixture(1703, &"guiin")
+	_enter_post_clear_workbench(missing_fate.route)
 	assert_true(missing_fate.route.set_provisional_next_school(&"cheonsul"))
 	var missing_fate_coordinator = _new_coordinator(missing_fate)
 	assert_true(missing_fate_coordinator.begin_rest(missing_fate.session))
@@ -57,6 +58,7 @@ func test_clean_independent_gate_families_fail_closed_without_committed_state_dr
 	assert_eq(_committed_signature(missing_fate, missing_fate_coordinator), missing_fate_before)
 
 	var missing_route := _fixture(1705, &"guiin")
+	_enter_post_clear_workbench(missing_route.route)
 	missing_route.fate.begin_rest()
 	assert_true(missing_route.fate.choose_pending(missing_route.fate.candidate_ids[0]))
 	var missing_route_coordinator = _new_coordinator(missing_route)
@@ -90,6 +92,7 @@ func test_clean_independent_gate_families_fail_closed_without_committed_state_dr
 
 func test_clean_legacy_and_atomic_fate_paths_remain_explicitly_separate_until_t13() -> void:
 	var legacy := _fixture(1721, &"guiin")
+	_enter_post_clear_workbench(legacy.route)
 	legacy.fate.begin_rest()
 	var legacy_fate: StringName = legacy.fate.candidate_ids[0]
 	assert_true(legacy.fate.choose(legacy_fate))
@@ -114,6 +117,7 @@ func test_clean_legacy_and_atomic_fate_paths_remain_explicitly_separate_until_t1
 
 func test_clean_t07_identity_observer_coherence_and_defensive_snapshot_hold_together() -> void:
 	var fixture := _fixture(1731, &"guiin")
+	_enter_post_clear_workbench(fixture.route)
 	var created: Array[int] = fixture.session._acquire_items_to_buffer([&"shuriken"])
 	assert_eq(created.size(), 1)
 	var acquired_id: int = created[0]
@@ -187,6 +191,7 @@ func test_clean_final_source_boundary_contains_no_t13_or_generic_authority_bypas
 
 func _prepared_fixture(seed_value: int, route_id: StringName) -> Dictionary:
 	var fixture := _fixture(seed_value, &"guiin")
+	_enter_post_clear_workbench(fixture.route)
 	fixture.fate.begin_rest()
 	fixture["pending_fate_id"] = fixture.fate.candidate_ids[0]
 	assert_true(fixture.fate.choose_pending(fixture.pending_fate_id))
@@ -223,6 +228,13 @@ func _fixture(seed_value: int, selected_school_id: StringName) -> Dictionary:
 		"fate": fate,
 		"route": route,
 	}
+
+
+func _enter_post_clear_workbench(route, cleared_school_id: StringName = &"guiin") -> void:
+	assert_true(route.set_provisional_next_school(cleared_school_id))
+	assert_true(route.commit_provisional_next_school())
+	assert_true(route.mark_active_school_cleared())
+	assert_eq(route.stage_index(), 2)
 
 
 func _new_coordinator(fixture: Dictionary):
