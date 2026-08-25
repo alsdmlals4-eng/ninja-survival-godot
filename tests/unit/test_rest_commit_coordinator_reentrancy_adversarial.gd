@@ -29,7 +29,7 @@ func test_synchronous_fate_changed_reentrant_commit_is_rejected_and_outer_commit
 	assert_eq(fixture.build_state.selected_fates.size(), 1)
 
 
-func test_synchronous_fate_changed_reentrant_begin_rest_cannot_keep_live_session_authority_after_outer_commit() -> void:
+func test_synchronous_fate_changed_reentrant_begin_rest_is_rejected_while_outer_transaction_is_active() -> void:
 	var fixture := _prepared_fixture(1503, &"bongma")
 	var coordinator = _new_coordinator(fixture)
 	assert_true(coordinator.begin_rest(fixture.session))
@@ -38,8 +38,8 @@ func test_synchronous_fate_changed_reentrant_begin_rest_cannot_keep_live_session
 		reentrant_begin_results.append(coordinator.begin_rest(fixture.session))
 	)
 	assert_true(coordinator.commit())
-	assert_eq(reentrant_begin_results, [true])
-	assert_eq(coordinator.commit_failures(), [&"already_committed", &"missing_session"], "Outer completion must detach any reentrant session assignment")
+	assert_eq(reentrant_begin_results, [false], "One active T12 transaction must reject session rebinding, including synchronous signal reentry")
+	assert_eq(coordinator.commit_failures(), [&"already_committed", &"missing_session"])
 	var committed_before := _backpack_signature(coordinator.committed_backpack_state())
 	var preview = fixture.session.preview_item(fixture.item_instance_id, Vector2i(2, 1), 0)
 	assert_true(preview.valid)
