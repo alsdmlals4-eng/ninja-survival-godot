@@ -63,8 +63,11 @@ func commit_failures(
 	if _route_state == null:
 		failures.append(&"route_pending")
 	else:
+		var cleared_count: int = _route_state.cleared_school_ids().size()
 		var provisional_school_id: StringName = _route_state.provisional_school_id()
-		if provisional_school_id == &"" \
+		if cleared_count <= 0 \
+			or cleared_count >= _route_state.school_ids().size() \
+			or provisional_school_id == &"" \
 			or _route_state.active_school_id() != &"" \
 			or _route_state.is_final_binding_eligible() \
 			or not _route_state.is_school_unvisited(provisional_school_id):
