@@ -4,28 +4,33 @@
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER
 updated_at: 2026-08-25 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
+current_completed_main: c0440e7043bcf3bb678f5cb7d1653883f93c07a2
 latest_product_canon: docs/canon/2026-08-21-dec014-025-product-canon.md
 latest_encounter_canon: docs/canon/2026-08-22-dec026-encounter-pattern-budget.md
 latest_migration_traceability: docs/traceability/2026-08-22-dec026-post-gate-traceability.md
 latest_phase_b: docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md
 current_migration_plan: docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md
 current_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
+current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 phase_b_verdict: PASS_FOR_APPROVED_DOMAIN_SEQUENCE
 mvp0_to_mvp3_baseline: INTEGRATED
 t01_to_t11_domain_chain: INTEGRATED_ON_COMPLETED_MAIN
-t12_atomic_workbench_commit: NOT_MERGED_NEXT_FRESH_PACKAGE
+t12_atomic_workbench_commit: IN_PROGRESS_DRAFT_PR_49_NOT_MERGED
 pr_43_t12: CLOSED_UNMERGED_HISTORICAL_WIP
 pr_44_front_door_docs: CLOSED_UNMERGED_HISTORICAL_WIP
+pr_49_t12: OPEN_DRAFT_OTHER_WORKSTREAM_READ_ONLY_FOR_VISUAL_CLOSEOUT
 playable_new_four_school_run: NOT_PROVEN
 release_near_vertical_slice_human_qa: NOT_RUN
 human_usability: NOT_RUN
 player_experience: NOT_RUN
 device_android_export: NOT_RUN
-visual_master_style_reference: USER_APPROVED_FIRST_IMAGE_2026_08_25
-visual_binary_notion_attachment: NOT_VERIFIED
+visual_master_style_reference: HYBRID_MASTER_STYLE_2026_08_25
+visual_runtime_character_identity: ONE_FIXED_CHARACTER_PLUS_TRACE_LAYERS
+visual_trace_stage3_rule: STARTING_MAIN_SCHOOL_ONLY
+visual_binary_notion_attachment: HYBRID_KEYVISUAL_LOW_RES_SERVER_READBACK_PASS_SUPPLEMENTARY_PREVIEWS_PENDING_FINAL_READBACK
 ```
 
-This is the current mutable decision router/ledger. Detailed rules live in the dated canon files; implementation reality lives in actual code/scenes/data/tests and executed evidence. Do not use an older status sentence or closed branch to override this file.
+This is the current mutable decision router/ledger. Detailed rules live in the dated canon files; implementation reality lives in actual code/scenes/data/tests and executed evidence. Do not use an older status sentence or closed branch to override this file. Visual continuation detail lives in `docs/CURRENT_VISUAL_HANDOFF.md` and the Notion `02 · 비주얼 바이블`; if an older visual sentence elsewhere conflicts, this section and those current owners win.
 
 ## 1. Current product definition
 
@@ -182,7 +187,7 @@ DEC-026 does not claim full playable encounter integration or final-calamity exa
 
 ## 8. Current implementation boundary — merged through T11
 
-Completed-main evidence at reactivation:
+Latest completed-main observation for this closeout is `c0440e7043bcf3bb678f5cb7d1653883f93c07a2`. The latest merged product implementation baseline remains T11:
 
 `265bab32da087c070ea2ea0d98a3bdace1e10f7f` — `T11: add tradition access reward lanes`.
 
@@ -208,11 +213,11 @@ T11 recorded exact-head evidence in Production Handoff:
 
 Evidence ceiling: automated/domain implementation scope only.
 
-## 9. Next product gate — T12 fresh package
+## 9. Current product workstream — T12 PR #49
 
-**T12 is NOT_MERGED / NOT_COMPLETED.**
+T12 is **IN_PROGRESS / NOT_MERGED / NOT_COMPLETED** in draft PR #49 (`T12: atomic Workbench Fate route commit`). PR #49 is a separate implementation workstream and remains read-only for this visual closeout.
 
-PR #43 (`T12: add atomic Workbench commit coordinator`) was intentionally closed-unmerged during the 2026-08-25 pause. Its branch is historical/WIP evidence only.
+Historical PR #43 (`T12: add atomic Workbench commit coordinator`) remains closed-unmerged WIP/reference only. PR #44 is also closed-unmerged historical WIP.
 
 Still-approved product outcome:
 
@@ -223,16 +228,12 @@ Still-approved product outcome:
 - existing T02/T03/T04/T05/T06/T07/T08/T11 owners remain singular,
 - T13 UI/MainController migration is not silently absorbed unless fresh evidence proves a smaller integration necessity.
 
-Resume method:
-
-`then-current completed main -> current authority/code/test audit -> inspect closed #43 read-only -> ADAPT still-valid pieces -> fresh current-task branch/PR -> TDD -> review -> exact-head -> merge/readback`.
-
-PR #44 is also closed-unmerged historical WIP and is not a current branch authority.
+Visual work must not modify, rebase, close, merge or absorb PR #49 unless a later user instruction explicitly authorizes that PR workstream.
 
 ## 10. Remaining production sequence
 
 ```text
-T12 fresh atomic Workbench + Fate + route commit
+T12 atomic Workbench + Fate + route commit (currently draft PR #49)
 -> T13 Persistent Workbench route-preview UI/input
 -> T14 Cheonsul one-school release-near Vertical Slice
 -> T15 Human QA gate
@@ -270,25 +271,54 @@ Ninja Soul/meta progression prioritizes horizontal possibility rather than perma
 
 Base-building/economy is not the project core.
 
-## 13. Visual decision — 2026-08-25 APPROVED
+## 13. Visual decision — 2026-08-25 APPROVED HYBRID MASTER STYLE
 
-The user explicitly approved the **first image supplied in the approval turn** as the current master art-style reference.
+Current visual continuation authority:
 
-Approved visual language:
+- `docs/CURRENT_VISUAL_HANDOFF.md`
+- Notion `02 · 비주얼 바이블`
+
+The user approved a two-surface visual system that must still read as one IP:
+
+- **Presentation / key art / lore:** hand-drawn ink codex + mature dark painterly anime ninja fantasy.
+- **In-game:** animation-forward **2–3 head SD anime** with C-leaning dark painterly DNA and restrained ink/rough-edge cues.
+
+### Runtime character identity — protected visual rule
+
+The player is **one fixed ninja identity**, not four school-specific protagonists. Keep the same face, hair, body proportion and core outfit identity. Collecting school traces adds bounded visual layers around the same character.
+
+All four traces must combine naturally as `one ninja accumulating four traditions`, not as four unrelated costumes combined.
+
+The strongest **Trace Stage 3** visual expression applies only to the **starting/main school**. Other school traces remain supporting layers so the full four-school state stays readable.
+
+Approved school visual motifs:
+
+- **봉마류:** 부적 + 식신
+- **천술류:** 차크라 기운
+- **귀인류:** 오니가면 + 귀기
+- **흑영류:** 그림자 + 어둠
+
+Shared visual DNA:
 
 - dark moonlit ninja fantasy,
-- premium painterly anime illustration,
-- ink-splash / brush framing,
-- Korean brush-calligraphy title language,
-- black / deep navy / red / warm gold base palette,
-- readable silhouettes and dramatic but controlled effects,
-- school accents: 봉마 gold, 천술 elemental blue/orange, 귀인 red, 흑영 purple/black.
+- black / deep navy / charcoal + red / warm gold base,
+- ink / brush framing and Korean brush-calligraphy in presentation surfaces,
+- readable silhouettes and controlled effects,
+- same character/motif/palette hierarchy across presentation and gameplay even when rendering detail differs.
 
-Dense parchment infographic compositions are **supporting explanatory/learning layouts**, not the master gameplay art style.
+### Image authority levels
 
-No further image generation or editing unless the user explicitly requests it.
+- Hybrid Key Visual: **APPROVED MASTER BRIDGE**.
+- Four-school full-body sheet: **APPROVED SUPPORTING REFERENCE** for Presentation/Lore silhouette/motif comparison; not four runtime protagonists.
+- SD/action/icon three-panel sheet: **WORKING_REFERENCE**; SD/action/icon structure is reusable, but details must be revised to the fixed-character + main-school Stage-3 + all-four-coherent rules before runtime-art approval.
 
-The first chat image is a user-approved style reference, but durable Notion binary attachment remains `NOT_VERIFIED` until actual upload/attach + destination readback.
+No new image should be generated automatically on chat start. Resume via current visual handoff → text brief → user approval → requested generation → result review → durable Notion placement.
+
+### Notion delivery evidence
+
+The approved Hybrid Key Visual has a **Notion-native low-resolution preview** with server readback resolving to Notion-owned `prod-files-secure`: PASS.
+
+High-resolution pixel-equivalent Notion delivery is not proven. Browser/Android/iOS human-visible rendering of the latest preview set remains NOT_RUN until directly observed.
 
 ## 14. Notion Human Home decision — APPROVED
 
@@ -310,31 +340,24 @@ Raw SHA, full PR/CI history, local Godot path/ports, internal routing and detail
 
 ## 15. Evidence / completion protection
 
-The following remain `NOT_RUN` until direct evidence exists:
+The following remain `NOT_RUN` or explicitly limited until direct evidence exists:
 
 - release-near new-Run Human Usability,
 - intended Player Experience,
 - production-candidate Workbench/end-to-end input flow,
 - device/Android/export readiness,
 - current local shared Godot/editor/session identity for future Godot authoring,
-- durable Notion attachment of the approved first chat image.
+- high-resolution pixel-equivalent Notion delivery of the approved generated images,
+- browser/Android/iOS human-visible render of the latest Notion image previews,
+- actual Godot runtime implementation of the new SD character direction,
+- final four-school accumulated-character composite under the newest trace rules.
 
-Do not use T01~T11 test receipts to promote these states.
+Do not use T01~T11 test receipts or Notion server readback to promote these states.
 
-## 16. Current documentation alignment package
+## 16. Documentation alignment history and current visual continuation
 
-User approved `Planning Canon & Human Home Alignment` on 2026-08-25.
+`Planning Canon & Human Home Alignment` remains completed history. Its older instruction to generate no further images applied to that alignment package only and was superseded by the user's later explicit visual-generation approvals on 2026-08-25.
 
-Scope:
+Current visual continuation and next-chat quality gate are owned by `docs/CURRENT_VISUAL_HANDOFF.md`.
 
-- align active repository front doors to T11 reality,
-- remove T05/T06 stale resume routing,
-- preserve #43/#44 only as closed historical WIP,
-- rebuild Human Home as whole-game learning projection,
-- keep AI/System operational status in existing System/Production surfaces,
-- record the visual-style decision,
-- generate no further images.
-
-Implementation plan:
-
-`docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md`.
+Product implementation continues independently through draft T12 PR #49; the visual closeout does not claim or mutate that implementation workstream.
