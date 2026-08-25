@@ -127,7 +127,7 @@ Purpose:
 
 Notion:
 - `02 · 비주얼 바이블` contains a **Notion-native low-resolution preview attachment**.
-- server readback resolved to Notion-owned `prod-files-secure`.
+- server readback resolved to Notion-owned `prod-files-secure`: **PASS**.
 - original generated high-resolution image in the originating chat remains the quality reference.
 - actual browser/mobile pixel observation: NOT_RUN in this handoff.
 
@@ -141,8 +141,9 @@ Important limitation:
 - runtime uses ONE_CHARACTER_IDENTITY.
 
 Notion:
-- a low-resolution Notion-native preview was attached to the Visual Bible during closeout.
-- destination readback must be checked before claiming final attach PASS.
+- low-resolution Notion-native preview attached to the Visual Bible.
+- destination fetch resolved the block to Notion-owned `prod-files-secure`: **SERVER_READBACK_PASS**.
+- browser/mobile pixel observation: NOT_RUN.
 
 ### C. SD / action / icon three-panel sheet — WORKING REFERENCE, DETAILS SUPERSEDED
 
@@ -159,8 +160,10 @@ Superseded details to correct in the next visual session:
 - exact motifs are 봉마=부적/식신, 천술=차크라 기운, 귀인=오니가면/귀기, 흑영=그림자/어둠.
 
 Notion:
-- a low-resolution working-reference preview was attached during closeout.
-- it must stay labeled WORKING_REFERENCE, not approved final runtime art.
+- low-resolution working-reference preview attached to the Visual Bible.
+- destination fetch resolved the block to Notion-owned `prod-files-secure`: **SERVER_READBACK_PASS**.
+- it remains WORKING_REFERENCE, not approved final runtime art.
+- browser/mobile pixel observation: NOT_RUN.
 
 ## 6. Notion human-facing authority
 
@@ -230,8 +233,9 @@ Verified in this visual session:
 - user approval of fixed-character trace-layer direction,
 - exact school motif choices,
 - Notion text updates invoked,
-- Hybrid Key Visual Notion server readback previously PASS,
-- supplementary Notion preview uploads invoked.
+- Hybrid Key Visual Notion server readback PASS,
+- four-school full-body supporting preview Notion server readback PASS,
+- SD/action/icon working preview Notion server readback PASS.
 
 Not verified / not claimed:
 - high-resolution pixel-equivalent Notion upload,
