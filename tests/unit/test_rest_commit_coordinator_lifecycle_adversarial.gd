@@ -28,6 +28,18 @@ func test_begin_rest_rejects_missing_runtime_dependencies_without_changing_commi
 	assert_false(_new_coordinator(fixture).begin_rest(null))
 
 
+func test_active_rest_session_cannot_be_replaced_before_commit() -> void:
+	var fixture := _prepared_fixture(1402, &"cheonsul")
+	var coordinator = _new_coordinator(fixture)
+	assert_true(coordinator.begin_rest(fixture.session))
+	var alternate_state = fixture.original_state.copy_value()
+	assert_true(alternate_state.move_item(fixture.item_instance_id, Vector2i(2, 1)))
+	var alternate_session = _session_from_state(alternate_state, fixture.item_defs, fixture.bag_defs)
+	assert_false(coordinator.begin_rest(alternate_session), "One T12 transaction must stay bound to exactly one T04 session until commit completes")
+	assert_true(coordinator.commit())
+	assert_eq(coordinator.committed_backpack_state().get_item(fixture.item_instance_id).origin, Vector2i(1, 1), "Rejected replacement must not switch the committed backpack candidate")
+
+
 func test_repeated_validation_is_deterministic_and_never_consumes_pending_state() -> void:
 	var fixture := _prepared_fixture(1403, &"cheonsul")
 	var coordinator = _new_coordinator(fixture)
