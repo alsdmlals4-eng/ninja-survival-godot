@@ -5,13 +5,17 @@ project: NINJA_SURVIVAL
 state_router_updated_at: 2026-08-25 KST
 reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
-completed_main_label: T11_TRADITION_ACCESS_REWARD_LANES
-resume_state: T11_MERGED_T12_NOT_MERGED
-next_product_gate: T12_FRESH_ATOMIC_WORKBENCH_FATE_ROUTE_PACKAGE
+current_completed_main: c0440e7043bcf3bb678f5cb7d1653883f93c07a2
+completed_main_label: T11_TRADITION_ACCESS_REWARD_LANES_PLUS_DOCS_CLOSEOUT_BASELINE
+resume_state: T12_DRAFT_PR_49_IN_PROGRESS_NOT_MERGED
+next_product_gate: T12_CURRENT_DRAFT_PR_49_THEN_T13
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
+current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 historical_closed_wip:
   - PR_43_T12_ATOMIC_WORKBENCH
   - PR_44_FRONT_DOOR_DOCS
+other_workstream_read_only:
+  - PR_49_T12_ATOMIC_WORKBENCH_FATE_ROUTE_COMMIT
 mvp0_to_mvp3_runtime: INTEGRATED_BASELINE
 mvp4_t01_to_t11_domain_chain: INTEGRATED_ON_COMPLETED_MAIN
 playable_new_four_school_run: NOT_PROVEN
@@ -20,33 +24,37 @@ release_near_cheonsul_slice: NOT_RUN
 human_usability: NOT_RUN
 player_experience: NOT_RUN
 device_export_android: NOT_RUN
-current_visual_style: USER_APPROVED_FIRST_IMAGE_2026_08_25
-visual_binary_notion_attachment: BLOCKED_TOOL_SURFACE_UNTIL_ACTUAL_UPLOAD_READBACK
+current_visual_style: HYBRID_MASTER_PRESENTATION_INK_CODEx_GAMEPLAY_ANIME_SD_C_LEANING
+runtime_character_visual_identity: ONE_FIXED_CHARACTER_PLUS_TRACE_LAYERS
+trace_stage3_visual_rule: STARTING_MAIN_SCHOOL_ONLY
+visual_keyvisual_notion_preview: SERVER_READBACK_PASS_LOW_RES
+visual_supplementary_previews: UPLOAD_AND_PAGE_ATTACH_INVOKED_FINAL_READBACK_REQUIRED
 local_shared_godot_exact_pin: UNKNOWN_UNVERIFIED_IN_DOCS_ALIGNMENT
-local_editor_session: NOT_RUN_NOT_REQUIRED_FOR_DOCS_ALIGNMENT
+local_editor_session: NOT_RUN_NOT_REQUIRED_FOR_VISUAL_CLOSEOUT
 ```
 
 ## Purpose
 
-This is the mutable resume router. Product rules live in `docs/CURRENT_CONFIRMED_DECISIONS.md` and dated canon files. Implementation facts live in actual code/scenes/data/tests and executed evidence. Human-facing game understanding lives in the exact Notion Human Home and its domain pages.
+This is the mutable resume router. Product rules live in `docs/CURRENT_CONFIRMED_DECISIONS.md` and dated canon files. Implementation facts live in actual code/scenes/data/tests and executed evidence. Human-facing game understanding lives in the exact Notion Human Home and its domain pages. Current visual continuation lives in `docs/CURRENT_VISUAL_HANDOFF.md` plus Notion `02 · 비주얼 바이블`.
 
-Do not reconstruct current state from older handoff sentences or closed branches without first reading current completed `main` and this router.
+Do not reconstruct current state from older handoff sentences or closed branches without first reading current completed `main`, current open-PR inventory and this router.
 
 ## Current read order
 
 1. `AGENTS.md`
 2. latest user instruction / active task contract
 3. `docs/CURRENT_CONFIRMED_DECISIONS.md`
-4. `docs/canon/2026-08-21-dec014-025-product-canon.md`
-5. `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`
-6. `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`
-7. `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
-8. `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
-9. actual `scripts/`, `scenes/`, `data/`, `tests/`, workflows
-10. Notion `닌자 서바이벌 · Home`, `03 · UI · 생존 Flow Map`, `08 · 핵심 시스템 · 상세`, `06 · Production · Handoff`, Visual Bible
-11. current Base owners when Base freshness materially affects the task
+4. `docs/CURRENT_VISUAL_HANDOFF.md` when the task touches art / visual / asset / presentation
+5. `docs/canon/2026-08-21-dec014-025-product-canon.md`
+6. `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`
+7. `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`
+8. `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
+9. `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
+10. actual `scripts/`, `scenes/`, `data/`, `tests/`, workflows
+11. Notion `닌자 서바이벌 · Home`, `03 · UI · 생존 Flow Map`, `08 · 핵심 시스템 · 상세`, `06 · Production · Handoff`, `02 · 비주얼 바이블`
+12. current Base owners when Base freshness materially affects the task
 
-Closed PR #43/#44 may be inspected only as historical/WIP evidence. They are not resume baselines.
+Closed PR #43/#44 may be inspected only as historical/WIP evidence. They are not resume baselines. Draft PR #49 is the current T12 implementation workstream and is read-only to unrelated visual/document work.
 
 ## Current product direction
 
@@ -131,9 +139,11 @@ Evidence ceiling: domain/automated scope only.
 
 ## T12 current status
 
-**NOT_MERGED / NOT_COMPLETED.**
+**IN_PROGRESS / DRAFT PR #49 / NOT_MERGED / NOT_COMPLETED.**
 
-PR #43 was intentionally closed-unmerged during the 2026-08-25 pause. Its branch contains potentially reusable implementation/test findings but is historical WIP only.
+PR #49 `T12: atomic Workbench Fate route commit` is the current implementation workstream based on completed main `c0440e7043bcf3bb678f5cb7d1653883f93c07a2` at this closeout observation. Unrelated visual work must not modify, rebase, close, merge or absorb it.
+
+Historical PR #43 remains closed-unmerged WIP/reference only.
 
 Current approved T12 outcome remains:
 
@@ -143,26 +153,15 @@ Current approved T12 outcome remains:
 - success commits once; duplicate commit is rejected.
 - UI/MainController migration remains T13 unless a current test proves a smaller integration necessity.
 
-When T12 resumes, create a fresh current-task branch from then-current completed main and re-evaluate #43 rather than reviving it.
-
 ## 2026-08-25 planning/documentation alignment
 
 User approved `Planning Canon & Human Home Alignment`.
 
-This alignment package defines the durable project front door after T11:
-
-- active repository routers state T11 merged / T12 fresh next,
-- T05/T06 stale resume routing is removed,
-- #43/#44 remain closed historical WIP,
-- Human Home is a self-contained game-flow/system/learning projection,
-- raw implementation receipts remain in System/Production surfaces,
-- current approved visual style is recorded without further image generation.
+This alignment package established the durable project front door after T11. It is completed history. Its scope-local instruction to avoid additional image generation was later superseded by explicit user approvals for the Hybrid Visual work.
 
 Implementation/decision locator:
 
 `docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md`.
-
-After this alignment is merged, it should be treated as completed front-door history; `next_product_gate` remains the current router for future work.
 
 ## Notion authority / Human Home
 
@@ -172,33 +171,43 @@ Human Home purpose:
 
 Raw SHA, full PR/CI history, local path/ports/tool routing and detailed Txx receipts stay in Project Registry/System and `06 · Production · Handoff`.
 
-## Visual decision — 2026-08-25
+## Visual decision — 2026-08-25 · current
 
-User approved the **first image in the approval turn** as the current master art-style reference.
+Current visual authority is `docs/CURRENT_VISUAL_HANDOFF.md` + Notion `02 · 비주얼 바이블`.
 
-Traits:
+### Hybrid surface split
 
-- dark moonlit ninja fantasy
-- premium painterly anime illustration
-- ink / brush / Korean calligraphy framing
-- black / deep navy / red / warm gold core palette
-- strong readable silhouette
-- restrained readable VFX
-- school accents: 봉마 gold, 천술 blue/orange elemental, 귀인 red, 흑영 purple/black
+- Presentation / key art / lore: hand-drawn ink codex + dark painterly anime ninja fantasy.
+- In-game: animation-forward **2–3 head SD anime** with C-leaning dark painterly DNA and restrained ink/rough-edge cues.
 
-Dense parchment infographic layouts are supporting explanation surfaces, not the master gameplay art style.
+### Runtime character identity
 
-No further image generation unless explicitly requested.
+The player remains **one fixed ninja identity**. School traces add items / aura / companion / shadow effects instead of replacing the character body/face/costume identity.
 
-The approved chat image is **not yet a durable Notion attachment** because the current connector surface does not expose a verified local-binary upload path. Do not claim upload/attachment completion until actual attach + readback succeeds.
+All four traces must combine naturally. The strongest Trace Stage 3 expression is reserved for the **starting/main school**; other school traces remain supporting layers.
+
+Approved school motifs:
+
+- 봉마류: 부적 + 식신
+- 천술류: 차크라 기운
+- 귀인류: 오니가면 + 귀기
+- 흑영류: 그림자 + 어둠
+
+### Current image authority
+
+- Hybrid Key Visual: APPROVED MASTER BRIDGE; Notion low-res native preview server readback PASS.
+- Four-school full-body silhouette sheet: APPROVED SUPPORTING REFERENCE; not four runtime protagonists.
+- SD/action/icon three-panel sheet: WORKING_REFERENCE; structure reusable but exact trace details superseded by current fixed-character/main-school-Stage-3 rules.
+
+The next visual session resumes with a corrected fixed-character SD trace-layer sheet, SD action/key poses and school icon roughs before Workbench/UI art.
 
 ## Local/toolchain evidence ceiling
 
-This planning/documentation alignment does not require Godot authoring/runtime, so local Editor/session startup is not forced.
+This visual closeout does not require Godot authoring/runtime, so local Editor/session startup is not forced.
 
 Historical Project Registry values for dedicated executable/ports are not current execution authority. The current shared-host Base policy must be applied only after a fresh local readback in a future Godot task.
 
-For this alignment:
+For this closeout:
 
 ```text
 LOCAL_SYNC: NOT_RUN
@@ -206,12 +215,14 @@ GODOT_RUN: NOT_RUN_NOT_REQUIRED
 GODOT_EDITOR_SESSION: NOT_RUN_NOT_REQUIRED
 HUMAN_PLAY: NOT_RUN
 DEVICE_EXPORT: NOT_RUN
+NOTION_HIGH_RES_PIXEL_EQUIVALENT: NOT_PROVEN
+NOTION_HUMAN_VISIBLE_LATEST_PREVIEWS: NOT_RUN
 ```
 
 ## Remaining product sequence
 
 ```text
-T12 fresh atomic Workbench/Fate/route package
+T12 current draft PR #49 -> merge only in its own authorized workstream
 -> T13 Persistent Workbench route-preview UI/input
 -> T14 Cheonsul release-near Vertical Slice
 -> T15 Human QA gate
