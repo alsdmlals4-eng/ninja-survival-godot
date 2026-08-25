@@ -13,6 +13,22 @@ const MVP3_CATALOG_PATH := "res://scripts/data/mvp3_catalog.gd"
 const SCHOOL_IDS: Array[StringName] = [&"bongma", &"cheonsul", &"guiin", &"heukyeong"]
 
 
+func test_t12_atomic_workbench_commit_rejects_route_before_any_school_has_been_cleared() -> void:
+	var fixture := _fixture(1599, &"guiin")
+	assert_true(fixture.route.set_provisional_next_school(&"cheonsul"))
+	fixture.fate.begin_rest()
+	var fate_id: StringName = fixture.fate.candidate_ids[0]
+	assert_true(fixture.fate.choose_pending(fate_id))
+	var coordinator = _new_coordinator(fixture)
+	assert_true(coordinator.begin_rest(fixture.session))
+	var failures: Array[StringName] = coordinator.commit_failures()
+	assert_true(failures.has(&"route_pending"), "DEC-025 T12 atomic Workbench commit applies only after at least one school clear; first battlefield uses separate confirmation")
+	assert_false(coordinator.commit())
+	assert_false(fixture.build_state.has_fate(fate_id))
+	assert_eq(fixture.route.active_school_id(), &"")
+	assert_eq(fixture.route.provisional_school_id(), &"cheonsul")
+
+
 func test_all_twelve_cleared_school_to_next_school_contexts_commit_without_changing_selected_school_identity() -> void:
 	var case_index := 0
 	for current_school in SCHOOL_IDS:
