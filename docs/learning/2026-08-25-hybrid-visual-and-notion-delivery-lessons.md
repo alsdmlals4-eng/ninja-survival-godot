@@ -139,10 +139,9 @@ This worked for low-resolution preview attachments without requiring public exte
 
 ### Evidence
 
-- Hybrid Key Visual preview: Notion-native attachment readback previously resolved to `prod-files-secure`.
-- Four-school Presentation supporting preview: `create-attachment(content SVG)` returned `status=uploaded` during closeout.
-- SD/action/icon working preview: `create-attachment(content SVG)` returned `status=uploaded` during closeout.
-- Final destination readback of the latter two must be checked before completion claim.
+- Hybrid Key Visual preview: Visual Bible destination readback resolved to Notion-owned `prod-files-secure`: **PASS**.
+- Four-school Presentation supporting preview: `create-attachment(content SVG)` returned `status=uploaded`; Visual Bible destination readback resolved to Notion-owned `prod-files-secure`: **PASS**.
+- SD/action/icon working preview: `create-attachment(content SVG)` returned `status=uploaded`; Visual Bible destination readback resolved to Notion-owned `prod-files-secure`: **PASS**.
 - Browser/Android/iOS pixel rendering remains NOT_RUN unless directly observed.
 
 ### Limitations / do not overgeneralize
