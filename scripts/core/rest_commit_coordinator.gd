@@ -26,6 +26,8 @@ func configure(
 func begin_rest(session: RestBackpackSession) -> bool:
 	if session == null or _build_state == null or _route_state == null or _fate_controller == null:
 		return false
+	if _session != null:
+		return false
 	if not _fate_controller._is_bound_to_build_state(_build_state):
 		return false
 	_session = session
