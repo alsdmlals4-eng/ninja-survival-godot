@@ -41,6 +41,7 @@ func test_coordinator_requires_fate_controller_to_share_the_same_build_state_aut
 	assert_true(fate.choose_pending(pending_fate))
 
 	var route = load(ROUTE_STATE_PATH).new()
+	_enter_post_clear_workbench(route)
 	assert_true(route.set_provisional_next_school(&"cheonsul"))
 
 	var coordinator = load(COORDINATOR_PATH).new()
@@ -89,6 +90,7 @@ func test_pending_fate_definition_must_be_prevalidated_before_route_or_backpack_
 	assert_true(fate.choose_pending(missing_fate))
 
 	var route = load(ROUTE_STATE_PATH).new()
+	_enter_post_clear_workbench(route)
 	assert_true(route.set_provisional_next_school(&"cheonsul"))
 	var coordinator = load(COORDINATOR_PATH).new()
 	coordinator.configure(original_state, build_state, route, fate)
@@ -100,3 +102,10 @@ func test_pending_fate_definition_must_be_prevalidated_before_route_or_backpack_
 	assert_false(build_state.has_fate(missing_fate))
 	assert_eq(route.active_school_id(), &"", "Failed Fate commit must not leave route partially committed")
 	assert_eq(route.provisional_school_id(), &"cheonsul")
+
+
+func _enter_post_clear_workbench(route, cleared_school_id: StringName = &"guiin") -> void:
+	assert_true(route.set_provisional_next_school(cleared_school_id))
+	assert_true(route.commit_provisional_next_school())
+	assert_true(route.mark_active_school_cleared())
+	assert_eq(route.stage_index(), 2)
