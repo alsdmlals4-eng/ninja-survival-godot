@@ -25,6 +25,7 @@ func test_synchronous_fate_changed_reentrant_commit_is_rejected_and_outer_commit
 	assert_eq(fixture.build_state.selected_fates.size(), 1)
 	assert_eq(fixture.route.active_school_id(), &"cheonsul")
 	assert_eq(fixture.route.provisional_school_id(), &"")
+	assert_eq(fixture.route.stage_index(), 2)
 	assert_false(coordinator.commit())
 	assert_eq(fixture.build_state.selected_fates.size(), 1)
 
@@ -49,6 +50,7 @@ func test_synchronous_fate_changed_reentrant_begin_rest_is_rejected_while_outer_
 
 func test_t07_acquired_item_keeps_instance_identity_and_future_cursor_through_t12_commit() -> void:
 	var fixture := _fixture(1505)
+	_enter_post_clear_workbench(fixture.route)
 	var created: Array[int] = fixture.session._acquire_items_to_buffer([&"shuriken"])
 	assert_eq(created.size(), 1)
 	var acquired_id: int = created[0]
@@ -70,6 +72,7 @@ func test_t07_acquired_item_keeps_instance_identity_and_future_cursor_through_t1
 
 func test_final_modifiers_equal_independent_backpack_then_fate_composition_once() -> void:
 	var fixture := _fixture(1507)
+	_enter_post_clear_workbench(fixture.route)
 	var preview = fixture.session.preview_item(fixture.item_instance_id, Vector2i(2, 1), 0)
 	assert_true(preview.valid)
 	assert_true(fixture.session.commit_item_preview())
@@ -93,6 +96,7 @@ func test_final_modifiers_equal_independent_backpack_then_fate_composition_once(
 
 func test_pending_selection_signal_remains_intent_only_before_atomic_commit() -> void:
 	var fixture := _fixture(1509)
+	_enter_post_clear_workbench(fixture.route)
 	fixture.fate.begin_rest()
 	var fate_id: StringName = fixture.fate.candidate_ids[0]
 	var observations: Array[Dictionary] = []
@@ -115,6 +119,7 @@ func test_pending_selection_signal_remains_intent_only_before_atomic_commit() ->
 
 func _prepared_fixture(seed_value: int, route_id: StringName) -> Dictionary:
 	var fixture := _fixture(seed_value)
+	_enter_post_clear_workbench(fixture.route)
 	fixture.fate.begin_rest()
 	fixture["pending_fate_id"] = fixture.fate.candidate_ids[0]
 	assert_true(fixture.fate.choose_pending(fixture.pending_fate_id))
@@ -154,6 +159,13 @@ func _fixture(seed_value: int) -> Dictionary:
 		"fate": fate,
 		"route": route,
 	}
+
+
+func _enter_post_clear_workbench(route, cleared_school_id: StringName = &"guiin") -> void:
+	assert_true(route.set_provisional_next_school(cleared_school_id))
+	assert_true(route.commit_provisional_next_school())
+	assert_true(route.mark_active_school_cleared())
+	assert_eq(route.stage_index(), 2)
 
 
 func _new_coordinator(fixture: Dictionary):
