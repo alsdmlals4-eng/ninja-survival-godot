@@ -80,7 +80,7 @@ func test_coordinator_can_be_reused_for_a_legitimate_next_rest_after_route_clear
 	assert_true(fixture.build_state.has_fate(first_fate))
 	assert_eq(fixture.route.active_school_id(), &"cheonsul")
 	assert_true(fixture.route.mark_active_school_cleared())
-	assert_eq(fixture.route.stage_index(), 2)
+	assert_eq(fixture.route.stage_index(), 3)
 
 	var second_session = _session_from_state(coordinator.committed_backpack_state(), fixture.item_defs, fixture.bag_defs)
 	fixture.fate.begin_rest()
@@ -94,11 +94,12 @@ func test_coordinator_can_be_reused_for_a_legitimate_next_rest_after_route_clear
 	assert_true(fixture.build_state.has_fate(first_fate))
 	assert_true(fixture.build_state.has_fate(second_fate))
 	assert_eq(fixture.route.active_school_id(), &"heukyeong")
-	assert_eq(fixture.route.stage_index(), 2, "Route commit itself must not advance stage")
+	assert_eq(fixture.route.stage_index(), 3, "Route commit itself must not advance stage")
 
 
 func test_failed_validation_can_repeat_without_poisoning_later_valid_commit() -> void:
 	var fixture := _fixture(1409)
+	_enter_post_clear_workbench(fixture.route)
 	fixture.fate.begin_rest()
 	var fate_id: StringName = fixture.fate.candidate_ids[0]
 	assert_true(fixture.fate.choose_pending(fate_id))
@@ -118,6 +119,7 @@ func test_failed_validation_can_repeat_without_poisoning_later_valid_commit() ->
 
 func _prepared_fixture(seed_value: int, route_id: StringName) -> Dictionary:
 	var fixture := _fixture(seed_value)
+	_enter_post_clear_workbench(fixture.route)
 	fixture.fate.begin_rest()
 	fixture["pending_fate_id"] = fixture.fate.candidate_ids[0]
 	assert_true(fixture.fate.choose_pending(fixture.pending_fate_id))
@@ -155,6 +157,13 @@ func _fixture(seed_value: int) -> Dictionary:
 		"fate": fate,
 		"route": route,
 	}
+
+
+func _enter_post_clear_workbench(route, cleared_school_id: StringName = &"guiin") -> void:
+	assert_true(route.set_provisional_next_school(cleared_school_id))
+	assert_true(route.commit_provisional_next_school())
+	assert_true(route.mark_active_school_cleared())
+	assert_eq(route.stage_index(), 2)
 
 
 func _session_from_state(state, item_defs: Dictionary, bag_defs: Dictionary):
