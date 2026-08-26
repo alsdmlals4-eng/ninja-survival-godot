@@ -8,6 +8,7 @@ var _build_state: RunBuildState
 var _route_state: RunRouteState
 var _fate_controller: FateController
 var _session: RestBackpackSession
+var _session_generation: int = -1
 var _configured: bool = false
 var _committed_this_rest: bool = false
 var _commit_in_progress: bool = false
@@ -30,6 +31,7 @@ func configure(
 	_fate_controller = fate_controller
 	_configured = true
 	_committed_this_rest = false
+	_session_generation = -1
 	return true
 
 
@@ -41,6 +43,7 @@ func begin_rest(session: RestBackpackSession) -> bool:
 	if not session._is_bound_to_committed_state(_source_backpack_state):
 		return false
 	_session = session
+	_session_generation = session._transaction_generation()
 	return true
 
 
@@ -63,6 +66,9 @@ func commit_failures(
 	if _session == null:
 		failures.append(&"missing_session")
 		return failures
+	if not _session._is_bound_to_committed_state(_source_backpack_state) \
+		or _session._transaction_generation() != _session_generation:
+		failures.append(&"session_rebound")
 
 	failures.append_array(_session.commit_failures(chest_count, boss_reward_pending, combination_pending))
 	if _fate_controller == null \
@@ -101,5 +107,6 @@ func commit(
 		return false
 	_committed_this_rest = true
 	_session = null
+	_session_generation = -1
 	_commit_in_progress = false
 	return true

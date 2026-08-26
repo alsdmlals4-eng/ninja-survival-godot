@@ -51,6 +51,25 @@ func test_session_started_from_different_backpack_owner_is_rejected() -> void:
 	assert_eq(fixture.route.provisional_school_id(), &"cheonsul")
 
 
+func test_active_session_reinitialization_invalidates_the_transaction() -> void:
+	var fixture := _prepared_fixture(706)
+	var coordinator = _coordinator(fixture)
+	assert_true(coordinator.begin_rest(fixture.session))
+	fixture.session.begin(
+		fixture.committed_state,
+		load(BACKPACK_RESOLVER_PATH).new(),
+		fixture.item_defs,
+		load(MVP4_CATALOG_PATH).build_bags(),
+		&"cheonsul"
+	)
+	var route_before: Dictionary = fixture.route.get_route_snapshot()
+
+	assert_true(coordinator.commit_failures().has(&"session_rebound"))
+	assert_false(coordinator.commit())
+	assert_eq(fixture.route.get_route_snapshot(), route_before)
+	assert_false(fixture.build_state.has_fate(fixture.pending_fate_id))
+
+
 func test_pending_fate_unknown_to_build_state_fails_before_route_or_modifier_mutation() -> void:
 	var mvp4 = load(MVP4_CATALOG_PATH)
 	var all_fate_defs: Dictionary = load(MVP3_CATALOG_PATH).build_fates()
