@@ -21,7 +21,7 @@ mvp0_to_mvp3_runtime: INTEGRATED_BASELINE
 mvp4_t01_to_t11_domain_chain: INTEGRATED_ON_COMPLETED_MAIN
 playable_new_four_school_run: NOT_PROVEN
 persistent_workbench_route_ui_input: INTEGRATED_ON_MAIN_71152C7AA9DFF4CC05EEC76D4D2D70BE47755F6C
-release_near_cheonsul_slice: NOT_RUN
+release_near_cheonsul_slice: ACTIVE_BRANCH_AUTOMATED_EVIDENCE_ONLY
 human_usability: NOT_RUN
 player_experience: NOT_RUN
 device_export_android: NOT_RUN
@@ -223,6 +223,12 @@ NOTION_HUMAN_VISIBLE_LATEST_PREVIEWS: NOT_RUN
 ## T13 merged status
 
 T13 Issue #62 / PR #63 is merged to `main` at `71152c7aa9dff4cc05eec76d4d2d70be47755f6c`. It adds only the reusable `RestFlowUI` Workbench route-preview and intent contract: legal unvisited-school cards, pending Fate presentation, human-readable readiness state, and standard pointer/touch/focus input. It does not wire the protected MVP-3 loop to the T12 transaction; T14 owns that real session/encounter integration.
+
+## T14 active implementation status
+
+Issue #65 is active on a fresh branch from the T13 documentation baseline. Current unmerged code connects the Cheonsul selection path to the protected route/encounter/Workbench owners: first-school route commit, Elite → chest token + Trace, explicit Trace recovery, Boss warning/spawn gate, Boss-clear route stabilization, mandatory Boss-reward-pending Workbench entry, and provisional route/Fate intent refresh. Boss-reward candidates are readable but selection/board placement remain unavailable, so commit stays disabled; no build power, Fate, or next route is auto-committed. New image generation, raster asset work, human usability, player experience, device/export, and visual live validation remain `NOT_RUN`.
+
+The active package also closes a relevant T12 safety gap: a successful `RestCommitCoordinator` cannot be reconfigured to begin another commit. Existing session-reinitialization protection was already enforced by the generation check.
 
 ## Remaining product sequence
 

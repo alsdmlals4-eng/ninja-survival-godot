@@ -216,7 +216,7 @@ T12 post-merge automated evidence in Production Handoff:
 
 Evidence ceiling: automated/domain implementation scope only.
 
-## 9. Current product workstream — T13 merged / T14 next
+## 9. Current product workstream — T13 merged / T14 active implementation
 
 T12 PR #61 (`T12: atomically commit Workbench snapshot, Fate, and route`) and T13 PR #63 (`T13: add persistent Workbench route-preview UI`) are merged in the completed-main baseline above. T13 remains limited to a reusable Workbench route-preview/input presentation contract.
 
@@ -231,7 +231,7 @@ T12's protected product outcome remains:
 - existing T02/T03/T04/T05/T06/T07/T08/T11 owners remain singular,
 - T13 presentation may not move transaction ownership into UI.
 
-T13 intentionally did not absorb MainController/T14 integration: it renders supplied snapshots, marks route/Fate choices as pending, sends intent signals, and presents coordinator/readiness failures in Korean. T14 now owns the real post-clear Workbench-session/encounter integration. Visual work must not modify, rebase, close, merge or absorb PR #49.
+T13 intentionally did not absorb MainController/T14 integration: it renders supplied snapshots, marks route/Fate choices as pending, sends intent signals, and presents coordinator/readiness failures in Korean. T14 now owns the real post-clear Workbench-session/encounter integration. The current T14 branch adds a Cheonsul-only lifecycle adapter (first-route commit, Elite → Trace → Boss gates, Boss-clear Workbench entry), existing runtime combat composition, read-only Boss-reward candidates, and pending route/Fate intents. It never auto-selects a reward, places an item, commits a Fate, or commits the next route. The current MainController does not yet expose board placement or Boss-reward selection controls; those remain a later Workbench interaction surface. Visual work must not modify, rebase, close, merge or absorb PR #49.
 
 ## 10. Remaining production sequence
 
