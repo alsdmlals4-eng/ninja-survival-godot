@@ -42,7 +42,15 @@ func test_player_scene_has_collision_visual_camera_and_projectile_config() -> vo
 		return
 
 	assert_not_null(player.get_node_or_null("CollisionShape2D"))
-	assert_not_null(player.get_node_or_null("Visual"))
+	var visual = player.get_node_or_null("Visual")
+	assert_not_null(visual)
+	assert_true(visual is Sprite2D, "Player Visual must render the approved Sprite2D pose")
+	if visual is Sprite2D:
+		assert_almost_eq(visual.scale.x, 0.05, 0.0001)
+		assert_almost_eq(visual.scale.y, 0.05, 0.0001)
+		assert_not_null(visual.move_texture)
+		assert_not_null(visual.attack_texture)
+		assert_not_null(visual.hit_texture)
 	assert_not_null(player.get_node_or_null("Camera2D"))
 	var auto_attack = player.get_node_or_null("AutoAttack")
 	assert_not_null(auto_attack)
