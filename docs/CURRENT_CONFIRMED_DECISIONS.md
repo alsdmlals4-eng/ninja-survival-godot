@@ -4,7 +4,7 @@
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER
 updated_at: 2026-08-26 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
-current_completed_main: 41202283b75921efb7691e77c3de1502d77410d1
+current_completed_main: 71152c7aa9dff4cc05eec76d4d2d70be47755f6c
 current_completed_main_resolution: GITHUB_DEFAULT_BRANCH_READBACK_2026_08_26_KST
 latest_product_canon: docs/canon/2026-08-21-dec014-025-product-canon.md
 latest_encounter_canon: docs/canon/2026-08-22-dec026-encounter-pattern-budget.md
@@ -17,7 +17,7 @@ phase_b_verdict: PASS_FOR_APPROVED_DOMAIN_SEQUENCE
 mvp0_to_mvp3_baseline: INTEGRATED
 t01_to_t12_domain_chain: INTEGRATED_ON_COMPLETED_MAIN
 t12_atomic_workbench_commit: MERGED_MAIN_41202283b75921efb7691e77c3de1502d77410d1
-t13_persistent_workbench_route_ui_input: FRESH_PR_62_IMPLEMENTATION_CANDIDATE
+t13_persistent_workbench_route_ui_input: MERGED_MAIN_71152C7AA9DFF4CC05EEC76D4D2D70BE47755F6C
 pr_43_t12: CLOSED_UNMERGED_HISTORICAL_WIP
 pr_44_front_door_docs: CLOSED_UNMERGED_HISTORICAL_WIP
 pr_49_t12: OPEN_DRAFT_READ_ONLY_SUPERSEDED_BY_FRESH_PR_61
@@ -216,9 +216,9 @@ T12 post-merge automated evidence in Production Handoff:
 
 Evidence ceiling: automated/domain implementation scope only.
 
-## 9. Current product workstream — T13 fresh Issue #62
+## 9. Current product workstream — T13 merged / T14 next
 
-T12 PR #61 (`T12: atomically commit Workbench snapshot, Fate, and route`) is merged in the completed-main baseline above. T13 starts fresh from that baseline as Issue #62, and is limited to a reusable Workbench route-preview/input presentation contract.
+T12 PR #61 (`T12: atomically commit Workbench snapshot, Fate, and route`) and T13 PR #63 (`T13: add persistent Workbench route-preview UI`) are merged in the completed-main baseline above. T13 remains limited to a reusable Workbench route-preview/input presentation contract.
 
 Draft PR #49 (`T12: atomic Workbench Fate route commit`) is superseded and remains read-only WIP/reference only. Historical PR #43 (`T12: add atomic Workbench commit coordinator`) and PR #44 are also closed-unmerged WIP/reference only.
 
@@ -231,13 +231,12 @@ T12's protected product outcome remains:
 - existing T02/T03/T04/T05/T06/T07/T08/T11 owners remain singular,
 - T13 presentation may not move transaction ownership into UI.
 
-T13 scope is intentionally not MainController/T14 integration: it renders supplied snapshots, marks route/Fate choices as pending, sends intent signals, and presents coordinator/readiness failures in Korean. Visual work must not modify, rebase, close, merge or absorb PR #49.
+T13 intentionally did not absorb MainController/T14 integration: it renders supplied snapshots, marks route/Fate choices as pending, sends intent signals, and presents coordinator/readiness failures in Korean. T14 now owns the real post-clear Workbench-session/encounter integration. Visual work must not modify, rebase, close, merge or absorb PR #49.
 
 ## 10. Remaining production sequence
 
 ```text
-T13 Persistent Workbench route-preview UI/input (fresh Issue #62; resolve PR candidate)
--> T14 Cheonsul one-school release-near Vertical Slice
+T14 Cheonsul one-school release-near Vertical Slice
 -> T15 Human QA gate
 -> T16 expand 봉마/귀인/흑영
 -> T17 four-school circuit integration

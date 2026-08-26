@@ -5,11 +5,11 @@ project: NINJA_SURVIVAL
 state_router_updated_at: 2026-08-26 KST
 reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
-current_completed_main: 41202283b75921efb7691e77c3de1502d77410d1
+current_completed_main: 71152c7aa9dff4cc05eec76d4d2d70be47755f6c
 current_completed_main_resolution: GITHUB_DEFAULT_BRANCH_READBACK_2026_08_26_KST
-completed_main_label: T12_ATOMIC_WORKBENCH_FATE_ROUTE_COMMIT
-resume_state: T13_FRESH_PR_62_PERSISTENT_WORKBENCH_ROUTE_UI_INPUT
-next_product_gate: RESOLVE_T13_PR_62_THEN_T14_CHEONSUL_VERTICAL_SLICE
+completed_main_label: T13_PERSISTENT_WORKBENCH_ROUTE_PREVIEW_UI_INPUT
+resume_state: T14_CHEONSUL_RELEASE_NEAR_VERTICAL_SLICE
+next_product_gate: T14_CHEONSUL_RELEASE_NEAR_VERTICAL_SLICE
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 historical_closed_wip:
@@ -20,7 +20,7 @@ other_workstream_read_only:
 mvp0_to_mvp3_runtime: INTEGRATED_BASELINE
 mvp4_t01_to_t11_domain_chain: INTEGRATED_ON_COMPLETED_MAIN
 playable_new_four_school_run: NOT_PROVEN
-persistent_workbench_route_ui_input: FRESH_PR_62_IMPLEMENTATION_CANDIDATE
+persistent_workbench_route_ui_input: INTEGRATED_ON_MAIN_71152C7AA9DFF4CC05EEC76D4D2D70BE47755F6C
 release_near_cheonsul_slice: NOT_RUN
 human_usability: NOT_RUN
 player_experience: NOT_RUN
@@ -220,15 +220,14 @@ NOTION_HIGH_RES_PIXEL_EQUIVALENT: NOT_PROVEN
 NOTION_HUMAN_VISIBLE_LATEST_PREVIEWS: NOT_RUN
 ```
 
-## Current T13 status
+## T13 merged status
 
-T13 is a fresh Issue #62 / PR-candidate package from completed T12 `main`. It adds only the reusable `RestFlowUI` Workbench route-preview and intent contract: legal unvisited-school cards, pending Fate presentation, human-readable readiness state, and standard pointer/touch/focus input. It does not wire the protected MVP-3 loop to the T12 transaction; T14 owns that real session/encounter integration.
+T13 Issue #62 / PR #63 is merged to `main` at `71152c7aa9dff4cc05eec76d4d2d70be47755f6c`. It adds only the reusable `RestFlowUI` Workbench route-preview and intent contract: legal unvisited-school cards, pending Fate presentation, human-readable readiness state, and standard pointer/touch/focus input. It does not wire the protected MVP-3 loop to the T12 transaction; T14 owns that real session/encounter integration.
 
 ## Remaining product sequence
 
 ```text
-Resolve fresh T13 PR #62 from the default branch
--> T14 Cheonsul release-near Vertical Slice
+T14 Cheonsul release-near Vertical Slice
 -> T15 Human QA gate
 -> T16 remaining schools
 -> T17 four-school circuit integration
