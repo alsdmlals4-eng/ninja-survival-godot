@@ -40,7 +40,14 @@ consumer, and has an exact-head PR check covering Godot 4.7.1 import,
 main-scene smoke, and full GUT. Resolve the live PR check before using this
 receipt as a current-head reference.
 
-This is not live runtime evidence. `RUNTIME_VERIFIED`, Human Usability,
-Player Experience, device, and export remain **NOT_RUN** until the Ninja
-Survival editor and game are observed. Preserve v1 in both storage systems as
-provenance; do not replace or delete it.
+Live runtime/render/input evidence was captured in the exact PR #59 worktree
+on 2026-08-26 KST: the selection screen and combat frame showed the approved
+v2 Sprite2D without checkerboard or clipping; Move, successful Bongma and
+Cheonsul actions, and a non-zero Player Hit all selected their intended
+textures. Keyboard-style `ui_right` input moved the Player from `(0, 0)` to
+`(132, 0)` while the Camera2D retained the player-centered view. Runtime log
+and diagnostics reported no errors or warnings.
+
+This is limited runtime/render/input evidence, not a Human Usability, Player
+Experience, device, or export result; those remain **NOT_RUN**. Preserve v1 in
+both storage systems as provenance; do not replace or delete it.

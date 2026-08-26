@@ -34,11 +34,17 @@ and dual-storage gate.
   a selected school's non-zero resolved action; Hit is a visual-only response
   to non-zero, non-evaded Player damage. Legacy AutoAttack stays disabled.
 - The exact-head GUT check on PR #59 passed Base manifest, Godot 4.7.1 import,
-  main-scene smoke, and the full current GUT suite. Do not promote this to
-  live runtime evidence.
-- Evidence ceiling: source/static/import/smoke/GUT are PASS on the unmerged
-  PR head. Live runtime rendering/input, Human Usability, Player Experience,
-  device, and export are **NOT_RUN**. PR #49 remains read-only.
+  main-scene smoke, and the full current GUT suite.
+- Live runtime/render/input observation on 2026-08-26 KST used the exact PR
+  #59 worktree. The selection screen and combat view rendered the approved v2
+  Sprite2D without checkerboard or clipping; Move, successful Bongma and
+  Cheonsul actions, and non-zero Player Hit selected their intended textures.
+  `ui_right` moved Player `(0, 0)` to `(132, 0)` while Camera2D kept the
+  player-centered view. Runtime log and diagnostics had no errors or warnings.
+- Evidence ceiling: source/static/import/smoke/GUT and this scoped live
+  runtime/render/input evidence are PASS on the unmerged PR head. Human
+  Usability, Player Experience, device, and export remain **NOT_RUN**. PR #49
+  remains read-only.
 
 ## 1. Exact repository / concurrency state at handoff
 
