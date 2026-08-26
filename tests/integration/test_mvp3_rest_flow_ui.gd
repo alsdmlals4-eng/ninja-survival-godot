@@ -166,6 +166,54 @@ func test_workbench_renders_only_unvisited_routes_and_emits_intents() -> void:
 	assert_eq(emitted, [["route", &"cheonsul"], ["fate", &"guardian_path"], ["commit"]])
 
 
+func test_workbench_fails_closed_for_unknown_duplicate_and_incomplete_inputs() -> void:
+	var ui = _new_ui()
+	if ui == null:
+		return
+	ui.workbench_commit_requested.connect(func(): emitted.append(["commit"]))
+	var catalog = load(CATALOG_PATH)
+	var fates: Dictionary = catalog.build_fates()
+	var duplicate_routes: Array[StringName] = [&"cheonsul", &"cheonsul", &"unknown"]
+	var candidates: Array[StringName] = [&"seal_path", &"seal_path"]
+	var readiness_failures: Array[StringName] = [&"session_rebound"]
+	ui.show_workbench(
+		{
+			"unvisited_school_ids": duplicate_routes,
+			"provisional_school_id": &"cheonsul",
+		},
+		candidates,
+		fates,
+		&"seal_path",
+		readiness_failures
+	)
+
+	var route_cards = ui.get_node("Panel/Margin/Content/WorkbenchView/RouteCards")
+	var fate_cards = ui.get_node("Panel/Margin/Content/WorkbenchView/FateCandidates")
+	var commit_button = ui.get_node("Panel/Margin/Content/WorkbenchView/CommitButton")
+	assert_eq(route_cards.get_child_count(), 1)
+	assert_eq(fate_cards.get_child_count(), 1)
+	assert_true(commit_button.disabled)
+	commit_button.emit_signal("pressed")
+	assert_eq(emitted, [])
+
+	var only_guiin: Array[StringName] = [&"guiin"]
+	var no_candidates: Array[StringName] = []
+	var no_failures: Array[StringName] = []
+	ui.show_workbench(
+		{
+			"unvisited_school_ids": only_guiin,
+			"provisional_school_id": &"",
+		},
+		no_candidates,
+		fates,
+		&"",
+		no_failures
+	)
+	assert_eq(route_cards.get_child_count(), 1)
+	assert_eq(fate_cards.get_child_count(), 0)
+	assert_true(commit_button.disabled)
+
+
 func test_preview_and_complete_are_distinct_terminal_states() -> void:
 	var ui = _new_ui()
 	if ui == null:

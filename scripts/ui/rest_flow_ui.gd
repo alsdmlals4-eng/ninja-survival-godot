@@ -254,12 +254,16 @@ func _render_workbench_routes(route_snapshot: Dictionary, provisional_school_id:
 	_clear_children(workbench_route_cards)
 	var rendered_provisional := false
 	var focus_target: Button = null
+	var rendered_school_ids: Array[StringName] = []
 	var unvisited_school_ids: Array = route_snapshot.get("unvisited_school_ids", [])
 	for raw_school_id in unvisited_school_ids:
 		var school_id := StringName(raw_school_id)
+		if rendered_school_ids.has(school_id):
+			continue
 		var details: Dictionary = WORKBENCH_SCHOOL_DETAILS.get(school_id, {})
 		if details.is_empty():
 			continue
+		rendered_school_ids.append(school_id)
 		var button := Button.new()
 		var lines := [
 			str(details.get("name", school_id)),
@@ -289,10 +293,14 @@ func _render_workbench_fates(
 ) -> bool:
 	_clear_children(workbench_fate_candidates)
 	var rendered_pending := false
+	var rendered_fate_ids: Array[StringName] = []
 	for fate_id in fate_candidate_ids:
+		if rendered_fate_ids.has(fate_id):
+			continue
 		var definition = fate_definitions.get(fate_id)
 		if definition == null:
 			continue
+		rendered_fate_ids.append(fate_id)
 		var button := Button.new()
 		var lines := [
 			str(definition.display_name),
