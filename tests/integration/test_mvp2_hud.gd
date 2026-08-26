@@ -3,10 +3,12 @@ extends GutTest
 const HUD_SCENE := preload("res://scenes/ui/hud.tscn")
 
 var restart_count: int = 0
+var school_help_count: int = 0
 
 
 func before_each() -> void:
 	restart_count = 0
+	school_help_count = 0
 
 
 func test_hud_has_mvp2_school_feedback_contract() -> void:
@@ -30,6 +32,25 @@ func test_restart_button_is_always_available_and_emits_request() -> void:
 	hud.restart_requested.connect(_on_restart_requested)
 	button.emit_signal("pressed")
 	assert_eq(restart_count, 1)
+
+
+func test_school_help_button_is_hidden_until_combat_and_emits_intent() -> void:
+	var hud = HUD_SCENE.instantiate()
+	add_child_autofree(hud)
+	assert_true(hud.has_signal("school_help_requested"), "HUD must emit a school-help intent")
+	assert_true(hud.has_node("SchoolHelpButton"), "HUD must expose the current-school help button")
+	if not hud.has_signal("school_help_requested") or not hud.has_node("SchoolHelpButton"):
+		return
+	var button := hud.get_node("SchoolHelpButton") as Button
+	assert_false(button.visible, "The help button must not appear before a school is selected")
+	hud.school_help_requested.connect(_on_school_help_requested)
+	hud.show_school_help("천술류")
+	assert_true(button.visible)
+	assert_eq(button.text, "천술류 기능 도움말")
+	button.emit_signal("pressed")
+	assert_eq(school_help_count, 1)
+	hud.hide_school_help()
+	assert_false(button.visible)
 
 
 func test_hud_formats_school_resource_and_ultimate_state() -> void:
@@ -80,6 +101,10 @@ func test_older_school_feedback_timeout_does_not_clear_newer_feedback() -> void:
 
 func _on_restart_requested() -> void:
 	restart_count += 1
+
+
+func _on_school_help_requested() -> void:
+	school_help_count += 1
 
 
 func _has_mvp2_feedback(hud: Node) -> bool:

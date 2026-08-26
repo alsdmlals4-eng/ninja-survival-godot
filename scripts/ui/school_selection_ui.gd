@@ -37,6 +37,7 @@ var _help_opener: Button
 @onready var _help_title := $HelpDialog/Margin/Content/TitleLabel as Label
 @onready var _help_body := $HelpDialog/Margin/Content/BodyLabel as Label
 @onready var _help_close_button := $HelpDialog/Margin/Content/CloseButton as Button
+@onready var _selection_panel := $Panel as Control
 
 
 func _ready() -> void:
@@ -52,11 +53,11 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if _selected or not visible:
-		return
 	if _help_open:
 		if event.is_action_pressed(&"ui_cancel"):
 			_close_school_help()
+		return
+	if _selected or not visible:
 		return
 	if not event is InputEventKey:
 		return
@@ -92,6 +93,24 @@ func _connect_help_button(path: NodePath, school_id: StringName) -> void:
 func _open_school_help(school_id: StringName, opener: Button) -> void:
 	if _selected or not SCHOOL_HELP.has(school_id):
 		return
+	_show_school_help(school_id, opener)
+
+
+func open_runtime_school_help(school_id: StringName, opener: Button) -> void:
+	if not _selected or not SCHOOL_HELP.has(school_id):
+		return
+	_show_school_help(school_id, opener)
+
+
+func dismiss_school_help() -> void:
+	_help_open = false
+	_help_dialog.hide()
+	_help_opener = null
+
+
+func _show_school_help(school_id: StringName, opener: Button) -> void:
+	if _help_open:
+		return
 	var help := SCHOOL_HELP[school_id] as Dictionary
 	_help_title.text = help["title"]
 	_help_body.text = help["body"]
@@ -112,5 +131,5 @@ func _choose(school_id: StringName) -> void:
 	if _selected or _help_open or not VALID_SCHOOL_IDS.has(school_id):
 		return
 	_selected = true
-	visible = false
+	_selection_panel.hide()
 	school_selected.emit(school_id)

@@ -40,6 +40,7 @@ var _fate_defs: Dictionary = {}
 var _shop_message: String = ""
 var _latest_result_snapshot: Dictionary = {}
 var _cheonsul_elapsed_seconds: float = 0.0
+var _combat_enabled: bool = false
 
 @onready var game_state: GameState = $GameState
 @onready var combat_ddd: CombatDDDTracker = $CombatDDD
@@ -131,6 +132,7 @@ func _connect_existing_signals() -> void:
 	school_host.school_feedback.connect(hud.show_school_feedback)
 	school_host.player_action_resolved.connect(player_visual.show_attack)
 	hud.restart_requested.connect(_restart_run)
+	hud.school_help_requested.connect(_on_school_help_requested)
 
 
 func _connect_mvp3_signals() -> void:
@@ -312,6 +314,7 @@ func _sync_run_modifiers() -> void:
 
 
 func _set_combat_enabled(enabled: bool) -> void:
+	_combat_enabled = enabled
 	var gameplay_mode := Node.PROCESS_MODE_INHERIT if enabled else Node.PROCESS_MODE_DISABLED
 	player.process_mode = gameplay_mode
 	auto_attack.process_mode = Node.PROCESS_MODE_DISABLED
@@ -325,6 +328,18 @@ func _set_combat_enabled(enabled: bool) -> void:
 			child.process_mode = gameplay_mode
 		elif child is RewardOrb:
 			child.process_mode = gameplay_mode
+
+	if enabled and not game_over and school_host.selected_school_id != &"":
+		hud.show_school_help(school_host.selected_school_name)
+	else:
+		hud.hide_school_help()
+		school_selection.dismiss_school_help()
+
+
+func _on_school_help_requested() -> void:
+	if game_over or not _combat_enabled or school_host.selected_school_id == &"":
+		return
+	school_selection.open_runtime_school_help(school_host.selected_school_id, hud.school_help_button)
 
 
 func _on_segment_time_changed(segment: int, remaining: float) -> void:
@@ -664,6 +679,7 @@ func _on_player_died() -> void:
 	school_host.deactivate()
 	if rest_flow_ui != null:
 		rest_flow_ui.hide_all()
+	_set_combat_enabled(false)
 	_stop_gameplay()
 	hud.show_game_over()
 
