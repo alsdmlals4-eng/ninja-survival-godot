@@ -2,14 +2,14 @@
 
 ```yaml
 project: NINJA_SURVIVAL
-state_router_updated_at: 2026-08-26 KST
+state_router_updated_at: 2026-08-27 KST
 reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
-current_completed_main: 33242876d1b930906416323076e0b55e79896ef7
-current_completed_main_resolution: GITHUB_DEFAULT_BRANCH_READBACK_2026_08_26_KST
-completed_main_label: T13_PERSISTENT_WORKBENCH_ROUTE_PREVIEW_UI_INPUT
-resume_state: T14_CHEONSUL_RELEASE_NEAR_VERTICAL_SLICE
-next_product_gate: T14_CHEONSUL_RELEASE_NEAR_VERTICAL_SLICE
+current_completed_main: 51e39737f272db0962a3dabada51bae10cd1fa97
+current_completed_main_resolution: GITHUB_DEFAULT_BRANCH_READBACK_2026_08_27_KST
+completed_main_label: T14_CHEONSUL_RELEASE_NEAR_VERTICAL_SLICE
+resume_state: T15_CHEONSUL_HUMAN_QA_GATE
+next_product_gate: T15_CHEONSUL_HUMAN_QA_GATE
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 historical_closed_wip:
@@ -21,7 +21,7 @@ mvp0_to_mvp3_runtime: INTEGRATED_BASELINE
 mvp4_t01_to_t11_domain_chain: INTEGRATED_ON_COMPLETED_MAIN
 playable_new_four_school_run: NOT_PROVEN
 persistent_workbench_route_ui_input: INTEGRATED_ON_MAIN_71152C7AA9DFF4CC05EEC76D4D2D70BE47755F6C
-release_near_cheonsul_slice: ACTIVE_BRANCH_AUTOMATED_EVIDENCE_ONLY
+release_near_cheonsul_slice: MERGED_MAIN_51E39737F272DB0962A3DABADA51BAE10CD1FA97_AUTOMATED_EVIDENCE_ONLY
 human_usability: NOT_RUN
 player_experience: NOT_RUN
 device_export_android: NOT_RUN
@@ -224,9 +224,9 @@ NOTION_HUMAN_VISIBLE_LATEST_PREVIEWS: NOT_RUN
 
 T13 Issue #62 / PR #63 is merged to `main` at `71152c7aa9dff4cc05eec76d4d2d70be47755f6c`; its documentation readback PR #64 advances the completed-main reference to `33242876d1b930906416323076e0b55e79896ef7`. T13 adds only the reusable `RestFlowUI` Workbench route-preview and intent contract: legal unvisited-school cards, pending Fate presentation, human-readable readiness state, and standard pointer/touch/focus input. It does not wire the protected MVP-3 loop to the T12 transaction; T14 owns that real session/encounter integration.
 
-## T14 active implementation status
+## T14 merged status
 
-Issue #65 is active on a fresh branch from the T13 documentation baseline. Current unmerged code connects the Cheonsul selection path to the protected route/encounter/Workbench owners: first-school route commit, Elite → chest token + Trace, explicit Trace recovery, Boss warning/spawn gate, Boss-clear route stabilization, mandatory Boss-reward-pending Workbench entry, and provisional route/Fate intent refresh. `EncounterCatalog` is the runtime source for the Core/Elite/Boss role IDs and Elite/Boss HUD display names bound to the existing enemy representations; its fan/zone/mark pattern definitions are not newly implemented or claimed as live behavior. Cheonsul combat RewardOrbs stay active despite the legacy MVP-3 stage-flow phase remaining idle. Boss-reward candidates are readable but selection/board placement remain unavailable, so commit stays disabled; no build power, Fate, or next route is auto-committed. Current branch evidence: Godot 4.7.1 import PASS, editor parse PASS, five-second main-scene smoke PASS, full GUT `485/485` and `5301` assertions. These are automated-only evidence; new image generation, raster asset work, human usability, player experience, device/export, and visual live validation remain `NOT_RUN`.
+Issue #65 / PR #66 is squash-merged to GitHub `main` at `51e39737f272db0962a3dabada51bae10cd1fa97`. T14 connects the Cheonsul selection path to the protected route/encounter/Workbench owners: first-school route commit, Elite → chest token + Trace, explicit Trace recovery, Boss warning/spawn gate, Boss-clear route stabilization, mandatory Boss-reward-pending Workbench entry, and provisional route/Fate intent refresh. `EncounterCatalog` is the runtime source for the Core/Elite/Boss role IDs and Elite/Boss HUD display names bound to existing enemy representations; its fan/zone/mark pattern definitions are not newly implemented or claimed as live behavior. Cheonsul combat RewardOrbs stay active despite the legacy MVP-3 stage-flow phase remaining idle. Boss-reward candidates are readable but selection/board placement remain unavailable, so commit stays disabled; no build power, Fate, or next route is auto-committed. Exact PR head local evidence and fresh isolated post-merge evidence each passed Godot 4.7.1 import, editor parse, five-second main-scene smoke, and full GUT `485/485` with `5301` assertions. GitHub Actions run `32983817646` remained queued and was cancelled; a follow-up PR synchronization run was not created, so this router does not claim remote-CI success. These are automated-only evidence; new image generation, raster asset work, human usability, player experience, device/export, and visual live validation remain `NOT_RUN`.
 
 The active package also closes a relevant T12 safety gap: a successful `RestCommitCoordinator` cannot be reconfigured to begin another commit. Existing session-reinitialization protection was already enforced by the generation check.
 

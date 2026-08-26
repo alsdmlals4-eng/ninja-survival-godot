@@ -276,16 +276,18 @@ Observed 2026-08-26 KST: Godot 4.7.1 import, editor parse, and five-second main-
 
 For five full passes inspect: first-school route exception, Boss gate, trace-before-Boss, Workbench no-auto-commit, non-Cheonsul MVP-3 regression, UI keyboard/pointer/touch contract, and documentation claims. Each valid finding requires a focused test, fix, regression, then the five-pass count restarts. Put the five clean pass headings in the PR description.
 
-- [ ] **Step 4: Commit documentation**
+- [x] **Step 4: Commit documentation**
 
 ```bash
 git add docs/ACTIVE_CONTEXT.md docs/CURRENT_CONFIRMED_DECISIONS.md docs/superpowers/plans/2026-08-26-t14-cheonsul-release-near-vertical-slice.md
 git commit -m "docs: record T14 Cheonsul slice evidence"
 ```
 
-- [ ] **Step 5: Request independent code review and prepare a fresh PR**
+- [x] **Step 5: Request independent code review and prepare a fresh PR**
 
 Do not modify PR #49. Create a fresh PR linked to GitHub Issue #65 from the T14 branch. Include changed files, scope/exclusions, exact verification evidence, five adversarial passes, and explicit `NOT_RUN` human/device/export evidence. Reconcile with latest `origin/main` using fast-forward-only logic before final head verification.
+
+Delivered: Issue #65 / PR #66 was squash-merged to `main` at `51e39737f272db0962a3dabada51bae10cd1fa97`. Exact PR-head and isolated post-merge checks each passed Godot 4.7.1 import, editor parse, five-second main smoke, and full GUT `485/485` / `5301` assertions. The queued GitHub Actions run `32983817646` was cancelled and no replacement PR synchronization run was created; remote-CI success is not claimed.
 
 ## Plan self-review
 

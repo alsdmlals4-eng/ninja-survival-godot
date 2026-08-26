@@ -2,10 +2,10 @@
 
 ```yaml
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER
-updated_at: 2026-08-26 KST
+updated_at: 2026-08-27 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
-current_completed_main: 33242876d1b930906416323076e0b55e79896ef7
-current_completed_main_resolution: GITHUB_DEFAULT_BRANCH_READBACK_2026_08_26_KST
+current_completed_main: 51e39737f272db0962a3dabada51bae10cd1fa97
+current_completed_main_resolution: GITHUB_DEFAULT_BRANCH_READBACK_2026_08_27_KST
 latest_product_canon: docs/canon/2026-08-21-dec014-025-product-canon.md
 latest_encounter_canon: docs/canon/2026-08-22-dec026-encounter-pattern-budget.md
 latest_migration_traceability: docs/traceability/2026-08-22-dec026-post-gate-traceability.md
@@ -18,6 +18,7 @@ mvp0_to_mvp3_baseline: INTEGRATED
 t01_to_t12_domain_chain: INTEGRATED_ON_COMPLETED_MAIN
 t12_atomic_workbench_commit: MERGED_MAIN_41202283b75921efb7691e77c3de1502d77410d1
 t13_persistent_workbench_route_ui_input: MERGED_MAIN_71152C7AA9DFF4CC05EEC76D4D2D70BE47755F6C
+t14_cheonsul_release_near_vertical_slice: MERGED_MAIN_51E39737F272DB0962A3DABADA51BAE10CD1FA97_AUTOMATED_EVIDENCE_ONLY
 pr_43_t12: CLOSED_UNMERGED_HISTORICAL_WIP
 pr_44_front_door_docs: CLOSED_UNMERGED_HISTORICAL_WIP
 pr_49_t12: OPEN_DRAFT_READ_ONLY_SUPERSEDED_BY_FRESH_PR_61
@@ -216,7 +217,7 @@ T12 post-merge automated evidence in Production Handoff:
 
 Evidence ceiling: automated/domain implementation scope only.
 
-## 9. Current product workstream — T13 merged / T14 active implementation
+## 9. Current product workstream — T14 merged / T15 Human QA next
 
 T12 PR #61 (`T12: atomically commit Workbench snapshot, Fate, and route`) and T13 PR #63 (`T13: add persistent Workbench route-preview UI`) are merged in the completed-main baseline above. T13 remains limited to a reusable Workbench route-preview/input presentation contract.
 
@@ -231,7 +232,7 @@ T12's protected product outcome remains:
 - existing T02/T03/T04/T05/T06/T07/T08/T11 owners remain singular,
 - T13 presentation may not move transaction ownership into UI.
 
-T13 intentionally did not absorb MainController/T14 integration: it renders supplied snapshots, marks route/Fate choices as pending, sends intent signals, and presents coordinator/readiness failures in Korean. T14 now owns the real post-clear Workbench-session/encounter integration. The current T14 branch adds a Cheonsul-only lifecycle adapter (first-route commit, Elite → Trace → Boss gates, Boss-clear Workbench entry), existing runtime combat composition, active combat reward-orbs, read-only Boss-reward candidates, and pending route/Fate intents. `EncounterCatalog` is consumed as the single source for the three Core/Elite/Boss role IDs and the Elite/Boss HUD display names of those existing representations; it does not make the catalog's fan/zone/mark primitive behaviors a newly verified runtime claim. The package never auto-selects a reward, places an item, commits a Fate, or commits the next route. The current MainController does not yet expose board placement or Boss-reward selection controls; those remain a later Workbench interaction surface. Visual work must not modify, rebase, close, merge or absorb PR #49.
+T13 intentionally did not absorb MainController/T14 integration: it renders supplied snapshots, marks route/Fate choices as pending, sends intent signals, and presents coordinator/readiness failures in Korean. T14 is now merged in `51e39737f272db0962a3dabada51bae10cd1fa97`: it adds the Cheonsul-only lifecycle adapter (first-route commit, Elite → Trace → Boss gates, Boss-clear Workbench entry), existing runtime combat composition, active combat reward-orbs, read-only Boss-reward candidates, and pending route/Fate intents. `EncounterCatalog` is consumed as the single source for the three Core/Elite/Boss role IDs and the Elite/Boss HUD display names of those existing representations; it does not make the catalog's fan/zone/mark primitive behaviors a newly verified runtime claim. The package never auto-selects a reward, places an item, commits a Fate, or commits the next route. The current MainController does not yet expose board placement or Boss-reward selection controls; those remain a later Workbench interaction surface. Exact PR-head and isolated post-merge local evidence passed Godot 4.7.1 import, editor parse, five-second main smoke, and GUT `485/485` / `5301` assertions; GitHub Actions run `32983817646` stayed queued and was cancelled, so remote-CI success is not claimed. T15 Human QA remains the next product gate. Visual work must not modify, rebase, close, merge or absorb PR #49.
 
 ## 10. Remaining production sequence
 
