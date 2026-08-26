@@ -1,6 +1,8 @@
 extends Node2D
 class_name BongmaFamiliar
 
+signal attack_resolved
+
 @export var follow_distance: float = 72.0
 @export var follow_speed: float = 220.0
 
@@ -65,10 +67,13 @@ func attack_once() -> Node:
 	var target := _nearest_target()
 	if target == null:
 		return null
+	var actual_damage := 0
 	if combat_resolver != null:
-		combat_resolver.deal_school_damage(target, float(damage), damage_kind)
+		actual_damage = combat_resolver.deal_school_damage(target, float(damage), damage_kind)
 	else:
-		target.take_damage(damage)
+		actual_damage = target.take_damage(damage)
+	if actual_damage > 0:
+		attack_resolved.emit()
 	return target
 
 

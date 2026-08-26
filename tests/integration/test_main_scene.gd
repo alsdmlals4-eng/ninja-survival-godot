@@ -42,7 +42,15 @@ func test_player_scene_has_collision_visual_camera_and_projectile_config() -> vo
 		return
 
 	assert_not_null(player.get_node_or_null("CollisionShape2D"))
-	assert_not_null(player.get_node_or_null("Visual"))
+	var visual = player.get_node_or_null("Visual")
+	assert_not_null(visual)
+	assert_true(visual is Sprite2D, "Player Visual must render the approved Sprite2D pose")
+	if visual is Sprite2D:
+		assert_almost_eq(visual.scale.x, 0.05, 0.0001)
+		assert_almost_eq(visual.scale.y, 0.05, 0.0001)
+		assert_not_null(visual.move_texture)
+		assert_not_null(visual.attack_texture)
+		assert_not_null(visual.hit_texture)
 	assert_not_null(player.get_node_or_null("Camera2D"))
 	var auto_attack = player.get_node_or_null("AutoAttack")
 	assert_not_null(auto_attack)
@@ -162,6 +170,26 @@ func test_main_wires_enemies_score_health_and_game_over() -> void:
 	for enemy in enemies:
 		if is_instance_valid(enemy) and not enemy.is_queued_for_deletion():
 			assert_eq(enemy.process_mode, Node.PROCESS_MODE_DISABLED)
+
+
+func test_main_uses_resolved_actions_and_damage_for_player_poses() -> void:
+	var main = _spawn_main()
+	assert_not_null(main)
+	if main == null:
+		return
+	var player = main.get_node_or_null("Player")
+	var visual = main.get_node_or_null("Player/Visual")
+	var school_host = main.get_node_or_null("SchoolRuntimeHost")
+	assert_not_null(player)
+	assert_not_null(visual)
+	assert_not_null(school_host)
+	if player == null or visual == null or school_host == null:
+		return
+
+	school_host.player_action_resolved.emit()
+	assert_eq(visual.current_pose(), visual.Pose.ATTACK)
+	player.take_damage(1)
+	assert_eq(visual.current_pose(), visual.Pose.HIT)
 
 
 func _spawn_main() -> Node:

@@ -60,6 +60,28 @@ func test_deactivate_disables_selected_runtime() -> void:
 	assert_false(runtime.active)
 
 
+func test_host_relays_the_active_runtime_action_signal() -> void:
+	var base_script = load(BASE_PATH)
+	var host = load(HOST_PATH).new()
+	add_child_autofree(host)
+	var runtime = base_script.new()
+	runtime.name = "Bongma"
+	host.add_child(runtime)
+
+	assert_true(host.select_school(&"bongma"))
+	watch_signals(host)
+	runtime.emit_player_action_resolved()
+	assert_signal_emitted(host, "player_action_resolved")
+
+
+func test_inactive_runtime_does_not_emit_an_action_signal() -> void:
+	var runtime = load(BASE_PATH).new()
+	add_child_autofree(runtime)
+	watch_signals(runtime)
+	runtime.emit_player_action_resolved()
+	assert_signal_not_emitted(runtime, "player_action_resolved")
+
+
 func test_runtime_base_exposes_run_system_and_modifier_hooks() -> void:
 	var runtime = load(BASE_PATH).new()
 	add_child_autofree(runtime)

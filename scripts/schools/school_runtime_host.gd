@@ -5,6 +5,7 @@ signal resource_changed(label: String, current: float, maximum: float)
 signal ultimate_ready_changed(ready: bool)
 signal school_feedback(text: String)
 signal school_activated(school_id: StringName, school_name: String)
+signal player_action_resolved
 
 const SCHOOL_NAMES := {
 	&"bongma": "봉마류",
@@ -120,6 +121,10 @@ func _connect_runtime(runtime: SchoolRuntimeBase) -> void:
 	if not runtime.school_feedback.is_connected(feedback_callback):
 		runtime.school_feedback.connect(feedback_callback)
 
+	var action_callback := Callable(self, "_on_player_action_resolved")
+	if not runtime.player_action_resolved.is_connected(action_callback):
+		runtime.player_action_resolved.connect(action_callback)
+
 
 func _on_resource_changed(label: String, current: float, maximum: float) -> void:
 	resource_changed.emit(label, current, maximum)
@@ -131,3 +136,7 @@ func _on_ultimate_ready_changed(ready: bool) -> void:
 
 func _on_school_feedback(text: String) -> void:
 	school_feedback.emit(text)
+
+
+func _on_player_action_resolved() -> void:
+	player_action_resolved.emit()

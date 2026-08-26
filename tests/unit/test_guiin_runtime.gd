@@ -103,10 +103,12 @@ func test_melee_pulse_hits_only_enemies_inside_current_radius_and_gains_four_eac
 	var edge_enemy = _enemy(runtime.world, Vector2(80, 0))
 	var far_enemy = _enemy(runtime.world, Vector2(81, 0))
 
+	watch_signals(runtime)
 	assert_eq(runtime.perform_melee_pulse(), 2)
 	assert_eq(near_enemy.health, 90)
 	assert_eq(edge_enemy.health, 90)
 	assert_eq(far_enemy.health, 100)
+	assert_signal_emitted(runtime, "player_action_resolved")
 	assert_almost_eq(runtime.gwihyeol, 8.0, 0.001)
 	assert_almost_eq(runtime.time_since_gain, 0.0, 0.001)
 
@@ -136,8 +138,10 @@ func test_only_actual_damage_counts_as_hit_and_resource_gain() -> void:
 	var immune := ImmuneEnemy.new()
 	immune.global_position = Vector2(20, 0)
 	runtime.world.add_child(immune)
+	watch_signals(runtime)
 	assert_eq(runtime.perform_melee_pulse(), 0)
 	assert_almost_eq(runtime.gwihyeol, 0.0, 0.001)
+	assert_signal_not_emitted(runtime, "player_action_resolved")
 
 
 func test_school_damage_modifier_is_applied_once_after_local_guiin_math() -> void:

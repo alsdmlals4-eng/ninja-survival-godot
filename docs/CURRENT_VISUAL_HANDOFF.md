@@ -19,10 +19,32 @@ Library records:
 | Hit | `docs/assets/approved/img-01-player-runtime-core/player_runtime_hit_v2_alpha.png` | `f00c2f6fd09e6c52e1dce8abe6f493e76245d2dbc818ee4ac5db1b98f5b23d60` | [Notion](https://app.notion.com/p/3c81b237eb1c81958819dc9e3e763587) |
 
 All v2 files are 1254×1254 32bpp ARGB PNGs with transparent corners. Notion
-readback confirmed native v2 image blocks. This clears only the source-level
-alpha and dual-storage gate. Godot import, Scene wiring, runtime rendering,
-input, smoke, and human play validation are all **NOT_RUN**. PR #49 remains
-read-only.
+readback confirmed native v2 image blocks. This clears the source-level alpha
+and dual-storage gate.
+
+### IMG-01 runtime wiring receipt — PR #59 / unmerged
+
+- Fresh Issue [#58](https://github.com/alsdmlals4-eng/ninja-survival-godot/issues/58)
+  branch: `codex/img-01-runtime-visuals-58`, based on merged `main`
+  `c9956130ec0631603cc4bd03b619795917874bc7`.
+- Current PR head: resolve it from the live [PR #59](https://github.com/alsdmlals4-eng/ninja-survival-godot/pull/59)
+  before relying on this receipt; the PR check is the exact-head authority.
+- `Player/Visual` now consumes only these three v2 sources as a `Sprite2D` at
+  `Vector2(0.05, 0.05)`. Move is default; Attack is a visual-only relay from
+  a selected school's non-zero resolved action; Hit is a visual-only response
+  to non-zero, non-evaded Player damage. Legacy AutoAttack stays disabled.
+- The exact-head GUT check on PR #59 passed Base manifest, Godot 4.7.1 import,
+  main-scene smoke, and the full current GUT suite.
+- Live runtime/render/input observation on 2026-08-26 KST used the exact PR
+  #59 worktree. The selection screen and combat view rendered the approved v2
+  Sprite2D without checkerboard or clipping; Move, successful Bongma and
+  Cheonsul actions, and non-zero Player Hit selected their intended textures.
+  `ui_right` moved Player `(0, 0)` to `(132, 0)` while Camera2D kept the
+  player-centered view. Runtime log and diagnostics had no errors or warnings.
+- Evidence ceiling: source/static/import/smoke/GUT and this scoped live
+  runtime/render/input evidence are PASS on the unmerged PR head. Human
+  Usability, Player Experience, device, and export remain **NOT_RUN**. PR #49
+  remains read-only.
 
 ## 1. Exact repository / concurrency state at handoff
 

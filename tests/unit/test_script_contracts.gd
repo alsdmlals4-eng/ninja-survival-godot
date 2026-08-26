@@ -21,6 +21,7 @@ const MVP2_CHEONSUL_RUNTIME_PATH := "res://scripts/schools/cheonsul_runtime.gd"
 const MVP2_GUIIN_RUNTIME_PATH := "res://scripts/schools/guiin_runtime.gd"
 const MVP2_HEUKYEONG_RUNTIME_PATH := "res://scripts/schools/heukyeong_runtime.gd"
 const MVP2_BADGE_PATH := "res://scripts/ui/enemy_effect_badge.gd"
+const PLAYER_VISUAL_PATH := "res://scripts/player/player_visual_controller.gd"
 const MVP3_DATA_PATHS := [
 	"res://scripts/data/item_definition.gd",
 	"res://scripts/data/fate_definition.gd",
@@ -165,8 +166,9 @@ func test_school_runtime_base_contract() -> void:
 	var runtime = load(MVP2_RUNTIME_BASE_PATH).new()
 	for method_name in ["configure", "activate", "deactivate", "on_enemy_died", "try_use_ultimate", "is_ultimate_ready"]:
 		assert_true(runtime.has_method(method_name), "Missing runtime method: %s" % method_name)
-	for signal_name in ["resource_changed", "ultimate_ready_changed", "school_feedback"]:
+	for signal_name in ["resource_changed", "ultimate_ready_changed", "school_feedback", "player_action_resolved"]:
 		assert_true(runtime.has_signal(signal_name), "Missing runtime signal: %s" % signal_name)
+	assert_true(runtime.has_method("emit_player_action_resolved"))
 	assert_true(_has_property(runtime, "active"))
 	runtime.free()
 
@@ -180,7 +182,18 @@ func test_school_runtime_host_contract() -> void:
 		assert_true(host.has_method(method_name), "Missing host method: %s" % method_name)
 	for property_name in ["selected_school_id", "selected_school_name", "active_runtime"]:
 		assert_true(_has_property(host, property_name), "Missing host property: %s" % property_name)
+	assert_true(host.has_signal("player_action_resolved"))
 	host.free()
+
+
+func test_player_visual_controller_contract() -> void:
+	assert_true(ResourceLoader.exists(PLAYER_VISUAL_PATH), "Missing player visual controller")
+	if not ResourceLoader.exists(PLAYER_VISUAL_PATH):
+		return
+	var visual = load(PLAYER_VISUAL_PATH).new()
+	for method_name in ["show_attack", "show_hit", "advance_pose", "current_pose"]:
+		assert_true(visual.has_method(method_name), "Missing player visual method: %s" % method_name)
+	visual.free()
 
 
 func test_bongma_runtime_contract() -> void:

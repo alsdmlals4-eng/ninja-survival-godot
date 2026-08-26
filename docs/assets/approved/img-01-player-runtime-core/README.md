@@ -34,8 +34,20 @@ the pixels. The v2 derivatives have real alpha and meet the source-level
 transparent-background requirement. They remain source records, not evidence
 of a Godot import or of runtime behavior.
 
-Before CODEX-IMG-01 can claim `IMPLEMENTATION_READY` or `RUNTIME_VERIFIED`,
-import only the v2 derivatives through the approved Godot task, wire the
-intended consumer, and perform the required import, smoke, and human runtime
-validation. Preserve v1 in both storage systems as provenance; do not replace
-or delete it.
+IMG-01 wiring is currently in unmerged [PR #59](https://github.com/alsdmlals4-eng/ninja-survival-godot/pull/59).
+It imports only the v2 derivatives, wires the intended `Player/Visual`
+consumer, and has an exact-head PR check covering Godot 4.7.1 import,
+main-scene smoke, and full GUT. Resolve the live PR check before using this
+receipt as a current-head reference.
+
+Live runtime/render/input evidence was captured in the exact PR #59 worktree
+on 2026-08-26 KST: the selection screen and combat frame showed the approved
+v2 Sprite2D without checkerboard or clipping; Move, successful Bongma and
+Cheonsul actions, and a non-zero Player Hit all selected their intended
+textures. Keyboard-style `ui_right` input moved the Player from `(0, 0)` to
+`(132, 0)` while the Camera2D retained the player-centered view. Runtime log
+and diagnostics reported no errors or warnings.
+
+This is limited runtime/render/input evidence, not a Human Usability, Player
+Experience, device, or export result; those remain **NOT_RUN**. Preserve v1 in
+both storage systems as provenance; do not replace or delete it.
