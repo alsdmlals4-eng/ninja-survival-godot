@@ -214,6 +214,30 @@ func test_workbench_fails_closed_for_unknown_duplicate_and_incomplete_inputs() -
 	assert_true(commit_button.disabled)
 
 
+func test_workbench_focuses_the_provisional_route_card() -> void:
+	var ui = _new_ui()
+	if ui == null:
+		return
+	var catalog = load(CATALOG_PATH)
+	var fates: Dictionary = catalog.build_fates()
+	var unvisited: Array[StringName] = [&"bongma", &"heukyeong"]
+	var candidates: Array[StringName] = [&"guardian_path"]
+	var no_failures: Array[StringName] = []
+	ui.show_workbench(
+		{
+			"unvisited_school_ids": unvisited,
+			"provisional_school_id": &"heukyeong",
+		},
+		candidates,
+		fates,
+		&"guardian_path",
+		no_failures
+	)
+	await get_tree().process_frame
+	var route_cards = ui.get_node("Panel/Margin/Content/WorkbenchView/RouteCards")
+	assert_eq(ui.get_viewport().gui_get_focus_owner(), route_cards.get_child(1))
+
+
 func test_preview_and_complete_are_distinct_terminal_states() -> void:
 	var ui = _new_ui()
 	if ui == null:
