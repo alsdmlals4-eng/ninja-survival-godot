@@ -4,6 +4,7 @@ class_name CheonsulVerticalSliceController
 
 const BACKPACK_STATE_SCRIPT = preload("res://scripts/backpack/backpack_state.gd")
 const BACKPACK_RESOLVER_SCRIPT = preload("res://scripts/backpack/backpack_resolver.gd")
+const ENCOUNTER_CATALOG_SCRIPT = preload("res://scripts/data/encounter_catalog.gd")
 const REST_BACKPACK_SESSION_SCRIPT = preload("res://scripts/backpack/rest_backpack_session.gd")
 const REST_COMMIT_COORDINATOR_SCRIPT = preload("res://scripts/core/rest_commit_coordinator.gd")
 const REST_REWARD_CONTROLLER_SCRIPT = preload("res://scripts/core/rest_reward_controller.gd")
@@ -27,7 +28,9 @@ var _reward_controller: RestRewardController
 var _commit_coordinator: RestCommitCoordinator
 var _access_state: TraditionAccessState
 var _item_defs: Dictionary = {}
+var _encounter: Dictionary = {}
 var _chest_token_count: int = 0
+var _next_core_encounter_index: int = 0
 var _workbench_configured: bool = false
 var _workbench_started: bool = false
 
@@ -39,6 +42,8 @@ func _ready() -> void:
 func begin_first_school() -> bool:
 	_connect_encounter_signals()
 	if route_state.active_school_id() != &"" or not route_state.cleared_school_ids().is_empty():
+		return false
+	if not _load_cheonsul_encounter_identity():
 		return false
 	if not route_state.set_provisional_next_school(&"cheonsul"):
 		return false
@@ -135,6 +140,19 @@ func workbench_snapshot() -> Dictionary:
 	}
 
 
+func next_core_encounter() -> Dictionary:
+	var core_ids: Array = _encounter.get("core_monster_ids", [])
+	var core_names: Array = _encounter.get("core_monster_display_names", [])
+	if core_ids.is_empty() or core_ids.size() != core_names.size():
+		return {}
+	var index := _next_core_encounter_index % core_ids.size()
+	_next_core_encounter_index += 1
+	return {
+		"id": StringName(core_ids[index]),
+		"display_name": str(core_names[index]),
+	}
+
+
 func _boss_reward_labels() -> Array[String]:
 	var labels: Array[String] = []
 	if _reward_controller == null:
@@ -154,7 +172,31 @@ func get_snapshot() -> Dictionary:
 		"trace_recovered": encounter_snapshot.get("trace_recovered", false),
 		"normal_spawning_allowed": encounter_snapshot.get("normal_spawning_allowed", false),
 		"elapsed_seconds": encounter_snapshot.get("elapsed_seconds", 0.0),
+		"encounter": _encounter.duplicate(true),
 	}
+
+
+func _load_cheonsul_encounter_identity() -> bool:
+	var schools: Dictionary = ENCOUNTER_CATALOG_SCRIPT.build_school_encounters()
+	var definition = schools.get(&"cheonsul")
+	if definition == null or definition.school_id != &"cheonsul":
+		return false
+	if definition.core_monster_ids.size() != 3 or definition.core_monster_display_names.size() != 3:
+		return false
+	if definition.elite_id == &"" or definition.boss_id == &"" or definition.pattern_refs.is_empty():
+		return false
+	_encounter = {
+		"school_id": definition.school_id,
+		"core_monster_ids": definition.core_monster_ids.duplicate(),
+		"core_monster_display_names": definition.core_monster_display_names.duplicate(),
+		"elite_id": definition.elite_id,
+		"elite_display_name": definition.elite_display_name,
+		"boss_id": definition.boss_id,
+		"boss_display_name": definition.boss_display_name,
+		"pattern_refs": definition.pattern_refs.duplicate(),
+	}
+	_next_core_encounter_index = 0
+	return true
 
 
 func _connect_encounter_signals() -> void:

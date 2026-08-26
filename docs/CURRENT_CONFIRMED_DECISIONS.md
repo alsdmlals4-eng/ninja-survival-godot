@@ -4,7 +4,7 @@
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER
 updated_at: 2026-08-26 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
-current_completed_main: 71152c7aa9dff4cc05eec76d4d2d70be47755f6c
+current_completed_main: 33242876d1b930906416323076e0b55e79896ef7
 current_completed_main_resolution: GITHUB_DEFAULT_BRANCH_READBACK_2026_08_26_KST
 latest_product_canon: docs/canon/2026-08-21-dec014-025-product-canon.md
 latest_encounter_canon: docs/canon/2026-08-22-dec026-encounter-pattern-budget.md
@@ -231,7 +231,7 @@ T12's protected product outcome remains:
 - existing T02/T03/T04/T05/T06/T07/T08/T11 owners remain singular,
 - T13 presentation may not move transaction ownership into UI.
 
-T13 intentionally did not absorb MainController/T14 integration: it renders supplied snapshots, marks route/Fate choices as pending, sends intent signals, and presents coordinator/readiness failures in Korean. T14 now owns the real post-clear Workbench-session/encounter integration. The current T14 branch adds a Cheonsul-only lifecycle adapter (first-route commit, Elite → Trace → Boss gates, Boss-clear Workbench entry), existing runtime combat composition, read-only Boss-reward candidates, and pending route/Fate intents. It never auto-selects a reward, places an item, commits a Fate, or commits the next route. The current MainController does not yet expose board placement or Boss-reward selection controls; those remain a later Workbench interaction surface. Visual work must not modify, rebase, close, merge or absorb PR #49.
+T13 intentionally did not absorb MainController/T14 integration: it renders supplied snapshots, marks route/Fate choices as pending, sends intent signals, and presents coordinator/readiness failures in Korean. T14 now owns the real post-clear Workbench-session/encounter integration. The current T14 branch adds a Cheonsul-only lifecycle adapter (first-route commit, Elite → Trace → Boss gates, Boss-clear Workbench entry), existing runtime combat composition, active combat reward-orbs, read-only Boss-reward candidates, and pending route/Fate intents. `EncounterCatalog` is consumed as the single source for the three Core/Elite/Boss role IDs and display names of those existing representations; it does not make the catalog's fan/zone/mark primitive behaviors a newly verified runtime claim. The package never auto-selects a reward, places an item, commits a Fate, or commits the next route. The current MainController does not yet expose board placement or Boss-reward selection controls; those remain a later Workbench interaction surface. Visual work must not modify, rebase, close, merge or absorb PR #49.
 
 ## 10. Remaining production sequence
 

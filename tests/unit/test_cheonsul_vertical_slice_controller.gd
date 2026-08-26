@@ -1,3 +1,4 @@
+# 천술류 세로 슬라이스 도메인 계약을 검증한다.
 extends GutTest
 
 const CONTROLLER_PATH := "res://scripts/core/cheonsul_vertical_slice_controller.gd"
@@ -17,6 +18,22 @@ func test_first_school_commits_cheonsul_without_rest_commit() -> void:
 	assert_true(slice.begin_first_school())
 	assert_eq(slice.route_state.active_school_id(), &"cheonsul")
 	assert_eq(slice.route_state.cleared_school_ids(), [])
+
+
+func test_first_school_exposes_cheonsul_encounter_catalog_identity() -> void:
+	var controller_script = load(CONTROLLER_PATH)
+	assert_not_null(controller_script, "천술류 세로 슬라이스 조정자가 필요합니다.")
+	if controller_script == null:
+		return
+	var slice = controller_script.new()
+	add_child_autofree(slice)
+	assert_true(slice.begin_first_school())
+	var encounter: Dictionary = slice.get_snapshot().get("encounter", {})
+	assert_eq(encounter.get("school_id"), &"cheonsul")
+	assert_eq(encounter.get("core_monster_ids"), [&"fire_mark_caster", &"water_vein_caster", &"lightning_chain_caster"])
+	assert_eq(encounter.get("elite_id"), &"five_element_tuner")
+	assert_eq(encounter.get("boss_id"), &"heavenly_change_taoist")
+	assert_eq(encounter.get("pattern_refs"), [&"fan_or_arc_projectile", &"telegraphed_zone", &"mark_or_link"])
 
 
 func test_boss_request_requires_elite_trace_and_elapsed_time() -> void:

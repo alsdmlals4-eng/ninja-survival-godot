@@ -4,7 +4,7 @@
 
 **Goal:** 기존 T09~T13 도메인을 조립해 천술류 한 유파가 Elite, Trace, Boss, Workbench 미리보기까지 실제 상태로 진행되게 한다.
 
-**Architecture:** `CheonsulVerticalSliceController`는 `StageEncounterState`, `RunRouteState`, `RestRewardController`, `RestBackpackSession`, `RestCommitCoordinator`를 소유하지 않는 런타임 조정자다. `MainController`는 천술류 선택 때만 이를 구성하고, 기존 MVP-3 선택 경로는 바꾸지 않는다. Workbench는 실제 Boss 보상 대기 상태와 경로/Fate 임시 선택을 표시하되, 아직 없는 배낭 보드 UI를 자동화하지 않는다.
+**Architecture:** `CheonsulVerticalSliceController`는 기존 `StageEncounterState`, `RunRouteState`, `RestRewardController`, `RestBackpackSession`, `RestCommitCoordinator`를 조립하는 런타임 조정자이며, 각 도메인 규칙의 소유권은 이전하지 않는다. 또한 `EncounterCatalog`의 천술류 역할 식별자를 읽어 기존 일반 적·정예·보스 표현에만 연결한다. `MainController`는 천술류 선택 때만 이를 구성하고, 기존 MVP-3 선택 경로는 바꾸지 않는다. Workbench는 실제 Boss 보상 대기 상태와 경로/Fate 임시 선택을 표시하되, 아직 없는 배낭 보드 UI를 자동화하지 않는다.
 
 **Tech Stack:** Godot 4.x, GDScript, GUT, 현재 main의 Scene/Resource/Signal 구조.
 
@@ -29,7 +29,7 @@
 - Modify: `scripts/ui/rest_flow_ui.gd` — 실제 Boss 보상 대기와 배낭 미해결 사유를 Workbench에 읽기 쉬운 한국어로 표시.
 - Modify: `scenes/ui/rest_flow_ui.tscn` — 위 상태 문구를 위한 단일 읽기 전용 라벨.
 - Modify: `tests/integration/test_mvp3_rest_flow_ui.gd` — 보상 대기 상태와 기존 카드/입력 회귀.
-- Create: `tests/integration/test_cheonsul_vertical_slice_integration.gd` — MainController를 거치지 않는 통합 계약 및 Workbench 준비도.
+- Modify: `tests/integration/test_mvp3_stage_loop.gd` — MainController를 거치는 천술류 선택·보상 오브·Elite/Trace/Boss/Workbench 회귀 계약.
 - Modify: `docs/ACTIVE_CONTEXT.md`, `docs/CURRENT_CONFIRMED_DECISIONS.md` — PR 전에는 T14 구현 상태와 남은 Human QA를 정확히 기록.
 
 ### Task 1: 천술류 조정자의 실패 계약 작성
@@ -108,7 +108,7 @@ git commit -m "feat: add Cheonsul slice lifecycle adapter"
 **Files:**
 - Modify: `scripts/core/cheonsul_vertical_slice_controller.gd`
 - Modify: `tests/unit/test_cheonsul_vertical_slice_controller.gd`
-- Create: `tests/integration/test_cheonsul_vertical_slice_integration.gd`
+- Modify: `tests/integration/test_mvp3_stage_loop.gd`
 
 **Interfaces:**
 - Consumes: `RestBackpackSession`, `RestRewardController.begin_rest`, `RestRewardController.boss_reward_options`, `RunRouteState.mark_active_school_cleared`.
@@ -148,7 +148,7 @@ Expected: PASS; calling Boss completion out of order creates neither a cleared s
 - [x] **Step 5: Commit**
 
 ```bash
-git add scripts/core/cheonsul_vertical_slice_controller.gd tests/unit/test_cheonsul_vertical_slice_controller.gd tests/integration/test_cheonsul_vertical_slice_integration.gd
+git add scripts/core/cheonsul_vertical_slice_controller.gd tests/unit/test_cheonsul_vertical_slice_controller.gd tests/integration/test_mvp3_stage_loop.gd
 git commit -m "feat: connect Cheonsul boss reward to Workbench state"
 ```
 
@@ -156,7 +156,7 @@ git commit -m "feat: connect Cheonsul boss reward to Workbench state"
 
 **Files:**
 - Modify: `scripts/core/main_controller.gd`
-- Modify: `tests/integration/test_cheonsul_vertical_slice_integration.gd`
+- Modify: `tests/integration/test_mvp3_stage_loop.gd`
 
 **Interfaces:**
 - Consumes: Task 1/2 controller public API, existing `WaveSpawner`, `HUDController`, `RestFlowUI`.
@@ -180,7 +180,7 @@ func test_non_cheonsul_boss_still_uses_legacy_settlement() -> void:
 
 - [x] **Step 2: Run integration test to verify it fails**
 
-Run: `& $env:GODOT_CONSOLE --headless -s res://addons/gut/gut_cmdln.gd -gdir=res://tests/integration -ginclude_subdirs -gtest=test_cheonsul_vertical_slice_integration.gd -gexit`
+Run: `& $env:GODOT_CONSOLE --headless -s res://addons/gut/gut_cmdln.gd -gtest=res://tests/integration/test_mvp3_stage_loop.gd -gexit`
 
 Expected: FAIL because MainController has no slice branch.
 
@@ -197,7 +197,7 @@ Expected: PASS; non-Cheonsul regression test observes the original `StageFlow` p
 - [x] **Step 5: Commit**
 
 ```bash
-git add scripts/core/main_controller.gd tests/integration/test_cheonsul_vertical_slice_integration.gd
+git add scripts/core/main_controller.gd tests/integration/test_mvp3_stage_loop.gd
 git commit -m "feat: route Cheonsul combat through vertical slice"
 ```
 
@@ -208,7 +208,7 @@ git commit -m "feat: route Cheonsul combat through vertical slice"
 - Modify: `scripts/ui/rest_flow_ui.gd`
 - Modify: `scenes/ui/rest_flow_ui.tscn`
 - Modify: `tests/integration/test_mvp3_rest_flow_ui.gd`
-- Modify: `tests/integration/test_cheonsul_vertical_slice_integration.gd`
+- Modify: `tests/integration/test_mvp3_stage_loop.gd`
 
 **Interfaces:**
 - Consumes: Task 2 `workbench_snapshot()`, Task 3 phase signals, `RestFlowUI.show_workbench`.
@@ -246,7 +246,7 @@ Expected: PASS; T13 pointer/touch/focus tests continue to use standard Buttons a
 - [x] **Step 5: Commit**
 
 ```bash
-git add scripts/core/main_controller.gd scripts/ui/rest_flow_ui.gd scenes/ui/rest_flow_ui.tscn tests/integration/test_mvp3_rest_flow_ui.gd tests/integration/test_cheonsul_vertical_slice_integration.gd
+git add scripts/core/main_controller.gd scripts/ui/rest_flow_ui.gd scenes/ui/rest_flow_ui.tscn tests/integration/test_mvp3_rest_flow_ui.gd tests/integration/test_mvp3_stage_loop.gd
 git commit -m "feat: show Cheonsul Trace and Workbench readiness"
 ```
 
@@ -261,7 +261,7 @@ git commit -m "feat: show Cheonsul Trace and Workbench readiness"
 
 Mark only completed plan steps. Record the exact limited result: technical Cheonsul lifecycle/Workbench entry is implemented; Boss reward placement UI and human/device/export evaluation remain `NOT_RUN` or pending.
 
-- [ ] **Step 2: Run import, main-scene smoke, and complete GUT**
+- [x] **Step 2: Run import, main-scene smoke, and complete GUT**
 
 ```powershell
 & $env:GODOT_CONSOLE --headless --import --path .
@@ -270,9 +270,9 @@ Mark only completed plan steps. Record the exact limited result: technical Cheon
 & $env:GODOT_CONSOLE --headless -s res://addons/gut/gut_cmdln.gd -gdir=res://tests -ginclude_subdirs -gexit
 ```
 
-Expected: every command exits 0. Record exact test and assertion totals; do not call this human-play evidence.
+Observed 2026-08-26 KST: Godot 4.7.1 import, editor parse, and five-second main-scene smoke each exited `0`; full GUT passed `485/485` tests and `5301` assertions. This is not human-play evidence.
 
-- [ ] **Step 3: Perform the required adversarial passes**
+- [x] **Step 3: Perform the required adversarial passes**
 
 For five full passes inspect: first-school route exception, Boss gate, trace-before-Boss, Workbench no-auto-commit, non-Cheonsul MVP-3 regression, UI keyboard/pointer/touch contract, and documentation claims. Each valid finding requires a focused test, fix, regression, then the five-pass count restarts. Put the five clean pass headings in the PR description.
 
@@ -292,3 +292,12 @@ Do not modify PR #49. Create a fresh PR linked to GitHub Issue #65 from the T14 
 - Spec coverage: Tasks 1–3 cover route/lifecycle composition and Boss gating; Task 4 covers Trace/Workbench feedback; Task 5 records proof and deferred board interaction.
 - Placeholder scan: no `TBD`, `TODO`, vague test, or undefined later interface remains. `CheonsulSliceFixture` is local test setup and must be defined in Task 2's test file before use.
 - Type consistency: `workbench_snapshot()` supplies the optional final `show_workbench` context used only by Task 4; all earlier five-argument T13 calls remain source-compatible.
+- Runtime catalog boundary: this package binds `EncounterCatalog` role IDs/names to existing enemy representations; the catalog's fan/zone/mark primitive behaviors are not newly implemented or claimed as live pattern evidence here.
+
+## 2026-08-26 adversarial clean-pass lineage
+
+1. **첫 학교 경로 예외:** `test_cheonsul_vertical_slice_controller.gd`로 첫 임시 경로 확정이 T12 Rest commit을 우회해도 활성 학교만 만들고 clear order를 바꾸지 않음을 재검증했다. 깨끗함.
+2. **Elite/Trace/Boss 이중 게이트:** 같은 도메인 계약에서 시간만, Trace만, Elite만으로 Boss를 요청하지 못하고 명시 회수 뒤에만 경고/요청이 생김을 재검증했다. 깨끗함.
+3. **Workbench 원자 경계:** Boss-clear Workbench, 읽기 전용 보상 대기, Fate/경로 임시 의도 UI를 `test_cheonsul_vertical_slice_controller.gd`와 `test_mvp3_rest_flow_ui.gd`로 재공격했다. 보상 선택·배치·Fate·route 자동 커밋은 없음. 깨끗함.
+4. **MVP-3 회귀 및 보상 오브:** `test_mvp3_stage_loop.gd`로 비천술류 기존 stage flow와 천술류의 legacy-stage-flow-idle 보상 오브 활성 상태를 함께 재검증했다. 깨끗함.
+5. **카탈로그/문서 과장 방지:** `EncounterCatalog` preload·Core/Elite/Boss ID 메타 결합, 금지된 자동 보상/커밋 호출 부재, `NOT_RUN` 및 패턴 미구현 문구를 소스/문서 스캔으로 재검증했다. 깨끗함.

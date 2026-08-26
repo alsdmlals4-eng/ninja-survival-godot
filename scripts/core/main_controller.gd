@@ -18,6 +18,7 @@ const REST_FLOW_UI_SCENE = preload("res://scenes/ui/rest_flow_ui.tscn")
 const CHEONSUL_SLICE_SCRIPT = preload("res://scripts/core/cheonsul_vertical_slice_controller.gd")
 
 const CHEONSUL_SLICE_ROLE_META := &"cheonsul_slice_role"
+const CHEONSUL_ENCOUNTER_ID_META := &"cheonsul_encounter_id"
 const CHEONSUL_ELITE_ROLE := &"elite"
 const CHEONSUL_BOSS_ROLE := &"boss"
 
@@ -222,6 +223,9 @@ func _start_cheonsul_vertical_slice() -> bool:
 		cheonsul_slice.queue_free()
 		cheonsul_slice = null
 		return false
+	for child in get_children():
+		if child.is_in_group("enemies") and not child.has_meta(CHEONSUL_SLICE_ROLE_META):
+			_wire_enemy(child)
 	_cheonsul_elapsed_seconds = 0.0
 	hud.set_stage(1, 4)
 	hud.set_stage_time(270.0)
@@ -243,7 +247,7 @@ func _process(delta: float) -> void:
 func _on_cheonsul_slice_phase_changed(phase: StringName) -> void:
 	match phase:
 		&"elite_warning":
-			hud.show_school_feedback("정예 경고: 오행 조율사가 접근합니다.")
+			hud.show_school_feedback("정예 경고: %s가 접근합니다." % _cheonsul_encounter_name("elite_display_name", "정예"))
 		&"elite_active":
 			hud.show_school_feedback("정예: 두 원소 준비 뒤 반응을 노리세요.")
 			_spawn_cheonsul_elite()
@@ -252,7 +256,7 @@ func _on_cheonsul_slice_phase_changed(phase: StringName) -> void:
 		&"trace_recovered":
 			hud.show_school_feedback("흔적 회수 완료. 보스 게이트를 확인합니다.")
 		&"boss_warning":
-			hud.show_school_feedback("보스 경고: 천변도사가 다가옵니다.")
+			hud.show_school_feedback("보스 경고: %s가 다가옵니다." % _cheonsul_encounter_name("boss_display_name", "보스"))
 		&"boss_active":
 			hud.show_school_feedback("보스: 준비한 원소 반응을 연결하세요.")
 
@@ -277,6 +281,7 @@ func _spawn_cheonsul_elite() -> void:
 	if elite is Node2D:
 		(elite as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
 	elite.set_meta(CHEONSUL_SLICE_ROLE_META, CHEONSUL_ELITE_ROLE)
+	elite.set_meta(CHEONSUL_ENCOUNTER_ID_META, _cheonsul_encounter_id("elite_id"))
 	_wire_enemy(elite)
 
 
@@ -295,6 +300,7 @@ func _on_cheonsul_boss_spawn_requested() -> void:
 	if boss_node is Node2D:
 		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
 	boss_node.set_meta(CHEONSUL_SLICE_ROLE_META, CHEONSUL_BOSS_ROLE)
+	boss_node.set_meta(CHEONSUL_ENCOUNTER_ID_META, _cheonsul_encounter_id("boss_id"))
 	_wire_enemy(boss_node)
 
 
@@ -448,8 +454,19 @@ func _spawn_reward_orb(spawn_position: Vector2) -> void:
 	orb.global_position = spawn_position
 	orb.configure(player)
 	orb.collected.connect(_on_reward_collected)
-	if stage_flow.phase != StageFlowController.Phase.COMBAT and stage_flow.phase != StageFlowController.Phase.BOSS:
+	if not _is_reward_orb_combat_active():
 		orb.process_mode = Node.PROCESS_MODE_DISABLED
+
+
+func _is_reward_orb_combat_active() -> bool:
+	if stage_flow.phase == StageFlowController.Phase.COMBAT or stage_flow.phase == StageFlowController.Phase.BOSS:
+		return true
+	if cheonsul_slice == null:
+		return false
+	return cheonsul_slice.get_snapshot().get("state", &"") in [
+		&"core", &"elite_warning", &"elite_active", &"trace_available",
+		&"trace_recovered", &"boss_warning", &"boss_active",
+	]
 
 
 func _on_reward_collected(_orb: RewardOrb) -> void:
@@ -461,10 +478,29 @@ func _on_reward_collected(_orb: RewardOrb) -> void:
 func _wire_enemy(enemy: Node) -> void:
 	if enemy.has_method("set_target"):
 		enemy.set_target(player)
+	if cheonsul_slice != null and enemy.is_in_group("enemies") and not enemy.has_meta(CHEONSUL_SLICE_ROLE_META):
+		var encounter := cheonsul_slice.next_core_encounter()
+		var encounter_id := StringName(encounter.get("id", &""))
+		if encounter_id != &"":
+			enemy.set_meta(CHEONSUL_ENCOUNTER_ID_META, encounter_id)
 	if enemy.has_signal("died"):
 		var death_callback := Callable(self, "_on_enemy_died")
 		if not enemy.is_connected("died", death_callback):
 			enemy.connect("died", death_callback)
+
+
+func _cheonsul_encounter_id(key: String) -> StringName:
+	if cheonsul_slice == null:
+		return &""
+	var encounter: Dictionary = cheonsul_slice.get_snapshot().get("encounter", {})
+	return StringName(encounter.get(key, &""))
+
+
+func _cheonsul_encounter_name(key: String, fallback: String) -> String:
+	if cheonsul_slice == null:
+		return fallback
+	var encounter: Dictionary = cheonsul_slice.get_snapshot().get("encounter", {})
+	return str(encounter.get(key, fallback))
 
 
 func _on_player_damage_resolved(_requested: int, _resolved: int, prevented: int, _evaded: bool) -> void:
