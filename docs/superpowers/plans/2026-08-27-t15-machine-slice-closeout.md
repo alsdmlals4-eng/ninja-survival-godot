@@ -30,15 +30,15 @@
 - Consumes: current-main T14 route, actual four school runtime mechanics, approved Visual Bible, and T15 protocol.
 - Produces: a bounded `READY_FOR_SINGLE_CODEX_WINDOW` packet for existing help implementation and `HUMAN_QA_DEFERRED_BY_CURRENT_USER` evidence status.
 
-- [ ] **Step 1: Record the actual player outcome and explicit exclusions.**
+- [x] **Step 1: Record the actual player outcome and explicit exclusions.**
 
 Set the player outcome to reading one selected school's current mechanics before committing a starting-school selection. Exclude new assets/audio, school behavior changes, and all Workbench completion behavior.
 
-- [ ] **Step 2: Record runtime text, input, data, and validation contracts.**
+- [x] **Step 2: Record runtime text, input, data, and validation contracts.**
 
 Require `SchoolSelectionUI` to remain the selection authority, help data to mirror current runtime only, modal state to block selection, and `닫기`/`ui_cancel` to restore opener focus. Name focused and complete GUT, import, parse, smoke, CI, and attempted Hera routes.
 
-- [ ] **Step 3: Preserve the Human evidence boundary.**
+- [x] **Step 3: Preserve the Human evidence boundary.**
 
 Replace the old direct-session blocker only with `HUMAN_QA_DEFERRED_BY_CURRENT_USER`; keep every participant and physical-touch result `NOT_RUN`.
 
@@ -51,11 +51,11 @@ Replace the old direct-session blocker only with `HUMAN_QA_DEFERRED_BY_CURRENT_U
 - Consumes: PR #69 exact head and `gut` GitHub check.
 - Produces: exact-head evidence that does not borrow a different SHA's result.
 
-- [ ] **Step 1: Verify PR identity, base/head, mergeability, checks, review threads, and protected-scope drift.**
+- [x] **Step 1: Verify PR identity, base/head, mergeability, checks, review threads, and protected-scope drift.**
 
 Require base `25e2bf3a5ecd026f56428e75f18389da2c430c40`, exact reviewed head, one completed successful `gut` check, no unresolved review decision, and no changed path outside the six scope files plus the Work Packet/closeout documentation.
 
-- [ ] **Step 2: Re-run current-head machine gates.**
+- [x] **Step 2: Re-run current-head machine gates.**
 
 Run Godot 4.7.1 import, editor parse, five-second main-scene smoke, focused `test_school_selection_ui.gd`, and complete GUT. If Hera does not expose this exact project editor, record `LIVE_HERA_NOT_CONNECTED` without substituting another project session.
 
@@ -68,23 +68,23 @@ Run Godot 4.7.1 import, editor parse, five-second main-scene smoke, focused `tes
 - Consumes: complete diff, source authority, runtime mechanics, tests, PR, and Notion records.
 - Produces: five documented whole-state re-attacks with no uncorrected blocker.
 
-- [ ] **Step 1: Attack scope and authority drift.**
+- [x] **Step 1: Attack scope and authority drift.**
 
 Confirm no selection signal, route, Fate, combat modifier, asset, or PR #49 authority moved into help UI.
 
-- [ ] **Step 2: Attack false mechanic claims.**
+- [x] **Step 2: Attack false mechanic claims.**
 
 Compare every help sentence with the four current runtime owners and reject any future pattern, auto-commit, or non-runtime claim.
 
-- [ ] **Step 3: Attack all input paths.**
+- [x] **Step 3: Attack all input paths.**
 
 Check help open, direct selection-button activation behind modal, number selection, `ui_cancel`, close button, and opener focus restoration.
 
-- [ ] **Step 4: Attack evidence and documentation claims.**
+- [x] **Step 4: Attack evidence and documentation claims.**
 
 Verify counts, SHAs, PR status, CI result, Notion handoff, and Human/Player/Hera ceilings independently.
 
-- [ ] **Step 5: Recalculate remaining machine-executable work.**
+- [x] **Step 5: Recalculate remaining machine-executable work.**
 
 Correct any validated finding and restart this Task's five-loop review count; otherwise record clean exit.
 
@@ -131,3 +131,11 @@ List Human/Player/physical touch/device/export and live-Hera as `NOT_RUN` or def
 - Spec coverage: Task 1 closes Work inputs; Task 2 establishes exact-head evidence; Task 3 executes the required five full re-attacks; Task 4 safely integrates current-task work; Task 5 supplies the requested runnable validation handoff.
 - Placeholder scan: no undefined product owner, success condition, input, implementation path, or evidence class is used.
 - Type consistency: the plan preserves the existing `SchoolSelectionUI.school_selected(school_id: StringName)` interface and names only existing runtime/test owners.
+
+## Machine closeout review record
+
+- Scope/authority loop: clean. The diff keeps `SchoolSelectionUI` as the only selection emitter and does not touch route, Fate, combat modifiers, assets, or PR #49.
+- Runtime-claim loop: clean. Each help sentence was compared with `BongmaRuntime`, `CheonsulRuntime`, `GuiinRuntime`, and `HeukyeongRuntime`; no future encounter/pattern or auto-commit claim remains.
+- Input loop: clean after the already completed RED → GREEN correction. Focused tests cover help open, direct button and numeric selection blocking, cancel/close, and focus return.
+- Evidence loop: clean. PR head `349ddf1f51f5f61897b73df1ddde19eb4ab82ef1` had a successful exact-head GitHub `gut` check; local import, editor parse, five-second main smoke, focused GUT `8/8` / `38`, and CI-scope full GUT `488/488` / `5321` passed. `LIVE_HERA_NOT_CONNECTED`, Human, Player Experience, touch, device/export remain unpromoted.
+- Remaining-work loop: no machine-executable feature defect remains before merge. The post-merge receipt, repository/Notion readback, and user validation packet remain Tasks 4–5, so this is not a completion claim.
