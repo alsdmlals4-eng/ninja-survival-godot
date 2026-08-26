@@ -34,11 +34,11 @@ the pixels. The v2 derivatives have real alpha and meet the source-level
 transparent-background requirement. They remain source records, not evidence
 of a Godot import or of runtime behavior.
 
-IMG-01 wiring is currently in unmerged [PR #59](https://github.com/alsdmlals4-eng/ninja-survival-godot/pull/59)
-at `394c0e3592495a3834e64ee32d51d13a34add914`. It imports only the v2
-derivatives, wires the intended `Player/Visual` consumer, and has exact-head
-Godot 4.7.1 import, main-scene smoke, and full GUT evidence in
-[workflow 32969670717](https://github.com/alsdmlals4-eng/ninja-survival-godot/actions/runs/32969670717).
+IMG-01 wiring is currently in unmerged [PR #59](https://github.com/alsdmlals4-eng/ninja-survival-godot/pull/59).
+It imports only the v2 derivatives, wires the intended `Player/Visual`
+consumer, and has an exact-head PR check covering Godot 4.7.1 import,
+main-scene smoke, and full GUT. Resolve the live PR check before using this
+receipt as a current-head reference.
 
 This is not live runtime evidence. `RUNTIME_VERIFIED`, Human Usability,
 Player Experience, device, and export remain **NOT_RUN** until the Ninja

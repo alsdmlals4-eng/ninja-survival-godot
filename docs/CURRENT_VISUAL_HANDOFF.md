@@ -27,14 +27,15 @@ and dual-storage gate.
 - Fresh Issue [#58](https://github.com/alsdmlals4-eng/ninja-survival-godot/issues/58)
   branch: `codex/img-01-runtime-visuals-58`, based on merged `main`
   `c9956130ec0631603cc4bd03b619795917874bc7`.
-- Exact PR head: `394c0e3592495a3834e64ee32d51d13a34add914`.
+- Current PR head: resolve it from the live [PR #59](https://github.com/alsdmlals4-eng/ninja-survival-godot/pull/59)
+  before relying on this receipt; the PR check is the exact-head authority.
 - `Player/Visual` now consumes only these three v2 sources as a `Sprite2D` at
   `Vector2(0.05, 0.05)`. Move is default; Attack is a visual-only relay from
   a selected school's non-zero resolved action; Hit is a visual-only response
   to non-zero, non-evaded Player damage. Legacy AutoAttack stays disabled.
-- Exact-head [GUT workflow 32969670717](https://github.com/alsdmlals4-eng/ninja-survival-godot/actions/runs/32969670717)
-  passed Base manifest, Godot 4.7.1 import, main-scene smoke, and full GUT:
-  456/456 tests, 5032 assertions.
+- The exact-head GUT check on PR #59 passed Base manifest, Godot 4.7.1 import,
+  main-scene smoke, and full GUT: 456/456 tests, 5032 assertions. Do not
+  promote this to live runtime evidence.
 - Evidence ceiling: source/static/import/smoke/GUT are PASS on the unmerged
   PR head. Live runtime rendering/input, Human Usability, Player Experience,
   device, and export are **NOT_RUN**. PR #49 remains read-only.
