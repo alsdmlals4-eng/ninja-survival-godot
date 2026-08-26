@@ -26,6 +26,7 @@ var _backpack_session: RestBackpackSession
 var _reward_controller: RestRewardController
 var _commit_coordinator: RestCommitCoordinator
 var _access_state: TraditionAccessState
+var _item_defs: Dictionary = {}
 var _chest_token_count: int = 0
 var _workbench_configured: bool = false
 var _workbench_started: bool = false
@@ -82,6 +83,7 @@ func configure_workbench(
 		return false
 	_build_state = build_state
 	_fate_controller = fate_controller
+	_item_defs = item_defs.duplicate()
 	_workbench_configured = true
 	return true
 
@@ -123,6 +125,7 @@ func workbench_snapshot() -> Dictionary:
 		"pending_fate_id": _fate_controller.pending_fate_id(),
 		"boss_reward_pending": _reward_controller.has_pending_boss_reward(),
 		"boss_reward_options": _reward_controller.boss_reward_options(),
+		"boss_reward_labels": _boss_reward_labels(),
 		"boss_reward_lane_ids": _reward_controller.boss_reward_lane_ids(),
 		"chest_count": _reward_controller.chest_count(),
 		"readiness_failures": _commit_coordinator.commit_failures(
@@ -130,6 +133,16 @@ func workbench_snapshot() -> Dictionary:
 			_reward_controller.has_pending_boss_reward()
 		),
 	}
+
+
+func _boss_reward_labels() -> Array[String]:
+	var labels: Array[String] = []
+	if _reward_controller == null:
+		return labels
+	for item_id in _reward_controller.boss_reward_options():
+		var definition = _item_defs.get(item_id)
+		labels.append(str(item_id) if definition == null else str(definition.display_name))
+	return labels
 
 
 func get_snapshot() -> Dictionary:

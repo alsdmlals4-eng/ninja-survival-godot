@@ -273,6 +273,33 @@ func test_workbench_explains_every_current_commit_failure_code() -> void:
 	assert_true(ui.get_node("Panel/Margin/Content/WorkbenchView/CommitButton").disabled)
 
 
+func test_workbench_shows_pending_boss_reward_without_enabling_commit() -> void:
+	var ui = _new_ui()
+	if ui == null:
+		return
+	var catalog = load(CATALOG_PATH)
+	var candidates: Array[StringName] = [&"guardian_path"]
+	var failures: Array[StringName] = [&"boss_reward_pending"]
+	ui.show_workbench(
+		{
+			"unvisited_school_ids": [&"bongma"],
+			"provisional_school_id": &"bongma",
+		},
+		candidates,
+		catalog.build_fates(),
+		&"guardian_path",
+		failures,
+		{
+			"boss_reward_pending": true,
+			"boss_reward_labels": ["수둔", "뇌둔", "화둔"],
+		}
+	)
+	var reward_label: Label = ui.get_node("Panel/Margin/Content/WorkbenchView/RewardStatusLabel")
+	assert_true(reward_label.text.contains("보스 보상"))
+	assert_true(reward_label.text.contains("수둔"))
+	assert_true(ui.get_node("Panel/Margin/Content/WorkbenchView/CommitButton").disabled)
+
+
 func test_workbench_standard_pointer_touch_and_focus_input_emit_intents() -> void:
 	get_viewport().size = Vector2i(1152, 648)
 	var ui = _new_ui()
