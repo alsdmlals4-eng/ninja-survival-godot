@@ -69,9 +69,11 @@ func test_flame_cast_hits_radius_and_burn_ticks_once_per_second() -> void:
 	var near_enemy = _enemy(runtime.world, Vector2(40, 0))
 	var far_enemy = _enemy(runtime.world, Vector2(140, 0))
 
+	watch_signals(runtime)
 	assert_eq(runtime.apply_flame_cast(Vector2.ZERO), 1)
 	assert_eq(near_enemy.health, 94)
 	assert_eq(far_enemy.health, 100)
+	assert_signal_emitted(runtime, "player_action_resolved")
 	assert_true(runtime.has_status(near_enemy, &"burn"))
 	runtime._cast_remaining = 999.0
 

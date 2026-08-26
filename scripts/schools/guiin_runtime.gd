@@ -81,6 +81,7 @@ func perform_melee_pulse() -> int:
 		hit_count += 1
 	if hit_count > 0:
 		_gain_gwihyeol(HIT_GWIHYEOL * float(hit_count))
+		emit_player_action_resolved()
 	return hit_count
 
 

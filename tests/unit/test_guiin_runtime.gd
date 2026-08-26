@@ -103,10 +103,12 @@ func test_melee_pulse_hits_only_enemies_inside_current_radius_and_gains_four_eac
 	var edge_enemy = _enemy(runtime.world, Vector2(80, 0))
 	var far_enemy = _enemy(runtime.world, Vector2(81, 0))
 
+	watch_signals(runtime)
 	assert_eq(runtime.perform_melee_pulse(), 2)
 	assert_eq(near_enemy.health, 90)
 	assert_eq(edge_enemy.health, 90)
 	assert_eq(far_enemy.health, 100)
+	assert_signal_emitted(runtime, "player_action_resolved")
 	assert_almost_eq(runtime.gwihyeol, 8.0, 0.001)
 	assert_almost_eq(runtime.time_since_gain, 0.0, 0.001)
 

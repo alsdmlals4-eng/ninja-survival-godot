@@ -101,6 +101,7 @@ func apply_needle_hit(enemy: Node2D, force_critical: Variant = null) -> bool:
 	var actual_damage := _deal_damage(enemy, float(BASE_DAMAGE), &"normal", multiplier)
 	if actual_damage <= 0:
 		return is_critical
+	emit_player_action_resolved()
 
 	if not _is_valid_enemy(enemy):
 		_remove_mark_state(enemy.get_instance_id())

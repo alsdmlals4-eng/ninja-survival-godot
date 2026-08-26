@@ -148,6 +148,9 @@ func _spawn_familiar(node_name: String) -> BongmaFamiliar:
 	familiar.global_position = player.global_position + Vector2(48.0, 0.0)
 	familiar.configure(player, BASE_ATTACK_INTERVAL, FAMILIAR_DAMAGE, combat_resolver)
 	familiar.set_damage_kind(&"ultimate" if ultimate_time_remaining > 0.0 else &"normal")
+	var action_callback := Callable(self, "emit_player_action_resolved")
+	if not familiar.attack_resolved.is_connected(action_callback):
+		familiar.attack_resolved.connect(action_callback)
 	return familiar
 
 

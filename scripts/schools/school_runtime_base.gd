@@ -4,6 +4,7 @@ class_name SchoolRuntimeBase
 signal resource_changed(label: String, current: float, maximum: float)
 signal ultimate_ready_changed(ready: bool)
 signal school_feedback(text: String)
+signal player_action_resolved
 
 var player: PlayerController
 var world: Node2D
@@ -50,3 +51,7 @@ func try_use_ultimate() -> bool:
 
 func is_ultimate_ready() -> bool:
 	return false
+
+
+func emit_player_action_resolved() -> void:
+	player_action_resolved.emit()

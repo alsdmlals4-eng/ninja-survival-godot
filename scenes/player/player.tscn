@@ -1,8 +1,12 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/player/player_controller.gd" id="1_player"]
 [ext_resource type="Script" path="res://scripts/combat/auto_attack_controller.gd" id="2_attack"]
 [ext_resource type="PackedScene" path="res://scenes/projectiles/projectile_basic.tscn" id="3_projectile"]
+[ext_resource type="Texture2D" path="res://docs/assets/approved/img-01-player-runtime-core/player_runtime_move_v2_alpha.png" id="4_move"]
+[ext_resource type="Texture2D" path="res://docs/assets/approved/img-01-player-runtime-core/player_runtime_attack_v2_alpha.png" id="5_attack"]
+[ext_resource type="Texture2D" path="res://docs/assets/approved/img-01-player-runtime-core/player_runtime_hit_v2_alpha.png" id="6_hit"]
+[ext_resource type="Script" path="res://scripts/player/player_visual_controller.gd" id="7_visual"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 14.0
@@ -15,9 +19,13 @@ script = ExtResource("1_player")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_player")
 
-[node name="Visual" type="Polygon2D" parent="."]
-polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
-color = Color(0.25, 0.75, 1, 1)
+[node name="Visual" type="Sprite2D" parent="."]
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("4_move")
+script = ExtResource("7_visual")
+move_texture = ExtResource("4_move")
+attack_texture = ExtResource("5_attack")
+hit_texture = ExtResource("6_hit")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 enabled = true

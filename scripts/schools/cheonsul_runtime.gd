@@ -71,10 +71,12 @@ func apply_flame_cast(center: Vector2) -> int:
 
 	_spawn_field_visual(center)
 	var hit_enemies: Array[Node2D] = []
+	var resolved_damage := false
 	for enemy in _valid_enemies():
 		if enemy.global_position.distance_squared_to(center) > FLAME_RADIUS * FLAME_RADIUS:
 			continue
-		_deal_damage(enemy, FLAME_DAMAGE)
+		if _deal_damage(enemy, FLAME_DAMAGE) > 0:
+			resolved_damage = true
 		hit_enemies.append(enemy)
 		if enemy.has_method("is_dead") and enemy.is_dead():
 			continue
@@ -92,6 +94,8 @@ func apply_flame_cast(center: Vector2) -> int:
 		apply_token(enemy, token)
 
 	_next_token = &"shock" if token == &"wet" else &"wet"
+	if resolved_damage:
+		emit_player_action_resolved()
 	return hit_enemies.size()
 
 

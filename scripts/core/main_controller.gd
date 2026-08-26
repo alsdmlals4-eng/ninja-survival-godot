@@ -34,6 +34,7 @@ var _latest_result_snapshot: Dictionary = {}
 @onready var game_state: GameState = $GameState
 @onready var combat_ddd: CombatDDDTracker = $CombatDDD
 @onready var player: PlayerController = $Player
+@onready var player_visual: PlayerVisualController = $Player/Visual
 @onready var auto_attack: AutoAttackController = $Player/AutoAttack
 @onready var wave_spawner: WaveSpawner = $WaveSpawner
 @onready var school_host: SchoolRuntimeHost = $SchoolRuntimeHost
@@ -118,6 +119,7 @@ func _connect_existing_signals() -> void:
 	school_host.resource_changed.connect(hud.set_school_resource)
 	school_host.ultimate_ready_changed.connect(hud.set_ultimate_ready)
 	school_host.school_feedback.connect(hud.show_school_feedback)
+	school_host.player_action_resolved.connect(player_visual.show_attack)
 	hud.restart_requested.connect(_restart_run)
 
 
@@ -304,8 +306,10 @@ func _wire_enemy(enemy: Node) -> void:
 			enemy.connect("died", death_callback)
 
 
-func _on_player_damage_resolved(_requested: int, _resolved: int, prevented: int, _evaded: bool) -> void:
+func _on_player_damage_resolved(_requested: int, resolved: int, prevented: int, _evaded: bool) -> void:
 	contribution_tracker.record_defense(prevented)
+	if resolved > 0:
+		player_visual.show_hit()
 
 
 func _on_result_continue_requested() -> void:

@@ -70,9 +70,11 @@ func test_normal_and_critical_hits_apply_exact_damage_and_marks() -> void:
 	if runtime == null:
 		return
 	var enemy = _enemy(runtime.world, Vector2.ZERO)
+	watch_signals(runtime)
 	assert_false(runtime.apply_needle_hit(enemy, false))
 	assert_eq(enemy.health, 94)
 	assert_eq(runtime.get_mark_count(enemy), 1)
+	assert_signal_emitted(runtime, "player_action_resolved")
 	assert_true(runtime.apply_needle_hit(enemy, true))
 	assert_eq(enemy.health, 66)
 	assert_eq(runtime.get_mark_count(enemy), 0)

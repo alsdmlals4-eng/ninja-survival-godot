@@ -28,10 +28,12 @@ func test_attack_once_damages_nearest_valid_enemy() -> void:
 	far_enemy.global_position = Vector2(80, 0)
 	world.add_child(far_enemy)
 
+	watch_signals(familiar)
 	var hit = familiar.attack_once()
 	assert_eq(hit, near_enemy)
 	assert_eq(near_enemy.health, 12)
 	assert_eq(far_enemy.health, 20)
+	assert_signal_emitted(familiar, "attack_resolved")
 
 
 func test_familiar_uses_combat_resolver_for_actual_modified_damage() -> void:
