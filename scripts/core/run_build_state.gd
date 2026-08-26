@@ -104,8 +104,12 @@ func sell_item(item_id: StringName) -> bool:
 	return true
 
 
+func can_select_fate(fate_id: StringName) -> bool:
+	return _fate_defs.has(fate_id) and not has_fate(fate_id)
+
+
 func select_fate(fate_id: StringName) -> bool:
-	if not _fate_defs.has(fate_id) or has_fate(fate_id):
+	if not can_select_fate(fate_id):
 		return false
 	selected_fates.append(fate_id)
 	_recompute_modifiers()
