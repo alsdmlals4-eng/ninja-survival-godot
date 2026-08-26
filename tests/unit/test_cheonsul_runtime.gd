@@ -83,6 +83,15 @@ func test_flame_cast_hits_radius_and_burn_ticks_once_per_second() -> void:
 	assert_eq(near_enemy.health, 90)
 
 
+func test_flame_cast_without_a_target_does_not_emit_player_action() -> void:
+	var runtime = _make_runtime()
+	if runtime == null:
+		return
+	watch_signals(runtime)
+	assert_eq(runtime.apply_flame_cast(Vector2(9999, 9999)), 0)
+	assert_signal_not_emitted(runtime, "player_action_resolved")
+
+
 func test_same_token_refreshes_four_second_duration() -> void:
 	var runtime = _make_runtime()
 	if runtime == null:

@@ -1,6 +1,7 @@
 extends GutTest
 
 const VISUAL_PATH := "res://scripts/player/player_visual_controller.gd"
+const PLAYER_PATH := "res://scripts/player/player_controller.gd"
 
 
 func _make_visual():
@@ -44,4 +45,19 @@ func test_attack_does_not_replace_an_active_hit_pose() -> void:
 		return
 	visual.show_hit()
 	visual.show_attack()
+	assert_eq(visual.current_pose(), visual.Pose.HIT)
+
+
+func test_parent_resolved_damage_shows_hit_but_evaded_damage_does_not() -> void:
+	var player = load(PLAYER_PATH).new()
+	add_child_autofree(player)
+	var visual = load(VISUAL_PATH).new()
+	visual.move_texture = GradientTexture2D.new()
+	visual.attack_texture = GradientTexture2D.new()
+	visual.hit_texture = GradientTexture2D.new()
+	player.add_child(visual)
+
+	player.damage_resolved.emit(10, 0, 10, true)
+	assert_eq(visual.current_pose(), visual.Pose.MOVE)
+	player.take_damage(1)
 	assert_eq(visual.current_pose(), visual.Pose.HIT)

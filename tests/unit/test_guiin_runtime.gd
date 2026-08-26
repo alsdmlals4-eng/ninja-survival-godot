@@ -138,8 +138,10 @@ func test_only_actual_damage_counts_as_hit_and_resource_gain() -> void:
 	var immune := ImmuneEnemy.new()
 	immune.global_position = Vector2(20, 0)
 	runtime.world.add_child(immune)
+	watch_signals(runtime)
 	assert_eq(runtime.perform_melee_pulse(), 0)
 	assert_almost_eq(runtime.gwihyeol, 0.0, 0.001)
+	assert_signal_not_emitted(runtime, "player_action_resolved")
 
 
 func test_school_damage_modifier_is_applied_once_after_local_guiin_math() -> void:
