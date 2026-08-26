@@ -22,11 +22,15 @@ func test_rest_flow_has_all_state_views_methods_and_intent_signals() -> void:
 		"Panel/Margin/Content/ResultView",
 		"Panel/Margin/Content/ShopView",
 		"Panel/Margin/Content/FateView",
+		"Panel/Margin/Content/WorkbenchView",
 		"Panel/Margin/Content/PreviewView",
 		"Panel/Margin/Content/CompleteView",
+		"Panel/Margin/Content/WorkbenchView/RouteCards",
+		"Panel/Margin/Content/WorkbenchView/FateCandidates",
+		"Panel/Margin/Content/WorkbenchView/CommitButton",
 	]:
 		assert_true(ui.has_node(path), "Missing rest view: %s" % path)
-	for method_name in ["show_result", "show_shop", "show_fate", "show_preview", "show_complete", "hide_all"]:
+	for method_name in ["show_result", "show_shop", "show_fate", "show_workbench", "show_preview", "show_complete", "hide_all"]:
 		assert_true(ui.has_method(method_name), "Missing RestFlowUI method: %s" % method_name)
 	for signal_name in [
 		"result_continue_requested",
@@ -35,6 +39,8 @@ func test_rest_flow_has_all_state_views_methods_and_intent_signals() -> void:
 		"shop_reroll_requested",
 		"shop_continue_requested",
 		"fate_selected_requested",
+		"workbench_route_selected_requested",
+		"workbench_commit_requested",
 		"preview_start_requested",
 		"restart_requested",
 	]:
@@ -119,6 +125,238 @@ func test_fate_view_shows_three_benefit_cost_cards_and_has_no_skip() -> void:
 	assert_eq(emitted, [["fate", &"seal_path"]])
 
 
+func test_workbench_renders_only_unvisited_routes_and_emits_intents() -> void:
+	var ui = _new_ui()
+	if ui == null:
+		return
+	ui.workbench_route_selected_requested.connect(func(school_id: StringName): emitted.append(["route", school_id]))
+	ui.fate_selected_requested.connect(func(fate_id: StringName): emitted.append(["fate", fate_id]))
+	ui.workbench_commit_requested.connect(func(): emitted.append(["commit"]))
+	var catalog = load(CATALOG_PATH)
+	var fates: Dictionary = catalog.build_fates()
+	var unvisited: Array[StringName] = [&"cheonsul", &"guiin"]
+	var candidates: Array[StringName] = [&"slaughter_path", &"guardian_path"]
+	var readiness_failures: Array[StringName] = []
+	ui.show_workbench(
+		{
+			"unvisited_school_ids": unvisited,
+			"provisional_school_id": &"guiin",
+		},
+		candidates,
+		fates,
+		&"guardian_path",
+		readiness_failures
+	)
+
+	var route_cards = ui.get_node("Panel/Margin/Content/WorkbenchView/RouteCards")
+	var fate_cards = ui.get_node("Panel/Margin/Content/WorkbenchView/FateCandidates")
+	var commit_button = ui.get_node("Panel/Margin/Content/WorkbenchView/CommitButton")
+	assert_true(ui.get_node("Panel/Margin/Content/WorkbenchView").visible)
+	assert_eq(route_cards.get_child_count(), 2)
+	assert_eq(fate_cards.get_child_count(), 2)
+	assert_true(route_cards.get_child(1).text.contains("임시 선택"))
+	assert_false(route_cards.get_child(0).text.contains("HP"))
+	assert_false(commit_button.disabled)
+	for button in route_cards.get_children() + fate_cards.get_children():
+		assert_ne(button.focus_mode, Control.FOCUS_NONE)
+
+	route_cards.get_child(0).emit_signal("pressed")
+	fate_cards.get_child(1).emit_signal("pressed")
+	commit_button.emit_signal("pressed")
+	assert_eq(emitted, [["route", &"cheonsul"], ["fate", &"guardian_path"], ["commit"]])
+
+
+func test_workbench_fails_closed_for_unknown_duplicate_and_incomplete_inputs() -> void:
+	var ui = _new_ui()
+	if ui == null:
+		return
+	ui.workbench_route_selected_requested.connect(func(school_id: StringName): emitted.append(["route", school_id]))
+	ui.workbench_commit_requested.connect(func(): emitted.append(["commit"]))
+	var catalog = load(CATALOG_PATH)
+	var fates: Dictionary = catalog.build_fates()
+	var duplicate_routes: Array[StringName] = [&"cheonsul", &"cheonsul", &"unknown"]
+	var candidates: Array[StringName] = [&"seal_path", &"seal_path"]
+	var readiness_failures: Array[StringName] = [&"session_rebound"]
+	ui.show_workbench(
+		{
+			"unvisited_school_ids": duplicate_routes,
+			"provisional_school_id": &"cheonsul",
+		},
+		candidates,
+		fates,
+		&"seal_path",
+		readiness_failures
+	)
+
+	var route_cards = ui.get_node("Panel/Margin/Content/WorkbenchView/RouteCards")
+	var fate_cards = ui.get_node("Panel/Margin/Content/WorkbenchView/FateCandidates")
+	var commit_button = ui.get_node("Panel/Margin/Content/WorkbenchView/CommitButton")
+	assert_eq(route_cards.get_child_count(), 1)
+	assert_eq(fate_cards.get_child_count(), 1)
+	assert_true(commit_button.disabled)
+	commit_button.emit_signal("pressed")
+	assert_eq(emitted, [])
+
+	var only_guiin: Array[StringName] = [&"guiin"]
+	var no_candidates: Array[StringName] = []
+	var no_failures: Array[StringName] = []
+	ui.show_workbench(
+		{
+			"unvisited_school_ids": only_guiin,
+			"provisional_school_id": &"",
+		},
+		no_candidates,
+		fates,
+		&"",
+		no_failures
+	)
+	assert_eq(route_cards.get_child_count(), 1)
+	assert_eq(fate_cards.get_child_count(), 0)
+	assert_true(commit_button.disabled)
+	route_cards.get_child(0).emit_signal("pressed")
+	assert_eq(emitted, [["route", &"guiin"]], "A refresh must remove stale route callbacks with its old cards")
+
+
+func test_workbench_explains_every_current_commit_failure_code() -> void:
+	var ui = _new_ui()
+	if ui == null:
+		return
+	var catalog = load(CATALOG_PATH)
+	var fates: Dictionary = catalog.build_fates()
+	var candidates: Array[StringName] = [&"guardian_path"]
+	var failures: Array[StringName] = [
+		&"missing_session",
+		&"already_committed",
+		&"commit_in_progress",
+		&"missing_state",
+		&"missing_resolver",
+		&"invalid_backpack",
+		&"unknown_item_definition",
+		&"unknown_bag_definition",
+		&"empty_bag_footprint",
+		&"bag_out_of_bounds",
+		&"bag_overlap",
+		&"no_active_cells",
+		&"disconnected_active_cells",
+		&"empty_item_footprint",
+		&"item_out_of_bounds",
+		&"inactive_item_cell",
+		&"item_overlap",
+	]
+	ui.show_workbench(
+		{
+			"unvisited_school_ids": [&"bongma"],
+			"provisional_school_id": &"bongma",
+		},
+		candidates,
+		fates,
+		&"guardian_path",
+		failures
+	)
+	var status_label: Label = ui.get_node("Panel/Margin/Content/WorkbenchView/CommitStatusLabel")
+	assert_true(status_label.text.contains("세션"))
+	assert_true(status_label.text.contains("이미 확정"))
+	assert_true(status_label.text.contains("처리 중"))
+	assert_true(status_label.text.contains("백팩 상태"))
+	assert_true(status_label.text.contains("배치 규칙"))
+	assert_true(status_label.text.contains("아이템 정의"))
+	assert_true(status_label.text.contains("가방 정의"))
+	assert_true(status_label.text.contains("가방 모양"))
+	assert_true(status_label.text.contains("가방 범위"))
+	assert_true(status_label.text.contains("가방이 겹"))
+	assert_true(status_label.text.contains("활성 칸"))
+	assert_true(status_label.text.contains("이어져"))
+	assert_true(status_label.text.contains("아이템 모양"))
+	assert_true(status_label.text.contains("아이템 범위"))
+	assert_true(status_label.text.contains("사용할 수 없는"))
+	assert_true(status_label.text.contains("아이템이 겹"))
+	assert_true(ui.get_node("Panel/Margin/Content/WorkbenchView/CommitButton").disabled)
+
+
+func test_workbench_standard_pointer_touch_and_focus_input_emit_intents() -> void:
+	get_viewport().size = Vector2i(1152, 648)
+	var ui = _new_ui()
+	if ui == null:
+		return
+	ui.workbench_route_selected_requested.connect(func(school_id: StringName): emitted.append(["route", school_id]))
+	ui.fate_selected_requested.connect(func(fate_id: StringName): emitted.append(["fate", fate_id]))
+	ui.workbench_commit_requested.connect(func(): emitted.append(["commit"]))
+	var catalog = load(CATALOG_PATH)
+	var fates: Dictionary = catalog.build_fates()
+	var candidates: Array[StringName] = [&"guardian_path"]
+	var no_failures: Array[StringName] = []
+	ui.show_workbench(
+		{
+			"unvisited_school_ids": [&"bongma"],
+			"provisional_school_id": &"bongma",
+		},
+		candidates,
+		fates,
+		&"guardian_path",
+		no_failures
+	)
+	await get_tree().process_frame
+	var route_button: Button = ui.get_node("Panel/Margin/Content/WorkbenchView/RouteCards").get_child(0)
+	var fate_button: Button = ui.get_node("Panel/Margin/Content/WorkbenchView/FateCandidates").get_child(0)
+	var commit_button: Button = ui.get_node("Panel/Margin/Content/WorkbenchView/CommitButton")
+	var route_gui_events: Array = []
+	route_button.gui_input.connect(func(event: InputEvent): route_gui_events.append(event))
+	var route_center := route_button.get_global_rect().get_center()
+	var fate_center := fate_button.get_global_rect().get_center()
+	assert_gt(route_button.size.x, 0.0, "Route button must receive a layout size before pointer input")
+	assert_gt(route_button.size.y, 0.0, "Route button must receive a layout size before pointer input")
+	ui.get_viewport().push_input(GutInputFactory.mouse_motion(route_center, route_center), true)
+	ui.get_viewport().push_input(GutInputFactory.mouse_left_button_down(route_center, route_center), true)
+	await get_tree().process_frame
+	assert_eq(ui.get_viewport().gui_get_hovered_control(), route_button, "Viewport hit-testing must target the visible route Button")
+	ui.get_viewport().push_input(GutInputFactory.mouse_left_button_up(route_center, route_center), true)
+	await get_tree().process_frame
+	assert_gt(route_gui_events.size(), 0, "Viewport pointer input must reach the route Button GUI boundary")
+	assert_eq(emitted, [["route", &"bongma"]], "Pointer click must use the route Button intent")
+
+	var touch_down := InputEventScreenTouch.new()
+	touch_down.position = fate_center
+	touch_down.pressed = true
+	var touch_up := InputEventScreenTouch.new()
+	touch_up.position = fate_center
+	touch_up.pressed = false
+	ui.get_viewport().push_input(touch_down, true)
+	await get_tree().process_frame
+	ui.get_viewport().push_input(touch_up, true)
+	await get_tree().process_frame
+	assert_eq(emitted, [["route", &"bongma"], ["fate", &"guardian_path"]], "Touch must use the Fate Button intent")
+
+	commit_button.grab_focus()
+	Input.parse_input_event(GutInputFactory.action_down(&"ui_accept"))
+	Input.parse_input_event(GutInputFactory.action_up(&"ui_accept"))
+	await get_tree().process_frame
+	assert_eq(emitted, [["route", &"bongma"], ["fate", &"guardian_path"], ["commit"]], "Focused confirm covers keyboard/gamepad Button activation")
+
+
+func test_workbench_focuses_the_provisional_route_card() -> void:
+	var ui = _new_ui()
+	if ui == null:
+		return
+	var catalog = load(CATALOG_PATH)
+	var fates: Dictionary = catalog.build_fates()
+	var unvisited: Array[StringName] = [&"bongma", &"heukyeong"]
+	var candidates: Array[StringName] = [&"guardian_path"]
+	var no_failures: Array[StringName] = []
+	ui.show_workbench(
+		{
+			"unvisited_school_ids": unvisited,
+			"provisional_school_id": &"heukyeong",
+		},
+		candidates,
+		fates,
+		&"guardian_path",
+		no_failures
+	)
+	await get_tree().process_frame
+	var route_cards = ui.get_node("Panel/Margin/Content/WorkbenchView/RouteCards")
+	assert_eq(ui.get_viewport().gui_get_focus_owner(), route_cards.get_child(1))
+
+
 func test_preview_and_complete_are_distinct_terminal_states() -> void:
 	var ui = _new_ui()
 	if ui == null:
@@ -156,7 +394,7 @@ func test_hide_all_hides_overlay_and_every_state_view() -> void:
 	ui.show_preview({})
 	ui.hide_all()
 	assert_false(ui.get_node("Panel").visible)
-	for view_name in ["ResultView", "ShopView", "FateView", "PreviewView", "CompleteView"]:
+	for view_name in ["ResultView", "ShopView", "FateView", "WorkbenchView", "PreviewView", "CompleteView"]:
 		assert_false(ui.get_node("Panel/Margin/Content/%s" % view_name).visible)
 
 

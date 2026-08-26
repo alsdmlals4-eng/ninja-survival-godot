@@ -5,11 +5,11 @@ project: NINJA_SURVIVAL
 state_router_updated_at: 2026-08-26 KST
 reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
-current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
-current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
-completed_main_label: T11_TRADITION_ACCESS_REWARD_LANES_PLUS_DOCS_CLOSEOUT_BASELINE
-resume_state: T12_FRESH_PR_61_IMPLEMENTATION_RESOLVE_MERGE_FROM_GITHUB_DEFAULT_BRANCH
-next_product_gate: RESOLVE_T12_PR_61_MERGE_THEN_T13
+current_completed_main: 41202283b75921efb7691e77c3de1502d77410d1
+current_completed_main_resolution: GITHUB_DEFAULT_BRANCH_READBACK_2026_08_26_KST
+completed_main_label: T12_ATOMIC_WORKBENCH_FATE_ROUTE_COMMIT
+resume_state: T13_FRESH_PR_62_PERSISTENT_WORKBENCH_ROUTE_UI_INPUT
+next_product_gate: RESOLVE_T13_PR_62_THEN_T14_CHEONSUL_VERTICAL_SLICE
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 historical_closed_wip:
@@ -20,7 +20,7 @@ other_workstream_read_only:
 mvp0_to_mvp3_runtime: INTEGRATED_BASELINE
 mvp4_t01_to_t11_domain_chain: INTEGRATED_ON_COMPLETED_MAIN
 playable_new_four_school_run: NOT_PROVEN
-persistent_workbench_route_ui_input: NOT_INTEGRATED
+persistent_workbench_route_ui_input: FRESH_PR_62_IMPLEMENTATION_CANDIDATE
 release_near_cheonsul_slice: NOT_RUN
 human_usability: NOT_RUN
 player_experience: NOT_RUN
@@ -55,7 +55,7 @@ Do not reconstruct current state from older handoff sentences or closed branches
 11. Notion `닌자 서바이벌 · Home`, `03 · UI · 생존 Flow Map`, `08 · 핵심 시스템 · 상세`, `06 · Production · Handoff`, `02 · 비주얼 바이블`
 12. current Base owners when Base freshness materially affects the task
 
-Closed PR #43/#44 may be inspected only as historical/WIP evidence. They are not resume baselines. Draft PR #49 is a read-only, superseded T12 reference; fresh PR #61 is the current T12 implementation. Resolve PR #61's merge state from the GitHub default branch before continuing.
+Closed PR #43/#44 may be inspected only as historical/WIP evidence. They are not resume baselines. Draft PR #49 is a read-only, superseded T12 reference. PR #61 is merged T12 history; current production work begins from its completed `main`.
 
 ## Current product direction
 
@@ -138,11 +138,11 @@ T11 exact merged evidence recorded in Production Handoff:
 
 Evidence ceiling: domain/automated scope only.
 
-## T12 current status
+## T12 merged status
 
-**FRESH PR #61 IMPLEMENTED / MERGE STATUS MUST BE RESOLVED FROM THE GITHUB DEFAULT BRANCH.**
+**MERGED TO `main` AT `41202283b75921efb7691e77c3de1502d77410d1`.**
 
-PR #61 `T12: atomically commit Workbench snapshot, Fate, and route` is the fresh implementation workstream from then-current completed `main` `98eaee2`. It replaces the abandoned T12 draft as the current merge candidate; use the GitHub default branch to resolve whether it has merged before resuming.
+PR #61 `T12: atomically commit Workbench snapshot, Fate, and route` is merged production history. Its post-merge automated evidence is `Godot 4.7.1 import PASS -> main-scene smoke PASS -> GUT 471/471 -> 5168 assertions`; this is not Human, Player Experience, device, or end-to-end Run evidence.
 
 PR #49 `T12: atomic Workbench Fate route commit` and historical PR #43 remain read-only WIP/reference only. Do not reopen, rebase, merge or absorb either branch.
 
@@ -220,11 +220,14 @@ NOTION_HIGH_RES_PIXEL_EQUIVALENT: NOT_PROVEN
 NOTION_HUMAN_VISIBLE_LATEST_PREVIEWS: NOT_RUN
 ```
 
+## Current T13 status
+
+T13 is a fresh Issue #62 / PR-candidate package from completed T12 `main`. It adds only the reusable `RestFlowUI` Workbench route-preview and intent contract: legal unvisited-school cards, pending Fate presentation, human-readable readiness state, and standard pointer/touch/focus input. It does not wire the protected MVP-3 loop to the T12 transaction; T14 owns that real session/encounter integration.
+
 ## Remaining product sequence
 
 ```text
-Resolve fresh T12 PR #61 merge from the default branch
--> T13 Persistent Workbench route-preview UI/input
+Resolve fresh T13 PR #62 from the default branch
 -> T14 Cheonsul release-near Vertical Slice
 -> T15 Human QA gate
 -> T16 remaining schools
