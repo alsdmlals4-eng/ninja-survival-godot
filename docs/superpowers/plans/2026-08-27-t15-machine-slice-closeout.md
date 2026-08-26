@@ -97,15 +97,15 @@ Correct any validated finding and restart this Task's five-loop review count; ot
 - Consumes: a clean exact PR head.
 - Produces: one squash-merged main commit and exact post-merge verification receipt.
 
-- [ ] **Step 1: Reconcile latest main immediately before merge.**
+- [x] **Step 1: Reconcile latest main immediately before merge.**
 
 Fetch `origin/main`; if it differs from the reviewed base, rebase is forbidden and a fresh current-main PR is required. Otherwise use repository-supported squash merge without admin bypass.
 
-- [ ] **Step 2: Read new main and run post-merge gates.**
+- [x] **Step 2: Read new main and run post-merge gates.**
 
 Run Godot import, editor parse, five-second main smoke, and full GUT from new main. Record actual counts and exit status.
 
-- [ ] **Step 3: Update GitHub and Notion current records and read them back.**
+- [x] **Step 3: Update GitHub and Notion current records and read them back.**
 
 Update Issue #68, Production Handoff, repository routers, and the result record with merge SHA, actual evidence, Human deferral, and no image/audio change. Fetch the Notion Handoff after writing it.
 
@@ -118,11 +118,11 @@ Update Issue #68, Production Handoff, repository routers, and the result record 
 - Consumes: new-main identity and post-merge evidence.
 - Produces: one `USER_VERTICAL_SLICE_VALIDATION_PACKET` that tells the user exactly how to open the main scene and observe help without claiming Human PASS.
 
-- [ ] **Step 1: Record launch route and expected result.**
+- [x] **Step 1: Record launch route and expected result.**
 
 Use `res://scenes/main/main_scene.tscn`; open any school help, close it, then choose one school. The expected result is an explanation-only modal followed by one deliberate school-selection transition.
 
-- [ ] **Step 2: Record known limits and feedback questions.**
+- [x] **Step 2: Record known limits and feedback questions.**
 
 List Human/Player/physical touch/device/export and live-Hera as `NOT_RUN` or deferred exactly as observed, then ask the user to note comprehension, Korean readability, and any input leak.
 

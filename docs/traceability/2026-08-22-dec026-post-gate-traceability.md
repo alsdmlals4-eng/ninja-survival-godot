@@ -6,9 +6,9 @@ source_canon:
   - docs/canon/2026-08-21-dec014-025-product-canon.md
   - docs/canon/2026-08-22-dec026-encounter-pattern-budget.md
 prior_traceability: docs/traceability/2026-08-21-dec014-025-migration-traceability.md
-current_plan: docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md
-coverage_status: PLANNED_COMPLETE_RUNTIME_NOT_RUN
-next_gate: PHASE_B_DEFINITION_OF_READY_T08_TO_T14
+current_plan: docs/superpowers/plans/2026-08-27-t15-machine-slice-closeout.md
+coverage_status: T08_TO_T15_MACHINE_SLICE_MERGED_HUMAN_RUNTIME_NOT_RUN
+next_gate: USER_VERTICAL_SLICE_VALIDATION
 ```
 
 ## 1. Gate change
@@ -26,7 +26,7 @@ The prior migration packet correctly recorded `DEC-026` as a blocker. DEC-026 is
 | MIG-05 atomic build + Fate + route commit | T12 | PLANNED |
 | MIG-05 UI/input route preview | T13 | PLANNED |
 | MIG-07 school identity migration | T14 first slice, T16 expansion | PLANNED |
-| MIG-08 release-near Vertical Slice | T14 + T15 Human QA | PLANNED / NOT_RUN |
+| MIG-08 release-near Vertical Slice | T14 + T15 school-function help | MERGED_AUTOMATED_ONLY / HUMAN_QA_DEFERRED_BY_CURRENT_USER |
 | four-school circuit integration | T17 | PLANNED |
 | MIG-06 final binding/final routing | T17 + T18 | PARTIAL_SPEC / PLANNED |
 | full-run/runtime/device evidence | T19 | NOT_RUN |
@@ -41,7 +41,7 @@ The following are now sufficiently specified to enter a fresh Definition of Read
 - T11 access-package/reward-lane extension;
 - T12 atomic Workbench/Fate/route commit;
 - T13 route-preview UI/input;
-- T14 one-school Cheonsul release-near Vertical Slice.
+- T14 one-school Cheonsul release-near Vertical Slice and T15 school-function help machine slice.
 
 Phase B must still identify exact files/classes/tests, verify no live PR conflict, preserve the MVP-0~3 regression baseline and reject duplicate state authority before any production implementation branch starts.
 
@@ -56,9 +56,9 @@ The final calamity's **exact full attack script** is intentionally not over-spec
 ## 6. Evidence ceiling
 
 - DEC-026 planning: APPROVED.
-- T08–T19 implementation: NOT_STARTED.
+- T08–T15 machine implementation: MERGED; T16–T19: NOT_STARTED.
 - DEC-014~026 runtime: NOT_RUN.
-- release-near Vertical Slice Human QA: NOT_RUN.
+- release-near Vertical Slice Human QA: DEFERRED_BY_CURRENT_USER / NOT_RUN.
 - four-school full-run QA: NOT_RUN.
 - Android/export: NOT_RUN / NOT_READY.
 

@@ -7,7 +7,7 @@
 | 기준 리비전 | `25e2bf3a5ecd026f56428e75f18389da2c430c40` |
 | 엔진 | Godot 4.7.1 |
 | 자동 기준선 | import PASS · editor parse PASS · five-second main smoke PASS · GUT 485/485 tests · 5301 assertions |
-| 기능 도움말 구현 헤드 | import PASS · editor parse PASS · five-second main smoke PASS · GUT 488/488 tests · 5321 assertions |
+| PR #69 post-merge `main` (`e2cfe445`) | import PASS · editor parse PASS · five-second main smoke PASS · focused GUT 8/8 tests · 38 assertions · full GUT 488/488 tests · 5321 assertions |
 | Hera 라이브 에이전트 | `LIVE_HERA_NOT_CONNECTED` — 최신 작업 공간의 직접 런타임 UI 관찰에 사용하지 않음 |
 | 사람 참가자 | NOT_RUN |
 | 세션 일시 | NOT_RUN |

@@ -8,6 +8,7 @@ repository: alsdmlals4-eng/ninja-survival-godot
 slice_id: T15_CHEONSUL_SCHOOL_FUNCTION_HELP_MACHINE_SLICE
 exact_project_baseline: 25e2bf3a5ecd026f56428e75f18389da2c430c40
 implementation_head: f60504b57dfea84c3b20e43b93e62f68b3222104
+merged_main: e2cfe4452e1de5a224f5cd7dee8e47a104c868e0
 work_packet_timing: RECONCILED_AFTER_EXISTING_IMPLEMENTATION
 readiness: READY_FOR_SINGLE_CODEX_WINDOW
 human_qa: DEFERRED_BY_CURRENT_USER
@@ -145,7 +146,7 @@ evidence_ceiling:
 project: NINJA_SURVIVAL
 slice_id: T15_CHEONSUL_SCHOOL_FUNCTION_HELP_MACHINE_SLICE
 build_or_scene: res://scenes/main/main_scene.tscn
-exact_commit_or_build_identity: "Pre-merge packet: use the post-merge main SHA recorded by Task 4; no main identity is claimed before merge."
+exact_commit_or_build_identity: e2cfe4452e1de5a224f5cd7dee8e47a104c868e0
 launch_route: "Godot Editor → Run Project"
 prerequisites: "None beyond the project-local Godot 4.7.1 environment"
 representative_play_window: "Start screen: open one help popup, close it, then select a school"
@@ -164,5 +165,6 @@ feedback_questions:
   - "도움말을 보고 각 유파가 어떻게 싸우는지 한 문장으로 설명할 수 있었나요?"
   - "닫은 뒤 원하는 유파를 고르는 흐름이 자연스러웠나요?"
   - "읽기 어렵거나 과장된 설명이 있었나요?"
-next_decisions: "Human feedback에서 실제 문제를 발견할 때만 T15 후속 수정 범위를 연다"
+machine_evidence: "Godot 4.7.1 import PASS · editor parse PASS · five-second main smoke PASS · focused GUT 8/8 / 38 · full GUT 488/488 / 5321 · GitHub Actions gut SUCCESS on final PR head b716b98"
+next_decisions: "Human feedback에서 실제 문제를 발견할 때만 T15 후속 수정 범위를 연다; T16은 별도 현재 범위 승인 없이는 시작하지 않는다"
 ```
