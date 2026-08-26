@@ -68,10 +68,15 @@ func set_provisional_next_school(school_id: StringName) -> bool:
 	return true
 
 
+func can_commit_provisional_next_school() -> bool:
+	return not _final_binding_eligible \
+		and _active_school_id == &"" \
+		and _provisional_school_id != &"" \
+		and is_school_unvisited(_provisional_school_id)
+
+
 func commit_provisional_next_school() -> bool:
-	if _final_binding_eligible or _active_school_id != &"":
-		return false
-	if _provisional_school_id == &"" or not is_school_unvisited(_provisional_school_id):
+	if not can_commit_provisional_next_school():
 		return false
 	_active_school_id = _provisional_school_id
 	_provisional_school_id = &""
