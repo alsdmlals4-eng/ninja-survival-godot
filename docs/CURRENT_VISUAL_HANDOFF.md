@@ -34,8 +34,8 @@ and dual-storage gate.
   a selected school's non-zero resolved action; Hit is a visual-only response
   to non-zero, non-evaded Player damage. Legacy AutoAttack stays disabled.
 - The exact-head GUT check on PR #59 passed Base manifest, Godot 4.7.1 import,
-  main-scene smoke, and full GUT: 456/456 tests, 5032 assertions. Do not
-  promote this to live runtime evidence.
+  main-scene smoke, and the full current GUT suite. Do not promote this to
+  live runtime evidence.
 - Evidence ceiling: source/static/import/smoke/GUT are PASS on the unmerged
   PR head. Live runtime rendering/input, Human Usability, Player Experience,
   device, and export are **NOT_RUN**. PR #49 remains read-only.
