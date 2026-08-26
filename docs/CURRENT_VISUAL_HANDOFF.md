@@ -19,10 +19,25 @@ Library records:
 | Hit | `docs/assets/approved/img-01-player-runtime-core/player_runtime_hit_v2_alpha.png` | `f00c2f6fd09e6c52e1dce8abe6f493e76245d2dbc818ee4ac5db1b98f5b23d60` | [Notion](https://app.notion.com/p/3c81b237eb1c81958819dc9e3e763587) |
 
 All v2 files are 1254×1254 32bpp ARGB PNGs with transparent corners. Notion
-readback confirmed native v2 image blocks. This clears only the source-level
-alpha and dual-storage gate. Godot import, Scene wiring, runtime rendering,
-input, smoke, and human play validation are all **NOT_RUN**. PR #49 remains
-read-only.
+readback confirmed native v2 image blocks. This clears the source-level alpha
+and dual-storage gate.
+
+### IMG-01 runtime wiring receipt — PR #59 / unmerged
+
+- Fresh Issue [#58](https://github.com/alsdmlals4-eng/ninja-survival-godot/issues/58)
+  branch: `codex/img-01-runtime-visuals-58`, based on merged `main`
+  `c9956130ec0631603cc4bd03b619795917874bc7`.
+- Exact PR head: `394c0e3592495a3834e64ee32d51d13a34add914`.
+- `Player/Visual` now consumes only these three v2 sources as a `Sprite2D` at
+  `Vector2(0.05, 0.05)`. Move is default; Attack is a visual-only relay from
+  a selected school's non-zero resolved action; Hit is a visual-only response
+  to non-zero, non-evaded Player damage. Legacy AutoAttack stays disabled.
+- Exact-head [GUT workflow 32969670717](https://github.com/alsdmlals4-eng/ninja-survival-godot/actions/runs/32969670717)
+  passed Base manifest, Godot 4.7.1 import, main-scene smoke, and full GUT:
+  456/456 tests, 5032 assertions.
+- Evidence ceiling: source/static/import/smoke/GUT are PASS on the unmerged
+  PR head. Live runtime rendering/input, Human Usability, Player Experience,
+  device, and export are **NOT_RUN**. PR #49 remains read-only.
 
 ## 1. Exact repository / concurrency state at handoff
 
