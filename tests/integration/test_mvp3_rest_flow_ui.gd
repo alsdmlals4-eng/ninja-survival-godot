@@ -22,11 +22,15 @@ func test_rest_flow_has_all_state_views_methods_and_intent_signals() -> void:
 		"Panel/Margin/Content/ResultView",
 		"Panel/Margin/Content/ShopView",
 		"Panel/Margin/Content/FateView",
+		"Panel/Margin/Content/WorkbenchView",
 		"Panel/Margin/Content/PreviewView",
 		"Panel/Margin/Content/CompleteView",
+		"Panel/Margin/Content/WorkbenchView/RouteCards",
+		"Panel/Margin/Content/WorkbenchView/FateCandidates",
+		"Panel/Margin/Content/WorkbenchView/CommitButton",
 	]:
 		assert_true(ui.has_node(path), "Missing rest view: %s" % path)
-	for method_name in ["show_result", "show_shop", "show_fate", "show_preview", "show_complete", "hide_all"]:
+	for method_name in ["show_result", "show_shop", "show_fate", "show_workbench", "show_preview", "show_complete", "hide_all"]:
 		assert_true(ui.has_method(method_name), "Missing RestFlowUI method: %s" % method_name)
 	for signal_name in [
 		"result_continue_requested",
@@ -35,6 +39,8 @@ func test_rest_flow_has_all_state_views_methods_and_intent_signals() -> void:
 		"shop_reroll_requested",
 		"shop_continue_requested",
 		"fate_selected_requested",
+		"workbench_route_selected_requested",
+		"workbench_commit_requested",
 		"preview_start_requested",
 		"restart_requested",
 	]:
