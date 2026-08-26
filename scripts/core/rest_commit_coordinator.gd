@@ -20,7 +20,7 @@ func configure(
 	route_state: RunRouteState,
 	fate_controller: FateController
 ) -> bool:
-	if _session != null or _commit_in_progress:
+	if _session != null or _commit_in_progress or _committed_this_rest:
 		return false
 	if committed_backpack_state == null or build_state == null or route_state == null or fate_controller == null:
 		return false
