@@ -5,11 +5,11 @@ project: NINJA_SURVIVAL
 state_router_updated_at: 2026-08-27 KST
 reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
-current_completed_main: 51e39737f272db0962a3dabada51bae10cd1fa97
-current_completed_main_resolution: GITHUB_DEFAULT_BRANCH_READBACK_2026_08_27_KST
-completed_main_label: T14_CHEONSUL_RELEASE_NEAR_VERTICAL_SLICE
-resume_state: T15_CHEONSUL_HUMAN_QA_GATE
-next_product_gate: T15_CHEONSUL_HUMAN_QA_GATE
+current_completed_main: e2cfe4452e1de5a224f5cd7dee8e47a104c868e0
+current_completed_main_resolution: GITHUB_DEFAULT_BRANCH_READBACK_PR_69_2026_08_27_KST
+completed_main_label: T15_SCHOOL_FUNCTION_HELP_MACHINE_SLICE
+resume_state: T15_MACHINE_SLICE_MERGED_HUMAN_QA_DEFERRED_BY_CURRENT_USER
+next_product_gate: USER_VERTICAL_SLICE_VALIDATION
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 historical_closed_wip:
@@ -22,6 +22,7 @@ mvp4_t01_to_t11_domain_chain: INTEGRATED_ON_COMPLETED_MAIN
 playable_new_four_school_run: NOT_PROVEN
 persistent_workbench_route_ui_input: INTEGRATED_ON_MAIN_71152C7AA9DFF4CC05EEC76D4D2D70BE47755F6C
 release_near_cheonsul_slice: MERGED_MAIN_51E39737F272DB0962A3DABADA51BAE10CD1FA97_AUTOMATED_EVIDENCE_ONLY
+t15_school_function_help: MERGED_MAIN_E2CFE4452E1DE5A224F5CD7DEE8E47A104C868E0_MACHINE_VERIFIED_HUMAN_QA_DEFERRED_BY_CURRENT_USER
 human_usability: NOT_RUN
 player_experience: NOT_RUN
 device_export_android: NOT_RUN
@@ -234,8 +235,9 @@ The active package also closes a relevant T12 safety gap: a successful `RestComm
 
 ```text
 T14 Cheonsul release-near Vertical Slice
--> T15 Human QA gate
--> T16 remaining schools
+-> T15 school-function help machine slice (merged)
+-> User vertical-slice validation (Human/Player feedback remains deferred, not passed)
+-> T16 remaining schools only after a separate current-scope decision
 -> T17 four-school circuit integration
 -> T18 final calamity package
 -> T19 full-run verification
