@@ -84,7 +84,36 @@ Observed: `485/485` tests and `5301` assertions on unchanged `main`.
 
 Use `hera status`/`hera instances` only against a directly returned current-project editor. If no agent connection exists, record `LIVE_HERA_NOT_CONNECTED`; do not infer UI or human input from a different project/editor.
 
-### Task 3: Run direct participant sessions
+### Task 3: Add user-directed school-function help without changing selection semantics
+
+**Files:**
+- Modify: `scenes/ui/school_selection_ui.tscn`
+- Modify: `scripts/ui/school_selection_ui.gd`
+- Modify: `tests/unit/test_school_selection_ui.gd`
+- Modify: `docs/qa/2026-08-27-t15-cheonsul-human-qa-protocol.md`
+- Modify: `docs/qa/records/2026-08-27-t15-cheonsul-human-qa-results.md`
+
+**Interfaces:**
+- Consumes: four current school runtimes and the `SchoolSelectionUI` selection signal.
+- Produces: one reusable popup that describes only actually implemented mechanics and never emits `school_selected`.
+
+- [x] **Step 1: Write focused RED regressions for help-open, selection blocking, and close behavior.**
+
+Require that opening Cheonsul help does not select Cheonsul, keyboard numbers are ignored while help is open, and `닫기` returns to the unchanged selector.
+
+- [x] **Step 2: Implement separate help entry points and one reusable popup.**
+
+Add one help button per school. Use the actual current mechanics: Bongma SPIRIT/ward/백귀야행; Cheonsul flame/BURN/WET/SHOCK/오행폭주; Guiin GWIHYEOL/low-health range/귀인화; Heukyeong marks/MARK BURST/암영처형. Do not describe unimplemented patterns, reward auto-commit, or future school content.
+
+- [x] **Step 3: Preserve mouse, keyboard/gamepad focus, and touch boundaries.**
+
+Button activation remains the shared mouse/touch/focus path. While the popup is open, `ui_cancel` and `닫기` close it; number selection is blocked until then.
+
+- [x] **Step 4: Update the Human QA protocol without weakening the unassisted 30-second read.**
+
+Record help as a separate post-baseline usability observation, not as a substitute for the participant's first interpretation.
+
+### Task 4: Run direct participant sessions
 
 **Files:**
 - Create: `docs/qa/records/2026-08-27-t15-cheonsul-human-qa-results.md`
@@ -109,14 +138,14 @@ Use the protocol’s minimum outcome for each. If no physical touch hardware is 
 
 Write every row in the result table. A `FAIL`, an unrooted `UNCLEAR`, or missing required human evidence keeps T15 closed and blocks T16.
 
-### Task 4: Correct only validated shared-chassis findings
+### Task 5: Correct only validated shared-chassis findings
 
 **Files:**
-- Modify: exact source/UI/test files named by a direct Task 3 failure.
+- Modify: exact source/UI/test files named by a direct Task 4 failure.
 - Modify: `docs/qa/records/2026-08-27-t15-cheonsul-human-qa-results.md`
 
 **Interfaces:**
-- Consumes: a reproducible Task 3 finding and the affected current owner.
+- Consumes: a reproducible Task 4 finding and the affected current owner.
 - Produces: a minimal, tested correction or a documented non-code follow-up.
 
 - [ ] **Step 1: Trace the failing signal to its current owner before changing source.**
@@ -135,7 +164,7 @@ Keep route/Fate/backpack authority in existing domain owners. Do not implement B
 
 Only mark the criterion corrected when automated evidence and new direct participant evidence both exist.
 
-### Task 5: Record evidence, review, and hand off the next gate
+### Task 6: Record evidence, review, and hand off the next gate
 
 **Files:**
 - Modify: `docs/ACTIVE_CONTEXT.md`
@@ -166,6 +195,6 @@ Use `superpowers:requesting-code-review`, verify exact head, and create a PR onl
 
 ## Plan self-review
 
-- Spec coverage: Task 1 defines every human criterion; Task 2 creates fresh-main technical context; Task 3 gathers direct human evidence; Task 4 limits correction scope; Task 5 preserves the decision and handoff.
+- Spec coverage: Task 1 defines every human criterion; Task 2 creates fresh-main technical context; Task 3 adds the user-directed comprehension aid without changing the gate; Task 4 gathers direct human evidence; Task 5 limits correction scope; Task 6 preserves the decision and handoff.
 - Placeholder scan: no undefined runtime owner, test command, success condition, or evidence class is used. Human answers remain intentionally unavailable until a person supplies them and are not fabricated.
 - Type consistency: this plan introduces no production API. Existing `SchoolSelectionUI`, `CheonsulRuntime`, `CheonsulVerticalSliceController`, and `RestFlowUI` remain their current owners.
