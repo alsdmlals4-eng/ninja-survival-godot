@@ -292,7 +292,7 @@ Do not modify PR #49. Create a fresh PR linked to GitHub Issue #65 from the T14 
 - Spec coverage: Tasks 1–3 cover route/lifecycle composition and Boss gating; Task 4 covers Trace/Workbench feedback; Task 5 records proof and deferred board interaction.
 - Placeholder scan: no `TBD`, `TODO`, vague test, or undefined later interface remains. `CheonsulSliceFixture` is local test setup and must be defined in Task 2's test file before use.
 - Type consistency: `workbench_snapshot()` supplies the optional final `show_workbench` context used only by Task 4; all earlier five-argument T13 calls remain source-compatible.
-- Runtime catalog boundary: this package binds `EncounterCatalog` role IDs/names to existing enemy representations; the catalog's fan/zone/mark primitive behaviors are not newly implemented or claimed as live pattern evidence here.
+- Runtime catalog boundary: this package binds `EncounterCatalog` Core/Elite/Boss role IDs and Elite/Boss HUD display names to existing enemy representations; the catalog's fan/zone/mark primitive behaviors are not newly implemented or claimed as live pattern evidence here.
 
 ## 2026-08-26 adversarial clean-pass lineage
 
