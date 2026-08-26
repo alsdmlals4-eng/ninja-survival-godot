@@ -70,6 +70,21 @@ func test_active_session_reinitialization_invalidates_the_transaction() -> void:
 	assert_false(fixture.build_state.has_fate(fixture.pending_fate_id))
 
 
+func test_successful_rest_cannot_reconfigure_same_coordinator_for_another_commit() -> void:
+	var fixture := _prepared_fixture(708)
+	var coordinator = _coordinator(fixture)
+	assert_true(coordinator.begin_rest(fixture.session))
+	assert_true(coordinator.commit())
+
+	assert_false(coordinator.configure(
+		fixture.committed_state,
+		fixture.build_state,
+		fixture.route,
+		fixture.fate
+	))
+	assert_false(coordinator.begin_rest(fixture.session))
+
+
 func test_pending_fate_unknown_to_build_state_fails_before_route_or_modifier_mutation() -> void:
 	var mvp4 = load(MVP4_CATALOG_PATH)
 	var all_fate_defs: Dictionary = load(MVP3_CATALOG_PATH).build_fates()

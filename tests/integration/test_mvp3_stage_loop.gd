@@ -42,6 +42,92 @@ func test_school_selection_starts_segment_one_and_syncs_hud_and_build_state() ->
 	assert_eq(main.get_node("HUD/GoldLabel").text, "GOLD 0")
 
 
+func test_cheonsul_selection_starts_vertical_slice_without_replacing_legacy_stage_flow() -> void:
+	var main = _new_main()
+	if main == null:
+		return
+	var flow = main.get_node("StageFlow")
+	main._on_school_selected(&"cheonsul")
+	assert_not_null(main.cheonsul_slice)
+	assert_eq(flow.phase, flow.Phase.SCHOOL_SELECT)
+	assert_eq(main.cheonsul_slice.route_state.active_school_id(), &"cheonsul")
+	assert_eq(main.get_node("RunBuildState").selected_school_id, &"cheonsul")
+	assert_eq(main.get_node("Player").process_mode, Node.PROCESS_MODE_INHERIT)
+	assert_eq(main.get_node("WaveSpawner").process_mode, Node.PROCESS_MODE_INHERIT)
+	var core_enemy = _first_live_normal_enemy(main)
+	assert_not_null(core_enemy)
+	if core_enemy != null:
+		assert_true(
+			[&"fire_mark_caster", &"water_vein_caster", &"lightning_chain_caster"].has(
+				StringName(core_enemy.get_meta(&"cheonsul_encounter_id", &""))
+			)
+		)
+
+
+func test_cheonsul_normal_enemy_reward_orb_remains_active_despite_legacy_stage_flow_idle() -> void:
+	var main = _new_main()
+	if main == null:
+		return
+	main._on_school_selected(&"cheonsul")
+	var enemy = _first_live_normal_enemy(main)
+	assert_not_null(enemy)
+	if enemy == null:
+		return
+	enemy.take_damage(9999)
+	var orbs := _living_reward_orbs(main)
+	assert_eq(orbs.size(), 1)
+	if orbs.is_empty():
+		return
+	assert_ne(orbs[0].process_mode, Node.PROCESS_MODE_DISABLED)
+
+
+func test_cheonsul_runtime_requires_trace_before_boss_and_ends_at_workbench() -> void:
+	var main = _new_main()
+	if main == null:
+		return
+	main._on_school_selected(&"cheonsul")
+	var slice = main.cheonsul_slice
+	assert_not_null(slice)
+	if slice == null:
+		return
+	assert_true(slice.sync_elapsed(180.0))
+	var elite = _cheonsul_role_enemy(main, &"elite")
+	assert_not_null(elite)
+	if elite == null:
+		return
+	assert_eq(elite.get_meta(&"cheonsul_encounter_id", &""), &"five_element_tuner")
+	elite.take_damage(9999)
+	assert_eq(slice.get_snapshot().get("state"), &"trace_available")
+	assert_true(slice.sync_elapsed(270.0))
+	assert_false(bool(slice.get_snapshot().get("boss_requested", false)))
+	var recover_event := InputEventAction.new()
+	recover_event.action = &"ui_accept"
+	recover_event.pressed = true
+	main._unhandled_input(recover_event)
+	assert_eq(slice.get_snapshot().get("state"), &"boss_warning")
+	assert_true(slice.sync_elapsed(280.0))
+	var boss = _cheonsul_role_enemy(main, &"boss")
+	assert_not_null(boss)
+	if boss == null:
+		return
+	assert_eq(boss.get_meta(&"cheonsul_encounter_id", &""), &"heavenly_change_taoist")
+	boss.take_damage(99999)
+	assert_eq(slice.get_snapshot().get("state"), &"cleared")
+	assert_true(main.get_node("RestFlowUI/Panel").visible)
+	assert_true(main.get_node("RestFlowUI/Panel/Margin/Content/WorkbenchView").visible)
+	assert_true(main.get_node("RestFlowUI/Panel/Margin/Content/WorkbenchView/RewardStatusLabel").text.contains("보스 보상"))
+	assert_true(main.get_node("RestFlowUI/Panel/Margin/Content/WorkbenchView/CommitButton").disabled)
+	assert_eq(main.get_node("RunBuildState").selected_fates, [])
+	var rest_ui = main.get_node("RestFlowUI")
+	rest_ui.workbench_route_selected_requested.emit(&"bongma")
+	assert_eq(slice.route_state.provisional_school_id(), &"bongma")
+	var pending_fate: StringName = slice.workbench_snapshot().get("fate_candidate_ids", [])[0]
+	rest_ui.fate_selected_requested.emit(pending_fate)
+	assert_eq(slice.workbench_snapshot().get("pending_fate_id"), pending_fate)
+	assert_eq(main.get_node("RunBuildState").selected_fates, [])
+	assert_true(main.get_node("RestFlowUI/Panel/Margin/Content/WorkbenchView/CommitButton").disabled)
+
+
 func test_normal_enemy_death_grants_one_gold_and_segment_kill_after_selection() -> void:
 	var main = _new_main()
 	if main == null:
@@ -244,3 +330,18 @@ func _live_normal_enemies(main: Node) -> Array:
 func _first_live_normal_enemy(main: Node):
 	var enemies := _live_normal_enemies(main)
 	return null if enemies.is_empty() else enemies[0]
+
+
+func _living_reward_orbs(main: Node) -> Array:
+	var orbs: Array = []
+	for child in main.get_children():
+		if child.is_in_group("reward_orbs") and not child.is_queued_for_deletion():
+			orbs.append(child)
+	return orbs
+
+
+func _cheonsul_role_enemy(main: Node, role: StringName):
+	for child in main.get_children():
+		if child.get_meta(&"cheonsul_slice_role", &"") == role and not child.is_queued_for_deletion():
+			return child
+	return null

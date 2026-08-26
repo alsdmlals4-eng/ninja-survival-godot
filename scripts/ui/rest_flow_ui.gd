@@ -104,6 +104,7 @@ signal restart_requested
 @onready var fate_candidates: Container = $Panel/Margin/Content/FateView/Candidates
 @onready var workbench_route_cards: Container = $Panel/Margin/Content/WorkbenchView/RouteCards
 @onready var workbench_fate_candidates: Container = $Panel/Margin/Content/WorkbenchView/FateCandidates
+@onready var workbench_reward_status_label: Label = $Panel/Margin/Content/WorkbenchView/RewardStatusLabel
 @onready var workbench_commit_status_label: Label = $Panel/Margin/Content/WorkbenchView/CommitStatusLabel
 @onready var workbench_commit_button: Button = $Panel/Margin/Content/WorkbenchView/CommitButton
 @onready var preview_summary_label: Label = $Panel/Margin/Content/PreviewView/SummaryLabel
@@ -201,12 +202,14 @@ func show_workbench(
 	fate_candidate_ids: Array[StringName],
 	fate_definitions: Dictionary,
 	pending_fate_id: StringName,
-	readiness_failures: Array[StringName]
+	readiness_failures: Array[StringName],
+	workbench_context: Dictionary = {}
 ) -> void:
 	_show_only(workbench_view)
 	var provisional_school_id := StringName(route_snapshot.get("provisional_school_id", &""))
 	var has_route := _render_workbench_routes(route_snapshot, provisional_school_id)
 	var has_fate := _render_workbench_fates(fate_candidate_ids, fate_definitions, pending_fate_id)
+	_render_workbench_reward_status(workbench_context)
 	_render_workbench_commit(has_route, has_fate, readiness_failures)
 
 
@@ -351,6 +354,23 @@ func _render_workbench_commit(
 		messages.append(str(WORKBENCH_FAILURE_TEXT.get(failure, "작업대 상태를 다시 확인하세요.")))
 	workbench_commit_button.disabled = not has_route or not has_fate or not readiness_failures.is_empty()
 	workbench_commit_status_label.text = "확정 가능" if messages.is_empty() else "\n".join(messages)
+
+
+func _render_workbench_reward_status(workbench_context: Dictionary) -> void:
+	workbench_reward_status_label.text = ""
+	if not bool(workbench_context.get("boss_reward_pending", false)):
+		return
+	var labels: Array = workbench_context.get("boss_reward_labels", [])
+	var names: Array[String] = []
+	for label in labels:
+		var text := str(label)
+		if not text.is_empty():
+			names.append(text)
+	var candidates := " / ".join(names)
+	if candidates.is_empty():
+		workbench_reward_status_label.text = "보스 보상이 준비되었습니다. 선택과 배치를 먼저 완료하세요."
+		return
+	workbench_reward_status_label.text = "보스 보상 후보: %s\n선택·배치 조작은 자동으로 확정되지 않습니다." % candidates
 
 
 func _clear_children(container: Node) -> void:

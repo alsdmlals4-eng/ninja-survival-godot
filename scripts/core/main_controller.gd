@@ -4,6 +4,7 @@ class_name MainController
 const DEATH_COUNTED_META := &"ninja_main_death_counted"
 
 const MVP3_CATALOG_SCRIPT = preload("res://scripts/data/mvp3_catalog.gd")
+const MVP4_CATALOG_SCRIPT = preload("res://scripts/data/mvp4_catalog.gd")
 const RUN_BUILD_STATE_SCRIPT = preload("res://scripts/core/run_build_state.gd")
 const SHOP_CONTROLLER_SCRIPT = preload("res://scripts/core/shop_controller.gd")
 const FATE_CONTROLLER_SCRIPT = preload("res://scripts/core/fate_controller.gd")
@@ -12,7 +13,14 @@ const CONTRIBUTION_TRACKER_SCRIPT = preload("res://scripts/combat/combat_contrib
 const COMBAT_RESOLVER_SCRIPT = preload("res://scripts/combat/combat_resolver.gd")
 const STAGE_BOSS_SCENE = preload("res://scenes/enemies/stage_boss.tscn")
 const STAGE_BOSS_SCRIPT = preload("res://scripts/enemies/stage_boss.gd")
+const ENEMY_BASIC_SCENE = preload("res://scenes/enemies/enemy_basic.tscn")
 const REST_FLOW_UI_SCENE = preload("res://scenes/ui/rest_flow_ui.tscn")
+const CHEONSUL_SLICE_SCRIPT = preload("res://scripts/core/cheonsul_vertical_slice_controller.gd")
+
+const CHEONSUL_SLICE_ROLE_META := &"cheonsul_slice_role"
+const CHEONSUL_ENCOUNTER_ID_META := &"cheonsul_encounter_id"
+const CHEONSUL_ELITE_ROLE := &"elite"
+const CHEONSUL_BOSS_ROLE := &"boss"
 
 @export var reward_orb_scene: PackedScene
 
@@ -25,11 +33,13 @@ var contribution_tracker: CombatContributionTracker
 var combat_resolver: CombatResolver
 var rest_flow_ui: RestFlowUI
 var current_stage_boss: Node
+var cheonsul_slice: CheonsulVerticalSliceController
 
 var _item_defs: Dictionary = {}
 var _fate_defs: Dictionary = {}
 var _shop_message: String = ""
 var _latest_result_snapshot: Dictionary = {}
+var _cheonsul_elapsed_seconds: float = 0.0
 
 @onready var game_state: GameState = $GameState
 @onready var combat_ddd: CombatDDDTracker = $CombatDDD
@@ -137,6 +147,8 @@ func _connect_mvp3_signals() -> void:
 	rest_flow_ui.shop_reroll_requested.connect(_on_shop_reroll_requested)
 	rest_flow_ui.shop_continue_requested.connect(_on_shop_continue_requested)
 	rest_flow_ui.fate_selected_requested.connect(_on_fate_selected_requested)
+	rest_flow_ui.workbench_route_selected_requested.connect(_on_workbench_route_selected_requested)
+	rest_flow_ui.workbench_commit_requested.connect(_on_workbench_commit_requested)
 	rest_flow_ui.preview_start_requested.connect(_on_preview_start_requested)
 	rest_flow_ui.restart_requested.connect(_restart_run)
 
@@ -146,6 +158,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if game_over:
 		_restart_run()
+		return
+	if cheonsul_slice != null:
+		if cheonsul_slice.get_snapshot().get("state", &"") == &"trace_available":
+			if cheonsul_slice.recover_trace():
+				hud.show_school_feedback("흔적을 회수했습니다. 보스 경고를 기다리세요.")
+			return
+		if cheonsul_slice.get_snapshot().get("state", &"") in [&"core", &"elite_warning", &"elite_active", &"trace_recovered", &"boss_warning", &"boss_active"]:
+			school_host.try_use_ultimate()
 		return
 	if stage_flow != null and stage_flow.phase != StageFlowController.Phase.COMBAT and stage_flow.phase != StageFlowController.Phase.BOSS:
 		return
@@ -167,9 +187,121 @@ func _on_school_selected(school_id: StringName) -> void:
 	_sync_run_modifiers()
 	hud.set_school(school_host.selected_school_name)
 	contribution_tracker.reset_segment(combat_ddd.reward_count, run_build_state.gold)
+	if school_id == &"cheonsul":
+		if _start_cheonsul_vertical_slice():
+			_set_combat_enabled(true)
+		return
 	if not stage_flow.start_after_school_selection():
 		return
 	_set_combat_enabled(true)
+
+
+func _start_cheonsul_vertical_slice() -> bool:
+	if cheonsul_slice != null:
+		return false
+	var slice := CHEONSUL_SLICE_SCRIPT.new() as CheonsulVerticalSliceController
+	if slice == null:
+		return false
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	if not slice.configure_workbench(
+		run_build_state,
+		fate_controller,
+		MVP4_CATALOG_SCRIPT.build_items(),
+		MVP4_CATALOG_SCRIPT.build_bags(),
+		rng
+	):
+		slice.queue_free()
+		return false
+	add_child(slice)
+	cheonsul_slice = slice
+	cheonsul_slice.phase_changed.connect(_on_cheonsul_slice_phase_changed)
+	cheonsul_slice.chest_token_granted.connect(_on_cheonsul_chest_token_granted)
+	cheonsul_slice.boss_spawn_requested.connect(_on_cheonsul_boss_spawn_requested)
+	cheonsul_slice.normal_spawn_permission_changed.connect(_on_cheonsul_normal_spawn_permission_changed)
+	if not cheonsul_slice.begin_first_school():
+		cheonsul_slice.queue_free()
+		cheonsul_slice = null
+		return false
+	for child in get_children():
+		if child.is_in_group("enemies") and not child.has_meta(CHEONSUL_SLICE_ROLE_META):
+			_wire_enemy(child)
+	_cheonsul_elapsed_seconds = 0.0
+	hud.set_stage(1, 4)
+	hud.set_stage_time(270.0)
+	hud.show_school_feedback("천술류: 원소 반응을 준비하세요.")
+	return true
+
+
+func _process(delta: float) -> void:
+	if game_over or cheonsul_slice == null or delta <= 0.0:
+		return
+	var state_name := StringName(cheonsul_slice.get_snapshot().get("state", &""))
+	if state_name == &"cleared":
+		return
+	_cheonsul_elapsed_seconds += delta
+	cheonsul_slice.sync_elapsed(_cheonsul_elapsed_seconds)
+	hud.set_stage_time(maxf(270.0 - _cheonsul_elapsed_seconds, 0.0))
+
+
+func _on_cheonsul_slice_phase_changed(phase: StringName) -> void:
+	match phase:
+		&"elite_warning":
+			hud.show_school_feedback("정예 경고: %s가 접근합니다." % _cheonsul_encounter_name("elite_display_name", "정예"))
+		&"elite_active":
+			hud.show_school_feedback("정예: 두 원소 준비 뒤 반응을 노리세요.")
+			_spawn_cheonsul_elite()
+		&"trace_available":
+			hud.show_school_feedback("흔적 발견: Enter로 회수하세요.")
+		&"trace_recovered":
+			hud.show_school_feedback("흔적 회수 완료. 보스 게이트를 확인합니다.")
+		&"boss_warning":
+			hud.show_school_feedback("보스 경고: %s가 다가옵니다." % _cheonsul_encounter_name("boss_display_name", "보스"))
+		&"boss_active":
+			hud.show_school_feedback("보스: 준비한 원소 반응을 연결하세요.")
+
+
+func _on_cheonsul_chest_token_granted(_amount: int) -> void:
+	hud.show_school_feedback("정예 보상: 상자 토큰과 흔적을 얻었습니다.")
+
+
+func _on_cheonsul_normal_spawn_permission_changed(allowed: bool) -> void:
+	if cheonsul_slice == null:
+		return
+	wave_spawner.set_spawning_enabled(allowed)
+
+
+func _spawn_cheonsul_elite() -> void:
+	if game_over or cheonsul_slice == null:
+		return
+	var elite := ENEMY_BASIC_SCENE.instantiate()
+	if elite == null:
+		return
+	add_child(elite)
+	if elite is Node2D:
+		(elite as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
+	elite.set_meta(CHEONSUL_SLICE_ROLE_META, CHEONSUL_ELITE_ROLE)
+	elite.set_meta(CHEONSUL_ENCOUNTER_ID_META, _cheonsul_encounter_id("elite_id"))
+	_wire_enemy(elite)
+
+
+func _on_cheonsul_boss_spawn_requested() -> void:
+	if game_over or cheonsul_slice == null:
+		return
+	wave_spawner.set_spawning_enabled(false)
+	if is_instance_valid(current_stage_boss) and not current_stage_boss.is_queued_for_deletion():
+		return
+	var boss_node := STAGE_BOSS_SCENE.instantiate()
+	if not boss_node.has_method("configure_tier") or not boss_node.configure_tier(1):
+		boss_node.free()
+		return
+	add_child(boss_node)
+	current_stage_boss = boss_node
+	if boss_node is Node2D:
+		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
+	boss_node.set_meta(CHEONSUL_SLICE_ROLE_META, CHEONSUL_BOSS_ROLE)
+	boss_node.set_meta(CHEONSUL_ENCOUNTER_ID_META, _cheonsul_encounter_id("boss_id"))
+	_wire_enemy(boss_node)
 
 
 func _sync_run_modifiers() -> void:
@@ -230,6 +362,7 @@ func _on_enemy_died(enemy: Node) -> void:
 		death_position = (enemy as Node2D).global_position
 
 	var is_boss := enemy.has_method("is_stage_boss") and bool(enemy.call("is_stage_boss"))
+	var cheonsul_role := StringName(enemy.get_meta(CHEONSUL_SLICE_ROLE_META, &""))
 	game_state.register_kill(100)
 	combat_ddd.register_kill()
 	school_host.forward_enemy_died(enemy)
@@ -240,8 +373,42 @@ func _on_enemy_died(enemy: Node) -> void:
 	contribution_tracker.record_kill(combat_ddd.combo_count)
 	_spawn_reward_orb(death_position)
 
-	if is_boss:
+	if cheonsul_role == CHEONSUL_ELITE_ROLE and cheonsul_slice != null:
+		cheonsul_slice.mark_elite_defeated()
+	elif cheonsul_role == CHEONSUL_BOSS_ROLE and cheonsul_slice != null:
+		_settle_cheonsul_boss_death(enemy)
+	elif is_boss:
 		_settle_boss_death(enemy)
+
+
+func _settle_cheonsul_boss_death(enemy: Node) -> void:
+	if game_over or cheonsul_slice == null or enemy != current_stage_boss:
+		return
+	if not cheonsul_slice.mark_boss_defeated():
+		return
+	_cleanup_remaining_normal_enemies()
+	current_stage_boss = null
+	_set_combat_enabled(false)
+	_render_cheonsul_workbench()
+
+
+func _render_cheonsul_workbench() -> void:
+	if cheonsul_slice == null:
+		return
+	var snapshot: Dictionary = cheonsul_slice.workbench_snapshot()
+	if snapshot.is_empty():
+		return
+	rest_flow_ui.show_workbench(
+		snapshot.get("route_snapshot", {}),
+		snapshot.get("fate_candidate_ids", []),
+		_fate_defs,
+		StringName(snapshot.get("pending_fate_id", &"")),
+		snapshot.get("readiness_failures", []),
+		{
+			"boss_reward_pending": snapshot.get("boss_reward_pending", false),
+			"boss_reward_labels": snapshot.get("boss_reward_labels", []),
+		}
+	)
 
 
 func _settle_boss_death(enemy: Node) -> void:
@@ -287,8 +454,19 @@ func _spawn_reward_orb(spawn_position: Vector2) -> void:
 	orb.global_position = spawn_position
 	orb.configure(player)
 	orb.collected.connect(_on_reward_collected)
-	if stage_flow.phase != StageFlowController.Phase.COMBAT and stage_flow.phase != StageFlowController.Phase.BOSS:
+	if not _is_reward_orb_combat_active():
 		orb.process_mode = Node.PROCESS_MODE_DISABLED
+
+
+func _is_reward_orb_combat_active() -> bool:
+	if stage_flow.phase == StageFlowController.Phase.COMBAT or stage_flow.phase == StageFlowController.Phase.BOSS:
+		return true
+	if cheonsul_slice == null:
+		return false
+	return cheonsul_slice.get_snapshot().get("state", &"") in [
+		&"core", &"elite_warning", &"elite_active", &"trace_available",
+		&"trace_recovered", &"boss_warning", &"boss_active",
+	]
 
 
 func _on_reward_collected(_orb: RewardOrb) -> void:
@@ -300,10 +478,29 @@ func _on_reward_collected(_orb: RewardOrb) -> void:
 func _wire_enemy(enemy: Node) -> void:
 	if enemy.has_method("set_target"):
 		enemy.set_target(player)
+	if cheonsul_slice != null and enemy.is_in_group("enemies") and not enemy.has_meta(CHEONSUL_SLICE_ROLE_META):
+		var encounter := cheonsul_slice.next_core_encounter()
+		var encounter_id := StringName(encounter.get("id", &""))
+		if encounter_id != &"":
+			enemy.set_meta(CHEONSUL_ENCOUNTER_ID_META, encounter_id)
 	if enemy.has_signal("died"):
 		var death_callback := Callable(self, "_on_enemy_died")
 		if not enemy.is_connected("died", death_callback):
 			enemy.connect("died", death_callback)
+
+
+func _cheonsul_encounter_id(key: String) -> StringName:
+	if cheonsul_slice == null:
+		return &""
+	var encounter: Dictionary = cheonsul_slice.get_snapshot().get("encounter", {})
+	return StringName(encounter.get(key, &""))
+
+
+func _cheonsul_encounter_name(key: String, fallback: String) -> String:
+	if cheonsul_slice == null:
+		return fallback
+	var encounter: Dictionary = cheonsul_slice.get_snapshot().get("encounter", {})
+	return str(encounter.get(key, fallback))
 
 
 func _on_player_damage_resolved(_requested: int, _resolved: int, prevented: int, _evaded: bool) -> void:
@@ -375,6 +572,10 @@ func _on_shop_continue_requested() -> void:
 
 
 func _on_fate_selected_requested(fate_id: StringName) -> void:
+	if cheonsul_slice != null:
+		if fate_controller.choose_pending(fate_id):
+			_render_cheonsul_workbench()
+		return
 	if game_over or stage_flow.phase != StageFlowController.Phase.FATE:
 		return
 	if not fate_controller.choose(fate_id):
@@ -387,6 +588,19 @@ func _on_fate_selected_requested(fate_id: StringName) -> void:
 		rest_flow_ui.show_complete(summary)
 	else:
 		rest_flow_ui.show_preview(summary)
+
+
+func _on_workbench_route_selected_requested(school_id: StringName) -> void:
+	if game_over or cheonsul_slice == null:
+		return
+	if cheonsul_slice.route_state.set_provisional_next_school(school_id):
+		_render_cheonsul_workbench()
+
+
+func _on_workbench_commit_requested() -> void:
+	if cheonsul_slice == null:
+		return
+	_render_cheonsul_workbench()
 
 
 func _build_preview_summary(new_fate_id: StringName) -> Dictionary:
