@@ -9,6 +9,22 @@ const RESOLVER_PATH := "res://scripts/combat/combat_resolver.gd"
 const MODIFIER_PATH := "res://scripts/data/run_modifier_set.gd"
 
 
+class ImmuneEnemy:
+	extends Node2D
+
+
+	func _ready() -> void:
+		add_to_group("enemies")
+
+
+	func take_damage(_amount: int) -> int:
+		return 0
+
+
+	func is_dead() -> bool:
+		return false
+
+
 func _make_runtime():
 	assert_true(ResourceLoader.exists(RUNTIME_PATH), "Heukyeong runtime script must exist")
 	if not ResourceLoader.exists(RUNTIME_PATH):
@@ -78,6 +94,17 @@ func test_normal_and_critical_hits_apply_exact_damage_and_marks() -> void:
 	assert_true(runtime.apply_needle_hit(enemy, true))
 	assert_eq(enemy.health, 66)
 	assert_eq(runtime.get_mark_count(enemy), 0)
+
+
+func test_zero_actual_needle_damage_does_not_emit_player_action() -> void:
+	var runtime = _make_runtime()
+	if runtime == null:
+		return
+	var immune := ImmuneEnemy.new()
+	runtime.world.add_child(immune)
+	watch_signals(runtime)
+	assert_false(runtime.apply_needle_hit(immune, false))
+	assert_signal_not_emitted(runtime, "player_action_resolved")
 
 
 func test_marked_target_uses_emblem_critical_bonus_only_when_marked() -> void:

@@ -8,6 +8,22 @@ const RESOLVER_PATH := "res://scripts/combat/combat_resolver.gd"
 const MODIFIER_PATH := "res://scripts/data/run_modifier_set.gd"
 
 
+class ImmuneEnemy:
+	extends Node2D
+
+
+	func _ready() -> void:
+		add_to_group("enemies")
+
+
+	func take_damage(_amount: int) -> int:
+		return 0
+
+
+	func is_dead() -> bool:
+		return false
+
+
 func test_attack_once_damages_nearest_valid_enemy() -> void:
 	assert_true(ResourceLoader.exists(FAMILIAR_PATH), "Bongma familiar script must exist")
 	if not ResourceLoader.exists(FAMILIAR_PATH):
@@ -140,3 +156,20 @@ func test_attack_ignores_dead_enemy() -> void:
 
 	assert_eq(familiar.attack_once(), alive_enemy)
 	assert_eq(alive_enemy.health, 12)
+
+
+func test_zero_actual_familiar_damage_does_not_emit_attack_resolved() -> void:
+	var world := Node2D.new()
+	add_child_autofree(world)
+	var player = load(PLAYER_PATH).new()
+	world.add_child(player)
+	var familiar = load(FAMILIAR_PATH).new()
+	world.add_child(familiar)
+	familiar.configure(player, 0.70, 8)
+	var immune := ImmuneEnemy.new()
+	immune.global_position = Vector2(20, 0)
+	world.add_child(immune)
+
+	watch_signals(familiar)
+	assert_eq(familiar.attack_once(), immune)
+	assert_signal_not_emitted(familiar, "attack_resolved")
