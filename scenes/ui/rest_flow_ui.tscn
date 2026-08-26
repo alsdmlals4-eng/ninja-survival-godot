@@ -108,6 +108,27 @@ text = "운명 선택 — 1개 필수"
 [node name="Candidates" type="HBoxContainer" parent="Panel/Margin/Content/FateView"]
 layout_mode = 2
 
+[node name="WorkbenchView" type="VBoxContainer" parent="Panel/Margin/Content"]
+visible = false
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+text = "작업대 — 다음 유파는 임시 선택입니다"
+
+[node name="RouteCards" type="HBoxContainer" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+
+[node name="FateCandidates" type="HBoxContainer" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+
+[node name="CommitStatusLabel" type="Label" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+
+[node name="CommitButton" type="Button" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+text = "작업대 확정"
+
 [node name="PreviewView" type="VBoxContainer" parent="Panel/Margin/Content"]
 visible = false
 layout_mode = 2

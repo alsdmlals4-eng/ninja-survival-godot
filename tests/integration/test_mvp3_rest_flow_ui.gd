@@ -125,6 +125,47 @@ func test_fate_view_shows_three_benefit_cost_cards_and_has_no_skip() -> void:
 	assert_eq(emitted, [["fate", &"seal_path"]])
 
 
+func test_workbench_renders_only_unvisited_routes_and_emits_intents() -> void:
+	var ui = _new_ui()
+	if ui == null:
+		return
+	ui.workbench_route_selected_requested.connect(func(school_id: StringName): emitted.append(["route", school_id]))
+	ui.fate_selected_requested.connect(func(fate_id: StringName): emitted.append(["fate", fate_id]))
+	ui.workbench_commit_requested.connect(func(): emitted.append(["commit"]))
+	var catalog = load(CATALOG_PATH)
+	var fates: Dictionary = catalog.build_fates()
+	var unvisited: Array[StringName] = [&"cheonsul", &"guiin"]
+	var candidates: Array[StringName] = [&"slaughter_path", &"guardian_path"]
+	var readiness_failures: Array[StringName] = []
+	ui.show_workbench(
+		{
+			"unvisited_school_ids": unvisited,
+			"provisional_school_id": &"guiin",
+		},
+		candidates,
+		fates,
+		&"guardian_path",
+		readiness_failures
+	)
+
+	var route_cards = ui.get_node("Panel/Margin/Content/WorkbenchView/RouteCards")
+	var fate_cards = ui.get_node("Panel/Margin/Content/WorkbenchView/FateCandidates")
+	var commit_button = ui.get_node("Panel/Margin/Content/WorkbenchView/CommitButton")
+	assert_true(ui.get_node("Panel/Margin/Content/WorkbenchView").visible)
+	assert_eq(route_cards.get_child_count(), 2)
+	assert_eq(fate_cards.get_child_count(), 2)
+	assert_true(route_cards.get_child(1).text.contains("임시 선택"))
+	assert_false(route_cards.get_child(0).text.contains("HP"))
+	assert_false(commit_button.disabled)
+	for button in route_cards.get_children() + fate_cards.get_children():
+		assert_ne(button.focus_mode, Control.FOCUS_NONE)
+
+	route_cards.get_child(0).emit_signal("pressed")
+	fate_cards.get_child(1).emit_signal("pressed")
+	commit_button.emit_signal("pressed")
+	assert_eq(emitted, [["route", &"cheonsul"], ["fate", &"guardian_path"], ["commit"]])
+
+
 func test_preview_and_complete_are_distinct_terminal_states() -> void:
 	var ui = _new_ui()
 	if ui == null:
