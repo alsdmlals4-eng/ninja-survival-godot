@@ -3,6 +3,7 @@ extends RefCounted
 class_name RestCommitCoordinator
 
 var _committed_backpack_state = null
+var _source_backpack_state = null
 var _build_state: RunBuildState
 var _route_state: RunRouteState
 var _fate_controller: FateController
@@ -22,6 +23,7 @@ func configure(
 		return false
 	if committed_backpack_state == null or build_state == null or route_state == null or fate_controller == null:
 		return false
+	_source_backpack_state = committed_backpack_state
 	_committed_backpack_state = committed_backpack_state.copy_value()
 	_build_state = build_state
 	_route_state = route_state
@@ -35,6 +37,8 @@ func begin_rest(session: RestBackpackSession) -> bool:
 	if not _configured or _committed_this_rest or _commit_in_progress or _session != null or session == null:
 		return false
 	if not _fate_controller._is_bound_to_build_state(_build_state):
+		return false
+	if not session._is_bound_to_committed_state(_source_backpack_state):
 		return false
 	_session = session
 	return true

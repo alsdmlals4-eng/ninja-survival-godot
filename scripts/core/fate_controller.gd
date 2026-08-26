@@ -63,7 +63,7 @@ func _can_commit_pending() -> bool:
 		and selected_this_rest == _pending_fate_id \
 		and candidate_ids.has(_pending_fate_id) \
 		and _build_state != null \
-		and not _build_state.has_fate(_pending_fate_id)
+		and _build_state.can_select_fate(_pending_fate_id)
 
 
 func _commit_pending() -> bool:
