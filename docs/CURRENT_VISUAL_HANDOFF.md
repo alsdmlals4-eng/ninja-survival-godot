@@ -1,8 +1,28 @@
 # CURRENT VISUAL HANDOFF — Ninja Survival / 닌자의 신
 
-> Updated: 2026-08-25 KST
+> Updated: 2026-08-26 KST
 > Purpose: next-chat resume router for the approved visual direction and current image-production state.
 > Product/runtime authority remains `AGENTS.md` → `docs/CURRENT_CONFIRMED_DECISIONS.md` → `docs/ACTIVE_CONTEXT.md` → actual code/data/tests. This file owns the **current visual continuation state only**.
+
+## 0. Current IMG-01 source receipt — 2026-08-26
+
+The user-approved fixed-player Move / Attack / Hit v1 images remain immutable
+visual provenance. Their baked checkerboard prevents runtime use. The approved
+v2 alpha-remediated derivatives are now stored as exact project-local PNGs and
+as native original-binary attachments on their corresponding Notion Asset
+Library records:
+
+| Variant | Local v2 source | SHA-256 | Notion record |
+| --- | --- | --- | --- |
+| Move | `docs/assets/approved/img-01-player-runtime-core/player_runtime_move_v2_alpha.png` | `a56f79918bd9ebe451cbca092cb9828c512a710c1762600a070eeba68e01fb2a` | [Notion](https://app.notion.com/p/3c81b237eb1c815e9e9eeb4c8b0c2911) |
+| Attack | `docs/assets/approved/img-01-player-runtime-core/player_runtime_attack_v2_alpha.png` | `75c6d31237ebf8cd1760c89d90d2a85ebae5c2802cb615816b1be8fb7f7836cd` | [Notion](https://app.notion.com/p/3c81b237eb1c81e3a121c2904209f2eb) |
+| Hit | `docs/assets/approved/img-01-player-runtime-core/player_runtime_hit_v2_alpha.png` | `f00c2f6fd09e6c52e1dce8abe6f493e76245d2dbc818ee4ac5db1b98f5b23d60` | [Notion](https://app.notion.com/p/3c81b237eb1c81958819dc9e3e763587) |
+
+All v2 files are 1254×1254 32bpp ARGB PNGs with transparent corners. Notion
+readback confirmed native v2 image blocks. This clears only the source-level
+alpha and dual-storage gate. Godot import, Scene wiring, runtime rendering,
+input, smoke, and human play validation are all **NOT_RUN**. PR #49 remains
+read-only.
 
 ## 1. Exact repository / concurrency state at handoff
 
