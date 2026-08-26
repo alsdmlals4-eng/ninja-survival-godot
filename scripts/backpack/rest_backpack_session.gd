@@ -14,6 +14,8 @@ enum InputMode {
 }
 
 var _state = null
+var _source_committed_state = null
+var _begin_generation: int = 0
 var _buffer: Array = []
 var _pending_bag = null
 var input_mode: int = InputMode.NORMAL
@@ -49,6 +51,8 @@ var combination_transaction_active: bool:
 
 
 func begin(committed_state, resolver, item_defs: Dictionary, bag_defs: Dictionary, selected_school_id: StringName) -> void:
+	_begin_generation += 1
+	_source_committed_state = committed_state
 	_state = committed_state.copy_value() if committed_state != null else null
 	_resolver = resolver
 	_item_defs = item_defs.duplicate()
@@ -61,6 +65,14 @@ func begin(committed_state, resolver, item_defs: Dictionary, bag_defs: Dictionar
 	_redo_stack.clear()
 	_pending_preview_state = null
 	_combination_transaction_active = false
+
+
+func _is_bound_to_committed_state(committed_state) -> bool:
+	return _source_committed_state != null and _source_committed_state == committed_state
+
+
+func _transaction_generation() -> int:
+	return _begin_generation
 
 
 func preview_item(instance_id: int, origin: Vector2i, rotation_quarters: int):

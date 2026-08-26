@@ -2,21 +2,21 @@
 
 ```yaml
 project: NINJA_SURVIVAL
-state_router_updated_at: 2026-08-25 KST
+state_router_updated_at: 2026-08-26 KST
 reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
 current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
 completed_main_label: T11_TRADITION_ACCESS_REWARD_LANES_PLUS_DOCS_CLOSEOUT_BASELINE
-resume_state: T12_DRAFT_PR_49_IN_PROGRESS_NOT_MERGED
-next_product_gate: T12_CURRENT_DRAFT_PR_49_THEN_T13
+resume_state: T12_FRESH_PR_61_IMPLEMENTATION_RESOLVE_MERGE_FROM_GITHUB_DEFAULT_BRANCH
+next_product_gate: RESOLVE_T12_PR_61_MERGE_THEN_T13
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 historical_closed_wip:
   - PR_43_T12_ATOMIC_WORKBENCH
   - PR_44_FRONT_DOOR_DOCS
 other_workstream_read_only:
-  - PR_49_T12_ATOMIC_WORKBENCH_FATE_ROUTE_COMMIT
+  - PR_49_T12_ATOMIC_WORKBENCH_FATE_ROUTE_COMMIT_SUPERSEDED_BY_PR_61
 mvp0_to_mvp3_runtime: INTEGRATED_BASELINE
 mvp4_t01_to_t11_domain_chain: INTEGRATED_ON_COMPLETED_MAIN
 playable_new_four_school_run: NOT_PROVEN
@@ -55,7 +55,7 @@ Do not reconstruct current state from older handoff sentences or closed branches
 11. Notion `닌자 서바이벌 · Home`, `03 · UI · 생존 Flow Map`, `08 · 핵심 시스템 · 상세`, `06 · Production · Handoff`, `02 · 비주얼 바이블`
 12. current Base owners when Base freshness materially affects the task
 
-Closed PR #43/#44 may be inspected only as historical/WIP evidence. They are not resume baselines. Draft PR #49 is the current T12 implementation workstream and is read-only to unrelated visual/document work.
+Closed PR #43/#44 may be inspected only as historical/WIP evidence. They are not resume baselines. Draft PR #49 is a read-only, superseded T12 reference; fresh PR #61 is the current T12 implementation. Resolve PR #61's merge state from the GitHub default branch before continuing.
 
 ## Current product direction
 
@@ -140,11 +140,11 @@ Evidence ceiling: domain/automated scope only.
 
 ## T12 current status
 
-**IN_PROGRESS / DRAFT PR #49 / NOT_MERGED / NOT_COMPLETED.**
+**FRESH PR #61 IMPLEMENTED / MERGE STATUS MUST BE RESOLVED FROM THE GITHUB DEFAULT BRANCH.**
 
-PR #49 `T12: atomic Workbench Fate route commit` is the current implementation workstream based on completed main `c0440e7043bcf3bb678f5cb7d1653883f93c07a2` at this closeout observation. Unrelated visual work must not modify, rebase, close, merge or absorb it.
+PR #61 `T12: atomically commit Workbench snapshot, Fate, and route` is the fresh implementation workstream from then-current completed `main` `98eaee2`. It replaces the abandoned T12 draft as the current merge candidate; use the GitHub default branch to resolve whether it has merged before resuming.
 
-Historical PR #43 remains closed-unmerged WIP/reference only.
+PR #49 `T12: atomic Workbench Fate route commit` and historical PR #43 remain read-only WIP/reference only. Do not reopen, rebase, merge or absorb either branch.
 
 Current approved T12 outcome remains:
 
@@ -223,7 +223,7 @@ NOTION_HUMAN_VISIBLE_LATEST_PREVIEWS: NOT_RUN
 ## Remaining product sequence
 
 ```text
-T12 current draft PR #49 -> merge only in its own authorized workstream
+Resolve fresh T12 PR #61 merge from the default branch
 -> T13 Persistent Workbench route-preview UI/input
 -> T14 Cheonsul release-near Vertical Slice
 -> T15 Human QA gate

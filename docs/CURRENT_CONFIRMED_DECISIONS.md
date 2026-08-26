@@ -2,7 +2,7 @@
 
 ```yaml
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER
-updated_at: 2026-08-25 KST
+updated_at: 2026-08-26 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
 current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
@@ -16,10 +16,10 @@ current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 phase_b_verdict: PASS_FOR_APPROVED_DOMAIN_SEQUENCE
 mvp0_to_mvp3_baseline: INTEGRATED
 t01_to_t11_domain_chain: INTEGRATED_ON_COMPLETED_MAIN
-t12_atomic_workbench_commit: IN_PROGRESS_DRAFT_PR_49_NOT_MERGED
+t12_atomic_workbench_commit: FRESH_PR_61_IMPLEMENTATION_RESOLVE_MERGE_FROM_GITHUB_DEFAULT_BRANCH
 pr_43_t12: CLOSED_UNMERGED_HISTORICAL_WIP
 pr_44_front_door_docs: CLOSED_UNMERGED_HISTORICAL_WIP
-pr_49_t12: OPEN_DRAFT_OTHER_WORKSTREAM_READ_ONLY_FOR_VISUAL_CLOSEOUT
+pr_49_t12: OPEN_DRAFT_READ_ONLY_SUPERSEDED_BY_FRESH_PR_61
 playable_new_four_school_run: NOT_PROVEN
 release_near_vertical_slice_human_qa: NOT_RUN
 human_usability: NOT_RUN
@@ -214,11 +214,11 @@ T11 recorded exact-head evidence in Production Handoff:
 
 Evidence ceiling: automated/domain implementation scope only.
 
-## 9. Current product workstream — T12 PR #49
+## 9. Current product workstream — T12 fresh PR #61
 
-T12 is **IN_PROGRESS / NOT_MERGED / NOT_COMPLETED** in draft PR #49 (`T12: atomic Workbench Fate route commit`). PR #49 is a separate implementation workstream and remains read-only for this visual closeout.
+T12's fresh implementation is PR #61 (`T12: atomically commit Workbench snapshot, Fate, and route`). Resolve its merge state from the GitHub default branch before continuing; do not infer it from older handoffs.
 
-Historical PR #43 (`T12: add atomic Workbench commit coordinator`) remains closed-unmerged WIP/reference only. PR #44 is also closed-unmerged historical WIP.
+Draft PR #49 (`T12: atomic Workbench Fate route commit`) is superseded and remains read-only WIP/reference only. Historical PR #43 (`T12: add atomic Workbench commit coordinator`) and PR #44 are also closed-unmerged WIP/reference only.
 
 Still-approved product outcome:
 
@@ -229,12 +229,12 @@ Still-approved product outcome:
 - existing T02/T03/T04/T05/T06/T07/T08/T11 owners remain singular,
 - T13 UI/MainController migration is not silently absorbed unless fresh evidence proves a smaller integration necessity.
 
-Visual work must not modify, rebase, close, merge or absorb PR #49 unless a later user instruction explicitly authorizes that PR workstream.
+Visual work must not modify, rebase, close, merge or absorb PR #49. It is not a resume baseline for T12.
 
 ## 10. Remaining production sequence
 
 ```text
-T12 atomic Workbench + Fate + route commit (currently draft PR #49)
+T12 atomic Workbench + Fate + route commit (fresh PR #61; resolve completed-main merge)
 -> T13 Persistent Workbench route-preview UI/input
 -> T14 Cheonsul one-school release-near Vertical Slice
 -> T15 Human QA gate
@@ -361,4 +361,4 @@ Do not use T01~T11 test receipts or Notion server readback to promote these stat
 
 Current visual continuation and next-chat quality gate are owned by `docs/CURRENT_VISUAL_HANDOFF.md`.
 
-Product implementation continues independently through draft T12 PR #49; the visual closeout does not claim or mutate that implementation workstream.
+Product implementation continues through fresh T12 PR #61; draft PR #49 remains read-only and does not authorize resuming that older implementation path.
