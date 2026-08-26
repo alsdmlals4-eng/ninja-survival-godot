@@ -306,10 +306,8 @@ func _wire_enemy(enemy: Node) -> void:
 			enemy.connect("died", death_callback)
 
 
-func _on_player_damage_resolved(_requested: int, resolved: int, prevented: int, _evaded: bool) -> void:
+func _on_player_damage_resolved(_requested: int, _resolved: int, prevented: int, _evaded: bool) -> void:
 	contribution_tracker.record_defense(prevented)
-	if resolved > 0:
-		player_visual.show_hit()
 
 
 func _on_result_continue_requested() -> void:

@@ -54,4 +54,5 @@ func is_ultimate_ready() -> bool:
 
 
 func emit_player_action_resolved() -> void:
-	player_action_resolved.emit()
+	if active:
+		player_action_resolved.emit()

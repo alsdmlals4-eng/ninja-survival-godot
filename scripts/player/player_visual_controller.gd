@@ -20,6 +20,9 @@ var _remaining_seconds: float = 0.0
 
 func _ready() -> void:
 	_show_move()
+	var player := get_parent() as PlayerController
+	if player != null:
+		player.damage_resolved.connect(_on_player_damage_resolved)
 
 
 func _process(delta: float) -> void:
@@ -56,3 +59,8 @@ func _show_move() -> void:
 	_pose = Pose.MOVE
 	_remaining_seconds = 0.0
 	texture = move_texture
+
+
+func _on_player_damage_resolved(_requested: int, resolved: int, _prevented: int, evaded: bool) -> void:
+	if resolved > 0 and not evaded:
+		show_hit()
