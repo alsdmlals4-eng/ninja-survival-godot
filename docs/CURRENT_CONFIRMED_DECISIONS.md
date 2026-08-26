@@ -4,8 +4,8 @@
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER
 updated_at: 2026-08-26 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
-current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
-current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
+current_completed_main: 41202283b75921efb7691e77c3de1502d77410d1
+current_completed_main_resolution: GITHUB_DEFAULT_BRANCH_READBACK_2026_08_26_KST
 latest_product_canon: docs/canon/2026-08-21-dec014-025-product-canon.md
 latest_encounter_canon: docs/canon/2026-08-22-dec026-encounter-pattern-budget.md
 latest_migration_traceability: docs/traceability/2026-08-22-dec026-post-gate-traceability.md
@@ -15,8 +15,9 @@ current_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-hu
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 phase_b_verdict: PASS_FOR_APPROVED_DOMAIN_SEQUENCE
 mvp0_to_mvp3_baseline: INTEGRATED
-t01_to_t11_domain_chain: INTEGRATED_ON_COMPLETED_MAIN
-t12_atomic_workbench_commit: FRESH_PR_61_IMPLEMENTATION_RESOLVE_MERGE_FROM_GITHUB_DEFAULT_BRANCH
+t01_to_t12_domain_chain: INTEGRATED_ON_COMPLETED_MAIN
+t12_atomic_workbench_commit: MERGED_MAIN_41202283b75921efb7691e77c3de1502d77410d1
+t13_persistent_workbench_route_ui_input: FRESH_PR_62_IMPLEMENTATION_CANDIDATE
 pr_43_t12: CLOSED_UNMERGED_HISTORICAL_WIP
 pr_44_front_door_docs: CLOSED_UNMERGED_HISTORICAL_WIP
 pr_49_t12: OPEN_DRAFT_READ_ONLY_SUPERSEDED_BY_FRESH_PR_61
@@ -186,11 +187,11 @@ First release-near Vertical Slice target remains **천술류**.
 
 DEC-026 does not claim full playable encounter integration or final-calamity exact full attack script completion.
 
-## 8. Current implementation boundary — merged through T11
+## 8. Current implementation boundary — merged through T12
 
-Latest completed-main observation for this closeout is `c0440e7043bcf3bb678f5cb7d1653883f93c07a2`. The latest merged product implementation baseline remains T11:
+The current completed-main baseline is:
 
-`265bab32da087c070ea2ea0d98a3bdace1e10f7f` — `T11: add tradition access reward lanes`.
+`41202283b75921efb7691e77c3de1502d77410d1` — `T12: atomically commit Workbench snapshot, Fate, and route`.
 
 Current merged domain chain:
 
@@ -206,36 +207,36 @@ T01 definitions/catalog
 -> T09 encounter definitions/stage profiles
 -> T10 Elite/Trace/Boss lifecycle
 -> T11 tradition access/reward lanes
+-> T12 atomic committed backpack snapshot + Fate + route transaction
 ```
 
-T11 recorded exact-head evidence in Production Handoff:
+T12 post-merge automated evidence in Production Handoff:
 
-`Godot 4.7.1 import PASS -> main smoke PASS -> GUT 447/447 -> 4985 assertions -> T11 core 9/9 + adversarial 8/8 + clean re-attack 5/5`.
+`Godot 4.7.1 import PASS -> main smoke PASS -> GUT 471/471 -> 5168 assertions`.
 
 Evidence ceiling: automated/domain implementation scope only.
 
-## 9. Current product workstream — T12 fresh PR #61
+## 9. Current product workstream — T13 fresh Issue #62
 
-T12's fresh implementation is PR #61 (`T12: atomically commit Workbench snapshot, Fate, and route`). Resolve its merge state from the GitHub default branch before continuing; do not infer it from older handoffs.
+T12 PR #61 (`T12: atomically commit Workbench snapshot, Fate, and route`) is merged in the completed-main baseline above. T13 starts fresh from that baseline as Issue #62, and is limited to a reusable Workbench route-preview/input presentation contract.
 
 Draft PR #49 (`T12: atomic Workbench Fate route commit`) is superseded and remains read-only WIP/reference only. Historical PR #43 (`T12: add atomic Workbench commit coordinator`) and PR #44 are also closed-unmerged WIP/reference only.
 
-Still-approved product outcome:
+T12's protected product outcome remains:
 
 - next route remains provisional through Workbench,
 - final T04 backpack/session state + one pending Fate + one provisional unvisited school are validated before committed mutation,
 - failure mutates none of committed backpack/Fate/route state,
 - success commits exactly once,
 - existing T02/T03/T04/T05/T06/T07/T08/T11 owners remain singular,
-- T13 UI/MainController migration is not silently absorbed unless fresh evidence proves a smaller integration necessity.
+- T13 presentation may not move transaction ownership into UI.
 
-Visual work must not modify, rebase, close, merge or absorb PR #49. It is not a resume baseline for T12.
+T13 scope is intentionally not MainController/T14 integration: it renders supplied snapshots, marks route/Fate choices as pending, sends intent signals, and presents coordinator/readiness failures in Korean. Visual work must not modify, rebase, close, merge or absorb PR #49.
 
 ## 10. Remaining production sequence
 
 ```text
-T12 atomic Workbench + Fate + route commit (fresh PR #61; resolve completed-main merge)
--> T13 Persistent Workbench route-preview UI/input
+T13 Persistent Workbench route-preview UI/input (fresh Issue #62; resolve PR candidate)
 -> T14 Cheonsul one-school release-near Vertical Slice
 -> T15 Human QA gate
 -> T16 expand 봉마/귀인/흑영
