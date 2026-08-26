@@ -170,6 +170,7 @@ func test_workbench_fails_closed_for_unknown_duplicate_and_incomplete_inputs() -
 	var ui = _new_ui()
 	if ui == null:
 		return
+	ui.workbench_route_selected_requested.connect(func(school_id: StringName): emitted.append(["route", school_id]))
 	ui.workbench_commit_requested.connect(func(): emitted.append(["commit"]))
 	var catalog = load(CATALOG_PATH)
 	var fates: Dictionary = catalog.build_fates()
@@ -212,6 +213,124 @@ func test_workbench_fails_closed_for_unknown_duplicate_and_incomplete_inputs() -
 	assert_eq(route_cards.get_child_count(), 1)
 	assert_eq(fate_cards.get_child_count(), 0)
 	assert_true(commit_button.disabled)
+	route_cards.get_child(0).emit_signal("pressed")
+	assert_eq(emitted, [["route", &"guiin"]], "A refresh must remove stale route callbacks with its old cards")
+
+
+func test_workbench_explains_every_current_commit_failure_code() -> void:
+	var ui = _new_ui()
+	if ui == null:
+		return
+	var catalog = load(CATALOG_PATH)
+	var fates: Dictionary = catalog.build_fates()
+	var candidates: Array[StringName] = [&"guardian_path"]
+	var failures: Array[StringName] = [
+		&"missing_session",
+		&"already_committed",
+		&"commit_in_progress",
+		&"missing_state",
+		&"missing_resolver",
+		&"invalid_backpack",
+		&"unknown_item_definition",
+		&"unknown_bag_definition",
+		&"empty_bag_footprint",
+		&"bag_out_of_bounds",
+		&"bag_overlap",
+		&"no_active_cells",
+		&"disconnected_active_cells",
+		&"empty_item_footprint",
+		&"item_out_of_bounds",
+		&"inactive_item_cell",
+		&"item_overlap",
+	]
+	ui.show_workbench(
+		{
+			"unvisited_school_ids": [&"bongma"],
+			"provisional_school_id": &"bongma",
+		},
+		candidates,
+		fates,
+		&"guardian_path",
+		failures
+	)
+	var status_label: Label = ui.get_node("Panel/Margin/Content/WorkbenchView/CommitStatusLabel")
+	assert_true(status_label.text.contains("세션"))
+	assert_true(status_label.text.contains("이미 확정"))
+	assert_true(status_label.text.contains("처리 중"))
+	assert_true(status_label.text.contains("백팩 상태"))
+	assert_true(status_label.text.contains("배치 규칙"))
+	assert_true(status_label.text.contains("아이템 정의"))
+	assert_true(status_label.text.contains("가방 정의"))
+	assert_true(status_label.text.contains("가방 모양"))
+	assert_true(status_label.text.contains("가방 범위"))
+	assert_true(status_label.text.contains("가방이 겹"))
+	assert_true(status_label.text.contains("활성 칸"))
+	assert_true(status_label.text.contains("이어져"))
+	assert_true(status_label.text.contains("아이템 모양"))
+	assert_true(status_label.text.contains("아이템 범위"))
+	assert_true(status_label.text.contains("사용할 수 없는"))
+	assert_true(status_label.text.contains("아이템이 겹"))
+	assert_true(ui.get_node("Panel/Margin/Content/WorkbenchView/CommitButton").disabled)
+
+
+func test_workbench_standard_pointer_touch_and_focus_input_emit_intents() -> void:
+	get_viewport().size = Vector2i(1152, 648)
+	var ui = _new_ui()
+	if ui == null:
+		return
+	ui.workbench_route_selected_requested.connect(func(school_id: StringName): emitted.append(["route", school_id]))
+	ui.fate_selected_requested.connect(func(fate_id: StringName): emitted.append(["fate", fate_id]))
+	ui.workbench_commit_requested.connect(func(): emitted.append(["commit"]))
+	var catalog = load(CATALOG_PATH)
+	var fates: Dictionary = catalog.build_fates()
+	var candidates: Array[StringName] = [&"guardian_path"]
+	var no_failures: Array[StringName] = []
+	ui.show_workbench(
+		{
+			"unvisited_school_ids": [&"bongma"],
+			"provisional_school_id": &"bongma",
+		},
+		candidates,
+		fates,
+		&"guardian_path",
+		no_failures
+	)
+	await get_tree().process_frame
+	var route_button: Button = ui.get_node("Panel/Margin/Content/WorkbenchView/RouteCards").get_child(0)
+	var fate_button: Button = ui.get_node("Panel/Margin/Content/WorkbenchView/FateCandidates").get_child(0)
+	var commit_button: Button = ui.get_node("Panel/Margin/Content/WorkbenchView/CommitButton")
+	var route_gui_events: Array = []
+	route_button.gui_input.connect(func(event: InputEvent): route_gui_events.append(event))
+	var route_center := route_button.get_global_rect().get_center()
+	var fate_center := fate_button.get_global_rect().get_center()
+	assert_gt(route_button.size.x, 0.0, "Route button must receive a layout size before pointer input")
+	assert_gt(route_button.size.y, 0.0, "Route button must receive a layout size before pointer input")
+	ui.get_viewport().push_input(GutInputFactory.mouse_motion(route_center, route_center), true)
+	ui.get_viewport().push_input(GutInputFactory.mouse_left_button_down(route_center, route_center), true)
+	await get_tree().process_frame
+	assert_eq(ui.get_viewport().gui_get_hovered_control(), route_button, "Viewport hit-testing must target the visible route Button")
+	ui.get_viewport().push_input(GutInputFactory.mouse_left_button_up(route_center, route_center), true)
+	await get_tree().process_frame
+	assert_gt(route_gui_events.size(), 0, "Viewport pointer input must reach the route Button GUI boundary")
+	assert_eq(emitted, [["route", &"bongma"]], "Pointer click must use the route Button intent")
+
+	var touch_down := InputEventScreenTouch.new()
+	touch_down.position = fate_center
+	touch_down.pressed = true
+	var touch_up := InputEventScreenTouch.new()
+	touch_up.position = fate_center
+	touch_up.pressed = false
+	ui.get_viewport().push_input(touch_down, true)
+	await get_tree().process_frame
+	ui.get_viewport().push_input(touch_up, true)
+	await get_tree().process_frame
+	assert_eq(emitted, [["route", &"bongma"], ["fate", &"guardian_path"]], "Touch must use the Fate Button intent")
+
+	commit_button.grab_focus()
+	Input.parse_input_event(GutInputFactory.action_down(&"ui_accept"))
+	Input.parse_input_event(GutInputFactory.action_up(&"ui_accept"))
+	await get_tree().process_frame
+	assert_eq(emitted, [["route", &"bongma"], ["fate", &"guardian_path"], ["commit"]], "Focused confirm covers keyboard/gamepad Button activation")
 
 
 func test_workbench_focuses_the_provisional_route_card() -> void:
@@ -275,7 +394,7 @@ func test_hide_all_hides_overlay_and_every_state_view() -> void:
 	ui.show_preview({})
 	ui.hide_all()
 	assert_false(ui.get_node("Panel").visible)
-	for view_name in ["ResultView", "ShopView", "FateView", "PreviewView", "CompleteView"]:
+	for view_name in ["ResultView", "ShopView", "FateView", "WorkbenchView", "PreviewView", "CompleteView"]:
 		assert_false(ui.get_node("Panel/Margin/Content/%s" % view_name).visible)
 
 

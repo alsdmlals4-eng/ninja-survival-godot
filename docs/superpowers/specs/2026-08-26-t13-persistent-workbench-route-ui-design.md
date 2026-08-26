@@ -23,7 +23,7 @@ This is preferred over embedding rules in UI because it preserves the T12 owner 
 
 ## UI contract
 
-`RestFlowUI.show_workbench(route_snapshot, fate_candidate_ids, fate_definitions, readiness_failures)` renders:
+`RestFlowUI.show_workbench(route_snapshot, fate_candidate_ids, fate_definitions, pending_fate_id, readiness_failures)` renders:
 
 - exactly `unvisited_school_ids` route cards;
 - selected/provisional route state from `provisional_school_id`;
