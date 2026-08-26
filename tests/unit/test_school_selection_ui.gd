@@ -97,6 +97,35 @@ func test_help_close_button_returns_to_school_selection_without_selecting() -> v
 	assert_true(help_button.has_focus(), "Closing help must return keyboard/gamepad focus to its opener")
 
 
+func test_selected_school_help_reopens_during_play_and_returns_to_hud_opener() -> void:
+	var selector = load(SELECTOR_SCENE_PATH).instantiate()
+	add_child_autofree(selector)
+	var ids: Array[StringName] = []
+	selector.school_selected.connect(func(id: StringName): ids.append(id))
+	var runtime_opener := Button.new()
+	runtime_opener.text = "천술류 기능 도움말"
+	selector.add_child(runtime_opener)
+
+	selector._choose(&"cheonsul")
+	selector.open_runtime_school_help(&"cheonsul", runtime_opener)
+
+	assert_eq(ids, [&"cheonsul"], "Runtime help must not emit a second school selection")
+	assert_true(selector.visible, "The dialog owner must remain available after school selection")
+	assert_false((selector.get_node("Panel") as Control).visible, "Selection choices must stay hidden during play")
+	assert_true((selector.get_node("HelpDialog") as Control).visible)
+	assert_eq(selector.get_node("HelpDialog/Margin/Content/TitleLabel").text, "천술류 기능 도움말")
+	assert_string_contains(selector.get_node("HelpDialog/Margin/Content/BodyLabel").text, "WET")
+
+	var cancel_event := InputEventAction.new()
+	cancel_event.action = &"ui_cancel"
+	cancel_event.pressed = true
+	selector._unhandled_input(cancel_event)
+
+	assert_false((selector.get_node("HelpDialog") as Control).visible)
+	assert_true(runtime_opener.has_focus(), "Closing runtime help must return focus to the HUD opener")
+	assert_eq(ids, [&"cheonsul"], "Closing runtime help must not change the school")
+
+
 func test_key_three_selects_guiin_once() -> void:
 	assert_true(ResourceLoader.exists(SELECTOR_SCENE_PATH), "School selector scene must exist")
 	if not ResourceLoader.exists(SELECTOR_SCENE_PATH):
@@ -114,7 +143,8 @@ func test_key_three_selects_guiin_once() -> void:
 	selector._unhandled_input(event)
 
 	assert_eq(ids, [&"guiin"])
-	assert_false(selector.visible)
+	assert_true(selector.visible)
+	assert_false((selector.get_node("Panel") as Control).visible)
 
 
 func test_button_click_emits_stable_bongma_id_once() -> void:
@@ -131,7 +161,8 @@ func test_button_click_emits_stable_bongma_id_once() -> void:
 	button.pressed.emit()
 
 	assert_eq(ids, [&"bongma"])
-	assert_false(selector.visible)
+	assert_true(selector.visible)
+	assert_false((selector.get_node("Panel") as Control).visible)
 
 
 func test_invalid_school_id_is_ignored_without_locking_selector() -> void:
@@ -149,7 +180,8 @@ func test_invalid_school_id_is_ignored_without_locking_selector() -> void:
 	assert_eq(ids, [])
 
 	selector._choose(&"heukyeong")
-	assert_false(selector.visible)
+	assert_true(selector.visible)
+	assert_false((selector.get_node("Panel") as Control).visible)
 	assert_eq(ids, [&"heukyeong"])
 
 

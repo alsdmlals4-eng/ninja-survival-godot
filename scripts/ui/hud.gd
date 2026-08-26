@@ -2,6 +2,7 @@ extends CanvasLayer
 class_name HUDController
 
 signal restart_requested
+signal school_help_requested
 
 @onready var health_label: Label = $HealthLabel
 @onready var score_label: Label = $ScoreLabel
@@ -17,6 +18,7 @@ signal restart_requested
 @onready var stage_time_label: Label = $StageTimeLabel
 @onready var gold_label: Label = $GoldLabel
 @onready var restart_button: Button = $RestartButton
+@onready var school_help_button: Button = $SchoolHelpButton
 @onready var game_over_panel: Control = $GameOverPanel
 
 var _title_generation: int = 0
@@ -25,7 +27,9 @@ var _school_feedback_generation: int = 0
 
 func _ready() -> void:
 	game_over_panel.visible = false
+	school_help_button.hide()
 	restart_button.pressed.connect(_on_restart_pressed)
+	school_help_button.pressed.connect(_on_school_help_pressed)
 
 
 func set_health(current: int, maximum: int) -> void:
@@ -53,6 +57,18 @@ func set_reward_count(count: int) -> void:
 
 func set_school(name: String) -> void:
 	school_label.text = "SCHOOL %s" % name
+
+
+func show_school_help(school_name: String) -> void:
+	if school_name.is_empty():
+		hide_school_help()
+		return
+	school_help_button.text = "%s 기능 도움말" % school_name
+	school_help_button.show()
+
+
+func hide_school_help() -> void:
+	school_help_button.hide()
 
 
 func set_school_resource(label: String, current: float, maximum: float) -> void:
@@ -102,3 +118,7 @@ func show_game_over() -> void:
 
 func _on_restart_pressed() -> void:
 	restart_requested.emit()
+
+
+func _on_school_help_pressed() -> void:
+	school_help_requested.emit()

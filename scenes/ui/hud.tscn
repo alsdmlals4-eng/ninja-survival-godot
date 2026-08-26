@@ -104,6 +104,17 @@ offset_bottom = 56.0
 grow_horizontal = 0
 text = "RESTART"
 
+[node name="SchoolHelpButton" type="Button" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -310.0
+offset_top = 20.0
+offset_right = -150.0
+offset_bottom = 56.0
+grow_horizontal = 0
+text = "현재 유파 도움말"
+
 [node name="GameOverPanel" type="Control" parent="."]
 visible = false
 layout_mode = 3

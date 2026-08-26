@@ -46,7 +46,8 @@ func test_each_school_selection_activates_only_matching_runtime_and_combat() -> 
 		assert_eq(host.selected_school_id, school_id)
 		assert_eq(host.active_runtime.name, cases[school_id])
 		assert_true(host.active_runtime.active)
-		assert_false(selector.visible)
+		assert_true(selector.visible)
+		assert_false((selector.get_node("Panel") as Control).visible)
 		assert_eq(main.get_node("Player").process_mode, Node.PROCESS_MODE_INHERIT)
 		assert_eq(main.get_node("WaveSpawner").process_mode, Node.PROCESS_MODE_INHERIT)
 		assert_eq(main.get_node("Player/AutoAttack").process_mode, Node.PROCESS_MODE_DISABLED)
@@ -54,6 +55,31 @@ func test_each_school_selection_activates_only_matching_runtime_and_combat() -> 
 			assert_eq(enemy.process_mode, Node.PROCESS_MODE_INHERIT)
 		main.queue_free()
 		await get_tree().process_frame
+
+
+func test_current_school_help_opens_from_hud_during_combat_without_reselecting() -> void:
+	var main = MAIN_SCENE.instantiate()
+	add_child_autofree(main)
+	await get_tree().process_frame
+	var selector = main.get_node("SchoolSelectionUI") as SchoolSelectionUI
+	var hud = main.get_node("HUD") as HUDController
+	assert_not_null(selector)
+	assert_not_null(hud)
+	if selector == null or hud == null:
+		return
+
+	selector._choose(&"cheonsul")
+	var help_button := hud.get_node_or_null("SchoolHelpButton") as Button
+	assert_not_null(help_button, "Combat HUD must expose current-school help")
+	if help_button == null:
+		return
+	assert_true(help_button.visible)
+	help_button.pressed.emit()
+
+	assert_true((selector.get_node("HelpDialog") as Control).visible)
+	assert_eq(selector.get_node("HelpDialog/Margin/Content/TitleLabel").text, "천술류 기능 도움말")
+	assert_eq(main.get_node("SchoolRuntimeHost").selected_school_id, &"cheonsul")
+	assert_false((selector.get_node("Panel") as Control).visible)
 
 
 func test_second_school_selection_is_rejected() -> void:
@@ -184,6 +210,10 @@ func test_game_over_deactivates_school_runtime_and_freezes_school_effects() -> v
 	heukyeong.apply_needle_hit(enemy, false)
 	var badge: Node = enemy.get_node_or_null("EnemyEffectBadge")
 	assert_not_null(badge)
+	var school_help_button := main.get_node("HUD/SchoolHelpButton") as Button
+	assert_true(school_help_button.visible)
+	school_help_button.pressed.emit()
+	assert_true((main.get_node("SchoolSelectionUI/HelpDialog") as Control).visible)
 
 	main.get_node("Player").take_damage(100000)
 	assert_true(main.game_over)
@@ -192,6 +222,8 @@ func test_game_over_deactivates_school_runtime_and_freezes_school_effects() -> v
 	assert_eq(main.get_node("WaveSpawner").process_mode, Node.PROCESS_MODE_DISABLED)
 	assert_true(badge == null or badge.is_queued_for_deletion())
 	assert_eq(heukyeong.get_total_active_marks(), 0)
+	assert_false(school_help_button.visible, "Game over must remove the combat-only help entry point")
+	assert_false((main.get_node("SchoolSelectionUI/HelpDialog") as Control).visible, "Game over must dismiss a live help dialog")
 
 
 func _living_enemies(main: Node) -> Array[Node]:
