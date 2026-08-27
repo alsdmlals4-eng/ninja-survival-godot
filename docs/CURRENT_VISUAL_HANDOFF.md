@@ -29,6 +29,25 @@ actual Godot consumer.
 | Golden reward orb | `RewardOrb/Visual` | `assets/runtime/visual-core/golden_reward_orb_v1.png` | [Notion](https://app.notion.com/p/3c91b237eb1c81b7a686e2423308102b) |
 | Bongma familiar | `BongmaFamiliar/Visual` | `assets/runtime/visual-core/bongma_familiar_v1.png` | [Notion](https://app.notion.com/p/3c91b237eb1c8102a8c4fe46dfc41e8f) |
 
+## Current IMG-03 runtime battlefield backdrop — current task
+
+Issue [#87](https://github.com/alsdmlals4-eng/ninja-survival-godot/issues/87)
+adds one bounded battlefield background to the existing `Main` scene. It is
+behind gameplay at `Main/BattlefieldBackdrop` (`z_index = -10`) and does not
+change combat, route, reward, or school authority. Its normal gameplay center
+stays deliberately open; moonlit shrine architecture and restrained Cheonsul
+edge sigils supply the visual context.
+
+| Asset | Runtime consumer | Local runtime source | Notion record |
+| --- | --- | --- | --- |
+| Moonlit Battlefield | `Main/BattlefieldBackdrop` | `assets/runtime/visual-core/moonlit_battlefield_backdrop_v1.png` | [Notion](https://app.notion.com/p/3c91b237eb1c8109addcdb3659476e4d) |
+
+The local original is an opaque 1672×941 PNG with SHA-256
+`e5ec25a1429399be7a6ae3f930a5162ab4a935083051f7c2388724921ed9b0fd`.
+The linked Asset Library record has a native original-binary attachment and
+destination readback. Resolve the current GitHub PR/main state before treating
+this current-task receipt as integrated.
+
 `EnemyBasic/Visual` selects only the three approved generic-enemy textures;
 no school rule, combat value, reward rule, or route authority moved into the
 visual script. The four newly made originals preserve the approved dark
@@ -264,7 +283,7 @@ Notion is the human-facing visual authority. Repository files record structured 
 
 ## 7. Next visual work — safe resume point
 
-The existing seven runtime originals are final for their present consumer
+The existing eight runtime originals are final for their present consumer
 contracts. Do not regenerate or replace them merely to make a new sheet.
 
 The first new visual task must begin with a fresh implementation read and a
@@ -305,6 +324,9 @@ Verified:
 - every asset is mapped to an actual Godot Sprite2D consumer;
 - exact PR-head CI and fresh post-merge Godot 4.7.1 automated evidence passed
   as recorded in the current IMG-02 section.
+- the IMG-03 local original and native Notion attachment have destination
+  readback; its exact integration state must still be resolved from current
+  GitHub main.
 
 Not verified / not claimed:
 - live render/input observation in this Ninja Survival project;
