@@ -18,9 +18,12 @@
 | Godot editor parse | PASS |
 | five-second main-scene smoke | PASS |
 | full GUT | 491/491 tests · 5352 assertions PASS |
+| current-source-equivalent full GUT re-run | PASS (Godot 4.7.1 exit 0 on 63fc source; 63fc → current main changes only `docs/ACTIVE_CONTEXT.md`) |
 
 ## 직접 런타임 관찰
 
-새 작업 공간의 Godot 편집기에서 현재 씬 실행을 시작하고, 새 `Ninja Survival Godot (DEBUG)` 창에 키보드 `2`를 보냈다. HUD 도움말 버튼의 실제 클릭 시각 검증은 별도 Godot 프로젝트 창이 대상 창의 전면을 점유해 두 번 차단됐다. 따라서 이 기록은 HUD 버튼의 화면상 클릭·모달 렌더를 `NOT_VISUALLY_CONFIRMED`로 남긴다. 자동 통합 테스트는 HUD 버튼 → MainController → 현재 선택 유파 → 기존 모달의 전체 연결을 검증한다.
+`origin/main` 29dc9828537ca4cc795bb2f971e72b71df10a22e에서 Godot 4.7.1의 새 최상위 Debug 창을 열고, Computer Use로 키보드 `2` → HUD 예상 위치 클릭 → `Escape`를 순서대로 전달했다. 각 입력 호출은 오류 없이 완료됐다. 29dc는 T16 구현 병합본 63fc와 비교해 `docs/ACTIVE_CONTEXT.md`만 다르므로, 실행된 런타임 소스는 T16 구현과 동일하다.
+
+그러나 이 환경의 캡처에는 게임 Control 트리나 모달의 접근 가능한 텍스트가 노출되지 않았다. 그러므로 이 기록은 **입력 전달**만 `PASS`로 기록하며, HUD 버튼의 화면상 클릭·도움말 모달 렌더·닫힘은 여전히 `NOT_VISUALLY_CONFIRMED`다. Hera에는 닌자서바이벌 편집기 세션이 연결되지 않아, 다른 프로젝트 인스턴스를 증거로 사용하지 않았다. 자동 통합 테스트는 HUD 버튼 → MainController → 현재 선택 유파 → 기존 모달의 전체 연결을 검증한다.
 
 사람 사용성, 물리 gamepad, 터치, 기기/export 증거는 이 변경으로도 `NOT_RUN`이다.
