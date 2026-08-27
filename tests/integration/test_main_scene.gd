@@ -4,6 +4,9 @@ const MAIN_SCENE := "res://scenes/main/main_scene.tscn"
 const PLAYER_SCENE := "res://scenes/player/player.tscn"
 const ENEMY_SCENE := "res://scenes/enemies/enemy_basic.tscn"
 const PROJECTILE_SCENE := "res://scenes/projectiles/projectile_basic.tscn"
+const STAGE_BOSS_SCENE := "res://scenes/enemies/stage_boss.tscn"
+const REWARD_ORB_SCENE := "res://scenes/rewards/reward_orb.tscn"
+const BONGMA_FAMILIAR_SCENE := "res://scenes/schools/bongma_familiar.tscn"
 const HUD_SCENE := "res://scenes/ui/hud.tscn"
 const REQUIRED_RUNTIME_RESOURCES := [
 	"res://scripts/core/main_controller.gd",
@@ -67,7 +70,12 @@ func test_enemy_scene_has_collision_and_visual() -> void:
 		return
 
 	assert_not_null(enemy.get_node_or_null("CollisionShape2D"))
-	assert_not_null(enemy.get_node_or_null("Visual"))
+	var visual = enemy.get_node_or_null("Visual")
+	assert_not_null(visual)
+	assert_true(visual is Sprite2D, "Generic enemy Visual must use an approved Sprite2D")
+	if visual is Sprite2D:
+		assert_not_null(visual.texture)
+		assert_eq(visual.texture_candidates.size(), 3)
 	assert_eq(enemy.collision_layer, 2)
 	assert_eq(enemy.collision_mask, 1)
 
@@ -79,10 +87,26 @@ func test_projectile_scene_has_collision_and_enemy_mask() -> void:
 		return
 
 	assert_not_null(projectile.get_node_or_null("CollisionShape2D"))
-	assert_not_null(projectile.get_node_or_null("Visual"))
+	var visual = projectile.get_node_or_null("Visual")
+	assert_not_null(visual)
+	assert_true(visual is Sprite2D, "Projectile Visual must use an approved Sprite2D")
+	if visual is Sprite2D:
+		assert_not_null(visual.texture)
 	assert_eq(projectile.collision_layer, 4)
 	assert_eq(projectile.collision_mask, 2)
 	assert_true(projectile.monitoring)
+
+
+func test_visual_core_support_scenes_use_approved_sprite_textures() -> void:
+	for scene_path in [STAGE_BOSS_SCENE, REWARD_ORB_SCENE, BONGMA_FAMILIAR_SCENE]:
+		var instance = _spawn_scene(scene_path)
+		assert_not_null(instance)
+		if instance == null:
+			continue
+		var visual = instance.get_node_or_null("Visual")
+		assert_true(visual is Sprite2D, "%s Visual must use Sprite2D" % scene_path)
+		if visual is Sprite2D:
+			assert_not_null(visual.texture)
 
 
 func test_hud_updates_health_score_and_game_over_visibility() -> void:
