@@ -1,8 +1,47 @@
 # CURRENT VISUAL HANDOFF — Ninja Survival / 닌자의 신
 
-> Updated: 2026-08-26 KST
+> Updated: 2026-08-27 KST
 > Purpose: next-chat resume router for the approved visual direction and current image-production state.
 > Product/runtime authority remains `AGENTS.md` → `docs/CURRENT_CONFIRMED_DECISIONS.md` → `docs/ACTIVE_CONTEXT.md` → actual code/data/tests. This file owns the **current visual continuation state only**.
+
+## Current IMG-02 runtime visual core — merged 2026-08-27
+
+Issue [#83](https://github.com/alsdmlals4-eng/ninja-survival-godot/issues/83)
+and PR [#84](https://github.com/alsdmlals4-eng/ninja-survival-godot/pull/84)
+are merged. The runtime implementation baseline is
+`03005e7dcc1a2e0b6ee57b4f6ebed9b481ee2fbc`; every future task must still
+fresh-read the current `origin/main` rather than treating this SHA as a live
+branch pointer.
+
+Seven PNG originals are now stored in both locations required by the project:
+their exact project-local runtime paths and native original-binary attachments
+on the linked Notion Asset Library records. Each attachment and local file was
+read back by SHA-256, dimensions, alpha-corner check, approval state, and
+actual Godot consumer.
+
+| Asset | Runtime consumer | Local runtime source | Notion record |
+| --- | --- | --- | --- |
+| Cursed Lantern | `EnemyBasic/Visual` variant pool | `assets/runtime/visual-core/cursed_lantern_v1.png` | [Notion](https://app.notion.com/p/3c81b237eb1c81149768cb6f6b42db3c) |
+| Shadow Beast | `EnemyBasic/Visual` variant pool | `assets/runtime/visual-core/shadow_beast_v1.png` | [Notion](https://app.notion.com/p/3c81b237eb1c8187827cd5bf3b51907e) |
+| Flame Ninja | `EnemyBasic/Visual` variant pool | `assets/runtime/visual-core/flame_ninja_v1.png` | [Notion](https://app.notion.com/p/3c81b237eb1c819bac22df2c6a99b984) |
+| Cheonsul stage boss | `StageBoss/Visual` | `assets/runtime/visual-core/cheonsul_stage_boss_v1.png` | [Notion](https://app.notion.com/p/3c91b237eb1c816284b6ee6d8c2e7149) |
+| Talisman projectile | `ProjectileBasic/Visual` | `assets/runtime/visual-core/talisman_projectile_v1.png` | [Notion](https://app.notion.com/p/3c91b237eb1c8125a3dadb4a959dd387) |
+| Golden reward orb | `RewardOrb/Visual` | `assets/runtime/visual-core/golden_reward_orb_v1.png` | [Notion](https://app.notion.com/p/3c91b237eb1c81b7a686e2423308102b) |
+| Bongma familiar | `BongmaFamiliar/Visual` | `assets/runtime/visual-core/bongma_familiar_v1.png` | [Notion](https://app.notion.com/p/3c91b237eb1c8102a8c4fe46dfc41e8f) |
+
+`EnemyBasic/Visual` selects only the three approved generic-enemy textures;
+no school rule, combat value, reward rule, or route authority moved into the
+visual script. The four newly made originals preserve the approved dark
+moonlit, painterly-anime/ink direction while their runtime scale stays bounded
+by their existing Sprite2D consumers.
+
+Exact PR-head CI passed `gut` and the Windows internal-build artifact. Fresh
+post-merge Godot 4.7.1 evidence passed import, editor parse, a five-second
+headless main-scene smoke, and full GUT `492/492` with `5373` assertions.
+
+Evidence boundary: Hera was connected to a different project, so this package
+does **not** claim a live visual render, Human Usability, Player Experience,
+or device/export pass. PR #49 was not changed.
 
 ## 0. Current IMG-01 source receipt — 2026-08-26
 
@@ -223,66 +262,52 @@ Project work control:
 
 Notion is the human-facing visual authority. Repository files record structured handoff/status; actual runtime art implementation remains code/assets/runtime evidence.
 
-## 7. Next visual work — resume point
+## 7. Next visual work — safe resume point
 
-Do not generate automatically on chat start.
+The existing seven runtime originals are final for their present consumer
+contracts. Do not regenerate or replace them merely to make a new sheet.
 
-First next task should be a **revised 1–3 visual set** based on this handoff:
+The first new visual task must begin with a fresh implementation read and a
+specific Godot consumer contract. Dynamic trace effects (ward, elemental
+reaction, sword aura and shadow ground aura) remain excluded: they do not yet
+have an approved texture consumer, and must not be created as orphan art.
 
-1. **In-game fixed-character SD trace-layer sheet**
-   - same base character repeated,
-   - show no-trace / supporting trace layers / one starting-school Stage-3 example / coherent all-four state,
-   - main goal: prove all four can coexist without visual clutter.
-2. **SD action / animation key-pose sheet**
-   - same character identity,
-   - school identity comes from layered effects and action grammar, not different bodies.
-3. **School skill/symbol icon rough**
-   - 봉마: talisman/shikigami,
-   - 천술: chakra flow,
-   - 귀인: oni mask/demonic aura,
-   - 흑영: shadow/darkness.
+When a new consumer is approved, preserve the fixed-character trace-layer
+rules and make the smallest needed asset set:
 
-After this corrected 1–3 set is approved:
+1. same player identity; school identity stays in layers/effect grammar;
+2. Stage-3 intensity only for the starting/main school;
+3. four simultaneous traces must retain silhouette/readability;
+4. keep explanatory Korean text out of runtime image pixels.
 
-4. Persistent Workbench / backpack UI prototype.
-5. Backpack item visual-language sheet.
-6. Title / loading / marketing derivative visuals.
+Image process for any new pack remains:
 
-Image process remains:
+`current consumer contract -> text brief -> generated result review -> exact local source -> native Notion attachment + readback -> runtime validation`.
 
-`text brief -> user approval -> generate requested batch/result -> result review -> Notion durable placement -> next brief`.
+## 8. Quality and evidence bar
 
-Do not silently reuse an older image as final when its detail contract is superseded.
+Before creating any new asset, read current `AGENTS.md`,
+`CURRENT_CONFIRMED_DECISIONS.md`, `ACTIVE_CONTEXT.md`, this handoff, Notion
+Visual Bible, and the actual consumer scene/script. Preserve the four-school
+philosophies and Hybrid Master Style; do not copy a reference image's distinct
+expression.
 
-## 8. Quality bar for the next chat
+The target is not merely a matching prompt style. It is **one coherent
+character identity, readable school motifs, bounded runtime scale, durable
+dual storage, and proof at the consumer that actually uses the asset**.
 
-Before generating:
+## 9. Evidence ceiling at current closeout
 
-- read current `AGENTS.md`, `CURRENT_CONFIRMED_DECISIONS.md`, `ACTIVE_CONTEXT.md`, this handoff and Notion Visual Bible,
-- preserve four-school gameplay philosophies,
-- preserve the current Hybrid Master Style,
-- compare each draft against the approved Hybrid Key Visual and the fixed-character trace-layer rules,
-- explicitly check a full four-school accumulated state for clutter and silhouette loss,
-- keep long Korean explanatory text outside generated image pixels where possible,
-- do not claim image attachment until Notion attach + destination readback succeeds.
-
-The target is not merely "same prompt style". The target is **same character identity, same school motifs, same visual hierarchy, and the same evidence discipline**.
-
-## 9. Evidence ceiling at closeout
-
-Verified in this visual session:
-- user approval of Hybrid direction,
-- user approval of fixed-character trace-layer direction,
-- exact school motif choices,
-- Notion text updates invoked,
-- Hybrid Key Visual Notion server readback PASS,
-- four-school full-body supporting preview Notion server readback PASS,
-- SD/action/icon working preview Notion server readback PASS.
+Verified:
+- seven IMG-02 originals are on merged project-local runtime paths;
+- all seven linked Notion Asset Library records contain native original-binary
+  attachments after destination readback;
+- every asset is mapped to an actual Godot Sprite2D consumer;
+- exact PR-head CI and fresh post-merge Godot 4.7.1 automated evidence passed
+  as recorded in the current IMG-02 section.
 
 Not verified / not claimed:
-- high-resolution pixel-equivalent Notion upload,
-- browser/Android/iOS client render of the latest attachments,
-- actual Godot implementation of the new SD art direction,
-- animation runtime quality,
-- Human Usability / Player Experience,
-- full four-school final composite rendered under the latest rules.
+- live render/input observation in this Ninja Survival project;
+- browser/Android/iOS pixel observation of the latest Notion attachments;
+- Human Usability, Player Experience, or device/export validation;
+- dynamic trace VFX or a full four-school composite under runtime conditions.
