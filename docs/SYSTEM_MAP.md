@@ -14,18 +14,18 @@
 
 ## 1. Current implementation baseline
 
-최신 제품 구현 baseline은 **T11까지 integrated domain/automated scope**다. 그 이후 repository `main`에는 docs-only alignment가 추가될 수 있으므로, repository SHA와 제품 구현 단계는 같은 개념으로 취급하지 않는다.
+마지막 제품 구현 baseline은 **T16 전투 중 현재 유파 도움말까지 integrated machine scope**다 (`63fcf81…`). 현재 GitHub `main`은 문서 증거 정정 `f77a1c…`이므로, repository SHA와 제품 구현 단계는 같은 개념으로 취급하지 않는다.
 
 | 영역 | 현재 owner / surface | 구현 현실 | 현재 disposition |
 |---|---|---|---|
-| Main composition | `scripts/core/main_controller.gd` | MVP-3 playable composition baseline | preserve; T13/T14에서 새 Workbench/route/encounter 소비 연결 |
+| Main composition | `scripts/core/main_controller.gd` | T13/T14 Workbench·Cheonsul adapter와 T16 combat-help intent 연결 | preserve; 새 authority를 UI로 이동하지 않음 |
 | Game score / kill / contribution | `scripts/core/game_state.gd` | integrated baseline | reuse |
 | Stage flow | `scripts/core/stage_flow_controller.gd` | MVP-3 3-segment rollback baseline | 새 4유파 제품 흐름으로 migration 예정; 역사 동작 삭제 전 회귀 보호 |
 | Run build | `scripts/core/run_build_state.gd` | **T06 committed item/spatial modifier authority integrated** | combat power single-authority 보호 |
 | Combat resolver | `scripts/combat/combat_resolver.gd` | committed run modifier consumer | reuse consumer; legacy double-application 금지 |
 | Wave spawning | `scripts/spawning/wave_spawner.gd` | normal enemy spawn baseline | reuse API; 별도 wave system 만들지 않음 |
 | Four-school shallow runtime | `scripts/schools/*_runtime.gd` | MVP-2 migration baseline integrated | 4유파 철학에 맞춰 bounded tuning; wholesale rewrite 금지 |
-| REST outer UI | `scripts/ui/rest_flow_ui.gd` + scene | MVP-3 RESULT/SHOP/FATE/PREVIEW shell | T13에서 Persistent Workbench/route-preview input으로 migration |
+| REST outer UI | `scripts/ui/rest_flow_ui.gd` + scene | T13 Persistent Workbench/route-preview input presentation integrated | snapshot rendering / intent emission만 담당 |
 | Spatial data | T01 definitions/catalog | **INTEGRATED** | item/bag/recipe definition authority |
 | Backpack committed state | T02 `BackpackState` + item/bag instances | **INTEGRATED** | committed geometry/state authority |
 | Spatial resolution | T03 `BackpackResolver` + `BackpackResolution` | **INTEGRATED** | connectivity/adjacency/special-bag/modifier derived authority |
@@ -37,6 +37,9 @@
 | Encounter data | T09 encounter definitions + Stage profiles | **INTEGRATED** | school encounter/gimmick data authority |
 | Encounter lifecycle | T10 Elite → Trace → Boss domain gate | **INTEGRATED** | deterministic milestone/gate authority |
 | Tradition access / reward lanes | T11 Run-level access + Boss/Shop/Chest lane-first selection | **INTEGRATED** | acquisition eligibility/reward-lane authority; 직접 combat stat 아님 |
+| Final REST commit | `scripts/core/rest_commit_coordinator.gd` | T12 all-or-none Workbench + Fate + route transaction **INTEGRATED** | domain owner singularity 보호 |
+| Cheonsul vertical adapter | `scripts/core/cheonsul_vertical_slice_controller.gd` | T14 Elite → Trace → Boss → Workbench machine path **INTEGRATED** | release-near human/playable PASS 아님 |
+| School function help | `scripts/ui/school_selection_ui.gd` + `scripts/ui/hud.gd` | T15 selection help + T16 combat selected-school reopen **INTEGRATED** | one dialog owner / input isolation |
 | Tests / CI | `tests/**`, `.github/workflows/gut.yml` | active regression evidence | protect / extend exact-head |
 
 ## 2. Spatial / Workbench ownership chain
@@ -115,30 +118,17 @@ Trace는 RewardOrb와 별도이며 ORB/STYLE/GOLD/direct combat power를 주지 
 
 ## 4. Current missing integration boundary
 
-T01~T11의 domain integration이 있다고 해서 새 제품 Run이 end-to-end playable하다는 뜻은 아니다.
+T12~T16의 machine integration이 있다고 해서 새 제품 Run이 end-to-end playable하거나 사람에게 이해·재미·공정성이 검증되었다는 뜻은 아니다.
 
-현재 다음 제품 패키지:
+Current product gate:
 
-### T12 — Atomic Workbench + Fate + next-route commit · NEXT FRESH PACKAGE
+### User vertical-slice validation · DEFERRED / NOT_RUN
 
-목표:
+- Combat HUD help debug input delivery was observed, but modal live-render semantics are `NOT_VISUALLY_CONFIRMED`.
+- Human Usability, Player Experience, gamepad/touch completion, device/Android export are separate `NOT_RUN` evidence classes.
+- Remaining-school content must wait for a new explicit scope decision after the shared-chassis risk is assessed.
 
-- finalized T04/T05 Workbench state,
-- pending Fate,
-- T08 provisional next-school route
-
-를 **all-or-none**으로 검증/commit하는 단일 final REST transaction boundary를 확립한다.
-
-T12에서 하지 않는 것:
-
-- Persistent Workbench production UI/input migration (T13),
-- MainController 새 Run 조립 전체 (T13/T14),
-- Cheonsul release-near encounter slice (T14),
-- Human QA (T15).
-
-Closed PR #43은 historical/WIP read-only다. 새 T12는 then-current completed `main`에서 fresh branch/package로 시작하고 #43에서 여전히 유효한 material만 ADAPT한다.
-
-## 5. T13~T15 integration target
+## 5. T12~T16 implemented machine path and deferred human gate
 
 ```text
 T12 atomic REST commit domain
@@ -156,6 +146,8 @@ T14 Cheonsul one-school release-near Vertical Slice
   -> next-route preview
         ↓
 T15 Human QA gate
+        ↓
+T16 combat HUD current-school help reopen (machine scope; merged before human gate)
 ```
 
 T14 전에는 4유파 전체 content를 먼저 복제하지 않는다.
@@ -247,35 +239,23 @@ source / contract
 -> device / export
 ```
 
-현재 automated/domain evidence:
+현재 automated/domain/UI-help machine evidence:
 
 - MVP-0~3 baseline integrated.
-- T01~T11 domain chain integrated with automated evidence.
+- T01~T16 integrated with automated evidence.
 
 아직 그 증거로 PASS라 말할 수 없는 것:
 
 - intended new four-school Run end-to-end playability,
-- production-candidate Persistent Workbench UI/input,
+- human-validated Persistent Workbench UI/input,
 - Cheonsul release-near player experience,
 - device/Android readiness,
 - final full-run experience.
 
 `NOT_RUN`은 PASS가 아니다.
 
-## 11. Next execution artifact
+## 11. Next product gate
 
-**T12 — Atomic Workbench + Fate + next-route commit**.
+**User vertical-slice validation** is deferred / `NOT_RUN`.
 
-```text
-then-current completed main
--> current Base/project authority readback
--> actual code/tests/canon inspection
--> closed PR #43 read-only comparison
--> fresh branch
--> exact T12 boundary
--> TDD / adversarial review / exact-head verification
--> PR / merge
--> post-merge GitHub + Notion readback
-```
-
-T12가 T13/T14 scope를 흡수하지 않게 한다.
+Do not infer a remaining-school, full-circuit, final-calamity, or device/export implementation package from the automated T12~T16 results. Each needs a new approved scope and its own readiness/verification contract.

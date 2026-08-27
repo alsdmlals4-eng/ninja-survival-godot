@@ -6,25 +6,26 @@
 
 게임 내부 `Stage 1~4`와 개발 Task `T01~T19`를 혼동하지 않는다.
 
-## 현재 공식 상태 — 2026-08-25 재개
+## 현재 공식 상태 — 2026-08-27 fresh readback
 
 ```yaml
-completed_main: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
+last_product_implementation_merge: 63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497
+current_github_main: f77a1c86660784c1a20c9f2a9abfee7b774ba911
 MVP_0_BASIC_COMBAT: INTEGRATED
 MVP_1_COMBAT_DDD: INTEGRATED
 MVP_2_FOUR_SCHOOLS_SHALLOW: INTEGRATED_MIGRATION_BASELINE
 MVP_3_RESULT_REST_SHOP_FATE: INTEGRATED_ROLLBACK_BASELINE
-MVP_4_BACKPACK_COMBINATION_AND_ROUTE_FOUNDATION: T01_TO_T11_INTEGRATED
+MVP_4_BACKPACK_COMBINATION_AND_ROUTE_FOUNDATION: T01_TO_T16_MACHINE_SCOPE_INTEGRATED
 MVP_5_FINAL_LOOP_META: NOT_STARTED_AS_COMPLETE_PRODUCT
 DEC014_025_MIGRATION_OVERLAY: APPROVED_PARTIAL_DOMAIN_IMPLEMENTATION
 DEC026_ENCOUNTER_PATTERN_BUDGET: APPROVED_PARTIAL_DOMAIN_IMPLEMENTATION
-NEXT_IMPLEMENTATION_GATE: T12_FRESH_ATOMIC_WORKBENCH_FATE_ROUTE_PACKAGE
+NEXT_PRODUCT_GATE: USER_VERTICAL_SLICE_VALIDATION_DEFERRED
 CLOSED_WIP_REFERENCES: PR_43_T12_AND_PR_44_FRONT_DOOR
 RELEASE_NEAR_VERTICAL_SLICE_HUMAN_QA: NOT_RUN
 DEVICE_ANDROID_EXPORT: NOT_RUN
 ```
 
-`T01~T11 integrated`는 실제 code/test/domain evidence를 뜻한다. 새 Run 전체 playable, production-quality UI/visual/audio, Human/Player Experience, device/export PASS로 승격하지 않는다.
+`T01~T16 machine scope integrated`는 실제 code/test/domain/UI-help evidence를 뜻한다. 새 Run 전체 playable, production-quality UI/visual/audio, Human/Player Experience, device/export PASS로 승격하지 않는다.
 
 ## 제품 전체 검증 질문
 
@@ -80,7 +81,7 @@ DEVICE_ANDROID_EXPORT: NOT_RUN
 
 새 DEC 행동이 TDD package로 교체되기 전까지 기존 정상 경로를 회귀 보호한다.
 
-# MVP-4 — 공간 백팩 + 4유파 Run domain foundation · T01~T11 INTEGRATED
+# MVP-4 — 공간 백팩 + 4유파 Run domain foundation · T01~T16 MACHINE SCOPE INTEGRATED
 
 목표:
 
@@ -206,11 +207,11 @@ Evidence ceiling: deterministic lifecycle/domain gate.
 
 Access does not create direct school combat stats; T06 remains combat modifier authority.
 
-# T12 — Atomic Workbench + Fate + next-route commit · NEXT FRESH PACKAGE
+# T12 — Atomic Workbench + Fate + next-route commit · INTEGRATED
 
-Status: **NOT_MERGED / NOT_COMPLETED**.
+Status: **merged in PR #61 / `4120228…`**.
 
-Closed PR #43 is historical WIP evidence only. Its useful findings may be ADAPTed after current-main revalidation, but the branch is not a resume baseline.
+Closed PR #43 and draft PR #49 are historical read-only evidence only; neither is a resume baseline.
 
 Approved outcome:
 
@@ -233,7 +234,7 @@ fresh completed main
 -> merge + postmerge repository/Notion readback
 ```
 
-# T13 — Persistent Workbench route-preview UI/input
+# T13 — Persistent Workbench route-preview UI/input · INTEGRATED
 
 Goal:
 
@@ -246,15 +247,19 @@ Goal:
 
 Human evidence still separate from automated UI tests.
 
-# T14 — Cheonsul one-school release-near Vertical Slice
+# T14 — Cheonsul one-school lifecycle / Workbench machine slice · INTEGRATED
 
 One production-candidate school loop:
 
 `signature <=30 sec -> Core -> ~3m Elite -> trace -> ~5m Boss -> result/reward -> Workbench -> next-route preview`.
 
-Requires representative UI, character/enemy visual language, animation/VFX and audio sufficient for human judgment.
+Human judgment of representative UI, character/enemy visual language, animation/VFX and audio remains deferred; the merged evidence is machine scope only.
 
-# T15 — Human QA Gate
+# T15 — Starting-school function help machine slice · INTEGRATED
+
+Selection UI has a Korean function-help entry per school, one reusable modal, and input isolation. This task number was used for the implemented help slice; it does not close the separate human QA gate.
+
+# Human QA Gate · DEFERRED / NOT_RUN
 
 Measure:
 
@@ -269,14 +274,18 @@ Measure:
 
 If this fails, correct the shared chassis before multiplying content.
 
-# T16 — Expand 봉마 / 귀인 / 흑영
+# T16 — Combat HUD current-school help reopen · INTEGRATED
 
-After T15 PASS:
+The selected school’s existing help dialog can reopen during combat from HUD intent. This is machine-verified help access, not a human readability or runtime-render PASS.
 
-- reuse shared encounter chassis
-- author school-owned Core x3 / Elite / Boss composition
-- preserve each school's risk-processing identity
-- keep concurrent advanced-gimmick cap 2
+# Remaining-school expansion · FUTURE SEPARATE SCOPE
+
+After user vertical-slice validation and a new explicit product decision:
+
+- reuse shared encounter chassis,
+- author school-owned Core x3 / Elite / Boss composition,
+- preserve each school's risk-processing identity,
+- keep concurrent advanced-gimmick cap 2.
 
 # T17 — Four-school circuit integration
 
