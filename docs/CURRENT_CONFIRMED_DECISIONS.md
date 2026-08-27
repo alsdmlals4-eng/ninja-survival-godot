@@ -6,8 +6,8 @@ updated_at: 2026-08-27 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: 63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497
 current_completed_main_resolution: LAST_PRODUCT_IMPLEMENTATION_MERGE_PR_73_2026_08_27_KST
-current_github_main: f77a1c86660784c1a20c9f2a9abfee7b774ba911
-current_github_main_resolution: DOCUMENTATION_FOLLOWUP_PR_76_2026_08_27_KST
+github_main_read_before_router_reconciliation: f77a1c86660784c1a20c9f2a9abfee7b774ba911
+github_main_read_resolution: PRE_PR_77_FRESH_READBACK_2026_08_27_KST
 latest_product_canon: docs/canon/2026-08-21-dec014-025-product-canon.md
 latest_encounter_canon: docs/canon/2026-08-22-dec026-encounter-pattern-budget.md
 latest_migration_traceability: docs/traceability/2026-08-22-dec026-post-gate-traceability.md
@@ -198,9 +198,11 @@ The last product implementation merge is:
 
 `63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497` — `feat: reopen school help during combat`.
 
-The current GitHub default branch is a later documentation follow-up:
+The GitHub default branch read immediately before PR #77 was a later documentation follow-up:
 
 `f77a1c86660784c1a20c9f2a9abfee7b774ba911` — `docs: keep T16 GUT evidence count-safe (#76)`.
+
+This repository document cannot name its own eventual merge SHA as a durable “current main” fact. Always fresh-read GitHub `main` before mutation; Production Handoff records post-merge main receipts.
 
 Current merged domain chain:
 

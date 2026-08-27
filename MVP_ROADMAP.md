@@ -10,7 +10,7 @@
 
 ```yaml
 last_product_implementation_merge: 63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497
-current_github_main: f77a1c86660784c1a20c9f2a9abfee7b774ba911
+github_main_read_before_router_reconciliation: f77a1c86660784c1a20c9f2a9abfee7b774ba911
 MVP_0_BASIC_COMBAT: INTEGRATED
 MVP_1_COMBAT_DDD: INTEGRATED
 MVP_2_FOUR_SCHOOLS_SHALLOW: INTEGRATED_MIGRATION_BASELINE

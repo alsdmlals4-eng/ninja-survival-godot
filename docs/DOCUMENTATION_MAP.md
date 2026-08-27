@@ -25,7 +25,7 @@
 
 ## 2. Current product / implementation router
 
-마지막 제품 구현 baseline은 **T16 전투 중 현재 유파 도움말까지 merged machine scope**다. 현재 GitHub `main` (`f77a1c…`)은 그 뒤의 문서 증거 정정이며, 두 SHA를 같은 의미로 취급하지 않는다.
+마지막 제품 구현 baseline은 **T16 전투 중 현재 유파 도움말까지 merged machine scope**다. PR #77 직전 GitHub `main` (`f77a1c…`)은 그 뒤의 문서 증거 정정이었다. 문서가 병합되면 SHA가 다시 바뀌므로 작업 전 GitHub `main`을 fresh-read하며, 두 SHA 축을 같은 의미로 취급하지 않는다.
 
 ```text
 MVP-0~3 baseline · INTEGRATED
@@ -47,7 +47,7 @@ MVP-0~3 baseline · INTEGRATED
 
 Important:
 
-- latest product implementation merge is `63fcf81…` (T16 help); current GitHub `main` is `f77a1c…` (docs evidence correction).
+- latest product implementation merge is `63fcf81…` (T16 help); `f77a1c…` is the documented pre-PR #77 GitHub-main readback, not a durable current-main claim.
 - closed PR #43 (T12 WIP) and #44 (old front-door docs) are **closed / unmerged / historical read-only**.
 - PR #49 and closed #43/#44 remain historical read-only; they are not resume baselines.
 - Human Usability / Player Experience / device / Android evidence are not implied by T01~T16 automated evidence.
