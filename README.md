@@ -38,9 +38,9 @@ Godot 4.x / GDScript로 재구성 중인 `닌자 서바이벌 (닌자의 신)` �
 
 ## 현재 구현 상태
 
-2026-08-25 재개 시 확인한 completed `main` 기준:
+현재 product implementation 기준:
 
-`265bab32da087c070ea2ea0d98a3bdace1e10f7f` — `T11: add tradition access reward lanes`.
+`63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497` — `T16: add in-combat current school help`.
 
 | 영역 | 상태 |
 |---|---|
@@ -59,13 +59,14 @@ Godot 4.x / GDScript로 재구성 중인 `닌자 서바이벌 (닌자의 신)` �
 | T09 encounter definitions + Stage profiles | integrated |
 | T10 Elite → Trace → Boss lifecycle gate | integrated |
 | T11 tradition access packages + reward lanes | integrated |
-| T12 Atomic Workbench + Fate + next-route commit | **NOT_MERGED / NEXT FRESH PACKAGE** |
-| Persistent Workbench route UI/input | NOT_INTEGRATED |
-| Cheonsul release-near playable slice | NOT_RUN |
+| T12 Atomic Workbench + Fate + next-route commit | integrated (machine evidence) |
+| T13 Persistent Workbench route UI/input | integrated (machine evidence) |
+| T14 Cheonsul release-near lifecycle slice | integrated (automated evidence only) |
+| T15/T16 유파 기능 도움말 / 전투 중 현재 유파 도움말 | integrated (machine evidence) |
 | Human Usability / Player Experience | NOT_RUN |
 | device / Android export | NOT_RUN |
 
-T01~T11의 자동화/도메인 증거는 해당 범위의 구현·회귀 증거다. 실제 플레이 가능한 새 Run, 완성 후보 UI/Visual/Animation/VFX/Audio, Human/Device PASS를 뜻하지 않는다.
+T01~T16의 자동화/도메인 증거는 해당 범위의 구현·회귀 증거다. 실제 플레이 가능한 새 Run, 완성 후보 UI/Visual/Animation/VFX/Audio, Human/Device PASS를 뜻하지 않는다.
 
 2026-08-25 pause 때 닫힌 PR #43(T12)과 #44(front-door docs)는 **closed-unmerged historical/WIP**다. 재개 시 그대로 이어서 병합하지 않고 최신 completed `main`에서 여전히 유효한 부분만 재사용한다.
 
@@ -136,24 +137,11 @@ Elite kill
 - 승인된 최종 구조에서는 Fate가 **최종 build + Fate + next route**를 atomic commit한다.
 - clear order는 최종전의 유파 지원 callback 순서에 연결된다.
 
-## 다음 제품 구현 Gate
+## 다음 제품 Gate
 
-### T12 — Atomic Workbench + Fate + next-route commit
+현재 다음 Gate는 **사용자 Vertical Slice 검증**이다. T12~T16은 최신 completed `main`에 통합되었지만, 자동 증거는 Human Usability·Player Experience·디바이스/Android export PASS가 아니다.
 
-닫힌 PR #43은 구현 아이디어·테스트·실패 교훈을 가진 역사 WIP지만 현재 실행 baseline이 아니다.
-
-새 T12를 시작할 때는:
-
-1. 당시 최신 completed `main` 재조회,
-2. Base/project authority와 실제 code/test 재감사,
-3. #43 read-only 비교,
-4. 여전히 유효한 coordinator/pending-Fate 원리만 ADAPT,
-5. fresh current-task branch에서 RED → GREEN → adversarial → exact-head → PR/merge/readback,
-6. T13 UI와 T14 playable encounter scope는 별도 유지.
-
-현재 post-DEC-026 계획의 큰 순서는:
-
-`T12 -> T13 -> T14 Cheonsul release-near slice -> T15 Human QA gate -> T16 remaining schools -> T17 full circuit -> T18 final calamity -> T19 full-run verification`.
+현재 internal Windows build는 자동 빌드/다운로드 검증용이며, 공개 배포나 Android 릴리스를 뜻하지 않는다. 적/Boss/VFX의 최종 시각 자산과 실제 플레이 감각은 별도 사용자 검증에서 확인한다.
 
 ## Human play evidence
 

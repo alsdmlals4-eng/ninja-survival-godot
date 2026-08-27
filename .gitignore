@@ -2,7 +2,7 @@
 .godot/
 .import/
 export.cfg
-export_presets.cfg
+# `export_presets.cfg` is a non-secret, reproducible build contract and is tracked.
 
 # Mono/C# generated files, if accidentally created
 .mono/
