@@ -4,11 +4,19 @@ const HUD_SCENE := preload("res://scenes/ui/hud.tscn")
 
 var restart_count: int = 0
 var school_help_count: int = 0
+var ultimate_count: int = 0
+var test_elite_count: int = 0
+var test_boss_count: int = 0
+var trace_recovery_count: int = 0
 
 
 func before_each() -> void:
 	restart_count = 0
 	school_help_count = 0
+	ultimate_count = 0
+	test_elite_count = 0
+	test_boss_count = 0
+	trace_recovery_count = 0
 
 
 func test_hud_has_mvp2_school_feedback_contract() -> void:
@@ -51,6 +59,44 @@ func test_school_help_button_is_hidden_until_combat_and_emits_intent() -> void:
 	assert_eq(school_help_count, 1)
 	hud.hide_school_help()
 	assert_false(button.visible)
+
+
+func test_combat_controls_expose_ultimate_guidance_and_test_jump_intents() -> void:
+	var hud = HUD_SCENE.instantiate()
+	add_child_autofree(hud)
+	for signal_name in ["ultimate_requested", "test_elite_requested", "test_boss_requested", "trace_recovery_requested"]:
+		assert_true(hud.has_signal(signal_name), "HUD must expose combat-control intent: %s" % signal_name)
+	for node_name in ["UltimateButton", "CombatGuideLabel", "TestEliteButton", "TestBossButton", "TraceRecoveryButton"]:
+		assert_true(hud.has_node(node_name), "HUD must expose combat control: %s" % node_name)
+	if not hud.has_method("show_combat_controls"):
+		fail_test("HUD must expose one combat-control presentation API")
+		return
+
+	hud.ultimate_requested.connect(_on_ultimate_requested)
+	hud.test_elite_requested.connect(_on_test_elite_requested)
+	hud.test_boss_requested.connect(_on_test_boss_requested)
+	hud.trace_recovery_requested.connect(_on_trace_recovery_requested)
+	hud.set_ultimate_ready(true)
+	hud.show_combat_controls("천술류", "오행폭주: 상태가 있는 적에게 폭발 피해를 준다.", true)
+
+	var guide := hud.get_node("CombatGuideLabel") as Label
+	var ultimate := hud.get_node("UltimateButton") as Button
+	assert_string_contains(guide.text, "자동 투사체")
+	assert_string_contains(guide.text, "Enter")
+	assert_string_contains(guide.text, "오행폭주")
+	assert_true(ultimate.visible)
+	assert_false(ultimate.disabled)
+	assert_false((hud.get_node("TraceRecoveryButton") as Button).visible)
+	hud.set_trace_recovery_available(true)
+	assert_true((hud.get_node("TraceRecoveryButton") as Button).visible)
+	ultimate.pressed.emit()
+	(hud.get_node("TestEliteButton") as Button).pressed.emit()
+	(hud.get_node("TestBossButton") as Button).pressed.emit()
+	(hud.get_node("TraceRecoveryButton") as Button).pressed.emit()
+	assert_eq(ultimate_count, 1)
+	assert_eq(test_elite_count, 1)
+	assert_eq(test_boss_count, 1)
+	assert_eq(trace_recovery_count, 1)
 
 
 func test_hud_formats_school_resource_and_ultimate_state() -> void:
@@ -105,6 +151,22 @@ func _on_restart_requested() -> void:
 
 func _on_school_help_requested() -> void:
 	school_help_count += 1
+
+
+func _on_ultimate_requested() -> void:
+	ultimate_count += 1
+
+
+func _on_test_elite_requested() -> void:
+	test_elite_count += 1
+
+
+func _on_test_boss_requested() -> void:
+	test_boss_count += 1
+
+
+func _on_trace_recovery_requested() -> void:
+	trace_recovery_count += 1
 
 
 func _has_mvp2_feedback(hud: Node) -> bool:

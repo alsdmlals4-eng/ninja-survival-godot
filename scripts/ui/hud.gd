@@ -3,6 +3,10 @@ class_name HUDController
 
 signal restart_requested
 signal school_help_requested
+signal ultimate_requested
+signal test_elite_requested
+signal test_boss_requested
+signal trace_recovery_requested
 
 @onready var health_label: Label = $HealthLabel
 @onready var score_label: Label = $ScoreLabel
@@ -19,17 +23,28 @@ signal school_help_requested
 @onready var gold_label: Label = $GoldLabel
 @onready var restart_button: Button = $RestartButton
 @onready var school_help_button: Button = $SchoolHelpButton
+@onready var ultimate_button: Button = $UltimateButton
+@onready var combat_guide_label: Label = $CombatGuideLabel
+@onready var test_elite_button: Button = $TestEliteButton
+@onready var test_boss_button: Button = $TestBossButton
+@onready var trace_recovery_button: Button = $TraceRecoveryButton
 @onready var game_over_panel: Control = $GameOverPanel
 
 var _title_generation: int = 0
 var _school_feedback_generation: int = 0
+var _ultimate_ready: bool = false
 
 
 func _ready() -> void:
 	game_over_panel.visible = false
 	school_help_button.hide()
+	hide_combat_controls()
 	restart_button.pressed.connect(_on_restart_pressed)
 	school_help_button.pressed.connect(_on_school_help_pressed)
+	ultimate_button.pressed.connect(_on_ultimate_pressed)
+	test_elite_button.pressed.connect(_on_test_elite_pressed)
+	test_boss_button.pressed.connect(_on_test_boss_pressed)
+	trace_recovery_button.pressed.connect(_on_trace_recovery_pressed)
 
 
 func set_health(current: int, maximum: int) -> void:
@@ -71,12 +86,40 @@ func hide_school_help() -> void:
 	school_help_button.hide()
 
 
+func show_combat_controls(school_name: String, ultimate_description: String, show_test_jumps: bool) -> void:
+	combat_guide_label.text = "기본 공격: 자동 투사체가 가까운 적을 노립니다.\n궁극기 [Enter/버튼] — %s" % ultimate_description
+	combat_guide_label.show()
+	ultimate_button.text = "%s 궁극기 [Enter]" % school_name
+	ultimate_button.disabled = not _ultimate_ready
+	ultimate_button.show()
+	if show_test_jumps:
+		test_elite_button.show()
+		test_boss_button.show()
+	else:
+		test_elite_button.hide()
+		test_boss_button.hide()
+
+
+func hide_combat_controls() -> void:
+	combat_guide_label.hide()
+	ultimate_button.hide()
+	test_elite_button.hide()
+	test_boss_button.hide()
+	trace_recovery_button.hide()
+
+
+func set_trace_recovery_available(available: bool) -> void:
+	trace_recovery_button.visible = available
+
+
 func set_school_resource(label: String, current: float, maximum: float) -> void:
 	school_resource_label.text = "%s %d / %d" % [label, roundi(current), roundi(maximum)]
 
 
 func set_ultimate_ready(ready: bool) -> void:
+	_ultimate_ready = ready
 	ultimate_label.text = "ULT READY" if ready else "ULT charging"
+	ultimate_button.disabled = not ready
 
 
 func set_stage(segment: int, total: int = 3) -> void:
@@ -122,3 +165,19 @@ func _on_restart_pressed() -> void:
 
 func _on_school_help_pressed() -> void:
 	school_help_requested.emit()
+
+
+func _on_ultimate_pressed() -> void:
+	ultimate_requested.emit()
+
+
+func _on_test_elite_pressed() -> void:
+	test_elite_requested.emit()
+
+
+func _on_test_boss_pressed() -> void:
+	test_boss_requested.emit()
+
+
+func _on_trace_recovery_pressed() -> void:
+	trace_recovery_requested.emit()

@@ -100,8 +100,20 @@ func test_cheonsul_runtime_requires_trace_before_boss_and_ends_at_workbench() ->
 	assert_eq(slice.get_snapshot().get("state"), &"trace_available")
 	assert_true(slice.sync_elapsed(270.0))
 	assert_false(bool(slice.get_snapshot().get("boss_requested", false)))
-	var recover_event := InputEventAction.new()
-	recover_event.action = &"ui_accept"
+	var cheonsul = main.get_node("SchoolRuntimeHost").active_runtime
+	var status_target = _first_live_normal_enemy(main)
+	assert_not_null(status_target)
+	if status_target != null:
+		cheonsul._apply_burn(status_target)
+		cheonsul.reaction_count = 3.0
+		var ultimate_event := InputEventAction.new()
+		ultimate_event.action = &"ui_accept"
+		ultimate_event.pressed = true
+		main._unhandled_input(ultimate_event)
+		assert_eq(slice.get_snapshot().get("state"), &"trace_available", "Enter must preserve Trace recovery and use the ready ultimate")
+		assert_eq(cheonsul.reaction_count, 0.0, "Enter must reach the actual Cheonsul ultimate while Trace is available")
+	var recover_event := InputEventKey.new()
+	recover_event.keycode = KEY_R
 	recover_event.pressed = true
 	main._unhandled_input(recover_event)
 	assert_eq(slice.get_snapshot().get("state"), &"boss_warning")
@@ -111,7 +123,12 @@ func test_cheonsul_runtime_requires_trace_before_boss_and_ends_at_workbench() ->
 	if boss == null:
 		return
 	assert_eq(boss.get_meta(&"cheonsul_encounter_id", &""), &"heavenly_change_taoist")
+	main._on_test_boss_requested()
+	var test_boss = _cheonsul_role_enemy(main, &"test_boss")
+	assert_not_null(test_boss)
 	boss.take_damage(99999)
+	if test_boss != null:
+		assert_true(test_boss.is_queued_for_deletion(), "A test boss must not remain behind the Workbench after the canonical boss dies")
 	assert_eq(slice.get_snapshot().get("state"), &"cleared")
 	assert_true(main.get_node("RestFlowUI/Panel").visible)
 	assert_true(main.get_node("RestFlowUI/Panel/Margin/Content/WorkbenchView").visible)
