@@ -54,6 +54,24 @@ visual script. The four newly made originals preserve the approved dark
 moonlit, painterly-anime/ink direction while their runtime scale stays bounded
 by their existing Sprite2D consumers.
 
+## Current IMG-04 Cheonsul field visual — current task
+
+Issue [#90](https://github.com/alsdmlals4-eng/ninja-survival-godot/issues/90)
+adds one transparent field texture to the **existing** runtime visual owner:
+`Cheonsul/FlameFieldVisual`. It replaces only the former `Polygon2D` drawing
+node with a `Sprite2D`; its 90px radius, damage, statuses, target selection,
+timing, and 0.60-second lifetime stay owned by the existing runtime logic.
+
+| Asset | Runtime consumer | Local runtime source | Notion record |
+| --- | --- | --- | --- |
+| Cheonsul Flame Field | `Cheonsul/FlameFieldVisual` | `assets/runtime/visual-core/cheonsul_flame_field_v1.png` | [Notion](https://app.notion.com/p/3c91b237eb1c81798c10d307b4764ad8) |
+
+The local original is a transparent 1269×1240 PNG with SHA-256
+`cbb4b1e697f69bf37731f14a32c8ad3890d1557c5ee7ea2ebeb4b2f4f81b3e68`.
+The Asset Library record has a native original-binary attachment and destination
+readback. Resolve the current GitHub PR/main state before treating it as
+integrated.
+
 Exact PR-head CI passed `gut` and the Windows internal-build artifact. Fresh
 post-merge Godot 4.7.1 evidence passed import, editor parse, a five-second
 headless main-scene smoke, and full GUT `492/492` with `5373` assertions.
