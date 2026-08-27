@@ -14,7 +14,7 @@
 
 ## 1. Current implementation baseline
 
-마지막 제품 구현 baseline은 **T16 전투 중 현재 유파 도움말까지 integrated machine scope**다 (`63fcf81…`). 현재 GitHub `main`은 문서 증거 정정 `f77a1c…`이므로, repository SHA와 제품 구현 단계는 같은 개념으로 취급하지 않는다.
+마지막 제품 구현 baseline은 **T16 전투 중 현재 유파 도움말까지 integrated machine scope**다 (`63fcf81…`). `f77a1c…`은 PR #77 직전의 문서 증거 정정 main readback이며, 문서 병합 뒤에는 fresh-read가 필요하다. 따라서 repository SHA와 제품 구현 단계는 같은 개념으로 취급하지 않는다.
 
 | 영역 | 현재 owner / surface | 구현 현실 | 현재 disposition |
 |---|---|---|---|
