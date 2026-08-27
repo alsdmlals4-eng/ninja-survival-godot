@@ -37,6 +37,9 @@ visual_supplementary_previews: SERVER_READBACK_PASS_LOW_RES_ONLY_ORIGINAL_AND_HU
 img_02_runtime_visual_core: MERGED_MAIN_03005E7_SEVEN_APPROVED_PNGS_LOCAL_AND_NOTION_NATIVE_ORIGINALS
 img_02_automated_evidence: GODOT_4_7_1_IMPORT_EDITOR_PARSE_MAIN_SMOKE_GUT_492_OF_492_5373_ASSERTIONS_PASS
 img_02_live_render: NOT_RUN_HERA_CONNECTED_TO_DIFFERENT_PROJECT
+img_03_runtime_battlefield_backdrop: MERGED_MAIN_5A52A30_LOCAL_AND_NOTION_NATIVE_ORIGINAL_SYNCED
+img_03_automated_evidence: GODOT_4_7_1_IMPORT_EDITOR_PARSE_MAIN_SMOKE_GUT_493_OF_493_5380_ASSERTIONS_PASS
+img_03_live_render: NOT_RUN_DESKTOP_VISUAL_TARGET_CHANGED
 local_shared_godot_exact_pin: GODOT_4.7.1_STABLE_OFFICIAL_A13DA4FEB_FRESH_LOCAL_VERIFIED_2026_08_27_KST
 local_editor_session: NOT_RUN_FOR_NINJA_SURVIVAL_VISUAL_PACKAGE
 ```
@@ -207,6 +210,7 @@ Approved school motifs:
 - Four-school full-body silhouette sheet: APPROVED SUPPORTING REFERENCE; not four runtime protagonists.
 - SD/action/icon three-panel sheet: WORKING_REFERENCE; structure reusable but exact trace details superseded by current fixed-character/main-school-Stage-3 rules.
 - IMG-02 runtime visual core: merged at `03005e7dcc1a2e0b6ee57b4f6ebed9b481ee2fbc` with seven approved PNG originals stored locally and as native Notion Asset Library attachments. Actual consumers are three generic EnemyBasic variants, Cheonsul StageBoss, ProjectileBasic, RewardOrb and BongmaFamiliar.
+- IMG-03 moonlit battlefield backdrop: merged at `5a52a30aa6c38cfed17e46d550eef27ab06e53f7` with its opaque PNG stored locally and as a native Notion Asset Library original. Its sole consumer is `Main/BattlefieldBackdrop` behind gameplay; it changes no game-rule authority.
 
 No corrected trace-layer/action/icon sheet is a pending implementation task by itself. The next visual task begins only after a fresh consumer contract identifies the smallest missing runtime asset; dynamic trace VFX remain intentionally uncreated until then.
 
