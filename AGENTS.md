@@ -88,11 +88,9 @@ Current product canon:
 - `docs/canon/2026-08-21-dec014-025-product-canon.md`
 - `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`
 
-## 5. Current implementation reality — merged main through T11
+## 5. Current implementation reality — T12~T16 merged machine scope
 
-Authoritative completed-main baseline at this reactivation:
-
-`265bab32da087c070ea2ea0d98a3bdace1e10f7f` — `T11: add tradition access reward lanes`.
+`265bab32da087c070ea2ea0d98a3bdace1e10f7f` is the historical T11 reactivation baseline, not the current implementation frontier. Before mutation, always fresh-read the remote default branch; do not turn this document's own revision into a durable current-main pointer.
 
 Current facts:
 
@@ -107,37 +105,38 @@ Current facts:
 - T09 encounter definitions + Stage profiles: merged.
 - T10 Elite -> Trace -> Boss lifecycle/domain gate: merged.
 - T11 tradition access packages + Boss/Shop/Chest lane-first reward selection: merged.
-- T12 atomic Workbench + Fate + next-route commit: **NOT_MERGED / NOT_COMPLETED**.
-- Persistent Workbench route-preview UI/input migration: not integrated.
-- Cheonsul release-near playable slice: not run.
+- T12 atomic Workbench + Fate + next-route commit: merged by PR #61 (`41202283b75921efb7691e77c3de1502d77410d1`), automated evidence only.
+- T13 Persistent Workbench route-preview UI/input presentation: merged by PR #63 (`71152c7aa9dff4cc05eec76d4d2d70be47755f6c`).
+- T14 Cheonsul release-near lifecycle/Workbench entry slice: merged by PR #66 (`51e39737f272db0962a3dabada51bae10cd1fa97`), automated evidence only.
+- T15 starting-school Korean function help: merged by PR #69 (`e2cfe4452e1de5a224f5cd7dee8e47a104c868e0`), machine verified only.
+- T16 in-combat current-school help: merged by PR #73 (`63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497`), machine/runtime-input evidence only; visible modal semantics remain unconfirmed.
 - Human Usability / Player Experience / device / Android-export validation: `NOT_RUN`.
 
-T01~T11 source/test evidence proves only its actual automated/domain scope. It does not prove that the intended new Run is already playable end-to-end or fun/readable to a human.
+T01~T16 source/test evidence proves only its actual automated, domain, machine-input, or explicitly recorded runtime scope. It does not prove that the intended new Run is playable end-to-end or fun/readable to a human.
 
-## 6. Current next product gate — fresh T12 package
+## 6. Current next product gate — User vertical-slice validation
 
-The previous T12 PR #43 and front-door docs PR #44 were intentionally **closed unmerged** during the 2026-08-25 pause handoff. They are historical/WIP read-only evidence.
+The next product gate is the approved Cheonsul Human vertical-slice validation: school readability, Core → Elite → Trace → Boss tension, telegraph fairness, Trace purpose, Workbench comprehension/fatigue, Korean readability, and complete mouse/keyboard-gamepad/touch paths. This gate remains `NOT_RUN`; do not infer a pass from T12~T16 automation.
 
-Do not reopen, merge, rebase, or resume their branches as current authority.
+PR #43 and #44 are closed historical WIP. Draft PR #49 is a superseded T12 reference. All three are read-only: do not reopen, merge, rebase, or resume them as current authority.
 
-If T12 implementation is resumed:
+If a later task touches an already-merged T12~T16 area:
 
 ```text
 fetch then-current completed main
 -> re-read Base + project authority
--> inspect closed #43/#44 read-only
+-> inspect #43/#44/#49 read-only only when relevant
 -> compare actual current code/tests/canon
--> reuse only still-valid material
 -> create a fresh current-task branch/PR
 -> TDD / exact-head verification / merge / readback
 ```
 
-Approved T12 product boundary remains the current post-DEC-026 plan unless a newer decision supersedes it:
+The protected atomic Workbench boundary remains:
 
 - Workbench route remains provisional before commit.
 - Final backpack snapshot + pending Fate + provisional next school must commit all-or-none.
 - Existing domain owners remain singular; do not move geometry/economy/route/Fate authority into UI.
-- T13 UI and T14 playable encounter integration are not silently absorbed into T12.
+- follow-up UI, encounter, or full-run behavior is not silently absorbed into a transaction-only scope.
 
 ## 7. Protected spatial / Workbench rules
 
