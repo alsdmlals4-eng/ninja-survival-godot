@@ -8,7 +8,7 @@ completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: 7f0870d215d4efeeef7ca6e7bf683710c6d86104
 current_completed_main_resolution: POST_PR_101_CANON_FRONTIER_RECONCILIATION_2026_08_28_KST
 completed_main_label: T12_TO_T16_MACHINE_SCOPE_AND_CANON_FRONTIER_RECONCILED
-resume_state: VISUAL_COMBAT_GRAMMAR_APPROVED_BOARD_PENDING_USER_REVIEW
+resume_state: REVISED_FOUR_PANEL_CORE_BOARD_PENDING_USER_REVIEW
 next_product_gate: USER_VERTICAL_SLICE_VALIDATION
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
@@ -207,7 +207,7 @@ All four traces must combine naturally. The strongest Trace Stage 3 expression i
 - 천술류의 상태/반응 주색은 청색 + 호박/주황이다. 보라/검정은 흑영류의 시각 언어로 남긴다.
 - 전투 상태는 단어 배지 대신 색과 형태가 구분되는 작은 아이콘으로 제시한다.
 - 적 HP 바는 평상시 표시하지 않고, 피격 직후의 적 하나만 표시한다. 표시 지속 시간은 Human Usability 검증 전까지 확정하지 않는다.
-- 현재 대화의 `PROJECT_CORE_SCENE_VISUAL_BOARD`는 `GENERATED_EXPLORATION`이다. 런타임 asset, UI 구현 또는 사용자 검증 증거가 아니다.
+- 사용자가 A 구성을 선택한 개정 `PROJECT_CORE_SCENE_VISUAL_BOARD`는 `학교 선택 → 천술 핵심 행동 → [Trace → Boss] → Result/Workbench`의 네 패널을 사용한다. 이전 보드에서는 상태 아이콘 문법만 유지하고 나머지 구도·캐릭터·환경·UI는 다시 설계했다. 이 보드는 여전히 `GENERATED_EXPLORATION`이며 런타임 asset, UI 구현 또는 사용자 검증 증거가 아니다.
 
 Approved school motifs:
 

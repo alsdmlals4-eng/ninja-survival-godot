@@ -3,7 +3,9 @@
 ```yaml
 status: CURRENT_STRUCTURED_PLANNING_SPEC
 updated_at: 2026-08-28 KST
-visual_board_status: GENERATED_EXPLORATION_PENDING_USER_REVIEW
+visual_board_status: REVISED_FOUR_PANEL_GENERATED_EXPLORATION_PENDING_USER_REVIEW
+visual_board_composition: SCHOOL_SELECTION_TO_CHEONSUL_ACTION_TO_TRACE_BOSS_TO_RESULT_WORKBENCH
+previous_board_retained_element: STATUS_ICON_GRAMMAR_ONLY
 runtime_asset_status: NOT_CREATED
 godot_implementation_status: NOT_IMPLEMENTED
 human_player_evidence: NOT_RUN
@@ -18,6 +20,17 @@ This document owns exact screen meaning. Generated image pixels do not own text,
 - Cheonsul status/reaction uses blue + amber/orange. Heukyeong retains purple + black. Do not use purple as the default Cheonsul language.
 - Status is a compact, silhouette-distinct icon. Do not rely on a persistent written status badge.
 - Enemy HP bars are hidden by default; only the enemy that just took damage may expose one. Duration is intentionally undecided pending Human Usability observation.
+
+## 2026-08-28 revised board composition — user-selected A
+
+The user rejected every substantive element of the first generated board except the compact status-icon grammar. The revised candidate therefore reuses only that grammar and redraws character pose, environment, panel layout, UI treatment and all other visual content.
+
+1. `school_selection`
+2. `cheonsul_core_action`
+3. `trace_boss_gate`
+4. `result_workbench`
+
+`failure_retry` remains an actual consumer/specification below, but is deliberately not a panel in this four-panel core-loop board.
 
 ## `school_selection`
 
@@ -68,7 +81,7 @@ This document owns exact screen meaning. Generated image pixels do not own text,
 - **Expected feedback:** chest token/Trace state changes and a readable Boss-gate transition without conflating Trace with ORB/STYLE/GOLD.
 - **Target emotion:** “I unlocked the right to face this test; now I must be ready.”
 - **Next scene:** Boss action → Result/Workbench on clear; `failure_retry` on defeat.
-- **Current evidence:** T10/T14 lifecycle-domain and machine-slice contracts; human readability remains unverified.
+- **Current evidence:** T10/T14 lifecycle-domain and machine-slice contracts; the revised planning board now gives this transition its own panel, but human readability remains unverified.
 - **Undecided:** final icon/telegraph language and exact screen treatment.
 
 ## `failure_retry`
@@ -86,6 +99,6 @@ This document owns exact screen meaning. Generated image pixels do not own text,
 
 ## Board review findings
 
-- The generated board demonstrates a coherent single-ninja, moonlit-shrine, blue/amber Cheonsul combat language and the requested icon/one-HP-bar rule.
-- It is not a composition lock: it does not independently depict `trace_boss_gate`, and its Workbench grid depiction and failure/retry signal require user review against the actual 6×6 and game-over consumer contracts.
+- The revised board uses the selected A order: school selection, Cheonsul action, Trace → Boss, Result/Workbench. The only retained visual solution from the earlier board is the requested status-icon grammar.
+- It is not a composition lock: Trace must still be visually distinguishable from ordinary reward feedback, the Workbench grid must still be checked against the actual 6×6 contract, and failure/retry remains a separate consumer contract rather than a board panel.
 - The board must never be counted as four shipped assets or as Godot/Human/Player validation.
