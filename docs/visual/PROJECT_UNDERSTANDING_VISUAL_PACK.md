@@ -58,6 +58,19 @@ This document owns exact screen meaning. Generated image pixels do not own text,
 - **Current evidence:** T12/T13 merged machine scope, `RestFlowUI`, current canon, P0 v2 Workbench reference.
 - **Undecided:** final HUD density, exact interaction animation, keyboard/gamepad/touch usability, and Player Experience proof.
 
+## `trace_boss_gate`
+
+- **Actual consumer:** Cheonsul lifecycle controller and the existing `Main` combat/result transition path.
+- **Player goal:** recognize that an Elite creates a chest token and a non-expiring Trace, then recover that Trace before the Boss warning and dual gate can resolve.
+- **Primary action:** defeat the Elite, collect/acknowledge the chest token, recover Trace, survive/prepare through the Boss warning, then enter the Boss encounter.
+- **Meaningful choice:** preserve position and build readiness through escalating pressure; Trace recovery is Run progression, not a direct free-power reward.
+- **Required information:** Elite state, Trace availability/recovery, Boss warning, and clear separation from ordinary reward-orb feedback.
+- **Expected feedback:** chest token/Trace state changes and a readable Boss-gate transition without conflating Trace with ORB/STYLE/GOLD.
+- **Target emotion:** “I unlocked the right to face this test; now I must be ready.”
+- **Next scene:** Boss action → Result/Workbench on clear; `failure_retry` on defeat.
+- **Current evidence:** T10/T14 lifecycle-domain and machine-slice contracts; human readability remains unverified.
+- **Undecided:** final icon/telegraph language and exact screen treatment.
+
 ## `failure_retry`
 
 - **Actual consumer:** `GameOverPanel`.
@@ -74,5 +87,5 @@ This document owns exact screen meaning. Generated image pixels do not own text,
 ## Board review findings
 
 - The generated board demonstrates a coherent single-ninja, moonlit-shrine, blue/amber Cheonsul combat language and the requested icon/one-HP-bar rule.
-- It is not a composition lock: its Workbench grid depiction and failure/retry signal require user review against the actual 6×6 and game-over consumer contracts.
+- It is not a composition lock: it does not independently depict `trace_boss_gate`, and its Workbench grid depiction and failure/retry signal require user review against the actual 6×6 and game-over consumer contracts.
 - The board must never be counted as four shipped assets or as Godot/Human/Player validation.

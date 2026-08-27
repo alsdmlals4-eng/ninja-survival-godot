@@ -21,6 +21,23 @@ generation tool on 2026-08-28, visually inspected, and checked against the
 supplied SD style sheet: top-down survival readability, one-ninja identity,
 black/deep-navy base and school effects/icons rather than class protagonists.
 
+## 2026-08-28 current Cheonsul override
+
+`SCRREF-BATTLE-CHEONSUL-02` remains a `DUAL_STORED_REFERENCE` for its steep
+top-down composition, open combat center, small SD hierarchy, and bounded HUD
+zones. Its violet-forward Cheonsul reaction treatment and any persistent
+written-status / always-visible-enemy-HP implication are **SUPERSEDED** by the
+current combat grammar:
+
+- Cheonsul reaction/status primary family = blue + amber/orange.
+- Heukyeong retains violet + black ownership.
+- Status = compact silhouette-distinct icon, not a persistent written badge.
+- Enemy HP = hidden by default; only the enemy just damaged may show a bar.
+
+This is a scope-specific visual interpretation correction. It does not alter
+the binary, SHA-256, Notion attachment, runtime consumer state, or approval of
+the reference's composition role.
+
 ## Notion native-original receipt
 
 The exact v2 local binaries were attached to the Notion Visual Bible and fresh

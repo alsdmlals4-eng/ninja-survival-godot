@@ -39,6 +39,14 @@ covered by the approved local sources in `docs/assets/approved/` and
 `assets/runtime/visual-core/`. Notion attachment state is recorded separately
 after destination readback; do not call any row dual-stored before then.
 
+### Current Cheonsul visual interpretation override
+
+`SCRREF-BATTLE-CHEONSUL-02` continues to cover top-down composition only. Its
+violet-forward effect treatment is not active color authority: current
+Cheonsul uses blue + amber/orange, while violet + black remains Heukyeong-owned.
+Combat-status icons and hit-only enemy HP presentation are current planning
+rules; they do not prove an implemented HUD or live render.
+
 ## 1. Scope and protected boundary
 
 ### Current target build
