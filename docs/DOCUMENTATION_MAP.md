@@ -154,6 +154,7 @@ Notion 문구가 GitHub 실제 구현과 충돌할 때 **구현 사실**은 code
 |---|---|---|
 | `CURRENT_CONFIRMED_DECISIONS.md` | mutable approved-decision / protected-scope ledger | CURRENT · T12~T16 machine scope integrated / human gate deferred |
 | `ACTIVE_CONTEXT.md` | mutable resume-state router | CURRENT · T16 help merged / human gate deferred |
+| `visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md` | canonical screen-first visual coverage and Codex handoff | CURRENT · Issue #93 · no automatic image generation |
 | `canon/2026-08-21-dec014-025-product-canon.md` | four-school / route / trace / Workbench / final-binding product canon | CURRENT |
 | `canon/2026-08-22-dec026-encounter-pattern-budget.md` | encounter / gimmick / pattern budget canon | CURRENT · APPROVED |
 | `traceability/2026-08-22-dec026-post-gate-traceability.md` | reuse / supersession / migration coverage | CURRENT DESIGN CONTEXT |

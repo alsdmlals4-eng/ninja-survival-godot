@@ -4,6 +4,10 @@
 > Purpose: next-chat resume router for the approved visual direction and current image-production state.
 > Product/runtime authority remains `AGENTS.md` → `docs/CURRENT_CONFIRMED_DECISIONS.md` → `docs/ACTIVE_CONTEXT.md` → actual code/data/tests. This file owns the **current visual continuation state only**.
 
+> Screen-first coverage owner: `docs/visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md`.
+> It separates whole-screen references from runtime components and does not
+> authorize image generation from a gap.
+
 ## Current IMG-02 runtime visual core — merged 2026-08-27
 
 Issue [#83](https://github.com/alsdmlals4-eng/ninja-survival-godot/issues/83)
