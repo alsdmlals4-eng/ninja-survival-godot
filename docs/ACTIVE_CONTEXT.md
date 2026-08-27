@@ -5,10 +5,10 @@ project: NINJA_SURVIVAL
 state_router_updated_at: 2026-08-27 KST
 reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
-current_completed_main: 63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497
-current_completed_main_resolution: GITHUB_DEFAULT_BRANCH_READBACK_PR_73_2026_08_27_KST
-completed_main_label: T16_IN_COMBAT_CURRENT_SCHOOL_HELP_MACHINE_SLICE
-resume_state: T16_IN_COMBAT_HELP_MERGED_HUMAN_QA_DEFERRED_BY_CURRENT_USER
+current_completed_main: 03005e7dcc1a2e0b6ee57b4f6ebed9b481ee2fbc
+current_completed_main_resolution: POST_MERGE_RUNTIME_BASELINE_PR_84_2026_08_27_KST
+completed_main_label: IMG_02_RUNTIME_VISUAL_CORE
+resume_state: IMG_02_MERGED_MACHINE_VERIFIED_HUMAN_QA_DEFERRED_BY_CURRENT_USER
 next_product_gate: USER_VERTICAL_SLICE_VALIDATION
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
@@ -34,8 +34,11 @@ runtime_character_visual_identity: ONE_FIXED_CHARACTER_PLUS_TRACE_LAYERS
 trace_stage3_visual_rule: STARTING_MAIN_SCHOOL_ONLY
 visual_keyvisual_notion_preview: SERVER_READBACK_PASS_LOW_RES
 visual_supplementary_previews: SERVER_READBACK_PASS_LOW_RES_ONLY_ORIGINAL_AND_HUMAN_VISIBLE_NOT_PROVEN
+img_02_runtime_visual_core: MERGED_MAIN_03005E7_SEVEN_APPROVED_PNGS_LOCAL_AND_NOTION_NATIVE_ORIGINALS
+img_02_automated_evidence: GODOT_4_7_1_IMPORT_EDITOR_PARSE_MAIN_SMOKE_GUT_492_OF_492_5373_ASSERTIONS_PASS
+img_02_live_render: NOT_RUN_HERA_CONNECTED_TO_DIFFERENT_PROJECT
 local_shared_godot_exact_pin: GODOT_4.7.1_STABLE_OFFICIAL_A13DA4FEB_FRESH_LOCAL_VERIFIED_2026_08_27_KST
-local_editor_session: NOT_RUN_NOT_REQUIRED_FOR_VISUAL_CLOSEOUT
+local_editor_session: NOT_RUN_FOR_NINJA_SURVIVAL_VISUAL_PACKAGE
 ```
 
 ## Purpose
@@ -203,24 +206,28 @@ Approved school motifs:
 - Hybrid Key Visual: APPROVED MASTER BRIDGE; Notion low-res native preview server readback PASS.
 - Four-school full-body silhouette sheet: APPROVED SUPPORTING REFERENCE; not four runtime protagonists.
 - SD/action/icon three-panel sheet: WORKING_REFERENCE; structure reusable but exact trace details superseded by current fixed-character/main-school-Stage-3 rules.
+- IMG-02 runtime visual core: merged at `03005e7dcc1a2e0b6ee57b4f6ebed9b481ee2fbc` with seven approved PNG originals stored locally and as native Notion Asset Library attachments. Actual consumers are three generic EnemyBasic variants, Cheonsul StageBoss, ProjectileBasic, RewardOrb and BongmaFamiliar.
 
-The next visual session resumes with a corrected fixed-character SD trace-layer sheet, SD action/key poses and school icon roughs before Workbench/UI art.
+No corrected trace-layer/action/icon sheet is a pending implementation task by itself. The next visual task begins only after a fresh consumer contract identifies the smallest missing runtime asset; dynamic trace VFX remain intentionally uncreated until then.
 
 ## Local/toolchain evidence ceiling
 
-This visual closeout does not require Godot authoring/runtime, so local Editor/session startup is not forced.
+The IMG-02 package used a fresh local Godot 4.7.1 readback. Import, editor
+parse, five-second headless main-scene smoke and full GUT `492/492` with
+`5373` assertions passed after merge. Exact PR-head GitHub CI also passed GUT
+and the Windows internal-build artifact.
 
-Historical Project Registry values for dedicated executable/ports are not current execution authority. The current shared-host Base policy must be applied only after a fresh local readback in a future Godot task.
-
-For this closeout:
+Hera's only discovered live editor belonged to another project, so no Ninja
+Survival live-render/input claim is made. Historical Project Registry values
+for dedicated executable/ports are not current execution authority.
 
 ```text
-LOCAL_SYNC: NOT_RUN
-GODOT_RUN: NOT_RUN_NOT_REQUIRED
-GODOT_EDITOR_SESSION: NOT_RUN_NOT_REQUIRED
+LOCAL_SYNC: POST_MERGE_READBACK_PASS
+GODOT_RUN: HEADLESS_MAIN_SMOKE_PASS
+GODOT_EDITOR_SESSION: NOT_RUN_FOR_NINJA_SURVIVAL
 HUMAN_PLAY: NOT_RUN
 DEVICE_EXPORT: NOT_RUN
-NOTION_HIGH_RES_PIXEL_EQUIVALENT: NOT_PROVEN
+NOTION_NATIVE_ORIGINAL_ATTACHMENT: SEVEN_OF_SEVEN_SERVER_READBACK_PASS
 NOTION_HUMAN_VISIBLE_LATEST_PREVIEWS: NOT_RUN
 ```
 
