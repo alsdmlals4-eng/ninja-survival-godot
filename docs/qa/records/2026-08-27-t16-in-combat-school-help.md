@@ -17,7 +17,7 @@
 | Godot import | PASS |
 | Godot editor parse | PASS |
 | five-second main-scene smoke | PASS |
-| full GUT | 491/491 tests · 5352 assertions PASS |
+| full GUT | 491/491 tests PASS (assertion total omitted: earlier receipts disagree while CI confirms the test count) |
 | current-source-equivalent full GUT re-run | PASS (Godot 4.7.1 exit 0 on 63fc source; 63fc → current main changes only `docs/ACTIVE_CONTEXT.md`) |
 
 ## 직접 런타임 관찰
