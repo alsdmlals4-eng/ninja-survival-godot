@@ -57,6 +57,17 @@ selective_current_rule_read: PASS
 - Base remote가 바뀌었다고 project canon을 자동 덮어쓰지 않는다.
 - 실제 작업에 필요한 Base owner를 fresh read하고, 프로젝트 최신 AGENTS/Decision/Canon/implementation reality와 충돌 여부를 확인한 뒤 선택 적용한다.
 
+### 2026-08-27 · 5단계 artifact gate fresh observation
+
+```yaml
+observed_base_main: 986ac32113958c501f11cd1ec4e38e65eb29f746
+observation_reason: FIVE_PHASE_MACHINE_CLOSEOUT_ARTIFACT_AUDIT
+selective_current_rule_read: PASS
+base_promotion_judgement: REJECT_REFERENCE_ONLY_DUPLICATE_OF_EXISTING_FIVE_PHASE_ARTIFACT_CONTRACT
+```
+
+Base의 BCP-2026-040과 현재 5단계 실행 계약은 이미 다운로드 가능한 internal build, exact build identity, post-merge smoke, Human evidence 분리와 player-facing placeholder 금지를 공용 규칙으로 소유한다. 이 프로젝트의 preset 이름, Windows 경로, artifact 크기, Godot pin은 project-local evidence로만 남기며 별도 Base 변경 제안/구현 PR은 만들지 않았다.
+
 ## 3. 현재 project-local authority order
 
 1. 최신 사용자 지시
@@ -91,6 +102,8 @@ persistent_workbench_route_ui_input_t13: INTEGRATED
 cheonsul_lifecycle_workbench_machine_slice_t14: INTEGRATED
 starting_school_function_help_machine_slice_t15: INTEGRATED
 combat_current_school_help_machine_slice_t16: INTEGRATED
+windows_internal_build_artifact: INTEGRATED_MACHINE_EVIDENCE_ONLY_MAIN_0F085FC4FEFF25353C049749BF34236A89C01BE4
+windows_internal_build_boundary: INTERNAL_VALIDATION_ONLY_NOT_PUBLIC_RELEASE_OR_DEVICE_EXPORT
 next_product_gate: USER_VERTICAL_SLICE_VALIDATION_DEFERRED
 last_product_implementation_merge: 63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497
 github_main_read_before_router_reconciliation: f77a1c86660784c1a20c9f2a9abfee7b774ba911
