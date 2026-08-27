@@ -73,7 +73,7 @@ selective_current_rule_read: PASS
 
 Repository의 byte-exact historical adapter `PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION_v4.5_r2.md`는 역사 자료로 유지한다. 현재 사용자가 더 최신 작업 계약을 제공하면 **latest user instruction이 우선**한다.
 
-## 4. 현재 프로젝트 상태 · 2026-08-25
+## 4. 현재 프로젝트 상태 · 2026-08-27 fresh readback
 
 이 블록은 historical T01 state를 반복하지 않고 현재 router를 요약한다. 상세 상태는 `ACTIVE_CONTEXT.md`가 책임진다.
 
@@ -86,10 +86,15 @@ run_route_state_t08: INTEGRATED
 encounter_data_t09: INTEGRATED
 elite_trace_boss_gate_t10: INTEGRATED
 tradition_access_reward_lanes_t11: INTEGRATED
-next_product_gate: T12_FRESH_ATOMIC_WORKBENCH_FATE_ROUTE_PACKAGE
-persistent_workbench_route_ui_input_t13: NOT_INTEGRATED
-cheonsul_release_near_slice_t14: NOT_RUN
-human_qa_t15: NOT_RUN
+atomic_workbench_fate_route_t12: INTEGRATED
+persistent_workbench_route_ui_input_t13: INTEGRATED
+cheonsul_lifecycle_workbench_machine_slice_t14: INTEGRATED
+starting_school_function_help_machine_slice_t15: INTEGRATED
+combat_current_school_help_machine_slice_t16: INTEGRATED
+next_product_gate: USER_VERTICAL_SLICE_VALIDATION_DEFERRED
+last_product_implementation_merge: 63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497
+current_github_main: f77a1c86660784c1a20c9f2a9abfee7b774ba911
+human_qa: DEFERRED_BY_CURRENT_USER_NOT_RUN
 human_usability: NOT_RUN
 player_experience: NOT_RUN
 device_android_export: NOT_RUN
@@ -97,9 +102,9 @@ current_human_home_contract: LIVING_GDD_PLUS_VISUAL_DASHBOARD
 current_visual_style: USER_APPROVED_FIRST_IMAGE_2026_08_25
 ```
 
-Repository `main`은 docs-only alignment/correction으로 T11 구현 merge 이후 더 앞선 SHA일 수 있다. **repository current SHA와 latest product implementation package는 별도 축**이다.
+Repository `main`은 docs-only alignment/correction으로 제품 구현 merge 이후 더 앞선 SHA일 수 있다. **repository current SHA와 latest product implementation package는 별도 축**이다.
 
-Closed PR #43/#44는 historical read-only이며 T12 resume baseline이 아니다.
+Closed PR #43/#44와 open draft PR #49는 historical/read-only이며 현행 resume baseline이 아니다.
 
 ## 5. 현재 선택 적용하는 Base 작업 원칙
 

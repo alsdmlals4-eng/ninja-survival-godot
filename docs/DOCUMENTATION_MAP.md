@@ -25,7 +25,7 @@
 
 ## 2. Current product / implementation router
 
-현재 제품 구현 baseline은 **T11까지 merged-domain/automated scope**다.
+마지막 제품 구현 baseline은 **T16 전투 중 현재 유파 도움말까지 merged machine scope**다. 현재 GitHub `main` (`f77a1c…`)은 그 뒤의 문서 증거 정정이며, 두 SHA를 같은 의미로 취급하지 않는다.
 
 ```text
 MVP-0~3 baseline · INTEGRATED
@@ -36,19 +36,21 @@ MVP-0~3 baseline · INTEGRATED
 -> T09 encounter definitions + Stage profiles · INTEGRATED
 -> T10 Elite -> Trace -> Boss lifecycle gate · INTEGRATED
 -> T11 tradition access packages + reward lanes · INTEGRATED
--> T12 Atomic Workbench + Fate + next-route commit · NEXT FRESH PACKAGE
--> T13 Persistent Workbench route-preview UI/input
--> T14 Cheonsul release-near playable slice
--> T15 Human QA gate
--> remaining schools / full circuit / final calamity / full-run verification
+-> T12 Atomic Workbench + Fate + next-route commit · INTEGRATED
+-> T13 Persistent Workbench route-preview UI/input · INTEGRATED
+-> T14 Cheonsul lifecycle / Boss-clear Workbench machine slice · INTEGRATED
+-> T15 starting-school Korean function-help machine slice · INTEGRATED
+-> T16 combat HUD current-school help reopen machine slice · INTEGRATED
+-> User vertical-slice validation · DEFERRED / NOT_RUN
+-> remaining schools / full circuit / final calamity / full-run verification · SEPARATE FUTURE SCOPE
 ```
 
 Important:
 
-- repository `main` may advance through documentation-only corrections while the latest **product implementation baseline** remains T11.
+- latest product implementation merge is `63fcf81…` (T16 help); current GitHub `main` is `f77a1c…` (docs evidence correction).
 - closed PR #43 (T12 WIP) and #44 (old front-door docs) are **closed / unmerged / historical read-only**.
-- T12 must start from the then-current completed `main`; inspect #43 read-only and ADAPT only material that still matches current canon/code/tests.
-- Human Usability / Player Experience / device / Android evidence are not implied by T01~T11 automated evidence.
+- PR #49 and closed #43/#44 remain historical read-only; they are not resume baselines.
+- Human Usability / Player Experience / device / Android evidence are not implied by T01~T16 automated evidence.
 
 ## 3. Authority map — Human Home / Detail Canon / AI Workspace / GitHub
 
@@ -150,8 +152,8 @@ Notion 문구가 GitHub 실제 구현과 충돌할 때 **구현 사실**은 code
 
 | Document | Role | Current state |
 |---|---|---|
-| `CURRENT_CONFIRMED_DECISIONS.md` | mutable approved-decision / protected-scope ledger | CURRENT · T11 integrated / T12 fresh next |
-| `ACTIVE_CONTEXT.md` | mutable resume-state router | CURRENT · T11 integrated / T12 fresh next |
+| `CURRENT_CONFIRMED_DECISIONS.md` | mutable approved-decision / protected-scope ledger | CURRENT · T12~T16 machine scope integrated / human gate deferred |
+| `ACTIVE_CONTEXT.md` | mutable resume-state router | CURRENT · T16 help merged / human gate deferred |
 | `canon/2026-08-21-dec014-025-product-canon.md` | four-school / route / trace / Workbench / final-binding product canon | CURRENT |
 | `canon/2026-08-22-dec026-encounter-pattern-budget.md` | encounter / gimmick / pattern budget canon | CURRENT · APPROVED |
 | `traceability/2026-08-22-dec026-post-gate-traceability.md` | reuse / supersession / migration coverage | CURRENT DESIGN CONTEXT |
@@ -182,36 +184,20 @@ Do not rewrite historical artifacts merely to make their old status sentences lo
 Verified implementation scope:
 
 - MVP-0~3 integrated baseline.
-- T01~T11 domain / automated evidence integrated on product implementation baseline.
+- T01~T16 domain/UI/help machine evidence integrated on the last product implementation baseline.
 
 Not yet proven by that evidence:
 
 - intended new four-school Run end-to-end playability
-- production-candidate Persistent Workbench UI/input
+- human-validated Persistent Workbench UI/input
 - release-near Cheonsul Slice Human Usability / Player Experience
 - device / Android export readiness
 - final full-run experience
 
 `NOT_RUN` is not PASS.
 
-## 7. Next execution artifact
+## 7. Next product gate
 
-Next separate product package:
+**User vertical-slice validation** remains deferred / `NOT_RUN`.
 
-**T12 — Atomic Workbench + Fate + next-route commit**.
-
-Start rule:
-
-```text
-then-current completed main
--> current Base/project authority readback
--> current code/tests/canon inspection
--> closed PR #43 read-only comparison
--> fresh current-task branch
--> exact package scope
--> TDD / adversarial review / exact-head CI
--> PR / merge
--> post-merge GitHub + Notion readback
-```
-
-T12 must not silently absorb T13 UI or T14 playable encounter scope.
+The current machine evidence does not prove live-render semantics, Human Usability, Player Experience, touch/gamepad completion, device/export, or the full four-school Run. Do not begin remaining-school production until a separate scope decision reopens that product gate.

@@ -4,8 +4,10 @@
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER
 updated_at: 2026-08-27 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
-current_completed_main: e2cfe4452e1de5a224f5cd7dee8e47a104c868e0
-current_completed_main_resolution: GITHUB_DEFAULT_BRANCH_READBACK_PR_69_2026_08_27_KST
+current_completed_main: 63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497
+current_completed_main_resolution: LAST_PRODUCT_IMPLEMENTATION_MERGE_PR_73_2026_08_27_KST
+current_github_main: f77a1c86660784c1a20c9f2a9abfee7b774ba911
+current_github_main_resolution: DOCUMENTATION_FOLLOWUP_PR_76_2026_08_27_KST
 latest_product_canon: docs/canon/2026-08-21-dec014-025-product-canon.md
 latest_encounter_canon: docs/canon/2026-08-22-dec026-encounter-pattern-budget.md
 latest_migration_traceability: docs/traceability/2026-08-22-dec026-post-gate-traceability.md
@@ -15,11 +17,12 @@ current_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-hu
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 phase_b_verdict: PASS_FOR_APPROVED_DOMAIN_SEQUENCE
 mvp0_to_mvp3_baseline: INTEGRATED
-t01_to_t12_domain_chain: INTEGRATED_ON_COMPLETED_MAIN
+t01_to_t16_machine_scope: INTEGRATED_ON_LAST_PRODUCT_IMPLEMENTATION_MERGE
 t12_atomic_workbench_commit: MERGED_MAIN_41202283b75921efb7691e77c3de1502d77410d1
 t13_persistent_workbench_route_ui_input: MERGED_MAIN_71152C7AA9DFF4CC05EEC76D4D2D70BE47755F6C
 t14_cheonsul_release_near_vertical_slice: MERGED_MAIN_51E39737F272DB0962A3DABADA51BAE10CD1FA97_AUTOMATED_EVIDENCE_ONLY
 t15_school_function_help_machine_slice: MERGED_MAIN_E2CFE4452E1DE5A224F5CD7DEE8E47A104C868E0_MACHINE_VERIFIED_HUMAN_QA_DEFERRED_BY_CURRENT_USER
+t16_in_combat_current_school_help_machine_slice: MERGED_MAIN_63FCF81FDF4B5D1BBFF14B5721A13F7C1AFE1497_MACHINE_VERIFIED_HUMAN_QA_DEFERRED_BY_CURRENT_USER
 pr_43_t12: CLOSED_UNMERGED_HISTORICAL_WIP
 pr_44_front_door_docs: CLOSED_UNMERGED_HISTORICAL_WIP
 pr_49_t12: OPEN_DRAFT_READ_ONLY_SUPERSEDED_BY_FRESH_PR_61
@@ -189,11 +192,15 @@ First release-near Vertical Slice target remains **천술류**.
 
 DEC-026 does not claim full playable encounter integration or final-calamity exact full attack script completion.
 
-## 8. Current implementation boundary — merged through T12
+## 8. Current implementation boundary — product implementation merged through T16 help
 
-The current completed-main baseline is:
+The last product implementation merge is:
 
-`41202283b75921efb7691e77c3de1502d77410d1` — `T12: atomically commit Workbench snapshot, Fate, and route`.
+`63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497` — `feat: reopen school help during combat`.
+
+The current GitHub default branch is a later documentation follow-up:
+
+`f77a1c86660784c1a20c9f2a9abfee7b774ba911` — `docs: keep T16 GUT evidence count-safe (#76)`.
 
 Current merged domain chain:
 
@@ -210,6 +217,10 @@ T01 definitions/catalog
 -> T10 Elite/Trace/Boss lifecycle
 -> T11 tradition access/reward lanes
 -> T12 atomic committed backpack snapshot + Fate + route transaction
+-> T13 Persistent Workbench route-preview UI/input presentation
+-> T14 Cheonsul lifecycle adapter / Boss-clear Workbench entry
+-> T15 starting-school Korean function help
+-> T16 selected-school help reopen from combat HUD
 ```
 
 T12 post-merge automated evidence in Production Handoff:
@@ -218,7 +229,7 @@ T12 post-merge automated evidence in Production Handoff:
 
 Evidence ceiling: automated/domain implementation scope only.
 
-## 9. Current product workstream — T15 machine slice merged / Human QA deferred
+## 9. Current product workstream — T12~T16 machine slices merged / Human QA deferred
 
 T12 PR #61 (`T12: atomically commit Workbench snapshot, Fate, and route`) and T13 PR #63 (`T13: add persistent Workbench route-preview UI`) are merged in the completed-main baseline above. T13 remains limited to a reusable Workbench route-preview/input presentation contract.
 
@@ -238,10 +249,9 @@ T13 intentionally did not absorb MainController/T14 integration: it renders supp
 ## 10. Remaining production sequence
 
 ```text
-T14 Cheonsul one-school release-near Vertical Slice
--> T15 school-function help machine slice (merged)
+T12~T16 implemented machine scope
 -> User vertical-slice validation (deferred / NOT_RUN)
--> T16 expand 봉마/귀인/흑영 only after separate authorization
+-> remaining-school expansion only after separate authorization and shared-chassis evidence
 -> T17 four-school circuit integration
 -> T18 final calamity package
 -> T19 full-run verification
@@ -356,7 +366,7 @@ The following remain `NOT_RUN` or explicitly limited until direct evidence exist
 - actual Godot runtime implementation of the new SD character direction,
 - final four-school accumulated-character composite under the newest trace rules.
 
-Do not use T01~T11 test receipts or Notion server readback to promote these states.
+Do not use T01~T16 test receipts or Notion server readback to promote these states.
 
 ## 16. Documentation alignment history and current visual continuation
 
@@ -364,4 +374,4 @@ Do not use T01~T11 test receipts or Notion server readback to promote these stat
 
 Current visual continuation and next-chat quality gate are owned by `docs/CURRENT_VISUAL_HANDOFF.md`.
 
-Product implementation continues through fresh T12 PR #61; draft PR #49 remains read-only and does not authorize resuming that older implementation path.
+Product implementation currently includes T12 PR #61, T13 PR #63, T14 PR #66, T15 PR #69, and T16 PR #73; draft PR #49 remains read-only and does not authorize resuming that older implementation path.
