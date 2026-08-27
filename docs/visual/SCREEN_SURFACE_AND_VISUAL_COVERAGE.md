@@ -27,11 +27,11 @@ symbols rather than four protagonists.
 
 | Reference | Covers | Consumer surface | Current evidence |
 | --- | --- | --- | --- |
-| `SCRREF-SCHOOL-SELECT-02` | school selection | `Main/SchoolSelectionUI` | v2 SD reference created; Notion attachment pending; live composition `NOT_RUN` |
-| `SCRREF-BATTLE-CHEONSUL-02` | Cheonsul battle | `Main` + HUD + runtime actors | v2 SD/top-down reference created; Notion attachment pending; live composition `NOT_RUN` |
-| `SCRREF-WORKBENCH-02` | Workbench/Fate/preview | `Main/RestFlowUI` | v2 SD reference created; Notion attachment pending; live composition `NOT_RUN` |
-| `SCRREF-RESULT-02` | result/reward | `RestFlowUI/ResultView` | v2 SD reference created; Notion attachment pending; live composition `NOT_RUN` |
-| `SCRREF-GAME-OVER-02` | failure/retry | `HUD/GameOverPanel` | v2 SD/top-down reference created; Notion attachment pending; live composition `NOT_RUN` |
+| `SCRREF-SCHOOL-SELECT-02` | school selection | `Main/SchoolSelectionUI` | local + Notion native v2 reference stored; live composition `NOT_RUN` |
+| `SCRREF-BATTLE-CHEONSUL-02` | Cheonsul battle | `Main` + HUD + runtime actors | local + Notion native v2 SD/top-down reference stored; live composition `NOT_RUN` |
+| `SCRREF-WORKBENCH-02` | Workbench/Fate/preview | `Main/RestFlowUI` | local + Notion native v2 reference stored; live composition `NOT_RUN` |
+| `SCRREF-RESULT-02` | result/reward | `RestFlowUI/ResultView` | local + Notion native v2 reference stored; live composition `NOT_RUN` |
+| `SCRREF-GAME-OVER-02` | failure/retry | `HUD/GameOverPanel` | local + Notion native v2 SD/top-down reference stored; live composition `NOT_RUN` |
 
 The references are production guidance, not runtime imports. The existing
 actual runtime image-consumer audit remains valid: its P0 assets are already
