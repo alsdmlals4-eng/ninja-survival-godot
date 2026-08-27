@@ -78,7 +78,7 @@ HUD SchoolHelpButton
 | Godot import | PASS | T16 merge main 63fc |
 | Godot editor parse | PASS | T16 merge main 63fc |
 | main-scene smoke | PASS (5 sec) | T16 merge main 63fc |
-| full GUT | 491/491 tests · 5352 assertions PASS | T16 merge main 63fc |
+| full GUT | 491/491 tests PASS | T16 merge main 63fc; assertion total omitted because earlier receipts disagree while CI confirms the test count |
 | current-source-equivalent full GUT re-run | PASS (Godot 4.7.1 exit 0) | 63fc source; current main differs only in `docs/ACTIVE_CONTEXT.md` |
 | GitHub Actions GUT | SUCCESS, PR #73 final head | 구현 head 독립 검증 |
 | 직접 Debug 실행 | INPUT_DELIVERED | current main 29dc에서 `2` → HUD 예상 위치 클릭 → Escape; 시각 의미는 미확정 |
