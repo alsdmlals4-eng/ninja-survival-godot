@@ -8,6 +8,7 @@ const STAGE_BOSS_SCENE := "res://scenes/enemies/stage_boss.tscn"
 const REWARD_ORB_SCENE := "res://scenes/rewards/reward_orb.tscn"
 const BONGMA_FAMILIAR_SCENE := "res://scenes/schools/bongma_familiar.tscn"
 const HUD_SCENE := "res://scenes/ui/hud.tscn"
+const BATTLEFIELD_BACKDROP := "res://assets/runtime/visual-core/moonlit_battlefield_backdrop_v1.png"
 const REQUIRED_RUNTIME_RESOURCES := [
 	"res://scripts/core/main_controller.gd",
 	"res://scripts/ui/hud.gd",
@@ -31,6 +32,23 @@ func test_main_scene_has_core_nodes() -> void:
 	assert_not_null(main.get_node_or_null("HUD"))
 	assert_not_null(main.get_node_or_null("Player/Camera2D"))
 	assert_not_null(main.get_node_or_null("Player/AutoAttack"))
+
+
+func test_main_scene_renders_the_runtime_battlefield_backdrop_behind_gameplay() -> void:
+	assert_true(ResourceLoader.exists(BATTLEFIELD_BACKDROP), "The approved battlefield backdrop source must exist")
+	var main = _spawn_main()
+	assert_not_null(main)
+	if main == null:
+		return
+
+	var backdrop := main.get_node_or_null("BattlefieldBackdrop") as Sprite2D
+	var player := main.get_node_or_null("Player") as Node2D
+	assert_not_null(backdrop, "Main must own a direct runtime backdrop Sprite2D")
+	assert_not_null(player)
+	if backdrop == null or player == null:
+		return
+	assert_not_null(backdrop.texture, "Backdrop must consume the approved local texture")
+	assert_lt(backdrop.z_index, player.z_index, "Backdrop must remain behind gameplay")
 
 
 func test_runtime_resources_exist() -> void:

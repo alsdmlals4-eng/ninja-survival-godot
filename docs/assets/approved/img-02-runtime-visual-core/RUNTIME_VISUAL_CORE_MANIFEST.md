@@ -1,16 +1,18 @@
 # IMG-02 Runtime Visual Core Manifest
 
-> GitHub Issue: #83
+> GitHub Issues: #83, #87
 > Local source root: `assets/runtime/visual-core/`
 > Approval: user pre-authorized automatic visual production on 2026-08-26; this
 > package is limited to existing Godot consumers.
-> Notion state: pending native-binary attachment and destination readback. Do
-> not mark the generated entries as durably approved until that receipt exists.
+> Notion state: the original seven entries have native original-binary
+> destination readback. The new backdrop requires the same attachment receipt
+> before durable closeout.
 
 ## Runtime assets
 
 | Asset ID | Local source | SHA-256 | Metadata | Consumer | Status |
 | --- | --- | --- | --- | --- | --- |
+| `NINJA_RUNTIME_BATTLEFIELD_MOONLIT_01` | `assets/runtime/visual-core/moonlit_battlefield_backdrop_v1.png` | `e5ec25a1429399be7a6ae3f930a5162ab4a935083051f7c2388724921ed9b0fd` | PNG, 1672×941, opaque 16:9 background | `scenes/main/main_scene.tscn` → `Main/BattlefieldBackdrop` | generated v1; Notion pending |
 | `NINJA_RUNTIME_BOSS_CHEONSUL_01` | `assets/runtime/visual-core/cheonsul_stage_boss_v1.png` | `d787a4f4d1f646f14641b624a489dbb57dede57cfad8fd2625c8bfe227a9a39f` | PNG, 1224×1285, RGBA, transparent corners | `scenes/enemies/stage_boss.tscn` → `StageBoss/Visual` | generated v1; Notion pending |
 | `NINJA_RUNTIME_PROJECTILE_TALISMAN_01` | `assets/runtime/visual-core/talisman_projectile_v1.png` | `bdaa04e5ed46442fa4672838d5f4f340a324caf6de6e7b85dee3becd8de9a809` | PNG, 1536×1024, RGBA, transparent corners | `scenes/projectiles/projectile_basic.tscn` → `ProjectileBasic/Visual` | generated v1; Notion pending |
 | `NINJA_RUNTIME_REWARD_ORB_01` | `assets/runtime/visual-core/golden_reward_orb_v1.png` | `1464d9526123148443a8907a2110c539a2b6f446604cd7cc259f70e6ad7dcd1c` | PNG, 1278×1230, RGBA, transparent corners | `scenes/rewards/reward_orb.tscn` → `RewardOrb/Visual` | generated v1; Notion pending |

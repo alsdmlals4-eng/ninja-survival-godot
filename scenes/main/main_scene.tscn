@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://scripts/core/game_state.gd" id="1_state"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" path="res://scenes/schools/bongma_familiar.tscn" id="14_familiar"]
 [ext_resource type="PackedScene" path="res://scenes/ui/enemy_effect_badge.tscn" id="15_badge"]
 [ext_resource type="PackedScene" path="res://scenes/ui/school_selection_ui.tscn" id="16_selector"]
+[ext_resource type="Texture2D" path="res://assets/runtime/visual-core/moonlit_battlefield_backdrop_v1.png" id="17_backdrop"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("4_main")
@@ -26,6 +27,11 @@ script = ExtResource("1_state")
 
 [node name="CombatDDD" type="Node" parent="."]
 script = ExtResource("6_ddd")
+
+[node name="BattlefieldBackdrop" type="Sprite2D" parent="."]
+z_index = -10
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("17_backdrop")
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 
