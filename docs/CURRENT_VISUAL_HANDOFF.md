@@ -29,7 +29,7 @@ actual Godot consumer.
 | Golden reward orb | `RewardOrb/Visual` | `assets/runtime/visual-core/golden_reward_orb_v1.png` | [Notion](https://app.notion.com/p/3c91b237eb1c81b7a686e2423308102b) |
 | Bongma familiar | `BongmaFamiliar/Visual` | `assets/runtime/visual-core/bongma_familiar_v1.png` | [Notion](https://app.notion.com/p/3c91b237eb1c8102a8c4fe46dfc41e8f) |
 
-## Current IMG-03 runtime battlefield backdrop — current task
+## IMG-03 runtime battlefield backdrop — merged 2026-08-27
 
 Issue [#87](https://github.com/alsdmlals4-eng/ninja-survival-godot/issues/87)
 adds one bounded battlefield background to the existing `Main` scene. It is
@@ -45,8 +45,8 @@ edge sigils supply the visual context.
 The local original is an opaque 1672×941 PNG with SHA-256
 `e5ec25a1429399be7a6ae3f930a5162ab4a935083051f7c2388724921ed9b0fd`.
 The linked Asset Library record has a native original-binary attachment and
-destination readback. Resolve the current GitHub PR/main state before treating
-this current-task receipt as integrated.
+destination readback. PR [#88](https://github.com/alsdmlals4-eng/ninja-survival-godot/pull/88)
+is merged; its historical merge SHA is `5a52a30aa6c38cfed17e46d550eef27ab06e53f7`.
 
 `EnemyBasic/Visual` selects only the three approved generic-enemy textures;
 no school rule, combat value, reward rule, or route authority moved into the
@@ -54,7 +54,7 @@ visual script. The four newly made originals preserve the approved dark
 moonlit, painterly-anime/ink direction while their runtime scale stays bounded
 by their existing Sprite2D consumers.
 
-## Current IMG-04 Cheonsul field visual — current task
+## IMG-04 Cheonsul field visual — merged 2026-08-27
 
 Issue [#90](https://github.com/alsdmlals4-eng/ninja-survival-godot/issues/90)
 adds one transparent field texture to the **existing** runtime visual owner:
@@ -69,12 +69,12 @@ timing, and 0.60-second lifetime stay owned by the existing runtime logic.
 The local original is a transparent 1269×1240 PNG with SHA-256
 `cbb4b1e697f69bf37731f14a32c8ad3890d1557c5ee7ea2ebeb4b2f4f81b3e68`.
 The Asset Library record has a native original-binary attachment and destination
-readback. Resolve the current GitHub PR/main state before treating it as
-integrated.
+readback. PR [#91](https://github.com/alsdmlals4-eng/ninja-survival-godot/pull/91)
+is squash-merged; its merge SHA is `6d538fcf933e2fbcca50f8e6d369d165efac620c`.
 
 Exact PR-head CI passed `gut` and the Windows internal-build artifact. Fresh
 post-merge Godot 4.7.1 evidence passed import, editor parse, a five-second
-headless main-scene smoke, and full GUT `492/492` with `5373` assertions.
+headless main-scene smoke, and full GUT `494/494` with `5386` assertions.
 
 Evidence boundary: Hera was connected to a different project, so this package
 does **not** claim a live visual render, Human Usability, Player Experience,
