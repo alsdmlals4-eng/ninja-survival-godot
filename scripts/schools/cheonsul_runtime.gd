@@ -6,6 +6,7 @@ const CAST_EPSILON := 0.000001
 const FLAME_RADIUS := 90.0
 const FLAME_DAMAGE := 6
 const FIELD_VISUAL_DURATION := 0.60
+const FIELD_VISUAL_TEXTURE: Texture2D = preload("res://assets/runtime/visual-core/cheonsul_flame_field_v1.png")
 const BURN_DURATION := 3.0
 const BURN_TICK_INTERVAL := 1.0
 const BURN_DAMAGE := 2
@@ -252,10 +253,13 @@ func _tick_field_visuals(delta: float) -> void:
 
 
 func _spawn_field_visual(center: Vector2) -> void:
-	var visual := Polygon2D.new()
+	var visual := Sprite2D.new()
 	visual.name = "FlameFieldVisual"
-	visual.polygon = _circle_points(FLAME_RADIUS, 24)
-	visual.color = Color(1.0, 0.35, 0.1, 0.20)
+	visual.texture = FIELD_VISUAL_TEXTURE
+	var texture_size := FIELD_VISUAL_TEXTURE.get_size()
+	var longest_edge := maxf(texture_size.x, texture_size.y)
+	if longest_edge > 0.0:
+		visual.scale = Vector2.ONE * (FLAME_RADIUS * 2.0 / longest_edge)
 	add_child(visual)
 	visual.global_position = center
 	_field_visuals.append({"node": visual, "remaining": FIELD_VISUAL_DURATION})

@@ -8,6 +8,7 @@ const ENEMY_PATH := "res://scripts/enemies/enemy_chaser.gd"
 const TRACKER_PATH := "res://scripts/combat/combat_contribution_tracker.gd"
 const RESOLVER_PATH := "res://scripts/combat/combat_resolver.gd"
 const MODIFIER_PATH := "res://scripts/data/run_modifier_set.gd"
+const FIELD_VISUAL_TEXTURE_PATH := "res://assets/runtime/visual-core/cheonsul_flame_field_v1.png"
 
 
 func _make_runtime():
@@ -90,6 +91,21 @@ func test_flame_cast_without_a_target_does_not_emit_player_action() -> void:
 	watch_signals(runtime)
 	assert_eq(runtime.apply_flame_cast(Vector2(9999, 9999)), 0)
 	assert_signal_not_emitted(runtime, "player_action_resolved")
+
+
+func test_flame_cast_spawns_a_textured_runtime_field_visual() -> void:
+	var runtime = _make_runtime()
+	if runtime == null:
+		return
+	var center := Vector2(56, -24)
+	runtime.apply_flame_cast(center)
+	var field_visual: Node = runtime.get_node_or_null("FlameFieldVisual")
+	assert_true(field_visual is Sprite2D, "Cheonsul field must render through a Sprite2D consumer")
+	if not field_visual is Sprite2D:
+		return
+	assert_true(ResourceLoader.exists(FIELD_VISUAL_TEXTURE_PATH), "Cheonsul field source must exist locally")
+	assert_not_null(field_visual.texture, "Cheonsul field must consume the approved local texture")
+	assert_eq(field_visual.global_position, center)
 
 
 func test_same_token_refreshes_four_second_duration() -> void:
