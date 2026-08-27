@@ -104,3 +104,42 @@ jobs:
             exit 1
           fi
           grep -q "test_script_contracts.gd" gut-output.log
+
+  windows-internal-build:
+    name: Windows internal build artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Godot 4.7.1 and export templates
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -L --fail -o godot.zip https://github.com/godotengine/godot-builds/releases/download/4.7.1-stable/Godot_v4.7.1-stable_linux.x86_64.zip
+          unzip -q godot.zip
+          rm -f godot.zip
+          chmod +x Godot_v4.7.1-stable_linux.x86_64
+          curl -L --fail -o export-templates.tpz https://github.com/godotengine/godot-builds/releases/download/4.7.1-stable/Godot_v4.7.1-stable_export_templates.tpz
+          mkdir -p "$HOME/.local/share/godot/export_templates/4.7.1.stable"
+          unzip -q export-templates.tpz -d export-templates
+          mv export-templates/templates/* "$HOME/.local/share/godot/export_templates/4.7.1.stable/"
+          rm -rf export-templates export-templates.tpz
+
+      - name: Export Windows internal validation build
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/windows
+          ./Godot_v4.7.1-stable_linux.x86_64 --headless --path . --export-release "Windows Desktop Internal Validation" build/windows/NinjaSurvivalInternal.exe
+          test -s build/windows/NinjaSurvivalInternal.exe
+          test -s build/windows/NinjaSurvivalInternal.pck
+
+      - name: Upload Windows internal build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ninja-survival-windows-internal
+          path: build/windows/
+          if-no-files-found: error
+          retention-days: 7
