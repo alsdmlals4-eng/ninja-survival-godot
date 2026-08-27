@@ -8,6 +8,32 @@
 > subordinate to product canon and links existing asset manifests rather than
 > replacing their approval, provenance, or lifecycle authority.
 
+## 0. 2026-08-28 amendment — P0 reference creation
+
+The user explicitly requested that missing visual work be produced after a
+screen-first audit. This amendment supersedes the earlier audit's
+`NO_AUTOMATIC_IMAGE_GENERATION_FROM_GAPS` boundary **only for the five current
+P0 whole-screen design references**. It does not authorize an orphan runtime
+texture, a replacement of an approved runtime image, or a title/save/final
+screen that has no current consumer.
+
+`docs/visual/screen-references/README.md` is the binary/provenance owner for
+the following reviewed local 1672×941 PNG references:
+
+| Reference | Covers | Consumer surface | Current evidence |
+| --- | --- | --- | --- |
+| `SCRREF-SCHOOL-SELECT-01` | school selection | `Main/SchoolSelectionUI` | local reference created; live composition `NOT_RUN` |
+| `SCRREF-BATTLE-CHEONSUL-01` | Cheonsul battle | `Main` + HUD + runtime actors | local reference created; live composition `NOT_RUN` |
+| `SCRREF-WORKBENCH-01` | Workbench/Fate/preview | `Main/RestFlowUI` | local reference created; live composition `NOT_RUN` |
+| `SCRREF-RESULT-01` | result/reward | `RestFlowUI/ResultView` | local reference created; live composition `NOT_RUN` |
+| `SCRREF-GAME-OVER-01` | failure/retry | `HUD/GameOverPanel` | local reference created; live composition `NOT_RUN` |
+
+The references are production guidance, not runtime imports. The existing
+actual runtime image-consumer audit remains valid: its P0 assets are already
+covered by the approved local sources in `docs/assets/approved/` and
+`assets/runtime/visual-core/`. Notion attachment state is recorded separately
+after destination readback; do not call any row dual-stored before then.
+
 ## 1. Scope and protected boundary
 
 ### Current target build
