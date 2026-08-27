@@ -19,7 +19,7 @@ T14의 의도된 한계도 판정에서 분리한다. Workbench의 보스 보상
 
 ## 고정 환경
 
-- 기준 리비전: `main` `25e2bf3a5ecd026f56428e75f18389da2c430c40`
+- 기준 리비전: `main` `977158acce4dd7cd27eb82d9ae3699673f4e1029`
 - 엔진: Godot 4.7.1
 - 시작 씬: `res://scenes/main/main_scene.tscn`
 - 기본 선택: 천술류
