@@ -180,6 +180,50 @@ func test_alive_ui_accept_uses_selected_ultimate() -> void:
 	assert_almost_eq(bongma.ultimate_time_remaining, 6.0, 0.001)
 
 
+func test_ultimate_button_reuses_selected_school_runtime_action() -> void:
+	var main = MAIN_SCENE.instantiate()
+	add_child_autofree(main)
+	await get_tree().process_frame
+	main.get_node("SchoolSelectionUI")._choose(&"bongma")
+	var bongma = main.get_node("SchoolRuntimeHost").active_runtime
+	bongma.spirit = 100.0
+	var ultimate_button := main.get_node_or_null("HUD/UltimateButton") as Button
+	assert_not_null(ultimate_button, "Combat HUD must expose the ultimate button")
+	if ultimate_button == null:
+		return
+	ultimate_button.pressed.emit()
+	assert_almost_eq(bongma.ultimate_time_remaining, 6.0, 0.001)
+
+
+func test_cheonsul_test_buttons_spawn_isolated_elite_and_mid_boss() -> void:
+	var main = MAIN_SCENE.instantiate()
+	add_child_autofree(main)
+	await get_tree().process_frame
+	main.get_node("SchoolSelectionUI")._choose(&"cheonsul")
+	var slice_snapshot: Dictionary = main.cheonsul_slice.get_snapshot()
+	var elite_button := main.get_node_or_null("HUD/TestEliteButton") as Button
+	var boss_button := main.get_node_or_null("HUD/TestBossButton") as Button
+	assert_not_null(elite_button, "Cheonsul combat must expose the test elite button")
+	assert_not_null(boss_button, "Cheonsul combat must expose the test boss button")
+	if elite_button == null or boss_button == null:
+		return
+
+	elite_button.pressed.emit()
+	boss_button.pressed.emit()
+	var roles: Array[StringName] = []
+	for enemy in _living_enemies(main):
+		roles.append(StringName(enemy.get_meta("cheonsul_slice_role", &"")))
+	assert_true(roles.has(&"test_elite"))
+	assert_true(roles.has(&"test_boss"))
+	assert_eq(main.cheonsul_slice.get_snapshot().get("state"), slice_snapshot.get("state"), "Test jumps must not mutate canonical Cheonsul progression")
+	var gold_before: int = main.run_build_state.gold
+	for enemy in _living_enemies(main):
+		if StringName(enemy.get_meta("cheonsul_slice_role", &"")) in [&"test_elite", &"test_boss"]:
+			enemy.take_damage(enemy.max_health)
+	assert_eq(main.cheonsul_slice.get_snapshot().get("state"), slice_snapshot.get("state"), "Defeating test targets must not mutate canonical Cheonsul progression")
+	assert_eq(main.run_build_state.gold, gold_before, "Test encounters must not grant persistent currency")
+
+
 func test_restart_button_is_wired_while_player_is_alive() -> void:
 	var main = MAIN_SCENE.instantiate()
 	add_child_autofree(main)

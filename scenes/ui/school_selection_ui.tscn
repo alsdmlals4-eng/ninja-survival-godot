@@ -32,33 +32,17 @@ horizontal_alignment = 1
 layout_mode = 2
 text = "1 — 봉마류  |  소환과 결계로 진지를 만든다"
 
-[node name="BongmaHelpButton" type="Button" parent="Panel/Margin/Choices"]
-layout_mode = 2
-text = "봉마류 기능 도움말"
-
 [node name="CheonsulButton" type="Button" parent="Panel/Margin/Choices"]
 layout_mode = 2
 text = "2 — 천술류  |  속성 상태를 겹쳐 반응을 터뜨린다"
-
-[node name="CheonsulHelpButton" type="Button" parent="Panel/Margin/Choices"]
-layout_mode = 2
-text = "천술류 기능 도움말"
 
 [node name="GuiinButton" type="Button" parent="Panel/Margin/Choices"]
 layout_mode = 2
 text = "3 — 귀인류  |  가까이 붙고 위험할수록 강해진다"
 
-[node name="GuiinHelpButton" type="Button" parent="Panel/Margin/Choices"]
-layout_mode = 2
-text = "귀인류 기능 도움말"
-
 [node name="HeukyeongButton" type="Button" parent="Panel/Margin/Choices"]
 layout_mode = 2
 text = "4 — 흑영류  |  원거리 표식을 쌓아 연쇄 폭발시킨다"
-
-[node name="HeukyeongHelpButton" type="Button" parent="Panel/Margin/Choices"]
-layout_mode = 2
-text = "흑영류 기능 도움말"
 
 [node name="HelpDialog" type="PanelContainer" parent="."]
 anchors_preset = 15

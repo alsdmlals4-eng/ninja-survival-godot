@@ -45,10 +45,6 @@ func _ready() -> void:
 	_connect_button("Panel/Margin/Choices/CheonsulButton", &"cheonsul")
 	_connect_button("Panel/Margin/Choices/GuiinButton", &"guiin")
 	_connect_button("Panel/Margin/Choices/HeukyeongButton", &"heukyeong")
-	_connect_help_button("Panel/Margin/Choices/BongmaHelpButton", &"bongma")
-	_connect_help_button("Panel/Margin/Choices/CheonsulHelpButton", &"cheonsul")
-	_connect_help_button("Panel/Margin/Choices/GuiinHelpButton", &"guiin")
-	_connect_help_button("Panel/Margin/Choices/HeukyeongHelpButton", &"heukyeong")
 	_help_close_button.pressed.connect(_close_school_help)
 
 
@@ -81,19 +77,6 @@ func _connect_button(path: NodePath, school_id: StringName) -> void:
 	if button == null:
 		return
 	button.pressed.connect(func() -> void: _choose(school_id))
-
-
-func _connect_help_button(path: NodePath, school_id: StringName) -> void:
-	var button := get_node_or_null(path) as Button
-	if button == null:
-		return
-	button.pressed.connect(func() -> void: _open_school_help(school_id, button))
-
-
-func _open_school_help(school_id: StringName, opener: Button) -> void:
-	if _selected or not SCHOOL_HELP.has(school_id):
-		return
-	_show_school_help(school_id, opener)
 
 
 func open_runtime_school_help(school_id: StringName, opener: Button) -> void:

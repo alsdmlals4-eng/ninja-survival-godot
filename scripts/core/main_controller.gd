@@ -21,6 +21,15 @@ const CHEONSUL_SLICE_ROLE_META := &"cheonsul_slice_role"
 const CHEONSUL_ENCOUNTER_ID_META := &"cheonsul_encounter_id"
 const CHEONSUL_ELITE_ROLE := &"elite"
 const CHEONSUL_BOSS_ROLE := &"boss"
+const CHEONSUL_TEST_ELITE_ROLE := &"test_elite"
+const CHEONSUL_TEST_BOSS_ROLE := &"test_boss"
+
+const SCHOOL_ULTIMATE_GUIDANCE := {
+	&"bongma": "백귀야행: 임시 식신을 불러 짧은 시간 집중 공격합니다.",
+	&"cheonsul": "오행폭주: 상태가 남은 적에게 폭발 피해를 줍니다.",
+	&"guiin": "귀인화: 짧은 시간 근접 공격의 범위·속도·피해가 강해집니다.",
+	&"heukyeong": "암영처형: 쌓인 표식 대상에게 처형 피해를 줍니다.",
+}
 
 @export var reward_orb_scene: PackedScene
 
@@ -133,6 +142,10 @@ func _connect_existing_signals() -> void:
 	school_host.player_action_resolved.connect(player_visual.show_attack)
 	hud.restart_requested.connect(_restart_run)
 	hud.school_help_requested.connect(_on_school_help_requested)
+	hud.trace_recovery_requested.connect(_on_trace_recovery_requested)
+	hud.ultimate_requested.connect(_on_ultimate_requested)
+	hud.test_elite_requested.connect(_on_test_elite_requested)
+	hud.test_boss_requested.connect(_on_test_boss_requested)
 
 
 func _connect_mvp3_signals() -> void:
@@ -156,27 +169,65 @@ func _connect_mvp3_signals() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_R:
+		_on_trace_recovery_requested()
+		return
 	if not event.is_action_pressed("ui_accept"):
 		return
 	if game_over:
 		_restart_run()
 		return
 	if cheonsul_slice != null:
-		if cheonsul_slice.get_snapshot().get("state", &"") == &"trace_available":
-			if cheonsul_slice.recover_trace():
-				hud.show_school_feedback("흔적을 회수했습니다. 보스 경고를 기다리세요.")
-			return
-		if cheonsul_slice.get_snapshot().get("state", &"") in [&"core", &"elite_warning", &"elite_active", &"trace_recovered", &"boss_warning", &"boss_active"]:
-			school_host.try_use_ultimate()
+		if cheonsul_slice.get_snapshot().get("state", &"") in [&"core", &"elite_warning", &"elite_active", &"trace_available", &"trace_recovered", &"boss_warning", &"boss_active"]:
+			_try_use_selected_ultimate()
 		return
 	if stage_flow != null and stage_flow.phase != StageFlowController.Phase.COMBAT and stage_flow.phase != StageFlowController.Phase.BOSS:
 		return
-	if school_host.selected_school_id != &"":
-		school_host.try_use_ultimate()
+	_try_use_selected_ultimate()
 
 
 func _restart_run() -> void:
 	get_tree().reload_current_scene()
+
+
+func _on_ultimate_requested() -> void:
+	_try_use_selected_ultimate()
+
+
+func _try_use_selected_ultimate() -> bool:
+	if game_over or not _combat_enabled or school_host.selected_school_id == &"":
+		return false
+	return school_host.try_use_ultimate()
+
+
+func _on_test_elite_requested() -> void:
+	if not _can_spawn_cheonsul_test_encounter():
+		return
+	_spawn_cheonsul_test_elite()
+
+
+func _on_test_boss_requested() -> void:
+	if not _can_spawn_cheonsul_test_encounter():
+		return
+	_spawn_cheonsul_test_boss()
+
+
+func _on_trace_recovery_requested() -> void:
+	if game_over or cheonsul_slice == null:
+		return
+	if cheonsul_slice.get_snapshot().get("state", &"") != &"trace_available":
+		return
+	if cheonsul_slice.recover_trace():
+		hud.show_school_feedback("흔적을 회수했습니다. 보스 경고를 기다리세요.")
+
+
+func _can_spawn_cheonsul_test_encounter() -> bool:
+	return (
+		not game_over
+		and _combat_enabled
+		and cheonsul_slice != null
+		and school_host.selected_school_id == &"cheonsul"
+	)
 
 
 func _on_school_selected(school_id: StringName) -> void:
@@ -247,6 +298,7 @@ func _process(delta: float) -> void:
 
 
 func _on_cheonsul_slice_phase_changed(phase: StringName) -> void:
+	hud.set_trace_recovery_available(phase == &"trace_available")
 	match phase:
 		&"elite_warning":
 			hud.show_school_feedback("정예 경고: %s가 접근합니다." % _cheonsul_encounter_name("elite_display_name", "정예"))
@@ -254,7 +306,7 @@ func _on_cheonsul_slice_phase_changed(phase: StringName) -> void:
 			hud.show_school_feedback("정예: 두 원소 준비 뒤 반응을 노리세요.")
 			_spawn_cheonsul_elite()
 		&"trace_available":
-			hud.show_school_feedback("흔적 발견: Enter로 회수하세요.")
+			hud.show_school_feedback("흔적 발견: R 또는 버튼으로 회수하세요.")
 		&"trace_recovered":
 			hud.show_school_feedback("흔적 회수 완료. 보스 게이트를 확인합니다.")
 		&"boss_warning":
@@ -285,6 +337,50 @@ func _spawn_cheonsul_elite() -> void:
 	elite.set_meta(CHEONSUL_SLICE_ROLE_META, CHEONSUL_ELITE_ROLE)
 	elite.set_meta(CHEONSUL_ENCOUNTER_ID_META, _cheonsul_encounter_id("elite_id"))
 	_wire_enemy(elite)
+
+
+func _spawn_cheonsul_test_elite() -> void:
+	if _has_live_cheonsul_test_encounter(CHEONSUL_TEST_ELITE_ROLE):
+		return
+	var elite := ENEMY_BASIC_SCENE.instantiate()
+	if elite == null:
+		return
+	if elite is EnemyChaser:
+		(elite as EnemyChaser).max_health = 120
+		(elite as EnemyChaser).move_speed = 105.0
+		(elite as EnemyChaser).contact_damage = 14
+	if elite is Node2D:
+		(elite as Node2D).scale = Vector2.ONE * 1.35
+	add_child(elite)
+	if elite is Node2D:
+		(elite as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
+	elite.set_meta(CHEONSUL_SLICE_ROLE_META, CHEONSUL_TEST_ELITE_ROLE)
+	_wire_enemy(elite)
+	hud.show_school_feedback("TEST 정예: Trace·보상·진행에는 반영되지 않습니다.")
+
+
+func _spawn_cheonsul_test_boss() -> void:
+	if _has_live_cheonsul_test_encounter(CHEONSUL_TEST_BOSS_ROLE):
+		return
+	var boss_node := STAGE_BOSS_SCENE.instantiate()
+	if not boss_node.has_method("configure_tier") or not boss_node.configure_tier(2):
+		boss_node.free()
+		return
+	add_child(boss_node)
+	if boss_node is Node2D:
+		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
+	boss_node.set_meta(CHEONSUL_SLICE_ROLE_META, CHEONSUL_TEST_BOSS_ROLE)
+	_wire_enemy(boss_node)
+	hud.show_school_feedback("TEST 중간 보스: Trace·보상·진행에는 반영되지 않습니다.")
+
+
+func _has_live_cheonsul_test_encounter(role: StringName) -> bool:
+	for child in get_children():
+		if not child.is_in_group("enemies") or child.is_queued_for_deletion():
+			continue
+		if StringName(child.get_meta(CHEONSUL_SLICE_ROLE_META, &"")) == role:
+			return true
+	return false
 
 
 func _on_cheonsul_boss_spawn_requested() -> void:
@@ -331,8 +427,14 @@ func _set_combat_enabled(enabled: bool) -> void:
 
 	if enabled and not game_over and school_host.selected_school_id != &"":
 		hud.show_school_help(school_host.selected_school_name)
+		hud.show_combat_controls(
+			school_host.selected_school_name,
+			_school_ultimate_guidance(school_host.selected_school_id),
+			school_host.selected_school_id == &"cheonsul"
+		)
 	else:
 		hud.hide_school_help()
+		hud.hide_combat_controls()
 		school_selection.dismiss_school_help()
 
 
@@ -340,6 +442,10 @@ func _on_school_help_requested() -> void:
 	if game_over or not _combat_enabled or school_host.selected_school_id == &"":
 		return
 	school_selection.open_runtime_school_help(school_host.selected_school_id, hud.school_help_button)
+
+
+func _school_ultimate_guidance(school_id: StringName) -> String:
+	return str(SCHOOL_ULTIMATE_GUIDANCE.get(school_id, "궁극기 효과가 준비 중입니다."))
 
 
 func _on_segment_time_changed(segment: int, remaining: float) -> void:
@@ -378,9 +484,12 @@ func _on_enemy_died(enemy: Node) -> void:
 
 	var is_boss := enemy.has_method("is_stage_boss") and bool(enemy.call("is_stage_boss"))
 	var cheonsul_role := StringName(enemy.get_meta(CHEONSUL_SLICE_ROLE_META, &""))
+	var is_test_encounter := cheonsul_role in [CHEONSUL_TEST_ELITE_ROLE, CHEONSUL_TEST_BOSS_ROLE]
 	game_state.register_kill(100)
 	combat_ddd.register_kill()
 	school_host.forward_enemy_died(enemy)
+	if is_test_encounter:
+		return
 	if is_boss:
 		run_build_state.grant_boss_gold()
 	else:
@@ -448,6 +557,10 @@ func _settle_boss_death(enemy: Node) -> void:
 func _cleanup_remaining_normal_enemies() -> void:
 	for child in get_children():
 		if not child.is_in_group("enemies"):
+			continue
+		if StringName(child.get_meta(CHEONSUL_SLICE_ROLE_META, &"")) in [CHEONSUL_TEST_ELITE_ROLE, CHEONSUL_TEST_BOSS_ROLE]:
+			if not child.is_queued_for_deletion():
+				child.queue_free()
 			continue
 		if child.has_method("is_stage_boss") and bool(child.call("is_stage_boss")):
 			continue

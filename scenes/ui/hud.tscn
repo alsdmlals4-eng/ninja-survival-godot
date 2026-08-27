@@ -115,6 +115,61 @@ offset_bottom = 56.0
 grow_horizontal = 0
 text = "현재 유파 도움말"
 
+[node name="UltimateButton" type="Button" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -510.0
+offset_top = 20.0
+offset_right = -320.0
+offset_bottom = 56.0
+grow_horizontal = 0
+text = "궁극기 [Enter]"
+
+[node name="TestEliteButton" type="Button" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -510.0
+offset_top = 64.0
+offset_right = -320.0
+offset_bottom = 100.0
+grow_horizontal = 0
+text = "TEST · 정예 소환"
+
+[node name="TestBossButton" type="Button" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -310.0
+offset_top = 64.0
+offset_right = -20.0
+offset_bottom = 100.0
+grow_horizontal = 0
+text = "TEST · 중간 보스 소환"
+
+[node name="TraceRecoveryButton" type="Button" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -510.0
+offset_top = 108.0
+offset_right = -320.0
+offset_bottom = 144.0
+grow_horizontal = 0
+text = "흔적 회수 [R]"
+
+[node name="CombatGuideLabel" type="Label" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -510.0
+offset_top = 152.0
+offset_right = -20.0
+offset_bottom = 204.0
+grow_horizontal = 0
+autowrap_mode = 2
+
 [node name="GameOverPanel" type="Control" parent="."]
 visible = false
 layout_mode = 3
