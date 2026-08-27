@@ -8,6 +8,37 @@
 > subordinate to product canon and links existing asset manifests rather than
 > replacing their approval, provenance, or lifecycle authority.
 
+## 0. 2026-08-28 amendment — P0 reference creation
+
+The user explicitly requested that missing visual work be produced after a
+screen-first audit. This amendment supersedes the earlier audit's
+`NO_AUTOMATIC_IMAGE_GENERATION_FROM_GAPS` boundary **only for the five current
+P0 whole-screen design references**. It does not authorize an orphan runtime
+texture, a replacement of an approved runtime image, or a title/save/final
+screen that has no current consumer.
+
+The initial v1 reference set was rejected before merge because it used a
+poster-like, adult-proportion composition rather than the actual top-down SD
+survival-game language. `docs/visual/screen-references/README.md` is the
+binary/provenance owner for the following replacement references. They bind to
+the supplied SD style sheet: one small black-clad ninja identity, steep
+top-down combat readability, and school differentiation through effects and
+symbols rather than four protagonists.
+
+| Reference | Covers | Consumer surface | Current evidence |
+| --- | --- | --- | --- |
+| `SCRREF-SCHOOL-SELECT-02` | school selection | `Main/SchoolSelectionUI` | local + Notion native v2 reference stored; live composition `NOT_RUN` |
+| `SCRREF-BATTLE-CHEONSUL-02` | Cheonsul battle | `Main` + HUD + runtime actors | local + Notion native v2 SD/top-down reference stored; live composition `NOT_RUN` |
+| `SCRREF-WORKBENCH-02` | Workbench/Fate/preview | `Main/RestFlowUI` | local + Notion native v2 reference stored; live composition `NOT_RUN` |
+| `SCRREF-RESULT-02` | result/reward | `RestFlowUI/ResultView` | local + Notion native v2 reference stored; live composition `NOT_RUN` |
+| `SCRREF-GAME-OVER-02` | failure/retry | `HUD/GameOverPanel` | local + Notion native v2 SD/top-down reference stored; live composition `NOT_RUN` |
+
+The references are production guidance, not runtime imports. The existing
+actual runtime image-consumer audit remains valid: its P0 assets are already
+covered by the approved local sources in `docs/assets/approved/` and
+`assets/runtime/visual-core/`. Notion attachment state is recorded separately
+after destination readback; do not call any row dual-stored before then.
+
 ## 1. Scope and protected boundary
 
 ### Current target build
@@ -24,8 +55,10 @@ evidence remain `NOT_RUN` or user-deferred.
 
 ### Hard boundaries
 
-- `NO_AUTOMATIC_IMAGE_GENERATION_FROM_GAPS`: this audit creates no image,
-  image edit, asset promotion, or runtime consumer.
+- The earlier `NO_AUTOMATIC_IMAGE_GENERATION_FROM_GAPS` boundary is superseded
+  only for this completed, replacement v2 P0 reference set. It still forbids
+  runtime promotion, replacement of an approved runtime image, and expansion
+  to a screen with no current consumer.
 - Runtime facts come from the Godot scenes/scripts named below. A screen
   requirement is not evidence of an implemented screen.
 - `SCREEN_DESIGN_REFERENCE` and runtime component assets are separate outputs.
@@ -152,21 +185,22 @@ not a bitmap to place in the game.
 command. The corresponding runtime components continue to use their existing
 approved sources only.
 
-## 5. Queues — no automatic production
+## 5. Queues and completed P0 reference work
 
 ### Screen Design Reference Queue
 
 | screen_id | consumer surface | player goal | reference needed | existing anchor | fidelity / validation | priority / status |
 | --- | --- | --- | --- | --- | --- | --- |
-| `SCRREF-SCHOOL-SELECT` | `Main/SchoolSelectionUI` | choose school confidently | whole screen hierarchy and focus | existing scene + Hybrid Visual Bible | target-resolution capture; mouse/keyboard/gamepad/touch readability | P0 / `DEFERRED_BY_DECISION` |
-| `SCRREF-BATTLE-CHEONSUL` | `Main` + HUD + runtime actors | read danger, field and rewards | whole gameplay composition | moonlit backdrop + approved runtime consumers | live capture at target aspect; overlap/telegraph/readability review | P0 / `DEFERRED_BY_DECISION` |
-| `SCRREF-WORKBENCH` | `Main/RestFlowUI` | choose route/Fate and understand disabled commit | whole rest/Workbench hierarchy | actual view-switching Control tree | target-resolution capture; focus, pending and failure states | P0 / `DEFERRED_BY_DECISION` |
-| `SCRREF-RESULT` | `RestFlowUI/ResultView` | read outcome and next action | result/reward hierarchy | actual ResultView | capture normal and zero-contribution states | P0 / `DEFERRED_BY_DECISION` |
-| `SCRREF-GAME-OVER` | `HUD/GameOverPanel` | understand failure and retry | failure hierarchy | actual GameOverPanel | target-resolution capture and focus/restart check | P0 / `DEFERRED_BY_DECISION` |
+| `SCRREF-SCHOOL-SELECT` | `Main/SchoolSelectionUI` | choose school confidently | whole screen hierarchy and focus | v2 SD symbols/cards; actual scene | target-resolution capture; mouse/keyboard/gamepad/touch readability | P0 / `REFERENCE_CREATED_V2`, live `NOT_RUN` |
+| `SCRREF-BATTLE-CHEONSUL` | `Main` + HUD + runtime actors | read danger, field and rewards | whole gameplay composition | v2 top-down SD battle; approved runtime consumers | live capture at target aspect; overlap/telegraph/readability review | P0 / `REFERENCE_CREATED_V2`, live `NOT_RUN` |
+| `SCRREF-WORKBENCH` | `Main/RestFlowUI` | choose route/Fate and understand disabled commit | whole rest/Workbench hierarchy | v2 SD Workbench; actual Control tree | target-resolution capture; focus, pending and failure states | P0 / `REFERENCE_CREATED_V2`, live `NOT_RUN` |
+| `SCRREF-RESULT` | `RestFlowUI/ResultView` | read outcome and next action | result/reward hierarchy | v2 SD result; actual ResultView | capture normal and zero-contribution states | P0 / `REFERENCE_CREATED_V2`, live `NOT_RUN` |
+| `SCRREF-GAME-OVER` | `HUD/GameOverPanel` | understand failure and retry | failure hierarchy | v2 top-down SD failure; actual GameOverPanel | target-resolution capture and focus/restart check | P0 / `REFERENCE_CREATED_V2`, live `NOT_RUN` |
 
-All five rows require a future **Image Conversation Approval Gate** if a raster
-mockup is selected. Runtime capture or editable wireframe is preferred first;
-no row authorizes a generated image.
+All five P0 references now have one reviewed v2 local candidate under the
+user's standing image authorization. They remain design references; no row
+authorizes a runtime image import. The remaining gate is the explicit live
+composition/readability validation, not another generation pass.
 
 ### Runtime Asset Family Queue
 
@@ -191,12 +225,12 @@ no row authorizes a generated image.
 | Runtime components and whole-screen references were mixed | a PNG consumer did not prove hierarchy/readability | screen-reference queue is separate from runtime asset queue | future capture/wireframe work does not become a bitmap import task | explicit `SCREEN_DESIGN_REFERENCE` rows |
 | Dynamic Rest views are mostly Controls/text | a coverage audit could wrongly request UI PNGs | records `GODOT_UI` and `TEXT_LAYER` as sufficient modes | labels/cards/buttons remain editable/localizable | `rest_flow_ui.tscn` + script dynamic buttons |
 | Current target is only Cheonsul slice | full-run/title/final scope could be implied by canon | marks release shell/final flow `NOT_APPLICABLE` or deferred with reasons | current work remains bounded | product router + no corresponding runtime consumer |
-| Other-school visuals have uneven implementation | gaps could trigger automatic image creation | queues actual existing consumer/procedural draw only; defers remaining schools | no unapproved production queue expansion | user task's image-generation prohibition |
+| Initial P0 references used poster composition | references could steer implementation away from top-down SD survival gameplay | reject v1 before merge; replace with v2 small-ninja/top-down/school-symbol references | no adult-poster or four-protagonist visual direction remains active | supplied SD style sheet + v2 reference inspection |
 
 ### Codex implementation handoff
 
 - **Read first:** this file; `docs/ACTIVE_CONTEXT.md`; `docs/CURRENT_CONFIRMED_DECISIONS.md`; `docs/CURRENT_VISUAL_HANDOFF.md`; Notion Flow Map / Visual Bible; and the actual scene/script named by the selected queue row.
-- **Do not implement from this audit alone:** title/save/settings/final binding, remaining-school art, or any new raster asset. They require a separately approved product scope and, for images, an Image Conversation Approval Gate.
+- **Do not implement from this audit alone:** title/save/settings/final binding, remaining-school art, or any new runtime raster asset. They require a separately approved product scope. The v2 files are references only, and must not be promoted as textures.
 - **Current actual consumers:** `scenes/main/main_scene.tscn`, `scenes/ui/school_selection_ui.tscn`, `scenes/ui/hud.tscn`, dynamically instantiated `scenes/ui/rest_flow_ui.tscn`, plus the asset consumers listed in section 5.
 - **Next permitted validation package:** target-aspect live capture of `SCR-SCHOOL-SELECT`, `SCR-BATTLE-CHEONSUL`, `SCR-RESULT/WORKBENCH`, and `SCR-GAME-OVER`; verify focus, disabled/pending states, Korean readability, overlap and safe exit. This is validation, not implementation completion.
 - **Acceptance:** do not claim Human/Player/device PASS without separate evidence; preserve all current domain owners; keep PR #49 unchanged; update this owner and Production Handoff after a future approved capture or implementation.
@@ -244,7 +278,8 @@ Validated correction made during loop 3: the player source is a per-state
 
 ### User decisions / approvals needed later
 
-- Reopen Human vertical-slice validation to choose capture vs. editable
-  wireframe vs. a separately approved screen-design reference for each P0 row.
+- Reopen Human vertical-slice validation for target-resolution capture against
+  the completed v2 references.
 - Approve any future title/save/settings/full-run/remaining-school scope before
-  implementation. Approve any image generation separately.
+  implementation. Future image work follows the latest user authorization and
+  its required local/Notion storage rule.
