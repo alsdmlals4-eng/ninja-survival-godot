@@ -1,12 +1,22 @@
 # CURRENT VISUAL HANDOFF — Ninja Survival / 닌자의 신
 
-> Updated: 2026-08-27 KST
+> Updated: 2026-08-28 KST
 > Purpose: next-chat resume router for the approved visual direction and current image-production state.
 > Product/runtime authority remains `AGENTS.md` → `docs/CURRENT_CONFIRMED_DECISIONS.md` → `docs/ACTIVE_CONTEXT.md` → actual code/data/tests. This file owns the **current visual continuation state only**.
 
 > Screen-first coverage owner: `docs/visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md`.
 > It separates whole-screen references from runtime components and does not
 > authorize image generation from a gap.
+
+## 2026-08-28 current combat visual grammar — approved, implementation deferred
+
+- **Cheonsul:** blue plus amber/orange is the primary status/reaction family. It must not drift into the violet/black family reserved for Heukyeong.
+- **Status information:** show compact, silhouette-distinct icons rather than persistent written status badges. Color alone is insufficient; implementation must retain a focus/help description path for validation.
+- **Enemy HP:** hide all HP bars by default. Only the enemy just damaged may reveal its bar. The reveal duration is intentionally undecided until Human Usability observation.
+- **Character/style guardrail:** retain the single black/navy ninja identity with restrained red cord and warm-gold details. The supplied four-school SD sheet may inform icon/action density only; it must not become four runtime protagonists or simultaneous four Stage-3 forms.
+- **`PROJECT_CORE_SCENE_VISUAL_BOARD`:** generated in the current chat to check understanding and visual coherence. Its four planning panels are school selection, Cheonsul action, Result/Workbench, and failure/retry. It is `GENERATED_EXPLORATION`, not an approved Project Asset, runtime texture, UI implementation, Scene completion, or Human/Player evidence. Do not copy it into the repository or attach it to Notion unless the user separately promotes it through the asset gate.
+
+The Hybrid Master Style remains approved. Exact screen composition, Workbench grid treatment, failure/retry visual signal, and any new runtime asset remain **PENDING_USER_REVIEW / NOT_IMPLEMENTATION_READY**.
 
 ## Current IMG-02 runtime visual core — merged 2026-08-27
 
@@ -126,7 +136,7 @@ and dual-storage gate.
   Usability, Player Experience, device, and export remain **NOT_RUN**. PR #49
   remains read-only.
 
-## 1. Exact repository / concurrency state at handoff
+## Historical repository / concurrency snapshot — not current authority
 
 - Completed `main` observed for this visual handoff: `c0440e7043bcf3bb678f5cb7d1653883f93c07a2`.
 - Open T12 implementation PR: **#49 `T12: atomic Workbench Fate route commit`**.

@@ -2,13 +2,13 @@
 
 ```yaml
 project: NINJA_SURVIVAL
-state_router_updated_at: 2026-08-27 KST
+state_router_updated_at: 2026-08-28 KST
 reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
-current_completed_main: 1841041055026c4f6b211447488a682b914a57b6
-current_completed_main_resolution: POST_MERGE_CHEONSUL_FIELD_VISUAL_HANDOFF_RECONCILIATION_PR_92_2026_08_27_KST
-completed_main_label: CHEONSUL_FIELD_VISUAL_AND_HANDOFF_RECONCILED
-resume_state: IMG_02_MERGED_MACHINE_VERIFIED_HUMAN_QA_DEFERRED_BY_CURRENT_USER
+current_completed_main: 7f0870d215d4efeeef7ca6e7bf683710c6d86104
+current_completed_main_resolution: POST_PR_101_CANON_FRONTIER_RECONCILIATION_2026_08_28_KST
+completed_main_label: T12_TO_T16_MACHINE_SCOPE_AND_CANON_FRONTIER_RECONCILED
+resume_state: VISUAL_COMBAT_GRAMMAR_APPROVED_BOARD_PENDING_USER_REVIEW
 next_product_gate: USER_VERTICAL_SLICE_VALIDATION
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
@@ -33,6 +33,10 @@ device_export_android: NOT_RUN
 current_visual_style: HYBRID_MASTER_PRESENTATION_INK_CODEx_GAMEPLAY_ANIME_SD_C_LEANING
 runtime_character_visual_identity: ONE_FIXED_CHARACTER_PLUS_TRACE_LAYERS
 trace_stage3_visual_rule: STARTING_MAIN_SCHOOL_ONLY
+cheonsul_visual_palette: BLUE_PLUS_AMBER_ORANGE_PRIMARY
+heukyeong_visual_palette: PURPLE_PLUS_BLACK_RESERVED
+combat_status_presentation: ICON_FIRST_NO_PERSISTENT_TEXT_BADGES
+enemy_hp_presentation: HIDDEN_BY_DEFAULT_SHOW_ONLY_RECENTLY_HIT_ENEMY
 visual_keyvisual_notion_preview: SERVER_READBACK_PASS_LOW_RES
 visual_supplementary_previews: SERVER_READBACK_PASS_LOW_RES_ONLY_ORIGINAL_AND_HUMAN_VISIBLE_NOT_PROVEN
 img_02_runtime_visual_core: MERGED_MAIN_03005E7_SEVEN_APPROVED_PNGS_LOCAL_AND_NOTION_NATIVE_ORIGINALS
@@ -197,6 +201,13 @@ Current visual authority is `docs/CURRENT_VISUAL_HANDOFF.md` + Notion `02 · 비
 The player remains **one fixed ninja identity**. School traces add items / aura / companion / shadow effects instead of replacing the character body/face/costume identity.
 
 All four traces must combine naturally. The strongest Trace Stage 3 expression is reserved for the **starting/main school**; other school traces remain supporting layers.
+
+### 2026-08-28 combat readability lock
+
+- 천술류의 상태/반응 주색은 청색 + 호박/주황이다. 보라/검정은 흑영류의 시각 언어로 남긴다.
+- 전투 상태는 단어 배지 대신 색과 형태가 구분되는 작은 아이콘으로 제시한다.
+- 적 HP 바는 평상시 표시하지 않고, 피격 직후의 적 하나만 표시한다. 표시 지속 시간은 Human Usability 검증 전까지 확정하지 않는다.
+- 현재 대화의 `PROJECT_CORE_SCENE_VISUAL_BOARD`는 `GENERATED_EXPLORATION`이다. 런타임 asset, UI 구현 또는 사용자 검증 증거가 아니다.
 
 Approved school motifs:
 

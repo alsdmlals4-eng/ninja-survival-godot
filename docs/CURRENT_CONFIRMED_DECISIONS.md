@@ -2,12 +2,13 @@
 
 ```yaml
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER
-updated_at: 2026-08-27 KST
+updated_at: 2026-08-28 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
-current_completed_main: 63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497
-current_completed_main_resolution: LAST_PRODUCT_IMPLEMENTATION_MERGE_PR_73_2026_08_27_KST
-github_main_read_before_router_reconciliation: f77a1c86660784c1a20c9f2a9abfee7b774ba911
-github_main_read_resolution: PRE_PR_77_FRESH_READBACK_2026_08_27_KST
+current_completed_main: 7f0870d215d4efeeef7ca6e7bf683710c6d86104
+current_completed_main_resolution: POST_PR_101_CANON_FRONTIER_RECONCILIATION_2026_08_28_KST
+last_product_implementation_merge: 63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497
+github_main_read_before_router_reconciliation: 7f0870d215d4efeeef7ca6e7bf683710c6d86104
+github_main_read_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READBACK_2026_08_28_KST
 latest_product_canon: docs/canon/2026-08-21-dec014-025-product-canon.md
 latest_encounter_canon: docs/canon/2026-08-22-dec026-encounter-pattern-budget.md
 latest_migration_traceability: docs/traceability/2026-08-22-dec026-post-gate-traceability.md
@@ -289,12 +290,19 @@ Ninja Soul/meta progression prioritizes horizontal possibility rather than perma
 
 Base-building/economy is not the project core.
 
-## 13. Visual decision — 2026-08-25 APPROVED HYBRID MASTER STYLE
+## 13. Visual decision — 2026-08-25 Hybrid Master Style + 2026-08-28 combat readability lock
 
 Current visual continuation authority:
 
 - `docs/CURRENT_VISUAL_HANDOFF.md`
 - Notion `02 · 비주얼 바이블`
+
+### 2026-08-28 — approved combat information grammar
+
+- **천술류**는 청색 + 호박/주황을 상태·반응의 주색으로 사용한다. 보라/검정은 **흑영류**의 소유 색이며 천술류의 주색 또는 기본 상태 표시에 사용하지 않는다.
+- 전투 상태는 지속적인 단어 배지가 아니라 **색 + 고유 실루엣을 갖춘 작은 아이콘**으로 표현한다. 구현 단계에서는 포커스/도움말 등 접근 가능한 설명 경로를 별도로 검증한다.
+- 적 HP 바는 기본적으로 숨긴다. **피격 직후의 적 하나만** HP 바를 표시한다. 지속 시간·전환은 Human Usability 검증에서 조정할 항목이며, 이 결정은 전투 규칙이나 HP 수치를 바꾸지 않는다.
+- `PROJECT_CORE_SCENE_VISUAL_BOARD`는 현재 대화에서 만든 **GENERATED_EXPLORATION / planning visualization**이다. 런타임 texture, Godot UI 구현, 승인 Project Asset, Human/Player evidence가 아니며 사용자 검토 전에는 어느 것도 대체하지 않는다.
 
 The user approved a two-surface visual system that must still read as one IP:
 
