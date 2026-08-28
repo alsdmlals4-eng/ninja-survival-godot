@@ -56,7 +56,7 @@ def inline_markdown(value: str, mono: str) -> str:
     """ReportLab Paragraph가 읽는 최소 Markdown 표현으로 변환한다."""
     text = html.escape(value.strip())
     text = re.sub(
-        r"\[([^\]]+)\]\((https?://[^)]+)\)",
+        r"\[([^\]]+)\]\(([^)\s]+)\)",
         r'<link href="\2" color="#254E70">\1</link>',
         text,
     )
@@ -145,6 +145,14 @@ def make_styles(regular: str, bold: str) -> dict[str, ParagraphStyle]:
             leading=9.3,
             textColor=colors.HexColor("#20252C"),
         ),
+        "table_header": ParagraphStyle(
+            "NinjaTableHeader",
+            parent=base["BodyText"],
+            fontName=bold,
+            fontSize=7.1,
+            leading=9.3,
+            textColor=colors.white,
+        ),
         "quote": ParagraphStyle(
             "NinjaQuote",
             parent=base["BodyText"],
@@ -192,8 +200,14 @@ def parse_table(
     column_count = max(len(row) for row in rows)
     normalized = [row + [""] * (column_count - len(row)) for row in rows]
     data = [
-        [Paragraph(inline_markdown(cell, "Courier"), styles["small"]) for cell in row]
-        for row in normalized
+        [
+            Paragraph(
+                inline_markdown(cell, "Courier"),
+                styles["table_header"] if row_index == 0 else styles["small"],
+            )
+            for cell in row
+        ]
+        for row_index, row in enumerate(normalized)
     ]
     available_width = PAGE_SIZE[0] - LEFT_MARGIN - RIGHT_MARGIN
     table = Table(

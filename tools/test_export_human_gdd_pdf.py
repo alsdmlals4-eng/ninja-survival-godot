@@ -8,6 +8,7 @@ import unittest
 from pathlib import Path
 
 from pypdf import PdfReader
+from reportlab.lib import colors
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
@@ -50,6 +51,43 @@ class HumanGddPdfExporterTests(unittest.TestCase):
             self.assertIn("닌자의 신", rendered_text)
             self.assertIn("피격된 적만 HP 바를 표시한다", rendered_text)
             self.assertIn("0123456789abcdef0123456789abcdef01234567", rendered_text)
+
+    def test_exporter_renders_relative_markdown_link_as_its_label(self) -> None:
+        """Break caught: repository PDF links leak raw Markdown syntax into human copy."""
+        source = "# 닌자의 신\n\n[PDF 내려받기](../../exports/ninja.pdf)\n"
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_root = Path(temp_dir)
+            source_path = temp_root / "source.md"
+            output_path = temp_root / "human-gdd.pdf"
+            source_path.write_text(source, encoding="utf-8")
+
+            exporter = load_exporter_module()
+            exporter.export_pdf(
+                source_path,
+                output_path,
+                source_branch="codex/test-publication",
+                source_commit="0123456789abcdef0123456789abcdef01234567",
+                generated_at="2026-08-28T00:00:00+09:00",
+            )
+
+            reader = PdfReader(str(output_path))
+            rendered_text = "\n".join(page.extract_text() or "" for page in reader.pages)
+            self.assertIn("PDF 내려받기", rendered_text)
+            self.assertNotIn("[PDF 내려받기](../../exports/ninja.pdf)", rendered_text)
+
+    def test_table_headers_use_light_text_on_the_dark_header_band(self) -> None:
+        """Break caught: table headers inherit body ink and become unreadable on navy."""
+        exporter = load_exporter_module()
+        regular, bold = exporter.register_fonts()
+        table, _ = exporter.parse_table(
+            ["| ID | 규칙 |", "| --- | --- |", "| UI-01 | 상태 아이콘 |"],
+            0,
+            exporter.make_styles(regular, bold),
+            bold,
+        )
+
+        self.assertEqual(table._cellvalues[0][0].style.textColor, colors.white)
 
 
 if __name__ == "__main__":
