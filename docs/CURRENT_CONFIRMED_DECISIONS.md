@@ -64,6 +64,8 @@ Detailed DEC-026 encounter/pattern rules: `docs/canon/2026-08-22-dec026-encounte
 
 Detailed DEC-027 Cheonsul spatial auto-reaction rules: `docs/canon/2026-08-28-dec027-cheonsul-spatial-auto-reaction.md`.
 
+Detailed DEC-028 Cheonsul fixed setup-seal rules: `docs/canon/2026-08-28-dec028-cheonsul-fixed-setup-seal.md`.
+
 ## 2. Protected integrated baseline
 
 Keep and regression-protect until deliberately replaced by approved behavior changes:
@@ -205,6 +207,13 @@ DEC-026 does not claim full playable encounter integration or final-calamity exa
 - The player does not gain a separate manual reaction trigger, aim reticle, or cooldown sequence in this first Slice.
 - Current automatic token-targeting implementation does not yet satisfy this product intent; concrete spatial-condition form and tuning remain the next Phase 1 decision.
 - This is product/canon authority only. It does not claim a code, Scene, asset, Human Usability, or Player Experience change.
+
+## 7.2 DEC-028 Cheonsul fixed setup seal — APPROVED / implementation deferred
+
+- The player-created spatial condition is a short, fixed blue setup seal at the automatic `WET` cast location.
+- The next automatic `SHOCK` prioritizes a prepared `WET` group inside that seal for a higher-value amber/orange chain reaction.
+- Reuse existing zone/field presentation only as an implementation reference; the current flame field and automatic targeting do not satisfy DEC-028.
+- Exact duration, radius, cluster threshold and numerical effects remain intentionally undecided until the complete implementation contract.
 
 ## 8. Current implementation boundary — product implementation merged through T16 help
 
