@@ -7,14 +7,15 @@ reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
 current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
-last_completed_main_read: 87ea39d96ff65adccdccb5489c30c9e6063bfd52
-last_completed_main_read_receipt: PRE_DEC035_REPOSITORY_ONLY_AND_UNIFIED_CONTRACT_2026_08_28_KST
+last_completed_main_read: abe219c632a9cd0e7554b2a1ad47c5874cfa03cc
+last_completed_main_read_receipt: DEC035_NOTION_MIGRATION_FRESH_MAIN_READ_2026_08_28_KST
 completed_main_label: T12_TO_T16_MACHINE_SCOPE_AND_CANON_FRONTIER_RECONCILED
 resume_state: REVISED_FOUR_PANEL_CORE_BOARD_REFERENCE_ONLY_PLANNING_REVIEW_ACTIVE
 next_product_gate: MASTER_GDD_DEC029_DEC030_DEC031_DEC032_DEC033_DEC034_FOUR_SCHOOL_LIFECYCLE_CONTRACT_AND_PHASE2_REVIEW
 current_master_gdd: docs/design/NINJA_SURVIVAL_MASTER_GDD.md
 repository_only_policy: docs/canon/2026-08-28-dec035-repository-only-project-record.md
-notion_usage: RETIRED_HISTORICAL_REFERENCE_ONLY_NO_NEW_READ_OR_WRITE
+notion_usage: MIGRATED_READ_ONLY_ARCHIVE_PENDING_FINAL_REMOTE_READBACK
+notion_migration_manifest: docs/migration/notion/MIGRATION_MANIFEST.md
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 current_screen_visual_coverage: docs/visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md
@@ -56,7 +57,7 @@ local_editor_session: NOT_RUN_FOR_NINJA_SURVIVAL_VISUAL_PACKAGE
 
 ## Purpose
 
-This is the mutable resume router. Product rules live in `docs/CURRENT_CONFIRMED_DECISIONS.md` and dated canon files. Implementation facts live in actual code/scenes/data/tests and executed evidence. Human-facing game understanding lives in `docs/design/NINJA_SURVIVAL_MASTER_GDD.md`. Current visual continuation lives in `docs/CURRENT_VISUAL_HANDOFF.md`; DEC-035 retires Notion from active use.
+This is the mutable resume router. Product rules live in `docs/CURRENT_CONFIRMED_DECISIONS.md` and dated canon files. Implementation facts live in actual code/scenes/data/tests and executed evidence. Human-facing game understanding lives in `docs/design/NINJA_SURVIVAL_MASTER_GDD.md`. Current visual continuation lives in `docs/CURRENT_VISUAL_HANDOFF.md`; DEC-035 preserves and maps the former Notion surface before repository-only cutover.
 
 Do not reconstruct current state from older handoff sentences or closed branches without first reading current completed `main`, current open-PR inventory and this router.
 
@@ -145,8 +146,8 @@ starts from one ninja school
 
 ### 2026-08-28 DEC-035 repository-only project record
 
-- Notion is retired from active project source ownership. Do not search, read, write, attach, upload, or require readback there for current/future work.
-- Repository Master GDD, current decision ledger, visual handoff, asset provenance/manifest, code, tests, and evidence are the active owners. Old Notion content remains intact as `HISTORICAL_REFERENCE_ONLY`.
+- The current Notion structure and work products are preserved in `docs/migration/notion/`. The source remains intact and has not been modified or deleted.
+- Repository Master GDD, current decision ledger, visual handoff, asset provenance/manifest, code, tests, and evidence are the active owners. After final remote readback, Notion becomes `HISTORICAL_REFERENCE_ONLY`.
 
 ## Current integrated implementation truth
 
@@ -227,7 +228,7 @@ Implementation/decision locator:
 
 `docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md`.
 
-## Historical Notion authority / Human Home — retired by DEC-035
+## Historical Notion authority / Human Home — migrated by DEC-035
 
 Human Home purpose:
 

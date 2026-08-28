@@ -31,16 +31,19 @@ Use the following order when sources differ:
 
 ## 2.1 Repository-only documentation policy — DEC-035
 
-The user retired Notion from active project work on 2026-08-28 KST. This
-policy supersedes every operational Notion requirement below, while preserving
-old Notion references only as historical receipts.
+The user approved the repository-only cutover on 2026-08-28 KST **after
+preserving the existing Notion structure and current work products**. The
+migration coverage and exclusions are owned by
+`docs/migration/notion/MIGRATION_MANIFEST.md`.
 
 - Repository: the single active owner for human-readable GDD/Flow/Visual
   Bible, structured canon, asset provenance, code, data, Scene/Resource,
   tests, production handoff, and runtime evidence.
-- Existing Notion pages/attachments: `HISTORICAL_REFERENCE_ONLY`; do not
-  read, write, upload, attach, search, or require a readback from them for
-  current/future work.
+- During a live migration only: Notion is a read-only source. No page,
+  database, attachment or comment may be modified or deleted.
+- After the migration completion check: existing Notion pages/attachments are
+  `HISTORICAL_REFERENCE_ONLY`; do not read, write, upload, attach, search or
+  require a readback from them for current/future work.
 - A new asset is durable only after its repository source, SHA-256/provenance
   manifest, explicit approval state, actual consumer, and applicable
   import/runtime evidence are recorded in the repository. Historical Notion
