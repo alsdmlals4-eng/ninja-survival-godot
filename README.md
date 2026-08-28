@@ -4,7 +4,7 @@ Godot 4.x / GDScript로 재구성 중인 `닌자 서바이벌 (닌자의 신)` �
 
 ## 사람용 기획서
 
-[Master Production GDD PDF 내려받기](exports/NINJA_SURVIVAL_MASTER_PRODUCTION_GDD_20260828.pdf) · 편집 정본은 `docs/design/NINJA_SURVIVAL_MASTER_GDD.md`이며, PDF의 생성·검수 상태는 `docs/PDF_EXPORT.md`에서 확인한다.
+[플레이어용 게임 기획서 PDF 내려받기](exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf) · 읽기용 원고는 `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md`이며, 기술 정본은 `docs/design/NINJA_SURVIVAL_MASTER_GDD.md`에 분리해 둔다. PDF의 생성·검수 상태는 `docs/PDF_EXPORT.md`에서 확인한다.
 
 ## 제품 약속
 

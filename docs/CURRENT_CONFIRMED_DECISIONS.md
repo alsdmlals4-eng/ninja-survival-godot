@@ -19,9 +19,10 @@ current_migration_plan: docs/superpowers/plans/2026-08-22-dec026-t08-plus-migrat
 current_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 current_master_gdd: docs/design/NINJA_SURVIVAL_MASTER_GDD.md
-human_master_gdd_pdf: exports/NINJA_SURVIVAL_MASTER_PRODUCTION_GDD_20260828.pdf
-human_master_gdd_pdf_manifest: docs/publication/NINJA_SURVIVAL_MASTER_GDD_PDF_MANIFEST.json
-human_master_gdd_pdf_policy: ALWAYS_SYNC_ON_MASTER_GDD_OR_EXPORTER_CHANGE
+current_human_gdd: docs/design/NINJA_SURVIVAL_HUMAN_GDD.md
+human_player_gdd_pdf: exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf
+human_player_gdd_pdf_manifest: docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json
+human_player_gdd_pdf_policy: ALWAYS_SYNC_ON_HUMAN_GDD_OR_EXPORTER_CHANGE
 mandatory_work_gate: FRESH_READ_REUSE_FIRST_TARGETED_WEB_RESEARCH_FEASIBILITY_AND_ADVERSARIAL_REVIEW_UNTIL_CLEAN
 current_repository_only_policy: docs/canon/2026-08-28-dec035-repository-only-project-record.md
 notion_migration_manifest: docs/migration/notion/MIGRATION_MANIFEST.md

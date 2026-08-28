@@ -1,13 +1,14 @@
-# Master GDD PDF 발행 계약
+# 플레이어용 GDD PDF 발행 계약
 
 ## 역할과 정본 경계
 
-- **편집 정본:** `docs/design/NINJA_SURVIVAL_MASTER_GDD.md`
-- **사람용 다운로드 snapshot:** `exports/NINJA_SURVIVAL_MASTER_PRODUCTION_GDD_20260828.pdf`
-- **발행 상태/해시:** `docs/publication/NINJA_SURVIVAL_MASTER_GDD_PDF_MANIFEST.json`
+- **기술 정본:** `docs/design/NINJA_SURVIVAL_MASTER_GDD.md`
+- **사람용 편집 원고:** `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md`
+- **사람용 다운로드 snapshot:** `exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf`
+- **발행 상태/해시:** `docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json`
 - **생성기:** `tools/export_human_gdd_pdf.py`
 
-PDF는 사람이 한 파일로 읽고 내려받는 파생본이다. PDF 안의 설명, 표, 링크 또는 생성 성공은 Godot runtime, Human Usability, Player Experience, device/export, release evidence를 승격하지 않는다.
+PDF는 사람이 한 파일로 읽고 내려받는 파생본이다. Human GDD는 핵심 재미·플레이 흐름·선택·구현 구조를 쉬운 말로 설명하고, 기술 정본의 SHA/PR/CI receipt/경로 세부를 반복하지 않는다. PDF 안의 설명, 표, 링크 또는 생성 성공은 Godot runtime, Human Usability, Player Experience, device/export, release evidence를 승격하지 않는다.
 
 ## 조사·실현성 판정
 
@@ -19,24 +20,27 @@ PDF는 사람이 한 파일로 읽고 내려받는 파생본이다. PDF 안의 �
 
 ## 발행 정책
 
-`ALWAYS_SYNC_ON_MASTER_GDD_OR_EXPORTER_CHANGE`
+`ALWAYS_SYNC_ON_HUMAN_GDD_OR_EXPORTER_CHANGE`
 
-Master GDD Markdown, 승인된 인라인 시각자료 참조, 또는 exporter가 바뀌는 같은 변경 단위에서 PDF와 manifest를 반드시 재발행한다. PDF가 검수에 실패하면 이전 정상 PDF/manifest를 보존하고 실패한 output을 current로 기록하지 않는다.
+Human GDD Markdown 또는 exporter가 바뀌는 같은 변경 단위에서 PDF와 manifest를 반드시 재발행한다. 기술 정본의 변경이 사람용 설명의 의미를 바꾸면 Human GDD 원고를 먼저 갱신한 뒤 재발행한다. PDF가 검수에 실패하면 이전 정상 PDF/manifest를 보존하고 실패한 output을 current로 기록하지 않는다.
 
 ## 재생성 절차
 
 PowerShell에서 source 변경을 별도 commit으로 확정한 뒤 다음처럼 실행한다.
 
 ```powershell
-$sourceBranch = git branch --show-current
-$sourceCommit = git rev-parse HEAD
+$sourceBranch = 'main'
+$sourceCommit = '<completed-main SHA containing the Human GDD source>'
 $generatedAt = (Get-Date).ToString('yyyy-MM-ddTHH:mm:ssK')
 & 'C:\Users\user\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' tools\export_human_gdd_pdf.py `
-  --source docs\design\NINJA_SURVIVAL_MASTER_GDD.md `
-  --output exports\NINJA_SURVIVAL_MASTER_PRODUCTION_GDD_20260828.pdf `
+  --source docs\design\NINJA_SURVIVAL_HUMAN_GDD.md `
+  --output exports\NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf `
   --source-branch $sourceBranch `
   --source-commit $sourceCommit `
-  --generated-at $generatedAt
+  --generated-at $generatedAt `
+  --document-title '닌자의 신 - 플레이어용 게임 기획서' `
+  --header-label '닌자의 신 | 플레이어용 게임 기획서' `
+  --right-header-label '읽기용 게임 기획서'
 ```
 
 출력 파일은 generator가 임시 `.tmp` 파일에 먼저 작성하고 PDF header를 확인한 뒤에만 대상 경로로 교체한다.
