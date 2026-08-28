@@ -7,7 +7,7 @@ phase_2_preproduction_review: BLOCKED_BY_OPEN_PHASE_1_DECISIONS
 phase_3_element_production: NOT_STARTED
 phase_4_codex_implementation: NOT_STARTED
 phase_5_user_vertical_slice_validation: NOT_RUN
-completed_main_read: 001e18365b0b89b6edf2f1778def836dbde6e0e3
+completed_main_read: 417d69ff85686799bb77d1e4cc15dfb1eff4f41c
 open_prs_read_only:
   - PR_49_DRAFT_SUPERSEDED_T12_REFERENCE
 ```
@@ -28,6 +28,7 @@ Fresh-read한 현재 owner는 다음과 같다.
 - **DEC-028:** 그 공간 조건은 자동 `WET` 시전 지점에 짧게 남는 고정 청색 준비 결계다. 다음 자동 `SHOCK`은 결계 안의 준비된 군집을 우선한다.
 - **Combat visual grammar:** 상태는 작은 아이콘, 적 HP는 기본 숨김 후 피격된 적 하나만 표시, 천술류는 청색 + 호박/주황이다.
 - **Visual-board boundary:** 현재 네 패널 보드는 `REFERENCE_ONLY GENERATED_EXPLORATION`이다. runtime asset, Scene/UI 구현, Human Usability/Player Experience PASS가 아니다.
+- **DEC-029:** 사용자는 C안을 선택했다. 네 유파 모두의 완결 lifecycle과 shared four-school circuit을 구현·machine 검증한 뒤 첫 Human/Player validation을 연다. Final Binding/final calamity는 별도 결정이다.
 
 ## 3. 실제 대조 findings
 
@@ -41,22 +42,22 @@ Fresh-read한 현재 owner는 다음과 같다.
 | F-06 | `WEAKNESS` | Cheonsul 선택 시 HUD의 `TEST · 정예 소환`/`TEST · 중간 보스 소환`이 현재 일반 combat controls와 함께 보인다. HUD에는 다수의 영문 운영 라벨도 남아 있다. | 검증용 점프는 player-facing slice에서 격리하고, 핵심 runtime 한국어 문구/정보 위계를 visual QA 항목으로 만든다. | 불필요 — release-near consumer와 테스트 도구를 분리한다. |
 | F-07 | `NOT_RUN` | GitHub GUT/Windows internal build evidence는 존재하지만 Ninja Survival의 live render, Human Usability, Player Experience, touch/device/export는 현재 증명되지 않았다. | Phase 4의 machine evidence와 Phase 5의 실제 Human Slice를 분리한다. | 불필요 — evidence ceiling을 낮추지 않는다. |
 
-## 4. 첫 Grill Me — 검증 진입 경계
+## 4. 첫 Grill Me — 검증 진입 경계 · RESOLVED
 
 현재 제품 약속은 네 유파 중 시작 학교를 고르는 구조지만, release-near로 증명해야 할 것은 먼저 **천술류 한 학교의 완결된 Core → Elite → Trace → Boss → Workbench → 다음 경로**다. 현재 `SchoolSelectionUI`는 네 유파를 모두 선택하게 하지만, 완결 lifecycle은 Cheonsul에만 연결되어 있다.
 
-다음 세 가지 중 하나를 사용자와 확정해야 단일 구현계약의 첫 화면과 검증 표본을 정직하게 고정할 수 있다.
+사용자는 다음 세 가지 중 **C**를 승인했다. 이 선택은 종전의 Cheonsul-only Human gate를 현재 package에서 supersede한다.
 
 | 후보 | Player value | 제작비/위험 | 되돌리기 | 추천 |
 |---|---|---|---|---|
-| A. **Cheonsul 검증 진입으로 한정** | 누구도 legacy 경로를 release-near slice로 오인하지 않는다. 첫 5분의 promise를 한 경험으로 검증한다. | 선택 화면의 진입 규칙/안내를 조정하지만 네 유파 lifecycle 동시 구현을 피한다. | 높음 — 이후 네 유파가 준비되면 원래 선택 규칙을 복원한다. | **권장** |
+| A. Cheonsul 검증 진입으로 한정 | 누구도 legacy 경로를 release-near slice로 오인하지 않는다. 첫 5분의 promise를 한 경험으로 검증한다. | 선택 화면의 진입 규칙/안내를 조정하지만 네 유파 lifecycle 동시 구현을 피한다. | 높음 — 이후 네 유파가 준비되면 원래 선택 규칙을 복원한다. | 미채택 |
 | B. 네 유파 선택은 유지, Cheonsul만 검증 안내 | 전체 세계관의 폭은 즉시 보인다. | 플레이어가 비완결 경로를 선택해 핵심 Slice 평가를 흐릴 위험이 크다. | 높음 | 비추천 |
-| C. 네 유파 모두 완결 lifecycle로 올린 뒤 검증 | 시작 선택 약속을 곧바로 온전히 보인다. | 4배의 encounter/UI/QA 범위로 커져 Cheonsul 가설 검증이 지연된다. | 낮음 | 기각 |
+| C. **네 유파 모두 완결 lifecycle로 올린 뒤 검증** | 시작 선택·route·Workbench 약속을 실제 four-school circuit으로 검증한다. | 네 유파 composition/Workbench/QA 범위가 커지고 최초 Human evidence가 늦어진다. | 낮음 | **사용자 승인** |
 
-이것은 구현 세부가 아니라 **이번 Human/Player validation에서 플레이어에게 무엇을 약속하는가**를 정하는 product boundary다. 선택 전까지 이 문서는 `PHASE_1_PLANNING_CO_DESIGN_IN_PROGRESS`를 유지한다.
+이는 구현 세부가 아니라 **이번 Human/Player validation에서 플레이어에게 무엇을 약속하는가**를 정하는 product boundary다. 선택은 완료됐지만, final package boundary와 all-four implementation contract가 아직 열려 있어 이 문서는 `PHASE_1_PLANNING_CO_DESIGN_IN_PROGRESS`를 유지한다.
 
 ## 5. 다음 순서
 
-1. 위 진입 경계를 Grill Me로 확정한다.
+1. Final Binding/final calamity package를 이번 all-four contract에 포함할지 다음 Grill Me로 확정한다.
 2. 확정 경계에 맞춰 failure/retry, 첫 30초 안내, Trace/Workbench/visual consumer의 기존 정본과 실제 code 차이를 재검토한다.
 3. 남은 material decision이 없을 때만 단일 구현계약과 Phase 2 preproduction review packet을 작성한다.

@@ -11,7 +11,7 @@ last_completed_main_read: 695d01f278b1468e3c61880e3c10033f44057f65
 last_completed_main_read_receipt: POST_PR_105_REVISED_CORE_BOARD_DOCUMENTATION_2026_08_28_KST
 completed_main_label: T12_TO_T16_MACHINE_SCOPE_AND_CANON_FRONTIER_RECONCILED
 resume_state: REVISED_FOUR_PANEL_CORE_BOARD_REFERENCE_ONLY_PLANNING_REVIEW_ACTIVE
-next_product_gate: USER_VERTICAL_SLICE_VALIDATION
+next_product_gate: DEC029_FOUR_SCHOOL_LIFECYCLE_CONTRACT_AND_PHASE2_REVIEW
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 current_screen_visual_coverage: docs/visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md
@@ -102,6 +102,13 @@ starts from one ninja school
 - **천술류 공간 조건:** a short fixed blue setup seal remains at the automatic `WET` cast point; automatic `SHOCK` should prefer its prepared group for the higher-value amber/orange chain (DEC-028; exact values and implementation deferred).
 - **귀인류:** sustain dangerous close-range presence for power; not universally low-HP-only.
 - **흑영류:** mark/priority/execution removes dangerous targets first through auto-combat-compatible indirect control.
+
+### 2026-08-28 DEC-029 validation-scope override
+
+- The user selected the all-four-school boundary: do not start Human/Player validation after Cheonsul alone.
+- First implement and machine-verify the shared Core → Elite → Trace → Boss → Result/Reward → Workbench → next-unvisited-school lifecycle for Bongma, Cheonsul, Guiin and Heukyeong.
+- Preserve shared encounter/route/Backpack/Workbench owners; do not create four independent engines.
+- Final Binding Workbench, final calamity and final ending remain a separate current-scope decision.
 
 ## Current integrated implementation truth
 
@@ -264,13 +271,12 @@ The active package also closes a relevant T12 safety gap: a successful `RestComm
 ## Remaining product sequence
 
 ```text
-T14 Cheonsul release-near Vertical Slice
--> T15 school-function help machine slice (merged)
+T12~T16 machine scope + Cheonsul first authoring baseline
+-> DEC-029 all-four-school lifecycle contract and Phase 2 review
+-> four-school shared-chassis/circuit implementation + machine evidence
 -> User vertical-slice validation (Human/Player feedback remains deferred, not passed)
--> T16 remaining schools only after a separate current-scope decision
--> T17 four-school circuit integration
--> T18 final calamity package
--> T19 full-run verification
+-> final calamity package only after a separate current-scope decision
+-> full-run verification
 ```
 
-Do not skip T15 and multiply four-school content before representative Human evidence closes the shared-chassis risks.
+DEC-029 explicitly supersedes the previous Cheonsul-only Human gate for this package: four-school shared-chassis completion and machine evidence now precede the first representative Human validation. Do not treat that later Human gate as passed until actual user evidence exists.
