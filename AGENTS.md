@@ -324,6 +324,30 @@ For L1+ product/system/UX decisions:
 
 Do not copy another game's surface content, trade dress, exact UI or tuning.
 
+## 15.1 Mandatory current research and feasibility gate
+
+For every non-trivial planning, document, visual, system, implementation, or
+review task, do this before proposing a new solution, and repeat it after a
+material finding:
+
+1. fresh-read the current project authority, latest completed `main`, relevant
+   open/recent PRs, and actual implementation consumers;
+2. inspect reusable project and current Base owners before making a new
+   workflow, system, document surface, asset, or tool;
+3. run targeted current Internet research using official/primary sources and
+   directly relevant field evidence. If no decision-relevant result exists,
+   record `NO_MATERIAL_EXTERNAL_EVIDENCE` after the targeted search rather than
+   silently skipping it;
+4. make an explicit technical/production feasibility judgement against the
+   current Godot version, code/data/Scene/Resource ownership, local toolchain,
+   dependencies, runtime/test evidence, cost, rights, and rollback path; and
+5. apply the adversarial-review loop in section 16 before claiming the changed
+   scope is complete.
+
+Internet research, source inspection, a passing parser, or a generated PDF is
+not Human Usability, Player Experience, device, runtime-render, or release
+evidence unless that exact evidence class was actually executed.
+
 ## 16. Adversarial review / evidence rules
 
 For L1+ changes use current Base `running-adversarial-review-and-refinement` semantics:

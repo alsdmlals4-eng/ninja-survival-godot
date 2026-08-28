@@ -1,8 +1,10 @@
 # 닌자의 신 — Master Game Design Document
 
 > **문서 상태:** `CURRENT_PRODUCT_GDD / IMPLEMENTATION_CONTRACT_COMPANION`
-> **기준 브랜치 / SHA:** `main` / `746f8fe495b09a5412deb443f78021e008d947f5`
+> **기준 브랜치 / SHA:** `main` / `d803330c8144b177fe5ece1d4c4da98b3dd07235`
 > **생성일:** 2026-08-28 KST
+> **사람용 다운로드:** [Master Production GDD PDF](../../exports/NINJA_SURVIVAL_MASTER_PRODUCTION_GDD_20260828.pdf) — 이 Markdown 정본에서 생성한 읽기 전용 snapshot
+> **발행/검수 계약:** `docs/PDF_EXPORT.md`와 `docs/publication/NINJA_SURVIVAL_MASTER_GDD_PDF_MANIFEST.json`; PDF 존재는 runtime·Human Usability·Player Experience 검증을 뜻하지 않는다.
 > **정본 우선순위:** 최신 사용자 승인 → `AGENTS.md` → `CURRENT_CONFIRMED_DECISIONS.md` → dated canon → `ACTIVE_CONTEXT.md` → actual code/data/Scene/test → Base → benchmark
 > **범위:** 이 파일은 사람이 읽는 GDD와 AI가 검색하는 구현 계약의 공통 정본이다. DEC-035는 기존 Notion 구조와 현재 작업물을 repository migration archive에 보존한 뒤, repository-only owner로 전환한다.
 
@@ -424,6 +426,7 @@ No new product-meaning decision is required to write or use this GDD. Values exp
 | 2026-08-28 | generate-one-candidate then user final lock workflow confirmed | DEC-034 + user approval |
 | 2026-08-28 | historical Notion Home retry wording and Visual Bible generation cadence were reconciled before migration | historical receipts + DEC-033/034 |
 | 2026-08-28 | former Notion structure/current work products preserved as a repository migration archive before repository-only cutover | DEC-035 + migration manifest |
+| 2026-08-28 | 사람용 다운로드 PDF와 재생성/검수 계약을 추가 | user-approved repository PDF publication |
 
 ## 17. Non-negotiable Evidence Ceiling
 

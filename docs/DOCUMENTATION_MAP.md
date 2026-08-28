@@ -15,7 +15,7 @@
 3. `CURRENT_CONFIRMED_DECISIONS.md`
 4. `canon/2026-08-21-dec014-025-product-canon.md`
 5. `canon/2026-08-22-dec026-encounter-pattern-budget.md`
-6. `design/NINJA_SURVIVAL_MASTER_GDD.md` (사람이 읽는 통합 GDD와 AI 구현계약의 공통 진입면)
+6. `design/NINJA_SURVIVAL_MASTER_GDD.md` (사람이 읽는 통합 GDD와 AI 구현계약의 공통 진입면) → `../exports/NINJA_SURVIVAL_MASTER_PRODUCTION_GDD_20260828.pdf` (다운로드용 파생본)
 7. `ACTIVE_CONTEXT.md`
 8. `traceability/2026-08-22-dec026-post-gate-traceability.md`
 9. `planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
@@ -57,7 +57,7 @@ Important:
 
 ### A. Repository Master GDD — 사람용 Living GDD + Visual Dashboard
 
-`design/NINJA_SURVIVAL_MASTER_GDD.md`는 링크 허브나 raw 개발 dashboard가 아니다.
+`design/NINJA_SURVIVAL_MASTER_GDD.md`는 링크 허브나 raw 개발 dashboard가 아니다. 사람이 바로 열람·다운로드할 때는 이 정본을 기준으로 발행한 `../exports/NINJA_SURVIVAL_MASTER_PRODUCTION_GDD_20260828.pdf`를 사용한다. PDF는 독립 정본이 아니며 발행/검수 상태는 `PDF_EXPORT.md`와 publication manifest가 소유한다.
 
 **최상위 Acceptance Criterion:**
 
@@ -158,6 +158,8 @@ approved Decision/Canon을 따른다.
 | `CURRENT_CONFIRMED_DECISIONS.md` | mutable approved-decision / protected-scope ledger | CURRENT · T12~T16 machine scope integrated / human gate deferred |
 | `ACTIVE_CONTEXT.md` | mutable resume-state router | CURRENT · T16 help merged / human gate deferred |
 | `design/NINJA_SURVIVAL_MASTER_GDD.md` | 사람용 GDD + AI 구현계약 공통 정본 진입면 | CURRENT · current canon/implementation/evidence ceiling을 구분 |
+| `../exports/NINJA_SURVIVAL_MASTER_PRODUCTION_GDD_20260828.pdf` | 사람이 내려받아 읽는 Master GDD snapshot | ALWAYS_SYNC · Markdown source/generator 변경 시 재발행; Human visual review는 별도 |
+| `PDF_EXPORT.md` + `publication/NINJA_SURVIVAL_MASTER_GDD_PDF_MANIFEST.json` | PDF 발행/신선도/검수 상태 | CURRENT publication contract |
 | `canon/2026-08-28-dec034-generate-then-approve-visual-workflow.md` | concrete consumer/board 후 1개 후보 생성과 사용자 LOCK 기준 | CURRENT · chat-start/gap-only 생성 금지 |
 | `canon/2026-08-28-dec035-repository-only-project-record.md` | preservation-first Notion migration / repository-only cutover | CURRENT · final remote readback complete |
 | `migration/notion/MIGRATION_MANIFEST.md` | former Notion structure, work-product and asset continuity audit | CURRENT MIGRATION ARCHIVE · not active canon |
