@@ -2,19 +2,17 @@
   "schema_version": 1,
   "document_id": "HUMAN_PLAYER_GDD_PDF",
   "role": "DOWNLOADABLE_HUMAN_READER_GDD_DERIVATIVE",
-  "sync_status": "STALE_PENDING_MAIN_SOURCE_PUBLICATION",
+  "sync_status": "CURRENT",
   "publication_policy": "ALWAYS_SYNC_ON_HUMAN_GDD_OR_EXPORTER_CHANGE",
-  "stale_reason": "The Human GDD source changes in Issue #126. A fresh completed-main source commit is required before the publication derivative can record exact provenance.",
-  "required_next_action": "Create the source-main PDF publication PR immediately; do not claim this PDF is current until its manifest returns to CURRENT.",
   "source": {
     "path": "docs/design/NINJA_SURVIVAL_HUMAN_GDD.md",
     "branch": "main",
-    "commit": "f96d3a7fb269d3c4c45533addbee22355a59d154",
-    "sha256": "61891f20f22ee4432982cf04836a8b34feb04676b11bc7546d8d2f9ada276a53"
+    "commit": "5d93f13f03ef0d79d84067f8c87c6da93b5be65d",
+    "sha256": "cf6d06f9f58cbb838ff7ca1e419defb941baefac0d4f98fd9fb8c0df1361a95f"
   },
   "generator": {
     "path": "tools/export_human_gdd_pdf.py",
-    "sha256": "70f3fcdb88b2f3a182447a91950567818985ec14dbf9f60203bc5cd8598bacb4",
+    "sha256": "df4b44404bc2d26de5ab531eccdc29aeccf7a208c3026a8a49779f5c2b9766f7",
     "runtime": "bundled Python 3 + ReportLab",
     "korean_font_requirement": "Windows Malgun Gothic regular/bold",
     "document_title": "닌자의 신 - 플레이어용 게임 기획서",
@@ -23,18 +21,18 @@
   },
   "artifact": {
     "path": "exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf",
-    "sha256": "3863921becd87c9248a8ed8a492d02f63bab2e7a7d76506779bb30f73f488064",
-    "generated_at": "2026-08-28T23:54:55+09:00",
+    "sha256": "256f2a80bbbb1bf4d607d47864182ecb18d63b27e7530db5ad525d0d7ef6b2c3",
+    "generated_at": "2026-08-29T00:23:53+09:00",
     "page_count": 4,
     "page_size": "landscape A4"
   },
   "validation": {
     "unit_test": "PASSED: 5/5",
     "pdfinfo": "PASSED: file opens; 4 pages; landscape A4; player-facing title",
-    "pypdf_text_contract": "PASSED: eight reader sections, Korean inline text, source SHA, no raw Markdown links, no missing-glyph squares, no blank pages",
+    "pypdf_text_contract": "PASSED: eight reader sections, Korean inline text including the deferred-Human-review statement after whitespace normalization, source SHA, no raw Markdown links, no missing-glyph squares, no blank pages",
     "render_command": "pdftoppm -png -r 144",
     "automated_render_review": "PASSED: 4/4 PNG; 0 zero-byte pages",
-    "codex_visual_review": "PASSED: all 4 rendered pages inspected; Korean glyphs, player-facing headers, tables, page flow, and footer are legible",
+    "codex_visual_review": "PASSED: all 4 rendered pages inspected; Korean glyphs, player-facing headers, tables, page flow, deferred-Human-review wording, and footer are legible",
     "render_environment_note": "Poppler emitted unavailable system-font alias warnings while producing all PNGs; the actual renders were inspected and showed no glyph loss or overlap.",
     "human_visual_review": "NOT_RUN"
   },
