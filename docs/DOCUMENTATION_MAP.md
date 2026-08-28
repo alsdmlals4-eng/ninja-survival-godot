@@ -15,7 +15,7 @@
 3. `CURRENT_CONFIRMED_DECISIONS.md`
 4. `canon/2026-08-21-dec014-025-product-canon.md`
 5. `canon/2026-08-22-dec026-encounter-pattern-budget.md`
-6. `design/NINJA_SURVIVAL_MASTER_GDD.md` (사람이 읽는 통합 GDD와 AI 구현계약의 공통 진입면) → `../exports/NINJA_SURVIVAL_MASTER_PRODUCTION_GDD_20260828.pdf` (다운로드용 파생본)
+6. `design/NINJA_SURVIVAL_HUMAN_GDD.md` (사람이 읽는 게임 설명 원고) → `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf` (다운로드용 파생본); `design/NINJA_SURVIVAL_MASTER_GDD.md`는 기술 canon·구현 계약을 확인할 때 읽는다.
 7. `ACTIVE_CONTEXT.md`
 8. `traceability/2026-08-22-dec026-post-gate-traceability.md`
 9. `planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
@@ -55,15 +55,17 @@ Important:
 
 ## 3. Authority map — Repository GDD / Detail Canon / AI Workspace / GitHub
 
-### A. Repository Master GDD — 사람용 Living GDD + Visual Dashboard
+### A. Reader GDD와 기술 Master GDD
 
-`design/NINJA_SURVIVAL_MASTER_GDD.md`는 링크 허브나 raw 개발 dashboard가 아니다. 사람이 바로 열람·다운로드할 때는 이 정본을 기준으로 발행한 `../exports/NINJA_SURVIVAL_MASTER_PRODUCTION_GDD_20260828.pdf`를 사용한다. PDF는 독립 정본이 아니며 발행/검수 상태는 `PDF_EXPORT.md`와 publication manifest가 소유한다.
+`design/NINJA_SURVIVAL_HUMAN_GDD.md`는 사람이 바로 읽는 게임 설명 원고다. 사람이 바로 열람·다운로드할 때는 이 원고를 기준으로 발행한 `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf`를 사용한다. PDF는 독립 정본이 아니며 발행/검수 상태는 `PDF_EXPORT.md`와 publication manifest가 소유한다.
+
+`design/NINJA_SURVIVAL_MASTER_GDD.md`는 제품 canon, 구현 계약, 증거 경계를 소유하는 기술 정본이다. Human GDD가 기술 정본의 내용을 이해하기 쉽게 풀어 쓸 수는 있지만, 수치·상태·권한이 충돌할 경우 기술 정본과 최신 승인 결정이 우선한다.
 
 **최상위 Acceptance Criterion:**
 
-> Master GDD만 보면 무엇을 만들 게임인지와 어떻게 만들 것인지 판단할 수 있고, AI/System Workspace를 보면 그것을 실제로 구현·검증하는 데 필요한 세부 데이터가 부족하지 않아야 한다.
+> Human GDD만 보면 어떤 게임을 어떤 선택으로 플레이하는지 이해할 수 있고, 기술 Master GDD와 AI/System Workspace를 보면 그것을 실제로 구현·검증하는 데 필요한 세부 데이터가 부족하지 않아야 한다.
 
-Master GDD는 다음 순서가 읽혀야 한다.
+Human GDD는 다음 순서가 읽혀야 한다.
 
 ```text
 PROJECT NORTH STAR
@@ -77,7 +79,7 @@ PROJECT NORTH STAR
 
 최상단 시각자료는 장식용 Concept Art보다 **게임 구조·시스템·화면·플레이 방법을 설명하는 Visual GDD**를 우선한다.
 
-Master GDD에서 직접 보여야 하는 정보:
+Human GDD에서 직접 보여야 하는 정보:
 
 - 한 줄 제품 약속 / 플레이어 판타지
 - Core Gameplay Loop와 전체 Run Flow
@@ -85,10 +87,9 @@ Master GDD에서 직접 보여야 하는 정보:
 - 5분 전장 cadence
 - 6x6 / 4x3 / 회전 / 직교 인접 / 조합 / Workbench / Fate 핵심 규칙
 - 사람이 판단해야 하는 주요 수치·경제·콘텐츠 상한
-- 현재 승인 Visual 방향과 승인 Asset linked view
-- 사람이 알아야 할 수준의 구현 현실 / 다음 Gate / Human evidence ceiling
+- 사람이 알아야 할 수준의 구현 구조 / 현재 구현 현실 / 다음 Gate / Human evidence ceiling
 
-Master GDD 금지:
+Human GDD 금지:
 
 - raw SHA / PR 번호 / CI receipt / 포트 / local tool routing을 주 reading flow에 노출
 - `소개 몇 줄 + 상세 링크 목록`으로 축소
@@ -96,9 +97,9 @@ Master GDD 금지:
 - 승인되지 않은 예시 이미지를 정본 Asset으로 승격
 - 별도 복사 데이터를 유지해 정본 drift 생성
 
-### B. Repository detail canon / manifests — 사람용 상세 정본
+### B. Repository detail canon / manifests — 기술 상세 정본
 
-Master GDD에 보이는 정보를 더 자세히 authoring하는 repository owner다.
+Human GDD에 보이는 정보를 더 자세히 authoring하는 repository owner다.
 
 Notion Detail Pages / Master Databases are preserved first through the
 read-only migration archive at `migration/notion/`. The archive is not a
@@ -120,8 +121,7 @@ manifest/provenance, planning and evidence docs own the active role.
 - `05 · Production · Validation`
 - `06 · Reference · Benchmark`
 
-사람용 요약은 Master GDD에서 repository canon/manifest를 링크하며, 중복 data
-view를 유지하지 않는다.
+사람용 원고는 Human GDD에만 유지하고, 기술 데이터/상태는 Master GDD와 repository canon/manifest가 소유한다.
 
 ### C. AI/System Workspace — AI 구현·검증 작업면
 
@@ -157,9 +157,10 @@ approved Decision/Canon을 따른다.
 |---|---|---|
 | `CURRENT_CONFIRMED_DECISIONS.md` | mutable approved-decision / protected-scope ledger | CURRENT · T12~T16 machine scope integrated / human gate deferred |
 | `ACTIVE_CONTEXT.md` | mutable resume-state router | CURRENT · T16 help merged / human gate deferred |
-| `design/NINJA_SURVIVAL_MASTER_GDD.md` | 사람용 GDD + AI 구현계약 공통 정본 진입면 | CURRENT · current canon/implementation/evidence ceiling을 구분 |
-| `../exports/NINJA_SURVIVAL_MASTER_PRODUCTION_GDD_20260828.pdf` | 사람이 내려받아 읽는 Master GDD snapshot | ALWAYS_SYNC · Markdown source/generator 변경 시 재발행; Human visual review는 별도 |
-| `PDF_EXPORT.md` + `publication/NINJA_SURVIVAL_MASTER_GDD_PDF_MANIFEST.json` | PDF 발행/신선도/검수 상태 | CURRENT publication contract |
+| `design/NINJA_SURVIVAL_HUMAN_GDD.md` | 사람용 게임 설명 원고 | CURRENT · 핵심 재미/흐름/선택/구현 구조를 쉬운 말로 설명 |
+| `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf` | 사람이 내려받아 읽는 Player GDD snapshot | ALWAYS_SYNC · Human GDD/source generator 변경 시 재발행; Human visual review는 별도 |
+| `design/NINJA_SURVIVAL_MASTER_GDD.md` | 기술 canon·구현 계약·증거 경계 | CURRENT · Human GDD와 중복 소유하지 않음 |
+| `PDF_EXPORT.md` + `publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json` | PDF 발행/신선도/검수 상태 | CURRENT publication contract |
 | `canon/2026-08-28-dec034-generate-then-approve-visual-workflow.md` | concrete consumer/board 후 1개 후보 생성과 사용자 LOCK 기준 | CURRENT · chat-start/gap-only 생성 금지 |
 | `canon/2026-08-28-dec035-repository-only-project-record.md` | preservation-first Notion migration / repository-only cutover | CURRENT · final remote readback complete |
 | `migration/notion/MIGRATION_MANIFEST.md` | former Notion structure, work-product and asset continuity audit | CURRENT MIGRATION ARCHIVE · not active canon |

@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "document_id": "HUMAN_PLAYER_GDD_PDF",
+  "role": "DOWNLOADABLE_HUMAN_READER_GDD_DERIVATIVE",
+  "sync_status": "CURRENT",
+  "publication_policy": "ALWAYS_SYNC_ON_HUMAN_GDD_OR_EXPORTER_CHANGE",
+  "source": {
+    "path": "docs/design/NINJA_SURVIVAL_HUMAN_GDD.md",
+    "branch": "main",
+    "commit": "f96d3a7fb269d3c4c45533addbee22355a59d154",
+    "sha256": "61891f20f22ee4432982cf04836a8b34feb04676b11bc7546d8d2f9ada276a53"
+  },
+  "generator": {
+    "path": "tools/export_human_gdd_pdf.py",
+    "sha256": "70f3fcdb88b2f3a182447a91950567818985ec14dbf9f60203bc5cd8598bacb4",
+    "runtime": "bundled Python 3 + ReportLab",
+    "korean_font_requirement": "Windows Malgun Gothic regular/bold",
+    "document_title": "닌자의 신 - 플레이어용 게임 기획서",
+    "header_label": "닌자의 신 | 플레이어용 게임 기획서",
+    "right_header_label": "읽기용 게임 기획서"
+  },
+  "artifact": {
+    "path": "exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf",
+    "sha256": "3863921becd87c9248a8ed8a492d02f63bab2e7a7d76506779bb30f73f488064",
+    "generated_at": "2026-08-28T23:54:55+09:00",
+    "page_count": 4,
+    "page_size": "landscape A4"
+  },
+  "validation": {
+    "unit_test": "PASSED: 5/5",
+    "pdfinfo": "PASSED: file opens; 4 pages; landscape A4; player-facing title",
+    "pypdf_text_contract": "PASSED: eight reader sections, Korean inline text, source SHA, no raw Markdown links, no missing-glyph squares, no blank pages",
+    "render_command": "pdftoppm -png -r 144",
+    "automated_render_review": "PASSED: 4/4 PNG; 0 zero-byte pages",
+    "codex_visual_review": "PASSED: all 4 rendered pages inspected; Korean glyphs, player-facing headers, tables, page flow, and footer are legible",
+    "render_environment_note": "Poppler emitted unavailable system-font alias warnings while producing all PNGs; the actual renders were inspected and showed no glyph loss or overlap.",
+    "human_visual_review": "NOT_RUN"
+  },
+  "evidence_ceiling": "This publication validation does not prove Godot runtime, Human Usability, Player Experience, device/export, or release readiness."
+}

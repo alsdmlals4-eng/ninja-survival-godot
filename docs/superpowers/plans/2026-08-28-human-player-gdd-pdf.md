@@ -80,7 +80,7 @@ Create a concise Korean reader GDD with these exact sections: `이 게임은 무
 
 For every implementation explanation, mark it as `현재 구현됨`, `기반 구현됨`, or `다음 제작 범위` in plain Korean; do not include code paths or internal receipt identifiers.
 
-- [ ] **Step 6: Commit reader source and exporter behavior**
+- [x] **Step 6: Commit reader source and exporter behavior**
 
 ```powershell
 git add docs/design/NINJA_SURVIVAL_HUMAN_GDD.md tools/export_human_gdd_pdf.py tools/test_export_human_gdd_pdf.py
@@ -96,15 +96,15 @@ git commit -m "docs: add human player GDD source"
 - Consumes: Task 1 exact branch head and required CI checks.
 - Produces: a completed-`main` ancestor that contains the human reader source and title-capable exporter.
 
-- [ ] **Step 1: Run exact-head checks**
+- [x] **Step 1: Run exact-head checks**
 
 Run `git diff --check`, the complete exporter test module, `py_compile`, and a temporary PDF export using the player title/header.
 
-- [ ] **Step 2: Push and create a focused source PR**
+- [x] **Step 2: Push and create a focused source PR**
 
 Create a PR limited to Task 1. Do not modify draft PR #49.
 
-- [ ] **Step 3: Merge only after required checks pass and read back `origin/main`**
+- [x] **Step 3: Merge only after required checks pass and read back `origin/main`**
 
 Squash merge the source PR, fetch remote, and record its completed-main SHA for publication. The later PDF manifest must cite this SHA.
 
@@ -126,23 +126,23 @@ Squash merge the source PR, fetch remote, and record its completed-main SHA for 
 - Consumes: reader source and exporter from completed `main`.
 - Produces: the only download link labelled as human/player GDD and a SHA-verified publication manifest.
 
-- [ ] **Step 1: Start a fresh publication branch from the Task 2 completed main**
+- [x] **Step 1: Start a fresh publication branch from the Task 2 completed main**
 
 Verify the reader source exists at `origin/main`, then create `codex/human-player-gdd-publish-<issue>` from that exact ref.
 
-- [ ] **Step 2: Generate the PDF and publication manifest**
+- [x] **Step 2: Generate the PDF and publication manifest**
 
 Use the completed-main SHA as `--source-commit`, pass the player title/header, compute source/generator/artifact SHA-256 values, and write the human-GDD manifest with `human_visual_review: NOT_RUN`.
 
-- [ ] **Step 3: Point all human download routes to the new artifact**
+- [x] **Step 3: Point all human download routes to the new artifact**
 
 Make README, documentation map, active context, decision ledger, PDF export contract, and technical Master GDD call the reader GDD a derivative from `NINJA_SURVIVAL_HUMAN_GDD.md`. Remove the old technically dense download artifact/manifest to prevent user confusion.
 
-- [ ] **Step 4: Validate the final artifact**
+- [x] **Step 4: Validate the final artifact**
 
 Run the full exporter tests, `py_compile`, `pdfinfo`, pypdf assertions for the eight Korean section headings/no raw Markdown/no blank page, SHA manifest checks, and render all pages with `pdftoppm`. Visually inspect title, system-explanation, and final-status pages.
 
-- [ ] **Step 5: Run five whole-scope adversarial loops and record only validated findings**
+- [x] **Step 5: Run five whole-scope adversarial loops and record only validated findings**
 
 Attack reader/technical authority separation, gameplay canon accuracy, implementation-status honesty, first-session comprehension, Korean readability, content overload, source provenance, PDF layout, cost/rights, broken links, stale artifacts, and evidence ceilings. Correct a valid finding and re-run only affected validation.
 

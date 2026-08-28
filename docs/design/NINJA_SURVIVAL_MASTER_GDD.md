@@ -3,10 +3,10 @@
 > **문서 상태:** `CURRENT_PRODUCT_GDD / IMPLEMENTATION_CONTRACT_COMPANION`
 > **기준 브랜치 / SHA:** `main` / `d803330c8144b177fe5ece1d4c4da98b3dd07235`
 > **생성일:** 2026-08-28 KST
-> **사람용 다운로드:** [Master Production GDD PDF](../../exports/NINJA_SURVIVAL_MASTER_PRODUCTION_GDD_20260828.pdf) — 이 Markdown 정본에서 생성한 읽기 전용 snapshot
-> **발행/검수 계약:** `docs/PDF_EXPORT.md`와 `docs/publication/NINJA_SURVIVAL_MASTER_GDD_PDF_MANIFEST.json`; PDF 존재는 runtime·Human Usability·Player Experience 검증을 뜻하지 않는다.
+> **사람용 안내:** [플레이어용 게임 기획서 PDF](../../exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf) — `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md`에서 생성한 읽기 전용 설명본
+> **발행/검수 계약:** `docs/PDF_EXPORT.md`와 `docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json`; PDF 존재는 runtime·Human Usability·Player Experience 검증을 뜻하지 않는다.
 > **정본 우선순위:** 최신 사용자 승인 → `AGENTS.md` → `CURRENT_CONFIRMED_DECISIONS.md` → dated canon → `ACTIVE_CONTEXT.md` → actual code/data/Scene/test → Base → benchmark
-> **범위:** 이 파일은 사람이 읽는 GDD와 AI가 검색하는 구현 계약의 공통 정본이다. DEC-035는 기존 Notion 구조와 현재 작업물을 repository migration archive에 보존한 뒤, repository-only owner로 전환한다.
+> **범위:** 이 파일은 제품 canon·구현 계약·증거 경계를 소유하는 기술 정본이다. 사람용 설명은 별도 Human GDD가 소유하며, 둘이 충돌하면 최신 승인과 이 기술 정본의 규칙을 따른다. DEC-035는 기존 Notion 구조와 현재 작업물을 repository migration archive에 보존한 뒤, repository-only owner로 전환한다.
 
 ## 00. Canon Snapshot
 

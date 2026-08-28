@@ -14,7 +14,7 @@ build/
 builds/
 exports/
 !exports/
-!exports/NINJA_SURVIVAL_MASTER_PRODUCTION_GDD_20260828.pdf
+!exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf
 *.exe
 *.apk
 *.aab
