@@ -48,7 +48,7 @@ school selection
 - 새 영구 메타, 새 wave system, 유파별 독립 입력/경제/공간 알고리즘.
 - 새 raster asset batch 또는 이미지 생성. visual consumer gap은 Phase 2 asset gate에서 별도로 확정한다.
 
-fourth-school clear 뒤 Final Binding eligibility가 열리는 기존 route authority는 보존한다. 최종 결산 package의 구현 여부는 이 확장 범위의 다음 별도 Grill Me다.
+fourth-school clear 뒤 Final Binding eligibility가 열리는 기존 route authority는 보존한다. 최종 결산 package는 DEC-030에 따라 이번 확장 범위에서 제외되며, first Human validation 뒤 별도 package로 다시 review한다.
 
 ## 3. Player Promise와 trade-off
 
@@ -72,14 +72,14 @@ Phase 2 review는 아래가 하나의 단일 구현계약에서 traceable할 때
 2. shared Trace object/auto-recovery, Boss gate, Result/Reward, 6×6 Workbench input, provisional route/Fate commit contract.
 3. 네 유파별 first-30-second proof, Elite/Boss test, accessibility/visual information contract.
 4. exact automated, runtime, Human and Player evidence를 서로 승격하지 않는 validation matrix.
-5. Final Binding/final calamity를 제외한 이유와 별도 revisit gate.
+5. DEC-030의 Final Binding/final calamity 제외 이유와 별도 package revisit gate.
 
 ## 6. Revisit conditions
 
 - 네 유파 completion이 공통 primitive 재사용을 깨고 네 개의 독립 subsystem으로 변질된다.
 - Workbench/route가 유파 확장보다 먼저 player value와 accessibility 위험의 병목이 된다.
 - production cost 또는 Human-ready delay가 현재 사용자 목표와 맞지 않아, 사용자에게 천술류-only validation으로 범위를 되돌릴 이유가 생긴다.
-- final Binding/final calamity를 이 계약에 포함해야만 four-school circuit의 failure/reward meaning이 성립한다고 검증된다.
+- final Binding/final calamity를 이 계약에 포함해야만 four-school circuit의 failure/reward meaning이 성립한다는 새 Human evidence가 생겨 DEC-030을 재검토해야 한다.
 
 ## 7. 적대적 검토 — 전체 범위 5회
 

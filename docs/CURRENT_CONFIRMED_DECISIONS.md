@@ -68,6 +68,8 @@ Detailed DEC-028 Cheonsul fixed setup-seal rules: `docs/canon/2026-08-28-dec028-
 
 Detailed DEC-029 four-school lifecycle-before-Human-validation scope: `docs/canon/2026-08-28-dec029-four-school-lifecycle-before-human-validation.md`.
 
+Detailed DEC-030 four-school Human-validation endpoint-before-final-package scope: `docs/canon/2026-08-28-dec030-four-school-validation-endpoint-before-final-package.md`.
+
 ## 2. Protected integrated baseline
 
 Keep and regression-protect until deliberately replaced by approved behavior changes:
@@ -221,8 +223,14 @@ DEC-026 does not claim full playable encounter integration or final-calamity exa
 
 - The first Human/Player vertical-slice validation waits until all four schools can traverse the shared school lifecycle and an actual unvisited-school route/Workbench commit.
 - Reuse one shared encounter primitive chassis and existing route/Backpack/Workbench owners; school-specific data/compositions express identity.
-- This package excludes Final Binding Workbench, final calamity Boss and final ending implementation unless later approved separately.
+- This package excludes Final Binding Workbench, final calamity Boss and final ending implementation under the DEC-030 later-package boundary.
 - This supersedes the current-package Cheonsul-only Human-validation gate, not DEC-026's Cheonsul-first encounter authoring or any existing product rule.
+
+## 7.4 DEC-030 four-school validation endpoint before final package — APPROVED / implementation deferred
+
+- The first four-school Human/Player validation ends when the fourth school Boss Result/Reward makes existing `final_binding_eligible` legible; it does not enter a Final Binding Scene or launch final combat.
+- Final Binding Workbench, final calamity Boss, four-school support callbacks and final result/Ninja Soul/legend remain one later, separately reviewed package under DEC-018/020/022.
+- Do not manufacture a placeholder ending or special final reward that could make this evidence look like a full-Run completion.
 
 ## 8. Current implementation boundary — product implementation merged through T16 help
 
@@ -284,14 +292,14 @@ T13 intentionally did not absorb MainController/T14 integration: it renders supp
 
 ```text
 T12~T16 implemented machine scope
--> DEC-029 four-school lifecycle implementation contract and Phase 2 review
+-> DEC-029/030 four-school lifecycle implementation contract and Phase 2 review
 -> all-four-school shared-chassis/circuit implementation and machine evidence
--> User vertical-slice validation (deferred / NOT_RUN)
--> final calamity package only after a separate current-scope decision
--> full-run verification
+-> User vertical-slice validation through fourth-Boss Final Binding eligibility (deferred / NOT_RUN)
+-> separately reviewed Final Binding / final calamity package
+-> full-Run verification only after that package
 ```
 
-DEC-029 explicitly authorizes all-four-school shared-chassis implementation before the first Human gate. That later gate remains mandatory and `NOT_RUN`; no machine evidence may replace it.
+DEC-029/030 authorize four-school shared-chassis implementation before the first Human gate and delimit that first test before the final package. The later Human gate remains mandatory and `NOT_RUN`; no machine evidence may replace it.
 
 ## 11. World / `닌자의 신` product meaning
 

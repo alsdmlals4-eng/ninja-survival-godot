@@ -7,7 +7,7 @@ phase_2_preproduction_review: BLOCKED_BY_OPEN_PHASE_1_DECISIONS
 phase_3_element_production: NOT_STARTED
 phase_4_codex_implementation: NOT_STARTED
 phase_5_user_vertical_slice_validation: NOT_RUN
-completed_main_read: 417d69ff85686799bb77d1e4cc15dfb1eff4f41c
+completed_main_read: acfa6c5658b354b91a54e4e48521a8ed5baa0e9b
 open_prs_read_only:
   - PR_49_DRAFT_SUPERSEDED_T12_REFERENCE
 ```
@@ -28,7 +28,8 @@ Fresh-read한 현재 owner는 다음과 같다.
 - **DEC-028:** 그 공간 조건은 자동 `WET` 시전 지점에 짧게 남는 고정 청색 준비 결계다. 다음 자동 `SHOCK`은 결계 안의 준비된 군집을 우선한다.
 - **Combat visual grammar:** 상태는 작은 아이콘, 적 HP는 기본 숨김 후 피격된 적 하나만 표시, 천술류는 청색 + 호박/주황이다.
 - **Visual-board boundary:** 현재 네 패널 보드는 `REFERENCE_ONLY GENERATED_EXPLORATION`이다. runtime asset, Scene/UI 구현, Human Usability/Player Experience PASS가 아니다.
-- **DEC-029:** 사용자는 C안을 선택했다. 네 유파 모두의 완결 lifecycle과 shared four-school circuit을 구현·machine 검증한 뒤 첫 Human/Player validation을 연다. Final Binding/final calamity는 별도 결정이다.
+- **DEC-029:** 사용자는 C안을 선택했다. 네 유파 모두의 완결 lifecycle과 shared four-school circuit을 구현·machine 검증한 뒤 첫 Human/Player validation을 연다.
+- **DEC-030:** 사용자는 A안을 선택했다. 첫 Human/Player validation은 네 번째 Boss Result/Reward가 `final_binding_eligible`을 확인하는 지점에서 끝난다. Final Binding Workbench·final calamity·ending은 이후 별도 package다.
 
 ## 3. 실제 대조 findings
 
@@ -54,10 +55,22 @@ Fresh-read한 현재 owner는 다음과 같다.
 | B. 네 유파 선택은 유지, Cheonsul만 검증 안내 | 전체 세계관의 폭은 즉시 보인다. | 플레이어가 비완결 경로를 선택해 핵심 Slice 평가를 흐릴 위험이 크다. | 높음 | 비추천 |
 | C. **네 유파 모두 완결 lifecycle로 올린 뒤 검증** | 시작 선택·route·Workbench 약속을 실제 four-school circuit으로 검증한다. | 네 유파 composition/Workbench/QA 범위가 커지고 최초 Human evidence가 늦어진다. | 낮음 | **사용자 승인** |
 
-이는 구현 세부가 아니라 **이번 Human/Player validation에서 플레이어에게 무엇을 약속하는가**를 정하는 product boundary다. 선택은 완료됐지만, final package boundary와 all-four implementation contract가 아직 열려 있어 이 문서는 `PHASE_1_PLANNING_CO_DESIGN_IN_PROGRESS`를 유지한다.
+이는 구현 세부가 아니라 **이번 Human/Player validation에서 플레이어에게 무엇을 약속하는가**를 정하는 product boundary다. C안은 완료됐고, 아래의 DEC-030이 final package 경계까지 확정했다. failure/retry 등 implementation contract의 material decision은 아직 열려 있어 이 문서는 `PHASE_1_PLANNING_CO_DESIGN_IN_PROGRESS`를 유지한다.
 
-## 5. 다음 순서
+## 5. 두 번째 Grill Me — final package 경계 · RESOLVED
 
-1. Final Binding/final calamity package를 이번 all-four contract에 포함할지 다음 Grill Me로 확정한다.
-2. 확정 경계에 맞춰 failure/retry, 첫 30초 안내, Trace/Workbench/visual consumer의 기존 정본과 실제 code 차이를 재검토한다.
+제품 canon은 네 유파 뒤 Final Binding Workbench와 최종 재앙을 약속하지만, 실제 `RunRouteState`는 현재 `final_binding_eligible` 상태까지만 소유한다. 사용자는 아래 후보 중 **A**를 승인했다.
+
+| 후보 | Player value | 제작비/위험 | 되돌리기 | 판정 |
+|---|---|---|---|---|
+| A. **네 번째 Boss 뒤 Final Binding 진입 자격까지** | 네 유파 선택·route·Workbench의 가치와 가독성을 먼저 검증한다. | 최종 Boss/ending 가설을 별도 유지해 현재 contract 폭증을 막는다. | 높음 | **사용자 승인 / 권장** |
+| B. Final Binding Workbench까지만 | 마지막 build 결산 감각을 먼저 확인한다. | final battle 없이 긴 준비만 남아 product payoff를 오해시킬 수 있다. | 중간 | 미채택 |
+| C. Final Binding·최종 재앙·결과까지 | 전설이 되는 full-Run 결산을 한 번에 경험한다. | 2-phase Boss·4유파 support·ending·QA가 동시 확대된다. | 낮음 | 미채택 |
+
+DEC-030은 최종 결산을 삭제하지 않는다. first Human test에서 Final Binding availability만 명확히 확인하고, 최종 패키지는 DEC-018/020/022를 다시 review하는 별도 계약으로 연다.
+
+## 6. 다음 순서
+
+1. DEC-029/030 경계에 맞춰 failure/retry, 첫 30초 안내, Trace/Workbench/visual consumer의 기존 정본과 실제 code 차이를 재검토한다.
+2. 아직 승인되지 않았고 제품 의미를 바꾸는 핵심 결정만 한 건씩 Grill Me로 확정한다.
 3. 남은 material decision이 없을 때만 단일 구현계약과 Phase 2 preproduction review packet을 작성한다.
