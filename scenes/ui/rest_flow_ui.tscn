@@ -119,6 +119,61 @@ text = "작업대 — 다음 유파는 임시 선택입니다"
 [node name="RewardStatusLabel" type="Label" parent="Panel/Margin/Content/WorkbenchView"]
 layout_mode = 2
 
+[node name="BossRewardChoices" type="HBoxContainer" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+
+[node name="ChestOpenButton" type="Button" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+text = "상자 열기 (0)"
+
+[node name="GoldLabel" type="Label" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+text = "보유 G 0G"
+
+[node name="BagOfferButton" type="Button" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+text = "가방 구매: 가방 없음 · 0G"
+
+[node name="PendingBagButton" type="Button" parent="Panel/Margin/Content/WorkbenchView"]
+visible = false
+layout_mode = 2
+text = "대기 가방 배치"
+
+[node name="BufferTitleLabel" type="Label" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+text = "작업 버퍼 — 하나를 선택해 회전·배치"
+
+[node name="BufferItems" type="HBoxContainer" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+
+[node name="BufferRotateButton" type="Button" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+text = "선택 아이템 회전 0°"
+
+[node name="BoardTitleLabel" type="Label" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+text = "6×6 백팩 — 선택 아이템의 시작 칸을 누르세요"
+
+[node name="BoardGrid" type="GridContainer" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+columns = 6
+
+[node name="CombinationTitleLabel" type="Label" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+text = "조합 가능 — 인접한 재료를 선택해 결과를 배치"
+
+[node name="CombinationChoices" type="HBoxContainer" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+
+[node name="CombinationCancelButton" type="Button" parent="Panel/Margin/Content/WorkbenchView"]
+visible = false
+layout_mode = 2
+text = "조합 취소"
+
+[node name="UndoButton" type="Button" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+text = "마지막 배치 되돌리기"
+
 [node name="RouteCards" type="HBoxContainer" parent="Panel/Margin/Content/WorkbenchView"]
 layout_mode = 2
 

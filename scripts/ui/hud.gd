@@ -2,11 +2,11 @@ extends CanvasLayer
 class_name HUDController
 
 signal restart_requested
+signal retry_requested
 signal school_help_requested
 signal ultimate_requested
 signal test_elite_requested
 signal test_boss_requested
-signal trace_recovery_requested
 
 @onready var health_label: Label = $HealthLabel
 @onready var score_label: Label = $ScoreLabel
@@ -27,8 +27,9 @@ signal trace_recovery_requested
 @onready var combat_guide_label: Label = $CombatGuideLabel
 @onready var test_elite_button: Button = $TestEliteButton
 @onready var test_boss_button: Button = $TestBossButton
-@onready var trace_recovery_button: Button = $TraceRecoveryButton
 @onready var game_over_panel: Control = $GameOverPanel
+@onready var game_over_message: Label = $GameOverPanel/Message
+@onready var retry_button: Button = $GameOverPanel/RetryButton
 
 var _title_generation: int = 0
 var _school_feedback_generation: int = 0
@@ -40,11 +41,11 @@ func _ready() -> void:
 	school_help_button.hide()
 	hide_combat_controls()
 	restart_button.pressed.connect(_on_restart_pressed)
+	retry_button.pressed.connect(_on_retry_pressed)
 	school_help_button.pressed.connect(_on_school_help_pressed)
 	ultimate_button.pressed.connect(_on_ultimate_pressed)
 	test_elite_button.pressed.connect(_on_test_elite_pressed)
 	test_boss_button.pressed.connect(_on_test_boss_pressed)
-	trace_recovery_button.pressed.connect(_on_trace_recovery_pressed)
 
 
 func set_health(current: int, maximum: int) -> void:
@@ -105,11 +106,6 @@ func hide_combat_controls() -> void:
 	ultimate_button.hide()
 	test_elite_button.hide()
 	test_boss_button.hide()
-	trace_recovery_button.hide()
-
-
-func set_trace_recovery_available(available: bool) -> void:
-	trace_recovery_button.visible = available
 
 
 func set_school_resource(label: String, current: float, maximum: float) -> void:
@@ -155,12 +151,28 @@ func show_combo_title(title: String) -> void:
 		combo_title_label.text = ""
 
 
-func show_game_over() -> void:
+func show_game_over(retry_available: bool = false, ninja_soul_balance: int = 0) -> void:
+	game_over_message.text = "GAME OVER"
+	if retry_available:
+		game_over_message.text += "\n닌자소울 1로 현재 학교 재도전"
+	retry_button.visible = retry_available
+	retry_button.disabled = not retry_available
+	retry_button.text = "재도전 · 닌자소울 1 (보유 %d)" % maxi(ninja_soul_balance, 0)
 	game_over_panel.visible = true
+
+
+func hide_game_over() -> void:
+	game_over_panel.visible = false
 
 
 func _on_restart_pressed() -> void:
 	restart_requested.emit()
+
+
+func _on_retry_pressed() -> void:
+	if retry_button.disabled:
+		return
+	retry_requested.emit()
 
 
 func _on_school_help_pressed() -> void:
@@ -177,7 +189,3 @@ func _on_test_elite_pressed() -> void:
 
 func _on_test_boss_pressed() -> void:
 	test_boss_requested.emit()
-
-
-func _on_trace_recovery_pressed() -> void:
-	trace_recovery_requested.emit()

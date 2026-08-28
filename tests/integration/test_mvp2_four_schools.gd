@@ -200,7 +200,7 @@ func test_cheonsul_test_buttons_spawn_isolated_elite_and_mid_boss() -> void:
 	add_child_autofree(main)
 	await get_tree().process_frame
 	main.get_node("SchoolSelectionUI")._choose(&"cheonsul")
-	var slice_snapshot: Dictionary = main.cheonsul_slice.get_snapshot()
+	var circuit_snapshot: Dictionary = main.school_circuit.get_snapshot()
 	var elite_button := main.get_node_or_null("HUD/TestEliteButton") as Button
 	var boss_button := main.get_node_or_null("HUD/TestBossButton") as Button
 	assert_not_null(elite_button, "Cheonsul combat must expose the test elite button")
@@ -212,15 +212,15 @@ func test_cheonsul_test_buttons_spawn_isolated_elite_and_mid_boss() -> void:
 	boss_button.pressed.emit()
 	var roles: Array[StringName] = []
 	for enemy in _living_enemies(main):
-		roles.append(StringName(enemy.get_meta("cheonsul_slice_role", &"")))
+		roles.append(StringName(enemy.get_meta("school_circuit_role", &"")))
 	assert_true(roles.has(&"test_elite"))
 	assert_true(roles.has(&"test_boss"))
-	assert_eq(main.cheonsul_slice.get_snapshot().get("state"), slice_snapshot.get("state"), "Test jumps must not mutate canonical Cheonsul progression")
+	assert_eq(main.school_circuit.get_snapshot().get("state"), circuit_snapshot.get("state"), "Test jumps must not mutate canonical Cheonsul progression")
 	var gold_before: int = main.run_build_state.gold
 	for enemy in _living_enemies(main):
-		if StringName(enemy.get_meta("cheonsul_slice_role", &"")) in [&"test_elite", &"test_boss"]:
+		if StringName(enemy.get_meta("school_circuit_role", &"")) in [&"test_elite", &"test_boss"]:
 			enemy.take_damage(enemy.max_health)
-	assert_eq(main.cheonsul_slice.get_snapshot().get("state"), slice_snapshot.get("state"), "Defeating test targets must not mutate canonical Cheonsul progression")
+	assert_eq(main.school_circuit.get_snapshot().get("state"), circuit_snapshot.get("state"), "Defeating test targets must not mutate canonical Cheonsul progression")
 	assert_eq(main.run_build_state.gold, gold_before, "Test encounters must not grant persistent currency")
 
 

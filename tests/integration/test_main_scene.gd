@@ -198,7 +198,15 @@ func test_main_wires_enemies_score_health_and_game_over() -> void:
 	assert_eq(score_label.text, "KILLS 1  SCORE 100")
 
 	var first_enemy = enemies[0]
+	var recent_hit_presenter = main.get_node_or_null("RecentHitHpPresenter")
+	assert_not_null(recent_hit_presenter, "Main은 최근 피격 HP 표시 owner 하나를 가져야 합니다.")
+	if recent_hit_presenter == null:
+		return
+	first_enemy.take_damage(1)
+	assert_eq(recent_hit_presenter.visible_enemy(), first_enemy)
+	assert_eq(recent_hit_presenter.visible_bar().max_value, float(first_enemy.max_health))
 	first_enemy.take_damage(first_enemy.max_health)
+	assert_null(recent_hit_presenter.visible_enemy(), "사망한 적의 HP bar는 즉시 정리해야 합니다.")
 	assert_eq(state.kill_count, 2)
 	assert_eq(score_label.text, "KILLS 2  SCORE 200")
 

@@ -53,7 +53,7 @@ func configure(
 
 	if _shop != null and is_instance_valid(_shop):
 		remove_child(_shop)
-		_shop.queue_free()
+		_shop.free()
 	_shop = ShopControllerScript.new()
 	add_child(_shop)
 	_shop.configure_spatial(_build_state, _session, _item_defs, _bag_defs, _rng)

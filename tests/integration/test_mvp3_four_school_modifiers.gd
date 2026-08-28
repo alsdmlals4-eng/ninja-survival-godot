@@ -101,7 +101,6 @@ func test_frozen_result_stays_equal_after_shop_fate_heal_and_reroll_mutations() 
 func test_reward_orbs_are_paused_during_result_rest_and_resume_next_combat() -> void:
 	var main = MAIN_SCENE.instantiate()
 	add_child_autofree(main)
-	main.get_node("StageFlow").segment_duration_seconds = 0.01
 	main._on_school_selected(&"bongma")
 	var normal = _first_live_normal_enemy(main)
 	assert_not_null(normal)
@@ -114,20 +113,21 @@ func test_reward_orbs_are_paused_during_result_rest_and_resume_next_combat() -> 
 		return
 	assert_eq(orb.process_mode, Node.PROCESS_MODE_INHERIT)
 
-	var flow = main.get_node("StageFlow")
-	flow._process(0.01)
-	var boss = _stage_bosses(main)[0]
-	boss.take_damage(99999)
-	assert_eq(flow.phase, flow.Phase.RESULT)
+	var circuit = main.school_circuit
+	assert_not_null(circuit)
+	if circuit == null:
+		return
+	assert_true(_clear_active_school_to_workbench(main, circuit))
 	assert_eq(orb.process_mode, Node.PROCESS_MODE_DISABLED)
 
-	var rest_ui = main.get_node("RestFlowUI")
-	rest_ui.result_continue_requested.emit()
-	rest_ui.shop_continue_requested.emit()
-	var fate = main.get_node("FateController")
-	rest_ui.fate_selected_requested.emit(fate.candidate_ids[0])
-	rest_ui.preview_start_requested.emit()
-	assert_eq(flow.phase, flow.Phase.COMBAT)
+	assert_true(circuit.choose_boss_reward(0))
+	assert_true(circuit.open_chest())
+	assert_true(_place_every_buffer_item(circuit))
+	var fate_id: StringName = circuit.workbench_snapshot().get("fate_candidate_ids", [])[0]
+	assert_true(circuit.choose_fate(fate_id))
+	assert_true(circuit.choose_next_route(&"cheonsul"))
+	main._on_workbench_commit_requested()
+	assert_eq(circuit.route_state.active_school_id(), &"cheonsul")
 	assert_eq(orb.process_mode, Node.PROCESS_MODE_INHERIT)
 
 
@@ -135,14 +135,16 @@ func test_game_over_during_combat_is_terminal_and_never_opens_rest() -> void:
 	var main = MAIN_SCENE.instantiate()
 	add_child_autofree(main)
 	main._on_school_selected(&"guiin")
-	var flow = main.get_node("StageFlow")
-	assert_eq(flow.phase, flow.Phase.COMBAT)
+	var circuit = main.school_circuit
+	assert_not_null(circuit)
+	if circuit == null:
+		return
+	assert_eq(circuit.get_snapshot().get("state"), &"core")
 	main.get_node("Player").take_damage(99999)
 	assert_true(main.game_over)
-	assert_eq(flow.phase, flow.Phase.GAME_OVER)
+	assert_eq(circuit.get_snapshot().get("state"), &"core")
 	assert_true(main.get_node("HUD/GameOverPanel").visible)
 	assert_false(main.get_node("RestFlowUI/Panel").visible)
-	assert_false(flow.enter_result_after_boss())
 
 
 func _resource_marker(runtime: Node, school_id: StringName):
@@ -174,6 +176,53 @@ func _first_live_normal_enemy(main: Node):
 			continue
 		return child
 	return null
+
+
+func _role_enemy(main: Node, role: StringName):
+	for child in main.get_children():
+		if child.get_meta(&"school_circuit_role", &"") == role and not child.is_queued_for_deletion():
+			return child
+	return null
+
+
+func _clear_active_school_to_workbench(main: Node, circuit) -> bool:
+	if not circuit.sync_elapsed(180.0):
+		return false
+	var elite = _role_enemy(main, &"elite")
+	if elite == null:
+		return false
+	elite.take_damage(99999)
+	var trace = main.current_trace_pickup
+	if trace == null:
+		return false
+	main.get_node("Player").global_position = trace.global_position
+	trace._process(0.35)
+	trace._process(0.40)
+	if not circuit.sync_elapsed(280.0):
+		return false
+	var boss = _role_enemy(main, &"boss")
+	if boss == null:
+		return false
+	boss.take_damage(99999)
+	return circuit.get_snapshot().get("state") == &"cleared"
+
+
+func _place_every_buffer_item(circuit) -> bool:
+	while not (circuit.workbench_snapshot().get("buffer", []) as Array).is_empty():
+		var placed := false
+		for rotation in range(4):
+			for y in range(6):
+				for x in range(6):
+					if circuit.place_buffer_item(0, Vector2i(x, y), rotation):
+						placed = true
+						break
+				if placed:
+					break
+			if placed:
+				break
+		if not placed:
+			return false
+	return true
 
 
 func _first_reward_orb(main: Node):

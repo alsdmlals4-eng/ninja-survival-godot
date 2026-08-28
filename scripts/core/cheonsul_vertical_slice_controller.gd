@@ -12,7 +12,7 @@ const TRADITION_ACCESS_STATE_SCRIPT = preload("res://scripts/core/tradition_acce
 
 signal phase_changed(phase: StringName)
 signal chest_token_granted(amount: int)
-signal trace_recovery_requested
+signal trace_spawn_requested
 signal boss_warning_requested
 signal boss_spawn_requested
 signal normal_spawn_permission_changed(allowed: bool)
@@ -233,7 +233,7 @@ func _on_chest_token_requested(amount: int) -> void:
 
 func _on_trace_spawn_requested() -> void:
 	phase_changed.emit(&"trace_available")
-	trace_recovery_requested.emit()
+	trace_spawn_requested.emit()
 
 
 func _on_trace_recovered() -> void:

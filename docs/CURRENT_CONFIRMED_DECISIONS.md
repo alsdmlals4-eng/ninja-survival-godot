@@ -244,12 +244,13 @@ DEC-026 does not claim full playable encounter integration or final-calamity exa
 - Reuse existing zone/field presentation only as an implementation reference; the current flame field and automatic targeting do not satisfy DEC-028.
 - Exact duration, radius, cluster threshold and numerical effects remain intentionally undecided until the complete implementation contract.
 
-## 7.3 DEC-029 four-school completed lifecycle before Human validation — APPROVED / implementation deferred
+## 7.3 DEC-029 four-school completed lifecycle before Human validation — APPROVED / current-task machine implementation
 
 - The first Human/Player vertical-slice validation waits until all four schools can traverse the shared school lifecycle and an actual unvisited-school route/Workbench commit.
 - Reuse one shared encounter primitive chassis and existing route/Backpack/Workbench owners; school-specific data/compositions express identity.
 - This package excludes Final Binding Workbench, final calamity Boss and final ending implementation under the DEC-030 later-package boundary.
 - This supersedes the current-package Cheonsul-only Human-validation gate, not DEC-026's Cheonsul-first encounter authoring or any existing product rule.
+- Current-task branch evidence: one `SchoolCircuitController` owns the generic lifecycle and a deterministic non-catalog-order test reaches `final_binding_eligible`. It is not Human, Player Experience, device, or full-Run-final-package evidence.
 
 ## 7.4 DEC-030 four-school validation endpoint before final package — APPROVED / implementation deferred
 
@@ -257,11 +258,12 @@ DEC-026 does not claim full playable encounter integration or final-calamity exa
 - Final Binding Workbench, final calamity Boss, four-school support callbacks and final result/Ninja Soul/legend remain one later, separately reviewed package under DEC-018/020/022.
 - Do not manufacture a placeholder ending or special final reward that could make this evidence look like a full-Run completion.
 
-## 7.5 DEC-031 default Run-end plus one-time emergency school retry — PARTIALLY SUPERSEDED / implementation deferred
+## 7.5 DEC-031 default Run-end plus one-time emergency school retry — PARTIALLY SUPERSEDED / current-task machine implementation
 
 - Default death ends the Run. One explicit retry per Run remains conditionally available only from a valid successful Workbench checkpoint and restarts the same active school.
 - The retry currency, persistent Ninja Soul allowance, and Boss eligibility ledger are owned by DEC-033. Failed-school transient GOLD/rewards/Trace/progress are still lost; previously committed Backpack/Fate/route/clear order restore atomically.
 - No automatic revive or retry recharge is allowed.
+- Current-task branch evidence: retry is offered only from a valid successful Workbench checkpoint and restarts the same active school at `0:00`. All restore owners preflight their checkpoint payload before the wallet spends 1 Soul or the one-time retry permission is consumed; malformed payloads therefore fail closed without debit.
 
 ## 7.6 DEC-032 optional expanded school help — APPROVED / implementation deferred
 
@@ -269,12 +271,13 @@ DEC-026 does not claim full playable encounter integration or final-calamity exa
 - Each explanation must connect actual risk processing → relevant screen information → player positioning attempt → observable success/next goal, without claiming future mechanics or changing automatic-combat ownership.
 - Help remains a post-baseline, optional explanation path. It cannot turn an unassisted first-30-second Human result into `PASS`; status presentation remains compact icon-first.
 
-## 7.7 DEC-033 Run-end Ninja Soul settlement — APPROVED / implementation deferred
+## 7.7 DEC-033 Run-end Ninja Soul settlement — APPROVED / partially current-task machine implemented
 
 - `GOLD` remains transient Run economy: normal enemies have a recommended 20% chance for 1G, Elite gives fixed 5G, and a school Boss gives fixed 10G. The normal chance is a data-tunable initial recommendation, not verified balance.
 - Ninja Soul is persistent. At Run end only, a distinct school Boss clear awards 2 Soul and progress rank awards C/B/A/S = 0/1/2/4 Soul for 0/1/2–3/4 distinct school Boss clears.
 - Retry costs persistent Ninja Soul 1, requires a valid Workbench checkpoint, is limited to once per Run, and never grants immediate or duplicate Boss Soul. The Result must explain each settlement component separately.
 - Fourth-Boss `final_binding_eligible` in the first Human Slice is not true Run end and grants no Soul; success settlement waits for the separately reviewed final package.
+- Current-task branch implements the transient-G policy, source receipts, persistent retry-only wallet, checkpoint and idempotent Boss eligibility ledger. It deliberately does **not** credit Ninja Soul at the fourth Boss or any incomplete Run endpoint.
 
 ## 7.8 DEC-034 generate-then-approve visual workflow — APPROVED
 
@@ -345,22 +348,22 @@ T13 intentionally did not absorb MainController/T14 integration: it renders supp
 
 ## 10. Current implementation-contract gate
 
-`docs/implementation/2026-08-29-four-school-circuit-implementation-contract.md` and `docs/planning/2026-08-29-phase2-four-school-definition-of-ready.md` are the current source-backed package. They are `PROPOSED_FOR_USER_IMPLEMENTATION_CONTRACT_APPROVAL` / `READY_FOR_USER_IMPLEMENTATION_CONTRACT_APPROVAL`, not Godot production implementation evidence.
+`docs/implementation/2026-08-29-four-school-circuit-implementation-contract.md` and `docs/planning/2026-08-29-phase2-four-school-definition-of-ready.md` are the current source-backed package. The user approved the contract; its current task branch has machine implementation/evidence pending exact-head review, PR and merge. The generated status-icon candidate remains `GENERATED_EXPLORATION`, so icon runtime asset completion is explicitly `PARTIAL`.
 
 DEC-036 permits the contract and subsequent machine implementation to proceed without a Human/Player session. The user-deferred evidence classes remain `NOT_RUN`; a future release or player-facing milestone must not promote them from GUT/import/smoke evidence.
 
 ## 11. Remaining production sequence
 
 ```text
-T12~T16 implemented machine scope
--> user approval of NINJA_FOUR_SCHOOL_CIRCUIT_V1
--> all-four-school shared-chassis/circuit implementation and machine evidence
+T12~T16 merged machine scope
+-> current-task four-school circuit machine implementation
+-> exact-head verification + adversarial review + PR/merge/readback
 -> optional later Human/Player validation through fourth-Boss Final Binding eligibility (DEC-036 deferred / NOT_RUN)
 -> separately reviewed Final Binding / final calamity package
 -> full-Run verification only after that package
 ```
 
-DEC-029/030/031/032/033 authorize the shared-chassis package, delimit its final-package boundary, require optional help as a non-substitute for unassisted readability, and preserve default Run-end pressure with one Ninja-Soul-gated school retry. DEC-036 defers the later Human gate from this implementation sequence; no machine evidence may replace it.
+DEC-029/030/031/032/033 authorize the shared-chassis package, delimit its final-package boundary, require optional help as a non-substitute for unassisted readability, and preserve default Run-end pressure with one Ninja-Soul-gated school retry. DEC-036 defers the later Human gate from this implementation sequence; no machine evidence may replace it. The fixed `RunEconomyPolicy` now owns G payouts; the legacy `normal_kill_gold_pct` modifier is intentionally inert and requires a later catalog decision before removal or repurposing.
 
 ## 11. World / `닌자의 신` product meaning
 

@@ -84,6 +84,7 @@ func freeze_snapshot(
 		"max_combo": max_combo,
 		"reward_orbs": maxi(current_reward_count - _base_reward_count, 0),
 		"gold_earned": maxi(current_gold - _base_gold, 0),
+		"economy_receipts": [] if build_state == null else build_state.get_economy_receipts(),
 		"growth_hints": _build_growth_hints(build_state),
 	}
 	_frozen = true
