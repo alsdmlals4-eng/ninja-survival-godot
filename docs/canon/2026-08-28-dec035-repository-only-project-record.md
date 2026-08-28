@@ -1,4 +1,4 @@
-# DEC-035 — Repository-only project record and Notion retirement
+# DEC-035 — Repository-only project record after Notion migration
 
 ```yaml
 decision_id: DEC-035
@@ -6,20 +6,28 @@ status: APPROVED_WORKFLOW_AND_DOCUMENTATION_SCOPE
 approved_by: USER
 approved_at: 2026-08-28 KST
 owner: docs/canon/2026-08-28-dec035-repository-only-project-record.md
-implementation_reality: NO_GODOT_OR_ASSET_BEHAVIOR_CHANGE
+implementation_reality: NO_GODOT_BEHAVIOR_CHANGE
 human_player_evidence: NOT_APPLICABLE
+migration_manifest: docs/migration/notion/MIGRATION_MANIFEST.md
 ```
 
 ## Decision
 
-`닌자의 신` no longer uses Notion as an active project tool or owner. The
-repository is the single active source for the human-readable GDD, Flow,
-Visual Bible, structured product canon, asset provenance, implementation
-contract, code/data/Scene/Resource, tests, and evidence receipts.
+`닌자의 신` moves from Notion to a repository-only active record **without
+dropping its existing Notion structure or current work products**. The
+repository is the single active owner for the human-readable GDD, Flow, Visual
+Bible, structured product canon, asset provenance, implementation contract,
+code/data/Scene/Resource, tests and evidence receipts.
 
-Existing Notion pages and attachments remain intact, but are
-`HISTORICAL_REFERENCE_ONLY`. Current and future work must not read, search,
-write, upload, attach, or wait for Notion destination readback.
+The Notion source was used read-only for the migration. Its current structure,
+current/partial system records, approved asset records and data-source schemas
+are preserved under `docs/migration/notion/`. Existing Notion pages and
+attachments remain intact and are not edited or deleted.
+
+After the migration completion check, Notion is
+`HISTORICAL_REFERENCE_ONLY`: new project work must not create, modify, upload,
+attach or rely on it as an active gate. A migration snapshot is continuity
+evidence, not a second active canon.
 
 ## Repository asset gate
 
@@ -33,37 +41,36 @@ fresh canon + actual consumer
 -> applicable import/runtime/Human evidence
 ```
 
-An old Notion attachment is historical provenance only. It neither blocks nor
-satisfies a new asset gate. No existing Notion data is deleted or migrated
-solely for this decision.
+Migrated Notion asset records preserve provenance and prior approval context,
+but do not by themselves satisfy a new asset gate. The migration additionally
+put the fixed-player original source into the repository after exact SHA-256
+verification; all current approved assets are mapped in the migration manifest.
 
 ## Scope and supersession
 
-- Supersedes active Notion source/read/write/attachment/readback steps in
-  project workflow documents and `AGENTS.md`.
-- Does **not** supersede the current product, visual grammar, approval level,
-  single-character identity, asset consumer, or evidence boundaries.
-- Does **not** start Godot production, asset batch generation, or Human
-  validation.
-- If a needed fact exists only in historical Notion and has no repository
-  equivalent, classify it `UNKNOWN_UNVERIFIED`; do not silently revive Notion.
+- Supersedes active Notion source/read/write/attachment/readback steps only
+  **after** the migration manifest completion check closes.
+- Does not supersede current product, visual grammar, approval level,
+  single-character identity, asset consumer or evidence boundaries.
+- Does not start Godot production, asset batch generation or Human validation.
+- A legacy Notion record that was intentionally excluded is not revived by this
+  decision; current truth stays in approved repository Decision/Canon/code.
 
 ## Incident / Solution / Lesson
 
-- **Incident:** human-facing current truth, visual approval, and asset
-  receipts were split between repository and an external Notion surface.
-  Continuing to require that surface would create a stale/unavailable
-  dependency after the user's retirement decision.
-- **Solution:** use the repository Master GDD, current decision ledger,
-  visual handoff, manifest/provenance, and production evidence as the only
-  active record. Historical Notion references remain non-operative receipts.
-- **Lesson:** a project documentation owner must be executable by the current
-  workflow. When an external owner is retired, its current rules need an
-  explicit repository replacement rather than a silent omission.
+- **Incident:** current structure, visual approval context and asset receipts
+  were split between the repository and an external Notion surface. Immediate
+  retirement would risk losing project work or page structure.
+- **Solution:** capture the current Notion surface read-only, preserve its
+  structural snapshots and schemas, map each owner to a repository document,
+  validate each approved asset binary/hash, then cut active ownership to the
+  repository.
+- **Lesson:** external-owner retirement is a migration, not a flag flip. The
+  cutover needs coverage, provenance and exclusion evidence before the old
+  surface can become historical only.
 
 ## Base promotion
 
-`NO_BASE_PROMOTION`: retiring a specific external documentation owner and
-choosing repository-only asset provenance is a project/user workflow decision.
-The general source-owner migration principle is already covered by Base
-fresh-read and evidence-ownership rules.
+`NO_BASE_PROMOTION`: this project-specific Notion structure, asset set and
+repository layout are not reusable Base configuration. The general principle is
+already covered by Base source-owner/evidence rules.

@@ -4,7 +4,7 @@
 > **기준 브랜치 / SHA:** `main` / `746f8fe495b09a5412deb443f78021e008d947f5`
 > **생성일:** 2026-08-28 KST
 > **정본 우선순위:** 최신 사용자 승인 → `AGENTS.md` → `CURRENT_CONFIRMED_DECISIONS.md` → dated canon → `ACTIVE_CONTEXT.md` → actual code/data/Scene/test → Base → benchmark
-> **범위:** 이 파일은 사람이 읽는 GDD와 AI가 검색하는 구현 계약의 공통 정본이다. DEC-035 이후 Notion은 historical reference only이며, active source/asset/evidence owner가 아니다.
+> **범위:** 이 파일은 사람이 읽는 GDD와 AI가 검색하는 구현 계약의 공통 정본이다. DEC-035는 기존 Notion 구조와 현재 작업물을 repository migration archive에 보존한 뒤, repository-only owner로 전환한다.
 
 ## 00. Canon Snapshot
 
@@ -42,7 +42,7 @@ Phase 5 Human vertical-slice validation: NOT_RUN
 | `SRC-REPO-04` | DEC-014~025, DEC-026~034 | product, encounter, current decisions | `CONFIRMED` |
 | `SRC-REPO-05` | `scripts/`, `scenes/`, `assets/`, `tests/` | actual implementation reality | `IMPLEMENTED` where paths exist |
 | `SRC-REPO-06` | `docs/visual/*`, asset manifests | visual grammar and consumer evidence | mixed; see `AST-*` |
-| `SRC-NOTION-01` | former Human Home / Core Systems / Visual Bible / Production Handoff | historical interpretation and attachment receipt | `HISTORICAL_REFERENCE_ONLY` by DEC-035; no new read/write |
+| `SRC-NOTION-01` | former Human Home / Core Systems / Visual Bible / Production Handoff | preserved migration snapshot and attachment provenance | `docs/migration/notion/`; not active canon |
 | `SRC-EXT-01` | official/Steam pages, researched 2026-08-28 | positioning references | `REFERENCE_ONLY` |
 
 ### Current conflict register
@@ -422,8 +422,8 @@ No new product-meaning decision is required to write or use this GDD. Values exp
 | 2026-08-28 | initial Master GDD created from current `main` | this document |
 | 2026-08-28 | true Run-end-only Ninja Soul settlement confirmed | DEC-033 + user approval |
 | 2026-08-28 | generate-one-candidate then user final lock workflow confirmed | DEC-034 + user approval |
-| 2026-08-28 | historical Notion Home retry wording and Visual Bible generation cadence were reconciled before retirement | historical receipts + DEC-033/034 |
-| 2026-08-28 | repository-only active record; Notion retired without deleting its historical data | DEC-035 + user approval |
+| 2026-08-28 | historical Notion Home retry wording and Visual Bible generation cadence were reconciled before migration | historical receipts + DEC-033/034 |
+| 2026-08-28 | former Notion structure/current work products preserved as a repository migration archive before repository-only cutover | DEC-035 + migration manifest |
 
 ## 17. Non-negotiable Evidence Ceiling
 

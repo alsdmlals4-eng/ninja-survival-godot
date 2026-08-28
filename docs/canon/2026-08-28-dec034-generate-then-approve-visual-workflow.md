@@ -38,7 +38,7 @@ fresh visual + consumer read
 ## Incident / Solution / Lesson
 
 - **Incident:** user가 생성 뒤 확정만 받는 흐름을 승인했지만, Notion Visual Bible에는 이전의 `다음 메시지 승인 -> 1건 생성` 사전승인 문구가 남아 있었다.
-- **Solution:** repository DEC-034, current decision/router/GDD를 새 흐름으로 맞추고, 당시 Visual Bible의 해당 문구를 `concrete consumer/board -> one candidate -> LOCK/REVISE/REJECT`로 정확히 교정했다. 2026-08-28 KST destination readback은 historical receipt로 보존되며, DEC-035 이후에는 repository manifest가 active owner다.
+- **Solution:** repository DEC-034, current decision/router/GDD를 새 흐름으로 맞추고, 당시 Visual Bible의 해당 문구를 `concrete consumer/board -> one candidate -> LOCK/REVISE/REJECT`로 정확히 교정했다. The former Visual Bible is now preserved in the DEC-035 migration archive; repository manifest is the active owner.
 - **Lesson:** 이미지 작업의 cadence 변경은 단순 대화 습관이 아니라 candidate, approved asset, runtime evidence를 구분하는 approval contract다. source-of-truth의 이전 승인 순서가 남아 있으면 사용자의 다음 작업 cadence와 자산 승격 기준이 함께 drift한다.
 
 ## Base 승격 판정

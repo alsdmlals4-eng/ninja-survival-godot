@@ -14,13 +14,15 @@ Once fresh-read identifies a concrete runtime consumer, screen-reference, or pla
 
 This does not authorize chat-start generation, gap-only/orphan art, or replacement of an approved asset. A candidate remains `GENERATED_EXPLORATION` until `LOCK`; durable repository source/manifest, actual consumer integration, and runtime/Human evidence gates stay unchanged.
 
-## 2026-08-28 DEC-035 — repository-only visual ownership
+## 2026-08-28 DEC-035 — migration-first repository-only visual ownership
 
-Notion is `HISTORICAL_REFERENCE_ONLY` and must not be read, written, or used as
-an asset gate for new work. After user `LOCK`, durable visual ownership is
+The former Notion Visual Bible and Asset Library are preserved read-only under
+`docs/migration/notion/` before repository-only cutover. After final remote
+readback, Notion is `HISTORICAL_REFERENCE_ONLY` and must not be used as an
+asset gate for new work. After user `LOCK`, durable visual ownership is
 repository source + SHA-256/provenance manifest + explicit consumer + applicable
-import/runtime evidence. The historical Notion links/attachments below remain
-receipts only; they neither block nor satisfy a current asset gate.
+import/runtime evidence. The migration snapshots are provenance receipts only;
+they neither block nor satisfy a current asset gate.
 
 ## 2026-08-28 current combat visual grammar — approved, implementation deferred
 
@@ -42,21 +44,20 @@ are merged. The runtime implementation baseline is
 fresh-read the current `origin/main` rather than treating this SHA as a live
 branch pointer.
 
-Seven PNG originals are now stored in both locations required by the project:
-their exact project-local runtime paths and native original-binary attachments
-on the linked Notion Asset Library records. Each attachment and local file was
-read back by SHA-256, dimensions, alpha-corner check, approval state, and
-actual Godot consumer.
+Seven PNG originals are now stored in their exact project-local runtime paths.
+Their former Notion Asset Library records are preserved as sanitized migration
+snapshots. Local files were rechecked by SHA-256 against their approved record,
+with dimensions/alpha/consumer evidence retained in the runtime manifest.
 
-| Asset | Runtime consumer | Local runtime source | Notion record |
+| Asset | Runtime consumer | Local runtime source | Migration snapshot |
 | --- | --- | --- | --- |
-| Cursed Lantern | `EnemyBasic/Visual` variant pool | `assets/runtime/visual-core/cursed_lantern_v1.png` | [Notion](https://app.notion.com/p/3c81b237eb1c81149768cb6f6b42db3c) |
-| Shadow Beast | `EnemyBasic/Visual` variant pool | `assets/runtime/visual-core/shadow_beast_v1.png` | [Notion](https://app.notion.com/p/3c81b237eb1c8187827cd5bf3b51907e) |
-| Flame Ninja | `EnemyBasic/Visual` variant pool | `assets/runtime/visual-core/flame_ninja_v1.png` | [Notion](https://app.notion.com/p/3c81b237eb1c819bac22df2c6a99b984) |
-| Cheonsul stage boss | `StageBoss/Visual` | `assets/runtime/visual-core/cheonsul_stage_boss_v1.png` | [Notion](https://app.notion.com/p/3c91b237eb1c816284b6ee6d8c2e7149) |
-| Talisman projectile | `ProjectileBasic/Visual` | `assets/runtime/visual-core/talisman_projectile_v1.png` | [Notion](https://app.notion.com/p/3c91b237eb1c8125a3dadb4a959dd387) |
-| Golden reward orb | `RewardOrb/Visual` | `assets/runtime/visual-core/golden_reward_orb_v1.png` | [Notion](https://app.notion.com/p/3c91b237eb1c81b7a686e2423308102b) |
-| Bongma familiar | `BongmaFamiliar/Visual` | `assets/runtime/visual-core/bongma_familiar_v1.png` | [Notion](https://app.notion.com/p/3c91b237eb1c8102a8c4fe46dfc41e8f) |
+| Cursed Lantern | `EnemyBasic/Visual` variant pool | `assets/runtime/visual-core/cursed_lantern_v1.png` | `migration/notion/assets/3c81b237-eb1c-8114-9768-cb6f6b42db3c.notion.md` |
+| Shadow Beast | `EnemyBasic/Visual` variant pool | `assets/runtime/visual-core/shadow_beast_v1.png` | `migration/notion/assets/3c81b237-eb1c-8187-827c-d5bf3b51907e.notion.md` |
+| Flame Ninja | `EnemyBasic/Visual` variant pool | `assets/runtime/visual-core/flame_ninja_v1.png` | `migration/notion/assets/3c81b237-eb1c-819b-ac22-df2c6a99b984.notion.md` |
+| Cheonsul stage boss | `StageBoss/Visual` | `assets/runtime/visual-core/cheonsul_stage_boss_v1.png` | `migration/notion/assets/3c91b237-eb1c-8162-84b6-ee6d8c2e7149.notion.md` |
+| Talisman projectile | `ProjectileBasic/Visual` | `assets/runtime/visual-core/talisman_projectile_v1.png` | `migration/notion/assets/3c91b237-eb1c-8125-a3da-db4a959dd387.notion.md` |
+| Golden reward orb | `RewardOrb/Visual` | `assets/runtime/visual-core/golden_reward_orb_v1.png` | `migration/notion/assets/3c91b237-eb1c-81b7-a686-e2423308102b.notion.md` |
+| Bongma familiar | `BongmaFamiliar/Visual` | `assets/runtime/visual-core/bongma_familiar_v1.png` | `migration/notion/assets/3c91b237-eb1c-8102-a8c4-fe46dfc41e8f.notion.md` |
 
 ## IMG-03 runtime battlefield backdrop — merged 2026-08-27
 
@@ -67,14 +68,13 @@ change combat, route, reward, or school authority. Its normal gameplay center
 stays deliberately open; moonlit shrine architecture and restrained Cheonsul
 edge sigils supply the visual context.
 
-| Asset | Runtime consumer | Local runtime source | Notion record |
+| Asset | Runtime consumer | Local runtime source | Migration snapshot |
 | --- | --- | --- | --- |
-| Moonlit Battlefield | `Main/BattlefieldBackdrop` | `assets/runtime/visual-core/moonlit_battlefield_backdrop_v1.png` | [Notion](https://app.notion.com/p/3c91b237eb1c8109addcdb3659476e4d) |
+| Moonlit Battlefield | `Main/BattlefieldBackdrop` | `assets/runtime/visual-core/moonlit_battlefield_backdrop_v1.png` | `migration/notion/assets/3c91b237-eb1c-8109-addc-db3659476e4d.notion.md` |
 
 The local original is an opaque 1672×941 PNG with SHA-256
 `e5ec25a1429399be7a6ae3f930a5162ab4a935083051f7c2388724921ed9b0fd`.
-The linked Asset Library record has a native original-binary attachment and
-destination readback. PR [#88](https://github.com/alsdmlals4-eng/ninja-survival-godot/pull/88)
+Its former Asset Library record is preserved in the migration archive. PR [#88](https://github.com/alsdmlals4-eng/ninja-survival-godot/pull/88)
 is merged; its historical merge SHA is `5a52a30aa6c38cfed17e46d550eef27ab06e53f7`.
 
 `EnemyBasic/Visual` selects only the three approved generic-enemy textures;
@@ -91,14 +91,13 @@ adds one transparent field texture to the **existing** runtime visual owner:
 node with a `Sprite2D`; its 90px radius, damage, statuses, target selection,
 timing, and 0.60-second lifetime stay owned by the existing runtime logic.
 
-| Asset | Runtime consumer | Local runtime source | Notion record |
+| Asset | Runtime consumer | Local runtime source | Migration snapshot |
 | --- | --- | --- | --- |
-| Cheonsul Flame Field | `Cheonsul/FlameFieldVisual` | `assets/runtime/visual-core/cheonsul_flame_field_v1.png` | [Notion](https://app.notion.com/p/3c91b237eb1c81798c10d307b4764ad8) |
+| Cheonsul Flame Field | `Cheonsul/FlameFieldVisual` | `assets/runtime/visual-core/cheonsul_flame_field_v1.png` | `migration/notion/assets/3c91b237-eb1c-8179-8c10-d307b4764ad8.notion.md` |
 
 The local original is a transparent 1269×1240 PNG with SHA-256
 `cbb4b1e697f69bf37731f14a32c8ad3890d1557c5ee7ea2ebeb4b2f4f81b3e68`.
-The Asset Library record has a native original-binary attachment and destination
-readback. PR [#91](https://github.com/alsdmlals4-eng/ninja-survival-godot/pull/91)
+The former Asset Library record is preserved in the migration archive. PR [#91](https://github.com/alsdmlals4-eng/ninja-survival-godot/pull/91)
 is squash-merged; its merge SHA is `6d538fcf933e2fbcca50f8e6d369d165efac620c`.
 
 Exact PR-head CI passed `gut` and the Windows internal-build artifact. Fresh
@@ -113,19 +112,18 @@ or device/export pass. PR #49 was not changed.
 
 The user-approved fixed-player Move / Attack / Hit v1 images remain immutable
 visual provenance. Their baked checkerboard prevents runtime use. The approved
-v2 alpha-remediated derivatives are now stored as exact project-local PNGs and
-as native original-binary attachments on their corresponding Notion Asset
-Library records:
+v2 alpha-remediated derivatives are stored as exact project-local PNGs; their
+former Asset Library records are preserved as migration snapshots:
 
-| Variant | Local v2 source | SHA-256 | Notion record |
+| Variant | Local v2 source | SHA-256 | Migration snapshot |
 | --- | --- | --- | --- |
-| Move | `docs/assets/approved/img-01-player-runtime-core/player_runtime_move_v2_alpha.png` | `a56f79918bd9ebe451cbca092cb9828c512a710c1762600a070eeba68e01fb2a` | [Notion](https://app.notion.com/p/3c81b237eb1c815e9e9eeb4c8b0c2911) |
-| Attack | `docs/assets/approved/img-01-player-runtime-core/player_runtime_attack_v2_alpha.png` | `75c6d31237ebf8cd1760c89d90d2a85ebae5c2802cb615816b1be8fb7f7836cd` | [Notion](https://app.notion.com/p/3c81b237eb1c81e3a121c2904209f2eb) |
-| Hit | `docs/assets/approved/img-01-player-runtime-core/player_runtime_hit_v2_alpha.png` | `f00c2f6fd09e6c52e1dce8abe6f493e76245d2dbc818ee4ac5db1b98f5b23d60` | [Notion](https://app.notion.com/p/3c81b237eb1c81958819dc9e3e763587) |
+| Move | `docs/assets/approved/img-01-player-runtime-core/player_runtime_move_v2_alpha.png` | `a56f79918bd9ebe451cbca092cb9828c512a710c1762600a070eeba68e01fb2a` | `migration/notion/assets/3c81b237-eb1c-815e-9e9e-eb4c8b0c2911.notion.md` |
+| Attack | `docs/assets/approved/img-01-player-runtime-core/player_runtime_attack_v2_alpha.png` | `75c6d31237ebf8cd1760c89d90d2a85ebae5c2802cb615816b1be8fb7f7836cd` | `migration/notion/assets/3c81b237-eb1c-81e3-a121-c2904209f2eb.notion.md` |
+| Hit | `docs/assets/approved/img-01-player-runtime-core/player_runtime_hit_v2_alpha.png` | `f00c2f6fd09e6c52e1dce8abe6f493e76245d2dbc818ee4ac5db1b98f5b23d60` | `migration/notion/assets/3c81b237-eb1c-8195-8819-dc9e3e763587.notion.md` |
 
-All v2 files are 1254×1254 32bpp ARGB PNGs with transparent corners. Notion
-readback confirmed native v2 image blocks. This clears the source-level alpha
-and dual-storage gate.
+All v2 files are 1254×1254 32bpp ARGB PNGs with transparent corners. The
+repository source, SHA-256 and migration snapshot retain the source-level
+alpha/provenance record; no external dual-storage gate remains.
 
 ### IMG-01 runtime wiring receipt — PR #59 / unmerged
 
