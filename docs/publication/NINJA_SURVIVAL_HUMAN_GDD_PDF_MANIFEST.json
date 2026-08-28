@@ -2,8 +2,10 @@
   "schema_version": 1,
   "document_id": "HUMAN_PLAYER_GDD_PDF",
   "role": "DOWNLOADABLE_HUMAN_READER_GDD_DERIVATIVE",
-  "sync_status": "CURRENT",
+  "sync_status": "STALE_PENDING_MAIN_SOURCE_PUBLICATION",
   "publication_policy": "ALWAYS_SYNC_ON_HUMAN_GDD_OR_EXPORTER_CHANGE",
+  "stale_reason": "The Human GDD source changes in Issue #126. A fresh completed-main source commit is required before the publication derivative can record exact provenance.",
+  "required_next_action": "Create the source-main PDF publication PR immediately; do not claim this PDF is current until its manifest returns to CURRENT.",
   "source": {
     "path": "docs/design/NINJA_SURVIVAL_HUMAN_GDD.md",
     "branch": "main",

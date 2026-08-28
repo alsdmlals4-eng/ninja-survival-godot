@@ -1,9 +1,9 @@
 # 닌자의 신 — Master Game Design Document
 
 > **문서 상태:** `CURRENT_PRODUCT_GDD / IMPLEMENTATION_CONTRACT_COMPANION`
-> **기준 브랜치 / SHA:** `main` / `d803330c8144b177fe5ece1d4c4da98b3dd07235`
-> **생성일:** 2026-08-28 KST
-> **사람용 안내:** [플레이어용 게임 기획서 PDF](../../exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf) — `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md`에서 생성한 읽기 전용 설명본
+> **기준 브랜치 / SHA:** `main` / `50fbf203ec3f71af1633a5b6cc74e7167c0604c8`
+> **생성일:** 2026-08-29 KST
+> **사람용 안내:** `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md` source update에 따른 PDF 재발행이 main source merge 뒤 진행 중이다. 현재 상태는 `docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json`이 소유하며, `CURRENT` 전에는 이전 PDF snapshot을 최신 설명본으로 취급하지 않는다.
 > **발행/검수 계약:** `docs/PDF_EXPORT.md`와 `docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json`; PDF 존재는 runtime·Human Usability·Player Experience 검증을 뜻하지 않는다.
 > **정본 우선순위:** 최신 사용자 승인 → `AGENTS.md` → `CURRENT_CONFIRMED_DECISIONS.md` → dated canon → `ACTIVE_CONTEXT.md` → actual code/data/Scene/test → Base → benchmark
 > **범위:** 이 파일은 제품 canon·구현 계약·증거 경계를 소유하는 기술 정본이다. 사람용 설명은 별도 Human GDD가 소유하며, 둘이 충돌하면 최신 승인과 이 기술 정본의 규칙을 따른다. DEC-035는 기존 Notion 구조와 현재 작업물을 repository migration archive에 보존한 뒤, repository-only owner로 전환한다.
@@ -27,11 +27,11 @@
 ### 지금의 Work 5 위치
 
 ```text
-Phase 1 기획/정본화: IN PROGRESS
-Phase 2 preproduction / Definition of Ready: NOT STARTED
+Phase 1 기획/정본화: CONTRACT_READY_FOR_USER_APPROVAL
+Phase 2 preproduction / Definition of Ready: READY_FOR_USER_IMPLEMENTATION_CONTRACT_APPROVAL
 Phase 3 asset production: PARTIAL (기존 소비처 asset만)
 Phase 4 Godot implementation: T12~T16 machine baseline merged; current package NOT STARTED
-Phase 5 Human vertical-slice validation: NOT_RUN
+Phase 5 Human vertical-slice validation: DEFERRED_BY_DEC036_NOT_RUN
 ```
 
 ## 01. Source Registry
@@ -41,7 +41,7 @@ Phase 5 Human vertical-slice validation: NOT_RUN
 | `SRC-REPO-01` | `AGENTS.md` | engine, authority, protected boundaries | `CONFIRMED` |
 | `SRC-REPO-02` | `docs/CURRENT_CONFIRMED_DECISIONS.md` | current product/visual/evidence ledger | `CONFIRMED` |
 | `SRC-REPO-03` | `docs/ACTIVE_CONTEXT.md` | mutable resume route | `CONFIRMED` |
-| `SRC-REPO-04` | DEC-014~025, DEC-026~034 | product, encounter, current decisions | `CONFIRMED` |
+| `SRC-REPO-04` | DEC-014~025, DEC-026~036 | product, encounter, current decisions | `CONFIRMED` |
 | `SRC-REPO-05` | `scripts/`, `scenes/`, `assets/`, `tests/` | actual implementation reality | `IMPLEMENTED` where paths exist |
 | `SRC-REPO-06` | `docs/visual/*`, asset manifests | visual grammar and consumer evidence | mixed; see `AST-*` |
 | `SRC-NOTION-01` | former Human Home / Core Systems / Visual Bible / Production Handoff | preserved migration snapshot and attachment provenance | `docs/migration/notion/`; not active canon |
@@ -368,7 +368,7 @@ Current slice has no persistent save/profile/Wallet owner. Ninja Soul introduces
 | `QA-06` | Player experience | `NOT_RUN` | do not infer from assets or docs |
 | `QA-07` | touch/gamepad/device/export | `NOT_RUN` | focus contract alone is insufficient |
 
-### First Human vertical slice acceptance
+### Future Human vertical-slice acceptance — deferred, not current gate
 
 1. Players can describe the selected school's danger-handling verb without opening help; optional help is evaluated separately.
 2. Core→Elite→Trace→Boss timing, telegraph fairness, Trace purpose, and Boss gate are readable.
@@ -392,12 +392,12 @@ Current slice has no persistent save/profile/Wallet owner. Ninja Soul introduces
 
 | order | package | player value / dependency | primary risk |
 | --- | --- | --- | --- |
-| `Q-01` | Phase 1 completion + unified implementation contract | prevent canon/code/UI drift before build | hidden current decisions |
+| `Q-01` | user approval of unified implementation contract | prevent canon/code/UI drift before build | implementation before contract sign-off |
 | `Q-02` | Trace/telegraph + combat information grammar | fair, readable encounter learning | target-resolution failure |
 | `Q-03` | complete spatial Workbench inputs | turn planning promise into play | UI/domain authority leakage |
 | `Q-04` | four-school shared lifecycle/content composition | validate selection/route promise | four separate engines/content cost |
 | `Q-05` | DEC-033 Run economy, wallet, retry, true-end settlement | meaningful failure and horizontal future | duplicate save/settlement payout |
-| `Q-06` | Human vertical slice | prove player promise | machine evidence mistaken for UX |
+| `Q-06` | optional later Human vertical slice | prove player promise when scheduled | machine evidence mistaken for UX |
 | `Q-07` | Final Binding/final calamity | deliver full legend payoff | premature scope expansion |
 
 ### Evidence-based SWOT
@@ -415,7 +415,7 @@ Current slice has no persistent save/profile/Wallet owner. Ninja Soul introduces
 
 ## 15. User Decision Required
 
-No new product-meaning decision is required to write or use this GDD. Values explicitly marked `TUNE_RECOMMENDED` (normal 20% gold chance, Soul reward table) require Human/Player balance evidence before adjustment. The next decision gate is the unified implementation contract’s Definition of Ready review, not a new feature invention.
+No new product-meaning decision is required. The sole next authorization is approval of `docs/implementation/2026-08-29-four-school-circuit-implementation-contract.md` before Godot production implementation begins. Values explicitly marked `TUNE_RECOMMENDED` are initial data defaults and require explicit evidence/review before later adjustment; DEC-036 removes Human/Player sessions from this current build gate without creating a PASS claim.
 
 ## 16. Change Log
 
@@ -427,6 +427,7 @@ No new product-meaning decision is required to write or use this GDD. Values exp
 | 2026-08-28 | historical Notion Home retry wording and Visual Bible generation cadence were reconciled before migration | historical receipts + DEC-033/034 |
 | 2026-08-28 | former Notion structure/current work products preserved as a repository migration archive before repository-only cutover | DEC-035 + migration manifest |
 | 2026-08-28 | 사람용 다운로드 PDF와 재생성/검수 계약을 추가 | user-approved repository PDF publication |
+| 2026-08-29 | Human/Player 검수를 current build gate에서 defer하고 네 유파 통합 구현계약/DoR를 작성 | user instruction + DEC-036 + Issue #126 |
 
 ## 17. Non-negotiable Evidence Ceiling
 

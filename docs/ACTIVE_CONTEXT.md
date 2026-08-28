@@ -2,7 +2,7 @@
 
 ```yaml
 project: NINJA_SURVIVAL
-state_router_updated_at: 2026-08-28 KST
+state_router_updated_at: 2026-08-29 KST
 reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
@@ -10,12 +10,13 @@ current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
 last_completed_main_read: d803330c8144b177fe5ece1d4c4da98b3dd07235
 last_completed_main_read_receipt: PR119_NOTION_MIGRATION_READBACK_MAIN_2026_08_28_KST
 completed_main_label: T12_TO_T16_MACHINE_SCOPE_AND_CANON_FRONTIER_RECONCILED
-resume_state: REVISED_FOUR_PANEL_CORE_BOARD_REFERENCE_ONLY_PLANNING_REVIEW_ACTIVE
-next_product_gate: MASTER_GDD_DEC029_DEC030_DEC031_DEC032_DEC033_DEC034_FOUR_SCHOOL_LIFECYCLE_CONTRACT_AND_PHASE2_REVIEW
+resume_state: FOUR_SCHOOL_CIRCUIT_IMPLEMENTATION_CONTRACT_READY_FOR_USER_APPROVAL
+next_product_gate: USER_APPROVAL_OF_NINJA_FOUR_SCHOOL_CIRCUIT_V1_THEN_PHASE2_MACHINE_IMPLEMENTATION
 current_master_gdd: docs/design/NINJA_SURVIVAL_MASTER_GDD.md
 current_human_gdd: docs/design/NINJA_SURVIVAL_HUMAN_GDD.md
 human_player_gdd_pdf: exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf
 human_player_gdd_pdf_manifest: docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json
+human_player_gdd_pdf_status: STALE_PENDING_MAIN_SOURCE_PUBLICATION
 mandatory_work_gate: FRESH_READ_REUSE_FIRST_TARGETED_WEB_RESEARCH_FEASIBILITY_AND_ADVERSARIAL_REVIEW_UNTIL_CLEAN
 repository_only_policy: docs/canon/2026-08-28-dec035-repository-only-project-record.md
 notion_usage: HISTORICAL_REFERENCE_ONLY_MIGRATION_COMPLETE
@@ -23,6 +24,10 @@ notion_migration_manifest: docs/migration/notion/MIGRATION_MANIFEST.md
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 current_screen_visual_coverage: docs/visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md
+current_implementation_contract: docs/implementation/2026-08-29-four-school-circuit-implementation-contract.md
+current_phase2_definition_of_ready: docs/planning/2026-08-29-phase2-four-school-definition-of-ready.md
+current_contract_adversarial_review: docs/reviews/2026-08-29-four-school-contract-adversarial-review.md
+human_player_build_gate: DEFERRED_BY_DEC036_NOT_RUN
 historical_closed_wip:
   - PR_43_T12_ATOMIC_WORKBENCH
   - PR_44_FRONT_DOOR_DOCS
@@ -314,11 +319,11 @@ The active package also closes a relevant T12 safety gap: a successful `RestComm
 
 ```text
 T12~T16 machine scope + Cheonsul first authoring baseline
--> DEC-029/030/031/032/033 all-four-school lifecycle contract and Phase 2 review
+-> user approval of NINJA_FOUR_SCHOOL_CIRCUIT_V1 contract
 -> four-school shared-chassis/circuit implementation + machine evidence
--> User vertical-slice validation through fourth-Boss Final Binding eligibility (Human/Player feedback remains deferred, not passed)
+-> optional later Human/Player validation through fourth-Boss Final Binding eligibility (DEC-036 deferred / NOT_RUN)
 -> separately reviewed Final Binding / final calamity package
 -> full-Run verification only after that package
 ```
 
-DEC-029/030/031/032/033 explicitly supersede the previous Cheonsul-only Human gate for this package: four-school shared-chassis completion and machine evidence now precede the first representative Human validation, whose endpoint is before the final package and whose failure rule remains default Run end with one Ninja-Soul-gated school retry. Do not treat that later Human gate as passed until actual user evidence exists.
+DEC-029/030/031/032/033 define the four-school shared-chassis package and its final-package boundary. DEC-036 moves Human/Player observation out of the current implementation gate; it stays `NOT_RUN` and cannot be inferred from automation. The failure rule remains default Run end with one Ninja-Soul-gated school retry.

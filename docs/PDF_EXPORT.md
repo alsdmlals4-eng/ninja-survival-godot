@@ -22,7 +22,9 @@ PDF는 사람이 한 파일로 읽고 내려받는 파생본이다. Human GDD는
 
 `ALWAYS_SYNC_ON_HUMAN_GDD_OR_EXPORTER_CHANGE`
 
-Human GDD Markdown 또는 exporter가 바뀌는 같은 변경 단위에서 PDF와 manifest를 반드시 재발행한다. 기술 정본의 변경이 사람용 설명의 의미를 바꾸면 Human GDD 원고를 먼저 갱신한 뒤 재발행한다. PDF가 검수에 실패하면 이전 정상 PDF/manifest를 보존하고 실패한 output을 current로 기록하지 않는다.
+Human GDD Markdown 또는 exporter가 바뀌는 같은 **publication package**에서 PDF와 manifest를 반드시 재발행한다. 기술 정본의 변경이 사람용 설명의 의미를 바꾸면 Human GDD 원고를 먼저 갱신한 뒤 재발행한다. PDF가 검수에 실패하면 이전 정상 PDF/manifest를 보존하고 실패한 output을 current로 기록하지 않는다.
+
+manifest가 completed `main` source commit을 기록해야 할 때에는 source merge와 PDF publication merge를 분리할 수 있다. 이 경우 source merge는 manifest를 `STALE_PENDING_MAIN_SOURCE_PUBLICATION`으로 명시하고, unrelated work 없이 fresh completed `main`에서 PDF/manifest publication PR을 즉시 열어 `CURRENT`로 되돌린다. 두 PR은 하나의 publication package이며, source PR만으로 current PDF를 주장하거나 package를 닫을 수 없다.
 
 ## 재생성 절차
 

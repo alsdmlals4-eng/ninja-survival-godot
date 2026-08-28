@@ -16,13 +16,15 @@
 4. `canon/2026-08-21-dec014-025-product-canon.md`
 5. `canon/2026-08-22-dec026-encounter-pattern-budget.md`
 6. `design/NINJA_SURVIVAL_HUMAN_GDD.md` (사람이 읽는 게임 설명 원고) → `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf` (다운로드용 파생본); `design/NINJA_SURVIVAL_MASTER_GDD.md`는 기술 canon·구현 계약을 확인할 때 읽는다.
-7. `ACTIVE_CONTEXT.md`
-8. `traceability/2026-08-22-dec026-post-gate-traceability.md`
-9. `planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
-10. `superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
-11. 실제 `../scripts/**`, `../scenes/**`, `../data/**`, `../tests/**`, `../.github/workflows/**`
-12. `design/NINJA_SURVIVAL_MASTER_GDD.md`, `CURRENT_VISUAL_HANDOFF.md`, asset manifest/provenance
-13. 현재 작업에 Base freshness가 materially 필요할 때 최신 Base owner
+7. `implementation/2026-08-29-four-school-circuit-implementation-contract.md`
+8. `planning/2026-08-29-phase2-four-school-definition-of-ready.md`
+9. `canon/2026-08-29-dec036-human-player-validation-deferred-from-current-build-gate.md`
+10. `ACTIVE_CONTEXT.md`
+11. `traceability/2026-08-22-dec026-post-gate-traceability.md`
+12. `planning/2026-08-22-dec026-phase-b-definition-of-ready.md` (historical)
+13. 실제 `../scripts/**`, `../scenes/**`, `../data/**`, `../tests/**`, `../.github/workflows/**`
+14. `design/NINJA_SURVIVAL_MASTER_GDD.md`, `CURRENT_VISUAL_HANDOFF.md`, asset manifest/provenance
+15. 현재 작업에 Base freshness가 materially 필요할 때 최신 Base owner
 
 ## 2. Current product / implementation router
 
@@ -158,11 +160,15 @@ approved Decision/Canon을 따른다.
 | `CURRENT_CONFIRMED_DECISIONS.md` | mutable approved-decision / protected-scope ledger | CURRENT · T12~T16 machine scope integrated / human gate deferred |
 | `ACTIVE_CONTEXT.md` | mutable resume-state router | CURRENT · T16 help merged / human gate deferred |
 | `design/NINJA_SURVIVAL_HUMAN_GDD.md` | 사람용 게임 설명 원고 | CURRENT · 핵심 재미/흐름/선택/구현 구조를 쉬운 말로 설명 |
-| `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf` | 사람이 내려받아 읽는 Player GDD snapshot | ALWAYS_SYNC · Human GDD/source generator 변경 시 재발행; Human visual review는 별도 |
+| `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf` | 사람이 내려받아 읽는 Player GDD snapshot | STALE_PENDING_MAIN_SOURCE_PUBLICATION · Issue #126 source merge 뒤 manifest/PDF 재발행 필요; Human visual review는 별도 |
 | `design/NINJA_SURVIVAL_MASTER_GDD.md` | 기술 canon·구현 계약·증거 경계 | CURRENT · Human GDD와 중복 소유하지 않음 |
 | `PDF_EXPORT.md` + `publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json` | PDF 발행/신선도/검수 상태 | CURRENT publication contract |
 | `canon/2026-08-28-dec034-generate-then-approve-visual-workflow.md` | concrete consumer/board 후 1개 후보 생성과 사용자 LOCK 기준 | CURRENT · chat-start/gap-only 생성 금지 |
 | `canon/2026-08-28-dec035-repository-only-project-record.md` | preservation-first Notion migration / repository-only cutover | CURRENT · final remote readback complete |
+| `canon/2026-08-29-dec036-human-player-validation-deferred-from-current-build-gate.md` | current implementation gate에서 Human/Player 검수 deferment | CURRENT · NOT_RUN evidence를 PASS로 바꾸지 않음 |
+| `implementation/2026-08-29-four-school-circuit-implementation-contract.md` | 네 유파 shared circuit의 구현 scope·owner·acceptance | PROPOSED · user contract approval 대기 |
+| `planning/2026-08-29-phase2-four-school-definition-of-ready.md` | current package의 Phase 2 preproduction verdict | READY_FOR_USER_IMPLEMENTATION_CONTRACT_APPROVAL |
+| `reviews/2026-08-29-four-school-contract-adversarial-review.md` | contract/DOR 적대적 검토 evidence | CURRENT · 5 whole-state loops |
 | `migration/notion/MIGRATION_MANIFEST.md` | former Notion structure, work-product and asset continuity audit | CURRENT MIGRATION ARCHIVE · not active canon |
 | `visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md` | canonical screen-first visual coverage and Codex handoff | CURRENT · consumer/board first, user LOCK 전 candidate only |
 | `canon/2026-08-21-dec014-025-product-canon.md` | four-school / route / trace / Workbench / final-binding product canon | CURRENT |

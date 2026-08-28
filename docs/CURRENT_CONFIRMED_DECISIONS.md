@@ -2,7 +2,7 @@
 
 ```yaml
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER
-updated_at: 2026-08-28 KST
+updated_at: 2026-08-29 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
 current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
@@ -23,8 +23,13 @@ current_human_gdd: docs/design/NINJA_SURVIVAL_HUMAN_GDD.md
 human_player_gdd_pdf: exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf
 human_player_gdd_pdf_manifest: docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json
 human_player_gdd_pdf_policy: ALWAYS_SYNC_ON_HUMAN_GDD_OR_EXPORTER_CHANGE
+human_player_gdd_pdf_status: STALE_PENDING_MAIN_SOURCE_PUBLICATION
 mandatory_work_gate: FRESH_READ_REUSE_FIRST_TARGETED_WEB_RESEARCH_FEASIBILITY_AND_ADVERSARIAL_REVIEW_UNTIL_CLEAN
 current_repository_only_policy: docs/canon/2026-08-28-dec035-repository-only-project-record.md
+current_human_validation_deferment: docs/canon/2026-08-29-dec036-human-player-validation-deferred-from-current-build-gate.md
+current_implementation_contract: docs/implementation/2026-08-29-four-school-circuit-implementation-contract.md
+current_phase2_definition_of_ready: docs/planning/2026-08-29-phase2-four-school-definition-of-ready.md
+current_contract_adversarial_review: docs/reviews/2026-08-29-four-school-contract-adversarial-review.md
 notion_migration_manifest: docs/migration/notion/MIGRATION_MANIFEST.md
 phase_b_verdict: PASS_FOR_APPROVED_DOMAIN_SEQUENCE
 mvp0_to_mvp3_baseline: INTEGRATED
@@ -87,6 +92,8 @@ Detailed DEC-033 Run-end Ninja Soul settlement, Boss-only soul eligibility, and 
 Detailed DEC-034 generate-then-approve visual workflow: `docs/canon/2026-08-28-dec034-generate-then-approve-visual-workflow.md`.
 
 Detailed DEC-035 repository-only project record and Notion retirement: `docs/canon/2026-08-28-dec035-repository-only-project-record.md`.
+
+Detailed DEC-036 current-build Human/Player validation deferment: `docs/canon/2026-08-29-dec036-human-player-validation-deferred-from-current-build-gate.md`.
 
 ## 2. Protected integrated baseline
 
@@ -319,7 +326,7 @@ T12 post-merge automated evidence in Production Handoff:
 
 Evidence ceiling: automated/domain implementation scope only.
 
-## 9. Current product workstream — T12~T16 machine slices merged / Human QA deferred
+## 9. Current product workstream — T12~T16 machine slices merged / contract approval pending
 
 T12 PR #61 (`T12: atomically commit Workbench snapshot, Fate, and route`) and T13 PR #63 (`T13: add persistent Workbench route-preview UI`) are merged in the completed-main baseline above. T13 remains limited to a reusable Workbench route-preview/input presentation contract.
 
@@ -336,18 +343,24 @@ T12's protected product outcome remains:
 
 T13 intentionally did not absorb MainController/T14 integration: it renders supplied snapshots, marks route/Fate choices as pending, sends intent signals, and presents coordinator/readiness failures in Korean. T14 is merged in `51e39737f272db0962a3dabada51bae10cd1fa97`: it adds the Cheonsul-only lifecycle adapter (first-route commit, Elite → Trace → Boss gates, Boss-clear Workbench entry), existing runtime combat composition, active combat reward-orbs, read-only Boss-reward candidates, and pending route/Fate intents. `EncounterCatalog` remains the source for Core/Elite/Boss role IDs and display names; its fan/zone/mark primitives are not newly verified runtime claims. T15 PR #69 is squash-merged in `e2cfe4452e1de5a224f5cd7dee8e47a104c868e0`: it adds a separate Korean `기능 도움말` entry for every starting school, one reusable modal, and input isolation so help cannot select a school. Exact PR-head GitHub GUT and isolated post-merge local import, editor parse, five-second main smoke, focused GUT `8/8` / `38`, and full GUT `488/488` / `5321` passed. Under the current user contract Human QA is `DEFERRED_BY_CURRENT_USER_NOT_RUN`; it is not Human, Player Experience, touch, device/export, or live-render PASS. The user then separately approved T16 in-combat current-school help: PR #73 is squash-merged in `63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497`, preserving the existing single help-dialog owner while a combat HUD intent opens only the selected school’s help. Exact PR-head GitHub GUT and isolated post-merge local import, editor parse, five-second main smoke, focused GUT `25/25` / `176`, and full GUT `491/491` passed. Assertion totals are omitted because earlier receipts disagree and the CI log proves the test count, not one canonical assertion total. Direct Debug input delivery is recorded separately; it is not live-render, Human, Player Experience, touch, device/export, or device PASS. Visual work must not modify, rebase, close, merge or absorb PR #49.
 
-## 10. Remaining production sequence
+## 10. Current implementation-contract gate
+
+`docs/implementation/2026-08-29-four-school-circuit-implementation-contract.md` and `docs/planning/2026-08-29-phase2-four-school-definition-of-ready.md` are the current source-backed package. They are `PROPOSED_FOR_USER_IMPLEMENTATION_CONTRACT_APPROVAL` / `READY_FOR_USER_IMPLEMENTATION_CONTRACT_APPROVAL`, not Godot production implementation evidence.
+
+DEC-036 permits the contract and subsequent machine implementation to proceed without a Human/Player session. The user-deferred evidence classes remain `NOT_RUN`; a future release or player-facing milestone must not promote them from GUT/import/smoke evidence.
+
+## 11. Remaining production sequence
 
 ```text
 T12~T16 implemented machine scope
--> DEC-029/030/031/032/033 four-school lifecycle implementation contract and Phase 2 review
+-> user approval of NINJA_FOUR_SCHOOL_CIRCUIT_V1
 -> all-four-school shared-chassis/circuit implementation and machine evidence
--> User vertical-slice validation through fourth-Boss Final Binding eligibility (deferred / NOT_RUN)
+-> optional later Human/Player validation through fourth-Boss Final Binding eligibility (DEC-036 deferred / NOT_RUN)
 -> separately reviewed Final Binding / final calamity package
 -> full-Run verification only after that package
 ```
 
-DEC-029/030/031/032/033 authorize four-school shared-chassis implementation before the first Human gate, delimit that first test before the final package, require optional help as a non-substitute for unassisted readability, and preserve default Run-end pressure with one Ninja-Soul-gated school retry. The later Human gate remains mandatory and `NOT_RUN`; no machine evidence may replace it.
+DEC-029/030/031/032/033 authorize the shared-chassis package, delimit its final-package boundary, require optional help as a non-substitute for unassisted readability, and preserve default Run-end pressure with one Ninja-Soul-gated school retry. DEC-036 defers the later Human gate from this implementation sequence; no machine evidence may replace it.
 
 ## 11. World / `닌자의 신` product meaning
 
