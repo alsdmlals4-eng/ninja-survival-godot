@@ -15,13 +15,14 @@
 3. `CURRENT_CONFIRMED_DECISIONS.md`
 4. `canon/2026-08-21-dec014-025-product-canon.md`
 5. `canon/2026-08-22-dec026-encounter-pattern-budget.md`
-6. `ACTIVE_CONTEXT.md`
-7. `traceability/2026-08-22-dec026-post-gate-traceability.md`
-8. `planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
-9. `superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
-10. 실제 `../scripts/**`, `../scenes/**`, `../data/**`, `../tests/**`, `../.github/workflows/**`
-11. Notion `닌자 서바이벌 · Home` + 필요한 Detail Canon / AI-System surface
-12. 현재 작업에 Base freshness가 materially 필요할 때 최신 Base owner
+6. `design/NINJA_SURVIVAL_MASTER_GDD.md` (사람이 읽는 통합 GDD와 AI 구현계약의 공통 진입면)
+7. `ACTIVE_CONTEXT.md`
+8. `traceability/2026-08-22-dec026-post-gate-traceability.md`
+9. `planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
+10. `superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
+11. 실제 `../scripts/**`, `../scenes/**`, `../data/**`, `../tests/**`, `../.github/workflows/**`
+12. Notion `닌자 서바이벌 · Home` + 필요한 Detail Canon / AI-System surface
+13. 현재 작업에 Base freshness가 materially 필요할 때 최신 Base owner
 
 ## 2. Current product / implementation router
 
@@ -154,7 +155,9 @@ Notion 문구가 GitHub 실제 구현과 충돌할 때 **구현 사실**은 code
 |---|---|---|
 | `CURRENT_CONFIRMED_DECISIONS.md` | mutable approved-decision / protected-scope ledger | CURRENT · T12~T16 machine scope integrated / human gate deferred |
 | `ACTIVE_CONTEXT.md` | mutable resume-state router | CURRENT · T16 help merged / human gate deferred |
-| `visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md` | canonical screen-first visual coverage and Codex handoff | CURRENT · Issue #93 · no automatic image generation |
+| `design/NINJA_SURVIVAL_MASTER_GDD.md` | 사람용 GDD + AI 구현계약 공통 정본 진입면 | CURRENT · current canon/implementation/evidence ceiling을 구분 |
+| `canon/2026-08-28-dec034-generate-then-approve-visual-workflow.md` | concrete consumer/board 후 1개 후보 생성과 사용자 LOCK 기준 | CURRENT · chat-start/gap-only 생성 금지 |
+| `visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md` | canonical screen-first visual coverage and Codex handoff | CURRENT · consumer/board first, user LOCK 전 candidate only |
 | `canon/2026-08-21-dec014-025-product-canon.md` | four-school / route / trace / Workbench / final-binding product canon | CURRENT |
 | `canon/2026-08-22-dec026-encounter-pattern-budget.md` | encounter / gimmick / pattern budget canon | CURRENT · APPROVED |
 | `traceability/2026-08-22-dec026-post-gate-traceability.md` | reuse / supersession / migration coverage | CURRENT DESIGN CONTEXT |

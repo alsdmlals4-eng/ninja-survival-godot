@@ -7,11 +7,12 @@ reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
 current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
-last_completed_main_read: 508711f5572c37587088223469e337817076ce19
-last_completed_main_read_receipt: PRE_DEC033_RUN_END_NINJA_SOUL_SETTLEMENT_2026_08_28_KST
+last_completed_main_read: 746f8fe495b09a5412deb443f78021e008d947f5
+last_completed_main_read_receipt: PRE_MASTER_GDD_AND_DEC034_2026_08_28_KST
 completed_main_label: T12_TO_T16_MACHINE_SCOPE_AND_CANON_FRONTIER_RECONCILED
 resume_state: REVISED_FOUR_PANEL_CORE_BOARD_REFERENCE_ONLY_PLANNING_REVIEW_ACTIVE
-next_product_gate: DEC029_DEC030_DEC031_DEC032_DEC033_FOUR_SCHOOL_LIFECYCLE_CONTRACT_AND_PHASE2_REVIEW
+next_product_gate: MASTER_GDD_DEC029_DEC030_DEC031_DEC032_DEC033_DEC034_FOUR_SCHOOL_LIFECYCLE_CONTRACT_AND_PHASE2_REVIEW
+current_master_gdd: docs/design/NINJA_SURVIVAL_MASTER_GDD.md
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 current_screen_visual_coverage: docs/visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md
@@ -133,6 +134,12 @@ starts from one ninja school
 - GOLD is transient Run economy: normal enemies have recommended 20% chance for 1G; Elite gives 5G; a school Boss gives 10G. Exact normal chance is a data-tunable balance recommendation, not validation evidence.
 - Persistent Ninja Soul is settled once only at Run end: distinct school Boss clears give 2 each and progress rank C/B/A/S gives 0/1/2/4 for 0/1/2–3/4 Boss clears.
 - Elite grants no Ninja Soul. Boss eligibility survives a retry only as an idempotent settlement ledger; retry uses 1 persistent Ninja Soul, remains one per Run, and needs a valid Workbench checkpoint.
+- Fourth-Boss `final_binding_eligible` is only the first Human Slice endpoint, not true Run end; it grants no Ninja Soul until the separately reviewed final package resolves the Run.
+
+### 2026-08-28 DEC-034 generate-then-approve visual workflow
+
+- After a fresh consumer or planning-board brief exists, generate one visual candidate without a separate pre-generation approval prompt. The user then chooses `LOCK`, `REVISE`, or `REJECT`.
+- Do not generate at chat start, for a vague gap, or to replace an approved asset. Candidate images are not project assets/runtime evidence before `LOCK` and the normal provenance/consumer gates still apply.
 
 ## Current integrated implementation truth
 

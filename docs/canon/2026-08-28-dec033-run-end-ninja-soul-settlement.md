@@ -23,6 +23,8 @@ Run-end NinjaSoul settlement
 + progress rank bonus
 ```
 
+여기서 Run 종료는 player death/명시적 포기 또는 Final Binding·final calamity까지 마친 **실제 Run 결론**이다. DEC-030의 첫 Human Slice 끝인 네 번째 학교 Boss 뒤 `final_binding_eligible`은 Run 종료가 아니며 닌자소울을 지급하지 않는다.
+
 - Elite는 `5G`만 지급하며 닌자소울을 지급하지 않는다.
 - 학교 Boss는 `10G`와 닌자소울 집계 자격을 준다.
 - 일반 몬스터는 권장 기본값 `20%` 확률로 `1G`를 준다. 이 값은 Human balance 검증 전 `TUNE_RECOMMENDED`이며 data-config로 조정 가능해야 한다.
