@@ -29,6 +29,10 @@ After the migration completion check, Notion is
 attach or rely on it as an active gate. A migration snapshot is continuity
 evidence, not a second active canon.
 
+**Completion receipt:** PR #118 was squash-merged to `main` at
+`8ae3dd1c8bea48908117ad4133ce00654a048b3f`. Its exact remote main readback
+confirmed the migration manifest and the fixed-player source SHA-256.
+
 ## Repository asset gate
 
 ```text

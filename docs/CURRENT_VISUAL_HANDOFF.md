@@ -17,9 +17,9 @@ This does not authorize chat-start generation, gap-only/orphan art, or replaceme
 ## 2026-08-28 DEC-035 — migration-first repository-only visual ownership
 
 The former Notion Visual Bible and Asset Library are preserved read-only under
-`docs/migration/notion/` before repository-only cutover. After final remote
-readback, Notion is `HISTORICAL_REFERENCE_ONLY` and must not be used as an
-asset gate for new work. After user `LOCK`, durable visual ownership is
+`docs/migration/notion/`. Post-merge remote readback is complete: Notion is
+`HISTORICAL_REFERENCE_ONLY` and must not be used as an asset gate for new work.
+After user `LOCK`, durable visual ownership is
 repository source + SHA-256/provenance manifest + explicit consumer + applicable
 import/runtime evidence. The migration snapshots are provenance receipts only;
 they neither block nor satisfy a current asset gate.

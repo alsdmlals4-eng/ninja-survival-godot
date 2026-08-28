@@ -73,7 +73,9 @@ truth.
 - [x] Temporary signed file URLs redacted rather than committed.
 - [x] All approved asset hashes either match a repository source or the
   user-provided player-base original copied into the repository.
-- [ ] Read back the committed remote branch and complete final cutover wording.
+- [x] Exact PR #118 head checks passed; squash-merged main
+  `8ae3dd1c8bea48908117ad4133ce00654a048b3f` was read back with the
+  migration manifest and fixed-player SHA-256 preserved.
 
 ## Cutover rule
 
