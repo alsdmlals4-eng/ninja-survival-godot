@@ -85,6 +85,13 @@ func heal(amount: int) -> int:
 	return actual
 
 
+func restore_after_retry() -> void:
+	_dead = false
+	velocity = Vector2.ZERO
+	health = max_health
+	health_changed.emit(health, max_health)
+
+
 func take_damage(amount: int) -> int:
 	if amount <= 0 or _dead:
 		return 0

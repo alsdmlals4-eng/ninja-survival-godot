@@ -2,9 +2,9 @@
 
 ```yaml
 contract_id: NINJA_FOUR_SCHOOL_CIRCUIT_V1
-status: PROPOSED_FOR_USER_IMPLEMENTATION_CONTRACT_APPROVAL
+status: USER_APPROVED_IMPLEMENTING_ON_CURRENT_TASK_BRANCH
 issue: 126
-base_main_read: 50fbf203ec3f71af1633a5b6cc74e7167c0604c8
+base_main_read: e53b41cf5c7e138735df90c2b654e62acb4d50d8
 engine: Godot_4.x_GDScript
 implementation_entry: fresh_completed_main_only
 human_usability: DEFERRED_BY_DEC036_NOT_RUN
@@ -167,6 +167,22 @@ school_boss_clear_gold: 10
 | `I-06` | exact-head evidence + adversarial review | scope/regression을 증명한다. | import/parse/smoke/full GUT/Windows internal build/5 clean review loops |
 
 `I-01`~`I-06`은 이 contract의 한 package다. Final Binding/final calamity/result settlement는 다음 package로 분리한다.
+
+## 8.1 Current-task execution readback — 2026-08-29 KST
+
+The user approved this contract. The current isolated branch implements and machine-verifies the following; this section is a current-task receipt, not a merged-main claim.
+
+| unit | status | current evidence / boundary |
+| --- | --- | --- |
+| `I-01` | `MACHINE_IMPLEMENTED` | `SchoolCircuitController` now owns a single four-school Core → Elite → Trace → Boss → Workbench chassis. Each school keeps its own `EncounterCatalog` composition identity. |
+| `I-02` Trace + hit HP | `MACHINE_IMPLEMENTED` | In-world `TracePickup` and `RecentHitHpPresenter` are wired through `MainController`; only the most recently damaged enemy has a temporary HP bar. |
+| `I-02` status icon asset | `PARTIAL` | The approved semantic contract is icon-first, but `EnemyEffectBadge` still uses the legacy text badge until a generated candidate is explicitly `LOCK`ed and promoted through the asset gate. No generated exploration was misrepresented as a runtime asset. |
+| `I-03` | `MACHINE_IMPLEMENTED` | Boss choice, chest, buffer/bag placement, board move/rotate/undo, explicit combination preview/result placement/cancel, Fate, provisional route and atomic commit remain domain-owned. `RestFlowUI` only renders snapshots and emits intents. |
+| `I-04` | `MACHINE_IMPLEMENTED` | `RunEconomyPolicy` owns 20% × 1G / Elite 5G / school Boss 10G receipts. Retry uses one persistent Ninja Soul only after every restore owner preflights its checkpoint payload. True Run-end Soul credit remains excluded. |
+| `I-05` | `MACHINE_IMPLEMENTED` | A deterministic non-catalog-order harness clears all four schools and reaches `final_binding_eligible`, without manufacturing the Final Binding package. |
+| `I-06` | `MACHINE_VERIFIED_CURRENT_TASK_BRANCH` | Godot 4.7.1 headless editor parse and five-second main smoke passed; full GUT passed `521/521` tests with `5769` assertions. Human/Player/device evidence stays `NOT_RUN`. |
+
+`normal_kill_gold_pct` remains a legacy combat-modifier field used by older catalog data but it no longer changes the fixed `RunEconomyPolicy` payouts. Its removal or repurposing requires a later explicit catalog/decision package; it was not silently deleted here.
 
 ## 9. 검증 계약
 

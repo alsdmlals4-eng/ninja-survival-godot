@@ -111,3 +111,47 @@ func get_route_snapshot() -> Dictionary:
 		"stage_index": _stage_index,
 		"final_binding_eligible": _final_binding_eligible,
 	}
+
+
+func can_restore_from_checkpoint(snapshot: Dictionary) -> bool:
+	var restored_clears: Array[StringName] = []
+	for raw_school_id in Array(snapshot.get("cleared_school_ids", [])):
+		var school_id := StringName(raw_school_id)
+		if not SCHOOL_IDS.has(school_id) or restored_clears.has(school_id):
+			return false
+		restored_clears.append(school_id)
+	var restored_active := StringName(snapshot.get("active_school_id", &""))
+	var restored_provisional := StringName(snapshot.get("provisional_school_id", &""))
+	var restored_final_binding := bool(snapshot.get("final_binding_eligible", false))
+	if restored_active != &"" and (not SCHOOL_IDS.has(restored_active) or restored_clears.has(restored_active)):
+		return false
+	if restored_provisional != &"" and (not SCHOOL_IDS.has(restored_provisional) or restored_clears.has(restored_provisional)):
+		return false
+	if restored_active != &"" and restored_provisional != &"":
+		return false
+	var expected_final_binding := restored_clears.size() == SCHOOL_IDS.size()
+	if restored_final_binding != expected_final_binding:
+		return false
+	if expected_final_binding and (restored_active != &"" or restored_provisional != &""):
+		return false
+	var expected_stage_index := SCHOOL_IDS.size() if expected_final_binding else restored_clears.size() + 1
+	return int(snapshot.get("stage_index", -1)) == expected_stage_index
+
+
+func restore_from_checkpoint(snapshot: Dictionary) -> bool:
+	if not can_restore_from_checkpoint(snapshot):
+		return false
+	var restored_clears: Array[StringName] = []
+	for raw_school_id in Array(snapshot.get("cleared_school_ids", [])):
+		var school_id := StringName(raw_school_id)
+		restored_clears.append(school_id)
+	var restored_active := StringName(snapshot.get("active_school_id", &""))
+	var restored_provisional := StringName(snapshot.get("provisional_school_id", &""))
+	var expected_final_binding := restored_clears.size() == SCHOOL_IDS.size()
+	var expected_stage_index := SCHOOL_IDS.size() if expected_final_binding else restored_clears.size() + 1
+	_clear_order = restored_clears
+	_active_school_id = restored_active
+	_provisional_school_id = restored_provisional
+	_stage_index = expected_stage_index
+	_final_binding_eligible = expected_final_binding
+	return true

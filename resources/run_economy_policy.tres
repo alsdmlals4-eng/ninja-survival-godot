@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="RunEconomyPolicy" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/run_economy_policy.gd" id="1_policy"]
+
+[resource]
+script = ExtResource("1_policy")
+normal_kill_gold_chance = 0.2
+normal_kill_gold_amount = 1
+elite_clear_gold = 5
+school_boss_clear_gold = 10

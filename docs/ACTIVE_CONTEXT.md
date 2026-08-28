@@ -7,11 +7,11 @@ reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
 current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
-last_completed_main_read: d803330c8144b177fe5ece1d4c4da98b3dd07235
-last_completed_main_read_receipt: PR119_NOTION_MIGRATION_READBACK_MAIN_2026_08_28_KST
+last_completed_main_read: e53b41cf5c7e138735df90c2b654e62acb4d50d8
+last_completed_main_read_receipt: PHASE2_CURRENT_TASK_FRESH_DEFAULT_BRANCH_READ_2026_08_29_KST
 completed_main_label: T12_TO_T16_MACHINE_SCOPE_AND_CANON_FRONTIER_RECONCILED
-resume_state: FOUR_SCHOOL_CIRCUIT_IMPLEMENTATION_CONTRACT_READY_FOR_USER_APPROVAL
-next_product_gate: USER_APPROVAL_OF_NINJA_FOUR_SCHOOL_CIRCUIT_V1_THEN_PHASE2_MACHINE_IMPLEMENTATION
+resume_state: FOUR_SCHOOL_CIRCUIT_MACHINE_IMPLEMENTATION_UNMERGED_CURRENT_TASK_BRANCH
+next_product_gate: EXACT_HEAD_REVIEW_PR_MERGE_READBACK_THEN_DEFERRED_HUMAN_PLAYER_GATE
 current_master_gdd: docs/design/NINJA_SURVIVAL_MASTER_GDD.md
 current_human_gdd: docs/design/NINJA_SURVIVAL_HUMAN_GDD.md
 human_player_gdd_pdf: exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf
@@ -35,7 +35,7 @@ other_workstream_read_only:
   - PR_49_T12_ATOMIC_WORKBENCH_FATE_ROUTE_COMMIT_SUPERSEDED_BY_PR_61
 mvp0_to_mvp3_runtime: INTEGRATED_BASELINE
 mvp4_t01_to_t11_domain_chain: INTEGRATED_ON_COMPLETED_MAIN
-playable_new_four_school_run: NOT_PROVEN
+playable_new_four_school_run: MACHINE_CIRCUIT_THROUGH_FINAL_BINDING_ELIGIBILITY_VERIFIED_UNMERGED_HUMAN_NOT_RUN
 persistent_workbench_route_ui_input: INTEGRATED_ON_MAIN_71152C7AA9DFF4CC05EEC76D4D2D70BE47755F6C
 release_near_cheonsul_slice: MERGED_MAIN_51E39737F272DB0962A3DABADA51BAE10CD1FA97_AUTOMATED_EVIDENCE_ONLY
 t15_school_function_help: MERGED_MAIN_E2CFE4452E1DE5A224F5CD7DEE8E47A104C868E0_MACHINE_VERIFIED_HUMAN_QA_DEFERRED_BY_CURRENT_USER
@@ -50,8 +50,8 @@ runtime_character_visual_identity: ONE_FIXED_CHARACTER_PLUS_TRACE_LAYERS
 trace_stage3_visual_rule: STARTING_MAIN_SCHOOL_ONLY
 cheonsul_visual_palette: BLUE_PLUS_AMBER_ORANGE_PRIMARY
 heukyeong_visual_palette: PURPLE_PLUS_BLACK_RESERVED
-combat_status_presentation: ICON_FIRST_NO_PERSISTENT_TEXT_BADGES
-enemy_hp_presentation: HIDDEN_BY_DEFAULT_SHOW_ONLY_RECENTLY_HIT_ENEMY
+combat_status_presentation: ICON_FIRST_APPROVED_RUNTIME_ASSET_PARTIAL_LEGACY_TEXT_BADGE_REMAINS
+enemy_hp_presentation: HIDDEN_BY_DEFAULT_SHOW_ONLY_RECENTLY_HIT_ENEMY_MACHINE_IMPLEMENTED_UNMERGED
 historical_visual_keyvisual_notion_preview: SERVER_READBACK_PASS_LOW_RES_RETIRED
 historical_visual_supplementary_previews: SERVER_READBACK_PASS_LOW_RES_RETIRED
 img_02_runtime_visual_core: MERGED_MAIN_03005E7_SEVEN_APPROVED_PNGS_LOCAL_SOURCES_CURRENT_HISTORICAL_NOTION_ATTACHMENTS_RETIRED
@@ -61,7 +61,14 @@ img_03_runtime_battlefield_backdrop: MERGED_MAIN_5A52A30_LOCAL_SOURCE_CURRENT_HI
 img_03_automated_evidence: GODOT_4_7_1_IMPORT_EDITOR_PARSE_MAIN_SMOKE_GUT_493_OF_493_5380_ASSERTIONS_PASS
 img_03_live_render: NOT_RUN_DESKTOP_VISUAL_TARGET_CHANGED
 local_shared_godot_exact_pin: GODOT_4.7.1_STABLE_OFFICIAL_A13DA4FEB_FRESH_LOCAL_VERIFIED_2026_08_27_KST
-local_editor_session: NOT_RUN_FOR_NINJA_SURVIVAL_VISUAL_PACKAGE
+local_editor_session: HEADLESS_EDITOR_PARSE_CURRENT_TASK_PASS
+phase2_shared_four_school_circuit: MACHINE_IMPLEMENTED_UNMERGED
+phase2_trace_and_recent_hit_hp: MACHINE_IMPLEMENTED_UNMERGED
+phase2_workbench_reward_board_combination_route_fate: MACHINE_IMPLEMENTED_UNMERGED
+phase2_economy_checkpoint_retry: MACHINE_IMPLEMENTED_UNMERGED
+phase2_status_icon_runtime_asset: PARTIAL_AWAITING_USER_LOCKED_ASSET
+phase2_final_binding_and_true_run_settlement: OUT_OF_SCOPE_NOT_IMPLEMENTED
+phase2_machine_evidence: GODOT_4_7_1_EDITOR_PARSE_PASS_HEADLESS_MAIN_SMOKE_PASS_GUT_521_OF_521_5769_ASSERTIONS
 ```
 
 ## Purpose
@@ -133,7 +140,7 @@ starts from one ninja school
 
 - Default death ends the Run. One explicit retry per Run may restore the last successful Workbench checkpoint and restart the same active school from `0:00`.
 - Failed-school transient GOLD/rewards/Trace/progress are lost. Currency and durable settlement semantics are owned by DEC-033; no automatic revive or retry recharge is allowed.
-- The current implementation still reloads the whole scene on death. This is approved future scope, not runtime evidence.
+- Current-task branch implementation restores the committed checkpoint in-place after one paid retry. It is machine-verified only; Human/Player/device evidence remains `NOT_RUN`.
 
 ### 2026-08-28 DEC-032 optional expanded school help
 
@@ -319,8 +326,8 @@ The active package also closes a relevant T12 safety gap: a successful `RestComm
 
 ```text
 T12~T16 machine scope + Cheonsul first authoring baseline
--> user approval of NINJA_FOUR_SCHOOL_CIRCUIT_V1 contract
--> four-school shared-chassis/circuit implementation + machine evidence
+-> current-task four-school shared-chassis/circuit implementation + machine evidence
+-> exact-head review + PR/merge/readback
 -> optional later Human/Player validation through fourth-Boss Final Binding eligibility (DEC-036 deferred / NOT_RUN)
 -> separately reviewed Final Binding / final calamity package
 -> full-Run verification only after that package

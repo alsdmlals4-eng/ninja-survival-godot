@@ -27,6 +27,17 @@ func test_rest_flow_has_all_state_views_methods_and_intent_signals() -> void:
 		"Panel/Margin/Content/CompleteView",
 		"Panel/Margin/Content/WorkbenchView/RouteCards",
 		"Panel/Margin/Content/WorkbenchView/FateCandidates",
+		"Panel/Margin/Content/WorkbenchView/BossRewardChoices",
+		"Panel/Margin/Content/WorkbenchView/ChestOpenButton",
+		"Panel/Margin/Content/WorkbenchView/BagOfferButton",
+		"Panel/Margin/Content/WorkbenchView/PendingBagButton",
+		"Panel/Margin/Content/WorkbenchView/GoldLabel",
+		"Panel/Margin/Content/WorkbenchView/BufferItems",
+		"Panel/Margin/Content/WorkbenchView/BufferRotateButton",
+		"Panel/Margin/Content/WorkbenchView/BoardGrid",
+		"Panel/Margin/Content/WorkbenchView/CombinationChoices",
+		"Panel/Margin/Content/WorkbenchView/CombinationCancelButton",
+		"Panel/Margin/Content/WorkbenchView/UndoButton",
 		"Panel/Margin/Content/WorkbenchView/CommitButton",
 	]:
 		assert_true(ui.has_node(path), "Missing rest view: %s" % path)
@@ -40,6 +51,16 @@ func test_rest_flow_has_all_state_views_methods_and_intent_signals() -> void:
 		"shop_continue_requested",
 		"fate_selected_requested",
 		"workbench_route_selected_requested",
+		"workbench_boss_reward_selected",
+		"workbench_chest_open_requested",
+		"workbench_bag_purchase_requested",
+		"workbench_bag_placement_requested",
+		"workbench_buffer_placement_requested",
+		"workbench_existing_item_move_requested",
+		"workbench_combination_begin_requested",
+		"workbench_combination_commit_requested",
+		"workbench_combination_cancel_requested",
+		"workbench_undo_requested",
 		"workbench_commit_requested",
 		"preview_start_requested",
 		"restart_requested",
@@ -298,6 +319,177 @@ func test_workbench_shows_pending_boss_reward_without_enabling_commit() -> void:
 	assert_true(reward_label.text.contains("보스 보상"))
 	assert_true(reward_label.text.contains("수둔"))
 	assert_true(ui.get_node("Panel/Margin/Content/WorkbenchView/CommitButton").disabled)
+
+
+func test_workbench_boss_reward_and_buffer_board_emit_intents_without_domain_mutation() -> void:
+	var ui = _new_ui()
+	if ui == null:
+		return
+	ui.workbench_boss_reward_selected.connect(func(index: int): emitted.append(["boss_reward", index]))
+	ui.workbench_chest_open_requested.connect(func(): emitted.append(["chest_open"]))
+	ui.workbench_bag_purchase_requested.connect(func(): emitted.append(["bag_purchase"]))
+	ui.workbench_bag_placement_requested.connect(func(origin: Vector2i, rotation: int): emitted.append(["bag_place", origin, rotation]))
+	ui.workbench_buffer_placement_requested.connect(func(index: int, origin: Vector2i, rotation: int): emitted.append(["buffer_place", index, origin, rotation]))
+	var catalog = load(CATALOG_PATH)
+	var candidate_ids: Array[StringName] = [&"guardian_path"]
+	var readiness_failures: Array[StringName] = [&"boss_reward_pending"]
+	ui.show_workbench(
+		{
+			"unvisited_school_ids": [&"bongma"],
+			"provisional_school_id": &"bongma",
+		},
+		candidate_ids,
+		catalog.build_fates(),
+		&"guardian_path",
+		readiness_failures,
+		{
+			"boss_reward_pending": true,
+			"boss_reward_labels": ["수둔", "뇌둔", "화둔"],
+			"chest_count": 1,
+			"gold": 20,
+			"bag_offer": {"definition_id": &"small_pouch", "display_name": "소형 주머니", "price": 20},
+			"buffer": [{"instance_id": 21, "display_name": "수둔", "rotation_quarters": 0}],
+		}
+	)
+	var rewards: Container = ui.get_node("Panel/Margin/Content/WorkbenchView/BossRewardChoices")
+	var chest_open := ui.get_node("Panel/Margin/Content/WorkbenchView/ChestOpenButton") as Button
+	var bag_offer := ui.get_node("Panel/Margin/Content/WorkbenchView/BagOfferButton") as Button
+	var pending_bag := ui.get_node("Panel/Margin/Content/WorkbenchView/PendingBagButton") as Button
+	var buffer: Container = ui.get_node("Panel/Margin/Content/WorkbenchView/BufferItems")
+	var rotate := ui.get_node("Panel/Margin/Content/WorkbenchView/BufferRotateButton") as Button
+	var board: GridContainer = ui.get_node("Panel/Margin/Content/WorkbenchView/BoardGrid")
+	assert_eq(rewards.get_child_count(), 3)
+	assert_false(chest_open.disabled)
+	assert_false(bag_offer.disabled)
+	assert_false(pending_bag.visible)
+	assert_eq(buffer.get_child_count(), 1)
+	assert_eq(board.get_child_count(), 36)
+	rewards.get_child(1).emit_signal("pressed")
+	chest_open.emit_signal("pressed")
+	bag_offer.emit_signal("pressed")
+	ui.show_workbench(
+		{
+			"unvisited_school_ids": [&"bongma"],
+			"provisional_school_id": &"bongma",
+		},
+		candidate_ids,
+		catalog.build_fates(),
+		&"guardian_path",
+		readiness_failures,
+		{
+			"boss_reward_pending": true,
+			"boss_reward_labels": ["수둔", "뇌둔", "화둔"],
+			"chest_count": 1,
+			"gold": 20,
+			"bag_offer": {"definition_id": &"small_pouch", "display_name": "소형 주머니", "price": 20},
+			"pending_bag": {"definition_id": &"small_pouch", "display_name": "소형 주머니", "rotation_quarters": 0},
+			"buffer": [{"instance_id": 21, "display_name": "수둔", "rotation_quarters": 0}],
+		}
+	)
+	buffer = ui.get_node("Panel/Margin/Content/WorkbenchView/BufferItems")
+	rotate = ui.get_node("Panel/Margin/Content/WorkbenchView/BufferRotateButton") as Button
+	board = ui.get_node("Panel/Margin/Content/WorkbenchView/BoardGrid") as GridContainer
+	pending_bag = ui.get_node("Panel/Margin/Content/WorkbenchView/PendingBagButton") as Button
+	buffer.get_child(0).emit_signal("pressed")
+	rotate.emit_signal("pressed")
+	board.get_child(7).emit_signal("pressed")
+	pending_bag.emit_signal("pressed")
+	rotate.emit_signal("pressed")
+	board.get_child(8).emit_signal("pressed")
+	assert_eq(emitted, [
+		["boss_reward", 1], ["chest_open"], ["bag_purchase"],
+		["buffer_place", 0, Vector2i(1, 1), 1], ["bag_place", Vector2i(2, 1), 1],
+	])
+
+
+func test_workbench_board_exposes_active_occupied_cells_and_emits_move_undo_intents() -> void:
+	var ui = _new_ui()
+	if ui == null:
+		return
+	ui.workbench_existing_item_move_requested.connect(func(instance_id: int, origin: Vector2i, rotation: int): emitted.append(["item_move", instance_id, origin, rotation]))
+	ui.workbench_undo_requested.connect(func(): emitted.append(["undo"]))
+	var catalog = load(CATALOG_PATH)
+	var candidate_ids: Array[StringName] = [&"guardian_path"]
+	var no_failures: Array[StringName] = []
+	ui.show_workbench(
+		{
+			"unvisited_school_ids": [&"bongma"],
+			"provisional_school_id": &"bongma",
+		},
+		candidate_ids,
+		catalog.build_fates(),
+		&"guardian_path",
+		no_failures,
+		{
+			"gold": 35,
+			"can_undo": true,
+			"backpack_board": {
+				"active_cells": [Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 2), Vector2i(2, 2)],
+				"items": [{
+					"instance_id": 41,
+					"display_name": "수둔",
+					"rotation_quarters": 1,
+					"cells": [Vector2i(1, 1), Vector2i(1, 2)],
+				}],
+			},
+		}
+	)
+	var gold_label: Label = ui.get_node("Panel/Margin/Content/WorkbenchView/GoldLabel")
+	var board: GridContainer = ui.get_node("Panel/Margin/Content/WorkbenchView/BoardGrid")
+	var rotate: Button = ui.get_node("Panel/Margin/Content/WorkbenchView/BufferRotateButton")
+	var undo: Button = ui.get_node("Panel/Margin/Content/WorkbenchView/UndoButton")
+	assert_true(gold_label.text.contains("35G"))
+	assert_true(board.get_child(7).text.contains("수둔"))
+	assert_false(board.get_child(7).disabled)
+	assert_true(board.get_child(0).disabled)
+	assert_false(undo.disabled)
+	board.get_child(7).emit_signal("pressed")
+	rotate.emit_signal("pressed")
+	board.get_child(8).emit_signal("pressed")
+	undo.emit_signal("pressed")
+	assert_eq(emitted, [["item_move", 41, Vector2i(2, 1), 2], ["undo"]])
+
+
+func test_workbench_combination_choices_emit_only_intents_and_pending_result_uses_board_origin() -> void:
+	var ui = _new_ui()
+	if ui == null:
+		return
+	ui.workbench_combination_begin_requested.connect(func(combo_id: StringName, source_a: int, source_b: int): emitted.append(["combo_begin", combo_id, source_a, source_b]))
+	ui.workbench_combination_commit_requested.connect(func(origin: Vector2i, rotation: int): emitted.append(["combo_commit", origin, rotation]))
+	ui.workbench_combination_cancel_requested.connect(func(): emitted.append(["combo_cancel"]))
+	var catalog = load(CATALOG_PATH)
+	var fate_candidates: Array[StringName] = [&"guardian_path"]
+	var no_failures: Array[StringName] = []
+	var context := {
+		"backpack_board": {
+			"active_cells": [Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 2), Vector2i(2, 2)],
+			"items": [],
+		},
+		"combination_options": [{
+			"combo_id": &"water_mist",
+			"display_name": "수둔 + 은신술 → 물안개",
+			"source_a_instance": 31,
+			"source_b_instance": 32,
+		}],
+	}
+	ui.show_workbench({"unvisited_school_ids": [&"bongma"], "provisional_school_id": &"bongma"}, fate_candidates, catalog.build_fates(), &"guardian_path", no_failures, context)
+	var choices: Container = ui.get_node("Panel/Margin/Content/WorkbenchView/CombinationChoices")
+	assert_eq(choices.get_child_count(), 1)
+	choices.get_child(0).emit_signal("pressed")
+	assert_eq(emitted, [["combo_begin", &"water_mist", 31, 32]])
+
+	context["combination_options"] = []
+	context["pending_combination"] = {"combo_id": &"water_mist", "display_name": "물안개"}
+	var combination_pending: Array[StringName] = [&"combination_pending"]
+	ui.show_workbench({"unvisited_school_ids": [&"bongma"], "provisional_school_id": &"bongma"}, fate_candidates, catalog.build_fates(), &"guardian_path", combination_pending, context)
+	var rotate: Button = ui.get_node("Panel/Margin/Content/WorkbenchView/BufferRotateButton")
+	var board: GridContainer = ui.get_node("Panel/Margin/Content/WorkbenchView/BoardGrid")
+	var cancel: Button = ui.get_node("Panel/Margin/Content/WorkbenchView/CombinationCancelButton")
+	assert_true(cancel.visible)
+	rotate.emit_signal("pressed")
+	board.get_child(7).emit_signal("pressed")
+	cancel.emit_signal("pressed")
+	assert_eq(emitted, [["combo_begin", &"water_mist", 31, 32], ["combo_commit", Vector2i(1, 1), 1], ["combo_cancel"]])
 
 
 func test_workbench_standard_pointer_touch_and_focus_input_emit_intents() -> void:

@@ -3,13 +3,14 @@ extends GutTest
 const STATE_PATH := "res://scripts/core/run_build_state.gd"
 const CATALOG_PATH := "res://scripts/data/mvp3_catalog.gd"
 const MODIFIER_PATH := "res://scripts/data/run_modifier_set.gd"
+const ECONOMY_POLICY_PATH := "res://resources/run_economy_policy.tres"
 
 
 func test_run_build_state_resource_exists() -> void:
 	assert_true(ResourceLoader.exists(STATE_PATH), "Missing MVP-3 run build state")
 
 
-func test_gold_grants_spends_and_boss_reward_are_atomic() -> void:
+func test_gold_grants_spends_and_fixed_policy_rewards_are_atomic() -> void:
 	var state = _new_state()
 	if state == null:
 		return
@@ -18,33 +19,30 @@ func test_gold_grants_spends_and_boss_reward_are_atomic() -> void:
 	assert_eq(state.gold, 0)
 	assert_false(state.try_spend_gold(1))
 	assert_eq(state.gold, 0)
-	assert_eq(state.grant_normal_kill_gold(), 1)
-	assert_eq(state.gold, 1)
-	assert_eq(state.grant_boss_gold(), 25)
-	assert_eq(state.gold, 26)
+	assert_eq(state.grant_gold(30), 30)
+	assert_eq(state.grant_elite_clear_gold(), 5)
+	assert_eq(state.grant_school_boss_clear_gold(), 10)
+	assert_eq(state.gold, 45)
 	assert_true(state.try_spend_gold(20))
-	assert_eq(state.gold, 6)
+	assert_eq(state.gold, 25)
 
 
-func test_committed_fortune_modifier_uses_fractional_normal_kill_gold_carry() -> void:
-	var state = _new_state()
-	if state == null:
+func test_committed_normal_gold_modifier_does_not_override_fixed_run_economy_policy() -> void:
+	var baseline = _new_state(903)
+	var modified = _new_state(903)
+	if baseline == null or modified == null:
 		return
 	var committed = load(MODIFIER_PATH).new()
-	committed.normal_kill_gold_pct = 0.25
-	state.set_committed_backpack_modifiers(committed)
-	var before: int = int(state.gold)
-	for _i in range(4):
-		state.grant_normal_kill_gold()
-	assert_eq(state.gold - before, 5)
-	assert_eq(state.grant_boss_gold(), 25)
-
 	committed.normal_kill_gold_pct = 0.50
-	state.set_committed_backpack_modifiers(committed)
-	before = int(state.gold)
-	for _i in range(2):
-		state.grant_normal_kill_gold()
-	assert_eq(state.gold - before, 3)
+	modified.set_committed_backpack_modifiers(committed)
+	var baseline_amounts: Array[int] = []
+	var modified_amounts: Array[int] = []
+	for _i in range(20):
+		baseline_amounts.append(baseline.grant_normal_kill_gold())
+		modified_amounts.append(modified.grant_normal_kill_gold())
+	assert_eq(modified_amounts, baseline_amounts)
+	assert_eq(modified.grant_elite_clear_gold(), 5)
+	assert_eq(modified.grant_school_boss_clear_gold(), 10)
 
 
 func test_inventory_caps_and_failed_buy_are_atomic() -> void:
@@ -223,11 +221,13 @@ func test_get_modifiers_returns_independent_copy() -> void:
 	assert_almost_eq(state.get_modifiers().school_damage_pct, 0.0, 0.001)
 
 
-func _new_state():
+func _new_state(seed_value: int = 1):
 	if not ResourceLoader.exists(STATE_PATH):
 		return null
 	var state = load(STATE_PATH).new()
 	add_child_autofree(state)
 	var catalog = load(CATALOG_PATH)
-	state.configure(catalog.build_items(), catalog.build_fates())
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed_value
+	state.configure(catalog.build_items(), catalog.build_fates(), load(ECONOMY_POLICY_PATH), rng)
 	return state
