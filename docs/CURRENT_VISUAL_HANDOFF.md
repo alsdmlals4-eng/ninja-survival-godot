@@ -11,6 +11,7 @@
 ## 2026-08-28 current combat visual grammar — approved, implementation deferred
 
 - **Cheonsul:** blue plus amber/orange is the primary status/reaction family. It must not drift into the violet/black family reserved for Heukyeong.
+- **Cheonsul setup seal:** a short, fixed blue seal at the automatic `WET` cast point is the approved player-created setup condition. Its boundary and expiry cue must distinguish it from an enemy hazard; automatic `SHOCK` turns a prepared group inside it into the amber/orange higher-value chain. Exact values and runtime implementation remain deferred.
 - **Status information:** show compact, silhouette-distinct icons rather than persistent written status badges. Color alone is insufficient; implementation must retain a focus/help description path for validation.
 - **Enemy HP:** hide all HP bars by default. Only the enemy just damaged may reveal its bar. The reveal duration is intentionally undecided until Human Usability observation.
 - **Character/style guardrail:** retain the single black/navy ninja identity with restrained red cord and warm-gold details. The supplied four-school SD sheet may inform icon/action density only; it must not become four runtime protagonists or simultaneous four Stage-3 forms.

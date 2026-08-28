@@ -52,13 +52,13 @@ The user rejected every substantive element of the first generated board except 
 - **Actual consumer:** `Main` + combat HUD + Cheonsul Vertical Slice controller.
 - **Player goal:** survive pressure while setting up and observing an ordered elemental reaction.
 - **Primary action:** move the fixed SD ninja, position in the arena, and use/observe blue setup followed by amber/orange reaction.
-- **Meaningful choice:** choose a safe line or group enemies into a readable blue setup condition so the next automatic shock can resolve a stronger amber/orange chain; do not add a separate manual reaction trigger in this first Slice.
+- **Meaningful choice:** choose a safe line or group enemies into the short, fixed blue setup seal left at the automatic `WET` cast point so the next automatic shock can resolve a stronger amber/orange chain; do not add a separate manual reaction trigger in this first Slice.
 - **Required information:** player/enemy/hazard/projectile hierarchy, compact status icons, recently hit enemy HP only, and the next immediate threat.
 - **Expected feedback:** blue/amber reaction read, icon state change, hit effect, and exactly one damage-triggered enemy HP bar.
 - **Target emotion:** controlled field transformation under pressure.
 - **Next scene:** Elite → Trace → Boss gate, then Result on Boss clear.
-- **Current evidence:** Cheonsul controller/domain lifecycle, `Main` combat composition, P0 v2 battle reference, approved 2026-08-28 visual grammar. Current runtime still alternates automatic `WET`/`SHOCK` and automatically prioritizes a wet target; DEC-027 records the product correction, not an implemented spatial condition.
-- **Undecided:** exact spatial-condition form, icon set, reveal duration, actual-size legibility, sound/haptic feedback, and live telegraph fairness.
+- **Current evidence:** Cheonsul controller/domain lifecycle, `Main` combat composition, P0 v2 battle reference, approved 2026-08-28 visual grammar. Current runtime still alternates automatic `WET`/`SHOCK` and automatically prioritizes a wet target; DEC-027/028 record the product correction, not an implemented setup seal.
+- **Undecided:** setup-seal duration/radius/cluster threshold, icon set, reveal duration, actual-size legibility, sound/haptic feedback, and live telegraph fairness.
 
 ## `result_workbench`
 
