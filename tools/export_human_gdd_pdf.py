@@ -60,11 +60,12 @@ def inline_markdown(value: str, mono: str) -> str:
         r'<link href="\2" color="#254E70">\1</link>',
         text,
     )
-    text = re.sub(
-        r"\x60([^\x60]+)\x60",
-        lambda match: f'<font name="{mono}" color="#5B2C2C">{match.group(1)}</font>',
-        text,
-    )
+    def code_span(match: re.Match[str]) -> str:
+        content = match.group(1)
+        font = mono if content.isascii() else "NinjaGdd"
+        return f'<font name="{font}" color="#5B2C2C">{content}</font>'
+
+    text = re.sub(r"\x60([^\x60]+)\x60", code_span, text)
     text = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", text)
     text = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<i>\1</i>", text)
     return text
@@ -328,10 +329,10 @@ def page_decor(canvas, document) -> None:
     canvas.line(LEFT_MARGIN, height - 11 * mm, width - RIGHT_MARGIN, height - 11 * mm)
     canvas.setFont(document.ninja_regular_font, 7)
     canvas.setFillColor(colors.HexColor("#526779"))
-    canvas.drawString(LEFT_MARGIN, height - 8 * mm, "닌자의 신 | Master GDD")
-    canvas.drawRightString(width - RIGHT_MARGIN, height - 8 * mm, "Repository human edition")
+    canvas.drawString(LEFT_MARGIN, height - 8 * mm, document.ninja_header_label)
+    canvas.drawRightString(width - RIGHT_MARGIN, height - 8 * mm, document.ninja_right_header_label)
     canvas.line(LEFT_MARGIN, 10 * mm, width - RIGHT_MARGIN, 10 * mm)
-    canvas.drawString(LEFT_MARGIN, 6.7 * mm, "Source: docs/design/NINJA_SURVIVAL_MASTER_GDD.md")
+    canvas.drawString(LEFT_MARGIN, 6.7 * mm, document.ninja_footer_label)
     canvas.drawRightString(width - RIGHT_MARGIN, 6.7 * mm, f"{document.page}")
     canvas.restoreState()
 
@@ -343,6 +344,9 @@ def export_pdf(
     source_branch: str,
     source_commit: str,
     generated_at: str,
+    document_title: str = "닌자의 신 - Master GDD",
+    header_label: str = "닌자의 신 | Master GDD",
+    right_header_label: str = "Repository human edition",
 ) -> None:
     """PDF를 임시 파일로 검증 가능하게 만들고 성공 시에만 대상 파일을 교체한다."""
     if not source.is_file():
@@ -370,10 +374,13 @@ def export_pdf(
         rightMargin=RIGHT_MARGIN,
         topMargin=TOP_MARGIN,
         bottomMargin=BOTTOM_MARGIN,
-        title="닌자의 신 - Master GDD",
+        title=document_title,
         author="Ninja Survival Project",
     )
     document.ninja_regular_font = regular
+    document.ninja_header_label = header_label
+    document.ninja_right_header_label = right_header_label
+    document.ninja_footer_label = f"Source: {source.as_posix()}"
     document.addPageTemplates([PageTemplate(id="gdd", frames=[frame], onPage=page_decor)])
     try:
         document.build(markdown_story(source, make_styles(regular, bold), bold, source_branch, source_commit, generated_at))
@@ -392,6 +399,9 @@ def main() -> None:
     parser.add_argument("--source-branch", required=True)
     parser.add_argument("--source-commit", required=True)
     parser.add_argument("--generated-at", required=True)
+    parser.add_argument("--document-title", default="닌자의 신 - Master GDD")
+    parser.add_argument("--header-label", default="닌자의 신 | Master GDD")
+    parser.add_argument("--right-header-label", default="Repository human edition")
     args = parser.parse_args()
     export_pdf(
         args.source,
@@ -399,6 +409,9 @@ def main() -> None:
         source_branch=args.source_branch,
         source_commit=args.source_commit,
         generated_at=args.generated_at,
+        document_title=args.document_title,
+        header_label=args.header_label,
+        right_header_label=args.right_header_label,
     )
 
 
