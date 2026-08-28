@@ -7,7 +7,7 @@ phase_2_preproduction_review: BLOCKED_BY_OPEN_PHASE_1_DECISIONS
 phase_3_element_production: NOT_STARTED
 phase_4_codex_implementation: NOT_STARTED
 phase_5_user_vertical_slice_validation: NOT_RUN
-completed_main_read: 2749b757810fe53fb832e38012966d7ce55cef0c
+completed_main_read: bebff40f2a327bca19ca32d01d03631449314945
 open_prs_read_only:
   - PR_49_DRAFT_SUPERSEDED_T12_REFERENCE
 ```
@@ -31,6 +31,7 @@ Fresh-read한 현재 owner는 다음과 같다.
 - **DEC-029:** 사용자는 C안을 선택했다. 네 유파 모두의 완결 lifecycle과 shared four-school circuit을 구현·machine 검증한 뒤 첫 Human/Player validation을 연다.
 - **DEC-030:** 사용자는 A안을 선택했다. 첫 Human/Player validation은 네 번째 Boss Result/Reward가 `final_binding_eligible`을 확인하는 지점에서 끝난다. Final Binding Workbench·final calamity·ending은 이후 별도 package다.
 - **DEC-031:** 사용자는 B+A 혼합안을 선택했다. 기본 사망은 Run 전체 종료지만, 현재 Run `GOLD`를 써 한 Run에 한 번만 성공 Workbench checkpoint부터 같은 학교를 재도전할 수 있다. 비용은 `TUNE_NOT_LOCKED`다.
+- **DEC-032:** 사용자는 C안을 선택했다. 첫 30초에 강제 안내를 넣지 않고, 원할 때 현재 선택 유파의 확장된 한국어 도움말을 읽는다. 도움말은 무보조 첫인상 검증을 대체하지 않는다.
 
 ## 3. 실제 대조 findings
 
@@ -56,7 +57,7 @@ Fresh-read한 현재 owner는 다음과 같다.
 | B. 네 유파 선택은 유지, Cheonsul만 검증 안내 | 전체 세계관의 폭은 즉시 보인다. | 플레이어가 비완결 경로를 선택해 핵심 Slice 평가를 흐릴 위험이 크다. | 높음 | 비추천 |
 | C. **네 유파 모두 완결 lifecycle로 올린 뒤 검증** | 시작 선택·route·Workbench 약속을 실제 four-school circuit으로 검증한다. | 네 유파 composition/Workbench/QA 범위가 커지고 최초 Human evidence가 늦어진다. | 낮음 | **사용자 승인** |
 
-이는 구현 세부가 아니라 **이번 Human/Player validation에서 플레이어에게 무엇을 약속하는가**를 정하는 product boundary다. C안과 DEC-030 final package 경계, 아래 DEC-031 failure/retry 경계가 확정됐다. first-30-second 안내 등 implementation contract의 material decision은 아직 열려 있어 이 문서는 `PHASE_1_PLANNING_CO_DESIGN_IN_PROGRESS`를 유지한다.
+이는 구현 세부가 아니라 **이번 Human/Player validation에서 플레이어에게 무엇을 약속하는가**를 정하는 product boundary다. C안과 DEC-030 final package 경계, 아래 DEC-031 failure/retry 경계, DEC-032 선택형 도움말 경계가 확정됐다. 남은 material decision은 Trace/Workbench/encounter/UI consumer의 계약 값 대조이며, 이 문서는 `PHASE_1_PLANNING_CO_DESIGN_IN_PROGRESS`를 유지한다.
 
 ## 5. 두 번째 Grill Me — final package 경계 · RESOLVED
 
@@ -72,7 +73,7 @@ DEC-030은 최종 결산을 삭제하지 않는다. first Human test에서 Final
 
 ## 6. 다음 순서
 
-1. DEC-029/030/031 경계에 맞춰 첫 30초 안내, Trace/Workbench/visual consumer의 기존 정본과 실제 code 차이를 재검토한다.
+1. DEC-029/030/031/032 경계에 맞춰 선택형 도움말, Trace/Workbench/visual consumer의 기존 정본과 실제 code 차이를 재검토한다.
 2. 아직 승인되지 않았고 제품 의미를 바꾸는 핵심 결정만 한 건씩 Grill Me로 확정한다.
 3. 남은 material decision이 없을 때만 단일 구현계약과 Phase 2 preproduction review packet을 작성한다.
 
@@ -87,3 +88,15 @@ DEC-030은 최종 결산을 삭제하지 않는다. first Human test에서 Final
 | C. 즉시 부활/부활 token | 초반 실패를 낮춘다. | 새 자원·UI·밸런스와 위험 약화가 크다. | 기각 |
 
 승인 규칙: 기본은 B, 단 한 Run에 한 번 valid Workbench checkpoint의 `GOLD`를 지불하면 A 방식으로 같은 활성 학교를 `0:00`부터 다시 시작한다. failed-school transient reward/Trace/progress는 모두 잃는다. exact cost는 Human balance test 전 `TUNE_NOT_LOCKED`다.
+
+## 8. 네 번째 Grill Me — 첫 30초 설명 접근 · RESOLVED
+
+정본은 첫 `0:00–0:30`에 유파 시그니처가 읽혀야 한다고 요구하지만, 실제 구현의 `show_school_feedback()`은 짧은 문장이고 상세 설명은 선택형 전투 HUD 도움말뿐이다. 사용자는 다음 중 **C**를 선택했다.
+
+| 후보 | Player value | 제작비/위험 | 판정 |
+|---|---|---|---|
+| A. 행동→결과 마이크로 안내 | 자동전투 중에도 무엇을 시도할지 즉시 안다. | 유파별 성공 이벤트·표현을 강제로 연결해야 하며, 첫 진입을 방해할 수 있다. | 미채택 |
+| B. 전투 전 설명 카드 | 규칙을 가장 명시적으로 읽는다. | 시작 흐름을 멈추고 4개 카드/스킵/UI 범위를 늘린다. | 미채택 |
+| C. **원할 때 읽는 확장 도움말** | 필요할 때 실제 행동·정보·결과를 다시 확인한다. | 무보조 첫인상 문제를 스스로 해결하지 못하며, 문구와 runtime의 동기화가 필요하다. | **사용자 승인** |
+
+승인 규칙: 현재 선택 유파의 기존 전투 `기능 도움말` 경로에서 더 명확한 한국어 설명을 제공한다. 강제 prompt/card/marker는 추가하지 않는다. 상태는 compact icon-first를 지키며, 도움말을 읽은 뒤의 이해는 첫 30초 무보조 Human 가독성 `PASS`의 대체 근거가 아니다.

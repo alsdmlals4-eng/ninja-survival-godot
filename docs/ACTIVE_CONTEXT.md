@@ -7,11 +7,11 @@ reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
 current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
-last_completed_main_read: 695d01f278b1468e3c61880e3c10033f44057f65
-last_completed_main_read_receipt: POST_PR_105_REVISED_CORE_BOARD_DOCUMENTATION_2026_08_28_KST
+last_completed_main_read: bebff40f2a327bca19ca32d01d03631449314945
+last_completed_main_read_receipt: PRE_PR_115_DEC032_OPTIONAL_EXPANDED_HELP_2026_08_28_KST
 completed_main_label: T12_TO_T16_MACHINE_SCOPE_AND_CANON_FRONTIER_RECONCILED
 resume_state: REVISED_FOUR_PANEL_CORE_BOARD_REFERENCE_ONLY_PLANNING_REVIEW_ACTIVE
-next_product_gate: DEC029_DEC030_DEC031_FOUR_SCHOOL_LIFECYCLE_CONTRACT_AND_PHASE2_REVIEW
+next_product_gate: DEC029_DEC030_DEC031_DEC032_FOUR_SCHOOL_LIFECYCLE_CONTRACT_AND_PHASE2_REVIEW
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 current_screen_visual_coverage: docs/visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md
@@ -121,6 +121,12 @@ starts from one ninja school
 - Default death ends the Run. One explicit retry per Run may restore the last successful Workbench checkpoint only by spending checkpoint `GOLD`, then restarts the same active school from `0:00`.
 - Failed-school transient GOLD/rewards/Trace/progress are lost. No checkpoint or insufficient checkpoint GOLD means ordinary new Run; no new currency, token, automatic revive or retry recharge is allowed.
 - The current implementation still reloads the whole scene on death. This is approved future scope, not runtime evidence.
+
+### 2026-08-28 DEC-032 optional expanded school help
+
+- Do not force a first-30-second tutorial prompt, card or action marker. A player who wants clarification may open a longer Korean explanation for the currently selected school through the existing combat help route.
+- The explanation must connect actual risk processing, what to watch, movement/positioning intent, and an observable success signal without promising unimplemented mechanics or moving auto-combat authority into UI.
+- Optional help is not evidence that an unassisted first-30-second reading works. Human/Player evidence remains `NOT_RUN`.
 
 ## Current integrated implementation truth
 
