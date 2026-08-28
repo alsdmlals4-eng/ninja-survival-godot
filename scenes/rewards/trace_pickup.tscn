@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/rewards/trace_pickup.gd" id="1_trace"]
+[ext_resource type="Texture2D" path="res://assets/runtime/visual-core/talisman_projectile_v1.png" id="2_talisman"]
+
+[node name="TracePickup" type="Node2D"]
+script = ExtResource("1_trace")
+
+[node name="TraceVisual" type="Sprite2D" parent="."]
+texture = ExtResource("2_talisman")
+scale = Vector2(0.06, 0.06)

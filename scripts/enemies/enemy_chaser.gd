@@ -2,6 +2,7 @@ extends CharacterBody2D
 class_name EnemyChaser
 
 signal died(enemy: Node)
+signal damaged(enemy: Node, actual_damage: int, remaining_health: int, maximum_health: int)
 
 @export var max_health: int = 20
 @export var move_speed: float = 90.0
@@ -54,6 +55,8 @@ func take_damage(amount: int) -> int:
 	var before := health
 	health = max(health - amount, 0)
 	var actual_damage := before - health
+	if actual_damage > 0:
+		damaged.emit(self, actual_damage, health, max_health)
 	if health == 0:
 		_dead = true
 		died.emit(self)

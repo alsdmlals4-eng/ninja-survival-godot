@@ -6,7 +6,6 @@ signal school_help_requested
 signal ultimate_requested
 signal test_elite_requested
 signal test_boss_requested
-signal trace_recovery_requested
 
 @onready var health_label: Label = $HealthLabel
 @onready var score_label: Label = $ScoreLabel
@@ -27,7 +26,6 @@ signal trace_recovery_requested
 @onready var combat_guide_label: Label = $CombatGuideLabel
 @onready var test_elite_button: Button = $TestEliteButton
 @onready var test_boss_button: Button = $TestBossButton
-@onready var trace_recovery_button: Button = $TraceRecoveryButton
 @onready var game_over_panel: Control = $GameOverPanel
 
 var _title_generation: int = 0
@@ -44,7 +42,6 @@ func _ready() -> void:
 	ultimate_button.pressed.connect(_on_ultimate_pressed)
 	test_elite_button.pressed.connect(_on_test_elite_pressed)
 	test_boss_button.pressed.connect(_on_test_boss_pressed)
-	trace_recovery_button.pressed.connect(_on_trace_recovery_pressed)
 
 
 func set_health(current: int, maximum: int) -> void:
@@ -105,11 +102,6 @@ func hide_combat_controls() -> void:
 	ultimate_button.hide()
 	test_elite_button.hide()
 	test_boss_button.hide()
-	trace_recovery_button.hide()
-
-
-func set_trace_recovery_available(available: bool) -> void:
-	trace_recovery_button.visible = available
 
 
 func set_school_resource(label: String, current: float, maximum: float) -> void:
@@ -177,7 +169,3 @@ func _on_test_elite_pressed() -> void:
 
 func _on_test_boss_pressed() -> void:
 	test_boss_requested.emit()
-
-
-func _on_trace_recovery_pressed() -> void:
-	trace_recovery_requested.emit()

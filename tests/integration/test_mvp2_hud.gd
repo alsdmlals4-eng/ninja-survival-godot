@@ -7,7 +7,6 @@ var school_help_count: int = 0
 var ultimate_count: int = 0
 var test_elite_count: int = 0
 var test_boss_count: int = 0
-var trace_recovery_count: int = 0
 
 
 func before_each() -> void:
@@ -16,7 +15,6 @@ func before_each() -> void:
 	ultimate_count = 0
 	test_elite_count = 0
 	test_boss_count = 0
-	trace_recovery_count = 0
 
 
 func test_hud_has_mvp2_school_feedback_contract() -> void:
@@ -61,13 +59,15 @@ func test_school_help_button_is_hidden_until_combat_and_emits_intent() -> void:
 	assert_false(button.visible)
 
 
-func test_combat_controls_expose_ultimate_guidance_and_test_jump_intents() -> void:
+func test_combat_controls_keep_trace_recovery_out_of_the_hud() -> void:
 	var hud = HUD_SCENE.instantiate()
 	add_child_autofree(hud)
-	for signal_name in ["ultimate_requested", "test_elite_requested", "test_boss_requested", "trace_recovery_requested"]:
+	for signal_name in ["ultimate_requested", "test_elite_requested", "test_boss_requested"]:
 		assert_true(hud.has_signal(signal_name), "HUD must expose combat-control intent: %s" % signal_name)
-	for node_name in ["UltimateButton", "CombatGuideLabel", "TestEliteButton", "TestBossButton", "TraceRecoveryButton"]:
+	for node_name in ["UltimateButton", "CombatGuideLabel", "TestEliteButton", "TestBossButton"]:
 		assert_true(hud.has_node(node_name), "HUD must expose combat control: %s" % node_name)
+	assert_false(hud.has_signal("trace_recovery_requested"), "Trace recovery must be an in-world pickup, not a HUD intent.")
+	assert_false(hud.has_node("TraceRecoveryButton"), "Trace recovery must not expose a HUD button.")
 	if not hud.has_method("show_combat_controls"):
 		fail_test("HUD must expose one combat-control presentation API")
 		return
@@ -75,7 +75,6 @@ func test_combat_controls_expose_ultimate_guidance_and_test_jump_intents() -> vo
 	hud.ultimate_requested.connect(_on_ultimate_requested)
 	hud.test_elite_requested.connect(_on_test_elite_requested)
 	hud.test_boss_requested.connect(_on_test_boss_requested)
-	hud.trace_recovery_requested.connect(_on_trace_recovery_requested)
 	hud.set_ultimate_ready(true)
 	hud.show_combat_controls("천술류", "오행폭주: 상태가 있는 적에게 폭발 피해를 준다.", true)
 
@@ -86,17 +85,12 @@ func test_combat_controls_expose_ultimate_guidance_and_test_jump_intents() -> vo
 	assert_string_contains(guide.text, "오행폭주")
 	assert_true(ultimate.visible)
 	assert_false(ultimate.disabled)
-	assert_false((hud.get_node("TraceRecoveryButton") as Button).visible)
-	hud.set_trace_recovery_available(true)
-	assert_true((hud.get_node("TraceRecoveryButton") as Button).visible)
 	ultimate.pressed.emit()
 	(hud.get_node("TestEliteButton") as Button).pressed.emit()
 	(hud.get_node("TestBossButton") as Button).pressed.emit()
-	(hud.get_node("TraceRecoveryButton") as Button).pressed.emit()
 	assert_eq(ultimate_count, 1)
 	assert_eq(test_elite_count, 1)
 	assert_eq(test_boss_count, 1)
-	assert_eq(trace_recovery_count, 1)
 
 
 func test_hud_formats_school_resource_and_ultimate_state() -> void:
@@ -163,10 +157,6 @@ func _on_test_elite_requested() -> void:
 
 func _on_test_boss_requested() -> void:
 	test_boss_count += 1
-
-
-func _on_trace_recovery_requested() -> void:
-	trace_recovery_count += 1
 
 
 func _has_mvp2_feedback(hud: Node) -> bool:

@@ -148,17 +148,6 @@ offset_bottom = 100.0
 grow_horizontal = 0
 text = "TEST · 중간 보스 소환"
 
-[node name="TraceRecoveryButton" type="Button" parent="."]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -510.0
-offset_top = 108.0
-offset_right = -320.0
-offset_bottom = 144.0
-grow_horizontal = 0
-text = "흔적 회수 [R]"
-
 [node name="CombatGuideLabel" type="Label" parent="."]
 anchors_preset = 1
 anchor_left = 1.0

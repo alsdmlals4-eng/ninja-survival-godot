@@ -100,6 +100,11 @@ func test_cheonsul_runtime_requires_trace_before_boss_and_ends_at_workbench() ->
 	assert_eq(slice.get_snapshot().get("state"), &"trace_available")
 	assert_true(slice.sync_elapsed(270.0))
 	assert_false(bool(slice.get_snapshot().get("boss_requested", false)))
+	assert_null(main.get_node_or_null("HUD/TraceRecoveryButton"), "Trace는 HUD 즉시 회수 control이 아니라 전장 pickup이어야 합니다.")
+	var trace = main.current_trace_pickup
+	assert_not_null(trace, "Elite 사망은 전장 Trace pickup 하나를 만들어야 합니다.")
+	if trace == null:
+		return
 	var cheonsul = main.get_node("SchoolRuntimeHost").active_runtime
 	var status_target = _first_live_normal_enemy(main)
 	assert_not_null(status_target)
@@ -112,10 +117,9 @@ func test_cheonsul_runtime_requires_trace_before_boss_and_ends_at_workbench() ->
 		main._unhandled_input(ultimate_event)
 		assert_eq(slice.get_snapshot().get("state"), &"trace_available", "Enter must preserve Trace recovery and use the ready ultimate")
 		assert_eq(cheonsul.reaction_count, 0.0, "Enter must reach the actual Cheonsul ultimate while Trace is available")
-	var recover_event := InputEventKey.new()
-	recover_event.keycode = KEY_R
-	recover_event.pressed = true
-	main._unhandled_input(recover_event)
+	main.get_node("Player").global_position = trace.global_position
+	trace._process(0.35)
+	trace._process(0.40)
 	assert_eq(slice.get_snapshot().get("state"), &"boss_warning")
 	assert_true(slice.sync_elapsed(280.0))
 	var boss = _cheonsul_role_enemy(main, &"boss")

@@ -16,6 +16,8 @@ const STAGE_BOSS_SCRIPT = preload("res://scripts/enemies/stage_boss.gd")
 const ENEMY_BASIC_SCENE = preload("res://scenes/enemies/enemy_basic.tscn")
 const REST_FLOW_UI_SCENE = preload("res://scenes/ui/rest_flow_ui.tscn")
 const CHEONSUL_SLICE_SCRIPT = preload("res://scripts/core/cheonsul_vertical_slice_controller.gd")
+const TRACE_PICKUP_SCENE = preload("res://scenes/rewards/trace_pickup.tscn")
+const RECENT_HIT_HP_PRESENTER_SCRIPT = preload("res://scripts/ui/recent_hit_hp_presenter.gd")
 
 const CHEONSUL_SLICE_ROLE_META := &"cheonsul_slice_role"
 const CHEONSUL_ENCOUNTER_ID_META := &"cheonsul_encounter_id"
@@ -43,11 +45,14 @@ var combat_resolver: CombatResolver
 var rest_flow_ui: RestFlowUI
 var current_stage_boss: Node
 var cheonsul_slice: CheonsulVerticalSliceController
+var current_trace_pickup: Node2D
+var recent_hit_hp_presenter: Node
 
 var _item_defs: Dictionary = {}
 var _fate_defs: Dictionary = {}
 var _shop_message: String = ""
 var _latest_result_snapshot: Dictionary = {}
+var _pending_trace_spawn_position := Vector2.ZERO
 var _cheonsul_elapsed_seconds: float = 0.0
 var _combat_enabled: bool = false
 
@@ -100,6 +105,7 @@ func _setup_mvp3_nodes() -> void:
 	stage_flow = _ensure_script_node("StageFlow", STAGE_FLOW_SCRIPT) as StageFlowController
 	contribution_tracker = _ensure_script_node("ContributionTracker", CONTRIBUTION_TRACKER_SCRIPT) as CombatContributionTracker
 	combat_resolver = _ensure_script_node("CombatResolver", COMBAT_RESOLVER_SCRIPT) as CombatResolver
+	recent_hit_hp_presenter = _ensure_script_node("RecentHitHpPresenter", RECENT_HIT_HP_PRESENTER_SCRIPT)
 
 	var existing_rest_ui := get_node_or_null("RestFlowUI")
 	if existing_rest_ui is RestFlowUI:
@@ -142,7 +148,6 @@ func _connect_existing_signals() -> void:
 	school_host.player_action_resolved.connect(player_visual.show_attack)
 	hud.restart_requested.connect(_restart_run)
 	hud.school_help_requested.connect(_on_school_help_requested)
-	hud.trace_recovery_requested.connect(_on_trace_recovery_requested)
 	hud.ultimate_requested.connect(_on_ultimate_requested)
 	hud.test_elite_requested.connect(_on_test_elite_requested)
 	hud.test_boss_requested.connect(_on_test_boss_requested)
@@ -169,9 +174,6 @@ func _connect_mvp3_signals() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_R:
-		_on_trace_recovery_requested()
-		return
 	if not event.is_action_pressed("ui_accept"):
 		return
 	if game_over:
@@ -210,15 +212,6 @@ func _on_test_boss_requested() -> void:
 	if not _can_spawn_cheonsul_test_encounter():
 		return
 	_spawn_cheonsul_test_boss()
-
-
-func _on_trace_recovery_requested() -> void:
-	if game_over or cheonsul_slice == null:
-		return
-	if cheonsul_slice.get_snapshot().get("state", &"") != &"trace_available":
-		return
-	if cheonsul_slice.recover_trace():
-		hud.show_school_feedback("흔적을 회수했습니다. 보스 경고를 기다리세요.")
 
 
 func _can_spawn_cheonsul_test_encounter() -> bool:
@@ -270,6 +263,7 @@ func _start_cheonsul_vertical_slice() -> bool:
 	cheonsul_slice = slice
 	cheonsul_slice.phase_changed.connect(_on_cheonsul_slice_phase_changed)
 	cheonsul_slice.chest_token_granted.connect(_on_cheonsul_chest_token_granted)
+	cheonsul_slice.trace_spawn_requested.connect(_on_cheonsul_trace_spawn_requested)
 	cheonsul_slice.boss_spawn_requested.connect(_on_cheonsul_boss_spawn_requested)
 	cheonsul_slice.normal_spawn_permission_changed.connect(_on_cheonsul_normal_spawn_permission_changed)
 	if not cheonsul_slice.begin_first_school():
@@ -298,7 +292,6 @@ func _process(delta: float) -> void:
 
 
 func _on_cheonsul_slice_phase_changed(phase: StringName) -> void:
-	hud.set_trace_recovery_available(phase == &"trace_available")
 	match phase:
 		&"elite_warning":
 			hud.show_school_feedback("정예 경고: %s가 접근합니다." % _cheonsul_encounter_name("elite_display_name", "정예"))
@@ -306,7 +299,7 @@ func _on_cheonsul_slice_phase_changed(phase: StringName) -> void:
 			hud.show_school_feedback("정예: 두 원소 준비 뒤 반응을 노리세요.")
 			_spawn_cheonsul_elite()
 		&"trace_available":
-			hud.show_school_feedback("흔적 발견: R 또는 버튼으로 회수하세요.")
+			hud.show_school_feedback("흔적 발견: 가까이 다가가 회수하세요.")
 		&"trace_recovered":
 			hud.show_school_feedback("흔적 회수 완료. 보스 게이트를 확인합니다.")
 		&"boss_warning":
@@ -317,6 +310,33 @@ func _on_cheonsul_slice_phase_changed(phase: StringName) -> void:
 
 func _on_cheonsul_chest_token_granted(_amount: int) -> void:
 	hud.show_school_feedback("정예 보상: 상자 토큰과 흔적을 얻었습니다.")
+
+
+func _on_cheonsul_trace_spawn_requested() -> void:
+	if game_over or cheonsul_slice == null:
+		return
+	if is_instance_valid(current_trace_pickup) and not current_trace_pickup.is_queued_for_deletion():
+		return
+	var trace := TRACE_PICKUP_SCENE.instantiate() as Node2D
+	if trace == null or not trace.has_method("configure") or not trace.has_signal(&"recovered"):
+		return
+	add_child(trace)
+	trace.global_position = _pending_trace_spawn_position
+	if not bool(trace.call("configure", player)):
+		trace.queue_free()
+		return
+	current_trace_pickup = trace
+	trace.connect(&"recovered", _on_cheonsul_trace_recovered)
+
+
+func _on_cheonsul_trace_recovered(trace: Node) -> void:
+	if trace != current_trace_pickup:
+		return
+	current_trace_pickup = null
+	if game_over or cheonsul_slice == null:
+		return
+	if cheonsul_slice.get_snapshot().get("state", &"") == &"trace_available":
+		cheonsul_slice.recover_trace()
 
 
 func _on_cheonsul_normal_spawn_permission_changed(allowed: bool) -> void:
@@ -498,6 +518,7 @@ func _on_enemy_died(enemy: Node) -> void:
 	_spawn_reward_orb(death_position)
 
 	if cheonsul_role == CHEONSUL_ELITE_ROLE and cheonsul_slice != null:
+		_pending_trace_spawn_position = death_position
 		cheonsul_slice.mark_elite_defeated()
 	elif cheonsul_role == CHEONSUL_BOSS_ROLE and cheonsul_slice != null:
 		_settle_cheonsul_boss_death(enemy)
@@ -606,6 +627,8 @@ func _on_reward_collected(_orb: RewardOrb) -> void:
 func _wire_enemy(enemy: Node) -> void:
 	if enemy.has_method("set_target"):
 		enemy.set_target(player)
+	if recent_hit_hp_presenter != null and recent_hit_hp_presenter.has_method("observe_enemy"):
+		recent_hit_hp_presenter.call("observe_enemy", enemy)
 	if cheonsul_slice != null and enemy.is_in_group("enemies") and not enemy.has_meta(CHEONSUL_SLICE_ROLE_META):
 		var encounter := cheonsul_slice.next_core_encounter()
 		var encounter_id := StringName(encounter.get("id", &""))
