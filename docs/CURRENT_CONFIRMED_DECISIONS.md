@@ -6,8 +6,8 @@ updated_at: 2026-08-28 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
 current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
-last_completed_main_read: 695d01f278b1468e3c61880e3c10033f44057f65
-last_completed_main_read_receipt: POST_PR_105_REVISED_CORE_BOARD_DOCUMENTATION_2026_08_28_KST
+last_completed_main_read: bebff40f2a327bca19ca32d01d03631449314945
+last_completed_main_read_receipt: PRE_PR_115_DEC032_OPTIONAL_EXPANDED_HELP_2026_08_28_KST
 last_product_implementation_merge: 63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497
 github_main_read_before_router_reconciliation: 695d01f278b1468e3c61880e3c10033f44057f65
 github_main_read_resolution: POST_PR_105_FRESH_GITHUB_DEFAULT_BRANCH_READBACK_2026_08_28_KST
@@ -71,6 +71,8 @@ Detailed DEC-029 four-school lifecycle-before-Human-validation scope: `docs/cano
 Detailed DEC-030 four-school Human-validation endpoint-before-final-package scope: `docs/canon/2026-08-28-dec030-four-school-validation-endpoint-before-final-package.md`.
 
 Detailed DEC-031 default Run-end plus one-time GOLD emergency school-retry scope: `docs/canon/2026-08-28-dec031-gold-one-time-emergency-school-retry.md`.
+
+Detailed DEC-032 optional expanded school-help scope: `docs/canon/2026-08-28-dec032-optional-expanded-school-help.md`.
 
 ## 2. Protected integrated baseline
 
@@ -239,6 +241,12 @@ DEC-026 does not claim full playable encounter integration or final-calamity exa
 - Default death ends the Run. One explicit retry per Run is conditionally available only from a valid successful Workbench checkpoint by spending checkpoint `GOLD` and restarting the same active school.
 - Failed-school transient GOLD/rewards/Trace and all Elite/Boss progress are lost; previously committed Backpack/Fate/route/clear order restore atomically. No checkpoint or insufficient checkpoint GOLD means ordinary Run end.
 - Exact cost is `TUNE_NOT_LOCKED`; do not add an extra currency, revive token, automatic revive, retry recharge, or persistence/meta system.
+
+## 7.6 DEC-032 optional expanded school help — APPROVED / implementation deferred
+
+- Do not add forced first-30-second prompts, tutorial cards or action markers. A player may instead open a clearer, expanded Korean explanation for the currently selected school through the existing combat help path.
+- Each explanation must connect actual risk processing → relevant screen information → player positioning attempt → observable success/next goal, without claiming future mechanics or changing automatic-combat ownership.
+- Help remains a post-baseline, optional explanation path. It cannot turn an unassisted first-30-second Human result into `PASS`; status presentation remains compact icon-first.
 
 ## 8. Current implementation boundary — product implementation merged through T16 help
 
