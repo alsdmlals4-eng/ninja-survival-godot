@@ -66,6 +66,8 @@ Detailed DEC-027 Cheonsul spatial auto-reaction rules: `docs/canon/2026-08-28-de
 
 Detailed DEC-028 Cheonsul fixed setup-seal rules: `docs/canon/2026-08-28-dec028-cheonsul-fixed-setup-seal.md`.
 
+Detailed DEC-029 four-school lifecycle-before-Human-validation scope: `docs/canon/2026-08-28-dec029-four-school-lifecycle-before-human-validation.md`.
+
 ## 2. Protected integrated baseline
 
 Keep and regression-protect until deliberately replaced by approved behavior changes:
@@ -197,7 +199,7 @@ School encounter language:
 - 귀인: committed rush/proximity pressure -> readable recovery windows.
 - 흑영: visible threat/mark -> delayed execution and positioning priority.
 
-First release-near Vertical Slice target remains **천술류**.
+The first release-near slice is authored from **천술류**, but DEC-029 requires all four school lifecycles to be implemented before the first Human/Player vertical-slice validation begins.
 
 DEC-026 does not claim full playable encounter integration or final-calamity exact full attack script completion.
 
@@ -214,6 +216,13 @@ DEC-026 does not claim full playable encounter integration or final-calamity exa
 - The next automatic `SHOCK` prioritizes a prepared `WET` group inside that seal for a higher-value amber/orange chain reaction.
 - Reuse existing zone/field presentation only as an implementation reference; the current flame field and automatic targeting do not satisfy DEC-028.
 - Exact duration, radius, cluster threshold and numerical effects remain intentionally undecided until the complete implementation contract.
+
+## 7.3 DEC-029 four-school completed lifecycle before Human validation — APPROVED / implementation deferred
+
+- The first Human/Player vertical-slice validation waits until all four schools can traverse the shared school lifecycle and an actual unvisited-school route/Workbench commit.
+- Reuse one shared encounter primitive chassis and existing route/Backpack/Workbench owners; school-specific data/compositions express identity.
+- This package excludes Final Binding Workbench, final calamity Boss and final ending implementation unless later approved separately.
+- This supersedes the current-package Cheonsul-only Human-validation gate, not DEC-026's Cheonsul-first encounter authoring or any existing product rule.
 
 ## 8. Current implementation boundary — product implementation merged through T16 help
 
@@ -275,14 +284,14 @@ T13 intentionally did not absorb MainController/T14 integration: it renders supp
 
 ```text
 T12~T16 implemented machine scope
+-> DEC-029 four-school lifecycle implementation contract and Phase 2 review
+-> all-four-school shared-chassis/circuit implementation and machine evidence
 -> User vertical-slice validation (deferred / NOT_RUN)
--> remaining-school expansion only after separate authorization and shared-chassis evidence
--> T17 four-school circuit integration
--> T18 final calamity package
--> T19 full-run verification
+-> final calamity package only after a separate current-scope decision
+-> full-run verification
 ```
 
-Do not multiply full school production before T15 human evidence closes the shared-chassis risks.
+DEC-029 explicitly authorizes all-four-school shared-chassis implementation before the first Human gate. That later gate remains mandatory and `NOT_RUN`; no machine evidence may replace it.
 
 ## 11. World / `닌자의 신` product meaning
 
