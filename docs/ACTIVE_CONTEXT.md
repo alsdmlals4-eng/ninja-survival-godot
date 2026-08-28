@@ -7,14 +7,14 @@ reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
 current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
-last_completed_main_read: abe219c632a9cd0e7554b2a1ad47c5874cfa03cc
-last_completed_main_read_receipt: DEC035_NOTION_MIGRATION_FRESH_MAIN_READ_2026_08_28_KST
+last_completed_main_read: 8ae3dd1c8bea48908117ad4133ce00654a048b3f
+last_completed_main_read_receipt: DEC035_NOTION_MIGRATION_POST_MERGE_MAIN_READ_2026_08_28_KST
 completed_main_label: T12_TO_T16_MACHINE_SCOPE_AND_CANON_FRONTIER_RECONCILED
 resume_state: REVISED_FOUR_PANEL_CORE_BOARD_REFERENCE_ONLY_PLANNING_REVIEW_ACTIVE
 next_product_gate: MASTER_GDD_DEC029_DEC030_DEC031_DEC032_DEC033_DEC034_FOUR_SCHOOL_LIFECYCLE_CONTRACT_AND_PHASE2_REVIEW
 current_master_gdd: docs/design/NINJA_SURVIVAL_MASTER_GDD.md
 repository_only_policy: docs/canon/2026-08-28-dec035-repository-only-project-record.md
-notion_usage: MIGRATED_READ_ONLY_ARCHIVE_PENDING_FINAL_REMOTE_READBACK
+notion_usage: HISTORICAL_REFERENCE_ONLY_MIGRATION_COMPLETE
 notion_migration_manifest: docs/migration/notion/MIGRATION_MANIFEST.md
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
@@ -147,7 +147,7 @@ starts from one ninja school
 ### 2026-08-28 DEC-035 repository-only project record
 
 - The current Notion structure and work products are preserved in `docs/migration/notion/`. The source remains intact and has not been modified or deleted.
-- Repository Master GDD, current decision ledger, visual handoff, asset provenance/manifest, code, tests, and evidence are the active owners. After final remote readback, Notion becomes `HISTORICAL_REFERENCE_ONLY`.
+- Repository Master GDD, current decision ledger, visual handoff, asset provenance/manifest, code, tests, and evidence are the active owners. Post-merge main readback is complete; Notion is `HISTORICAL_REFERENCE_ONLY`.
 
 ## Current integrated implementation truth
 

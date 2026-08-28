@@ -6,8 +6,8 @@ updated_at: 2026-08-28 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
 current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
-last_completed_main_read: abe219c632a9cd0e7554b2a1ad47c5874cfa03cc
-last_completed_main_read_receipt: DEC035_NOTION_MIGRATION_FRESH_MAIN_READ_2026_08_28_KST
+last_completed_main_read: 8ae3dd1c8bea48908117ad4133ce00654a048b3f
+last_completed_main_read_receipt: DEC035_NOTION_MIGRATION_POST_MERGE_MAIN_READ_2026_08_28_KST
 last_product_implementation_merge: 63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497
 github_main_read_before_router_reconciliation: 695d01f278b1468e3c61880e3c10033f44057f65
 github_main_read_resolution: POST_PR_105_FRESH_GITHUB_DEFAULT_BRANCH_READBACK_2026_08_28_KST
@@ -272,7 +272,7 @@ DEC-026 does not claim full playable encounter integration or final-calamity exa
 ## 7.9 DEC-035 repository-only project record — APPROVED
 
 - The repository is the sole active owner of human-readable GDD/Flow/Visual Bible, structured canon, asset provenance, implementation contract, code/data/Scene/Resource, tests, and evidence.
-- Before retirement, the current Notion structure, current/partial systems, approved asset records and database schemas are preserved under `docs/migration/notion/`. Existing Notion content is left intact and read-only while that migration completes.
+- Before retirement, the current Notion structure, current/partial systems, approved asset records and database schemas were preserved under `docs/migration/notion/`. Existing Notion content is left intact; post-merge readback is complete and it is now `HISTORICAL_REFERENCE_ONLY`.
 - After cutover, a newly locked image requires repository source + SHA-256/provenance manifest + actual consumer + applicable evidence. The migrated Notion archive neither blocks nor satisfies that gate.
 
 ## 8. Current implementation boundary — product implementation merged through T16 help
