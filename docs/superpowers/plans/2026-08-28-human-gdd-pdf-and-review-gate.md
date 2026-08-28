@@ -117,7 +117,7 @@ If an inspected defect exists, make the smallest exporter/layout correction, re-
 
 For each loop, attack the authority boundary, Korean rendering, table/layout readability, downloadability/tracking, source-to-artifact freshness, and evidence-label discipline. Record only validated findings and retest each correction.
 
-- [ ] **Step 2: Run exact-head checks**
+- [x] **Step 2: Run exact-head checks**
 
 Run the source/link scan, Python syntax check, production export, `pdfinfo`, pypdf text assertion, and rendered-page visual inspection on the final commit head.
 
