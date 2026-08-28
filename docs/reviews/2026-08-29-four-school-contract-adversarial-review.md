@@ -3,7 +3,7 @@
 ```yaml
 scope: DEC036 + NINJA_FOUR_SCHOOL_CIRCUIT_V1 + Phase2_DoR
 assessed_main: 50fbf203ec3f71af1633a5b6cc74e7167c0604c8
-review_status: CLEAN_FOR_SOURCE_PR_THEN_PDF_PUBLICATION
+review_status: CLEAN_FOR_USER_CONTRACT_APPROVAL
 human_player_evidence: DEFERRED_NOT_RUN
 loops_completed: 5
 ```
@@ -46,4 +46,4 @@ impact: this documentation package cannot claim a new local runtime test; future
 - Three materially different reference patterns were considered: time survival, auto-fire shop cadence, spatial backpack buildcraft. The contract adapts their general lesson and rejects their expressive surfaces.
 - The four-school scope uses one controller/data chassis, not four engines.
 - Final Binding, final calamity, Soul credit, player evidence, device/export, and production asset batches remain outside the package.
-- The Human GDD changed, so its PDF manifest is deliberately `STALE_PENDING_MAIN_SOURCE_PUBLICATION` until the required second publication PR records the completed-main source commit. The implementation-contract approval request starts only after that publication package returns to `CURRENT`.
+- The Human GDD PDF was rebuilt from completed main `5d93f13f03ef0d79d84067f8c87c6da93b5be65d`; the publication manifest records the exact source/hash/render evidence as `CURRENT`. Remaining action is user approval of the implementation contract; no planning blocker remains.
