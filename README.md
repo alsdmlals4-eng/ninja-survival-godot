@@ -2,6 +2,10 @@
 
 Godot 4.x / GDScript로 재구성 중인 `닌자 서바이벌 (닌자의 신)` 저장소다. Unity 버전은 별도 아카이브 참고자료이며, 현재 구현 정본은 이 Godot 저장소다.
 
+## 사람용 기획서
+
+[Master Production GDD PDF 내려받기](exports/NINJA_SURVIVAL_MASTER_PRODUCTION_GDD_20260828.pdf) · 편집 정본은 `docs/design/NINJA_SURVIVAL_MASTER_GDD.md`이며, PDF의 생성·검수 상태는 `docs/PDF_EXPORT.md`에서 확인한다.
+
 ## 제품 약속
 
 > 네 유파 전장을 돌며 전승 접근권을 복구하고, 공간·회전·인접 기반 백팩 빌드를 완성해 난세 재앙핵을 평정하는 2D 서바이벌 로그라이크.

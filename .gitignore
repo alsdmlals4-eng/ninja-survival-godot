@@ -13,6 +13,8 @@ export.cfg
 build/
 builds/
 exports/
+!exports/
+!exports/NINJA_SURVIVAL_MASTER_PRODUCTION_GDD_20260828.pdf
 *.exe
 *.apk
 *.aab
@@ -26,3 +28,5 @@ exports/
 Thumbs.db
 .vscode/
 .idea/
+__pycache__/
+tmp/
