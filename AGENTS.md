@@ -29,12 +29,24 @@ Use the following order when sources differ:
 
 `docs/ACTIVE_CONTEXT.md` is a state router, not a replacement for Decision/Canon owners.
 
-Notion and repository use domain-split authority:
+## 2.1 Repository-only documentation policy — DEC-035
 
-- Notion Human Home / Flow / Visual Bible: human-facing game understanding and approved visual direction.
-- Repository: structured canon, code, data, Scene/Resource, tests and runtime evidence.
-- Project Registry / Production Handoff: AI/System execution metadata and evidence receipts.
-- Google Sheets: migration compatibility only when unique unmigrated material exists.
+The user retired Notion from active project work on 2026-08-28 KST. This
+policy supersedes every operational Notion requirement below, while preserving
+old Notion references only as historical receipts.
+
+- Repository: the single active owner for human-readable GDD/Flow/Visual
+  Bible, structured canon, asset provenance, code, data, Scene/Resource,
+  tests, production handoff, and runtime evidence.
+- Existing Notion pages/attachments: `HISTORICAL_REFERENCE_ONLY`; do not
+  read, write, upload, attach, search, or require a readback from them for
+  current/future work.
+- A new asset is durable only after its repository source, SHA-256/provenance
+  manifest, explicit approval state, actual consumer, and applicable
+  import/runtime evidence are recorded in the repository. Historical Notion
+  attachments neither block nor satisfy a future asset gate.
+- Google Sheets: migration compatibility only when unique unmigrated material
+  exists; do not introduce a new external owner.
 
 ## 3. Delivery-contract boundary
 
@@ -52,7 +64,7 @@ PLAN / canon / product decision
 -> exact verification
 -> adversarial review
 -> PR / merge
--> post-merge repository + Notion readback
+-> post-merge repository readback
 ```
 
 Do not infer current readiness from an old Phase-B record after material product decisions or implementation state changed.
@@ -243,22 +255,22 @@ The denser parchment infographic references are useful for **supporting explanat
 Do not generate or edit another project image unless the user explicitly asks. Image workflow:
 
 ```text
-current canon + visual canon
+current canon + visual canon + actual consumer/planning-board brief
 -> text brief
+-> generate exactly one candidate
 -> STOP
--> user explicitly approves generation
--> generate exactly one result
--> STOP
--> user approves/revises result
+-> user LOCK / REVISE / REJECT
 ```
 
-A chat image is not a durable Notion asset until actual upload/attach + destination readback succeeds.
+A chat image is not a durable project asset until user `LOCK`, repository
+source/manifest provenance, and its applicable consumer/evidence gates succeed.
 
-## 12. Human Home / AI-System separation
+## 12. Repository GDD / AI-System separation
 
-The Notion Human Home is a self-contained game-learning surface, not a raw production dashboard.
+`docs/design/NINJA_SURVIVAL_MASTER_GDD.md` is the self-contained
+human-readable game-learning surface, not a raw production dashboard.
 
-Human Home should directly show:
+The repository GDD should directly show:
 
 - one-line promise / player fantasy
 - full Run Flow
@@ -270,7 +282,8 @@ Human Home should directly show:
 - human edit guide
 - compact implementation/evidence ceiling and next product gate
 
-Raw SHA, full PR/CI history, local path/ports/tool routing and detailed Txx receipts belong in Project Registry / Production Handoff / repository evidence.
+Raw SHA, full PR/CI history, local path/ports/tool routing and detailed Txx
+receipts belong in repository production-handoff/evidence documents.
 
 ## 13. Historical PR / branch protection
 
@@ -345,14 +358,14 @@ Before completion:
 
 ```text
 remaining-work recalculation
--> implementation/canon/Notion/consumer/PR/evidence correction rescan
+-> implementation/canon/repository-consumer/PR/evidence correction rescan
 -> valid finding? fix + verify + recalc
 -> final post-change adversarial loop lineage
 -> minimum five full loops and clean exit
 -> exact PR head gate
 -> merge when authorized
 -> new main readback
--> Notion destination readback
+-> repository destination readback
 -> remaining work = 0 for current scope
 ```
 
@@ -365,8 +378,9 @@ Every material completion report must distinguish:
 - Implementation Reality evidence level
 - adversarial findings and corrections
 - exact PR/merge/new-main identity when applicable
-- Notion readback
+- repository readback
 - `NOT_RUN` / blockers
 - next product gate / revisit conditions
 
-Never claim a test, runtime, render, merge, Notion sync, image attachment or human validation that was not actually executed.
+Never claim a test, runtime, render, merge, repository asset registration, or
+human validation that was not actually executed.

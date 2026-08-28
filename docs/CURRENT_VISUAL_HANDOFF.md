@@ -12,7 +12,15 @@
 
 Once fresh-read identifies a concrete runtime consumer, screen-reference, or planning-board brief, generate **one** candidate without asking for a separate pre-generation approval. After viewing it, the user alone chooses `LOCK`, `REVISE`, or `REJECT`.
 
-This does not authorize chat-start generation, gap-only/orphan art, or replacement of an approved asset. A candidate remains `GENERATED_EXPLORATION` until `LOCK`; durable repository/Notion storage, manifest/provenance, actual consumer integration, and runtime/Human evidence gates stay unchanged.
+This does not authorize chat-start generation, gap-only/orphan art, or replacement of an approved asset. A candidate remains `GENERATED_EXPLORATION` until `LOCK`; durable repository source/manifest, actual consumer integration, and runtime/Human evidence gates stay unchanged.
+
+## 2026-08-28 DEC-035 — repository-only visual ownership
+
+Notion is `HISTORICAL_REFERENCE_ONLY` and must not be read, written, or used as
+an asset gate for new work. After user `LOCK`, durable visual ownership is
+repository source + SHA-256/provenance manifest + explicit consumer + applicable
+import/runtime evidence. The historical Notion links/attachments below remain
+receipts only; they neither block nor satisfy a current asset gate.
 
 ## 2026-08-28 current combat visual grammar — approved, implementation deferred
 
@@ -21,7 +29,7 @@ This does not authorize chat-start generation, gap-only/orphan art, or replaceme
 - **Status information:** show compact, silhouette-distinct icons rather than persistent written status badges. Color alone is insufficient; implementation must retain a focus/help description path for validation.
 - **Enemy HP:** hide all HP bars by default. Only the enemy just damaged may reveal its bar. The reveal duration is intentionally undecided until Human Usability observation.
 - **Character/style guardrail:** retain the single black/navy ninja identity with restrained red cord and warm-gold details. The supplied four-school SD sheet may inform icon/action density only; it must not become four runtime protagonists or simultaneous four Stage-3 forms.
-- **`PROJECT_CORE_SCENE_VISUAL_BOARD` revised candidate:** the user selected the four-panel A composition: school selection → Cheonsul core action → Trace-to-Boss gate → Result/Persistent Workbench. From the previous board, **only the compact status-icon grammar remains valid**; character poses, environments, panel compositions, UI treatment and all other visual elements were redesigned. The new candidate is `GENERATED_EXPLORATION`, not an approved Project Asset, runtime texture, UI implementation, Scene completion, or Human/Player evidence. Do not copy it into the repository or attach it to Notion unless the user separately promotes it through the asset gate.
+- **`PROJECT_CORE_SCENE_VISUAL_BOARD` revised candidate:** the user selected the four-panel A composition: school selection → Cheonsul core action → Trace-to-Boss gate → Result/Persistent Workbench. From the previous board, **only the compact status-icon grammar remains valid**; character poses, environments, panel compositions, UI treatment and all other visual elements were redesigned. The new candidate is `GENERATED_EXPLORATION`, not an approved Project Asset, runtime texture, UI implementation, Scene completion, or Human/Player evidence. Do not register it as a repository Project Asset or use it in a runtime consumer unless the user separately promotes it through the asset gate.
 
 The Hybrid Master Style remains approved. The user retains the revised board as a **REFERENCE_ONLY GENERATED_EXPLORATION** while planning review proceeds; it does not promote Trace-versus-reward readability, Workbench grid treatment, or any runtime asset. Those surfaces remain **NOT_IMPLEMENTATION_READY**. Failure/retry remains a separate consumer contract and is intentionally excluded from this four-panel board.
 
@@ -149,7 +157,7 @@ and dual-storage gate.
 - Open T12 implementation PR: **#49 `T12: atomic Workbench Fate route commit`**.
 - PR #49 is a separate implementation workstream and is **READ_ONLY / NO MUTATION** for visual work.
 - PR #49 changed files were checked; this visual handoff does not own its scripts/tests/plan.
-- Visual/document work should start from then-current completed `main`, re-read this file + Notion Visual Bible, and avoid taking over unrelated PRs.
+- Visual/document work should start from then-current completed `main`, re-read this file + repository Master GDD, and avoid taking over unrelated PRs.
 
 ## 2. Approved hybrid visual architecture
 
@@ -304,7 +312,7 @@ Notion:
 - it remains WORKING_REFERENCE, not approved final runtime art.
 - browser/mobile pixel observation: NOT_RUN.
 
-## 6. Notion human-facing authority
+## 6. Historical Notion visual authority — retired by DEC-035
 
 Primary visual page:
 - **`닌자 서바이벌 · Home` → `02 · 비주얼 바이블`**
@@ -318,7 +326,9 @@ Project work control:
 - `01 · 프로젝트 전체 작업계획`
 - should contain this closeout state and the next visual resume gate.
 
-Notion is the human-facing visual authority. Repository files record structured handoff/status; actual runtime art implementation remains code/assets/runtime evidence.
+These pages are historical visual receipts only. The repository Master GDD and
+this handoff are the active human-facing visual owners; actual runtime art
+implementation remains code/assets/runtime evidence.
 
 ## 7. Next visual work — safe resume point
 
@@ -340,35 +350,32 @@ rules and make the smallest needed asset set:
 
 Image process for any new pack remains:
 
-`current consumer contract -> text brief -> generate one candidate -> user LOCK/REVISE/REJECT -> exact local source -> native Notion attachment + readback -> runtime validation`.
+`current consumer contract -> text brief -> generate one candidate -> user LOCK/REVISE/REJECT -> exact repository-local source + SHA-256/provenance manifest -> runtime validation`.
 
 ## 8. Quality and evidence bar
 
 Before creating any new asset, read current `AGENTS.md`,
-`CURRENT_CONFIRMED_DECISIONS.md`, `ACTIVE_CONTEXT.md`, this handoff, Notion
-Visual Bible, and the actual consumer scene/script. Preserve the four-school
-philosophies and Hybrid Master Style; do not copy a reference image's distinct
-expression.
+`CURRENT_CONFIRMED_DECISIONS.md`, `ACTIVE_CONTEXT.md`, this handoff,
+`docs/design/NINJA_SURVIVAL_MASTER_GDD.md`, the repository asset
+manifest/provenance, and the actual consumer scene/script. Preserve the
+four-school philosophies and Hybrid Master Style; do not copy a reference
+image's distinct expression.
 
 The target is not merely a matching prompt style. It is **one coherent
 character identity, readable school motifs, bounded runtime scale, durable
-dual storage, and proof at the consumer that actually uses the asset**.
+repository provenance, and proof at the consumer that actually uses the asset**.
 
 ## 9. Evidence ceiling at current closeout
 
 Verified:
 - seven IMG-02 originals are on merged project-local runtime paths;
-- all seven linked Notion Asset Library records contain native original-binary
-  attachments after destination readback;
 - every asset is mapped to an actual Godot Sprite2D consumer;
 - exact PR-head CI and fresh post-merge Godot 4.7.1 automated evidence passed
   as recorded in the current IMG-02 section.
-- the IMG-03 local original and native Notion attachment have destination
-  readback; its exact integration state must still be resolved from current
-  GitHub main.
+- the IMG-03 local original is on its merged runtime path; its exact
+  integration state must still be resolved from current GitHub main.
 
 Not verified / not claimed:
 - live render/input observation in this Ninja Survival project;
-- browser/Android/iOS pixel observation of the latest Notion attachments;
 - Human Usability, Player Experience, or device/export validation;
 - dynamic trace VFX or a full four-school composite under runtime conditions.

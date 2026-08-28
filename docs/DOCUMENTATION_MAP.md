@@ -21,7 +21,7 @@
 9. `planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
 10. `superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
 11. 실제 `../scripts/**`, `../scenes/**`, `../data/**`, `../tests/**`, `../.github/workflows/**`
-12. Notion `닌자 서바이벌 · Home` + 필요한 Detail Canon / AI-System surface
+12. `design/NINJA_SURVIVAL_MASTER_GDD.md`, `CURRENT_VISUAL_HANDOFF.md`, asset manifest/provenance
 13. 현재 작업에 Base freshness가 materially 필요할 때 최신 Base owner
 
 ## 2. Current product / implementation router
@@ -53,17 +53,17 @@ Important:
 - PR #49 and closed #43/#44 remain historical read-only; they are not resume baselines.
 - Human Usability / Player Experience / device / Android evidence are not implied by T01~T16 automated evidence.
 
-## 3. Authority map — Human Home / Detail Canon / AI Workspace / GitHub
+## 3. Authority map — Repository GDD / Detail Canon / AI Workspace / GitHub
 
-### A. Project Main Home — 사람용 Living GDD + Visual Dashboard
+### A. Repository Master GDD — 사람용 Living GDD + Visual Dashboard
 
-Notion `닌자 서바이벌 · Home`은 링크 허브나 raw 개발 dashboard가 아니다.
+`design/NINJA_SURVIVAL_MASTER_GDD.md`는 링크 허브나 raw 개발 dashboard가 아니다.
 
 **최상위 Acceptance Criterion:**
 
-> Main Home만 보면 무엇을 만들 게임인지와 어떻게 만들 것인지 판단할 수 있고, AI/System Workspace를 보면 그것을 실제로 구현·검증하는 데 필요한 세부 데이터가 부족하지 않아야 한다.
+> Master GDD만 보면 무엇을 만들 게임인지와 어떻게 만들 것인지 판단할 수 있고, AI/System Workspace를 보면 그것을 실제로 구현·검증하는 데 필요한 세부 데이터가 부족하지 않아야 한다.
 
-Home은 스크롤하면서 다음 순서가 읽혀야 한다.
+Master GDD는 다음 순서가 읽혀야 한다.
 
 ```text
 PROJECT NORTH STAR
@@ -77,7 +77,7 @@ PROJECT NORTH STAR
 
 최상단 시각자료는 장식용 Concept Art보다 **게임 구조·시스템·화면·플레이 방법을 설명하는 Visual GDD**를 우선한다.
 
-Home에서 직접 보여야 하는 정보:
+Master GDD에서 직접 보여야 하는 정보:
 
 - 한 줄 제품 약속 / 플레이어 판타지
 - Core Gameplay Loop와 전체 Run Flow
@@ -88,17 +88,22 @@ Home에서 직접 보여야 하는 정보:
 - 현재 승인 Visual 방향과 승인 Asset linked view
 - 사람이 알아야 할 수준의 구현 현실 / 다음 Gate / Human evidence ceiling
 
-Home 금지:
+Master GDD 금지:
 
 - raw SHA / PR 번호 / CI receipt / 포트 / local tool routing을 주 reading flow에 노출
 - `소개 몇 줄 + 상세 링크 목록`으로 축소
 - 핵심 데이터를 상세 페이지에만 숨김
 - 승인되지 않은 예시 이미지를 정본 Asset으로 승격
-- Home용 복사 데이터를 별도 유지해 정본 drift 생성
+- 별도 복사 데이터를 유지해 정본 drift 생성
 
-### B. Detail Pages / Master Databases — 사람용 상세 정본
+### B. Repository detail canon / manifests — 사람용 상세 정본
 
-Home에 보이는 정보를 더 자세히 authoring하는 사람용 owner다.
+Master GDD에 보이는 정보를 더 자세히 authoring하는 repository owner다.
+
+Notion Detail Pages / Master Databases 목록은 `HISTORICAL_REFERENCE_ONLY`다.
+DEC-035 이후에는 해당 surface를 새로 읽거나 수정하지 않고, repository canon,
+visual docs, asset manifest/provenance, planning, and evidence docs에 같은 역할을
+기록한다.
 
 주요 surface:
 
@@ -114,14 +119,8 @@ Home에 보이는 정보를 더 자세히 authoring하는 사람용 owner다.
 - `05 · Production · Validation`
 - `06 · Reference · Benchmark`
 
-Home에서 대량 데이터를 보여줄 때는 별도 복사본을 만들지 않고 **Master DB의 filtered Linked View**를 사용한다.
-
-현재 Home의 대표 Linked View:
-
-- `ASSET LIBRARY · Master` -> `Project=NINJA_SURVIVAL AND Approved=true AND Status=APPROVED`
-- `CORE SYSTEM · Master` -> `Project=NINJA_SURVIVAL AND Status=CONFIRMED`, 사람용 필드만 표시
-
-Notion 공식 linked-database 동작과 동일하게, view의 filter/sort/layout은 Home 전용으로 두되 원본 row/property 수정은 같은 Master data에 반영되는 구조를 사용한다.
+사람용 요약은 Master GDD에서 repository canon/manifest를 링크하며, 중복 data
+view를 유지하지 않는다.
 
 ### C. AI/System Workspace — AI 구현·검증 작업면
 
@@ -147,7 +146,9 @@ GitHub repository는 다음의 구현 사실 정본이다.
 - tests / workflow
 - 실제 merged implementation evidence
 
-Notion 문구가 GitHub 실제 구현과 충돌할 때 **구현 사실**은 code/data/test/runtime evidence로 재확인한다. 앞으로 만들 제품 행동은 최신 approved Decision/Canon을 따른다.
+기존 Notion 문구는 historical receipt일 뿐이다. 구현 사실은
+code/data/test/runtime evidence로 재확인하고, 앞으로 만들 제품 행동은 최신
+approved Decision/Canon을 따른다.
 
 ## 4. Current product canon owners
 
@@ -157,6 +158,7 @@ Notion 문구가 GitHub 실제 구현과 충돌할 때 **구현 사실**은 code
 | `ACTIVE_CONTEXT.md` | mutable resume-state router | CURRENT · T16 help merged / human gate deferred |
 | `design/NINJA_SURVIVAL_MASTER_GDD.md` | 사람용 GDD + AI 구현계약 공통 정본 진입면 | CURRENT · current canon/implementation/evidence ceiling을 구분 |
 | `canon/2026-08-28-dec034-generate-then-approve-visual-workflow.md` | concrete consumer/board 후 1개 후보 생성과 사용자 LOCK 기준 | CURRENT · chat-start/gap-only 생성 금지 |
+| `canon/2026-08-28-dec035-repository-only-project-record.md` | active Notion retirement / repository-only owner | CURRENT · Notion is historical reference only |
 | `visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md` | canonical screen-first visual coverage and Codex handoff | CURRENT · consumer/board first, user LOCK 전 candidate only |
 | `canon/2026-08-21-dec014-025-product-canon.md` | four-school / route / trace / Workbench / final-binding product canon | CURRENT |
 | `canon/2026-08-22-dec026-encounter-pattern-budget.md` | encounter / gimmick / pattern budget canon | CURRENT · APPROVED |

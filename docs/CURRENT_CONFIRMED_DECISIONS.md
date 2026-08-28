@@ -6,8 +6,8 @@ updated_at: 2026-08-28 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
 current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
-last_completed_main_read: 746f8fe495b09a5412deb443f78021e008d947f5
-last_completed_main_read_receipt: PRE_MASTER_GDD_AND_DEC034_2026_08_28_KST
+last_completed_main_read: 87ea39d96ff65adccdccb5489c30c9e6063bfd52
+last_completed_main_read_receipt: PRE_DEC035_REPOSITORY_ONLY_AND_UNIFIED_CONTRACT_2026_08_28_KST
 last_product_implementation_merge: 63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497
 github_main_read_before_router_reconciliation: 695d01f278b1468e3c61880e3c10033f44057f65
 github_main_read_resolution: POST_PR_105_FRESH_GITHUB_DEFAULT_BRANCH_READBACK_2026_08_28_KST
@@ -18,6 +18,8 @@ latest_phase_b: docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md
 current_migration_plan: docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md
 current_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
+current_master_gdd: docs/design/NINJA_SURVIVAL_MASTER_GDD.md
+current_repository_only_policy: docs/canon/2026-08-28-dec035-repository-only-project-record.md
 phase_b_verdict: PASS_FOR_APPROVED_DOMAIN_SEQUENCE
 mvp0_to_mvp3_baseline: INTEGRATED
 t01_to_t16_machine_scope: INTEGRATED_ON_LAST_PRODUCT_IMPLEMENTATION_MERGE
@@ -39,10 +41,10 @@ device_android_export: NOT_RUN
 visual_master_style_reference: HYBRID_MASTER_STYLE_2026_08_25
 visual_runtime_character_identity: ONE_FIXED_CHARACTER_PLUS_TRACE_LAYERS
 visual_trace_stage3_rule: STARTING_MAIN_SCHOOL_ONLY
-visual_binary_notion_attachment: HYBRID_KEYVISUAL_AND_SUPPLEMENTARY_LOW_RES_SERVER_READBACK_PASS_ORIGINAL_AND_HUMAN_VISIBLE_NOT_PROVEN
+historical_notion_attachment_receipts: RETIRED_REFERENCE_ONLY_NO_ACTIVE_GATE
 ```
 
-This is the current mutable decision router/ledger. Detailed rules live in the dated canon files; implementation reality lives in actual code/scenes/data/tests and executed evidence. Do not use an older status sentence or closed branch to override this file. Visual continuation detail lives in `docs/CURRENT_VISUAL_HANDOFF.md` and the Notion `02 · 비주얼 바이블`; if an older visual sentence elsewhere conflicts, this section and those current owners win.
+This is the current mutable decision router/ledger. Detailed rules live in the dated canon files; implementation reality lives in actual code/scenes/data/tests and executed evidence. Do not use an older status sentence or closed branch to override this file. Visual continuation detail lives in `docs/CURRENT_VISUAL_HANDOFF.md` and `docs/design/NINJA_SURVIVAL_MASTER_GDD.md`; DEC-035 retires Notion from active source ownership.
 
 ## 1. Current product definition
 
@@ -77,6 +79,8 @@ Detailed DEC-032 optional expanded school-help scope: `docs/canon/2026-08-28-dec
 Detailed DEC-033 Run-end Ninja Soul settlement, Boss-only soul eligibility, and Ninja Soul retry scope: `docs/canon/2026-08-28-dec033-run-end-ninja-soul-settlement.md`.
 
 Detailed DEC-034 generate-then-approve visual workflow: `docs/canon/2026-08-28-dec034-generate-then-approve-visual-workflow.md`.
+
+Detailed DEC-035 repository-only project record and Notion retirement: `docs/canon/2026-08-28-dec035-repository-only-project-record.md`.
 
 ## 2. Protected integrated baseline
 
@@ -264,6 +268,12 @@ DEC-026 does not claim full playable encounter integration or final-calamity exa
 - After fresh-read identifies a concrete visual consumer, screen reference, or planning-board brief, create one candidate without asking for a separate pre-generation approval. The user approves only `LOCK`, `REVISE`, or `REJECT` after seeing it.
 - No chat-start, orphan-gap, or approved-asset replacement generation is allowed. Candidates remain `GENERATED_EXPLORATION` until user `LOCK`; durable asset storage, runtime implementation, and evidence gates remain unchanged.
 
+## 7.9 DEC-035 repository-only project record — APPROVED
+
+- The repository is the sole active owner of human-readable GDD/Flow/Visual Bible, structured canon, asset provenance, implementation contract, code/data/Scene/Resource, tests, and evidence.
+- Existing Notion content is `HISTORICAL_REFERENCE_ONLY`: leave it intact, but do not read, search, write, attach, upload, or require a readback there for current/future work.
+- A newly locked image requires repository source + SHA-256/provenance manifest + actual consumer + applicable evidence. Historical Notion attachments neither block nor satisfy that gate.
+
 ## 8. Current implementation boundary — product implementation merged through T16 help
 
 The last product implementation merge is:
@@ -364,7 +374,7 @@ Base-building/economy is not the project core.
 Current visual continuation authority:
 
 - `docs/CURRENT_VISUAL_HANDOFF.md`
-- Notion `02 · 비주얼 바이블`
+- `docs/design/NINJA_SURVIVAL_MASTER_GDD.md`
 
 ### 2026-08-28 — approved combat information grammar
 
@@ -407,19 +417,19 @@ Shared visual DNA:
 - Four-school full-body sheet: **APPROVED SUPPORTING REFERENCE** for Presentation/Lore silhouette/motif comparison; not four runtime protagonists.
 - SD/action/icon three-panel sheet: **WORKING_REFERENCE**; SD/action/icon structure is reusable, but details must be revised to the fixed-character + main-school Stage-3 + all-four-coherent rules before runtime-art approval.
 
-No new image should be generated automatically on chat start. Once the current visual handoff identifies a concrete consumer or planning-board brief, user approval is required after—not before—one candidate generation; durable Notion placement still requires a user `LOCK`.
+No new image should be generated automatically on chat start. Once the current visual handoff identifies a concrete consumer or planning-board brief, user approval is required after—not before—one candidate generation; user `LOCK` then requires repository provenance/manifest and applicable consumer evidence.
 
-### Notion delivery evidence
+### Historical Notion delivery evidence — retired from active gate
 
 The approved Hybrid Key Visual has a **Notion-native low-resolution preview** with server readback resolving to Notion-owned `prod-files-secure`: PASS.
 
-High-resolution pixel-equivalent Notion delivery is not proven. Browser/Android/iOS human-visible rendering of the latest preview set remains NOT_RUN until directly observed.
+These old preview receipts are not an active deliverable or pending evidence gate after DEC-035.
 
-## 14. Notion Human Home decision — APPROVED
+## 14. Repository Master GDD decision — APPROVED / replaces active Notion use
 
-The Human Home is a **self-contained player-facing whole-game flow map + visual/text learning surface**, not an AI task dashboard.
+`docs/design/NINJA_SURVIVAL_MASTER_GDD.md` is the **self-contained player-facing whole-game flow map + visual/text learning surface**, not an AI task dashboard.
 
-Home directly exposes enough to understand the project without opening raw technical pages:
+The repository GDD directly exposes enough to understand the project without opening raw technical pages:
 
 - project promise and player fantasy,
 - full Run Flow,
@@ -431,7 +441,7 @@ Home directly exposes enough to understand the project without opening raw techn
 - human edit guide,
 - compact implementation/evidence ceiling and next product gate.
 
-Raw SHA, full PR/CI history, local Godot path/ports, internal routing and detailed Txx receipts stay in Project Registry/System and Production Handoff.
+Raw SHA, full PR/CI history, local Godot path/ports, internal routing and detailed Txx receipts stay in repository production-handoff/evidence documents.
 
 ## 15. Evidence / completion protection
 
@@ -442,16 +452,14 @@ The following remain `NOT_RUN` or explicitly limited until direct evidence exist
 - production-candidate Workbench/end-to-end input flow,
 - device/Android/export readiness,
 - current local shared Godot/editor/session identity for future Godot authoring,
-- high-resolution pixel-equivalent Notion delivery of the approved generated images,
-- browser/Android/iOS human-visible render of the latest Notion image previews,
 - actual Godot runtime implementation of the new SD character direction,
 - final four-school accumulated-character composite under the newest trace rules.
 
-Do not use T01~T16 test receipts or Notion server readback to promote these states.
+Do not use T01~T16 test receipts or historical Notion server readback to promote these states.
 
 ## 16. Documentation alignment history and current visual continuation
 
-`Planning Canon & Human Home Alignment` remains completed history. Its older instruction to generate no further images applied to that alignment package only and was superseded by the user's later explicit visual-generation approvals on 2026-08-25.
+`Planning Canon & Human Home Alignment` remains completed history. DEC-035 retires its active Notion-owner assumptions; older attachments/readbacks remain historical receipts only. Its older instruction to generate no further images applied to that alignment package only and was superseded by the user's later explicit visual-generation approvals on 2026-08-25.
 
 Current visual continuation and next-chat quality gate are owned by `docs/CURRENT_VISUAL_HANDOFF.md`.
 

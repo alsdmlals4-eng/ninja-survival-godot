@@ -7,12 +7,14 @@ reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
 current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
-last_completed_main_read: 746f8fe495b09a5412deb443f78021e008d947f5
-last_completed_main_read_receipt: PRE_MASTER_GDD_AND_DEC034_2026_08_28_KST
+last_completed_main_read: 87ea39d96ff65adccdccb5489c30c9e6063bfd52
+last_completed_main_read_receipt: PRE_DEC035_REPOSITORY_ONLY_AND_UNIFIED_CONTRACT_2026_08_28_KST
 completed_main_label: T12_TO_T16_MACHINE_SCOPE_AND_CANON_FRONTIER_RECONCILED
 resume_state: REVISED_FOUR_PANEL_CORE_BOARD_REFERENCE_ONLY_PLANNING_REVIEW_ACTIVE
 next_product_gate: MASTER_GDD_DEC029_DEC030_DEC031_DEC032_DEC033_DEC034_FOUR_SCHOOL_LIFECYCLE_CONTRACT_AND_PHASE2_REVIEW
 current_master_gdd: docs/design/NINJA_SURVIVAL_MASTER_GDD.md
+repository_only_policy: docs/canon/2026-08-28-dec035-repository-only-project-record.md
+notion_usage: RETIRED_HISTORICAL_REFERENCE_ONLY_NO_NEW_READ_OR_WRITE
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 current_screen_visual_coverage: docs/visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md
@@ -40,12 +42,12 @@ cheonsul_visual_palette: BLUE_PLUS_AMBER_ORANGE_PRIMARY
 heukyeong_visual_palette: PURPLE_PLUS_BLACK_RESERVED
 combat_status_presentation: ICON_FIRST_NO_PERSISTENT_TEXT_BADGES
 enemy_hp_presentation: HIDDEN_BY_DEFAULT_SHOW_ONLY_RECENTLY_HIT_ENEMY
-visual_keyvisual_notion_preview: SERVER_READBACK_PASS_LOW_RES
-visual_supplementary_previews: SERVER_READBACK_PASS_LOW_RES_ONLY_ORIGINAL_AND_HUMAN_VISIBLE_NOT_PROVEN
-img_02_runtime_visual_core: MERGED_MAIN_03005E7_SEVEN_APPROVED_PNGS_LOCAL_AND_NOTION_NATIVE_ORIGINALS
+historical_visual_keyvisual_notion_preview: SERVER_READBACK_PASS_LOW_RES_RETIRED
+historical_visual_supplementary_previews: SERVER_READBACK_PASS_LOW_RES_RETIRED
+img_02_runtime_visual_core: MERGED_MAIN_03005E7_SEVEN_APPROVED_PNGS_LOCAL_SOURCES_CURRENT_HISTORICAL_NOTION_ATTACHMENTS_RETIRED
 img_02_automated_evidence: GODOT_4_7_1_IMPORT_EDITOR_PARSE_MAIN_SMOKE_GUT_492_OF_492_5373_ASSERTIONS_PASS
 img_02_live_render: NOT_RUN_HERA_CONNECTED_TO_DIFFERENT_PROJECT
-img_03_runtime_battlefield_backdrop: MERGED_MAIN_5A52A30_LOCAL_AND_NOTION_NATIVE_ORIGINAL_SYNCED
+img_03_runtime_battlefield_backdrop: MERGED_MAIN_5A52A30_LOCAL_SOURCE_CURRENT_HISTORICAL_NOTION_ATTACHMENT_RETIRED
 img_03_automated_evidence: GODOT_4_7_1_IMPORT_EDITOR_PARSE_MAIN_SMOKE_GUT_493_OF_493_5380_ASSERTIONS_PASS
 img_03_live_render: NOT_RUN_DESKTOP_VISUAL_TARGET_CHANGED
 local_shared_godot_exact_pin: GODOT_4.7.1_STABLE_OFFICIAL_A13DA4FEB_FRESH_LOCAL_VERIFIED_2026_08_27_KST
@@ -54,7 +56,7 @@ local_editor_session: NOT_RUN_FOR_NINJA_SURVIVAL_VISUAL_PACKAGE
 
 ## Purpose
 
-This is the mutable resume router. Product rules live in `docs/CURRENT_CONFIRMED_DECISIONS.md` and dated canon files. Implementation facts live in actual code/scenes/data/tests and executed evidence. Human-facing game understanding lives in the exact Notion Human Home and its domain pages. Current visual continuation lives in `docs/CURRENT_VISUAL_HANDOFF.md` plus Notion `02 · 비주얼 바이블`.
+This is the mutable resume router. Product rules live in `docs/CURRENT_CONFIRMED_DECISIONS.md` and dated canon files. Implementation facts live in actual code/scenes/data/tests and executed evidence. Human-facing game understanding lives in `docs/design/NINJA_SURVIVAL_MASTER_GDD.md`. Current visual continuation lives in `docs/CURRENT_VISUAL_HANDOFF.md`; DEC-035 retires Notion from active use.
 
 Do not reconstruct current state from older handoff sentences or closed branches without first reading current completed `main`, current open-PR inventory and this router.
 
@@ -70,7 +72,7 @@ Do not reconstruct current state from older handoff sentences or closed branches
 8. `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
 9. `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
 10. actual `scripts/`, `scenes/`, `data/`, `tests/`, workflows
-11. Notion `닌자 서바이벌 · Home`, `03 · UI · 생존 Flow Map`, `08 · 핵심 시스템 · 상세`, `06 · Production · Handoff`, `02 · 비주얼 바이블`
+11. `docs/design/NINJA_SURVIVAL_MASTER_GDD.md`, `docs/CURRENT_VISUAL_HANDOFF.md`, relevant asset manifests/provenance
 12. current Base owners when Base freshness materially affects the task
 
 Closed PR #43/#44 may be inspected only as historical/WIP evidence. They are not resume baselines. Draft PR #49 is a read-only, superseded T12 reference. PR #61 is merged T12 history; current production work begins from its completed `main`.
@@ -140,6 +142,11 @@ starts from one ninja school
 
 - After a fresh consumer or planning-board brief exists, generate one visual candidate without a separate pre-generation approval prompt. The user then chooses `LOCK`, `REVISE`, or `REJECT`.
 - Do not generate at chat start, for a vague gap, or to replace an approved asset. Candidate images are not project assets/runtime evidence before `LOCK` and the normal provenance/consumer gates still apply.
+
+### 2026-08-28 DEC-035 repository-only project record
+
+- Notion is retired from active project source ownership. Do not search, read, write, attach, upload, or require readback there for current/future work.
+- Repository Master GDD, current decision ledger, visual handoff, asset provenance/manifest, code, tests, and evidence are the active owners. Old Notion content remains intact as `HISTORICAL_REFERENCE_ONLY`.
 
 ## Current integrated implementation truth
 
@@ -220,7 +227,7 @@ Implementation/decision locator:
 
 `docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md`.
 
-## Notion authority / Human Home
+## Historical Notion authority / Human Home — retired by DEC-035
 
 Human Home purpose:
 
@@ -230,7 +237,7 @@ Raw SHA, full PR/CI history, local path/ports/tool routing and detailed Txx rece
 
 ## Visual decision — 2026-08-25 · current
 
-Current visual authority is `docs/CURRENT_VISUAL_HANDOFF.md` + Notion `02 · 비주얼 바이블`.
+Current visual authority is `docs/CURRENT_VISUAL_HANDOFF.md` + `docs/design/NINJA_SURVIVAL_MASTER_GDD.md`.
 
 ### Hybrid surface split
 
@@ -259,12 +266,12 @@ Approved school motifs:
 
 ### Current image authority
 
-- Hybrid Key Visual: APPROVED MASTER BRIDGE; Notion low-res native preview server readback PASS.
+- Hybrid Key Visual: APPROVED MASTER BRIDGE; historical Notion low-res preview server readback exists but is no longer an active gate.
 - Four-school full-body silhouette sheet: APPROVED SUPPORTING REFERENCE; not four runtime protagonists.
 - SD/action/icon three-panel sheet: WORKING_REFERENCE; structure reusable but exact trace details superseded by current fixed-character/main-school-Stage-3 rules.
-- IMG-02 runtime visual core: merged at `03005e7dcc1a2e0b6ee57b4f6ebed9b481ee2fbc` with seven approved PNG originals stored locally and as native Notion Asset Library attachments. Actual consumers are three generic EnemyBasic variants, Cheonsul StageBoss, ProjectileBasic, RewardOrb and BongmaFamiliar.
-- IMG-03 moonlit battlefield backdrop: merged at `5a52a30aa6c38cfed17e46d550eef27ab06e53f7` with its opaque PNG stored locally and as a native Notion Asset Library original. Its sole consumer is `Main/BattlefieldBackdrop` behind gameplay; it changes no game-rule authority.
-- IMG-04 Cheonsul flame field: merged at `6d538fcf933e2fbcca50f8e6d369d165efac620c` with its transparent PNG stored locally and as a native Notion Asset Library original. Its sole consumer is the existing `Cheonsul/FlameFieldVisual`; it changes no combat, route, reward, or school-rule authority.
+- IMG-02 runtime visual core: merged at `03005e7dcc1a2e0b6ee57b4f6ebed9b481ee2fbc` with seven approved repository-local PNG sources. Actual consumers are three generic EnemyBasic variants, Cheonsul StageBoss, ProjectileBasic, RewardOrb and BongmaFamiliar.
+- IMG-03 moonlit battlefield backdrop: merged at `5a52a30aa6c38cfed17e46d550eef27ab06e53f7` with its opaque repository-local PNG. Its sole consumer is `Main/BattlefieldBackdrop` behind gameplay; it changes no game-rule authority.
+- IMG-04 Cheonsul flame field: merged at `6d538fcf933e2fbcca50f8e6d369d165efac620c` with its transparent repository-local PNG. Its sole consumer is the existing `Cheonsul/FlameFieldVisual`; it changes no combat, route, reward, or school-rule authority.
 
 No corrected trace-layer/action/icon sheet is a pending implementation task by itself. The next visual task begins only after a fresh consumer contract identifies the smallest missing runtime asset; dynamic trace VFX remain intentionally uncreated until then.
 
@@ -285,8 +292,7 @@ GODOT_RUN: HEADLESS_MAIN_SMOKE_PASS
 GODOT_EDITOR_SESSION: NOT_RUN_FOR_NINJA_SURVIVAL
 HUMAN_PLAY: NOT_RUN
 DEVICE_EXPORT: NOT_RUN
-NOTION_NATIVE_ORIGINAL_ATTACHMENT: SEVEN_OF_SEVEN_SERVER_READBACK_PASS
-NOTION_HUMAN_VISIBLE_LATEST_PREVIEWS: NOT_RUN
+HISTORICAL_NOTION_ATTACHMENT_RECEIPTS: RETIRED_REFERENCE_ONLY
 ```
 
 ## T13 merged status

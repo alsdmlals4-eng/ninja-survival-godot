@@ -4,7 +4,7 @@
 > **기준 브랜치 / SHA:** `main` / `746f8fe495b09a5412deb443f78021e008d947f5`
 > **생성일:** 2026-08-28 KST
 > **정본 우선순위:** 최신 사용자 승인 → `AGENTS.md` → `CURRENT_CONFIRMED_DECISIONS.md` → dated canon → `ACTIVE_CONTEXT.md` → actual code/data/Scene/test → Base → benchmark
-> **범위:** 이 파일은 사람이 읽는 GDD와 AI가 검색하는 구현 계약의 공통 정본이다. PDF, 별도 AI 명세, 새 Notion output, 새 이미지 생성은 이 문서 작업의 산출물이 아니다.
+> **범위:** 이 파일은 사람이 읽는 GDD와 AI가 검색하는 구현 계약의 공통 정본이다. DEC-035 이후 Notion은 historical reference only이며, active source/asset/evidence owner가 아니다.
 
 ## 00. Canon Snapshot
 
@@ -42,7 +42,7 @@ Phase 5 Human vertical-slice validation: NOT_RUN
 | `SRC-REPO-04` | DEC-014~025, DEC-026~034 | product, encounter, current decisions | `CONFIRMED` |
 | `SRC-REPO-05` | `scripts/`, `scenes/`, `assets/`, `tests/` | actual implementation reality | `IMPLEMENTED` where paths exist |
 | `SRC-REPO-06` | `docs/visual/*`, asset manifests | visual grammar and consumer evidence | mixed; see `AST-*` |
-| `SRC-NOTION-01` | Human Home / Core Systems / Visual Bible / Production Handoff | human-facing interpretation and visual attachment receipt | read as supporting source; no Notion-only rule used |
+| `SRC-NOTION-01` | former Human Home / Core Systems / Visual Bible / Production Handoff | historical interpretation and attachment receipt | `HISTORICAL_REFERENCE_ONLY` by DEC-035; no new read/write |
 | `SRC-EXT-01` | official/Steam pages, researched 2026-08-28 | positioning references | `REFERENCE_ONLY` |
 
 ### Current conflict register
@@ -283,7 +283,7 @@ Current `RestFlowUI/ResultView` displays contribution damage/healing/defense/sta
 | `AST-07` | moonlit battlefield | `Main/BattlefieldBackdrop` | `IMPLEMENTED` consumer |
 | `AST-08` | Cheonsul flame field | `Cheonsul/FlameFieldVisual` | `IMPLEMENTED` consumer |
 
-Existing assets are durable only when repository source + Notion native original + manifest/provenance + actual consumer are all present. Existing project assets are not regenerated merely for a new sheet.
+Existing assets are durable only when repository source + SHA-256/provenance manifest + explicit `LOCK` state + actual consumer are all present, followed by applicable import/runtime evidence. Existing project assets are not regenerated merely for a new sheet.
 
 ### DEC-034 image workflow
 
@@ -422,7 +422,8 @@ No new product-meaning decision is required to write or use this GDD. Values exp
 | 2026-08-28 | initial Master GDD created from current `main` | this document |
 | 2026-08-28 | true Run-end-only Ninja Soul settlement confirmed | DEC-033 + user approval |
 | 2026-08-28 | generate-one-candidate then user final lock workflow confirmed | DEC-034 + user approval |
-| 2026-08-28 | Notion Home retry wording and Visual Bible generation cadence reconciled; destination readback confirmed | current Notion sources + DEC-033/034 |
+| 2026-08-28 | historical Notion Home retry wording and Visual Bible generation cadence were reconciled before retirement | historical receipts + DEC-033/034 |
+| 2026-08-28 | repository-only active record; Notion retired without deleting its historical data | DEC-035 + user approval |
 
 ## 17. Non-negotiable Evidence Ceiling
 
