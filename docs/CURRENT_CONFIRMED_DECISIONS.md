@@ -62,6 +62,8 @@ Detailed DEC-014~025 rules: `docs/canon/2026-08-21-dec014-025-product-canon.md`.
 
 Detailed DEC-026 encounter/pattern rules: `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`.
 
+Detailed DEC-027 Cheonsul spatial auto-reaction rules: `docs/canon/2026-08-28-dec027-cheonsul-spatial-auto-reaction.md`.
+
 ## 2. Protected integrated baseline
 
 Keep and regression-protect until deliberately replaced by approved behavior changes:
@@ -196,6 +198,13 @@ School encounter language:
 First release-near Vertical Slice target remains **천술류**.
 
 DEC-026 does not claim full playable encounter integration or final-calamity exact full attack script completion.
+
+## 7.1 DEC-027 Cheonsul spatial auto-reaction — APPROVED / implementation deferred
+
+- Cheonsul retains automatic `WET → SHOCK` combat, but a high-value chained reaction must arise from a readable spatial condition made through player movement and enemy grouping.
+- The player does not gain a separate manual reaction trigger, aim reticle, or cooldown sequence in this first Slice.
+- Current automatic token-targeting implementation does not yet satisfy this product intent; concrete spatial-condition form and tuning remain the next Phase 1 decision.
+- This is product/canon authority only. It does not claim a code, Scene, asset, Human Usability, or Player Experience change.
 
 ## 8. Current implementation boundary — product implementation merged through T16 help
 

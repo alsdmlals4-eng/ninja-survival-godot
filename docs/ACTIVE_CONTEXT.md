@@ -98,7 +98,7 @@ starts from one ninja school
 ## Current four-school identity
 
 - **봉마류:** mobile stronghold — prepare space, familiars/barriers fight for you.
-- **천술류:** setup + ordered elemental/status reactions transform the field.
+- **천술류:** setup + ordered elemental/status reactions transform the field. Strong chained reactions are spatially guided by player movement and grouping while basic combat stays automatic (DEC-027; implementation deferred).
 - **귀인류:** sustain dangerous close-range presence for power; not universally low-HP-only.
 - **흑영류:** mark/priority/execution removes dangerous targets first through auto-combat-compatible indirect control.
 
