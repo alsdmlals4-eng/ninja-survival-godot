@@ -1,9 +1,9 @@
 # 닌자의 신 — Master Game Design Document
 
-> **문서 상태:** `CURRENT_PRODUCT_GDD / IMPLEMENTATION_CONTRACT_COMPANION`  
-> **기준 브랜치 / SHA:** `main` / `746f8fe495b09a5412deb443f78021e008d947f5`  
-> **생성일:** 2026-08-28 KST  
-> **정본 우선순위:** 최신 사용자 승인 → `AGENTS.md` → `CURRENT_CONFIRMED_DECISIONS.md` → dated canon → `ACTIVE_CONTEXT.md` → actual code/data/Scene/test → Base → benchmark  
+> **문서 상태:** `CURRENT_PRODUCT_GDD / IMPLEMENTATION_CONTRACT_COMPANION`
+> **기준 브랜치 / SHA:** `main` / `746f8fe495b09a5412deb443f78021e008d947f5`
+> **생성일:** 2026-08-28 KST
+> **정본 우선순위:** 최신 사용자 승인 → `AGENTS.md` → `CURRENT_CONFIRMED_DECISIONS.md` → dated canon → `ACTIVE_CONTEXT.md` → actual code/data/Scene/test → Base → benchmark
 > **범위:** 이 파일은 사람이 읽는 GDD와 AI가 검색하는 구현 계약의 공통 정본이다. PDF, 별도 AI 명세, 새 Notion output, 새 이미지 생성은 이 문서 작업의 산출물이 아니다.
 
 ## 00. Canon Snapshot
