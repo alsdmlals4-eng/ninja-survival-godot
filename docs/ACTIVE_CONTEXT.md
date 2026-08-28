@@ -11,7 +11,7 @@ last_completed_main_read: 695d01f278b1468e3c61880e3c10033f44057f65
 last_completed_main_read_receipt: POST_PR_105_REVISED_CORE_BOARD_DOCUMENTATION_2026_08_28_KST
 completed_main_label: T12_TO_T16_MACHINE_SCOPE_AND_CANON_FRONTIER_RECONCILED
 resume_state: REVISED_FOUR_PANEL_CORE_BOARD_REFERENCE_ONLY_PLANNING_REVIEW_ACTIVE
-next_product_gate: DEC029_FOUR_SCHOOL_LIFECYCLE_CONTRACT_AND_PHASE2_REVIEW
+next_product_gate: DEC029_DEC030_FOUR_SCHOOL_LIFECYCLE_CONTRACT_AND_PHASE2_REVIEW
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 current_screen_visual_coverage: docs/visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md
@@ -108,7 +108,13 @@ starts from one ninja school
 - The user selected the all-four-school boundary: do not start Human/Player validation after Cheonsul alone.
 - First implement and machine-verify the shared Core → Elite → Trace → Boss → Result/Reward → Workbench → next-unvisited-school lifecycle for Bongma, Cheonsul, Guiin and Heukyeong.
 - Preserve shared encounter/route/Backpack/Workbench owners; do not create four independent engines.
-- Final Binding Workbench, final calamity and final ending remain a separate current-scope decision.
+- Final Binding Workbench, final calamity and final ending remain a separately reviewed later package under DEC-030.
+
+### 2026-08-28 DEC-030 first Human validation endpoint
+
+- The user selected the endpoint before the final package: the first four-school Human/Player validation ends after the fourth Boss Result/Reward confirms existing `final_binding_eligible`.
+- No Final Binding Scene, final calamity Boss, support callback, final result or placeholder ending is included in this contract.
+- The product's final-calamity promise remains protected for a later separately reviewed package; this decision only prevents it from silently expanding the current four-school contract.
 
 ## Current integrated implementation truth
 
@@ -272,11 +278,11 @@ The active package also closes a relevant T12 safety gap: a successful `RestComm
 
 ```text
 T12~T16 machine scope + Cheonsul first authoring baseline
--> DEC-029 all-four-school lifecycle contract and Phase 2 review
+-> DEC-029/030 all-four-school lifecycle contract and Phase 2 review
 -> four-school shared-chassis/circuit implementation + machine evidence
--> User vertical-slice validation (Human/Player feedback remains deferred, not passed)
--> final calamity package only after a separate current-scope decision
--> full-run verification
+-> User vertical-slice validation through fourth-Boss Final Binding eligibility (Human/Player feedback remains deferred, not passed)
+-> separately reviewed Final Binding / final calamity package
+-> full-Run verification only after that package
 ```
 
-DEC-029 explicitly supersedes the previous Cheonsul-only Human gate for this package: four-school shared-chassis completion and machine evidence now precede the first representative Human validation. Do not treat that later Human gate as passed until actual user evidence exists.
+DEC-029/030 explicitly supersede the previous Cheonsul-only Human gate for this package: four-school shared-chassis completion and machine evidence now precede the first representative Human validation, whose endpoint is before the final package. Do not treat that later Human gate as passed until actual user evidence exists.
