@@ -348,7 +348,7 @@ T13 intentionally did not absorb MainController/T14 integration: it renders supp
 
 ## 10. Current implementation-contract gate
 
-`docs/implementation/2026-08-29-four-school-circuit-implementation-contract.md` and `docs/planning/2026-08-29-phase2-four-school-definition-of-ready.md` are the current source-backed package. The user approved the contract; its current task branch has machine implementation/evidence pending exact-head review, PR and merge. The generated status-icon candidate remains `GENERATED_EXPLORATION`, so icon runtime asset completion is explicitly `PARTIAL`.
+`docs/implementation/2026-08-29-four-school-circuit-implementation-contract.md` and `docs/planning/2026-08-29-phase2-four-school-definition-of-ready.md` are the current source-backed package. The user-approved machine package was squash-merged by PR #129 into `main` at `57ba43973c5e1b67c82b52921014db0a97a63378`; exact PR-head local Godot 4.7.1 editor parse, five-second main smoke and full GUT `521/521` / `5769` all passed, and GitHub GUT plus Windows internal build passed. The generated status-icon candidate remains `GENERATED_EXPLORATION`, so icon runtime asset completion is explicitly `PARTIAL`.
 
 DEC-036 permits the contract and subsequent machine implementation to proceed without a Human/Player session. The user-deferred evidence classes remain `NOT_RUN`; a future release or player-facing milestone must not promote them from GUT/import/smoke evidence.
 

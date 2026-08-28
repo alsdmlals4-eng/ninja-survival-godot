@@ -2,9 +2,11 @@
 
 ```yaml
 contract_id: NINJA_FOUR_SCHOOL_CIRCUIT_V1
-status: USER_APPROVED_IMPLEMENTING_ON_CURRENT_TASK_BRANCH
+status: MACHINE_IMPLEMENTED_MERGED_MAIN_PR129
 issue: 126
 base_main_read: e53b41cf5c7e138735df90c2b654e62acb4d50d8
+merged_main: 57ba43973c5e1b67c82b52921014db0a97a63378
+merged_pr: 129
 engine: Godot_4.x_GDScript
 implementation_entry: fresh_completed_main_only
 human_usability: DEFERRED_BY_DEC036_NOT_RUN
@@ -170,7 +172,7 @@ school_boss_clear_gold: 10
 
 ## 8.1 Current-task execution readback — 2026-08-29 KST
 
-The user approved this contract. The current isolated branch implements and machine-verifies the following; this section is a current-task receipt, not a merged-main claim.
+The user approved this contract. PR #129 squash-merged the following machine implementation into `main`; this section is a merged-main receipt, not Human/Player or device validation.
 
 | unit | status | current evidence / boundary |
 | --- | --- | --- |
@@ -180,7 +182,7 @@ The user approved this contract. The current isolated branch implements and mach
 | `I-03` | `MACHINE_IMPLEMENTED` | Boss choice, chest, buffer/bag placement, board move/rotate/undo, explicit combination preview/result placement/cancel, Fate, provisional route and atomic commit remain domain-owned. `RestFlowUI` only renders snapshots and emits intents. |
 | `I-04` | `MACHINE_IMPLEMENTED` | `RunEconomyPolicy` owns 20% × 1G / Elite 5G / school Boss 10G receipts. Retry uses one persistent Ninja Soul only after every restore owner preflights its checkpoint payload. True Run-end Soul credit remains excluded. |
 | `I-05` | `MACHINE_IMPLEMENTED` | A deterministic non-catalog-order harness clears all four schools and reaches `final_binding_eligible`, without manufacturing the Final Binding package. |
-| `I-06` | `MACHINE_VERIFIED_CURRENT_TASK_BRANCH` | Godot 4.7.1 headless editor parse and five-second main smoke passed; full GUT passed `521/521` tests with `5769` assertions. Human/Player/device evidence stays `NOT_RUN`. |
+| `I-06` | `MACHINE_VERIFIED_MERGED_MAIN_PR129` | Godot 4.7.1 headless editor parse and five-second main smoke passed; full GUT passed `521/521` tests with `5769` assertions. GitHub GUT and Windows internal build passed on the exact PR head before squash merge. Human/Player/device evidence stays `NOT_RUN`. |
 
 `normal_kill_gold_pct` remains a legacy combat-modifier field used by older catalog data but it no longer changes the fixed `RunEconomyPolicy` payouts. Its removal or repurposing requires a later explicit catalog/decision package; it was not silently deleted here.
 

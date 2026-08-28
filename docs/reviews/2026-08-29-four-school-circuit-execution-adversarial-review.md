@@ -3,6 +3,8 @@
 ```yaml
 scope: ISSUE_126 + NINJA_FOUR_SCHOOL_CIRCUIT_V1
 base_main: e53b41cf5c7e138735df90c2b654e62acb4d50d8
+merged_main: 57ba43973c5e1b67c82b52921014db0a97a63378
+merged_pr: 129
 review_status: CLEAN_FOR_MACHINE_SCOPE_PENDING_STATUS_ICON_ASSET_LOCK
 human_player_evidence: NOT_RUN
 loops_completed: 5
