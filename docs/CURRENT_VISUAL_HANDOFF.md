@@ -8,6 +8,12 @@
 > It separates whole-screen references from runtime components and does not
 > authorize image generation from a gap.
 
+## 2026-08-28 DEC-034 — generate then user-lock
+
+Once fresh-read identifies a concrete runtime consumer, screen-reference, or planning-board brief, generate **one** candidate without asking for a separate pre-generation approval. After viewing it, the user alone chooses `LOCK`, `REVISE`, or `REJECT`.
+
+This does not authorize chat-start generation, gap-only/orphan art, or replacement of an approved asset. A candidate remains `GENERATED_EXPLORATION` until `LOCK`; durable repository/Notion storage, manifest/provenance, actual consumer integration, and runtime/Human evidence gates stay unchanged.
+
 ## 2026-08-28 current combat visual grammar — approved, implementation deferred
 
 - **Cheonsul:** blue plus amber/orange is the primary status/reaction family. It must not drift into the violet/black family reserved for Heukyeong.
@@ -334,7 +340,7 @@ rules and make the smallest needed asset set:
 
 Image process for any new pack remains:
 
-`current consumer contract -> text brief -> generated result review -> exact local source -> native Notion attachment + readback -> runtime validation`.
+`current consumer contract -> text brief -> generate one candidate -> user LOCK/REVISE/REJECT -> exact local source -> native Notion attachment + readback -> runtime validation`.
 
 ## 8. Quality and evidence bar
 

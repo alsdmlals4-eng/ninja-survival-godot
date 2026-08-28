@@ -13,7 +13,7 @@
 
 ## Solution
 
-DEC-033은 `GOLD`를 Run economy에 한정하고, Boss 처치 자격과 Result 시점의 영구 Ninja Soul 지급을 `RunSettlementLedger`와 `NinjaSoulWallet`으로 분리하는 계약을 승인했다. retry는 persistent Ninja Soul 1을 명시적으로 소비하며, 같은 학교 Boss는 한 Run에 한 번만 집계한다.
+DEC-033은 `GOLD`를 Run economy에 한정하고, Boss 처치 자격과 Result 시점의 영구 Ninja Soul 지급을 `RunSettlementLedger`와 `NinjaSoulWallet`으로 분리하는 계약을 승인했다. retry는 persistent Ninja Soul 1을 명시적으로 소비하며, 같은 학교 Boss는 한 Run에 한 번만 집계한다. 2026-08-28 Master GDD fresh-read에서 발견한 Notion Home의 `GOLD` 재도전 문구도 같은 의미로 교정했고, Human Home destination readback으로 영구 `닌자소울` 1 비용과 transient-loss/committed-state 복구 경계를 확인했다.
 
 ## Lesson
 

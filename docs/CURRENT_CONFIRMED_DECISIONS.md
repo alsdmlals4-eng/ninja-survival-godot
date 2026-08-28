@@ -6,8 +6,8 @@ updated_at: 2026-08-28 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
 current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
-last_completed_main_read: 508711f5572c37587088223469e337817076ce19
-last_completed_main_read_receipt: PRE_DEC033_RUN_END_NINJA_SOUL_SETTLEMENT_2026_08_28_KST
+last_completed_main_read: 746f8fe495b09a5412deb443f78021e008d947f5
+last_completed_main_read_receipt: PRE_MASTER_GDD_AND_DEC034_2026_08_28_KST
 last_product_implementation_merge: 63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497
 github_main_read_before_router_reconciliation: 695d01f278b1468e3c61880e3c10033f44057f65
 github_main_read_resolution: POST_PR_105_FRESH_GITHUB_DEFAULT_BRANCH_READBACK_2026_08_28_KST
@@ -75,6 +75,8 @@ Detailed DEC-031 default Run-end plus one-time emergency school-retry base scope
 Detailed DEC-032 optional expanded school-help scope: `docs/canon/2026-08-28-dec032-optional-expanded-school-help.md`.
 
 Detailed DEC-033 Run-end Ninja Soul settlement, Boss-only soul eligibility, and Ninja Soul retry scope: `docs/canon/2026-08-28-dec033-run-end-ninja-soul-settlement.md`.
+
+Detailed DEC-034 generate-then-approve visual workflow: `docs/canon/2026-08-28-dec034-generate-then-approve-visual-workflow.md`.
 
 ## 2. Protected integrated baseline
 
@@ -255,6 +257,12 @@ DEC-026 does not claim full playable encounter integration or final-calamity exa
 - `GOLD` remains transient Run economy: normal enemies have a recommended 20% chance for 1G, Elite gives fixed 5G, and a school Boss gives fixed 10G. The normal chance is a data-tunable initial recommendation, not verified balance.
 - Ninja Soul is persistent. At Run end only, a distinct school Boss clear awards 2 Soul and progress rank awards C/B/A/S = 0/1/2/4 Soul for 0/1/2–3/4 distinct school Boss clears.
 - Retry costs persistent Ninja Soul 1, requires a valid Workbench checkpoint, is limited to once per Run, and never grants immediate or duplicate Boss Soul. The Result must explain each settlement component separately.
+- Fourth-Boss `final_binding_eligible` in the first Human Slice is not true Run end and grants no Soul; success settlement waits for the separately reviewed final package.
+
+## 7.8 DEC-034 generate-then-approve visual workflow — APPROVED
+
+- After fresh-read identifies a concrete visual consumer, screen reference, or planning-board brief, create one candidate without asking for a separate pre-generation approval. The user approves only `LOCK`, `REVISE`, or `REJECT` after seeing it.
+- No chat-start, orphan-gap, or approved-asset replacement generation is allowed. Candidates remain `GENERATED_EXPLORATION` until user `LOCK`; durable asset storage, runtime implementation, and evidence gates remain unchanged.
 
 ## 8. Current implementation boundary — product implementation merged through T16 help
 
@@ -399,7 +407,7 @@ Shared visual DNA:
 - Four-school full-body sheet: **APPROVED SUPPORTING REFERENCE** for Presentation/Lore silhouette/motif comparison; not four runtime protagonists.
 - SD/action/icon three-panel sheet: **WORKING_REFERENCE**; SD/action/icon structure is reusable, but details must be revised to the fixed-character + main-school Stage-3 + all-four-coherent rules before runtime-art approval.
 
-No new image should be generated automatically on chat start. Resume via current visual handoff → text brief → user approval → requested generation → result review → durable Notion placement.
+No new image should be generated automatically on chat start. Once the current visual handoff identifies a concrete consumer or planning-board brief, user approval is required after—not before—one candidate generation; durable Notion placement still requires a user `LOCK`.
 
 ### Notion delivery evidence
 
