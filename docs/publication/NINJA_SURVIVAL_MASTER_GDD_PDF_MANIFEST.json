@@ -6,8 +6,8 @@
   "publication_policy": "ALWAYS_SYNC_ON_MASTER_GDD_OR_EXPORTER_CHANGE",
   "source": {
     "path": "docs/design/NINJA_SURVIVAL_MASTER_GDD.md",
-    "branch": "codex/human-gdd-pdf-review-gate-120",
-    "commit": "faa7bdd896d477c08ad91e646f81d77fad532fa1",
+    "branch": "main",
+    "commit": "ef3887f14b3317099d011dc8364d70468fe918bb",
     "sha256": "4c2d233d2c124d005ea19823215060af85a7e27b2d5c91eac85e5c3a43c38c21"
   },
   "generator": {
@@ -18,8 +18,8 @@
   },
   "artifact": {
     "path": "exports/NINJA_SURVIVAL_MASTER_PRODUCTION_GDD_20260828.pdf",
-    "sha256": "56002c893fbe4b2930cefb5971af075e6c659e7224f4c41477eff0a6cf3da8a7",
-    "generated_at": "2026-08-28T22:52:31+09:00",
+    "sha256": "19358b02195a9be191d42ab684ab47ef3e3bfea141eff6bd0ccc28c99638df56",
+    "generated_at": "2026-08-28T23:01:01+09:00",
     "page_count": 15,
     "page_size": "landscape A4"
   },
