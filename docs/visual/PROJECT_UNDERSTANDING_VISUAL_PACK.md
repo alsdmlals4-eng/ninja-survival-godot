@@ -3,7 +3,7 @@
 ```yaml
 status: CURRENT_STRUCTURED_PLANNING_SPEC
 updated_at: 2026-08-28 KST
-visual_board_status: REVISED_FOUR_PANEL_GENERATED_EXPLORATION_PENDING_USER_REVIEW
+visual_board_status: REVISED_FOUR_PANEL_GENERATED_EXPLORATION_REFERENCE_ONLY
 visual_board_composition: SCHOOL_SELECTION_TO_CHEONSUL_ACTION_TO_TRACE_BOSS_TO_RESULT_WORKBENCH
 previous_board_retained_element: STATUS_ICON_GRAMMAR_ONLY
 runtime_asset_status: NOT_CREATED
@@ -12,6 +12,8 @@ human_player_evidence: NOT_RUN
 ```
 
 This document owns exact screen meaning. Generated image pixels do not own text, UI labels, game rules, or state transitions.
+
+The user has retained the revised four-panel board as a planning reference while product-design review proceeds. It remains `GENERATED_EXPLORATION`, not an approved Project Asset, runtime implementation, Scene completion, or Human/Player evidence.
 
 ## Visual grammar used for every proposed scene
 
