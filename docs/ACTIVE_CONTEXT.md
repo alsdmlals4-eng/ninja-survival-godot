@@ -7,11 +7,11 @@ reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
 current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
-last_completed_main_read: bebff40f2a327bca19ca32d01d03631449314945
-last_completed_main_read_receipt: PRE_PR_115_DEC032_OPTIONAL_EXPANDED_HELP_2026_08_28_KST
+last_completed_main_read: 508711f5572c37587088223469e337817076ce19
+last_completed_main_read_receipt: PRE_DEC033_RUN_END_NINJA_SOUL_SETTLEMENT_2026_08_28_KST
 completed_main_label: T12_TO_T16_MACHINE_SCOPE_AND_CANON_FRONTIER_RECONCILED
 resume_state: REVISED_FOUR_PANEL_CORE_BOARD_REFERENCE_ONLY_PLANNING_REVIEW_ACTIVE
-next_product_gate: DEC029_DEC030_DEC031_DEC032_FOUR_SCHOOL_LIFECYCLE_CONTRACT_AND_PHASE2_REVIEW
+next_product_gate: DEC029_DEC030_DEC031_DEC032_DEC033_FOUR_SCHOOL_LIFECYCLE_CONTRACT_AND_PHASE2_REVIEW
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 current_screen_visual_coverage: docs/visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md
@@ -116,10 +116,10 @@ starts from one ninja school
 - No Final Binding Scene, final calamity Boss, support callback, final result or placeholder ending is included in this contract.
 - The product's final-calamity promise remains protected for a later separately reviewed package; this decision only prevents it from silently expanding the current four-school contract.
 
-### 2026-08-28 DEC-031 default Run-end + one GOLD retry
+### 2026-08-28 DEC-031 default Run-end + one emergency retry — PARTIALLY SUPERSEDED
 
-- Default death ends the Run. One explicit retry per Run may restore the last successful Workbench checkpoint only by spending checkpoint `GOLD`, then restarts the same active school from `0:00`.
-- Failed-school transient GOLD/rewards/Trace/progress are lost. No checkpoint or insufficient checkpoint GOLD means ordinary new Run; no new currency, token, automatic revive or retry recharge is allowed.
+- Default death ends the Run. One explicit retry per Run may restore the last successful Workbench checkpoint and restart the same active school from `0:00`.
+- Failed-school transient GOLD/rewards/Trace/progress are lost. Currency and durable settlement semantics are owned by DEC-033; no automatic revive or retry recharge is allowed.
 - The current implementation still reloads the whole scene on death. This is approved future scope, not runtime evidence.
 
 ### 2026-08-28 DEC-032 optional expanded school help
@@ -127,6 +127,12 @@ starts from one ninja school
 - Do not force a first-30-second tutorial prompt, card or action marker. A player who wants clarification may open a longer Korean explanation for the currently selected school through the existing combat help route.
 - The explanation must connect actual risk processing, what to watch, movement/positioning intent, and an observable success signal without promising unimplemented mechanics or moving auto-combat authority into UI.
 - Optional help is not evidence that an unassisted first-30-second reading works. Human/Player evidence remains `NOT_RUN`.
+
+### 2026-08-28 DEC-033 Run-end Ninja Soul settlement
+
+- GOLD is transient Run economy: normal enemies have recommended 20% chance for 1G; Elite gives 5G; a school Boss gives 10G. Exact normal chance is a data-tunable balance recommendation, not validation evidence.
+- Persistent Ninja Soul is settled once only at Run end: distinct school Boss clears give 2 each and progress rank C/B/A/S gives 0/1/2/4 for 0/1/2–3/4 Boss clears.
+- Elite grants no Ninja Soul. Boss eligibility survives a retry only as an idempotent settlement ledger; retry uses 1 persistent Ninja Soul, remains one per Run, and needs a valid Workbench checkpoint.
 
 ## Current integrated implementation truth
 
@@ -290,11 +296,11 @@ The active package also closes a relevant T12 safety gap: a successful `RestComm
 
 ```text
 T12~T16 machine scope + Cheonsul first authoring baseline
--> DEC-029/030/031 all-four-school lifecycle contract and Phase 2 review
+-> DEC-029/030/031/032/033 all-four-school lifecycle contract and Phase 2 review
 -> four-school shared-chassis/circuit implementation + machine evidence
 -> User vertical-slice validation through fourth-Boss Final Binding eligibility (Human/Player feedback remains deferred, not passed)
 -> separately reviewed Final Binding / final calamity package
 -> full-Run verification only after that package
 ```
 
-DEC-029/030/031 explicitly supersede the previous Cheonsul-only Human gate for this package: four-school shared-chassis completion and machine evidence now precede the first representative Human validation, whose endpoint is before the final package and whose failure rule remains default Run end with one GOLD-gated school retry. Do not treat that later Human gate as passed until actual user evidence exists.
+DEC-029/030/031/032/033 explicitly supersede the previous Cheonsul-only Human gate for this package: four-school shared-chassis completion and machine evidence now precede the first representative Human validation, whose endpoint is before the final package and whose failure rule remains default Run end with one Ninja-Soul-gated school retry. Do not treat that later Human gate as passed until actual user evidence exists.

@@ -30,8 +30,9 @@ Fresh-read한 현재 owner는 다음과 같다.
 - **Visual-board boundary:** 현재 네 패널 보드는 `REFERENCE_ONLY GENERATED_EXPLORATION`이다. runtime asset, Scene/UI 구현, Human Usability/Player Experience PASS가 아니다.
 - **DEC-029:** 사용자는 C안을 선택했다. 네 유파 모두의 완결 lifecycle과 shared four-school circuit을 구현·machine 검증한 뒤 첫 Human/Player validation을 연다.
 - **DEC-030:** 사용자는 A안을 선택했다. 첫 Human/Player validation은 네 번째 Boss Result/Reward가 `final_binding_eligible`을 확인하는 지점에서 끝난다. Final Binding Workbench·final calamity·ending은 이후 별도 package다.
-- **DEC-031:** 사용자는 B+A 혼합안을 선택했다. 기본 사망은 Run 전체 종료지만, 현재 Run `GOLD`를 써 한 Run에 한 번만 성공 Workbench checkpoint부터 같은 학교를 재도전할 수 있다. 비용은 `TUNE_NOT_LOCKED`다.
+- **DEC-031:** 기본 사망은 Run 전체 종료와 one-checkpoint retry의 경계를 소유한다. 재도전 통화와 영구 지갑 금지 범위는 DEC-033으로 supersede됐다.
 - **DEC-032:** 사용자는 C안을 선택했다. 첫 30초에 강제 안내를 넣지 않고, 원할 때 현재 선택 유파의 확장된 한국어 도움말을 읽는다. 도움말은 무보조 첫인상 검증을 대체하지 않는다.
+- **DEC-033:** 사용자는 Boss-only Ninja Soul을 승인했다. 런 종료에 distinct Boss × 2 + rank C/B/A/S = 0/1/2/4를 한 번 정산하고, retry는 persistent Ninja Soul 1을 쓴다. GOLD는 normal 20% × 1G / Elite 5G / Boss 10G로 분리한다.
 
 ## 3. 실제 대조 findings
 
@@ -44,6 +45,7 @@ Fresh-read한 현재 owner는 다음과 같다.
 | F-05 | `BLOCKING_GAP` | T12 domain transaction은 존재하지만 Cheonsul Workbench UI는 보상 후보를 읽기만 하며 선택·6×6 배치·회전·조합·가방 입력을 제공하지 않는다. commit은 `boss_reward_pending`으로 막힌다. | Boss reward → spatial Workbench → provisional route/Fate → atomic commit의 실제 입력 경로를 구현 범위에 포함해야 한다. | 불필요 — 보호 규칙과 T12 boundary가 이미 확정. |
 | F-06 | `WEAKNESS` | Cheonsul 선택 시 HUD의 `TEST · 정예 소환`/`TEST · 중간 보스 소환`이 현재 일반 combat controls와 함께 보인다. HUD에는 다수의 영문 운영 라벨도 남아 있다. | 검증용 점프는 player-facing slice에서 격리하고, 핵심 runtime 한국어 문구/정보 위계를 visual QA 항목으로 만든다. | 불필요 — release-near consumer와 테스트 도구를 분리한다. |
 | F-07 | `NOT_RUN` | GitHub GUT/Windows internal build evidence는 존재하지만 Ninja Survival의 live render, Human Usability, Player Experience, touch/device/export는 현재 증명되지 않았다. | Phase 4의 machine evidence와 Phase 5의 실제 Human Slice를 분리한다. | 불필요 — evidence ceiling을 낮추지 않는다. |
+| F-08 | `CONFLICT` | `RunBuildState`는 normal kill마다 확정 `1G`, Boss마다 `25G`를 주며 Elite reward·rank·persistent Ninja Soul wallet·Run-end settlement owner가 없다. | DEC-033의 normal chance / Elite 5G / Boss 10G / Boss-only Soul / Result settlement를 data·runtime·save·UI·test 단일 contract로 교체해야 한다. | 불필요 — 사용자 승인 DEC-033을 구현이 따라야 한다. |
 
 ## 4. 첫 Grill Me — 검증 진입 경계 · RESOLVED
 
@@ -57,7 +59,7 @@ Fresh-read한 현재 owner는 다음과 같다.
 | B. 네 유파 선택은 유지, Cheonsul만 검증 안내 | 전체 세계관의 폭은 즉시 보인다. | 플레이어가 비완결 경로를 선택해 핵심 Slice 평가를 흐릴 위험이 크다. | 높음 | 비추천 |
 | C. **네 유파 모두 완결 lifecycle로 올린 뒤 검증** | 시작 선택·route·Workbench 약속을 실제 four-school circuit으로 검증한다. | 네 유파 composition/Workbench/QA 범위가 커지고 최초 Human evidence가 늦어진다. | 낮음 | **사용자 승인** |
 
-이는 구현 세부가 아니라 **이번 Human/Player validation에서 플레이어에게 무엇을 약속하는가**를 정하는 product boundary다. C안과 DEC-030 final package 경계, 아래 DEC-031 failure/retry 경계, DEC-032 선택형 도움말 경계가 확정됐다. 남은 material decision은 Trace/Workbench/encounter/UI consumer의 계약 값 대조이며, 이 문서는 `PHASE_1_PLANNING_CO_DESIGN_IN_PROGRESS`를 유지한다.
+이는 구현 세부가 아니라 **이번 Human/Player validation에서 플레이어에게 무엇을 약속하는가**를 정하는 product boundary다. C안과 DEC-030 final package 경계, 아래 DEC-031/033 failure/retry/settlement 경계, DEC-032 선택형 도움말 경계가 확정됐다. 남은 material decision은 Trace/Workbench/encounter/UI consumer의 계약 값 대조이며, 이 문서는 `PHASE_1_PLANNING_CO_DESIGN_IN_PROGRESS`를 유지한다.
 
 ## 5. 두 번째 Grill Me — final package 경계 · RESOLVED
 
@@ -87,7 +89,7 @@ DEC-030은 최종 결산을 삭제하지 않는다. first Human test에서 Final
 | B. Run 전체 초기화 | 생존 실패와 route/Build 선택의 무게를 지킨다. | 현재 구현과 가깝지만 20분 circuit 검증 피로가 크다. | **기본 규칙 채택** |
 | C. 즉시 부활/부활 token | 초반 실패를 낮춘다. | 새 자원·UI·밸런스와 위험 약화가 크다. | 기각 |
 
-승인 규칙: 기본은 B, 단 한 Run에 한 번 valid Workbench checkpoint의 `GOLD`를 지불하면 A 방식으로 같은 활성 학교를 `0:00`부터 다시 시작한다. failed-school transient reward/Trace/progress는 모두 잃는다. exact cost는 Human balance test 전 `TUNE_NOT_LOCKED`다.
+승인 규칙: 기본은 B, 단 한 Run에 한 번 valid Workbench checkpoint가 있으면 persistent Ninja Soul `1`을 지불해 A 방식으로 같은 활성 학교를 `0:00`부터 다시 시작한다. failed-school transient reward/Trace/progress는 모두 잃는다. DEC-033의 distinct Boss eligibility만 Run-end settlement까지 idempotently 보존한다.
 
 ## 8. 네 번째 Grill Me — 첫 30초 설명 접근 · RESOLVED
 
