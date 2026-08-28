@@ -7,7 +7,7 @@ phase_2_preproduction_review: BLOCKED_BY_OPEN_PHASE_1_DECISIONS
 phase_3_element_production: NOT_STARTED
 phase_4_codex_implementation: NOT_STARTED
 phase_5_user_vertical_slice_validation: NOT_RUN
-completed_main_read: acfa6c5658b354b91a54e4e48521a8ed5baa0e9b
+completed_main_read: 2749b757810fe53fb832e38012966d7ce55cef0c
 open_prs_read_only:
   - PR_49_DRAFT_SUPERSEDED_T12_REFERENCE
 ```
@@ -30,6 +30,7 @@ Fresh-read한 현재 owner는 다음과 같다.
 - **Visual-board boundary:** 현재 네 패널 보드는 `REFERENCE_ONLY GENERATED_EXPLORATION`이다. runtime asset, Scene/UI 구현, Human Usability/Player Experience PASS가 아니다.
 - **DEC-029:** 사용자는 C안을 선택했다. 네 유파 모두의 완결 lifecycle과 shared four-school circuit을 구현·machine 검증한 뒤 첫 Human/Player validation을 연다.
 - **DEC-030:** 사용자는 A안을 선택했다. 첫 Human/Player validation은 네 번째 Boss Result/Reward가 `final_binding_eligible`을 확인하는 지점에서 끝난다. Final Binding Workbench·final calamity·ending은 이후 별도 package다.
+- **DEC-031:** 사용자는 B+A 혼합안을 선택했다. 기본 사망은 Run 전체 종료지만, 현재 Run `GOLD`를 써 한 Run에 한 번만 성공 Workbench checkpoint부터 같은 학교를 재도전할 수 있다. 비용은 `TUNE_NOT_LOCKED`다.
 
 ## 3. 실제 대조 findings
 
@@ -55,7 +56,7 @@ Fresh-read한 현재 owner는 다음과 같다.
 | B. 네 유파 선택은 유지, Cheonsul만 검증 안내 | 전체 세계관의 폭은 즉시 보인다. | 플레이어가 비완결 경로를 선택해 핵심 Slice 평가를 흐릴 위험이 크다. | 높음 | 비추천 |
 | C. **네 유파 모두 완결 lifecycle로 올린 뒤 검증** | 시작 선택·route·Workbench 약속을 실제 four-school circuit으로 검증한다. | 네 유파 composition/Workbench/QA 범위가 커지고 최초 Human evidence가 늦어진다. | 낮음 | **사용자 승인** |
 
-이는 구현 세부가 아니라 **이번 Human/Player validation에서 플레이어에게 무엇을 약속하는가**를 정하는 product boundary다. C안은 완료됐고, 아래의 DEC-030이 final package 경계까지 확정했다. failure/retry 등 implementation contract의 material decision은 아직 열려 있어 이 문서는 `PHASE_1_PLANNING_CO_DESIGN_IN_PROGRESS`를 유지한다.
+이는 구현 세부가 아니라 **이번 Human/Player validation에서 플레이어에게 무엇을 약속하는가**를 정하는 product boundary다. C안과 DEC-030 final package 경계, 아래 DEC-031 failure/retry 경계가 확정됐다. first-30-second 안내 등 implementation contract의 material decision은 아직 열려 있어 이 문서는 `PHASE_1_PLANNING_CO_DESIGN_IN_PROGRESS`를 유지한다.
 
 ## 5. 두 번째 Grill Me — final package 경계 · RESOLVED
 
@@ -71,6 +72,18 @@ DEC-030은 최종 결산을 삭제하지 않는다. first Human test에서 Final
 
 ## 6. 다음 순서
 
-1. DEC-029/030 경계에 맞춰 failure/retry, 첫 30초 안내, Trace/Workbench/visual consumer의 기존 정본과 실제 code 차이를 재검토한다.
+1. DEC-029/030/031 경계에 맞춰 첫 30초 안내, Trace/Workbench/visual consumer의 기존 정본과 실제 code 차이를 재검토한다.
 2. 아직 승인되지 않았고 제품 의미를 바꾸는 핵심 결정만 한 건씩 Grill Me로 확정한다.
 3. 남은 material decision이 없을 때만 단일 구현계약과 Phase 2 preproduction review packet을 작성한다.
+
+## 7. 세 번째 Grill Me — 패배와 재도전 · RESOLVED
+
+현재 구현은 player death 뒤 `Game Over`를 보이고 scene을 reload해 Run 전체를 새로 시작한다. canon에는 death/retry persistence owner가 없었다. 사용자는 **B+A**를 승인했다.
+
+| 후보 | Player value | 제작비/위험 | 판정 |
+|---|---|---|---|
+| A. 직전 Workbench부터 같은 학교 재도전 | 4유파 circuit과 Boss 학습을 이어가되, 이전 commit 선택은 보호한다. | checkpoint/restore/no-duplication contract가 필요하다. | **A 요소 채택** |
+| B. Run 전체 초기화 | 생존 실패와 route/Build 선택의 무게를 지킨다. | 현재 구현과 가깝지만 20분 circuit 검증 피로가 크다. | **기본 규칙 채택** |
+| C. 즉시 부활/부활 token | 초반 실패를 낮춘다. | 새 자원·UI·밸런스와 위험 약화가 크다. | 기각 |
+
+승인 규칙: 기본은 B, 단 한 Run에 한 번 valid Workbench checkpoint의 `GOLD`를 지불하면 A 방식으로 같은 활성 학교를 `0:00`부터 다시 시작한다. failed-school transient reward/Trace/progress는 모두 잃는다. exact cost는 Human balance test 전 `TUNE_NOT_LOCKED`다.

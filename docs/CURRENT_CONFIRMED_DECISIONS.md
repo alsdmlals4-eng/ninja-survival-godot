@@ -70,6 +70,8 @@ Detailed DEC-029 four-school lifecycle-before-Human-validation scope: `docs/cano
 
 Detailed DEC-030 four-school Human-validation endpoint-before-final-package scope: `docs/canon/2026-08-28-dec030-four-school-validation-endpoint-before-final-package.md`.
 
+Detailed DEC-031 default Run-end plus one-time GOLD emergency school-retry scope: `docs/canon/2026-08-28-dec031-gold-one-time-emergency-school-retry.md`.
+
 ## 2. Protected integrated baseline
 
 Keep and regression-protect until deliberately replaced by approved behavior changes:
@@ -232,6 +234,12 @@ DEC-026 does not claim full playable encounter integration or final-calamity exa
 - Final Binding Workbench, final calamity Boss, four-school support callbacks and final result/Ninja Soul/legend remain one later, separately reviewed package under DEC-018/020/022.
 - Do not manufacture a placeholder ending or special final reward that could make this evidence look like a full-Run completion.
 
+## 7.5 DEC-031 default Run-end plus one-time GOLD emergency school retry — APPROVED / implementation deferred
+
+- Default death ends the Run. One explicit retry per Run is conditionally available only from a valid successful Workbench checkpoint by spending checkpoint `GOLD` and restarting the same active school.
+- Failed-school transient GOLD/rewards/Trace and all Elite/Boss progress are lost; previously committed Backpack/Fate/route/clear order restore atomically. No checkpoint or insufficient checkpoint GOLD means ordinary Run end.
+- Exact cost is `TUNE_NOT_LOCKED`; do not add an extra currency, revive token, automatic revive, retry recharge, or persistence/meta system.
+
 ## 8. Current implementation boundary — product implementation merged through T16 help
 
 The last product implementation merge is:
@@ -292,14 +300,14 @@ T13 intentionally did not absorb MainController/T14 integration: it renders supp
 
 ```text
 T12~T16 implemented machine scope
--> DEC-029/030 four-school lifecycle implementation contract and Phase 2 review
+-> DEC-029/030/031 four-school lifecycle implementation contract and Phase 2 review
 -> all-four-school shared-chassis/circuit implementation and machine evidence
 -> User vertical-slice validation through fourth-Boss Final Binding eligibility (deferred / NOT_RUN)
 -> separately reviewed Final Binding / final calamity package
 -> full-Run verification only after that package
 ```
 
-DEC-029/030 authorize four-school shared-chassis implementation before the first Human gate and delimit that first test before the final package. The later Human gate remains mandatory and `NOT_RUN`; no machine evidence may replace it.
+DEC-029/030/031 authorize four-school shared-chassis implementation before the first Human gate, delimit that first test before the final package, and preserve default Run-end pressure with one GOLD-gated school retry. The later Human gate remains mandatory and `NOT_RUN`; no machine evidence may replace it.
 
 ## 11. World / `닌자의 신` product meaning
 
