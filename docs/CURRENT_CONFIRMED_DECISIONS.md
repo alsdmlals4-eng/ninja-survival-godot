@@ -6,8 +6,8 @@ updated_at: 2026-08-28 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
 current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
-last_completed_main_read: bebff40f2a327bca19ca32d01d03631449314945
-last_completed_main_read_receipt: PRE_PR_115_DEC032_OPTIONAL_EXPANDED_HELP_2026_08_28_KST
+last_completed_main_read: 508711f5572c37587088223469e337817076ce19
+last_completed_main_read_receipt: PRE_DEC033_RUN_END_NINJA_SOUL_SETTLEMENT_2026_08_28_KST
 last_product_implementation_merge: 63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497
 github_main_read_before_router_reconciliation: 695d01f278b1468e3c61880e3c10033f44057f65
 github_main_read_resolution: POST_PR_105_FRESH_GITHUB_DEFAULT_BRANCH_READBACK_2026_08_28_KST
@@ -70,9 +70,11 @@ Detailed DEC-029 four-school lifecycle-before-Human-validation scope: `docs/cano
 
 Detailed DEC-030 four-school Human-validation endpoint-before-final-package scope: `docs/canon/2026-08-28-dec030-four-school-validation-endpoint-before-final-package.md`.
 
-Detailed DEC-031 default Run-end plus one-time GOLD emergency school-retry scope: `docs/canon/2026-08-28-dec031-gold-one-time-emergency-school-retry.md`.
+Detailed DEC-031 default Run-end plus one-time emergency school-retry base scope: `docs/canon/2026-08-28-dec031-gold-one-time-emergency-school-retry.md`.
 
 Detailed DEC-032 optional expanded school-help scope: `docs/canon/2026-08-28-dec032-optional-expanded-school-help.md`.
+
+Detailed DEC-033 Run-end Ninja Soul settlement, Boss-only soul eligibility, and Ninja Soul retry scope: `docs/canon/2026-08-28-dec033-run-end-ninja-soul-settlement.md`.
 
 ## 2. Protected integrated baseline
 
@@ -236,17 +238,23 @@ DEC-026 does not claim full playable encounter integration or final-calamity exa
 - Final Binding Workbench, final calamity Boss, four-school support callbacks and final result/Ninja Soul/legend remain one later, separately reviewed package under DEC-018/020/022.
 - Do not manufacture a placeholder ending or special final reward that could make this evidence look like a full-Run completion.
 
-## 7.5 DEC-031 default Run-end plus one-time GOLD emergency school retry — APPROVED / implementation deferred
+## 7.5 DEC-031 default Run-end plus one-time emergency school retry — PARTIALLY SUPERSEDED / implementation deferred
 
-- Default death ends the Run. One explicit retry per Run is conditionally available only from a valid successful Workbench checkpoint by spending checkpoint `GOLD` and restarting the same active school.
-- Failed-school transient GOLD/rewards/Trace and all Elite/Boss progress are lost; previously committed Backpack/Fate/route/clear order restore atomically. No checkpoint or insufficient checkpoint GOLD means ordinary Run end.
-- Exact cost is `TUNE_NOT_LOCKED`; do not add an extra currency, revive token, automatic revive, retry recharge, or persistence/meta system.
+- Default death ends the Run. One explicit retry per Run remains conditionally available only from a valid successful Workbench checkpoint and restarts the same active school.
+- The retry currency, persistent Ninja Soul allowance, and Boss eligibility ledger are owned by DEC-033. Failed-school transient GOLD/rewards/Trace/progress are still lost; previously committed Backpack/Fate/route/clear order restore atomically.
+- No automatic revive or retry recharge is allowed.
 
 ## 7.6 DEC-032 optional expanded school help — APPROVED / implementation deferred
 
 - Do not add forced first-30-second prompts, tutorial cards or action markers. A player may instead open a clearer, expanded Korean explanation for the currently selected school through the existing combat help path.
 - Each explanation must connect actual risk processing → relevant screen information → player positioning attempt → observable success/next goal, without claiming future mechanics or changing automatic-combat ownership.
 - Help remains a post-baseline, optional explanation path. It cannot turn an unassisted first-30-second Human result into `PASS`; status presentation remains compact icon-first.
+
+## 7.7 DEC-033 Run-end Ninja Soul settlement — APPROVED / implementation deferred
+
+- `GOLD` remains transient Run economy: normal enemies have a recommended 20% chance for 1G, Elite gives fixed 5G, and a school Boss gives fixed 10G. The normal chance is a data-tunable initial recommendation, not verified balance.
+- Ninja Soul is persistent. At Run end only, a distinct school Boss clear awards 2 Soul and progress rank awards C/B/A/S = 0/1/2/4 Soul for 0/1/2–3/4 distinct school Boss clears.
+- Retry costs persistent Ninja Soul 1, requires a valid Workbench checkpoint, is limited to once per Run, and never grants immediate or duplicate Boss Soul. The Result must explain each settlement component separately.
 
 ## 8. Current implementation boundary — product implementation merged through T16 help
 
@@ -308,14 +316,14 @@ T13 intentionally did not absorb MainController/T14 integration: it renders supp
 
 ```text
 T12~T16 implemented machine scope
--> DEC-029/030/031 four-school lifecycle implementation contract and Phase 2 review
+-> DEC-029/030/031/032/033 four-school lifecycle implementation contract and Phase 2 review
 -> all-four-school shared-chassis/circuit implementation and machine evidence
 -> User vertical-slice validation through fourth-Boss Final Binding eligibility (deferred / NOT_RUN)
 -> separately reviewed Final Binding / final calamity package
 -> full-Run verification only after that package
 ```
 
-DEC-029/030/031 authorize four-school shared-chassis implementation before the first Human gate, delimit that first test before the final package, and preserve default Run-end pressure with one GOLD-gated school retry. The later Human gate remains mandatory and `NOT_RUN`; no machine evidence may replace it.
+DEC-029/030/031/032/033 authorize four-school shared-chassis implementation before the first Human gate, delimit that first test before the final package, require optional help as a non-substitute for unassisted readability, and preserve default Run-end pressure with one Ninja-Soul-gated school retry. The later Human gate remains mandatory and `NOT_RUN`; no machine evidence may replace it.
 
 ## 11. World / `닌자의 신` product meaning
 
