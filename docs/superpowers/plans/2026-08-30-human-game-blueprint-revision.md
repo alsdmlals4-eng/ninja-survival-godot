@@ -140,12 +140,12 @@ pdftoppm -png -r 144 exports\NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf <render-prefi
 player-control clarity -> 3x3 growth truth -> Stage/Phase consistency -> page/scene continuity -> publication/evidence boundary
 ```
 
-- [ ] **Step 2: Re-run source, PDF, and renderer checks after corrections**
+- [x] **Step 2: Re-run source, PDF, and renderer checks after corrections**
 
 Run: `python -m unittest tools/test_export_human_gdd_pdf.py -v`; `pdfinfo`; `pypdf`; full-page PNG rendering.
 Expected: each check has fresh recorded output; no claim is derived from a prior run.
 
-- [ ] **Step 3: Recalculate remaining work**
+- [x] **Step 3: Recalculate remaining work**
 
 ```text
 Current scope: human blueprint/source/publication = complete candidate only when all five review loops are clean.
