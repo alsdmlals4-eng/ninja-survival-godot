@@ -9,8 +9,8 @@
   "source": {
     "path": "docs/design/NINJA_SURVIVAL_HUMAN_GDD.md",
     "branch": "codex/human-game-blueprint-revision-132",
-    "commit": "2d20d379bcf8019d66addb7af51fee6c87265a09",
-    "sha256": "4dccd7c2172a2a296ba1d9e7b89e8425e989ed00a4e754fd947b6ec9244c5326",
+    "commit": "ae3e1b857ca9620885ed853f27364680b4d1e8c0",
+    "sha256": "141f46fbb58540253889db67f8d7808bb4a199d168ffcafa0bad7826dc6dc09d",
     "page_contract": "28 explicit human-review pages"
   },
   "generator": {
@@ -24,20 +24,28 @@
   },
   "artifact": {
     "path": "exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf",
-    "sha256": "623f15fbac5bf29c22e216eab916af46325223eb6f3bd60af43f8467f8e6a0da",
-    "generated_at": "2026-08-30T01:10:19+09:00",
-    "byte_size": 23819681,
+    "sha256": "9a94a2d13147f6def3e155aad3880e5962dab7cef1e53dd29861059016fb94b0",
+    "generated_at": "2026-08-30T08:46:31+09:00",
+    "byte_size": 22589109,
     "page_count": 28,
     "page_size": "landscape A4"
   },
   "validation": {
-    "unit_test": "PASSED: 7/7; includes explicit 28-page source and rendered-page contract",
+    "unit_test": "PASSED: 8/8; includes explicit 28-page source/rendered-page contract and locked continuous-floor reference binding",
     "pdfinfo": "PASSED: opens; 28 pages; landscape A4; human-blueprint title",
     "pypdf_text_contract": "PASSED: 28 pages; 0 blank extracted-text pages; 01/28 and 28/28 markers; player-control, 3x3, Stage/Phase text present",
     "render_command": "pdftoppm -png -r 144",
     "automated_render_review": "PASSED: 28/28 PNG; 0 zero-byte pages",
-    "codex_visual_review": "PASSED: all 28 rendered pages inspected; Korean glyphs, headers, cards, actual-screen references, flow diagrams, 3x3 diagram, and page numbers are legible without observed overlap or clipping",
+    "codex_visual_review": "PASSED: 28/28 pages rendered; changed pages 10, 25, and 28 re-inspected at high detail. Korean glyphs, headers, cards, the locked battle reference, current-runtime boundary, and page numbers are legible without observed overlap or clipping. Unchanged pages retain the prior full visual review.",
     "human_visual_review": "NOT_RUN"
   },
-  "evidence_ceiling": "Publication validation does not prove Godot runtime, 3x3 backpack implementation, public Stage/Phase UI migration, Human Usability, Player Experience, touch/gamepad, device/export, or release readiness."
+  "locked_visual_reference": {
+    "asset_id": "SCRREF-BATTLE-AUTOCOMBAT-03",
+    "source": "docs/visual/screen-references/scrref-battle-autocombat-continuous-floor-v3.png",
+    "sha256": "68727c87b5f81dee18f06bb0955d37314a3e0ec03f04fe9dd33f842df0dd6eac",
+    "status": "USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME",
+    "human_consumer": "Blueprint page 10; exported PDF page 10",
+    "runtime_consumer": null
+  },
+  "evidence_ceiling": "Publication validation does not prove Godot runtime, a seamless tiled floor, independent prop implementation, 3x3 backpack implementation, public Stage/Phase UI migration, Human Usability, Player Experience, touch/gamepad, device/export, or release readiness."
 }

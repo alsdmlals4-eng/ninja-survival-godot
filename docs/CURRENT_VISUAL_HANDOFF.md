@@ -1,6 +1,6 @@
 # CURRENT VISUAL HANDOFF — Ninja Survival / 닌자의 신
 
-> Updated: 2026-08-28 KST
+> Updated: 2026-08-30 KST
 > Purpose: next-chat resume router for the approved visual direction and current image-production state.
 > Product/runtime authority remains `AGENTS.md` → `docs/CURRENT_CONFIRMED_DECISIONS.md` → `docs/ACTIVE_CONTEXT.md` → actual code/data/tests. This file owns the **current visual continuation state only**.
 
