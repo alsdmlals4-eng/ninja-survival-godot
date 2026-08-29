@@ -255,38 +255,26 @@ Approved style traits:
 
 The denser parchment infographic references are useful for **supporting explanatory layouts**, not the master game-art style.
 
-A needed image candidate may be generated before per-image user lock when all
-of the following are true:
-
-- the current approved work requires an actual runtime consumer or a concrete
-  Blueprint/planning-board surface;
-- current canon, the approved master style, existing approved images and prior
-  drafts have been read back;
-- `keep / avoid / do not drift`, target size/role and state-family requirements
-  are explicit;
-- image generation uses the host image model, not SVG, Canvas, Python drawing,
-  Godot primitives or another code-drawn fallback; and
-- generation does not silently choose a new master Art Direction or expand the
-  approved product scope.
-
-Current image workflow:
+DEC-034 owns the active `NEED_DRIVEN_GENERATE_THEN_LOCK` route. When a concrete actual consumer, planned player-facing surface, product-distribution need, or current Blueprint planning-board purpose is confirmed, do not stop for a routine pre-generation approval question. First fresh-read current canon, the approved master style reference and relevant approved images/mockups, actual consumer, state family, dimensions, rights/provenance boundary, and reusable approved assets. Then use the host image model to generate exactly one consistent candidate or one consumer-required bounded state-family package and stop for the user to decide `LOCK / REVISE / REJECT`.
 
 ```text
-current canon + approved visual anchor + prior drafts + actual/planned consumer
--> bounded brief and continuity constraints
--> generate one candidate or one consumer-required bounded state family
+current canon + visual canon + actual consumer/planning-board purpose
+-> approved visual anchor readback
+-> existing approved asset reuse/edit check
+-> keep / avoid / do-not-drift / state / size / rights brief
+-> generate one candidate or bounded consumer-required state family with the image model
 -> objective QA
 -> STOP
--> user LOCK / REVISE / REJECT / REFERENCE_ONLY
+-> user LOCK / REVISE / REJECT
 ```
 
-Do not chain unrelated characters, poses, screens or variants merely because
-one candidate succeeded. `GENERATED_CANDIDATE`, `USER_APPROVED`,
-`CANON_REGISTERED`, `IMPLEMENTED` and `RUNTIME_VERIFIED` are separate states.
+A coverage gap, a vague decorative need, or another project's image is not generation authority. Do not automatically chain to another character, screen, independent variant, or asset family.
 
-A chat image is not a durable project asset until user `LOCK`, repository
-source/manifest provenance, exact consumer/state mapping, and its applicable
-import/runtime evidence gates succeed.
+```text
+GENERATED_CANDIDATE != USER_LOCKED != PROJECT_ASSET_APPROVED != IMPLEMENTED != RUNTIME_VERIFIED
+```
+
+A chat image is not a durable project asset until user `LOCK`, repository source/manifest provenance, exact consumer/state mapping, and its applicable evidence gates succeed. `LOCK` is still required before canon registration or production promotion, and Blueprint final approval is still required before a new implementation package.
 
 ## 12. Repository GDD / AI-System separation
 
@@ -370,25 +358,13 @@ evidence unless that exact evidence class was actually executed.
 
 ## 15.2 Long-term automation and learning
 
-Use the current Base
-`docs/AUTONOMOUS_RESEARCH_IMPLEMENTATION_AND_LEARNING_POLICY.md` when adopted
-by the project.
+Use the current Base `docs/AUTONOMOUS_QUALITY_OPTIMIZATION_AND_LEARNING_POLICY.md` when adopted by the project.
 
-- Prefer the lowest long-term total cost and strongest maintainability,
-  verification, reuse and rollback over a quick local patch.
-- Avoid speculative frameworks, duplicate owners and tool proliferation; use
-  the minimum complexity that closes the current product need durably.
-- Within the approved scope, continue fresh-read, research, comparison,
-  candidate preparation, exact checks, readback, reversible correction,
-  remaining-work recalculation and next safe work without routine user
-  checkpoints.
-- Escalate only core player meaning, final visual lock, irreversible
-  migration/deletion, external release, security/permission, new cost or a
-  genuine preference tie.
-- Capture reusable learning as
-  `problem -> root cause -> fix -> verification -> regression guard ->
-  project owner -> Base promotion candidate`; do not claim model self-training
-  or create a new document when there is no reusable lesson.
+- Prefer `LONG_TERM_EFFICIENCY_AND_COMPLETENESS_FIRST`, the lowest `TOTAL_LIFECYCLE_COST`, strongest maintainability, verification, reuse and rollback over a quick local patch.
+- Keep `MINIMUM_NECESSARY_COMPLEXITY`; avoid speculative frameworks, duplicate owners, tool proliferation and paid dependencies without current consumer, test, measurable benefit and safe rollback.
+- Within the approved scope, continue fresh-read, research, comparison, candidate preparation, exact checks, readback, reversible correction, remaining-work recalculation and next safe work without routine user checkpoints.
+- Escalate only core player meaning, final visual lock, irreversible migration/deletion, external release, security/permission, new cost or a genuine preference tie; fail closed on canon conflict or unverified high-risk input.
+- Capture reusable learning as `problem -> root cause -> fix -> verification -> regression guard -> project owner -> Base promotion candidate`; do not claim model self-training or create a new document when there is no reusable lesson.
 
 ## 16. Adversarial review / evidence rules
 
