@@ -8,159 +8,95 @@ This repository is the Godot 4.x / GDScript rebuild of `닌자 서바이벌 (닌
 
 The Unity archive is reference material only. Do not line-by-line port Unity C#/MonoBehaviour/Prefab structures into the Godot product.
 
-Project repository: `alsdmlals4-eng/ninja-survival-godot`.
+Do not preserve local path, editor version, port, PR number, SHA, or current task frontier in this file. Re-read those facts from the current repository and tool session.
 
-The last recorded local project root is `C:/Users/user/Documents/GitHub/Ninza/ninja-survival-godot`, but local path/tool/session facts must be re-read before local mutation. Do not revive retired per-project Godot binary/port assumptions from historical records.
+## 2. Authority order and bootstrap
 
-## 2. Authority order
-
-Use the following order when sources differ:
+Use the following order when sources differ.
 
 1. latest user instruction in the current task/chat
 2. this `AGENTS.md` and project safety/engine/data rules
 3. `docs/CURRENT_CONFIRMED_DECISIONS.md`
-4. `docs/canon/2026-08-21-dec014-025-product-canon.md` + `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`
+4. current product canon under `docs/canon/`
 5. `docs/ACTIVE_CONTEXT.md` for mutable resume state
-6. current migration traceability / approved implementation plan
-7. actual code / Scene / data / assets / tests for implementation reality
-8. project-adopted Base patterns
-9. current Base remote
-10. benchmarks / external evidence / historical notes / assumptions
+6. current migration/implementation plan and handoff
+7. actual code, Scene, Resource, data, assets, tests and runtime evidence
+8. project-adopted Base contracts
+9. current Base completed main
+10. current official/primary research, directly relevant field evidence, historical notes and assumptions
 
-`docs/ACTIVE_CONTEXT.md` is a state router, not a replacement for Decision/Canon owners.
+`docs/ACTIVE_CONTEXT.md` is the state router. This file must not duplicate a changing implementation frontier or historical PR ledger.
 
-## 2.1 Repository-only documentation policy — DEC-035
-
-The user approved the repository-only cutover on 2026-08-28 KST **after
-preserving the existing Notion structure and current work products**. The
-migration coverage and exclusions are owned by
-`docs/migration/notion/MIGRATION_MANIFEST.md`.
-
-- Repository: the single active owner for human-readable GDD/Flow/Visual
-  Bible, structured canon, asset provenance, code, data, Scene/Resource,
-  tests, production handoff, and runtime evidence.
-- During a live migration only: Notion is a read-only source. No page,
-  database, attachment or comment may be modified or deleted.
-- After the migration completion check: existing Notion pages/attachments are
-  `HISTORICAL_REFERENCE_ONLY`; do not read, write, upload, attach, search or
-  require a readback from them for current/future work.
-- A new asset is durable only after its repository source, SHA-256/provenance
-  manifest, explicit approval state, actual consumer, and applicable
-  import/runtime evidence are recorded in the repository. Historical Notion
-  attachments neither block nor satisfy a future asset gate.
-- Google Sheets: migration compatibility only when unique unmigrated material
-  exists; do not introduce a new external owner.
-
-## 3. Delivery-contract boundary
-
-The repository stores the historical adapter `PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION_v4.5_r2.md`. Do not edit it merely to look current.
-
-When the user supplies a newer task execution contract in the current chat, the latest user instruction wins for that task. Treat the newer contract as an execution overlay unless the user separately authorizes replacing the repository-stored historical adapter.
-
-Core phase rule:
+Before mutation, fresh-read:
 
 ```text
-PLAN / canon / product decision
--> explicit product decisions complete for the package
--> Definition of Ready / implementation-ready gate
--> BUILD / TDD or acceptance-evidence package
--> exact verification
--> adversarial review
--> PR / merge
--> post-merge repository readback
+latest completed default branch
+→ current open/recent same-goal PRs
+→ this AGENTS.md
+→ CURRENT_CONFIRMED_DECISIONS / canon / ACTIVE_CONTEXT
+→ actual implementation consumers and tests
+→ current adopted Base owners required by the goal
 ```
 
-Do not infer current readiness from an old Phase-B record after material product decisions or implementation state changed.
+Do not infer current readiness from memory, a historical T-number, or an old PR.
 
-## 4. Current product target
+## 3. Repository-only documentation policy — DEC-035
+
+- `REPOSITORY_HUMAN_FACING_CANON`: Master GDD, Flow, Visual Bible, approved decisions, visual locks, asset/provenance and story/product explanation.
+- `REPOSITORY_STRUCTURED_CANON`: Markdown, JSON, game data, GDScript, Scene, Resource, config and tests.
+- `REPOSITORY_RUNTIME_TRUTH`: actual Godot execution, logs, screenshots/video and human/device evidence.
+- Notion is `HISTORICAL_REFERENCE_ONLY` after the recorded migration. Do not use it as current truth, approval owner, write target or completion gate. A user-authorized bounded archive migration may read unique material and must close with repository destination readback.
+- Google Sheets is migration compatibility only when unique unmigrated material exists.
+
+A new asset is durable only after repository source, SHA-256/provenance, approval state, actual consumer and applicable import/runtime evidence are recorded. Historical attachments neither block nor satisfy a current asset gate.
+
+## 4. Product direction and protected invariants
+
+Current detailed product truth belongs to current Decisions, canon, Active Context and actual implementation. Preserve these high-level invariants unless the user makes a new product decision.
+
+### Four-school identity
+
+- **봉마류:** mobile stronghold using familiars and barriers.
+- **천술류:** ordered status and elemental reaction setup.
+- **귀인류:** dangerous close-range presence and sustained proximity; low HP alone is not the universal identity.
+- **흑영류:** threat-priority marking and execution compatible with auto combat.
+
+The schools are distinct ways of handling danger, not elemental skins.
+
+### Run and route
 
 ```text
 starting school
--> choose one unvisited school battlefield
--> Core Monsters / Stage gimmick
--> ~3 min school Elite
--> chest token + school trace
--> trace recovery
--> Boss warning / dual gate
--> school Boss around five-minute boundary
--> RESULT / Boss Reward
--> return to four-school joint branch
--> trace STABILIZED / tradition access package opens
--> Persistent Workbench
--> provisional next-school selection
--> Shop / Chest / Backpack / Combination
--> Fate atomically commits build + Fate + next route
--> clear all four schools exactly once
--> Final Binding Workbench
--> separate final calamity Boss
--> final result / Ninja Soul / legend
+→ unvisited school battlefield
+→ Core pressure / school gimmick
+→ Elite
+→ chest token + trace
+→ trace recovery
+→ Boss warning / gate
+→ Boss
+→ result / reward
+→ four-school branch
+→ Persistent Workbench
+→ provisional next route
+→ Shop / Chest / Backpack / Combination
+→ Fate atomically commits build + Fate + route
+→ clear all four schools once
+→ Final Binding Workbench
+→ final calamity Boss
+→ final result / Ninja Soul / legend
 ```
 
-`~20 minutes` is the target active-combat time through the fourth school Boss, not the entire Run end.
+- choose only among unvisited schools
+- Workbench route remains provisional before Fate
+- final backpack snapshot, pending Fate and next route commit all-or-none
+- UI renders snapshots and emits intents; domain objects own legality, economy, route and transaction rules
 
-Current product canon:
+### Backpack and acquisition
 
-- `docs/canon/2026-08-21-dec014-025-product-canon.md`
-- `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`
-
-## 5. Current implementation reality — T12~T16 merged machine scope
-
-`265bab32da087c070ea2ea0d98a3bdace1e10f7f` is the historical T11 reactivation baseline, not the current implementation frontier. Before mutation, always fresh-read the remote default branch; do not turn this document's own revision into a durable current-main pointer.
-
-Current facts:
-
-- MVP-0 basic combat: integrated.
-- MVP-1 combat DDD: integrated.
-- MVP-2 four-school shallow runtime: integrated migration baseline.
-- MVP-3 result/GOLD/Shop/Fate/three-segment runtime: integrated rollback/regression baseline.
-- T01~T05 spatial data / BackpackState / resolver / REST session / atomic first-tier combination: merged.
-- T06 committed `RunBuildState` modifier authority: merged.
-- T07 Boss/Shop/Chest spatial acquisition transaction foundation: merged.
-- T08 `RunRouteState` four-school route domain: merged.
-- T09 encounter definitions + Stage profiles: merged.
-- T10 Elite -> Trace -> Boss lifecycle/domain gate: merged.
-- T11 tradition access packages + Boss/Shop/Chest lane-first reward selection: merged.
-- T12 atomic Workbench + Fate + next-route commit: merged by PR #61 (`41202283b75921efb7691e77c3de1502d77410d1`), automated evidence only.
-- T13 Persistent Workbench route-preview UI/input presentation: merged by PR #63 (`71152c7aa9dff4cc05eec76d4d2d70be47755f6c`).
-- T14 Cheonsul release-near lifecycle/Workbench entry slice: merged by PR #66 (`51e39737f272db0962a3dabada51bae10cd1fa97`), automated evidence only.
-- T15 starting-school Korean function help: merged by PR #69 (`e2cfe4452e1de5a224f5cd7dee8e47a104c868e0`), machine verified only.
-- T16 in-combat current-school help: merged by PR #73 (`63fcf81fdf4b5d1bbff14b5721a13f7c1afe1497`), machine/runtime-input evidence only; visible modal semantics remain unconfirmed.
-- Human Usability / Player Experience / device / Android-export validation: `NOT_RUN`.
-
-T01~T16 source/test evidence proves only its actual automated, domain, machine-input, or explicitly recorded runtime scope. It does not prove that the intended new Run is playable end-to-end or fun/readable to a human.
-
-## 6. Current next product gate — User vertical-slice validation
-
-The next product gate is the approved Cheonsul Human vertical-slice validation: school readability, Core → Elite → Trace → Boss tension, telegraph fairness, Trace purpose, Workbench comprehension/fatigue, Korean readability, and complete mouse/keyboard-gamepad/touch paths. This gate remains `NOT_RUN`; do not infer a pass from T12~T16 automation.
-
-PR #43 and #44 are closed historical WIP. Draft PR #49 is a superseded T12 reference. All three are read-only: do not reopen, merge, rebase, or resume them as current authority.
-
-If a later task touches an already-merged T12~T16 area:
-
-```text
-fetch then-current completed main
--> re-read Base + project authority
--> inspect #43/#44/#49 read-only only when relevant
--> compare actual current code/tests/canon
--> create a fresh current-task branch/PR
--> TDD / exact-head verification / merge / readback
-```
-
-The protected atomic Workbench boundary remains:
-
-- Workbench route remains provisional before commit.
-- Final backpack snapshot + pending Fate + provisional next school must commit all-or-none.
-- Existing domain owners remain singular; do not move geometry/economy/route/Fate authority into UI.
-- follow-up UI, encounter, or full-run behavior is not silently absorbed into a transaction-only scope.
-
-## 7. Protected spatial / Workbench rules
-
-Do not regress these approved MVP-4 decisions:
-
-- fixed 6x6 total board / centered 4x3 starting active area
+- fixed 6x6 total board with centered 4x3 starting active area
 - bag purchase expands usable area
 - item and bag 90-degree rotation
-- rectangular regular items; selected L/T bag shapes
+- rectangular regular items and approved L/T bag shapes
 - orthogonal adjacency
 - special-bag activation on one-cell-or-more overlap
 - six-slot REST work buffer
@@ -168,246 +104,179 @@ Do not regress these approved MVP-4 decisions:
 - Boss / Shop / Chest acquisition pillars
 - preview/uncommitted items contribute zero combat power
 - one committed spatial modifier snapshot is combat authority
-- whole-layout movement mode is explicit/visible
-- mouse, keyboard/gamepad focus and touch each need a complete core path
+- mouse, keyboard/gamepad and touch each need a complete visible path
 
 Architecture direction:
 
-`definitions -> BackpackState -> BackpackResolver -> RestBackpackSession/CombinationResolver -> committed RunBuildState -> combat`.
-
-UI renders snapshots and emits intents; domain objects own legality, economy, route and transaction rules.
-
-## 8. Four-school product identity
-
-The four schools are not elemental skins. They are distinct ways of handling danger:
-
-- **봉마류:** mobile stronghold — prepare space and let familiars/barriers fight.
-- **천술류:** statuses + ordered elemental reactions — set up and transform the field.
-- **귀인류:** dangerous close-range presence — sustain risky proximity for power; low HP alone is not the universal identity.
-- **흑영류:** threat-priority mark/execution — indirectly influence which dangerous target dies first while staying auto-combat compatible.
-
-Current MVP-2 implementations are migration baselines, not wholesale deletion targets.
-
-## 9. Trace / route / reward rules
-
-Trace authority:
-
-- Elite kill -> chest token + trace `AVAILABLE`.
-- Trace is non-expiring Run progression and separate from RewardOrb.
-- Recovery does not give ORB/STYLE/GOLD or direct combat power.
-- Boss requires Elite + trace + time + warning gates.
-- Boss clear + branch return -> `STABILIZED`.
-- `STABILIZED` opens a tradition acquisition package.
-- Actual power still comes from acquire -> backpack placement -> adjacency -> combination -> committed modifier snapshot.
-
-Route authority:
-
-- choose only among unvisited schools,
-- school identity and Stage 1..4 are separate axes,
-- Workbench route selection is provisional,
-- Fate is the final build + Fate + route commit boundary after T12 migration,
-- clear order is retained for final support callbacks.
-
-Reward authority:
-
-- keep the existing 19 base-acquisition item IDs, 3 first-tier combinations and 5 purchasable bags unless explicitly changed,
-- access packages control eligibility/timing, not automatic school stats,
-- Boss reward preserves readable continuity / newly liberated tradition / bridge-universal lanes when possible,
-- Shop/Chest use lane-first selection and canonical item-ID dedupe rather than one flat oversized pool.
-
-## 10. Encounter / Vertical Slice rules
-
-DEC-026 selected **shared attack primitives + school-owned encounter compositions**.
-
-Per school authoring target:
-
-- Core Monster x3
-- Elite x1
-- Boss x1
-- bounded gimmick/pattern library
-
-Stage budget:
-
-- Stage 1: base signature, max 1 major hazard
-- Stage 2: one interaction pattern, max 1 advanced gimmick at once
-- Stage 3: one synergy/field layer, max 2 advanced gimmicks at once
-- Stage 4: mastery mix + one Boss capstone, still max 2 advanced gimmicks at once
-
-Before multiplying full production content across four schools, prove one **release-near Cheonsul slice**:
-
-`signature <=30 sec -> Core pressure -> ~3m Elite -> trace -> ~5m Boss -> reward -> Persistent Workbench -> next-route preview`.
-
-Human validation must measure school readability, tension curve, telegraph fairness, trace clarity, Workbench comprehension/fatigue, backpack decision value, and Korean readability.
-
-## 11. Visual direction and image gate
-
-Current user-approved master style reference is the **first image supplied in the 2026-08-25 approval turn**.
-
-Approved style traits:
-
-- dark moonlit ninja fantasy
-- premium painterly anime illustration
-- strong silhouette/readability
-- ink/brush framing and Korean brush-calligraphy title language
-- black / deep navy / red / warm gold core palette
-- school-specific gold, elemental blue/orange, red, purple/black accents
-- dramatic but readable VFX and battlefield density
-
-The denser parchment infographic references are useful for **supporting explanatory layouts**, not the master game-art style.
-
-Do not generate or edit another project image unless the user explicitly asks. Image workflow:
-
 ```text
-current canon + visual canon + actual consumer/planning-board brief
--> text brief
--> generate exactly one candidate
--> STOP
--> user LOCK / REVISE / REJECT
+definitions
+→ BackpackState
+→ BackpackResolver
+→ RestBackpackSession / CombinationResolver
+→ committed RunBuildState
+→ combat
 ```
 
-A chat image is not a durable project asset until user `LOCK`, repository
-source/manifest provenance, and its applicable consumer/evidence gates succeed.
+### Trace, encounter and content budget
 
-## 12. Repository GDD / AI-System separation
+- Elite kill makes a non-expiring Run trace available.
+- Trace recovery is progression, not direct ORB/STYLE/GOLD or combat power.
+- Boss requires the current approved Elite/trace/time/warning gates.
+- `STABILIZED` opens a tradition acquisition package; power still comes through acquisition, placement, adjacency, combination and commit.
+- Use shared attack primitives with school-owned encounter compositions.
+- Prove one release-near Cheonsul vertical slice before multiplying full production content across all schools.
+- Human validation must cover school readability, tension curve, telegraph fairness, trace clarity, Workbench comprehension/fatigue, backpack decision value and Korean readability.
 
-`docs/design/NINJA_SURVIVAL_MASTER_GDD.md` is the self-contained
-human-readable game-learning surface, not a raw production dashboard.
+Do not add a second wave system, new autoload/save/meta-power authority, or broad framework without demonstrated need, current feasibility evidence and approval.
 
-The repository GDD should directly show:
+## 5. Work style and implementation feasibility
 
-- one-line promise / player fantasy
-- full Run Flow
-- four-school philosophies
-- backpack/combination/Fate core data and decisions
-- world/story premise needed to understand `닌자의 신`
-- approved visual direction / actual approved visual anchor when durably attached
-- AI interpretation for user correction
-- human edit guide
-- compact implementation/evidence ceiling and next product gate
+```text
+IMPLEMENTATION_FEASIBILITY_BEFORE_COMMITMENT
+CURRENT_OFFICIAL_PRIMARY_RESEARCH_REQUIRED
+DIRECTLY_RELEVANT_FIELD_EVIDENCE_REQUIRED
+ACTUAL_PROJECT_STRUCTURE_FEASIBILITY_REQUIRED
+LONG_TERM_QUALITY_OVER_LOCAL_SPEED
+ROOT_CAUSE_AND_REUSE_BEFORE_REPEATED_MANUAL_PATCH
+MINIMUM_SUFFICIENT_COMPLEXITY
+SPECULATIVE_OVERENGINEERING_REJECTED
+PLAYABLE_OR_OPERATIONAL_VALUE_OVER_DOCUMENT_VOLUME
+```
 
-Raw SHA, full PR/CI history, local path/ports/tool routing and detailed Txx
-receipts belong in repository production-handoff/evidence documents.
+For every material planning, system, data, UX, visual, implementation or workflow decision:
 
-## 13. Historical PR / branch protection
+1. inspect current canon, actual implementation and reusable project/Base owners
+2. run targeted current Internet research using official/primary sources and directly relevant successful, failed or mixed field cases
+3. compare materially distinct viable approaches when the choice affects product or architecture
+4. assess player value and 1-person-development fit
+5. verify the actual Godot Scene/node/Resource/script/data/state/signal/save/consumer boundary
+6. verify tests, debugging, runtime/render/input, performance, platform, rights, cost, security, migration and rollback
+7. classify the result `FEASIBLE | PARTIAL | BLOCKED_UNVERIFIED`
 
-- Open/draft/ready PRs are read-only by default unless current-task continuation or explicit named authorization allows mutation.
-- PR #17: closed/unmerged historical.
-- PR #27/#29/#31/#33/#35 and T06~T11 implementation PRs: merged historical evidence.
-- PR #43: closed/unmerged T12 WIP; historical reference only.
-- PR #44: closed/unmerged front-door WIP; historical reference only.
-- Do not use old implementation branches as resume baselines.
-- New production work starts from fresh completed `main`.
-- No force push, direct-main push, admin/ruleset bypass, or unrelated PR takeover.
+A purely mechanical change whose result cannot be changed by external facts may record `MECHANICAL_NO_EXTERNAL_DEPENDENCY`. Do not use that exemption for gameplay, UX, runtime assets, dependencies, platforms, rights, safety or architecture.
 
-## 14. Godot / toolchain rules
+Prefer the root-cause fix and reusable verification when a small local patch would create repeated work or canon drift. Reject speculative abstraction, duplicate owners, broad cleanup and document/tool growth without current playable or operational value.
 
-- Engine family: Godot 4.x / GDScript.
-- The latest merged T11 evidence used Godot 4.7.1; that is an evidence identity, not proof that the current local shared host pin is still 4.7.1.
-- Before local Godot authoring/runtime, use the current Base fresh-shell route: exact project location -> git fetch -> safe ff-only reconciliation when clean -> official update check -> safe reviewed update when eligible -> exact Editor/project/session identity -> implementation/test/runtime.
-- Do not multiply per-project Godot binaries or ports by default. Current shared-host policy uses approved exact pins and exact project/editor/session isolation; local facts must be directly read before mutation.
-- GUT remains the project deterministic GDScript test framework where adopted.
-- Do not claim HiGodot/Godot AI/Hera/provider connection from historical records; verify callable/current session state.
-- Do not add a second wave system while current WaveSpawner responsibilities are sufficient.
-- Do not add a new autoload/save/meta-power system without demonstrated need and approval.
+## 6. Visual direction and candidate-first image workflow
 
-## 15. Benchmarking / Existing Solution First
+The current master style remains the repository-approved dark moonlit ninja fantasy direction: premium painterly anime illustration, strong silhouette/readability, ink/brush framing, Korean brush-calligraphy title language, black/deep navy/red/warm gold core palette and school-specific accents. Repository Visual owners and approved binaries are authoritative; historical chat previews are not.
 
-For L1+ product/system/UX decisions:
+When a real or explicitly planned screen, Scene, UI slot, object, state, release surface or production review deliverable needs an image, use:
 
-1. inspect current project canon and implementation,
-2. inspect existing internal solution and current Base owner,
-3. compare at least three materially distinct viable approaches when decision-relevant,
-4. use current official/primary evidence plus success/failure or mixed cases,
-5. classify evidence as `ADOPT / ADAPT / TEST / REJECT / REFERENCE_ONLY`,
-6. search again for a better alternative when new evidence/finding appears,
-7. judge long-term fit, maintenance cost, rollback and revisit conditions.
+```text
+CANDIDATE_FIRST_VISUAL_PRODUCTION
+VISUAL_NEED_CONFIRMED
+→ CURRENT_PROJECT_AND_VISUAL_CANON_READBACK
+→ ACTUAL_OR_EXPLICITLY_PLANNED_CONSUMER_REQUIRED
+→ EXISTING_APPROVED_ASSET_AND_CANDIDATE_REUSE_CHECK
+→ BOUNDED_BRIEF_READY
+→ IMAGE_MODEL_GENERATES_ONE_CANDIDATE
+→ OBJECTIVE_QA_AND_BOUNDED_CORRECTION
+→ PRESENT_FOR_USER_FINAL_LOCK
+```
 
-Do not copy another game's surface content, trade dress, exact UI or tuning.
+- Re-read current project decisions, approved visual anchors, existing candidates, actual/planned consumer, dimensions and Keep/Avoid/Do Not Drift before generation.
+- Do not require a duplicate per-image preapproval after this preflight. Produce one bounded candidate, then let the user `LOCK / REVISE / REJECT / RETAIN_AS_REFERENCE` after seeing it.
+- Use the host image generation/editing model. Do not substitute SVG/vector, HTML/Canvas, Python drawing or Godot primitives.
+- Do not automatically chain into another character, screen, state family or asset package. One objective-defect correction may stay inside the same bounded deliverable.
 
-## 15.1 Mandatory current research and feasibility gate
+```text
+NEEDED
+→ BRIEF_READY
+→ GENERATED_CANDIDATE
+→ USER_FINAL_LOCKED
+→ CANON_REGISTERED
+→ IMPLEMENTED
+→ RUNTIME_VERIFIED
+```
 
-For every non-trivial planning, document, visual, system, implementation, or
-review task, do this before proposing a new solution, and repeat it after a
-material finding:
+```text
+GENERATED_CANDIDATE != USER_FINAL_LOCKED
+USER_FINAL_LOCKED != PROJECT_ASSET_APPROVED
+CANDIDATE_PRODUCTION_IS_NOT_IMPLEMENTATION_AUTHORITY
+```
 
-1. fresh-read the current project authority, latest completed `main`, relevant
-   open/recent PRs, and actual implementation consumers;
-2. inspect reusable project and current Base owners before making a new
-   workflow, system, document surface, asset, or tool;
-3. run targeted current Internet research using official/primary sources and
-   directly relevant field evidence. If no decision-relevant result exists,
-   record `NO_MATERIAL_EXTERNAL_EVIDENCE` after the targeted search rather than
-   silently skipping it;
-4. make an explicit technical/production feasibility judgement against the
-   current Godot version, code/data/Scene/Resource ownership, local toolchain,
-   dependencies, runtime/test evidence, cost, rights, and rollback path; and
-5. apply the adversarial-review loop in section 16 before claiming the changed
-   scope is complete.
+A candidate or visual lock does not bypass exact Blueprint/Decision implementation approval, repository asset registration, provenance/SHA-256, Codex implementation or runtime evidence.
 
-Internet research, source inspection, a passing parser, or a generated PDF is
-not Human Usability, Player Experience, device, runtime-render, or release
-evidence unless that exact evidence class was actually executed.
+## 7. Automation and learning
 
-## 16. Adversarial review / evidence rules
+Apply `MINIMIZE_USER_INTERVENTION_WITH_SAFE_FINAL_CONTROL`.
 
-For L1+ changes use current Base `running-adversarial-review-and-refinement` semantics:
+Agents should continue fresh-read, reuse search, research, alternative comparison, bounded candidate preparation, safe document/test correction, readback, regression checks and remaining-work recalculation without asking the user for mechanical decisions already resolved by current evidence.
 
-- minimum 5 full whole-state loops,
-- each loop re-attacks the full approved scope,
-- validate the critique before changing anything,
-- fix only validated findings,
-- verify/regress the changed state,
-- search for a better alternative and recheck long-term fit,
-- continue beyond 5 while any valid blocker/MUST_FIX remains.
+Escalate core gameplay meaning, economy, narrative identity, Art Direction, major scope/cost, external release, security/permissions, irreversible deletion, safety, or objective ties that need user taste. Visual final lock remains a user decision.
 
-Evidence classes remain separate:
+Use:
 
-- source/contract/static evidence
-- import/parse
-- headless main-scene smoke
-- focused/full GUT
-- live runtime/render/input
-- Human Usability
-- Player Experience
-- device/export/platform
+```text
+INCIDENT_SOLUTION_LESSON_AUTOMATION_LOOP
+problem → reproducible evidence → root cause → correction → regression prevention → project owner/readback → reusable lesson → Base BCP when cross-project evidence exists
+```
 
-Do not promote one class into another. `NOT_RUN` is not PASS.
+Conversation memory is not learned canon. Persist reusable learning in repository owners, tests, validators, templates, checklists or an approved Base proposal.
 
-## 17. Cost rule
+## 8. Implementation and evidence boundary
 
-Default to zero incremental monetary cost. Do not introduce pay-as-you-go APIs, paid runners, additional SaaS subscriptions or separately metered services without explicit user approval.
+- Work/ChatGPT owns planning, research, review, candidate visual preparation, repository documentation and Codex handoff unless the current task contract says otherwise.
+- Codex owns actual Godot product code, Scene/Resource/data wiring, runtime UI, save/load, build/export and implementation tests when the current project contract assigns that role.
+- Current source/contract/static, import/parse, headless, focused/full GUT, live runtime/render/input, Human Usability, Player Experience and device/export evidence are separate classes.
+- `NOT_RUN` is not PASS. A generated image, passing parser or PDF is not runtime, UX, device or release evidence.
 
-## 18. Completion / reporting
+## 9. Adversarial review and correction
+
+Every material changed state must run the current Base whole-state review contract.
+
+```text
+ACTUAL_POST_COMPLETION_ADVERSARIAL_REVIEW_REQUIRED
+FULL_LOOP_COUNT_MINIMUM: 5
+EXECUTION_EVIDENCE_REQUIRED
+CORRECT_VALIDATED_FINDINGS
+NO_REVIEW_COMPLETION_CLAIM_WITHOUT_EVIDENCE
+CLEAN_REVIEW_EXIT
+```
+
+Each full loop:
+
+```text
+FULL_SCOPE_REVIEW
+→ FIND
+→ VALIDATE_CRITIQUE
+→ CORRECT_VALIDATED_FINDINGS
+→ VERIFY_AND_REGRESSION_RECHECK
+→ BETTER_ALTERNATIVE_SEARCH
+→ LONG_TERM_PLAN_FIT_RECHECK
+→ RE_ATTACK
+```
+
+Record input head, evidence delta, findings, validated findings, corrections, verification, better alternative, long-term fit, unresolved items and output head. Continue beyond five while a valid blocker, regression, stale reference or evidence-ceiling violation remains.
+
+## 10. PR, branch and tool protection
+
+- Open/draft/ready PRs are read-only unless current-task continuation or explicit named authorization allows mutation.
+- Start new product work from fresh completed default branch.
+- No force push, direct-main push, admin/ruleset bypass or unrelated PR takeover.
+- Verify current Godot/editor/project/session identity before local mutation; historical version and path records are evidence only.
+- Use GUT where adopted and run the smallest relevant Godot check plus required exact-head CI.
+- Do not claim HiGodot/Godot AI/Hera/provider availability from history; verify the current callable session.
+- Default to zero incremental monetary cost. Do not add paid APIs, runners, SaaS or dependencies without explicit approval.
+
+## 11. Completion and reporting
 
 `planned work = 0` is only a completion candidate.
 
-Before completion:
-
 ```text
 remaining-work recalculation
--> implementation/canon/repository-consumer/PR/evidence correction rescan
--> valid finding? fix + verify + recalc
--> final post-change adversarial loop lineage
--> minimum five full loops and clean exit
--> exact PR head gate
--> merge when authorized
--> new main readback
--> repository destination readback
--> remaining work = 0 for current scope
+→ implementation/canon/consumer/PR/evidence correction rescan
+→ valid finding? correct + verify + recalc
+→ final whole-state adversarial lineage
+→ minimum five full loops and clean exit
+→ exact PR head gate
+→ merge when authorized
+→ new main readback
+→ repository destination readback
+→ remaining work = 0 for current scope
 ```
 
-Every material completion report must distinguish:
+Every material report distinguishes approved scope/exclusions, actual changes, before/after/effect/trade-off, alternatives, Implementation Reality evidence, adversarial findings and corrections, exact PR/merge/main identity, repository readback, `NOT_RUN` items and the next product gate.
 
-- approved scope / exclusions / protected items
-- actual changed surfaces
-- BEFORE -> AFTER -> expected effect -> trade-off
-- alternatives and benchmark disposition
-- Implementation Reality evidence level
-- adversarial findings and corrections
-- exact PR/merge/new-main identity when applicable
-- repository readback
-- `NOT_RUN` / blockers
-- next product gate / revisit conditions
-
-Never claim a test, runtime, render, merge, repository asset registration, or
-human validation that was not actually executed.
+Never claim a test, runtime, render, merge, asset registration or human validation that was not actually executed.
