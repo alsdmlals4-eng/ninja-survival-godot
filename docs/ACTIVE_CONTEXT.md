@@ -2,7 +2,7 @@
 
 ```yaml
 project: NINJA_SURVIVAL
-state_router_updated_at: 2026-08-29 KST
+state_router_updated_at: 2026-08-30 KST
 reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
@@ -14,6 +14,11 @@ resume_state: FOUR_SCHOOL_CIRCUIT_MACHINE_IMPLEMENTED_MERGED_MAIN_PR129
 next_product_gate: STATUS_ICON_ASSET_LOCK_OR_SEPARATE_FINAL_PACKAGE_DEFINITION
 current_master_gdd: docs/design/NINJA_SURVIVAL_MASTER_GDD.md
 current_human_gdd: docs/design/NINJA_SURVIVAL_HUMAN_GDD.md
+current_human_blueprint_spec: docs/implementation/2026-08-30-player-control-stage-backpack-blueprint-spec.md
+current_player_control_stage_backpack_canon: docs/canon/2026-08-30-dec037-player-control-stage-3x3-backpack.md
+human_blueprint_runtime_authority: USER_FINAL_PDF_REVIEW_PENDING
+player_facing_vocabulary: STAGE_AND_PHASE
+backpack_starting_usable_area: EXACT_3X3
 human_player_gdd_pdf: exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf
 human_player_gdd_pdf_manifest: docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json
 human_player_gdd_pdf_status: CURRENT_MAIN_5D93F13F03EF0D79D84067F8C87C6DA93B5BE65D

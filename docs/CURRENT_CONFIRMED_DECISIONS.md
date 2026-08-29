@@ -2,7 +2,7 @@
 
 ```yaml
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER
-updated_at: 2026-08-29 KST
+updated_at: 2026-08-30 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
 current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
@@ -20,6 +20,13 @@ current_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-hu
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 current_master_gdd: docs/design/NINJA_SURVIVAL_MASTER_GDD.md
 current_human_gdd: docs/design/NINJA_SURVIVAL_HUMAN_GDD.md
+current_human_blueprint_spec: docs/implementation/2026-08-30-player-control-stage-backpack-blueprint-spec.md
+current_player_control_stage_backpack_canon: docs/canon/2026-08-30-dec037-player-control-stage-3x3-backpack.md
+player_facing_vocabulary: STAGE_AND_PHASE
+player_control_contract: ONE_FIXED_NINJA_DIRECT_MOVEMENT_AUTO_ACTIONS_SEPARATE
+backpack_starting_usable_area: EXACT_3X3
+backpack_technical_expansion_ceiling: MAX_6X6
+runtime_build_authority_for_dec037: USER_FINAL_PDF_REVIEW_PENDING
 human_player_gdd_pdf: exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf
 human_player_gdd_pdf_manifest: docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json
 human_player_gdd_pdf_policy: ALWAYS_SYNC_ON_HUMAN_GDD_OR_EXPORTER_CHANGE
@@ -59,11 +66,15 @@ This is the current mutable decision router/ledger. Detailed rules live in the d
 
 ## 1. Current product definition
 
-`닌자의 신 / 닌자 서바이벌` is a 2D survival roguelike where the player chooses a starting ninja school, clears all four school battlefields in a player-chosen order, opens their tradition acquisition packages, and uses a spatial/rotation/adjacency backpack build to defeat a separate final calamity.
+### 2026-08-30 public experience override — DEC-037
 
-High-level Run:
+For player-facing documents and future public UI, the destination is called a **Stage** and the internal pressure ladder is called **Phase 1–4**. A player directly moves one fixed Ninja during combat; automatic attack/tradition effects are results of position and committed build. The actual starting usable backpack is exactly **3×3** and grows through bag placement inside the retained 6×6 technical ceiling. Existing `school` terminology remains an internal legacy compatibility detail until the separately authorized runtime migration. This override supersedes older player-facing “school” and “6×6 starting board” statements.
 
-`starting school -> choose unvisited school -> ~5m battlefield with Core/Elite/trace/school Boss -> branch Workbench/Fate -> repeat four schools -> Final Binding Workbench -> separate final calamity Boss -> result/Ninja Soul/legend`.
+`닌자의 신 / 닌자 서바이벌` is a 2D survival roguelike where the player chooses a starting Stage, clears all four Stage battlefields in a player-chosen order, opens their tradition acquisition packages, and uses a spatial/rotation/adjacency backpack build to defeat a separate final calamity.
+
+High-level Run (player-facing vocabulary):
+
+`starting Stage -> choose unvisited Stage -> ~5m battlefield with Core/Elite/Trace/Stage Boss -> branch Workbench/Fate -> repeat four Stages -> Final Binding Workbench -> separate final calamity Boss -> result/Ninja Soul/legend`.
 
 `~20 minutes` is the target active-combat time through the fourth school Boss, not the entire Run end.
 

@@ -3,14 +3,23 @@
 > **문서 상태:** `CURRENT_PRODUCT_GDD / IMPLEMENTATION_CONTRACT_COMPANION`
 > **기준 브랜치 / SHA:** `main` / `50fbf203ec3f71af1633a5b6cc74e7167c0604c8`
 > **생성일:** 2026-08-29 KST
-> **사람용 안내:** [플레이어용 게임 기획서 PDF](../../exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf) — `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md`에서 생성한 읽기 전용 설명본
+> **사람용 안내:** [사람용 게임 경험 블루프린트 PDF](../../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf) — `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md`에서 생성한 읽기 전용 검수본
 > **발행/검수 계약:** `docs/PDF_EXPORT.md`와 `docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json`; PDF 존재는 runtime·Human Usability·Player Experience 검증을 뜻하지 않는다.
 > **정본 우선순위:** 최신 사용자 승인 → `AGENTS.md` → `CURRENT_CONFIRMED_DECISIONS.md` → dated canon → `ACTIVE_CONTEXT.md` → actual code/data/Scene/test → Base → benchmark
 > **범위:** 이 파일은 제품 canon·구현 계약·증거 경계를 소유하는 기술 정본이다. 사람용 설명은 별도 Human GDD가 소유하며, 둘이 충돌하면 최신 승인과 이 기술 정본의 규칙을 따른다. DEC-035는 기존 Notion 구조와 현재 작업물을 repository migration archive에 보존한 뒤, repository-only owner로 전환한다.
 
 ## 00. Canon Snapshot
 
-`닌자의 신`은 Godot 4.x/GDScript로 만드는 2D top-down survival roguelike다. 플레이어는 하나의 고정 닌자 신분으로 네 유파의 전장을 한 번씩 고르고, 각 유파가 가르치는 서로 다른 위험 처리법을 몸으로 익힌 뒤, 공간 배치형 백팩과 Fate를 조합해 최종 재앙에 맞설 자신만의 인법을 만든다.
+`닌자의 신`은 Godot 4.x/GDScript로 만드는 2D top-down survival roguelike다. 플레이어는 하나의 고정 닌자를 직접 이동해 네 스테이지를 한 번씩 고르고, 각 전승이 가르치는 서로 다른 위험 처리법을 몸으로 익힌 뒤, 공간 배치형 백팩과 Fate를 조합해 최종 재앙에 맞설 자신만의 인법을 만든다.
+
+### 2026-08-30 공개 경험 오버레이 — DEC-037
+
+`docs/canon/2026-08-30-dec037-player-control-stage-3x3-backpack.md`가 사람이 보는 제품 언어와 다음 runtime migration의 기준을 소유한다.
+
+- 플레이어는 **한 명의 닌자**를 직접 이동한다. 자동 공격/전승 반응은 위치와 확정 빌드가 만든 결과다.
+- 공개 목적지는 **스테이지**, 내부 위험 진행 축은 **페이즈 1–4**다. 기존 `school` key/class는 별도 migration 전까지 내부 호환 표현이다.
+- 시작 사용 가능 가방은 **정확히 3×3**이다. 기존 6×6은 확장 가능한 기술 상한이며, 처음부터 열린 시작 보드가 아니다.
+- 이 오버레이는 `DOCUMENTED/CONFIRMED` product contract이며, Godot/UI/data/test 이행과 Human/Player evidence는 user final PDF review 뒤의 별도 package에서 다룬다.
 
 ### 상태 표기
 

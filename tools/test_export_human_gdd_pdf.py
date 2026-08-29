@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -13,6 +14,7 @@ from reportlab.lib import colors
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 EXPORTER_PATH = REPOSITORY_ROOT / "tools" / "export_human_gdd_pdf.py"
+BLUEPRINT_SOURCE_PATH = REPOSITORY_ROOT / "docs" / "design" / "NINJA_SURVIVAL_HUMAN_GDD.md"
 
 
 def load_exporter_module():
@@ -25,6 +27,41 @@ def load_exporter_module():
 
 
 class HumanGddPdfExporterTests(unittest.TestCase):
+    def test_human_blueprint_source_has_28_explicit_review_pages(self) -> None:
+        """Break caught: the reader PDF quietly collapses back into a short prose GDD."""
+        source = BLUEPRINT_SOURCE_PATH.read_text(encoding="utf-8")
+        page_markers = re.findall(r"<!-- BLUEPRINT_PAGE: (\d{2}) / 28 -->", source)
+
+        self.assertEqual(page_markers, [f"{index:02d}" for index in range(1, 29)])
+        self.assertIn("당신은 한 명의 닌자를 움직인다", source)
+        self.assertIn("정확히 3×3", source)
+        self.assertIn("스테이지", source)
+        self.assertIn("페이즈", source)
+
+    def test_current_blueprint_export_has_28_numbered_pages(self) -> None:
+        """Break caught: source sections exist but the generated PDF loses the review-page contract."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output_path = Path(temp_dir) / "ninja-blueprint.pdf"
+            exporter = load_exporter_module()
+            exporter.export_pdf(
+                BLUEPRINT_SOURCE_PATH,
+                output_path,
+                source_branch="codex/test-blueprint",
+                source_commit="0123456789abcdef0123456789abcdef01234567",
+                generated_at="2026-08-30T00:00:00+09:00",
+                document_title="닌자의 신 - 사람용 게임 경험 블루프린트",
+                header_label="닌자의 신 | 게임 경험 블루프린트",
+                right_header_label="사람 검수용",
+            )
+
+            reader = PdfReader(str(output_path))
+            rendered_text = "\n".join(page.extract_text() or "" for page in reader.pages)
+            self.assertEqual(len(reader.pages), 28)
+            self.assertIn("01 / 28", rendered_text)
+            self.assertIn("28 / 28", rendered_text)
+            self.assertIn("한 명의 닌자", rendered_text)
+            self.assertIn("3×3", rendered_text)
+
     def test_export_uses_reader_facing_document_identity(self) -> None:
         """Break caught: a player guide is published with the technical Master-GDD identity."""
         source = "# 닌자의 신 — 플레이어용 게임 기획서\n\n게임의 핵심 재미를 설명한다.\n"
