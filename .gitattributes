@@ -1,0 +1,2 @@
+# Generated downloadable artifacts must remain binary in Git diff and whitespace checks.
+*.pdf binary
