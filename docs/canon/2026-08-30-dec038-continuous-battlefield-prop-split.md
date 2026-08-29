@@ -1,9 +1,9 @@
 # DEC-038 — 연속 전장 바닥과 독립 소품 분리
 
-> **Status:** `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME`  
-> **Decision date:** 2026-08-30 KST  
-> **Scope owner:** `docs/visual/screen-references/README.md`  
-> **Human consumers:** `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md` page 10 and its exported PDF  
+> **Status:** `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME`
+> **Decision date:** 2026-08-30 KST
+> **Scope owner:** `docs/visual/screen-references/README.md`
+> **Human consumers:** `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md` page 10 and its exported PDF
 > **Runtime status:** `NOT_IMPLEMENTED`
 
 ## User decision
