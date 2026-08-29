@@ -292,6 +292,7 @@ Approved school motifs:
 - Hybrid Key Visual: APPROVED MASTER BRIDGE; historical Notion low-res preview server readback exists but is no longer an active gate.
 - Four-school full-body silhouette sheet: APPROVED SUPPORTING REFERENCE; not four runtime protagonists.
 - SD/action/icon three-panel sheet: WORKING_REFERENCE; structure reusable but exact trace details superseded by current fixed-character/main-school-Stage-3 rules.
+- SCRREF-BATTLE-AUTOCOMBAT-03: USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME; human blueprint page 10 is its consumer. It locks seamless continuous floor + sparse independent props while the existing Main/BattlefieldBackdrop runtime texture remains unchanged.
 - IMG-02 runtime visual core: merged at `03005e7dcc1a2e0b6ee57b4f6ebed9b481ee2fbc` with seven approved repository-local PNG sources. Actual consumers are three generic EnemyBasic variants, Cheonsul StageBoss, ProjectileBasic, RewardOrb and BongmaFamiliar.
 - IMG-03 moonlit battlefield backdrop: merged at `5a52a30aa6c38cfed17e46d550eef27ab06e53f7` with its opaque repository-local PNG. Its sole consumer is `Main/BattlefieldBackdrop` behind gameplay; it changes no game-rule authority.
 - IMG-04 Cheonsul flame field: merged at `6d538fcf933e2fbcca50f8e6d369d165efac620c` with its transparent repository-local PNG. Its sole consumer is the existing `Cheonsul/FlameFieldVisual`; it changes no combat, route, reward, or school-rule authority.

@@ -416,6 +416,23 @@ Current visual continuation authority:
 - 적 HP 바는 기본적으로 숨긴다. **피격 직후의 적 하나만** HP 바를 표시한다. 지속 시간·전환은 Human Usability 검증에서 조정할 항목이며, 이 결정은 전투 규칙이나 HP 수치를 바꾸지 않는다.
 - `PROJECT_CORE_SCENE_VISUAL_BOARD`는 현재 대화에서 만든 **GENERATED_EXPLORATION / planning visualization**이다. 런타임 texture, Godot UI 구현, 승인 Project Asset, Human/Player evidence가 아니며 사용자 검토 전에는 어느 것도 대체하지 않는다.
 
+### 2026-08-30 — continuous battlefield and independent-prop planning lock
+
+- User `LOCK` promoted `SCRREF-BATTLE-AUTOCOMBAT-03` to
+  `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME`. Its repository source,
+  SHA-256, approval, and GDD/PDF consumer are owned by
+  `docs/visual/screen-references/README.md`; the full decision boundary is
+  `docs/canon/2026-08-30-dec038-continuous-battlefield-prop-split.md`.
+- The future battlefield base is a seamless, extendable moonlit cracked-stone
+  floor. It must not bake arena edges, buildings, tree clusters, lantern rows,
+  or a horizon into the background.
+- Lanterns, trees, stones, and shrubs are separate sparse props with independent
+  grounding/contact shadows. The locked reference does not set their final
+  density, spawn rules, collision, or gameplay effects.
+- The existing `Main/BattlefieldBackdrop` runtime texture is not replaced. No
+  import, Godot runtime/render, Human Usability, Player Experience, or
+  device/export status changes through this planning lock.
+
 The user approved a two-surface visual system that must still read as one IP:
 
 - **Presentation / key art / lore:** hand-drawn ink codex + mature dark painterly anime ninja fantasy.

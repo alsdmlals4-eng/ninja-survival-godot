@@ -24,6 +24,24 @@ repository source + SHA-256/provenance manifest + explicit consumer + applicable
 import/runtime evidence. The migration snapshots are provenance receipts only;
 they neither block nor satisfy a current asset gate.
 
+## 2026-08-30 user-locked auto-combat battlefield planning reference
+
+`SCRREF-BATTLE-AUTOCOMBAT-03` is now a repository-local
+`USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME` with source, SHA-256, approval,
+and GDD/PDF consumer recorded in `docs/visual/screen-references/README.md`.
+
+- Background contract: continuous moonlit cracked-stone floor only, without
+  baked architecture, tree clusters, lantern rows, horizon, or arena boundary.
+- Prop contract: lanterns, dead trees, stones, and shrubs are sparse independent
+  objects with their own contact shadows and must not be painted into the tile
+  background.
+- Gameplay contract: the fixed ninja, enemies, blue-to-amber Cheonsul setup and
+  reaction, red danger telegraph, and top-only automatic-combat HUD remain the
+  readable foreground.
+- Runtime boundary: the existing `Main/BattlefieldBackdrop` stays unchanged.
+  No Godot consumer, import, runtime render, Human Usability, Player Experience,
+  or device/export evidence is claimed for this planning reference.
+
 ## 2026-08-28 current combat visual grammar — approved, implementation deferred
 
 - **Cheonsul:** blue plus amber/orange is the primary status/reaction family. It must not drift into the violet/black family reserved for Heukyeong.

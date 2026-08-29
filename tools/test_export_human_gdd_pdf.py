@@ -15,6 +15,14 @@ from reportlab.lib import colors
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 EXPORTER_PATH = REPOSITORY_ROOT / "tools" / "export_human_gdd_pdf.py"
 BLUEPRINT_SOURCE_PATH = REPOSITORY_ROOT / "docs" / "design" / "NINJA_SURVIVAL_HUMAN_GDD.md"
+SCREEN_REFERENCE_README_PATH = REPOSITORY_ROOT / "docs" / "visual" / "screen-references" / "README.md"
+LOCKED_BATTLE_REFERENCE_PATH = (
+    REPOSITORY_ROOT
+    / "docs"
+    / "visual"
+    / "screen-references"
+    / "scrref-battle-autocombat-continuous-floor-v3.png"
+)
 
 
 def load_exporter_module():
@@ -27,6 +35,18 @@ def load_exporter_module():
 
 
 class HumanGddPdfExporterTests(unittest.TestCase):
+    def test_locked_continuous_floor_reference_is_bound_to_the_human_blueprint(self) -> None:
+        """Break caught: a user-locked combat reference is stored but omitted from its declared reader surface."""
+        source = BLUEPRINT_SOURCE_PATH.read_text(encoding="utf-8")
+        reference_manifest = SCREEN_REFERENCE_README_PATH.read_text(encoding="utf-8")
+
+        self.assertTrue(LOCKED_BATTLE_REFERENCE_PATH.is_file())
+        self.assertIn("scrref-battle-autocombat-continuous-floor-v3.png", source)
+        self.assertIn("연속 바닥", source)
+        self.assertIn("SCRREF-BATTLE-AUTOCOMBAT-03", reference_manifest)
+        self.assertIn("68727c87b5f81dee18f06bb0955d37314a3e0ec03f04fe9dd33f842df0dd6eac", reference_manifest)
+        self.assertIn("USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME", reference_manifest)
+
     def test_human_blueprint_source_has_28_explicit_review_pages(self) -> None:
         """Break caught: the reader PDF quietly collapses back into a short prose GDD."""
         source = BLUEPRINT_SOURCE_PATH.read_text(encoding="utf-8")

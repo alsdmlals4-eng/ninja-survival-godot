@@ -56,6 +56,7 @@ paired_reader_artifact: exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf
 사람용 PDF는 28개의 명시적 검수 페이지로 구성한다. 각 페이지는 검수 질문, 한 줄 결론, 실제 화면 또는 텍스트 기반 흐름 도식, “보이는 것·하는 것·결정하는 것”을 가진다.
 
 - 실제 전투/선택/Workbench/결과 화면은 repository의 screen reference를 재사용한다.
+- `SCRREF-BATTLE-AUTOCOMBAT-03`은 연속 바닥과 독립 소품을 설명하는 user-locked planning reference다. 이 이미지는 사람용 전장 기준일 뿐, 기존 `Main/BattlefieldBackdrop` runtime texture 또는 Godot scene을 교체하지 않는다.
 - 플레이어 Move/Attack/Hit 이미지는 실제 승인 source이며, 새 플레이어 이미지를 만들지 않는다.
 - `3×3 → 가방으로 확장` 및 입력/흐름은 **설계 도식**으로 표시하고 실제 runtime screenshot으로 오인시키지 않는다.
 - PDF는 사람 검수용 파생본이다. raw path, PR, CI, 엔진 버전, 테스트 명령은 PDF 본문에 넣지 않는다.
