@@ -255,18 +255,25 @@ Approved style traits:
 
 The denser parchment infographic references are useful for **supporting explanatory layouts**, not the master game-art style.
 
-Do not generate or edit another project image unless the user explicitly asks. Image workflow:
+DEC-034 owns the active `NEED_DRIVEN_GENERATE_THEN_LOCK` route. When a concrete actual consumer, planned player-facing surface, product-distribution need, or current Blueprint planning-board purpose is confirmed, do not stop for a routine pre-generation approval question. First fresh-read current canon, the approved master style reference and relevant approved images/mockups, actual consumer, state family, dimensions, rights/provenance boundary, and reusable approved assets. Then use the host image model to generate exactly one consistent candidate and stop for the user to decide `LOCK / REVISE / REJECT`.
 
 ```text
-current canon + visual canon + actual consumer/planning-board brief
--> text brief
--> generate exactly one candidate
+current canon + visual canon + actual consumer/planning-board purpose
+-> approved visual anchor readback
+-> existing approved asset reuse/edit check
+-> keep / avoid / do-not-drift / state / size / rights brief
+-> generate exactly one candidate with the image model
 -> STOP
 -> user LOCK / REVISE / REJECT
 ```
 
-A chat image is not a durable project asset until user `LOCK`, repository
-source/manifest provenance, and its applicable consumer/evidence gates succeed.
+A coverage gap, a vague decorative need, or another project's image is not generation authority. Do not automatically chain to another character, screen, independent variant, or asset family.
+
+```text
+GENERATED_CANDIDATE != USER_LOCKED != PROJECT_ASSET_APPROVED != IMPLEMENTED != RUNTIME_VERIFIED
+```
+
+A chat image is not a durable project asset until user `LOCK`, repository source/manifest provenance, and its applicable consumer/evidence gates succeed. `LOCK` is still required before canon registration or production promotion, and Blueprint final approval is still required before a new implementation package.
 
 ## 12. Repository GDD / AI-System separation
 
