@@ -62,7 +62,7 @@ CombatResolver / school runtime consumers
 
 Protected rules:
 
-- fixed 6x6 board / centered 4x3 starting active area,
+- legacy machine baseline: fixed 6x6 board / centered 4x3 starting active area; DEC-037 changes the next player-facing/runtime target to an exact 3×3 start inside the retained 6x6 ceiling,
 - item and bag 90-degree rotation,
 - orthogonal adjacency,
 - selected L/T bag shapes,

@@ -1,40 +1,43 @@
 {
-  "schema_version": 1,
-  "document_id": "HUMAN_PLAYER_GDD_PDF",
-  "role": "DOWNLOADABLE_HUMAN_READER_GDD_DERIVATIVE",
-  "sync_status": "CURRENT",
+  "schema_version": 2,
+  "document_id": "HUMAN_GAME_EXPERIENCE_BLUEPRINT_PDF",
+  "role": "DOWNLOADABLE_HUMAN_REVIEW_DERIVATIVE",
+  "sync_status": "CURRENT_ON_BRANCH_PENDING_MAIN_PUBLICATION",
   "publication_policy": "ALWAYS_SYNC_ON_HUMAN_GDD_OR_EXPORTER_CHANGE",
+  "paired_implementation_spec": "docs/implementation/2026-08-30-player-control-stage-backpack-blueprint-spec.md",
+  "canon_owner": "docs/canon/2026-08-30-dec037-player-control-stage-3x3-backpack.md",
   "source": {
     "path": "docs/design/NINJA_SURVIVAL_HUMAN_GDD.md",
-    "branch": "main",
-    "commit": "5d93f13f03ef0d79d84067f8c87c6da93b5be65d",
-    "sha256": "cf6d06f9f58cbb838ff7ca1e419defb941baefac0d4f98fd9fb8c0df1361a95f"
+    "branch": "codex/human-game-blueprint-revision-132",
+    "commit": "2d20d379bcf8019d66addb7af51fee6c87265a09",
+    "sha256": "4dccd7c2172a2a296ba1d9e7b89e8425e989ed00a4e754fd947b6ec9244c5326",
+    "page_contract": "28 explicit human-review pages"
   },
   "generator": {
     "path": "tools/export_human_gdd_pdf.py",
-    "sha256": "df4b44404bc2d26de5ab531eccdc29aeccf7a208c3026a8a49779f5c2b9766f7",
+    "sha256": "8ebe34fa67d8d831f37b4301863bcd2ad5cc1272b481bdc2812f594810fae2e2",
     "runtime": "bundled Python 3 + ReportLab",
     "korean_font_requirement": "Windows Malgun Gothic regular/bold",
-    "document_title": "닌자의 신 - 플레이어용 게임 기획서",
-    "header_label": "닌자의 신 | 플레이어용 게임 기획서",
-    "right_header_label": "읽기용 게임 기획서"
+    "document_title": "닌자의 신 - 사람용 게임 경험 블루프린트",
+    "header_label": "닌자의 신 | 게임 경험 블루프린트",
+    "right_header_label": "사람 검수용"
   },
   "artifact": {
-    "path": "exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf",
-    "sha256": "256f2a80bbbb1bf4d607d47864182ecb18d63b27e7530db5ad525d0d7ef6b2c3",
-    "generated_at": "2026-08-29T00:23:53+09:00",
-    "page_count": 4,
+    "path": "exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf",
+    "sha256": "623f15fbac5bf29c22e216eab916af46325223eb6f3bd60af43f8467f8e6a0da",
+    "generated_at": "2026-08-30T01:10:19+09:00",
+    "byte_size": 23819681,
+    "page_count": 28,
     "page_size": "landscape A4"
   },
   "validation": {
-    "unit_test": "PASSED: 5/5",
-    "pdfinfo": "PASSED: file opens; 4 pages; landscape A4; player-facing title",
-    "pypdf_text_contract": "PASSED: eight reader sections, Korean inline text including the deferred-Human-review statement after whitespace normalization, source SHA, no raw Markdown links, no missing-glyph squares, no blank pages",
+    "unit_test": "PASSED: 7/7; includes explicit 28-page source and rendered-page contract",
+    "pdfinfo": "PASSED: opens; 28 pages; landscape A4; human-blueprint title",
+    "pypdf_text_contract": "PASSED: 28 pages; 0 blank extracted-text pages; 01/28 and 28/28 markers; player-control, 3x3, Stage/Phase text present",
     "render_command": "pdftoppm -png -r 144",
-    "automated_render_review": "PASSED: 4/4 PNG; 0 zero-byte pages",
-    "codex_visual_review": "PASSED: all 4 rendered pages inspected; Korean glyphs, player-facing headers, tables, page flow, deferred-Human-review wording, and footer are legible",
-    "render_environment_note": "Poppler emitted unavailable system-font alias warnings while producing all PNGs; the actual renders were inspected and showed no glyph loss or overlap.",
+    "automated_render_review": "PASSED: 28/28 PNG; 0 zero-byte pages",
+    "codex_visual_review": "PASSED: all 28 rendered pages inspected; Korean glyphs, headers, cards, actual-screen references, flow diagrams, 3x3 diagram, and page numbers are legible without observed overlap or clipping",
     "human_visual_review": "NOT_RUN"
   },
-  "evidence_ceiling": "This publication validation does not prove Godot runtime, Human Usability, Player Experience, device/export, or release readiness."
+  "evidence_ceiling": "Publication validation does not prove Godot runtime, 3x3 backpack implementation, public Stage/Phase UI migration, Human Usability, Player Experience, touch/gamepad, device/export, or release readiness."
 }

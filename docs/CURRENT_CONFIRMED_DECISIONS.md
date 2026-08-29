@@ -27,10 +27,10 @@ player_control_contract: ONE_FIXED_NINJA_DIRECT_MOVEMENT_AUTO_ACTIONS_SEPARATE
 backpack_starting_usable_area: EXACT_3X3
 backpack_technical_expansion_ceiling: MAX_6X6
 runtime_build_authority_for_dec037: USER_FINAL_PDF_REVIEW_PENDING
-human_player_gdd_pdf: exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf
+human_player_gdd_pdf: exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf
 human_player_gdd_pdf_manifest: docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json
 human_player_gdd_pdf_policy: ALWAYS_SYNC_ON_HUMAN_GDD_OR_EXPORTER_CHANGE
-human_player_gdd_pdf_status: CURRENT_MAIN_5D93F13F03EF0D79D84067F8C87C6DA93B5BE65D
+human_player_gdd_pdf_status: CURRENT_ON_BRANCH_PENDING_MAIN_PUBLICATION_2D20D379BCF8019D66ADDB7AF51FEE6C87265A09
 mandatory_work_gate: FRESH_READ_REUSE_FIRST_TARGETED_WEB_RESEARCH_FEASIBILITY_AND_ADVERSARIAL_REVIEW_UNTIL_CLEAN
 current_repository_only_policy: docs/canon/2026-08-28-dec035-repository-only-project-record.md
 current_human_validation_deferment: docs/canon/2026-08-29-dec036-human-player-validation-deferred-from-current-build-gate.md
@@ -132,7 +132,7 @@ A green automated test does not prove the current intended Run is playable or en
 
 Approved:
 
-- fixed `6x6` board and centered `4x3` starting active area,
+- legacy machine baseline is fixed `6x6` board / centered `4x3` starting active area; **DEC-037 supersedes the player-facing and next-runtime target with an exact `3×3` start inside the retained 6×6 ceiling**,
 - purchasable bags expand usable area,
 - item/bag 90-degree rotation,
 - orthogonal adjacency,

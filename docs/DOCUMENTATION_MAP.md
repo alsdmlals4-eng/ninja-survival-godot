@@ -162,7 +162,7 @@ approved Decision/Canon을 따른다.
 | `CURRENT_CONFIRMED_DECISIONS.md` | mutable approved-decision / protected-scope ledger | CURRENT · T12~T16 machine scope integrated / human gate deferred |
 | `ACTIVE_CONTEXT.md` | mutable resume-state router | CURRENT · T16 help merged / human gate deferred |
 | `design/NINJA_SURVIVAL_HUMAN_GDD.md` | 사람용 게임 설명 원고 | CURRENT · 핵심 재미/흐름/선택/구현 구조를 쉬운 말로 설명 |
-| `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf` | 사람이 내려받아 읽는 Player GDD snapshot | ALWAYS_SYNC · Human GDD/source generator 변경 시 재발행; Human visual review는 별도 |
+| `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf` | 사람이 내려받아 읽는 28쪽 게임 경험 Blueprint snapshot | ALWAYS_SYNC · Human GDD/source generator 변경 시 재발행; user final review는 별도 |
 | `design/NINJA_SURVIVAL_MASTER_GDD.md` | 기술 canon·구현 계약·증거 경계 | CURRENT · Human GDD와 중복 소유하지 않음 |
 | `PDF_EXPORT.md` + `publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json` | PDF 발행/신선도/검수 상태 | CURRENT publication contract |
 | `canon/2026-08-28-dec034-generate-then-approve-visual-workflow.md` | concrete consumer/board 후 1개 후보 생성과 사용자 LOCK 기준 | CURRENT · chat-start/gap-only 생성 금지 |
