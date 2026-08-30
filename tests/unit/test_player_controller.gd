@@ -199,6 +199,23 @@ func test_dash_recharges_one_charge_after_one_point_five_seconds() -> void:
 	assert_eq(player.current_dash_charges(), 2)
 
 
+func test_second_dash_does_not_reset_the_running_recharge_cadence() -> void:
+	var player = _spawn_player()
+	player.set_movement_intent(Vector2.RIGHT)
+	assert_true(player.request_dash())
+
+	player._advance_dash_state(1.49)
+	assert_true(player.request_dash())
+	assert_eq(player.current_dash_charges(), 0)
+
+	player._advance_dash_state(0.01)
+	assert_eq(player.current_dash_charges(), 1, "first charge must return 1.5 seconds after the initial spend")
+	player._advance_dash_state(1.49)
+	assert_eq(player.current_dash_charges(), 1)
+	player._advance_dash_state(0.01)
+	assert_eq(player.current_dash_charges(), 2, "remaining charge must follow the original 1.5-second cadence")
+
+
 func test_active_dash_does_not_prevent_damage_or_bypass_body_motion() -> void:
 	var player = _spawn_player()
 	player.set_movement_intent(Vector2.RIGHT)

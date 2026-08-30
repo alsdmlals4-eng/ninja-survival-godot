@@ -211,7 +211,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if _handle_gameplay_pointer_input(event):
 		get_viewport().set_input_as_handled()
 		return
-	if not event.is_action_pressed("ui_accept"):
+	if event.is_action_pressed(&"dash") or not event.is_action_pressed("ui_accept"):
 		return
 	if game_over:
 		_restart_run()
@@ -686,6 +686,8 @@ func _sync_run_modifiers() -> void:
 
 func _set_combat_enabled(enabled: bool) -> void:
 	_combat_enabled = enabled
+	if not enabled:
+		player.clear_pointer_target()
 	var gameplay_mode := Node.PROCESS_MODE_INHERIT if enabled else Node.PROCESS_MODE_DISABLED
 	player.process_mode = gameplay_mode
 	auto_attack.process_mode = Node.PROCESS_MODE_DISABLED

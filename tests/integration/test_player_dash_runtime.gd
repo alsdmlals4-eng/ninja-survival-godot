@@ -72,6 +72,44 @@ func test_right_pointer_dash_uses_player_camera_canvas_transform() -> void:
 	assert_eq(player.current_dash_charges(), 1)
 
 
+func test_space_dash_event_cannot_also_trigger_the_legacy_ultimate() -> void:
+	var main = _spawn_scene(MAIN_SCENE)
+	main.get_node("SchoolSelectionUI")._choose(&"bongma")
+	var player = main.get_node("Player")
+	var bongma = main.get_node("SchoolRuntimeHost").active_runtime
+	bongma.spirit = 100.0
+	player.set_movement_intent(Vector2.RIGHT)
+
+	var space_event := InputEventKey.new()
+	space_event.keycode = KEY_SPACE
+	space_event.physical_keycode = KEY_SPACE
+	space_event.pressed = true
+	assert_true(space_event.is_action_pressed(&"dash"), "Space must exercise the real dash InputMap binding")
+	assert_true(space_event.is_action_pressed(&"ui_accept"), "regression requires the overlapping legacy action")
+
+	main._unhandled_input(space_event)
+
+	assert_true(player.request_dash(), "the same Space/dash action must still initiate the player-owned dash")
+	assert_eq(player.current_dash_charges(), 1)
+	assert_almost_eq(bongma.spirit, 100.0, 0.001, "dash must not spend legacy ultimate spirit")
+	assert_almost_eq(bongma.ultimate_time_remaining, 0.0, 0.001, "dash must not invoke the legacy ultimate")
+
+
+func test_combat_disable_clears_pointer_target_before_reenable() -> void:
+	var main = _spawn_scene(MAIN_SCENE)
+	var player = main.get_node("Player")
+	main._set_combat_enabled(true)
+	player.set_movement_intent(Vector2.LEFT)
+	player.set_pointer_target(player.global_position + Vector2.RIGHT * 120.0)
+
+	main._set_combat_enabled(false)
+	main._set_combat_enabled(true)
+	watch_signals(player)
+
+	assert_true(player.request_dash())
+	assert_signal_emitted_with_parameters(player, "dash_started", [Vector2.LEFT])
+
+
 func test_control_consumed_click_leaves_pointer_target_unchanged() -> void:
 	var main = _spawn_main_in_subviewport()
 	var player = main.get_node("Player")

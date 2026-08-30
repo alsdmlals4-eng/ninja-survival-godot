@@ -89,10 +89,12 @@ func request_dash() -> bool:
 	_update_resolved_direction()
 	if _dead or _dash_charges <= 0 or _resolved_direction == Vector2.ZERO:
 		return false
+	var recharge_was_idle := _dash_charges == MAX_DASH_CHARGES
 	_dash_charges -= 1
 	_dash_remaining = DASH_DURATION_SECONDS
 	_dash_direction = _resolved_direction
-	_dash_recharge_elapsed = 0.0
+	if recharge_was_idle:
+		_dash_recharge_elapsed = 0.0
 	dash_started.emit(_dash_direction)
 	dash_state_changed.emit(_dash_charges, MAX_DASH_CHARGES)
 	return true
