@@ -57,6 +57,9 @@ class HumanGddPdfExporterTests(unittest.TestCase):
         self.assertIn("정확히 3×3", source)
         self.assertIn("스테이지", source)
         self.assertIn("페이즈", source)
+        self.assertIn("닌자소울", source)
+        self.assertIn("진짜 Run 종료", source)
+        self.assertIn("제한된 한 번의 같은 스테이지 재도전", source)
 
     def test_current_blueprint_export_has_28_numbered_pages(self) -> None:
         """Break caught: source sections exist but the generated PDF loses the review-page contract."""
@@ -81,6 +84,8 @@ class HumanGddPdfExporterTests(unittest.TestCase):
             self.assertIn("28 / 28", rendered_text)
             self.assertIn("한 명의 닌자", rendered_text)
             self.assertIn("3×3", rendered_text)
+            self.assertIn("닌자소울", rendered_text)
+            self.assertIn("진짜 Run 종료", rendered_text)
 
     def test_export_uses_reader_facing_document_identity(self) -> None:
         """Break caught: a player guide is published with the technical Master-GDD identity."""

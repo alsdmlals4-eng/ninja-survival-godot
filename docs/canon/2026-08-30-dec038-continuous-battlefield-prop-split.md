@@ -1,10 +1,11 @@
 # DEC-038 — 연속 전장 바닥과 독립 소품 분리
 
-> **Status:** `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME`
+> **Reference asset status:** `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME`
+> **Derived runtime asset status:** `USER_LOCKED_IMPLEMENTED_ISOLATED_BRANCH_MACHINE_AND_SCOPED_RUNTIME_RENDER_INPUT_VERIFIED_NOT_MERGED`
 > **Decision date:** 2026-08-30 KST
 > **Scope owner:** `docs/visual/screen-references/README.md`
 > **Human consumers:** `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md` page 10 and its exported PDF
-> **Runtime status:** `NOT_IMPLEMENTED`
+> **Runtime status:** the planning reference itself is not a runtime asset; separately user-locked derived assets are implemented on the current isolated branch.
 
 ## User decision
 
@@ -21,7 +22,7 @@ trees, and similar scenery are added later as small individual elements.
 | SHA-256 | `68727c87b5f81dee18f06bb0955d37314a3e0ec03f04fe9dd33f842df0dd6eac` |
 | Approval | User `LOCK`, 2026-08-30 KST |
 | Consumer | Human blueprint page 10 and the generated human-review PDF |
-| Godot consumer | None |
+| Godot consumer | Planning-reference PNG: none. Derived floor/prop/shadow sources are bound on the current isolated branch below. |
 
 ## Visual rule
 
@@ -41,15 +42,28 @@ trees, and similar scenery are added later as small individual elements.
    does not decide prop collision, navigation obstruction, spawn density,
    rewards, encounters, or combat effects.
 
-## Existing-runtime boundary
+## Current isolated-branch runtime boundary
 
-`assets/runtime/visual-core/moonlit_battlefield_backdrop_v1.png` remains the
-existing opaque texture consumed by `Main/BattlefieldBackdrop`. DEC-038 does
-not copy, replace, import, or bind a runtime asset. A future implementation
-package must create a seamless background and transparent prop family as
-separate sources, define their actual Godot consumers, and obtain source,
-import, runtime-render, Human Usability, Player Experience, and relevant
-device/export evidence independently.
+The planning-reference PNG above remains a human-review source only and has no
+Godot consumer. Its user-locked visual contract was separately derived into
+the following runtime sources on the current isolated branch:
+
+| Runtime source | Exact consumer | State |
+| --- | --- | --- |
+| `assets/runtime/visual-core/moonlit_battlefield_floor_tile_v1.png` | `Main/BattlefieldBackdrop` (`Parallax2D`) → `FloorTile` | repeating continuous floor behind gameplay |
+| `assets/runtime/visual-core/moonlit_battlefield_prop_atlas_v1.png` | `Main/BattlefieldProps` → lantern, dead tree, rocks, talisman stele | sparse visual-only prop layer; no collision or gameplay ownership |
+| `assets/runtime/visual-core/runtime_contact_shadow_v1.png` | `Player`, `EnemyBasic`, `StageBoss` → `GroundShadow` | visual-only contact shadow at `z_index = -1` |
+
+`assets/runtime/visual-core/moonlit_battlefield_backdrop_v1.png` remains
+preserved for provenance and rollback, but is no longer the direct `Main`
+consumer on this branch. The runtime assets, SHA-256 receipts, scoped Godot
+render/input observation, and evidence ceiling are recorded in
+`docs/assets/approved/img-02-runtime-visual-core/RUNTIME_VISUAL_CORE_MANIFEST.md`
+and `docs/CURRENT_VISUAL_HANDOFF.md`.
+
+This isolated-branch implementation has machine and scoped runtime
+render/input evidence only. Human Usability, Player Experience, and
+device/export remain `NOT_RUN`; merge and post-merge readback remain pending.
 
 ## External-reference disposition
 

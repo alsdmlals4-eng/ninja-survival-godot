@@ -37,7 +37,7 @@ are now recorded here.
 | Status | `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME` |
 | Producer | Built-in image generation edit of the prior auto-combat battle candidate; user-requested infinite-floor and separate-prop revision |
 | Human consumer | `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md` page 10, then `exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf` |
-| Godot consumer | None. `Main/BattlefieldBackdrop` remains the existing runtime background until a separately approved implementation package binds a replacement. |
+| Godot consumer | Planning-reference PNG: none. The separately user-locked derived floor, prop atlas, and contact-shadow sources are bound on the current isolated branch; see `docs/CURRENT_VISUAL_HANDOFF.md`. |
 
 **Locked visual contract.** The background is only a continuous, walkable,
 moonlit cracked-stone floor that can extend beyond every camera edge. It has no
@@ -48,11 +48,13 @@ reference are not a final density or spawn-table decision. Player, enemies, and
 hazards stay readable against the floor through their own short contact shadows
 and high-contrast gameplay signals.
 
-This is a user-locked planning reference, not a runtime texture, scene change,
-import result, live render, Human Usability result, Player Experience result, or
-device/export result. A later runtime package must make the tiling background
-and transparent independent prop set separately, bind actual consumers, and
-run the applicable Godot/import/render evidence.
+This is a user-locked planning reference, not a runtime texture itself. The
+reference binary remains outside the Godot scene. A later, separately
+user-locked derived runtime package has now created the tile, prop atlas, and
+contact-shadow sources; it binds them only on the current isolated branch and
+records its exact consumers, source receipts, and scoped runtime evidence in
+`docs/CURRENT_VISUAL_HANDOFF.md`. That evidence does not become Human
+Usability, Player Experience, device/export, or merged-main evidence.
 
 ## 2026-08-28 current Cheonsul override
 
@@ -102,8 +104,11 @@ references and not runtime assets.
   route/Fate → commit. It does not add a new backpack UI implementation.
 - `SCRREF-RESULT-02` and `SCRREF-GAME-OVER-02` guide outcome/retry hierarchy;
   their abstract glyphs are not in-game text or icon assets.
-- No image in this folder is connected to a Godot runtime consumer yet. This is
-  intentional: a design reference must not be silently promoted as a texture.
+- No image **in this screen-reference folder** is connected to a Godot runtime
+  consumer. This is intentional: the planning reference is not silently
+  promoted as a texture. The separately user-locked runtime-derived sources
+  live under `assets/runtime/visual-core/` and are documented in the current
+  visual handoff.
 
 ## Evidence boundary
 
