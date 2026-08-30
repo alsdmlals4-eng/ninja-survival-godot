@@ -217,14 +217,9 @@ func test_invalid_checkpoint_never_debits_a_soul_or_consumes_the_retry() -> void
 	assert_not_null(circuit)
 	if circuit == null:
 		return
-	assert_true(_clear_active_school_to_workbench(main, circuit))
-	assert_true(circuit.choose_boss_reward(0))
-	assert_true(circuit.open_chest())
-	assert_true(_place_every_buffer_item(circuit))
-	var fate_id: StringName = circuit.workbench_snapshot().get("fate_candidate_ids", [])[0]
-	assert_true(circuit.choose_fate(fate_id))
-	assert_true(circuit.choose_next_route(&"bongma"))
-	main.get_node("RestFlowUI").workbench_commit_requested.emit()
+	# This case isolates retry validation. The fully committed next-school retry
+	# path is covered above; no randomized reward-placement fixture is needed here.
+	main._capture_run_checkpoint()
 	assert_true(main.run_checkpoint.is_valid())
 	assert_true(main.ninja_soul_wallet.configure(RETRY_WALLET_PATH, 1))
 	main.run_checkpoint._snapshot["build"] = {}
@@ -235,7 +230,7 @@ func test_invalid_checkpoint_never_debits_a_soul_or_consumes_the_retry() -> void
 	main.get_node("HUD").retry_requested.emit()
 	assert_true(main.game_over)
 	assert_eq(main.ninja_soul_wallet.balance(), 1)
-	assert_true(main.run_checkpoint.can_retry_school(&"bongma"))
+	assert_true(main.run_checkpoint.can_retry_school(&"cheonsul"))
 
 
 func _new_main():
@@ -303,9 +298,14 @@ func _expand_fixture_board(circuit) -> void:
 	var state = circuit._backpack_session._state
 	if state.bags.size() != 1:
 		return
-	assert_gt(state.add_bag(&"small_pouch", Vector2i(0, 0)), 0)
-	assert_gt(state.add_bag(&"small_pouch", Vector2i(3, 4)), 0)
-	assert_gt(state.add_bag(&"long_pouch", Vector2i(0, 4)), 0)
+	# Retry transaction coverage must not depend on the randomly offered item
+	# footprints. This test-only, legal tiling activates the retained 6x6 ceiling.
+	for y in [0, 4, 5]:
+		for x in [0, 2, 4]:
+			assert_gt(state.add_bag(&"small_pouch", Vector2i(x, y)), 0)
+	for x in [0, 4, 5]:
+		assert_gt(state.add_bag(&"long_pouch", Vector2i(x, 1), 1), 0)
+	assert_eq(state.get_active_cells().size(), 36)
 
 
 func _place_first_buffer_item(circuit) -> bool:
