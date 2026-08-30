@@ -291,8 +291,11 @@ Current `RestFlowUI/ResultView` displays contribution damage/healing/defense/sta
 | `AST-04` | talisman projectile | `ProjectileBasic/Visual` | `IMPLEMENTED` consumer |
 | `AST-05` | golden RewardOrb | `RewardOrb/Visual` | `IMPLEMENTED` consumer |
 | `AST-06` | Bongma familiar | `BongmaFamiliar/Visual` | consumer exists; other-school slice deferred |
-| `AST-07` | moonlit battlefield | `Main/BattlefieldBackdrop` | `IMPLEMENTED` consumer |
+| `AST-07` | historical moonlit battlefield backdrop | provenance / rollback only; no direct consumer on the current isolated branch | `HISTORICAL_SOURCE_ON_CURRENT_BRANCH` |
 | `AST-08` | Cheonsul flame field | `Cheonsul/FlameFieldVisual` | `IMPLEMENTED` consumer |
+| `AST-09` | moonlit battlefield floor tile | `Main/BattlefieldBackdrop/FloorTile` | `USER_LOCKED`, `IMPLEMENTED_ON_CURRENT_ISOLATED_BRANCH`; source/import + scoped runtime evidence only |
+| `AST-10` | moonlit battlefield sparse prop atlas | `Main/BattlefieldProps` | `USER_LOCKED`, `IMPLEMENTED_ON_CURRENT_ISOLATED_BRANCH`; source/import + scoped runtime evidence only |
+| `AST-11` | runtime contact shadow | player / basic-enemy / stage-boss `GroundShadow` | `USER_LOCKED`, `IMPLEMENTED_ON_CURRENT_ISOLATED_BRANCH`; source/import + scoped runtime evidence only |
 
 Existing assets are durable only when repository source + SHA-256/provenance manifest + explicit `LOCK` state + actual consumer are all present, followed by applicable import/runtime evidence. Existing project assets are not regenerated merely for a new sheet.
 

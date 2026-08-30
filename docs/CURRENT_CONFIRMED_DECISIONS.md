@@ -431,9 +431,15 @@ Current visual continuation authority:
 - Lanterns, trees, stones, and shrubs are separate sparse props with independent
   grounding/contact shadows. The locked reference does not set their final
   density, spawn rules, collision, or gameplay effects.
-- The existing `Main/BattlefieldBackdrop` runtime texture is not replaced. No
-  import, Godot runtime/render, Human Usability, Player Experience, or
-  device/export status changes through this planning lock.
+- `SCRREF-BATTLE-AUTOCOMBAT-03` itself remains a people-facing planning reference,
+  not a runtime texture. 현재 isolated 브랜치에서는 별도로 `LOCK`한
+  floor-tile, prop-atlas, and contact-shadow assets가 direct
+  `Main/BattlefieldBackdrop/FloorTile`, `Main/BattlefieldProps`, and unit-shadow
+  consumers; the old backdrop PNG remains only as historical provenance and a
+  rollback source.
+- This records source/import and scoped Godot runtime render/input evidence on
+  the isolated branch only. It does not promote Human Usability, Player
+  Experience, device/export, merge, or release status.
 
 The user approved a two-surface visual system that must still read as one IP:
 

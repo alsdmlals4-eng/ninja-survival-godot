@@ -23,6 +23,11 @@ LOCKED_BATTLE_REFERENCE_PATH = (
     / "screen-references"
     / "scrref-battle-autocombat-continuous-floor-v3.png"
 )
+CURRENT_DECISIONS_PATH = REPOSITORY_ROOT / "docs" / "CURRENT_CONFIRMED_DECISIONS.md"
+ACTIVE_CONTEXT_PATH = REPOSITORY_ROOT / "docs" / "ACTIVE_CONTEXT.md"
+MASTER_GDD_PATH = REPOSITORY_ROOT / "docs" / "design" / "NINJA_SURVIVAL_MASTER_GDD.md"
+VISUAL_COVERAGE_PATH = REPOSITORY_ROOT / "docs" / "visual" / "SCREEN_SURFACE_AND_VISUAL_COVERAGE.md"
+DOCUMENTATION_MAP_PATH = REPOSITORY_ROOT / "docs" / "DOCUMENTATION_MAP.md"
 
 
 def load_exporter_module():
@@ -35,6 +40,27 @@ def load_exporter_module():
 
 
 class HumanGddPdfExporterTests(unittest.TestCase):
+    def test_current_visual_and_backpack_authority_do_not_restore_superseded_state(self) -> None:
+        """Break caught: current reader surfaces call an archived backdrop or 4x3 baseline the active product state."""
+        human_source = BLUEPRINT_SOURCE_PATH.read_text(encoding="utf-8")
+        current_decisions = CURRENT_DECISIONS_PATH.read_text(encoding="utf-8")
+        active_context = ACTIVE_CONTEXT_PATH.read_text(encoding="utf-8")
+        master_gdd = MASTER_GDD_PATH.read_text(encoding="utf-8")
+        visual_coverage = VISUAL_COVERAGE_PATH.read_text(encoding="utf-8")
+        documentation_map = DOCUMENTATION_MAP_PATH.read_text(encoding="utf-8")
+
+        self.assertIn("역사적", human_source)
+        self.assertNotIn("현재 게임에 연결된 기존 화면 자산", human_source)
+        self.assertNotIn("기존 배경을 자동으로 교체하지 않으며", human_source)
+        self.assertIn("현재 isolated 브랜치", current_decisions)
+        self.assertNotIn("The existing `Main/BattlefieldBackdrop` runtime texture is not replaced.", current_decisions)
+        self.assertIn("historical/provenance/rollback source", active_context)
+        self.assertNotIn("Its sole consumer is `Main/BattlefieldBackdrop` behind gameplay.", active_context)
+        self.assertIn("moonlit battlefield floor tile", master_gdd)
+        self.assertIn("Main/BattlefieldBackdrop/FloorTile", visual_coverage)
+        self.assertIn("정확히 3×3 시작", documentation_map)
+        self.assertNotIn("6x6 / 4x3 / 회전", documentation_map)
+
     def test_locked_continuous_floor_reference_is_bound_to_the_human_blueprint(self) -> None:
         """Break caught: a user-locked combat reference is stored but omitted from its declared reader surface."""
         source = BLUEPRINT_SOURCE_PATH.read_text(encoding="utf-8")

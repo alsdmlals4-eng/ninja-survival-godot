@@ -89,7 +89,8 @@ Human GDD에서 직접 보여야 하는 정보:
 - Core Gameplay Loop와 전체 Run Flow
 - 4유파의 위험 처리 철학
 - 5분 전장 cadence
-- 6x6 / 4x3 / 회전 / 직교 인접 / 조합 / Workbench / Fate 핵심 규칙
+- 정확히 3×3 시작 / 가방 확장 / 6×6 기술적 외곽 상한 / 회전 / 직교 인접 / 조합 / Workbench / Fate 핵심 규칙
+- 기존 4×3 시작은 구현 migration baseline인 역사 정보이며, 사람용 시작 규칙으로 다시 제시하지 않음
 - 사람이 판단해야 하는 주요 수치·경제·콘텐츠 상한
 - 사람이 알아야 할 수준의 구현 구조 / 현재 구현 현실 / 다음 Gate / Human evidence ceiling
 
