@@ -19,6 +19,8 @@ current_player_control_stage_backpack_canon: docs/canon/2026-08-30-dec037-player
 human_blueprint_runtime_authority: USER_APPROVED_RUNTIME_BUILD_2026-08-30_KST
 dec037_runtime_design_spec: docs/superpowers/specs/2026-08-30-dec037-runtime-migration-design.md
 dec037_runtime_design_review_status: USER_SPEC_REVIEW_PENDING
+dec037_preimplementation_benchmark: docs/research/2026-08-30-dec037-survivor-auto-spatial-benchmark/report-source.md
+dec037_preimplementation_benchmark_status: RESEARCHED_NOT_PRODUCT_DECISION_12_OFFICIAL_COMPARABLES
 player_facing_vocabulary: STAGE_AND_PHASE
 backpack_starting_usable_area: EXACT_3X3
 human_player_gdd_pdf: exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf
