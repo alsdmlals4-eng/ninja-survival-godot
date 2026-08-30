@@ -103,28 +103,16 @@ layout_mode = 2
 text = "설정"
 horizontal_alignment = 1
 
-[node name="ResumeButton" type="Button" parent="SettingsPanel/Dialog"]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 63.0
-offset_right = 316.0
-offset_bottom = 103.0
+[node name="ResumeButton" type="Button" parent="SettingsPanel/Dialog/Margin/Actions"]
+layout_mode = 2
 text = "계속"
 
-[node name="TraditionHelpButton" type="Button" parent="SettingsPanel/Dialog"]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 111.0
-offset_right = 316.0
-offset_bottom = 151.0
+[node name="TraditionHelpButton" type="Button" parent="SettingsPanel/Dialog/Margin/Actions"]
+layout_mode = 2
 text = "현재 전승 도움말"
 
-[node name="RestartButton" type="Button" parent="SettingsPanel/Dialog"]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 159.0
-offset_right = 316.0
-offset_bottom = 199.0
+[node name="RestartButton" type="Button" parent="SettingsPanel/Dialog/Margin/Actions"]
+layout_mode = 2
 text = "Run 재시작"
 
 [node name="TouchControls" type="Control" parent="."]

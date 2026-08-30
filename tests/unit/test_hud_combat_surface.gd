@@ -93,9 +93,9 @@ func test_settings_panel_is_pause_safe_and_emits_only_intents() -> void:
 		return
 
 	var panel := hud.get_node_or_null("SettingsPanel") as Control
-	var resume := hud.get_node_or_null("SettingsPanel/Dialog/ResumeButton") as Button
-	var help := hud.get_node_or_null("SettingsPanel/Dialog/TraditionHelpButton") as Button
-	var restart := hud.get_node_or_null("SettingsPanel/Dialog/RestartButton") as Button
+	var resume := hud.find_child("ResumeButton", true, false) as Button
+	var help := hud.find_child("TraditionHelpButton", true, false) as Button
+	var restart := hud.find_child("RestartButton", true, false) as Button
 	assert_not_null(panel)
 	assert_not_null(resume)
 	assert_not_null(help)
@@ -122,6 +122,43 @@ func test_settings_panel_is_pause_safe_and_emits_only_intents() -> void:
 	assert_signal_emitted(hud, "current_tradition_help_requested")
 	restart.pressed.emit()
 	assert_signal_emitted(hud, "restart_requested")
+
+
+func test_settings_actions_have_distinct_layout_rects_inside_the_actions_container() -> void:
+	var hud = _spawn_hud()
+	if hud == null:
+		return
+	hud.open_settings()
+	await get_tree().process_frame
+	var actions := hud.get_node_or_null("SettingsPanel/Dialog/Margin/Actions") as VBoxContainer
+	var resume := hud.find_child("ResumeButton", true, false) as Button
+	var help := hud.find_child("TraditionHelpButton", true, false) as Button
+	var restart := hud.find_child("RestartButton", true, false) as Button
+	assert_not_null(actions)
+	assert_not_null(resume)
+	assert_not_null(help)
+	assert_not_null(restart)
+	if actions == null or resume == null or help == null or restart == null:
+		return
+
+	assert_eq(resume.get_parent(), actions)
+	assert_eq(help.get_parent(), actions)
+	assert_eq(restart.get_parent(), actions)
+	assert_false(resume.get_global_rect().intersects(help.get_global_rect()))
+	assert_false(resume.get_global_rect().intersects(restart.get_global_rect()))
+	assert_false(help.get_global_rect().intersects(restart.get_global_rect()))
+
+
+func test_each_settings_button_emits_only_its_matching_intent() -> void:
+	_assert_single_settings_intent("ResumeButton", "resume_requested", [
+		"current_tradition_help_requested", "restart_requested",
+	])
+	_assert_single_settings_intent("TraditionHelpButton", "current_tradition_help_requested", [
+		"resume_requested", "restart_requested",
+	])
+	_assert_single_settings_intent("RestartButton", "restart_requested", [
+		"resume_requested", "current_tradition_help_requested",
+	])
 
 
 func test_touch_controls_are_hidden_on_desktop_and_emit_named_movement_actions() -> void:
@@ -178,3 +215,19 @@ func _spawn_hud():
 	var hud = HUD_SCENE.instantiate()
 	add_child_autofree(hud)
 	return hud
+
+
+func _assert_single_settings_intent(button_name: String, expected_signal: String, unexpected_signals: Array[String]) -> void:
+	var hud = _spawn_hud()
+	if hud == null:
+		return
+	hud.open_settings()
+	var button := hud.find_child(button_name, true, false) as Button
+	assert_not_null(button, "Missing settings button: %s" % button_name)
+	if button == null:
+		return
+	watch_signals(hud)
+	button.pressed.emit()
+	assert_signal_emitted(hud, expected_signal)
+	for unexpected_signal in unexpected_signals:
+		assert_signal_not_emitted(hud, unexpected_signal)

@@ -21,7 +21,7 @@ func test_settings_emits_current_tradition_help_as_an_intent() -> void:
 	add_child_autofree(hud)
 	watch_signals(hud)
 	hud.open_settings()
-	(hud.get_node("SettingsPanel/Dialog/TraditionHelpButton") as Button).pressed.emit()
+	(hud.find_child("TraditionHelpButton", true, false) as Button).pressed.emit()
 	assert_signal_emitted(hud, "settings_requested")
 	assert_signal_emitted(hud, "current_tradition_help_requested")
 
@@ -30,7 +30,7 @@ func test_settings_restart_is_not_a_persistent_normal_combat_button() -> void:
 	var hud = HUD_SCENE.instantiate()
 	add_child_autofree(hud)
 	assert_null(hud.get_node_or_null("RestartButton"))
-	var settings_restart := hud.get_node_or_null("SettingsPanel/Dialog/RestartButton") as Button
+	var settings_restart := hud.find_child("RestartButton", true, false) as Button
 	assert_not_null(settings_restart)
 	if settings_restart == null:
 		return
