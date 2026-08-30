@@ -124,6 +124,7 @@ offset_top = 20.0
 offset_right = -320.0
 offset_bottom = 56.0
 grow_horizontal = 0
+focus_mode = 0
 text = "궁극기 [Enter]"
 
 [node name="TestEliteButton" type="Button" parent="."]

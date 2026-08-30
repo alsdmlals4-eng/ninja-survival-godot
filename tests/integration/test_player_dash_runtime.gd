@@ -72,13 +72,26 @@ func test_right_pointer_dash_uses_player_camera_canvas_transform() -> void:
 	assert_eq(player.current_dash_charges(), 1)
 
 
-func test_space_dash_event_cannot_also_trigger_the_legacy_ultimate() -> void:
+func test_parsed_space_dashes_once_without_focused_legacy_ultimate_activation() -> void:
 	var main = _spawn_scene(MAIN_SCENE)
 	main.get_node("SchoolSelectionUI")._choose(&"bongma")
 	var player = main.get_node("Player")
 	var bongma = main.get_node("SchoolRuntimeHost").active_runtime
+	var ultimate_button := main.get_node("HUD/UltimateButton") as Button
 	bongma.spirit = 100.0
-	player.set_movement_intent(Vector2.RIGHT)
+	bongma.set_process(false)
+	main.get_node("HUD").set_ultimate_ready(true)
+	player.set_pointer_target(player.global_position + Vector2.RIGHT * 120.0)
+	var dash_directions: Array[Vector2] = []
+	player.dash_started.connect(func(direction: Vector2): dash_directions.append(direction))
+	if ultimate_button.focus_mode != Control.FOCUS_NONE:
+		ultimate_button.grab_focus()
+	await get_tree().process_frame
+	assert_ne(
+		main.get_viewport().gui_get_focus_owner(),
+		ultimate_button,
+		"legacy ultimate control must reject keyboard/gamepad focus before Space is parsed"
+	)
 
 	var space_event := InputEventKey.new()
 	space_event.keycode = KEY_SPACE
@@ -87,12 +100,35 @@ func test_space_dash_event_cannot_also_trigger_the_legacy_ultimate() -> void:
 	assert_true(space_event.is_action_pressed(&"dash"), "Space must exercise the real dash InputMap binding")
 	assert_true(space_event.is_action_pressed(&"ui_accept"), "regression requires the overlapping legacy action")
 
-	main._unhandled_input(space_event)
+	Input.parse_input_event(space_event)
+	Input.flush_buffered_events()
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	var space_release := space_event.duplicate() as InputEventKey
+	space_release.pressed = false
+	Input.parse_input_event(space_release)
+	Input.flush_buffered_events()
+	await get_tree().process_frame
 
-	assert_true(player.request_dash(), "the same Space/dash action must still initiate the player-owned dash")
+	assert_eq(dash_directions.size(), 1, "one parsed Space press must start exactly one player-owned dash")
 	assert_eq(player.current_dash_charges(), 1)
 	assert_almost_eq(bongma.spirit, 100.0, 0.001, "dash must not spend legacy ultimate spirit")
 	assert_almost_eq(bongma.ultimate_time_remaining, 0.0, 0.001, "dash must not invoke the legacy ultimate")
+
+
+func test_legacy_ultimate_button_rejects_focus_but_keeps_pressed_route() -> void:
+	var main = _spawn_scene(MAIN_SCENE)
+	main.get_node("SchoolSelectionUI")._choose(&"bongma")
+	var bongma = main.get_node("SchoolRuntimeHost").active_runtime
+	var ultimate_button := main.get_node("HUD/UltimateButton") as Button
+	bongma.spirit = 100.0
+	main.get_node("HUD").set_ultimate_ready(true)
+
+	assert_eq(ultimate_button.focus_mode, Control.FOCUS_NONE)
+	ultimate_button.pressed.emit()
+
+	assert_almost_eq(bongma.spirit, 0.0, 0.001, "mouse pressed route must still spend ready spirit")
+	assert_almost_eq(bongma.ultimate_time_remaining, 6.0, 0.001, "mouse pressed route must remain connected")
 
 
 func test_combat_disable_clears_pointer_target_before_reenable() -> void:
