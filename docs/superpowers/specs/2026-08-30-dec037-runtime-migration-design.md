@@ -1,9 +1,9 @@
 # DEC-037 Runtime Migration Design
 
-> **Status:** `USER_APPROVED_DESIGN / IMPLEMENTED_MACHINE_VERIFIED_SCOPED_LIVE_OBSERVED_UNMERGED`
+> **Status:** `USER_APPROVED_DASH_INVULNERABILITY / IMPLEMENTED_MACHINE_AND_SCOPED_RUNTIME_VERIFIED_UNMERGED`
 > **Canon owner:** `docs/canon/2026-08-30-dec037-player-control-stage-3x3-backpack.md`
 > **Baseline:** `origin/main` `9855f9a5fa2e4297e3171a1b1903d3517719ad93`
-> **Scope:** the first fresh-main runtime package after Human Blueprint publication: direct movement and dash, top-only combat HUD, public Stage/Phase presentation, and exact 3×3 starting backpack.
+> **Scope:** the first fresh-main runtime package after Human Blueprint publication: direct movement and invulnerability dash, top-only combat HUD, public Stage/Phase presentation, and exact 3×3 starting backpack.
 
 ## 1. Goal
 
@@ -23,6 +23,7 @@ one fixed Ninja is directly moved
 
 - Keyboard, mouse/pointer, gamepad, and touch paths feed one movement/dash intent contract.
 - `PlayerController` owns dash charges, recovery, active-dash movement, and dash state signals.
+- An active dash resolves every valid `PlayerController.take_damage()` request as a full avoidance for its 0.20-second duration, without changing collision behavior.
 - Combat HUD shows only top-level dash charges, active-play time, and a settings entry during normal combat.
 - Settings presents `계속`, `현재 전승 도움말`, and `Run 재시작`; it is an intent surface, not a new gameplay owner.
 - Player-facing destination wording is `스테이지`; per-battle progression is `페이즈 1–4`.
@@ -32,7 +33,7 @@ one fixed Ninja is directly moved
 ### Explicit exclusions
 
 - No manual basic attack, aim reticle, skill hotbar, new ultimate button, or automatic-reaction ownership change.
-- No dash invulnerability, collision bypass, damage immunity, attack cancel, stamina economy, or new combat stat.
+- No collision bypass, attack cancel, stamina economy, new combat stat, or generic/post-dash invulnerability timer.
 - No Final Binding, final calamity, full Ninja Soul true-end settlement, Human Usability, Player Experience, device/export, or release claim.
 - No new raster asset is required. The approved player, floor, prop, and contact-shadow sources remain the visual baseline.
 - No destructive rename of internal `school` identifiers, route snapshots, or existing save/checkpoint keys.
@@ -53,7 +54,7 @@ The first runtime tuning is deliberately narrow and data-visible:
 | recharge | one charge every `1.5 s` | readable recovery without a new resource type |
 | allowed direction | non-zero current movement or pointer direction | prevents idle dash with undefined gameplay direction |
 | collision | existing `move_and_slide()` collision response | prevents clipping and preserves enemy/body interaction rules |
-| damage behavior | no immunity or prevention | avoids silently changing survival/economy balance |
+| damage behavior | while `_dash_remaining > 0.0`, a valid `take_damage()` request resolves `0` damage and reports full prevention as `evaded=true` | user-approved, player-authored escape window without changing collision or economy owners |
 
 The controller exposes a read-only presentation signal:
 
@@ -152,6 +153,7 @@ Catalog validation changes its starting-bag assertion from 12 to 9 cells. Tests 
 ## 5. Error and rollback behavior
 
 - A dash request with zero charge, a dead player, a settings-paused game, or zero direction returns `false` and leaves charge state unchanged.
+- A valid damage request during an active dash returns `0` and leaves HP unchanged; as soon as `_dash_remaining` reaches `0`, the normal evasion/modifier/HP path applies.
 - Pointer input inside a UI control does not set or replace a player movement target.
 - Unknown school/circuit states map to no Phase text; they never invent a visible Phase 5.
 - A malformed 3×3 restore snapshot fails closed through the existing checkpoint/backpack validators.
@@ -161,7 +163,7 @@ Catalog validation changes its starting-bag assertion from 12 to 9 cells. Tests 
 
 ### Automated
 
-- Unit tests prove two-charge dash consumption/recharge, nonzero direction, no damage immunity, and dead-player rejection.
+- Unit tests prove two-charge dash consumption/recharge, nonzero direction, active-dash full avoidance, immediate post-dash damage restoration, and dead-player rejection.
 - Unit tests prove input direction convergence and pointer arrival stopping behavior.
 - HUD tests prove the normal combat surface contains only dash/play/settings, settings emits intents, and no manual skill hotbar survives.
 - Presentation tests prove every live SchoolCircuit state maps to the approved Stage/Phase text without changing route depth.
@@ -170,7 +172,8 @@ Catalog validation changes its starting-bag assertion from 12 to 9 cells. Tests 
 
 ### Runtime and evidence ceiling
 
-- Godot import/editor parse, main-scene headless smoke, focused and full GUT, plus scoped live input/render observation are required before PR.
+- Godot 4.7.1 import/editor parse and main-scene smoke passed. The dash-focused regression passed at `3 scripts / 30 tests / 131 assertions`; the full GUT regression passed at `71 scripts / 555 tests / 6,033 assertions`.
+- Scoped live runtime on a new Cheonsul Run confirmed `request_dash() = true`, active `take_damage(10) = 0`, post-window `take_damage(10) = 10`, HUD `DASH 1 / 2`, and clean diagnostics. The check covers the active-dash damage boundary only; it is not a balance or player-experience pass.
 - Human Usability, Player Experience, device/Android export, balance validation, merge, and release remain separate evidence classes and may not be claimed from automated or scoped runtime results.
 
 ## 7. Sequence after this specification

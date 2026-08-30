@@ -243,10 +243,13 @@
       player.advance_dash_for_test(0.01)
       assert_eq(player.current_dash_charges(), 2)
 
-  func test_active_dash_does_not_prevent_damage_or_bypass_body_motion() -> void:
+  func test_active_dash_prevents_damage_only_during_the_dash_window() -> void:
       var player := _spawn_player()
       player.set_movement_intent(Vector2.RIGHT)
       assert_true(player.request_dash())
+      assert_eq(player.take_damage(10), 0)
+      assert_eq(player.health, 100)
+      player.advance_dash_for_test(0.20)
       assert_eq(player.take_damage(10), 10)
       assert_eq(player.health, 90)
   ```
@@ -299,7 +302,7 @@
 
   In `_physics_process(delta)`, read `Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")`, resolve an optional pointer direction, and call `request_dash()` only for `Input.is_action_just_pressed(&"dash")`. During active dash set velocity to `_dash_direction * move_speed * DASH_SPEED_MULTIPLIER`, decrement `_dash_remaining`, and still call `move_and_slide()`. Outside a dash set velocity from the resolved direction and `move_speed`. Restore each missing charge at 1.5-second intervals only while alive; emit `dash_state_changed` after every charge mutation and emit initial `2/2` in `_ready`/retry restoration.
 
-  Keep `take_damage` exactly damage-authoritative: it must not inspect `_dash_remaining`, change collision state, or cancel/negate valid damage. Do not export a generic test-only production mutator; use deterministic physics stepping or a narrowly named internal helper only if current GUT patterns require it.
+  **2026-08-30 user-directed override:** `take_damage` checks `_dash_remaining` after invalid/dead rejection and before modifier evasion. During the active 0.20-second dash it resolves the full requested damage as `0` with `evaded=true`; on expiry it immediately resumes the normal damage path. It still must not change collision state, and must not export a generic test-only production mutator.
 
 - [ ] **Step 4: Implement pointer input collection at the gameplay boundary.**
 

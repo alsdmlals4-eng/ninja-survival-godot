@@ -174,6 +174,10 @@ func take_damage(amount: int) -> int:
 		return 0
 
 	var requested := amount
+	if _dash_remaining > 0.0:
+		damage_resolved.emit(requested, 0, requested, true)
+		return 0
+
 	var evasion_chance := clampf(_run_modifiers.evasion_chance, 0.0, 1.0)
 	if evasion_chance > 0.0 and _rng.randf() < evasion_chance:
 		damage_resolved.emit(requested, 0, requested, true)

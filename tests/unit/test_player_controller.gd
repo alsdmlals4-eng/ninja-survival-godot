@@ -216,11 +216,17 @@ func test_second_dash_does_not_reset_the_running_recharge_cadence() -> void:
 	assert_eq(player.current_dash_charges(), 2, "remaining charge must follow the original 1.5-second cadence")
 
 
-func test_active_dash_does_not_prevent_damage_or_bypass_body_motion() -> void:
+func test_active_dash_prevents_damage_only_during_the_dash_window() -> void:
 	var player = _spawn_player()
 	player.set_movement_intent(Vector2.RIGHT)
+	player.damage_resolved.connect(_on_damage_resolved)
 	assert_true(player.request_dash())
 
+	assert_eq(player.take_damage(10), 0)
+	assert_eq(player.health, 100)
+	assert_eq(damage_events, [[10, 0, 10, true]])
+
+	player._advance_dash_state(player.DASH_DURATION_SECONDS)
 	assert_eq(player.take_damage(10), 10)
 	assert_eq(player.health, 90)
 
