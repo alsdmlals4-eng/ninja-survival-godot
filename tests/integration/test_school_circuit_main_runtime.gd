@@ -228,7 +228,9 @@ func test_invalid_checkpoint_never_debits_a_soul_or_consumes_the_retry() -> void
 	assert_true(main.run_checkpoint.is_valid())
 	assert_true(main.ninja_soul_wallet.configure(RETRY_WALLET_PATH, 1))
 	main.run_checkpoint._snapshot["build"] = {}
-	main.get_node("Player").take_damage(99999)
+	var player: PlayerController = main.get_node("Player")
+	player.set_rng_seed(178) # Keep the invalid-checkpoint path independent of build-provided evasion.
+	assert_gt(player.take_damage(99999), 0, "The deterministic lethal hit must not be evaded.")
 	assert_true(main.game_over)
 	main.get_node("HUD").retry_requested.emit()
 	assert_true(main.game_over)
