@@ -9,8 +9,8 @@
   "source": {
     "path": "docs/design/NINJA_SURVIVAL_HUMAN_GDD.md",
     "branch": "codex/human-game-blueprint-revision-132",
-    "commit": "ae3e1b857ca9620885ed853f27364680b4d1e8c0",
-    "sha256": "141f46fbb58540253889db67f8d7808bb4a199d168ffcafa0bad7826dc6dc09d",
+    "commit": "a36d06421526dbd38befba13f9f88a8fcb541b0d",
+    "sha256": "399f5c2d01b1d940195f31032f1ac8625513bbca51c437b3602603c8ee7273f5",
     "page_contract": "28 explicit human-review pages"
   },
   "generator": {
@@ -24,19 +24,19 @@
   },
   "artifact": {
     "path": "exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf",
-    "sha256": "9a94a2d13147f6def3e155aad3880e5962dab7cef1e53dd29861059016fb94b0",
-    "generated_at": "2026-08-30T08:46:31+09:00",
-    "byte_size": 22589109,
+    "sha256": "3e5e2becc3c3af5b8284a4f504f00bc0d74149b9c3c4fadea4bd08256e7e55ee",
+    "generated_at": "2026-08-30T11:53:56+09:00",
+    "byte_size": 22591341,
     "page_count": 28,
     "page_size": "landscape A4"
   },
   "validation": {
-    "unit_test": "PASSED: 8/8; includes explicit 28-page source/rendered-page contract and locked continuous-floor reference binding",
+    "unit_test": "PASSED: 8/8; includes explicit 28-page source/rendered-page contract, locked continuous-floor reference binding, Ninja Soul, and true Run-end text checks",
     "pdfinfo": "PASSED: opens; 28 pages; landscape A4; human-blueprint title",
-    "pypdf_text_contract": "PASSED: 28 pages; 0 blank extracted-text pages; 01/28 and 28/28 markers; player-control, 3x3, Stage/Phase text present",
+    "pypdf_text_contract": "PASSED: 28 pages; 0 blank extracted-text pages; 01/28 and 28/28 markers; player-control, 3x3, Stage/Phase, Ninja Soul, true Run-end, and normalized one-retry contract text present",
     "render_command": "pdftoppm -png -r 144",
     "automated_render_review": "PASSED: 28/28 PNG; 0 zero-byte pages",
-    "codex_visual_review": "PASSED: 28/28 pages rendered; changed pages 10, 25, and 28 re-inspected at high detail. Korean glyphs, headers, cards, the locked battle reference, current-runtime boundary, and page numbers are legible without observed overlap or clipping. Unchanged pages retain the prior full visual review.",
+    "codex_visual_review": "PASSED: 28/28 pages rendered; pages 10, 16, 24, and 28 re-inspected at high detail. Korean glyphs, headers, cards, locked battle reference, Ninja Soul retry card, current-runtime boundary, and page numbers are legible without observed overlap or clipping. Unchanged pages retain the prior full visual review.",
     "human_visual_review": "NOT_RUN"
   },
   "locked_visual_reference": {
