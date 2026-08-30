@@ -81,6 +81,47 @@ func test_current_school_help_opens_from_settings_during_combat_without_reselect
 	assert_false(get_tree().paused)
 
 
+func test_paused_settings_help_renders_above_hud_and_closes_from_parsed_escape() -> void:
+	var main = MAIN_SCENE.instantiate()
+	add_child_autofree(main)
+	await get_tree().process_frame
+	var selector := main.get_node_or_null("SchoolSelectionUI") as SchoolSelectionUI
+	var hud := main.get_node_or_null("HUD") as HUDController
+	assert_not_null(selector)
+	assert_not_null(hud)
+	if selector == null or hud == null:
+		return
+
+	selector._choose(&"cheonsul")
+	hud.open_settings()
+	assert_true(get_tree().paused)
+	assert_true(hud.settings_panel.visible)
+	assert_false((selector.get_node("Panel") as Control).visible)
+	hud.tradition_help_button.grab_focus()
+	hud.tradition_help_button.pressed.emit()
+	var help_dialog := selector.get_node("HelpDialog") as Control
+	var close_button := selector.get_node("HelpDialog/Margin/Content/CloseButton") as Button
+
+	assert_true(help_dialog.visible)
+	assert_gt(selector.layer, hud.layer, "Active runtime help must render above the HUD settings backdrop.")
+	assert_eq(get_viewport().gui_get_focus_owner(), close_button, "Opening help must move focus into its close control.")
+
+	var escape := InputEventKey.new()
+	escape.keycode = KEY_ESCAPE
+	escape.physical_keycode = KEY_ESCAPE
+	escape.pressed = true
+	assert_true(escape.is_action_pressed(&"ui_cancel"), "Escape must exercise the real ui_cancel action binding.")
+	Input.parse_input_event(escape)
+	Input.flush_buffered_events()
+	await get_tree().process_frame
+
+	assert_false(help_dialog.visible, "A real parsed Escape must close runtime help while Settings pauses the tree.")
+	assert_eq(get_viewport().gui_get_focus_owner(), hud.tradition_help_button, "Closing help must return focus to its Settings opener.")
+	assert_true(hud.settings_panel.visible)
+	assert_true(get_tree().paused)
+	get_tree().paused = false
+
+
 func test_second_school_selection_is_rejected() -> void:
 	var main = MAIN_SCENE.instantiate()
 	add_child_autofree(main)

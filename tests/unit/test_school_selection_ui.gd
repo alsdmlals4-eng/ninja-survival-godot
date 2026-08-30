@@ -73,7 +73,7 @@ func test_selected_school_help_reopens_during_play_and_returns_to_hud_opener() -
 	assert_eq(ids, [&"cheonsul"], "Closing runtime help must not change the school")
 
 
-func test_runtime_help_dialog_stays_interactive_while_settings_pause_is_active() -> void:
+func test_runtime_help_scene_uses_the_explicit_overlay_and_pause_process_contract() -> void:
 	var selector = load(SELECTOR_SCENE_PATH).instantiate()
 	add_child_autofree(selector)
 	var opener := Button.new()
@@ -83,6 +83,8 @@ func test_runtime_help_dialog_stays_interactive_while_settings_pause_is_active()
 	selector.open_runtime_school_help(&"cheonsul", opener)
 	var dialog := selector.get_node("HelpDialog") as Control
 
+	assert_eq(selector.layer, 11)
+	assert_eq(selector.process_mode, Node.PROCESS_MODE_ALWAYS)
 	assert_eq(dialog.process_mode, Node.PROCESS_MODE_WHEN_PAUSED)
 	selector._unhandled_input(_cancel_event())
 	assert_false(dialog.visible)

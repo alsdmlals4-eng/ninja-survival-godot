@@ -3,6 +3,8 @@
 [ext_resource type="Script" path="res://scripts/ui/school_selection_ui.gd" id="1_selector"]
 
 [node name="SchoolSelectionUI" type="CanvasLayer"]
+layer = 11
+process_mode = 3
 script = ExtResource("1_selector")
 
 [node name="Panel" type="PanelContainer" parent="."]
