@@ -190,7 +190,9 @@ func test_checkpoint_retry_spends_one_soul_once_and_restores_the_next_school_bas
 	var checkpoint_gold := int(main.get_node("RunBuildState").gold)
 	assert_true(main.ninja_soul_wallet.configure(RETRY_WALLET_PATH, 1))
 	main.get_node("RunBuildState").grant_gold(9)
-	main.get_node("Player").take_damage(99999)
+	var player: PlayerController = main.get_node("Player")
+	player.set_rng_seed(178) # First roll is 0.99936014, safely above the 0.95 evasion ceiling.
+	assert_gt(player.take_damage(99999), 0, "The deterministic lethal hit must not be evaded.")
 	assert_true(main.game_over)
 	assert_true(main.get_node("HUD/GameOverPanel/RetryButton").visible)
 	main.get_node("HUD").retry_requested.emit()
@@ -200,7 +202,8 @@ func test_checkpoint_retry_spends_one_soul_once_and_restores_the_next_school_bas
 	assert_eq(circuit.route_state.active_school_id(), &"bongma")
 	assert_eq(circuit.get_snapshot().get("elapsed_seconds"), 0.0)
 	assert_false(main.get_node("HUD/GameOverPanel").visible)
-	main.get_node("Player").take_damage(99999)
+	player.set_rng_seed(178)
+	assert_gt(player.take_damage(99999), 0, "The post-retry lethal hit must not be evaded.")
 	assert_true(main.game_over)
 	assert_false(main.get_node("HUD/GameOverPanel/RetryButton").visible, "A Run must not offer a second paid retry.")
 
