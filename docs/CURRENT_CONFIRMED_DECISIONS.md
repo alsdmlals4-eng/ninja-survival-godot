@@ -30,7 +30,12 @@ backpack_starting_usable_area: EXACT_3X3
 backpack_technical_expansion_ceiling: MAX_6X6
 runtime_build_authority_for_dec037: USER_APPROVED_RUNTIME_BUILD_2026-08-30_KST
 dec037_runtime_design_spec: docs/superpowers/specs/2026-08-30-dec037-runtime-migration-design.md
-dec037_runtime_design_review_status: USER_SPEC_REVIEW_PENDING
+dec037_runtime_design_review_status: IMPLEMENTED_MACHINE_VERIFIED_UNMERGED_USER_RUNTIME_REVIEW_PENDING
+dec037_runtime_evidence_code_head: E9275ABBE0A954313F468224BD0CEFF21D27A57C
+dec037_runtime_machine_evidence: GODOT_4_7_1_IMPORT_EDITOR_PARSE_MAIN_SMOKE_FOCUSED_GUT_23_OF_23_197_ASSERTS_1772_FULL_GUT_71_OF_71_555_ASSERTS_6030_PASS
+dec037_runtime_adversarial_review: FIVE_WHOLE_SCOPE_LOOPS_COMPLETED_THREE_VALIDATED_CORRECTIONS
+dec037_runtime_live_observation: NOT_RUN_USER_INTERRUPTED_2026-08-30_KST
+dec037_human_player_touch_gamepad_device_export_balance: NOT_RUN
 human_player_gdd_pdf: exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf
 human_player_gdd_pdf_manifest: docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json
 human_player_gdd_pdf_policy: ALWAYS_SYNC_ON_HUMAN_GDD_OR_EXPORTER_CHANGE
@@ -72,7 +77,7 @@ This is the current mutable decision router/ledger. Detailed rules live in the d
 
 ### 2026-08-30 public experience override — DEC-037
 
-For player-facing documents and future public UI, the destination is called a **Stage** and the internal pressure ladder is called **Phase 1–4**. A player directly moves one fixed Ninja during combat; automatic attack/tradition effects are results of position and committed build. The actual starting usable backpack is exactly **3×3** and grows through bag placement inside the retained 6×6 technical ceiling. Existing `school` terminology remains an internal legacy compatibility detail until the separately authorized runtime migration. This override supersedes older player-facing “school” and “6×6 starting board” statements.
+For player-facing documents and public runtime UI, the destination is called a **Stage** and the internal pressure ladder is called **Phase 1–4**. A player directly moves one fixed Ninja during combat; automatic attack/tradition effects are results of position and committed build. The actual starting usable backpack is exactly **3×3** and grows through bag placement inside the retained 6×6 technical ceiling. Existing `school` terminology remains an internal legacy compatibility detail only. This override supersedes older player-facing “school” and “6×6 starting board” statements.
 
 `닌자의 신 / 닌자 서바이벌` is a 2D survival roguelike where the player chooses a starting Stage, clears all four Stage battlefields in a player-chosen order, opens their tradition acquisition packages, and uses a spatial/rotation/adjacency backpack build to defeat a separate final calamity.
 

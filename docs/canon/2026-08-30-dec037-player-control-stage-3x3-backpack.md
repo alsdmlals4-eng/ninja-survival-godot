@@ -7,7 +7,11 @@ owner: PRODUCT_CANON
 supersedes_for_player_facing_surfaces:
   - legacy school terminology
   - 6x6 board presented as the starting backpack
-runtime_migration_status: DEFERRED_UNTIL_HUMAN_BLUEPRINT_FINAL_REVIEW
+runtime_migration_status: IMPLEMENTED_MACHINE_VERIFIED_UNMERGED_2026-08-30_KST
+runtime_evidence_code_head: e9275abbe0a954313f468224bd0ceff21d27a57c
+runtime_machine_evidence: GODOT_4_7_1_IMPORT_EDITOR_PARSE_MAIN_SMOKE_FOCUSED_GUT_23_OF_23_197_ASSERTS_1772_FULL_GUT_71_OF_71_555_ASSERTS_6030_PASS
+scoped_live_runtime_observation: NOT_RUN_USER_INTERRUPTED_2026-08-30_KST
+human_player_touch_gamepad_device_export_balance: NOT_RUN
 ```
 
 ## 결정
@@ -25,7 +29,7 @@ runtime_migration_status: DEFERRED_UNTIL_HUMAN_BLUEPRINT_FINAL_REVIEW
 
 ## 이행 경계
 
-이 결정을 사람용 Blueprint/기술 명세에 먼저 반영한다. 실제 Godot 이행은 사용자 final PDF review 후 별도 fresh-main package에서 다음을 같이 다룬다.
+이 결정은 사람용 Blueprint/기술 명세와 별도 fresh-main implementation package로 이행했다. 코드 기준 `e9275abbe0a954313f468224bd0ceff21d27a57c`에서 Godot 4.7.1 import, editor parse, main-scene smoke, 변경 범위 GUT 23 scripts/197 tests/1,772 assertions, full GUT 71 scripts/555 tests/6,030 assertions이 통과했다. 이 결과는 자동화·기계 검증 범위만 뜻하며, live observation 또는 Human/Player/device evidence가 아니다.
 
 - `BackpackState` 시작 bag/cell, catalog item footprint, resolver/session/UI, save/rollback, GUT regression
 - Stage/Phase 공개 UI, help, route/result copy 및 legacy identifier migration
@@ -34,4 +38,4 @@ runtime_migration_status: DEFERRED_UNTIL_HUMAN_BLUEPRINT_FINAL_REVIEW
 
 ## 증거 경계
 
-이 문서와 PDF의 변경은 `DOCUMENTED`/publication evidence다. 3×3 runtime, UI 용어 이행, Human Usability, Player Experience, touch/gamepad/device/export는 `NOT_RUN`이며 문서 발행으로 승격하지 않는다.
+문서와 PDF의 변경은 `DOCUMENTED`/publication evidence다. 위의 3×3 runtime과 UI 용어 이행은 `MACHINE_VERIFIED`이나, scoped live Godot observation은 사용자가 중단하여 `NOT_RUN`이다. Human Usability, Player Experience, touch/gamepad/device/export, balance와 release도 계속 `NOT_RUN`이며 기계 검증으로 승격하지 않는다.
