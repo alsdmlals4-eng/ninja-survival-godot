@@ -4,6 +4,7 @@ const MAIN_SCENE := preload("res://scenes/main/main_scene.tscn")
 const MODIFIER_PATH := "res://scripts/data/run_modifier_set.gd"
 
 const SCHOOL_IDS := [&"bongma", &"cheonsul", &"guiin", &"heukyeong"]
+const WORKBENCH_FIXTURE_SEED := 1
 
 
 func test_each_school_receives_committed_backpack_fate_and_school_modifiers() -> void:
@@ -117,6 +118,9 @@ func test_reward_orbs_are_paused_during_result_rest_and_resume_next_combat() -> 
 	assert_not_null(circuit)
 	if circuit == null:
 		return
+	# The production circuit randomizes offers. This fixture needs one reproducible
+	# reward/chest layout before it validates the commit and orb process mode.
+	circuit._rng.seed = WORKBENCH_FIXTURE_SEED
 	assert_true(_clear_active_school_to_workbench(main, circuit))
 	assert_eq(orb.process_mode, Node.PROCESS_MODE_DISABLED)
 

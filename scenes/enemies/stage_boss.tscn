@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/enemies/stage_boss.gd" id="1_boss"]
 [ext_resource type="Texture2D" path="res://assets/runtime/visual-core/cheonsul_stage_boss_v1.png" id="2_visual"]
+[ext_resource type="Texture2D" path="res://assets/runtime/visual-core/runtime_contact_shadow_v1.png" id="3_shadow"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_boss"]
 radius = 14.0
@@ -13,6 +14,13 @@ script = ExtResource("1_boss")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_boss")
+
+[node name="GroundShadow" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(0, 30)
+scale = Vector2(0.12, 0.055)
+texture_filter = 4
+texture = ExtResource("3_shadow")
 
 [node name="Visual" type="Sprite2D" parent="."]
 scale = Vector2(0.05, 0.05)

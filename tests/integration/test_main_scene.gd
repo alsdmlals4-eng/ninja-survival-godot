@@ -8,7 +8,16 @@ const STAGE_BOSS_SCENE := "res://scenes/enemies/stage_boss.tscn"
 const REWARD_ORB_SCENE := "res://scenes/rewards/reward_orb.tscn"
 const BONGMA_FAMILIAR_SCENE := "res://scenes/schools/bongma_familiar.tscn"
 const HUD_SCENE := "res://scenes/ui/hud.tscn"
-const BATTLEFIELD_BACKDROP := "res://assets/runtime/visual-core/moonlit_battlefield_backdrop_v1.png"
+const BATTLEFIELD_FLOOR_TILE := "res://assets/runtime/visual-core/moonlit_battlefield_floor_tile_v1.png"
+const BATTLEFIELD_FLOOR_TILE_SIZE := Vector2(1254, 1254)
+const BATTLEFIELD_PROP_ATLAS := "res://assets/runtime/visual-core/moonlit_battlefield_prop_atlas_v1.png"
+const GROUND_SHADOW_TEXTURE := "res://assets/runtime/visual-core/runtime_contact_shadow_v1.png"
+const BATTLEFIELD_PROP_REGIONS := {
+	"Lantern": Rect2(0, 0, 632.5, 621.5),
+	"DeadTree": Rect2(632.5, 0, 632.5, 621.5),
+	"Rocks": Rect2(0, 621.5, 632.5, 621.5),
+	"TalismanStele": Rect2(632.5, 621.5, 632.5, 621.5),
+}
 const REQUIRED_RUNTIME_RESOURCES := [
 	"res://scripts/core/main_controller.gd",
 	"res://scripts/ui/hud.gd",
@@ -34,21 +43,84 @@ func test_main_scene_has_core_nodes() -> void:
 	assert_not_null(main.get_node_or_null("Player/AutoAttack"))
 
 
-func test_main_scene_renders_the_runtime_battlefield_backdrop_behind_gameplay() -> void:
-	assert_true(ResourceLoader.exists(BATTLEFIELD_BACKDROP), "The approved battlefield backdrop source must exist")
+func test_main_scene_repeats_the_locked_battlefield_floor_behind_gameplay() -> void:
+	assert_true(ResourceLoader.exists(BATTLEFIELD_FLOOR_TILE), "The locked battlefield floor tile source must exist")
 	var main = _spawn_main()
 	assert_not_null(main)
 	if main == null:
 		return
 
-	var backdrop := main.get_node_or_null("BattlefieldBackdrop") as Sprite2D
+	var backdrop := main.get_node_or_null("BattlefieldBackdrop") as Parallax2D
 	var player := main.get_node_or_null("Player") as Node2D
-	assert_not_null(backdrop, "Main must own a direct runtime backdrop Sprite2D")
+	assert_not_null(backdrop, "Main must own a repeating runtime battlefield backdrop")
 	assert_not_null(player)
 	if backdrop == null or player == null:
 		return
-	assert_not_null(backdrop.texture, "Backdrop must consume the approved local texture")
+
+	assert_eq(backdrop.repeat_size, BATTLEFIELD_FLOOR_TILE_SIZE)
+	assert_eq(backdrop.repeat_times, 1)
+	assert_eq(backdrop.scroll_scale, Vector2.ONE)
+	var floor_tile := backdrop.get_node_or_null("FloorTile") as Sprite2D
+	assert_not_null(floor_tile, "The repeating backdrop must own the locked floor tile")
+	if floor_tile == null:
+		return
+	assert_not_null(floor_tile.texture, "Floor tile must consume the locked local texture")
+	assert_eq(floor_tile.texture.resource_path, BATTLEFIELD_FLOOR_TILE)
 	assert_lt(backdrop.z_index, player.z_index, "Backdrop must remain behind gameplay")
+
+
+func test_main_scene_repeats_locked_sparse_props_between_floor_and_gameplay() -> void:
+	assert_true(ResourceLoader.exists(BATTLEFIELD_PROP_ATLAS), "The locked sparse-prop atlas source must exist")
+	var main = _spawn_main()
+	assert_not_null(main)
+	if main == null:
+		return
+
+	var floor := main.get_node_or_null("BattlefieldBackdrop") as Parallax2D
+	var props := main.get_node_or_null("BattlefieldProps") as Parallax2D
+	var player := main.get_node_or_null("Player") as Node2D
+	assert_not_null(floor)
+	assert_not_null(props, "Main must own independent repeating battlefield props")
+	assert_not_null(player)
+	if floor == null or props == null or player == null:
+		return
+
+	assert_eq(props.repeat_size, BATTLEFIELD_FLOOR_TILE_SIZE)
+	assert_eq(props.repeat_times, 1)
+	assert_eq(props.scroll_scale, Vector2.ONE)
+	assert_gt(props.z_index, floor.z_index, "Props must render above the floor")
+	assert_lt(props.z_index, player.z_index, "Props must stay behind gameplay units")
+	assert_eq(props.get_child_count(), BATTLEFIELD_PROP_REGIONS.size(), "Only the approved sparse prop set belongs in the layer")
+	for prop_name in BATTLEFIELD_PROP_REGIONS:
+		var prop := props.get_node_or_null(prop_name) as Sprite2D
+		assert_not_null(prop, "Missing approved sparse prop: %s" % prop_name)
+		if prop == null:
+			continue
+		assert_not_null(prop.texture)
+		if prop.texture != null:
+			assert_eq(prop.texture.resource_path, BATTLEFIELD_PROP_ATLAS)
+		assert_true(prop.region_enabled)
+		assert_true(prop.region_filter_clip_enabled, "Prop atlas must clip filtered sampling to its own region")
+		assert_eq(prop.region_rect, BATTLEFIELD_PROP_REGIONS[prop_name])
+
+
+func test_player_enemy_and_boss_share_the_locked_ground_shadow() -> void:
+	assert_true(ResourceLoader.exists(GROUND_SHADOW_TEXTURE), "The locked contact-shadow source must exist")
+	for scene_path in [PLAYER_SCENE, ENEMY_SCENE, STAGE_BOSS_SCENE]:
+		var unit = _spawn_scene(scene_path)
+		assert_not_null(unit)
+		if unit == null:
+			continue
+		var shadow := unit.get_node_or_null("GroundShadow") as Sprite2D
+		var visual := unit.get_node_or_null("Visual") as Sprite2D
+		assert_not_null(shadow, "%s must own a grounded contact shadow" % scene_path)
+		assert_not_null(visual)
+		if shadow == null or visual == null:
+			continue
+		assert_not_null(shadow.texture)
+		if shadow.texture != null:
+			assert_eq(shadow.texture.resource_path, GROUND_SHADOW_TEXTURE)
+		assert_lt(shadow.z_index, visual.z_index, "Ground shadow must render behind the unit visual")
 
 
 func test_runtime_resources_exist() -> void:

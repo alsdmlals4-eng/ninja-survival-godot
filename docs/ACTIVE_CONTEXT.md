@@ -66,6 +66,9 @@ img_02_live_render: NOT_RUN_HERA_CONNECTED_TO_DIFFERENT_PROJECT
 img_03_runtime_battlefield_backdrop: MERGED_MAIN_5A52A30_LOCAL_SOURCE_CURRENT_HISTORICAL_NOTION_ATTACHMENT_RETIRED
 img_03_automated_evidence: GODOT_4_7_1_IMPORT_EDITOR_PARSE_MAIN_SMOKE_GUT_493_OF_493_5380_ASSERTIONS_PASS
 img_03_live_render: NOT_RUN_DESKTOP_VISUAL_TARGET_CHANGED
+runtime_battlefield_floor_tile_01: USER_LOCKED_IMPLEMENTED_ISOLATED_BRANCH_MACHINE_VERIFIED_NOT_MERGED
+runtime_battlefield_prop_shadow_batch: USER_LOCKED_IMPLEMENTED_ISOLATED_BRANCH_MACHINE_VERIFIED_NOT_MERGED
+runtime_battlefield_prop_shadow_review: docs/reviews/2026-08-30-runtime-battlefield-props-and-shadows-adversarial-review.md
 local_shared_godot_exact_pin: GODOT_4.7.1_STABLE_OFFICIAL_A13DA4FEB_FRESH_LOCAL_VERIFIED_2026_08_27_KST
 local_editor_session: HEADLESS_EDITOR_PARSE_PR129_HEAD_PASS
 phase2_shared_four_school_circuit: MACHINE_IMPLEMENTED_MERGED_MAIN_PR129
@@ -292,7 +295,7 @@ Approved school motifs:
 - Hybrid Key Visual: APPROVED MASTER BRIDGE; historical Notion low-res preview server readback exists but is no longer an active gate.
 - Four-school full-body silhouette sheet: APPROVED SUPPORTING REFERENCE; not four runtime protagonists.
 - SD/action/icon three-panel sheet: WORKING_REFERENCE; structure reusable but exact trace details superseded by current fixed-character/main-school-Stage-3 rules.
-- SCRREF-BATTLE-AUTOCOMBAT-03: USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME; human blueprint page 10 is its consumer. It locks seamless continuous floor + sparse independent props while the existing Main/BattlefieldBackdrop runtime texture remains unchanged.
+- SCRREF-BATTLE-AUTOCOMBAT-03: USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME; human blueprint page 10 is its consumer. It locks continuous floor + sparse independent-prop direction. The later user-locked `NINJA_RUNTIME_BATTLEFIELD_FLOOR_TILE_01`, `NINJA_RUNTIME_BATTLEFIELD_PROP_ATLAS_01`, and `NINJA_RUNTIME_CONTACT_SHADOW_01` are implemented on the current isolated branch; the floor/prop layer replaces the old direct backdrop binding without deleting the historical source. Prop sprites and ground shadows are visual-only and remain unmerged pending a later package decision.
 - IMG-02 runtime visual core: merged at `03005e7dcc1a2e0b6ee57b4f6ebed9b481ee2fbc` with seven approved repository-local PNG sources. Actual consumers are three generic EnemyBasic variants, Cheonsul StageBoss, ProjectileBasic, RewardOrb and BongmaFamiliar.
 - IMG-03 moonlit battlefield backdrop: merged at `5a52a30aa6c38cfed17e46d550eef27ab06e53f7` with its opaque repository-local PNG. Its sole consumer is `Main/BattlefieldBackdrop` behind gameplay; it changes no game-rule authority.
 - IMG-04 Cheonsul flame field: merged at `6d538fcf933e2fbcca50f8e6d369d165efac620c` with its transparent repository-local PNG. Its sole consumer is the existing `Cheonsul/FlameFieldVisual`; it changes no combat, route, reward, or school-rule authority.
