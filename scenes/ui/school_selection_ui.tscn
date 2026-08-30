@@ -25,26 +25,27 @@ theme_override_constants/separation = 12
 
 [node name="Title" type="Label" parent="Panel/Margin/Choices"]
 layout_mode = 2
-text = "유파 선택"
+text = "스테이지 선택"
 horizontal_alignment = 1
 
 [node name="BongmaButton" type="Button" parent="Panel/Margin/Choices"]
 layout_mode = 2
-text = "1 — 봉마류  |  소환과 결계로 진지를 만든다"
+text = "1 — 스테이지 · 봉마류 전장  |  소환과 결계로 진지를 만든다"
 
 [node name="CheonsulButton" type="Button" parent="Panel/Margin/Choices"]
 layout_mode = 2
-text = "2 — 천술류  |  속성 상태를 겹쳐 반응을 터뜨린다"
+text = "2 — 스테이지 · 천술류 전장  |  속성 상태를 겹쳐 반응을 터뜨린다"
 
 [node name="GuiinButton" type="Button" parent="Panel/Margin/Choices"]
 layout_mode = 2
-text = "3 — 귀인류  |  가까이 붙고 위험할수록 강해진다"
+text = "3 — 스테이지 · 귀인류 전장  |  가까이 붙고 위험할수록 강해진다"
 
 [node name="HeukyeongButton" type="Button" parent="Panel/Margin/Choices"]
 layout_mode = 2
-text = "4 — 흑영류  |  원거리 표식을 쌓아 연쇄 폭발시킨다"
+text = "4 — 스테이지 · 흑영류 전장  |  원거리 표식을 쌓아 연쇄 폭발시킨다"
 
 [node name="HelpDialog" type="PanelContainer" parent="."]
+process_mode = 2
 anchors_preset = 15
 anchor_left = 0.2
 anchor_top = 0.18

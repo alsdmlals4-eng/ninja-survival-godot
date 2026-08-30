@@ -22,7 +22,7 @@ func test_main_scene_keeps_existing_runtime_owners_before_a_school_starts() -> v
 	assert_null(main.school_circuit, "A circuit must be created only after the player selects a school.")
 
 
-func test_school_selection_starts_the_four_school_circuit_and_syncs_hud_and_build_state() -> void:
+func test_school_selection_starts_the_four_school_circuit_and_syncs_stage_phase_hud_and_build_state() -> void:
 	var main: Node = _new_main()
 	if main == null:
 		return
@@ -40,9 +40,15 @@ func test_school_selection_starts_the_four_school_circuit_and_syncs_hud_and_buil
 	assert_eq(player.process_mode, Node.PROCESS_MODE_INHERIT)
 	assert_eq(spawner.process_mode, Node.PROCESS_MODE_INHERIT)
 	assert_eq(main.get_node("Player/AutoAttack").process_mode, Node.PROCESS_MODE_DISABLED)
-	assert_eq(main.get_node("HUD/StageLabel").text, "SEGMENT 1/4")
-	assert_eq(main.get_node("HUD/StageTimeLabel").text, "TIME 04:30")
-	assert_eq(main.get_node("HUD/GoldLabel").text, "GOLD 0")
+	assert_true((main.get_node("HUD/CombatTopBar") as Control).visible)
+	assert_eq(
+		(main.get_node("HUD/CombatTopBar/Row/StagePhaseLabel") as Label).text,
+		"스테이지 · 봉마류 전장 · 페이즈 1 · Core 압박",
+	)
+	assert_eq((main.get_node("HUD/CombatTopBar/Row/PlayLabel") as Label).text, "PLAY 00:00")
+	assert_null(main.get_node_or_null("HUD/StageLabel"))
+	assert_null(main.get_node_or_null("HUD/StageTimeLabel"))
+	assert_null(main.get_node_or_null("HUD/GoldLabel"))
 
 
 func test_circuit_normal_enemy_reward_orb_remains_active_while_legacy_stage_flow_is_idle() -> void:

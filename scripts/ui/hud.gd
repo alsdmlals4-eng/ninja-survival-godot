@@ -9,13 +9,6 @@ signal current_tradition_help_requested
 signal restart_requested
 signal retry_requested
 
-## Transitional compatibility signals remain until Task 6 removes legacy
-## MainController consumers. They have no normal-combat controls in this scene.
-signal school_help_requested
-signal ultimate_requested
-signal test_elite_requested
-signal test_boss_requested
-
 @onready var combat_top_bar: MarginContainer = $CombatTopBar
 @onready var dash_label: Label = $CombatTopBar/Row/DashLabel
 @onready var stage_phase_label: Label = $CombatTopBar/Row/StagePhaseLabel
@@ -34,10 +27,6 @@ signal test_boss_requested
 @onready var game_over_panel: Control = $GameOverPanel
 @onready var game_over_message: Label = $GameOverPanel/Message
 @onready var retry_button: Button = $GameOverPanel/RetryButton
-
-## Task 6 still has one compile-time focus reference while it replaces the
-## legacy help route. The target is inside SettingsPanel, never normal combat.
-@onready var school_help_button: Button = tradition_help_button
 
 var _combat_hud_visible: bool = false
 var _touch_available: bool = false
@@ -171,72 +160,11 @@ func _release_touch_actions() -> void:
 		Input.action_release(action_name)
 
 
-## Transitional no-op presentation methods. Task 6 removes the old callers;
-## keeping the symbols during this scene-only migration avoids moving legacy
-## combat data into the new HUD or breaking the current main-scene parser.
+## Historical parser compatibility only. MainController has no live health or
+## score HUD consumers; normal combat continues to render only the compact bar.
 func set_health(_current: int, _maximum: int) -> void:
 	pass
 
 
 func set_score(_score: int, _kills: int) -> void:
-	pass
-
-
-func set_combo(_current: int, _maximum: int) -> void:
-	pass
-
-
-func set_stylish_score(_score: int) -> void:
-	pass
-
-
-func set_reward_count(_count: int) -> void:
-	pass
-
-
-func set_school(_name: String) -> void:
-	pass
-
-
-func show_school_help(_school_name: String) -> void:
-	pass
-
-
-func hide_school_help() -> void:
-	pass
-
-
-func show_combat_controls(_school_name: String, _ultimate_description: String, _show_test_jumps: bool) -> void:
-	pass
-
-
-func hide_combat_controls() -> void:
-	pass
-
-
-func set_school_resource(_label: String, _current: float, _maximum: float) -> void:
-	pass
-
-
-func set_ultimate_ready(_ready: bool) -> void:
-	pass
-
-
-func set_stage(_segment: int, _total: int = 3) -> void:
-	pass
-
-
-func set_stage_time(_seconds_remaining: float) -> void:
-	pass
-
-
-func set_gold(_gold: int) -> void:
-	pass
-
-
-func show_school_feedback(_text: String) -> void:
-	pass
-
-
-func show_combo_title(_title: String) -> void:
 	pass

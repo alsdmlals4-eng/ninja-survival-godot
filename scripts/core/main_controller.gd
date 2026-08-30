@@ -38,13 +38,6 @@ const SCHOOL_CIRCUIT_BOSS_ROLE := &"boss"
 const SCHOOL_CIRCUIT_TEST_ELITE_ROLE := &"test_elite"
 const SCHOOL_CIRCUIT_TEST_BOSS_ROLE := &"test_boss"
 
-const SCHOOL_ULTIMATE_GUIDANCE := {
-	&"bongma": "백귀야행: 임시 식신을 불러 짧은 시간 집중 공격합니다.",
-	&"cheonsul": "오행폭주: 상태가 남은 적에게 폭발 피해를 줍니다.",
-	&"guiin": "귀인화: 짧은 시간 근접 공격의 범위·속도·피해가 강해집니다.",
-	&"heukyeong": "암영처형: 쌓인 표식 대상에게 처형 피해를 줍니다.",
-}
-
 @export var reward_orb_scene: PackedScene
 
 var game_over: bool = false
@@ -71,6 +64,7 @@ var _latest_result_snapshot: Dictionary = {}
 var _pending_trace_spawn_position := Vector2.ZERO
 var _cheonsul_elapsed_seconds: float = 0.0
 var _school_circuit_elapsed_seconds: float = 0.0
+var _run_play_elapsed_seconds: float = 0.0
 var _combat_enabled: bool = false
 
 @onready var game_state: GameState = $GameState
@@ -88,16 +82,6 @@ func _ready() -> void:
 	_setup_mvp3_nodes()
 	_connect_existing_signals()
 	_connect_mvp3_signals()
-
-	hud.set_health(player.health, player.max_health)
-	hud.set_score(game_state.score, game_state.kill_count)
-	hud.set_combo(combat_ddd.combo_count, combat_ddd.max_combo)
-	hud.set_stylish_score(combat_ddd.stylish_score)
-	hud.set_reward_count(combat_ddd.reward_count)
-	hud.set_ultimate_ready(false)
-	hud.set_stage(1, 3)
-	hud.set_stage_time(stage_flow.segment_duration_seconds)
-	hud.set_gold(run_build_state.gold)
 
 	wave_spawner.configure(self, player)
 	school_host.configure(player, self)
@@ -156,30 +140,19 @@ func _ensure_script_node(node_name: String, script: Script) -> Node:
 
 
 func _connect_existing_signals() -> void:
-	game_state.score_changed.connect(hud.set_score)
-	combat_ddd.combo_changed.connect(hud.set_combo)
-	combat_ddd.stylish_score_changed.connect(hud.set_stylish_score)
-	combat_ddd.reward_count_changed.connect(hud.set_reward_count)
-	combat_ddd.title_triggered.connect(hud.show_combo_title)
-	player.health_changed.connect(hud.set_health)
 	player.died.connect(_on_player_died)
+	player.dash_state_changed.connect(hud.set_dash_state)
 	wave_spawner.enemy_spawned.connect(_wire_enemy)
 	school_selection.school_selected.connect(_on_school_selected)
-	school_host.resource_changed.connect(hud.set_school_resource)
-	school_host.ultimate_ready_changed.connect(hud.set_ultimate_ready)
-	school_host.school_feedback.connect(hud.show_school_feedback)
 	school_host.player_action_resolved.connect(player_visual.show_attack)
+	hud.settings_requested.connect(_on_settings_requested)
+	hud.resume_requested.connect(_on_resume_requested)
+	hud.current_tradition_help_requested.connect(_on_current_tradition_help_requested)
 	hud.restart_requested.connect(_restart_run)
 	hud.retry_requested.connect(_on_retry_requested)
-	hud.school_help_requested.connect(_on_school_help_requested)
-	hud.ultimate_requested.connect(_on_ultimate_requested)
-	hud.test_elite_requested.connect(_on_test_elite_requested)
-	hud.test_boss_requested.connect(_on_test_boss_requested)
 
 
 func _connect_mvp3_signals() -> void:
-	run_build_state.gold_changed.connect(hud.set_gold)
-	stage_flow.segment_time_changed.connect(_on_segment_time_changed)
 	stage_flow.boss_requested.connect(_on_boss_requested)
 	player.healing_resolved.connect(contribution_tracker.record_healing)
 	player.damage_resolved.connect(_on_player_damage_resolved)
@@ -211,22 +184,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	if _handle_gameplay_pointer_input(event):
 		get_viewport().set_input_as_handled()
 		return
-	if event.is_action_pressed(&"dash") or not event.is_action_pressed("ui_accept"):
+	if not event.is_action_pressed(&"ui_accept"):
 		return
 	if game_over:
 		_restart_run()
-		return
-	if school_circuit != null:
-		if school_circuit.get_snapshot().get("state", &"") in [&"core", &"elite_warning", &"elite_active", &"trace_available", &"trace_recovered", &"boss_warning", &"boss_active"]:
-			_try_use_selected_ultimate()
-		return
-	if cheonsul_slice != null:
-		if cheonsul_slice.get_snapshot().get("state", &"") in [&"core", &"elite_warning", &"elite_active", &"trace_available", &"trace_recovered", &"boss_warning", &"boss_active"]:
-			_try_use_selected_ultimate()
-		return
-	if stage_flow != null and stage_flow.phase != StageFlowController.Phase.COMBAT and stage_flow.phase != StageFlowController.Phase.BOSS:
-		return
-	_try_use_selected_ultimate()
 
 
 func _handle_gameplay_pointer_input(event: InputEvent) -> bool:
@@ -257,43 +218,8 @@ func _pointer_world_position(viewport_position: Vector2) -> Vector2:
 
 
 func _restart_run() -> void:
+	get_tree().paused = false
 	get_tree().reload_current_scene()
-
-
-func _on_ultimate_requested() -> void:
-	_try_use_selected_ultimate()
-
-
-func _try_use_selected_ultimate() -> bool:
-	if game_over or not _combat_enabled or school_host.selected_school_id == &"":
-		return false
-	return school_host.try_use_ultimate()
-
-
-func _on_test_elite_requested() -> void:
-	if not _can_spawn_cheonsul_test_encounter():
-		return
-	_spawn_cheonsul_test_elite()
-
-
-func _on_test_boss_requested() -> void:
-	if not _can_spawn_cheonsul_test_encounter():
-		return
-	_spawn_cheonsul_test_boss()
-
-
-func _can_spawn_cheonsul_test_encounter() -> bool:
-	var circuit_is_active := school_circuit != null and StringName(school_circuit.get_snapshot().get("state", &"")) in [
-		&"core", &"elite_warning", &"elite_active", &"trace_available",
-		&"trace_recovered", &"boss_warning", &"boss_active",
-	]
-	var legacy_slice_is_active := cheonsul_slice != null
-	return (
-		not game_over
-		and _combat_enabled
-		and (circuit_is_active or legacy_slice_is_active)
-		and school_host.selected_school_id == &"cheonsul"
-	)
 
 
 func _on_school_selected(school_id: StringName) -> void:
@@ -304,7 +230,6 @@ func _on_school_selected(school_id: StringName) -> void:
 
 	run_build_state.set_selected_school(school_id)
 	_sync_run_modifiers()
-	hud.set_school(school_host.selected_school_name)
 	contribution_tracker.reset_segment(combat_ddd.reward_count, run_build_state.gold)
 	if not _start_school_circuit(school_id):
 		return
@@ -330,7 +255,6 @@ func _start_school_circuit(school_id: StringName) -> bool:
 		add_child(circuit)
 		school_circuit = circuit
 		school_circuit.phase_changed.connect(_on_school_circuit_phase_changed)
-		school_circuit.chest_token_granted.connect(_on_school_circuit_chest_token_granted)
 		school_circuit.trace_spawn_requested.connect(_on_school_circuit_trace_spawn_requested)
 		school_circuit.boss_spawn_requested.connect(_on_school_circuit_boss_spawn_requested)
 		school_circuit.normal_spawn_permission_changed.connect(_on_school_circuit_normal_spawn_permission_changed)
@@ -340,23 +264,7 @@ func _start_school_circuit(school_id: StringName) -> bool:
 		if child.is_in_group("enemies") and not child.has_meta(SCHOOL_CIRCUIT_ROLE_META):
 			_wire_enemy(child)
 	_school_circuit_elapsed_seconds = 0.0
-	hud.set_stage(school_circuit.route_state.stage_index(), 4)
-	hud.set_stage_time(270.0)
-	hud.show_school_feedback(_school_circuit_opening_feedback(school_id))
 	return true
-
-
-func _school_circuit_opening_feedback(school_id: StringName) -> String:
-	match school_id:
-		&"bongma":
-			return "봉마류: 공간을 준비하고 식신·결계의 빈틈을 지키세요."
-		&"cheonsul":
-			return "천술류: 상태 순서를 만들고 원소 반응을 연결하세요."
-		&"guiin":
-			return "귀인류: 가까운 위험을 버틴 대가로 근접 압박을 되돌리세요."
-		&"heukyeong":
-			return "흑영류: 가장 위험한 표적에 표식을 모아 먼저 끊으세요."
-	return "유파의 핵심 규칙을 확인하세요."
 
 
 func _start_cheonsul_vertical_slice() -> bool:
@@ -379,7 +287,6 @@ func _start_cheonsul_vertical_slice() -> bool:
 	add_child(slice)
 	cheonsul_slice = slice
 	cheonsul_slice.phase_changed.connect(_on_cheonsul_slice_phase_changed)
-	cheonsul_slice.chest_token_granted.connect(_on_cheonsul_chest_token_granted)
 	cheonsul_slice.trace_spawn_requested.connect(_on_cheonsul_trace_spawn_requested)
 	cheonsul_slice.boss_spawn_requested.connect(_on_cheonsul_boss_spawn_requested)
 	cheonsul_slice.normal_spawn_permission_changed.connect(_on_cheonsul_normal_spawn_permission_changed)
@@ -391,22 +298,21 @@ func _start_cheonsul_vertical_slice() -> bool:
 		if child.is_in_group("enemies") and not child.has_meta(CHEONSUL_SLICE_ROLE_META):
 			_wire_enemy(child)
 	_cheonsul_elapsed_seconds = 0.0
-	hud.set_stage(1, 4)
-	hud.set_stage_time(270.0)
-	hud.show_school_feedback("천술류: 원소 반응을 준비하세요.")
 	return true
 
 
 func _process(delta: float) -> void:
-	if game_over or delta <= 0.0:
+	if game_over or delta <= 0.0 or get_tree().paused:
 		return
+	if _combat_enabled:
+		_run_play_elapsed_seconds += delta
+		hud.set_play_time(_run_play_elapsed_seconds)
 	if school_circuit != null:
 		var circuit_state := StringName(school_circuit.get_snapshot().get("state", &""))
 		if circuit_state == &"cleared":
 			return
 		_school_circuit_elapsed_seconds += delta
 		school_circuit.sync_elapsed(_school_circuit_elapsed_seconds)
-		hud.set_stage_time(maxf(270.0 - _school_circuit_elapsed_seconds, 0.0))
 		return
 	if cheonsul_slice == null:
 		return
@@ -415,57 +321,19 @@ func _process(delta: float) -> void:
 		return
 	_cheonsul_elapsed_seconds += delta
 	cheonsul_slice.sync_elapsed(_cheonsul_elapsed_seconds)
-	hud.set_stage_time(maxf(270.0 - _cheonsul_elapsed_seconds, 0.0))
 
 
 func _on_school_circuit_phase_changed(phase: StringName) -> void:
 	if school_circuit == null:
 		return
-	var school_id: StringName = school_circuit.route_state.active_school_id()
-	match phase:
-		&"elite_warning":
-			hud.show_school_feedback("정예 경고: %s가 접근합니다." % _school_circuit_encounter_name("elite_display_name", "정예"))
-		&"elite_active":
-			hud.show_school_feedback(_school_circuit_elite_feedback(school_id))
-			_spawn_school_circuit_elite()
-		&"trace_available":
-			hud.show_school_feedback("흔적 발견: 가까이 다가가 회수하세요.")
-		&"trace_recovered":
-			hud.show_school_feedback("흔적 회수 완료. 보스 게이트를 확인합니다.")
-		&"boss_warning":
-			hud.show_school_feedback("보스 경고: %s가 다가옵니다." % _school_circuit_encounter_name("boss_display_name", "보스"))
-		&"boss_active":
-			hud.show_school_feedback(_school_circuit_boss_feedback(school_id))
-
-
-func _school_circuit_elite_feedback(school_id: StringName) -> String:
-	match school_id:
-		&"bongma":
-			return "정예: 이동 봉진의 경로를 끊기 전에 결계를 유지하세요."
-		&"cheonsul":
-			return "정예: 두 원소를 준비한 뒤 반응을 노리세요."
-		&"guiin":
-			return "정예: 근접 압박을 버틸 회복 창과 퇴로를 남기세요."
-		&"heukyeong":
-			return "정예: 가장 위험한 표적에 표식을 모아 처형 창을 만드세요."
-	return "정예의 핵심 규칙을 확인하세요."
-
-
-func _school_circuit_boss_feedback(school_id: StringName) -> String:
-	match school_id:
-		&"bongma":
-			return "보스: 이동 진형을 지키며 식신과 결계로 압박을 분산하세요."
-		&"cheonsul":
-			return "보스: 준비한 원소 반응을 연결하세요."
-		&"guiin":
-			return "보스: 근접 위험을 오래 버틴 뒤 열린 회복 창을 활용하세요."
-		&"heukyeong":
-			return "보스: 위협 표적을 먼저 지우고 처형 타이밍을 잡으세요."
-	return "보스의 핵심 규칙을 확인하세요."
-
-
-func _on_school_circuit_chest_token_granted(_amount: int) -> void:
-	hud.show_school_feedback("정예 보상: 상자 토큰과 흔적을 얻었습니다.")
+	var view: Dictionary = STAGE_PHASE_PRESENTATION_SCRIPT.describe(school_host.selected_school_id, phase)
+	hud.set_stage_phase(
+		str(view.get("stage", "")),
+		str(view.get("phase", "")),
+		bool(view.get("visible", false)),
+	)
+	if phase == &"elite_active":
+		_spawn_school_circuit_elite()
 
 
 func _on_school_circuit_trace_spawn_requested() -> void:
@@ -535,24 +403,8 @@ func _on_school_circuit_boss_spawn_requested() -> void:
 
 
 func _on_cheonsul_slice_phase_changed(phase: StringName) -> void:
-	match phase:
-		&"elite_warning":
-			hud.show_school_feedback("정예 경고: %s가 접근합니다." % _cheonsul_encounter_name("elite_display_name", "정예"))
-		&"elite_active":
-			hud.show_school_feedback("정예: 두 원소 준비 뒤 반응을 노리세요.")
-			_spawn_cheonsul_elite()
-		&"trace_available":
-			hud.show_school_feedback("흔적 발견: 가까이 다가가 회수하세요.")
-		&"trace_recovered":
-			hud.show_school_feedback("흔적 회수 완료. 보스 게이트를 확인합니다.")
-		&"boss_warning":
-			hud.show_school_feedback("보스 경고: %s가 다가옵니다." % _cheonsul_encounter_name("boss_display_name", "보스"))
-		&"boss_active":
-			hud.show_school_feedback("보스: 준비한 원소 반응을 연결하세요.")
-
-
-func _on_cheonsul_chest_token_granted(_amount: int) -> void:
-	hud.show_school_feedback("정예 보상: 상자 토큰과 흔적을 얻었습니다.")
+	if phase == &"elite_active":
+		_spawn_cheonsul_elite()
 
 
 func _on_cheonsul_trace_spawn_requested() -> void:
@@ -619,7 +471,6 @@ func _spawn_cheonsul_test_elite() -> void:
 		(elite as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
 	_set_cheonsul_test_encounter_role(elite, CHEONSUL_TEST_ELITE_ROLE)
 	_wire_enemy(elite)
-	hud.show_school_feedback("TEST 정예: Trace·보상·진행에는 반영되지 않습니다.")
 
 
 func _spawn_cheonsul_test_boss() -> void:
@@ -634,7 +485,6 @@ func _spawn_cheonsul_test_boss() -> void:
 		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
 	_set_cheonsul_test_encounter_role(boss_node, CHEONSUL_TEST_BOSS_ROLE)
 	_wire_enemy(boss_node)
-	hud.show_school_feedback("TEST 중간 보스: Trace·보상·진행에는 반영되지 않습니다.")
 
 
 func _set_cheonsul_test_encounter_role(enemy: Node, role: StringName) -> void:
@@ -702,32 +552,31 @@ func _set_combat_enabled(enabled: bool) -> void:
 		elif child is RewardOrb:
 			child.process_mode = gameplay_mode
 
-	if enabled and not game_over and school_host.selected_school_id != &"":
-		hud.show_school_help(school_host.selected_school_name)
-		hud.show_combat_controls(
-			school_host.selected_school_name,
-			_school_ultimate_guidance(school_host.selected_school_id),
-			school_host.selected_school_id == &"cheonsul"
-		)
+	var combat_hud_enabled := enabled and not game_over and school_host.selected_school_id != &""
+	hud.show_combat_hud(combat_hud_enabled)
+	if combat_hud_enabled:
+		hud.set_dash_state(player.current_dash_charges(), PlayerController.MAX_DASH_CHARGES)
+		hud.set_play_time(_run_play_elapsed_seconds)
 	else:
-		hud.hide_school_help()
-		hud.hide_combat_controls()
+		hud.set_stage_phase("", "", false)
 		school_selection.dismiss_school_help()
 
 
-func _on_school_help_requested() -> void:
+func _on_settings_requested() -> void:
+	if game_over or not _combat_enabled or school_host.selected_school_id == &"":
+		hud.close_settings()
+		return
+	get_tree().paused = true
+
+
+func _on_resume_requested() -> void:
+	get_tree().paused = false
+
+
+func _on_current_tradition_help_requested() -> void:
 	if game_over or not _combat_enabled or school_host.selected_school_id == &"":
 		return
-	school_selection.open_runtime_school_help(school_host.selected_school_id, hud.school_help_button)
-
-
-func _school_ultimate_guidance(school_id: StringName) -> String:
-	return str(SCHOOL_ULTIMATE_GUIDANCE.get(school_id, "궁극기 효과가 준비 중입니다."))
-
-
-func _on_segment_time_changed(segment: int, remaining: float) -> void:
-	hud.set_stage(segment, 3)
-	hud.set_stage_time(remaining)
+	school_selection.open_runtime_school_help(school_host.selected_school_id, hud.tradition_help_button)
 
 
 func _on_boss_requested(tier: int) -> void:

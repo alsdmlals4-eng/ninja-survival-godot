@@ -31,11 +31,35 @@ func test_each_school_selection_starts_the_same_circuit_runtime_with_its_own_enc
 			continue
 		assert_eq(main.school_circuit.route_state.active_school_id(), school_id)
 		assert_eq(main.get_node("RunBuildState").selected_school_id, school_id)
-		assert_eq(main.get_node("HUD/StageLabel").text, "SEGMENT 1/4")
+		assert_eq(
+			(main.get_node("HUD/CombatTopBar/Row/StagePhaseLabel") as Label).text,
+			"스테이지 · %s 전장 · 페이즈 1 · Core 압박" % main.school_host.selected_school_name,
+		)
 		var core_enemy = _first_live_normal_enemy(main)
 		assert_not_null(core_enemy)
 		if core_enemy != null:
 			assert_eq(core_enemy.get_meta(&"school_circuit_encounter_id", &""), EXPECTED_FIRST_CORE_IDS[school_id])
+
+
+
+func test_circuit_phase_changes_render_public_phase_without_mutating_route_depth() -> void:
+	var main: Node = _new_main()
+	if main == null:
+		return
+	main._on_school_selected(&"cheonsul")
+	var circuit = main.school_circuit
+	assert_not_null(circuit)
+	if circuit == null:
+		return
+	var route_depth: int = int(circuit.route_state.stage_index())
+
+	main._on_school_circuit_phase_changed(&"boss_active")
+
+	assert_eq(
+		(main.get_node("HUD/CombatTopBar/Row/StagePhaseLabel") as Label).text,
+		"스테이지 · 천술류 전장 · 페이즈 4 · Boss 결전",
+	)
+	assert_eq(circuit.route_state.stage_index(), route_depth, "Public Phase rendering must not write route depth.")
 
 
 func test_workbench_ui_intents_delegate_to_the_shared_circuit_without_ui_ownership() -> void:

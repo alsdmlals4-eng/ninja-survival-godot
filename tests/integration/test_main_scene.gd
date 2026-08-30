@@ -199,36 +199,36 @@ func test_visual_core_support_scenes_use_approved_sprite_textures() -> void:
 			assert_not_null(visual.texture)
 
 
-func test_hud_updates_health_score_and_game_over_visibility() -> void:
+func test_hud_renders_compact_combat_values_and_game_over_visibility() -> void:
 	var hud = _spawn_scene(HUD_SCENE)
 	assert_not_null(hud)
 	if hud == null:
 		return
 
-	assert_true(hud.has_method("set_health"))
-	assert_true(hud.has_method("set_score"))
+	assert_true(hud.has_method("set_dash_state"))
+	assert_true(hud.has_method("set_play_time"))
 	assert_true(hud.has_method("show_game_over"))
-	var health_label = hud.get_node_or_null("HealthLabel")
-	var score_label = hud.get_node_or_null("ScoreLabel")
+	var dash_label = hud.get_node_or_null("CombatTopBar/Row/DashLabel")
+	var play_label = hud.get_node_or_null("CombatTopBar/Row/PlayLabel")
 	var game_over_panel = hud.get_node_or_null("GameOverPanel")
-	assert_not_null(health_label)
-	assert_not_null(score_label)
+	assert_not_null(dash_label)
+	assert_not_null(play_label)
 	assert_not_null(game_over_panel)
-	if not hud.has_method("set_health") or not hud.has_method("set_score") or not hud.has_method("show_game_over"):
+	if not hud.has_method("set_dash_state") or not hud.has_method("set_play_time") or not hud.has_method("show_game_over"):
 		return
-	if health_label == null or score_label == null or game_over_panel == null:
+	if dash_label == null or play_label == null or game_over_panel == null:
 		return
 
-	hud.set_health(75, 100)
-	hud.set_score(240, 3)
-	assert_eq(health_label.text, "HP 75 / 100")
-	assert_eq(score_label.text, "KILLS 3  SCORE 240")
+	hud.set_dash_state(1, 2)
+	hud.set_play_time(61.0)
+	assert_eq(dash_label.text, "DASH 1 / 2")
+	assert_eq(play_label.text, "PLAY 01:01")
 	assert_false(game_over_panel.visible)
 	hud.show_game_over()
 	assert_true(game_over_panel.visible)
 
 
-func test_main_wires_enemies_score_health_and_game_over() -> void:
+func test_main_keeps_enemy_and_game_over_owners_without_persistent_score_or_health_hud() -> void:
 	var main = _spawn_main()
 	assert_not_null(main)
 	if main == null:
@@ -244,13 +244,9 @@ func test_main_wires_enemies_score_health_and_game_over() -> void:
 	if state == null or player == null or hud == null or not _has_property(main, "game_over"):
 		return
 
-	var health_label = hud.get_node_or_null("HealthLabel")
-	var score_label = hud.get_node_or_null("ScoreLabel")
 	var game_over_panel = hud.get_node_or_null("GameOverPanel")
-	assert_not_null(health_label)
-	assert_not_null(score_label)
 	assert_not_null(game_over_panel)
-	if health_label == null or score_label == null or game_over_panel == null:
+	if game_over_panel == null:
 		return
 
 	var enemies: Array[Node] = []
@@ -263,11 +259,12 @@ func test_main_wires_enemies_score_health_and_game_over() -> void:
 	for enemy in enemies:
 		assert_eq(enemy.target, player)
 
-	assert_eq(health_label.text, "HP 100 / 100")
-	assert_eq(score_label.text, "KILLS 0  SCORE 0")
+	assert_null(hud.get_node_or_null("HealthLabel"))
+	assert_null(hud.get_node_or_null("ScoreLabel"))
 
 	state.register_kill(100)
-	assert_eq(score_label.text, "KILLS 1  SCORE 100")
+	assert_eq(state.kill_count, 1)
+	assert_eq(state.score, 100)
 
 	var first_enemy = enemies[0]
 	var recent_hit_presenter = main.get_node_or_null("RecentHitHpPresenter")
@@ -280,10 +277,9 @@ func test_main_wires_enemies_score_health_and_game_over() -> void:
 	first_enemy.take_damage(first_enemy.max_health)
 	assert_null(recent_hit_presenter.visible_enemy(), "사망한 적의 HP bar는 즉시 정리해야 합니다.")
 	assert_eq(state.kill_count, 2)
-	assert_eq(score_label.text, "KILLS 2  SCORE 200")
 
 	player.take_damage(25)
-	assert_eq(health_label.text, "HP 75 / 100")
+	assert_eq(player.health, 75)
 
 	player.take_damage(1000)
 	assert_true(main.game_over)
@@ -292,6 +288,43 @@ func test_main_wires_enemies_score_health_and_game_over() -> void:
 	for enemy in enemies:
 		if is_instance_valid(enemy) and not enemy.is_queued_for_deletion():
 			assert_eq(enemy.process_mode, Node.PROCESS_MODE_DISABLED)
+
+
+func test_main_wires_dash_play_time_and_settings_intents_without_manual_ultimate() -> void:
+	var main = _spawn_main()
+	assert_not_null(main)
+	if main == null:
+		return
+	var selector := main.get_node_or_null("SchoolSelectionUI") as SchoolSelectionUI
+	var player := main.get_node_or_null("Player") as PlayerController
+	var hud := main.get_node_or_null("HUD") as HUDController
+	assert_not_null(selector)
+	assert_not_null(player)
+	assert_not_null(hud)
+	if selector == null or player == null or hud == null:
+		return
+
+	selector._choose(&"bongma")
+	assert_true((hud.get_node("CombatTopBar") as Control).visible)
+	assert_eq(hud.dash_text(), "DASH 2 / 2")
+	player.set_pointer_target(player.global_position + Vector2.RIGHT * 120.0)
+	assert_true(player.request_dash())
+	assert_eq(hud.dash_text(), "DASH 1 / 2")
+	main._process(61.0)
+	assert_eq(hud.play_text(), "PLAY 01:01")
+
+	hud.open_settings()
+	assert_true(get_tree().paused, "Main must pause only after the HUD settings panel emits its intent.")
+	hud._on_resume_pressed()
+	assert_false(get_tree().paused, "Resume must restore the active combat tree state.")
+
+	var bongma = main.get_node("SchoolRuntimeHost").active_runtime
+	bongma.spirit = 100.0
+	var accept := InputEventAction.new()
+	accept.action = &"ui_accept"
+	accept.pressed = true
+	main._unhandled_input(accept)
+	assert_almost_eq(bongma.ultimate_time_remaining, 0.0, 0.001, "Automatic combat must not expose an ui_accept ultimate route.")
 
 
 func test_main_uses_resolved_actions_and_damage_for_player_poses() -> void:

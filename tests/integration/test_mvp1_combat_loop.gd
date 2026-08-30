@@ -39,7 +39,7 @@ func test_enemy_death_updates_combo_and_spawns_one_reward_orb() -> void:
 		assert_almost_eq(orbs[0].global_position.y, death_position.y, 0.1)
 
 
-func test_reward_collection_updates_tracker_and_hud_without_player_stats() -> void:
+func test_reward_collection_updates_tracker_without_adding_persistent_combat_metrics() -> void:
 	var main = MAIN_SCENE.instantiate()
 	add_child_autofree(main)
 	await get_tree().process_frame
@@ -66,8 +66,8 @@ func test_reward_collection_updates_tracker_and_hud_without_player_stats() -> vo
 	orb._physics_process(0.016)
 	assert_eq(tracker.reward_count, 1)
 	assert_eq(tracker.stylish_score, 125)
-	assert_eq(main.get_node("HUD/RewardLabel").text, "ORBS 1")
-	assert_eq(main.get_node("HUD/StyleLabel").text, "STYLE 125")
+	assert_null(main.get_node_or_null("HUD/RewardLabel"))
+	assert_null(main.get_node_or_null("HUD/StyleLabel"))
 	assert_eq(player.move_speed, move_speed_before)
 	assert_eq(player.health, health_before)
 
