@@ -28,6 +28,8 @@ ACTIVE_CONTEXT_PATH = REPOSITORY_ROOT / "docs" / "ACTIVE_CONTEXT.md"
 MASTER_GDD_PATH = REPOSITORY_ROOT / "docs" / "design" / "NINJA_SURVIVAL_MASTER_GDD.md"
 VISUAL_COVERAGE_PATH = REPOSITORY_ROOT / "docs" / "visual" / "SCREEN_SURFACE_AND_VISUAL_COVERAGE.md"
 DOCUMENTATION_MAP_PATH = REPOSITORY_ROOT / "docs" / "DOCUMENTATION_MAP.md"
+AGENTS_PATH = REPOSITORY_ROOT / "AGENTS.md"
+README_PATH = REPOSITORY_ROOT / "README.md"
 
 
 def load_exporter_module():
@@ -48,6 +50,8 @@ class HumanGddPdfExporterTests(unittest.TestCase):
         master_gdd = MASTER_GDD_PATH.read_text(encoding="utf-8")
         visual_coverage = VISUAL_COVERAGE_PATH.read_text(encoding="utf-8")
         documentation_map = DOCUMENTATION_MAP_PATH.read_text(encoding="utf-8")
+        agents = AGENTS_PATH.read_text(encoding="utf-8")
+        readme = README_PATH.read_text(encoding="utf-8")
 
         self.assertIn("역사적", human_source)
         self.assertNotIn("현재 게임에 연결된 기존 화면 자산", human_source)
@@ -60,6 +64,15 @@ class HumanGddPdfExporterTests(unittest.TestCase):
         self.assertIn("Main/BattlefieldBackdrop/FloorTile", visual_coverage)
         self.assertIn("정확히 3×3 시작", documentation_map)
         self.assertNotIn("6x6 / 4x3 / 회전", documentation_map)
+        self.assertIn("DEC-037", agents)
+        self.assertIn("exactly 3×3", agents)
+        self.assertIn("정확히 3×3", readme)
+        self.assertNotIn("- 4x3 시작 사용 영역", readme)
+        self.assertIn("current isolated-branch extension", master_gdd)
+        self.assertNotIn("current package NOT STARTED", master_gdd)
+        self.assertNotIn("The sole next authorization is approval", master_gdd)
+        self.assertIn("retry wallet machine-implemented", master_gdd)
+        self.assertNotIn("`DOCUMENTED`, no wallet yet", master_gdd)
 
     def test_locked_continuous_floor_reference_is_bound_to_the_human_blueprint(self) -> None:
         """Break caught: a user-locked combat reference is stored but omitted from its declared reader surface."""
