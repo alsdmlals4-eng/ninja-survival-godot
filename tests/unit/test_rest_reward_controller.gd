@@ -222,8 +222,8 @@ func _bundle(seed: int) -> Dictionary:
 func _fill_buffer(session, count: int) -> void:
 	var state = session.state
 	var cells: Array[Vector2i] = [
-		Vector2i(1, 1), Vector2i(2, 1), Vector2i(3, 1), Vector2i(4, 1),
-		Vector2i(1, 2), Vector2i(2, 2),
+		Vector2i(1, 1), Vector2i(2, 1), Vector2i(3, 1),
+		Vector2i(1, 2), Vector2i(2, 2), Vector2i(3, 2),
 	]
 	for i in range(mini(count, cells.size())):
 		var instance_id: int = state.add_item(&"shuriken", cells[i])

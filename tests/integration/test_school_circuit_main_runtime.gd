@@ -252,6 +252,7 @@ func _clear_active_school_to_workbench(main: Node, circuit) -> bool:
 
 
 func _place_every_buffer_item(circuit) -> bool:
+	_expand_fixture_board(circuit)
 	while not (circuit.workbench_snapshot().get("buffer", []) as Array).is_empty():
 		var placed := false
 		for rotation in range(4):
@@ -267,6 +268,15 @@ func _place_every_buffer_item(circuit) -> bool:
 		if not placed:
 			return false
 	return true
+
+
+func _expand_fixture_board(circuit) -> void:
+	var state = circuit._backpack_session._state
+	if state.bags.size() != 1:
+		return
+	state.add_bag(&"small_pouch", Vector2i(0, 0))
+	state.add_bag(&"small_pouch", Vector2i(3, 4))
+	state.add_bag(&"long_pouch", Vector2i(0, 4))
 
 
 func _place_first_buffer_item(circuit) -> bool:

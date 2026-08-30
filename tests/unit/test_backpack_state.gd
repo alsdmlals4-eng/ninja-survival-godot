@@ -10,14 +10,15 @@ func test_t02_resources_exist() -> void:
 		assert_true(ResourceLoader.exists(path), "Missing T02 resource: %s" % path)
 
 
-func test_starting_state_has_centered_4x3_active_area_and_stable_starting_bag() -> void:
+func test_starting_state_has_centered_3x3_active_area_and_stable_starting_bag() -> void:
 	var state = _starting_state()
 	if state == null:
 		return
 	var active_cells: Dictionary = state.get_active_cells()
-	assert_eq(active_cells.size(), 12)
+	assert_eq(active_cells.size(), 9)
 	assert_true(active_cells.has(Vector2i(1, 1)))
-	assert_true(active_cells.has(Vector2i(4, 3)))
+	assert_true(active_cells.has(Vector2i(3, 3)))
+	assert_false(active_cells.has(Vector2i(4, 3)))
 	assert_false(active_cells.has(Vector2i(0, 0)))
 	assert_eq(state.bags.size(), 1)
 	var starting_bag = state.get_bag(1)
@@ -98,10 +99,10 @@ func test_item_move_and_rotation_are_atomic_against_collision_and_active_area() 
 	assert_gt(blocker_id, 0)
 	assert_false(state.rotate_item(katana_id))
 	assert_eq(state.get_item(katana_id).rotation_quarters, 0)
-	assert_true(state.move_item(blocker_id, Vector2i(4, 3)))
+	assert_true(state.move_item(blocker_id, Vector2i(3, 3)))
 	assert_true(state.rotate_item(katana_id))
 	assert_eq(state.get_item(katana_id).rotation_quarters, 1)
-	assert_false(state.move_item(katana_id, Vector2i(3, 3)))
+	assert_false(state.move_item(katana_id, Vector2i(2, 3)))
 	assert_eq(state.get_item(katana_id).origin, Vector2i(1, 1))
 	assert_true(state.move_item(katana_id, Vector2i(1, 2)))
 	assert_eq(state.get_item(katana_id).origin, Vector2i(1, 2))
@@ -113,23 +114,22 @@ func test_bag_expansion_updates_active_cells_and_rejects_overlap_or_board_escape
 		return
 	var small_id: int = state.add_bag(&"small_pouch", Vector2i(0, 0))
 	assert_eq(small_id, 2)
-	assert_eq(state.get_active_cells().size(), 14)
+	assert_eq(state.get_active_cells().size(), 11)
 	assert_eq(state.add_bag(&"square_pouch", Vector2i(0, 0)), 0)
 	assert_eq(state.add_bag(&"long_pouch", Vector2i(4, 5)), 0)
 	var square_id: int = state.add_bag(&"square_pouch", Vector2i(4, 4))
 	assert_eq(square_id, 3)
-	assert_eq(state.get_active_cells().size(), 18)
+	assert_eq(state.get_active_cells().size(), 15)
 
 
-func test_bag_move_remove_and_rotation_do_not_orphan_existing_items() -> void:
+func test_starting_bag_cannot_be_removed_or_moved_when_it_would_orphan_an_item() -> void:
 	var state = _starting_state()
 	if state == null:
 		return
-	var item_id: int = state.add_item(&"taijutsu_training", Vector2i(4, 3))
+	var item_id: int = state.add_item(&"taijutsu_training", Vector2i(3, 3))
 	assert_gt(item_id, 0)
 	assert_null(state.remove_bag(1))
 	assert_false(state.move_bag(1, Vector2i(0, 1)))
-	assert_false(state.rotate_bag(1))
 	var starting_bag = state.get_bag(1)
 	assert_eq(starting_bag.origin, Vector2i(1, 1))
 	assert_eq(starting_bag.rotation_quarters, 0)

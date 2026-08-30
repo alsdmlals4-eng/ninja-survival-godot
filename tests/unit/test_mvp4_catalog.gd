@@ -91,7 +91,7 @@ func test_catalog_has_exact_base_and_combination_result_boundaries() -> void:
 		seen[item_id] = true
 
 
-func test_catalog_has_five_purchasable_bags_plus_one_starting_4x3_bag() -> void:
+func test_catalog_has_five_purchasable_bags_plus_one_starting_3x3_bag() -> void:
 	if not ResourceLoader.exists(CATALOG_PATH):
 		return
 	var catalog = load(CATALOG_PATH)
@@ -113,7 +113,10 @@ func test_catalog_has_five_purchasable_bags_plus_one_starting_4x3_bag() -> void:
 		return
 	var starting_bag = bags[starting_ids[0]]
 	assert_eq(starting_bag.base_price, 0)
-	assert_eq(starting_bag.cells.size(), 12, "Starting bag must expose a 4x3 active area")
+	assert_eq(starting_bag.cells.size(), 9)
+	assert_true(starting_bag.cells.has(Vector2i(0, 0)))
+	assert_true(starting_bag.cells.has(Vector2i(2, 2)))
+	assert_false(starting_bag.cells.has(Vector2i(3, 2)))
 
 
 func test_non_square_item_and_irregular_bags_rotate_with_normalized_cells() -> void:
