@@ -22,6 +22,7 @@ const CHEONSUL_SLICE_SCRIPT = preload("res://scripts/core/cheonsul_vertical_slic
 const SCHOOL_CIRCUIT_SCRIPT = preload("res://scripts/core/school_circuit_controller.gd")
 const TRACE_PICKUP_SCENE = preload("res://scenes/rewards/trace_pickup.tscn")
 const RECENT_HIT_HP_PRESENTER_SCRIPT = preload("res://scripts/ui/recent_hit_hp_presenter.gd")
+const STAGE_PHASE_PRESENTATION_SCRIPT = preload("res://scripts/ui/stage_phase_presentation.gd")
 const RUN_ECONOMY_POLICY = preload("res://resources/run_economy_policy.tres")
 
 const CHEONSUL_SLICE_ROLE_META := &"cheonsul_slice_role"
