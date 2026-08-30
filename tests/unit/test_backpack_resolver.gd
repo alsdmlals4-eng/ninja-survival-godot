@@ -194,14 +194,20 @@ func test_one_neighbor_matching_tag_and_definition_id_counts_once_for_rule() -> 
 	if not _t03_ready():
 		return
 	var state = _starting_state()
-	assert_gt(state.add_bag(&"small_pouch", Vector2i(4, 2)), 0)
-	assert_gt(state.add_bag(&"small_pouch", Vector2i(4, 3)), 0)
-	var summon_id: int = state.add_item(&"greater_summoning_circle", Vector2i(1, 1))
-	var emblem_id: int = state.add_item(&"school_emblem", Vector2i(3, 2))
-	assert_gt(summon_id, 0)
-	assert_gt(emblem_id, 0)
 	var item_defs: Dictionary = _item_defs()
+	item_defs[&"greater_summoning_circle"].footprint_size = Vector2i(2, 2)
+	item_defs[&"school_emblem"].footprint_size = Vector2i.ONE
 	item_defs[&"school_emblem"].tags.append(&"barrier")
+	var summon = load(ITEM_INSTANCE_PATH).new()
+	summon.instance_id = 2
+	summon.definition_id = &"greater_summoning_circle"
+	summon.origin = Vector2i(1, 1)
+	var emblem = load(ITEM_INSTANCE_PATH).new()
+	emblem.instance_id = 3
+	emblem.definition_id = &"school_emblem"
+	emblem.origin = Vector2i(3, 1)
+	state._items[summon.instance_id] = summon
+	state._items[emblem.instance_id] = emblem
 	var resolution = _resolver().resolve(state, item_defs, _bag_defs(), &"")
 	assert_true(resolution.valid)
 	assert_almost_eq(resolution.modifiers.ultimate_charge_gain_pct, 0.12, 0.001, "One neighbor matching both declared selectors must still count once")

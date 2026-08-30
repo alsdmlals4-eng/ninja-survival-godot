@@ -151,6 +151,8 @@ func remove_bag(instance_id: int):
 	var instance = _bags.get(instance_id)
 	if instance == null:
 		return null
+	if instance.definition_id == MVP4CatalogScript.STARTING_BAG_ID:
+		return null
 	var active_cells := _active_cells_with_replacement(instance_id, null)
 	if not _items_fit_active_cells(active_cells):
 		return null

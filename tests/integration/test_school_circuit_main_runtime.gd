@@ -274,9 +274,9 @@ func _expand_fixture_board(circuit) -> void:
 	var state = circuit._backpack_session._state
 	if state.bags.size() != 1:
 		return
-	state.add_bag(&"small_pouch", Vector2i(0, 0))
-	state.add_bag(&"small_pouch", Vector2i(3, 4))
-	state.add_bag(&"long_pouch", Vector2i(0, 4))
+	assert_gt(state.add_bag(&"small_pouch", Vector2i(0, 0)), 0)
+	assert_gt(state.add_bag(&"small_pouch", Vector2i(3, 4)), 0)
+	assert_gt(state.add_bag(&"long_pouch", Vector2i(0, 4)), 0)
 
 
 func _place_first_buffer_item(circuit) -> bool:

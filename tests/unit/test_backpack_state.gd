@@ -122,6 +122,15 @@ func test_bag_expansion_updates_active_cells_and_rejects_overlap_or_board_escape
 	assert_eq(state.get_active_cells().size(), 15)
 
 
+func test_starting_bag_cannot_be_removed_from_an_empty_start() -> void:
+	var state = _starting_state()
+	if state == null:
+		return
+	assert_null(state.remove_bag(1))
+	assert_eq(state.bags.size(), 1)
+	assert_not_null(state.get_bag(1))
+
+
 func test_starting_bag_cannot_be_removed_or_moved_when_it_would_orphan_an_item() -> void:
 	var state = _starting_state()
 	if state == null:
