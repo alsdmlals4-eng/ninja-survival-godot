@@ -73,6 +73,11 @@ class HumanGddPdfExporterTests(unittest.TestCase):
         self.assertNotIn("The sole next authorization is approval", master_gdd)
         self.assertIn("retry wallet machine-implemented", master_gdd)
         self.assertNotIn("`DOCUMENTED`, no wallet yet", master_gdd)
+        self.assertIn("HISTORICAL / NO_LONGER_NEXT_AUTHORIZATION", master_gdd)
+        self.assertIn("PDF_FINAL_REVIEW_PENDING", master_gdd)
+        self.assertNotIn("| `Q-01` | user approval of unified implementation contract", master_gdd)
+        self.assertIn("HISTORICAL_REFERENCE_ONLY", readme)
+        self.assertNotIn("정확한 Notion Human Home / Production Handoff / Visual surface", readme)
 
     def test_locked_continuous_floor_reference_is_bound_to_the_human_blueprint(self) -> None:
         """Break caught: a user-locked combat reference is stored but omitted from its declared reader surface."""

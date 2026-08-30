@@ -186,11 +186,12 @@ placeholder/card/text UI는 기술 Spike와 자동 테스트에 사용할 수 �
 ## 정본 / 사람용 workspace
 
 - 제품/시스템 structured canon: repository Markdown/data/code/test
-- 사람용 전체 게임 Flow·핵심 시스템·Visual 방향: Notion `닌자 서바이벌 · Home` 및 관련 Domain
-- 상세 구현 증거/운영 상태: Project Registry/System + `Production · Handoff`
+- 사람용 전체 게임 Flow·핵심 시스템·Visual 방향: `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md`, `docs/design/NINJA_SURVIVAL_MASTER_GDD.md`, `docs/visual/*`, repository asset manifest
+- 상세 구현 증거/운영 상태: repository `docs/`, `scripts/`, `scenes/`, `data/`, `tests/`, workflow
+- Notion migration archive: `HISTORICAL_REFERENCE_ONLY`; current/future work에서 정본으로 읽거나 수정하지 않음
 - Google Sheets: unique unmigrated material이 있을 때만 migration compatibility source
 
-Human Home은 raw PR/SHA/포트/내부 라우팅을 나열하는 개발 dashboard가 아니라, **게임 전체를 이해하고 비교·수정할 수 있는 사용자용 게임 지도**로 유지한다.
+사람용 Human GDD는 raw PR/SHA/포트/내부 라우팅을 나열하는 개발 dashboard가 아니라, **게임 전체를 이해하고 비교·수정할 수 있는 사용자용 게임 지도**로 유지한다.
 
 ## 읽기 순서
 
@@ -203,7 +204,9 @@ Human Home은 raw PR/SHA/포트/내부 라우팅을 나열하는 개발 dashboar
 7. `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
 8. `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
 9. 실제 `scripts/`, `scenes/`, `data/`, `tests/`, workflow
-10. 정확한 Notion Human Home / Production Handoff / Visual surface
+10. 현재 작업에 필요한 repository GDD·visual 문서·asset manifest와 실제 consumer
 11. 현재 작업에 영향을 주는 최신 Base owner
+
+Notion migration archive는 `HISTORICAL_REFERENCE_ONLY`이므로 현재 작업의 읽기 순서나 정본 owner에 포함하지 않는다.
 
 문서와 구현이 다르면 구현 사실은 실제 code/test/runtime evidence로 확인하고, 앞으로 구현할 제품 행동은 최신 승인 Decision/Canon을 따른다.

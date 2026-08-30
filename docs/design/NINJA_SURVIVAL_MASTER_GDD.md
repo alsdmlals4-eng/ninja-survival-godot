@@ -36,11 +36,12 @@
 ### 지금의 Work 5 위치
 
 ```text
-Phase 1 기획/정본화: CONTRACT_READY_FOR_USER_APPROVAL
-Phase 2 preproduction / Definition of Ready: READY_FOR_USER_IMPLEMENTATION_CONTRACT_APPROVAL
+Phase 1 기획/정본화: HISTORICAL / NO_LONGER_NEXT_AUTHORIZATION (당시 통합 구현계약 승인 상태)
+Phase 2 preproduction / Definition of Ready: HISTORICAL / NO_LONGER_NEXT_AUTHORIZATION (당시 DoR 상태)
 Phase 3 asset production: PARTIAL (기존 소비처 asset만)
 Phase 4 Godot implementation: T12~T16 machine baseline merged; current isolated-branch extension has the locked battlefield visual core with machine + scoped runtime render/input evidence; DEC-037 3×3/Stage·Phase/HUD migration is deferred until final PDF review
 Phase 5 Human vertical-slice validation: DEFERRED_BY_DEC036_NOT_RUN
+Current next gate: PDF_FINAL_REVIEW_PENDING -> fresh-main separate DEC-037 runtime migration authorization
 ```
 
 ## 01. Source Registry
@@ -410,13 +411,14 @@ features.
 
 | order | package | player value / dependency | primary risk |
 | --- | --- | --- | --- |
-| `Q-01` | user approval of unified implementation contract | prevent canon/code/UI drift before build | implementation before contract sign-off |
-| `Q-02` | Trace/telegraph + combat information grammar | fair, readable encounter learning | target-resolution failure |
-| `Q-03` | complete spatial Workbench inputs | turn planning promise into play | UI/domain authority leakage |
-| `Q-04` | four-school shared lifecycle/content composition | validate selection/route promise | four separate engines/content cost |
-| `Q-05` | DEC-033 Run economy, wallet, retry, true-end settlement | meaningful failure and horizontal future | duplicate save/settlement payout |
-| `Q-06` | optional later Human vertical slice | prove player promise when scheduled | machine evidence mistaken for UX |
-| `Q-07` | Final Binding/final calamity | deliver full legend payoff | premature scope expansion |
+| `Q-01` | final Human Blueprint PDF review | lock the documented player experience before a build package is authorized; the old unified implementation-contract approval is historical only | blueprint/PDF evidence mistaken for runtime completion |
+| `Q-02` | fresh-main separate DEC-037 runtime migration | implement the approved direct-control, dash, top-only HUD, Stage/Phase and exact 3×3 public contract as one bounded package after Q-01 | absorbing broader lifecycle or UI work into the migration |
+| `Q-03` | Trace/telegraph + combat information grammar | fair, readable encounter learning | target-resolution failure |
+| `Q-04` | complete spatial Workbench inputs | turn planning promise into play | UI/domain authority leakage |
+| `Q-05` | four-school shared lifecycle/content composition | validate selection/route promise | four separate engines/content cost |
+| `Q-06` | DEC-033 Run economy, wallet, retry, true-end settlement | meaningful failure and horizontal future | duplicate save/settlement payout |
+| `Q-07` | optional later Human vertical slice | prove player promise when scheduled | machine evidence mistaken for UX |
+| `Q-08` | Final Binding/final calamity | deliver full legend payoff | premature scope expansion |
 
 ### Evidence-based SWOT
 
