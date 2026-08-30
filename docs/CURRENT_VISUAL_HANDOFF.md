@@ -109,9 +109,20 @@ with dimensions/alpha/consumer evidence retained in the runtime manifest.
 | Shadow Beast | `EnemyBasic/Visual` variant pool | `assets/runtime/visual-core/shadow_beast_v1.png` | `migration/notion/assets/3c81b237-eb1c-8187-827c-d5bf3b51907e.notion.md` |
 | Flame Ninja | `EnemyBasic/Visual` variant pool | `assets/runtime/visual-core/flame_ninja_v1.png` | `migration/notion/assets/3c81b237-eb1c-819b-ac22-df2c6a99b984.notion.md` |
 | Cheonsul stage boss | `StageBoss/Visual` | `assets/runtime/visual-core/cheonsul_stage_boss_v1.png` | `migration/notion/assets/3c91b237-eb1c-8162-84b6-ee6d8c2e7149.notion.md` |
-| Talisman projectile | `ProjectileBasic/Visual` | `assets/runtime/visual-core/talisman_projectile_v1.png` | `migration/notion/assets/3c91b237-eb1c-8125-a3da-db4a959dd387.notion.md` |
+| Talisman trace visual | `TracePickup/TraceVisual` | `assets/runtime/visual-core/talisman_projectile_v1.png` | `migration/notion/assets/3c91b237-eb1c-8125-a3da-db4a959dd387.notion.md` |
 | Golden reward orb | `RewardOrb/Visual` | `assets/runtime/visual-core/golden_reward_orb_v1.png` | `migration/notion/assets/3c91b237-eb1c-81b7-a686-e2423308102b.notion.md` |
 | Bongma familiar | `BongmaFamiliar/Visual` | `assets/runtime/visual-core/bongma_familiar_v1.png` | `migration/notion/assets/3c91b237-eb1c-8102-a8c4-fe46dfc41e8f.notion.md` |
+
+## DEC-039 basic weapon effects — user locked, current isolated branch
+
+`NINJA_RUNTIME_BASIC_WEAPON_EFFECTS_01` is a 1774×887 transparent atlas at
+`assets/runtime/visual-core/basic_weapon_effects_v1.png` with SHA-256
+`728aff2ed85e233a0adcc195406a9a101b0933da8990078cced1af59c9eaf58a`.
+The left katana region is rendered briefly by `BasicWeaponController`; the
+right shuriken region is clipped by `ShurikenProjectile`. These effects make
+automatic base weapons readable without modifying the single Ninja's body
+pose. The asset is user locked and bound on the current isolated branch, but
+is not merged and has no Human/device/balance verdict.
 
 ## IMG-03 runtime battlefield backdrop — merged 2026-08-27
 

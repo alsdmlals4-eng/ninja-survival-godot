@@ -71,7 +71,7 @@ var _combat_enabled: bool = false
 @onready var combat_ddd: CombatDDDTracker = $CombatDDD
 @onready var player: PlayerController = $Player
 @onready var player_visual: PlayerVisualController = $Player/Visual
-@onready var auto_attack: AutoAttackController = $Player/AutoAttack
+@onready var basic_weapons: BasicWeaponController = $Player/BasicWeapons
 @onready var wave_spawner: WaveSpawner = $WaveSpawner
 @onready var school_host: SchoolRuntimeHost = $SchoolRuntimeHost
 @onready var school_selection: SchoolSelectionUI = $SchoolSelectionUI
@@ -84,6 +84,7 @@ func _ready() -> void:
 	_connect_mvp3_signals()
 
 	wave_spawner.configure(self, player)
+	basic_weapons.configure(combat_resolver)
 	school_host.configure(player, self)
 	school_host.configure_run_systems(combat_resolver, contribution_tracker)
 
@@ -144,7 +145,6 @@ func _connect_existing_signals() -> void:
 	player.dash_state_changed.connect(hud.set_dash_state)
 	wave_spawner.enemy_spawned.connect(_wire_enemy)
 	school_selection.school_selected.connect(_on_school_selected)
-	school_host.player_action_resolved.connect(player_visual.show_attack)
 	hud.settings_requested.connect(_on_settings_requested)
 	hud.resume_requested.connect(_on_resume_requested)
 	hud.current_tradition_help_requested.connect(_on_current_tradition_help_requested)
@@ -377,7 +377,7 @@ func _spawn_school_circuit_elite() -> void:
 		return
 	add_child(elite)
 	if elite is Node2D:
-		(elite as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
+		(elite as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
 	elite.set_meta(SCHOOL_CIRCUIT_ROLE_META, SCHOOL_CIRCUIT_ELITE_ROLE)
 	elite.set_meta(SCHOOL_CIRCUIT_ENCOUNTER_ID_META, _school_circuit_encounter_id("elite_id"))
 	_wire_enemy(elite)
@@ -396,7 +396,7 @@ func _on_school_circuit_boss_spawn_requested() -> void:
 	add_child(boss_node)
 	current_stage_boss = boss_node
 	if boss_node is Node2D:
-		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
+		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
 	boss_node.set_meta(SCHOOL_CIRCUIT_ROLE_META, SCHOOL_CIRCUIT_BOSS_ROLE)
 	boss_node.set_meta(SCHOOL_CIRCUIT_ENCOUNTER_ID_META, _school_circuit_encounter_id("boss_id"))
 	_wire_enemy(boss_node)
@@ -448,7 +448,7 @@ func _spawn_cheonsul_elite() -> void:
 		return
 	add_child(elite)
 	if elite is Node2D:
-		(elite as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
+		(elite as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
 	elite.set_meta(CHEONSUL_SLICE_ROLE_META, CHEONSUL_ELITE_ROLE)
 	elite.set_meta(CHEONSUL_ENCOUNTER_ID_META, _cheonsul_encounter_id("elite_id"))
 	_wire_enemy(elite)
@@ -468,7 +468,7 @@ func _spawn_cheonsul_test_elite() -> void:
 		(elite as Node2D).scale = Vector2.ONE * 1.35
 	add_child(elite)
 	if elite is Node2D:
-		(elite as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
+		(elite as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
 	_set_cheonsul_test_encounter_role(elite, CHEONSUL_TEST_ELITE_ROLE)
 	_wire_enemy(elite)
 
@@ -482,7 +482,7 @@ func _spawn_cheonsul_test_boss() -> void:
 		return
 	add_child(boss_node)
 	if boss_node is Node2D:
-		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
+		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
 	_set_cheonsul_test_encounter_role(boss_node, CHEONSUL_TEST_BOSS_ROLE)
 	_wire_enemy(boss_node)
 
@@ -521,7 +521,7 @@ func _on_cheonsul_boss_spawn_requested() -> void:
 	add_child(boss_node)
 	current_stage_boss = boss_node
 	if boss_node is Node2D:
-		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
+		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
 	boss_node.set_meta(CHEONSUL_SLICE_ROLE_META, CHEONSUL_BOSS_ROLE)
 	boss_node.set_meta(CHEONSUL_ENCOUNTER_ID_META, _cheonsul_encounter_id("boss_id"))
 	_wire_enemy(boss_node)
@@ -540,7 +540,7 @@ func _set_combat_enabled(enabled: bool) -> void:
 		player.clear_pointer_target()
 	var gameplay_mode := Node.PROCESS_MODE_INHERIT if enabled else Node.PROCESS_MODE_DISABLED
 	player.process_mode = gameplay_mode
-	auto_attack.process_mode = Node.PROCESS_MODE_DISABLED
+	basic_weapons.process_mode = gameplay_mode
 	wave_spawner.set_spawning_enabled(enabled)
 	wave_spawner.process_mode = gameplay_mode
 	combat_ddd.process_mode = gameplay_mode
@@ -555,6 +555,7 @@ func _set_combat_enabled(enabled: bool) -> void:
 	var combat_hud_enabled := enabled and not game_over and school_host.selected_school_id != &""
 	hud.show_combat_hud(combat_hud_enabled)
 	if combat_hud_enabled:
+		wave_spawner.ensure_minimum_active()
 		hud.set_dash_state(player.current_dash_charges(), PlayerController.MAX_DASH_CHARGES)
 		hud.set_play_time(_run_play_elapsed_seconds)
 	else:
@@ -593,7 +594,7 @@ func _on_boss_requested(tier: int) -> void:
 	add_child(boss_node)
 	current_stage_boss = boss_node
 	if boss_node is Node2D:
-		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
+		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
 	_wire_enemy(boss_node)
 
 

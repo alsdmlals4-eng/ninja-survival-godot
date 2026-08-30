@@ -39,7 +39,7 @@ func test_school_selection_starts_the_four_school_circuit_and_syncs_stage_phase_
 	assert_eq(build_state.selected_school_id, &"bongma")
 	assert_eq(player.process_mode, Node.PROCESS_MODE_INHERIT)
 	assert_eq(spawner.process_mode, Node.PROCESS_MODE_INHERIT)
-	assert_eq(main.get_node("Player/AutoAttack").process_mode, Node.PROCESS_MODE_DISABLED)
+	assert_eq(main.get_node("Player/BasicWeapons").process_mode, Node.PROCESS_MODE_INHERIT)
 	assert_true((main.get_node("HUD/CombatTopBar") as Control).visible)
 	assert_eq(
 		(main.get_node("HUD/CombatTopBar/Row/StagePhaseLabel") as Label).text,

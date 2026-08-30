@@ -3,7 +3,7 @@ extends GutTest
 const MAIN_SCENE := "res://scenes/main/main_scene.tscn"
 const PLAYER_SCENE := "res://scenes/player/player.tscn"
 const ENEMY_SCENE := "res://scenes/enemies/enemy_basic.tscn"
-const PROJECTILE_SCENE := "res://scenes/projectiles/projectile_basic.tscn"
+const SHURIKEN_SCENE := "res://scenes/projectiles/shuriken_projectile.tscn"
 const STAGE_BOSS_SCENE := "res://scenes/enemies/stage_boss.tscn"
 const REWARD_ORB_SCENE := "res://scenes/rewards/reward_orb.tscn"
 const BONGMA_FAMILIAR_SCENE := "res://scenes/schools/bongma_familiar.tscn"
@@ -12,6 +12,7 @@ const BATTLEFIELD_FLOOR_TILE := "res://assets/runtime/visual-core/moonlit_battle
 const BATTLEFIELD_FLOOR_TILE_SIZE := Vector2(1254, 1254)
 const BATTLEFIELD_PROP_ATLAS := "res://assets/runtime/visual-core/moonlit_battlefield_prop_atlas_v1.png"
 const GROUND_SHADOW_TEXTURE := "res://assets/runtime/visual-core/runtime_contact_shadow_v1.png"
+const BASIC_WEAPON_EFFECTS_TEXTURE := "res://assets/runtime/visual-core/basic_weapon_effects_v1.png"
 const BATTLEFIELD_PROP_REGIONS := {
 	"Lantern": Rect2(0, 0, 632.5, 621.5),
 	"DeadTree": Rect2(632.5, 0, 632.5, 621.5),
@@ -22,7 +23,7 @@ const REQUIRED_RUNTIME_RESOURCES := [
 	"res://scripts/core/main_controller.gd",
 	"res://scripts/ui/hud.gd",
 	ENEMY_SCENE,
-	PROJECTILE_SCENE,
+	SHURIKEN_SCENE,
 ]
 
 
@@ -40,7 +41,7 @@ func test_main_scene_has_core_nodes() -> void:
 	assert_not_null(main.get_node_or_null("Player"))
 	assert_not_null(main.get_node_or_null("HUD"))
 	assert_not_null(main.get_node_or_null("Player/Camera2D"))
-	assert_not_null(main.get_node_or_null("Player/AutoAttack"))
+	assert_not_null(main.get_node_or_null("Player/BasicWeapons"))
 
 
 func test_main_scene_repeats_the_locked_battlefield_floor_behind_gameplay() -> void:
@@ -128,7 +129,7 @@ func test_runtime_resources_exist() -> void:
 		assert_true(ResourceLoader.exists(path), "Missing MVP-0 runtime resource: %s" % path)
 
 
-func test_player_scene_has_collision_visual_camera_and_projectile_config() -> void:
+func test_player_scene_has_collision_visual_camera_and_basic_weapon_config() -> void:
 	var player = _spawn_scene(PLAYER_SCENE)
 	assert_not_null(player)
 	if player == null:
@@ -142,13 +143,14 @@ func test_player_scene_has_collision_visual_camera_and_projectile_config() -> vo
 		assert_almost_eq(visual.scale.x, 0.05, 0.0001)
 		assert_almost_eq(visual.scale.y, 0.05, 0.0001)
 		assert_not_null(visual.move_texture)
-		assert_not_null(visual.attack_texture)
+		assert_false(_has_property(visual, "attack_texture"), "Attack effects must no longer swap the player body pose.")
 		assert_not_null(visual.hit_texture)
 	assert_not_null(player.get_node_or_null("Camera2D"))
-	var auto_attack = player.get_node_or_null("AutoAttack")
-	assert_not_null(auto_attack)
-	if auto_attack != null:
-		assert_not_null(auto_attack.projectile_scene)
+	var basic_weapons = player.get_node_or_null("BasicWeapons")
+	assert_not_null(basic_weapons)
+	if basic_weapons != null:
+		assert_not_null(basic_weapons.shuriken_projectile_scene)
+		assert_not_null(basic_weapons.weapon_effect_texture)
 	assert_eq(player.collision_layer, 1)
 	assert_eq(player.collision_mask, 2)
 
@@ -170,8 +172,9 @@ func test_enemy_scene_has_collision_and_visual() -> void:
 	assert_eq(enemy.collision_mask, 1)
 
 
-func test_projectile_scene_has_collision_and_enemy_mask() -> void:
-	var projectile = _spawn_scene(PROJECTILE_SCENE)
+func test_shuriken_projectile_scene_has_collision_enemy_mask_and_locked_atlas_region() -> void:
+	assert_true(ResourceLoader.exists(BASIC_WEAPON_EFFECTS_TEXTURE))
+	var projectile = _spawn_scene(SHURIKEN_SCENE)
 	assert_not_null(projectile)
 	if projectile == null:
 		return
@@ -182,6 +185,9 @@ func test_projectile_scene_has_collision_and_enemy_mask() -> void:
 	assert_true(visual is Sprite2D, "Projectile Visual must use an approved Sprite2D")
 	if visual is Sprite2D:
 		assert_not_null(visual.texture)
+		assert_eq(visual.texture.resource_path, BASIC_WEAPON_EFFECTS_TEXTURE)
+		assert_true(visual.region_enabled)
+		assert_gt(visual.region_rect.position.x, 0.0)
 	assert_eq(projectile.collision_layer, 4)
 	assert_eq(projectile.collision_mask, 2)
 	assert_true(projectile.monitoring)
@@ -233,6 +239,7 @@ func test_main_keeps_enemy_and_game_over_owners_without_persistent_score_or_heal
 	assert_not_null(main)
 	if main == null:
 		return
+	(main.get_node("SchoolSelectionUI") as SchoolSelectionUI)._choose(&"bongma")
 
 	assert_true(_has_property(main, "game_over"))
 	var state = main.get_node_or_null("GameState")
@@ -295,6 +302,7 @@ func test_main_wires_dash_play_time_and_settings_intents_without_manual_ultimate
 	assert_not_null(main)
 	if main == null:
 		return
+	(main.get_node("SchoolSelectionUI") as SchoolSelectionUI)._choose(&"bongma")
 	var selector := main.get_node_or_null("SchoolSelectionUI") as SchoolSelectionUI
 	var player := main.get_node_or_null("Player") as PlayerController
 	var hud := main.get_node_or_null("HUD") as HUDController
@@ -327,7 +335,7 @@ func test_main_wires_dash_play_time_and_settings_intents_without_manual_ultimate
 	assert_almost_eq(bongma.ultimate_time_remaining, 0.0, 0.001, "Automatic combat must not expose an ui_accept ultimate route.")
 
 
-func test_main_uses_resolved_actions_and_damage_for_player_poses() -> void:
+func test_main_uses_resolved_damage_but_not_school_actions_for_player_poses() -> void:
 	var main = _spawn_main()
 	assert_not_null(main)
 	if main == null:
@@ -342,7 +350,7 @@ func test_main_uses_resolved_actions_and_damage_for_player_poses() -> void:
 		return
 
 	school_host.player_action_resolved.emit()
-	assert_eq(visual.current_pose(), visual.Pose.ATTACK)
+	assert_eq(visual.current_pose(), visual.Pose.MOVE)
 	player.take_damage(1)
 	assert_eq(visual.current_pose(), visual.Pose.HIT)
 

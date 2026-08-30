@@ -49,6 +49,7 @@ func test_right_pointer_dash_uses_player_camera_canvas_transform() -> void:
 	var main = _spawn_scene(MAIN_SCENE)
 	var player = main.get_node("Player")
 	var camera := player.get_node("Camera2D") as Camera2D
+	((main.get_node("SchoolSelectionUI") as SchoolSelectionUI).get_node("Panel") as Control).hide()
 	main._set_combat_enabled(true)
 	player.global_position = Vector2(420.0, -180.0)
 	camera.zoom = Vector2(1.35, 1.35)
@@ -131,7 +132,12 @@ func test_combat_disable_clears_pointer_target_before_reenable() -> void:
 func test_control_consumed_click_leaves_pointer_target_unchanged() -> void:
 	var main = _spawn_main_in_subviewport()
 	var player = main.get_node("Player")
+	((main.get_node("SchoolSelectionUI") as SchoolSelectionUI).get_node("Panel") as Control).hide()
 	main._set_combat_enabled(true)
+	main.wave_spawner.set_spawning_enabled(false)
+	for child in main.get_children():
+		if child.has_meta(WaveSpawner.NORMAL_ENEMY_META):
+			child.free()
 	player.set_pointer_target(player.global_position + Vector2.RIGHT * 120.0)
 
 	var blocker_layer := CanvasLayer.new()

@@ -3,7 +3,7 @@ extends GutTest
 const MAIN_SCENE := "res://scenes/main/main_scene.tscn"
 
 
-func test_enemy_kill_is_not_replaced_immediately() -> void:
+func test_normal_horde_floor_is_restored_from_the_annulus_after_a_kill() -> void:
 	var packed: PackedScene = load(MAIN_SCENE)
 	assert_not_null(packed)
 	if packed == null:
@@ -12,6 +12,7 @@ func test_enemy_kill_is_not_replaced_immediately() -> void:
 	var main = packed.instantiate()
 	add_child_autofree(main)
 	await get_tree().process_frame
+	(main.get_node("SchoolSelectionUI") as SchoolSelectionUI)._choose(&"bongma")
 
 	var enemies_before := _living_enemies(main)
 	assert_gt(enemies_before.size(), 0)
@@ -26,7 +27,7 @@ func test_enemy_kill_is_not_replaced_immediately() -> void:
 	await get_tree().process_frame
 
 	var enemies_after := _living_enemies(main)
-	assert_eq(enemies_after.size(), initial_count - 1, "MVP-1 must wait for a timed wave instead of instant replacement")
+	assert_eq(enemies_after.size(), initial_count, "The approved normal-enemy floor must be restored while normal spawning is allowed.")
 
 
 func _living_enemies(main: Node) -> Array[Node]:

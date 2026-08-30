@@ -18,7 +18,7 @@ func test_run_starts_paused_behind_school_selection() -> void:
 	assert_true(selector.visible)
 	assert_eq(host.selected_school_id, &"")
 	assert_eq(main.get_node("Player").process_mode, Node.PROCESS_MODE_DISABLED)
-	assert_eq(main.get_node("Player/AutoAttack").process_mode, Node.PROCESS_MODE_DISABLED)
+	assert_eq(main.get_node("Player/BasicWeapons").process_mode, Node.PROCESS_MODE_DISABLED)
 	assert_eq(main.get_node("WaveSpawner").process_mode, Node.PROCESS_MODE_DISABLED)
 	for enemy in _living_enemies(main):
 		assert_eq(enemy.process_mode, Node.PROCESS_MODE_DISABLED)
@@ -50,7 +50,9 @@ func test_each_school_selection_activates_only_matching_runtime_and_combat() -> 
 		assert_false((selector.get_node("Panel") as Control).visible)
 		assert_eq(main.get_node("Player").process_mode, Node.PROCESS_MODE_INHERIT)
 		assert_eq(main.get_node("WaveSpawner").process_mode, Node.PROCESS_MODE_INHERIT)
-		assert_eq(main.get_node("Player/AutoAttack").process_mode, Node.PROCESS_MODE_DISABLED)
+		assert_eq(main.get_node("Player/BasicWeapons").process_mode, Node.PROCESS_MODE_INHERIT)
+		assert_true(host.active_runtime.active, "The selected school must provide exactly one starter ninjutsu runtime.")
+		assert_gte(_living_enemies(main).size(), 10, "A selected Stage must establish the user-approved normal-enemy horde floor.")
 		for enemy in _living_enemies(main):
 			assert_eq(enemy.process_mode, Node.PROCESS_MODE_INHERIT)
 		main.queue_free()
@@ -198,9 +200,9 @@ func test_wave_spawned_enemy_is_wired_after_selection() -> void:
 	main.get_node("SchoolSelectionUI")._choose(&"guiin")
 	var spawner = main.get_node("WaveSpawner")
 	var count_before := _living_enemies(main).size()
-	assert_eq(spawner.spawn_wave(), 2)
+	assert_eq(spawner.spawn_wave(), 3)
 	var enemies := _living_enemies(main)
-	assert_eq(enemies.size(), count_before + 2)
+	assert_eq(enemies.size(), count_before + 3)
 	for enemy in enemies.slice(count_before):
 		assert_eq(enemy.target, main.get_node("Player"))
 		assert_true(enemy.is_connected("died", Callable(main, "_on_enemy_died")))

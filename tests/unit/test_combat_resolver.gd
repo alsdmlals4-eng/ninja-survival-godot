@@ -61,6 +61,22 @@ func test_extra_multiplier_is_applied_after_run_modifiers() -> void:
 	assert_eq(fixture.tracker.damage, 15)
 
 
+func test_basic_weapon_damage_records_actual_hp_loss_without_school_only_modifiers() -> void:
+	var fixture := _new_fixture()
+	if fixture.is_empty():
+		return
+	var target := DamageTarget.new()
+	add_child_autofree(target)
+	var modifiers = load(MODIFIER_PATH).new()
+	modifiers.school_damage_pct = 0.80
+	modifiers.non_ultimate_school_damage_pct = 0.60
+	fixture.resolver.set_modifiers(modifiers)
+
+	assert_eq(fixture.resolver.deal_basic_weapon_damage(target, 10.0), 10)
+	assert_eq(target.health, 90)
+	assert_eq(fixture.tracker.damage, 10)
+
+
 func test_overkill_records_actual_hp_loss_only() -> void:
 	var fixture := _new_fixture()
 	if fixture.is_empty():

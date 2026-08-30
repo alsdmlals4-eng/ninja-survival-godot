@@ -28,6 +28,13 @@ player_facing_vocabulary: STAGE_AND_PHASE
 player_control_contract: ONE_FIXED_NINJA_DIRECT_MOVEMENT_AUTO_ACTIONS_SEPARATE
 dash_combat_contract: ACTIVE_DASH_0_20_SECONDS_FULL_INVULNERABILITY_USER_APPROVED_2026-08-30_KST
 dash_change_evidence: RED_CONFIRMED_FOCUSED_GUT_1_OF_1_18_TESTS_82_ASSERTS_FULL_GUT_71_OF_71_555_TESTS_6033_ASSERTS_AND_SCOPED_RUNTIME_PASS
+dec039_horde_basic_weapons_and_starting_ninjutsu: USER_APPROVED_ASSET_LOCKED_IMPLEMENTED_MACHINE_VERIFIED_UNMERGED
+dec039_canon: docs/canon/2026-08-30-dec039-horde-basic-weapons-and-starting-ninjutsu.md
+dec039_locked_runtime_asset: NINJA_RUNTIME_BASIC_WEAPON_EFFECTS_01_SHA256_728AFF2ED85E233A0ADCC195406A9A101B0933DA8990078CCED1AF59C9EAF58A
+dec039_machine_evidence: GODOT_4_7_1_EDITOR_IMPORT_PARSE_MAIN_SMOKE_FULL_GUT_555_OF_555_6130_ASSERTS_PASS
+dec039_scoped_runtime: STAGE_SELECTION_TOP_HUD_HORDE_APPROACH_AND_GAME_OVER_RENDER_OBSERVED_2026_08_31_KST
+dec039_weapon_readability_and_balance: NOT_RUN
+dec039_human_player_device_balance: NOT_RUN
 backpack_starting_usable_area: EXACT_3X3
 backpack_technical_expansion_ceiling: MAX_6X6
 runtime_build_authority_for_dec037: USER_APPROVED_RUNTIME_BUILD_2026-08-30_KST
@@ -118,6 +125,27 @@ Detailed DEC-034 generate-then-approve visual workflow: `docs/canon/2026-08-28-d
 Detailed DEC-035 repository-only project record and Notion retirement: `docs/canon/2026-08-28-dec035-repository-only-project-record.md`.
 
 Detailed DEC-036 current-build Human/Player validation deferment: `docs/canon/2026-08-29-dec036-human-player-validation-deferred-from-current-build-gate.md`.
+
+Detailed DEC-039 horde, katana/shuriken base weapons, and selected starter
+ninjutsu: `docs/canon/2026-08-30-dec039-horde-basic-weapons-and-starting-ninjutsu.md`.
+
+### 2026-08-30 base-combat override — DEC-039
+
+After selecting a Stage, one directly moved Ninja automatically begins with
+three concurrent patterns: close katana, ranged shuriken, and exactly one
+selected-tradition starter ninjutsu. The first two are shared base weapons;
+the third remains school-owned and is not a second player body, manual attack,
+or later scroll system.
+
+Normal enemies are no longer placed or reinforced through a four-cardinal
+direction queue. `WaveSpawner` alone maintains at least 10 normal enemies
+from a random annulus outside the player while normal spawning is permitted;
+the user removed the normal-enemy maximum cap on 2026-08-31 KST, so timed
+reinforcement batches continue to accumulate until an existing lifecycle gate
+disables normal spawning. Elite, Trace, Boss, Workbench, Result, and Game Over
+keep their existing permission gates. Basic weapon effects are separate from
+the player body, which now has Move/Hit only. Exact values and evidence scope
+are owned by DEC-039; Human/Player/device/balance are still `NOT_RUN`.
 
 ## 2. Protected integrated baseline
 

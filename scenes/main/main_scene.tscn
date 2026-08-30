@@ -88,6 +88,11 @@ region_rect = Rect2(632.5, 621.5, 632.5, 621.5)
 [node name="WaveSpawner" type="Node" parent="."]
 script = ExtResource("7_wave")
 enemy_scene = ExtResource("5_enemy")
+wave_interval = 1.0
+batch_size = 3
+minimum_active_enemies = 10
+minimum_spawn_distance = 420.0
+maximum_spawn_distance = 560.0
 
 [node name="SchoolRuntimeHost" type="Node" parent="."]
 script = ExtResource("9_school_host")
@@ -110,18 +115,6 @@ script = ExtResource("12_guiin")
 process_mode = 4
 script = ExtResource("13_heukyeong")
 badge_scene = ExtResource("15_badge")
-
-[node name="EnemyEast" parent="." instance=ExtResource("5_enemy")]
-position = Vector2(320, 0)
-
-[node name="EnemyWest" parent="." instance=ExtResource("5_enemy")]
-position = Vector2(-320, 0)
-
-[node name="EnemySouth" parent="." instance=ExtResource("5_enemy")]
-position = Vector2(0, 320)
-
-[node name="EnemyNorth" parent="." instance=ExtResource("5_enemy")]
-position = Vector2(0, -320)
 
 [node name="HUD" parent="." instance=ExtResource("3_hud")]
 

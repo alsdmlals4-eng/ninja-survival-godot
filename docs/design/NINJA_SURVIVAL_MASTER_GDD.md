@@ -1,7 +1,7 @@
 # 닌자의 신 — Master Game Design Document
 
 > **문서 상태:** `CURRENT_PRODUCT_GDD / IMPLEMENTATION_CONTRACT_COMPANION`
-> **기준:** fresh-read된 마지막 merged `origin/main`은 `b0d310d1b7b8006524e7078fa1a9443430481e38`; 현재 문서는 그 위의 `codex/human-game-blueprint-revision-132` isolated-branch extension을 함께 기록하며 아직 병합되지 않았다.
+> **기준:** fresh-read된 마지막 merged `origin/main`은 `9855f9a5fa2e4297e3171a1b1903d3517719ad93`; 현재 문서는 그 위의 `codex/dec037-runtime-migration-135` isolated-branch extension을 함께 기록하며 아직 병합되지 않았다.
 > **생성일:** 2026-08-30 KST
 > **사람용 안내:** [사람용 게임 경험 블루프린트 PDF](../../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf) — `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md`에서 생성한 읽기 전용 검수본
 > **발행/검수 계약:** `docs/PDF_EXPORT.md`와 `docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json`; PDF 존재는 runtime·Human Usability·Player Experience 검증을 뜻하지 않는다.
@@ -12,14 +12,16 @@
 
 `닌자의 신`은 Godot 4.x/GDScript로 만드는 2D top-down survival roguelike다. 플레이어는 하나의 고정 닌자를 직접 이동해 네 스테이지를 한 번씩 고르고, 각 전승이 가르치는 서로 다른 위험 처리법을 몸으로 익힌 뒤, 공간 배치형 백팩과 Fate를 조합해 최종 재앙에 맞설 자신만의 인법을 만든다.
 
-### 2026-08-30 공개 경험 오버레이 — DEC-037
+### 2026-08-30 공개 경험 오버레이 — DEC-037 / DEC-039
 
 `docs/canon/2026-08-30-dec037-player-control-stage-3x3-backpack.md`가 사람이 보는 제품 언어와 다음 runtime migration의 기준을 소유한다.
 
 - 플레이어는 **한 명의 닌자**를 직접 이동한다. 자동 공격/전승 반응은 위치와 확정 빌드가 만든 결과다.
 - 공개 목적지는 **스테이지**, 내부 위험 진행 축은 **페이즈 1–4**다. 기존 `school` key/class는 별도 migration 전까지 내부 호환 표현이다.
 - 시작 사용 가능 가방은 **정확히 3×3**이다. 기존 6×6은 확장 가능한 기술 상한이며, 처음부터 열린 시작 보드가 아니다.
-- 이 오버레이는 `DOCUMENTED/CONFIRMED` product contract이며, Godot/UI/data/test 이행과 Human/Player evidence는 user final PDF review 뒤의 별도 package에서 다룬다.
+- 전투 시작에는 공통 **일본도 근접 자동공격 + 수리검 원거리 자동투사체 + 선택 유파의 시작 인법**이 동시에 활성화된다. 플레이어 몸체는 Move/Hit만 쓰고, 무기 이펙트는 별도 Sprite로 읽힌다.
+- 정상 적은 플레이어 밖의 난수 고리에서 등장하고, 정상 스폰이 허용된 동안 최소 10마리의 추적 압박을 유지한다. 일반 적에는 인위적인 최대 수를 두지 않으며, 누적 군중 규모와 실제 재미/난이도는 별도 balance gate가 검증한다.
+- 이 오버레이는 `DOCUMENTED/CONFIRMED` product contract다. DEC-039 현재 구현은 isolated branch에서 exact-head 검증 중이며, Human/Player evidence는 별도다.
 
 ### 상태 표기
 
@@ -39,9 +41,9 @@
 Phase 1 기획/정본화: HISTORICAL / NO_LONGER_NEXT_AUTHORIZATION (당시 통합 구현계약 승인 상태)
 Phase 2 preproduction / Definition of Ready: HISTORICAL / NO_LONGER_NEXT_AUTHORIZATION (당시 DoR 상태)
 Phase 3 asset production: PARTIAL (기존 소비처 asset만)
-Phase 4 Godot implementation: T12~T16 machine baseline merged; current isolated-branch extension has the locked battlefield visual core with machine + scoped runtime render/input evidence; DEC-037 3×3/Stage·Phase/HUD migration is deferred until final PDF review
+Phase 4 Godot implementation: T12~T16 machine baseline merged; current isolated-branch extension has locked battlefield visuals, dash invulnerability, and DEC-039 horde/base-weapon migration machine-verified (`555/555`, `6130` assertions), unmerged
 Phase 5 Human vertical-slice validation: DEFERRED_BY_DEC036_NOT_RUN
-Current next gate: PDF_FINAL_REVIEW_PENDING -> fresh-main separate DEC-037 runtime migration authorization
+Current next gate: DEC-039 fresh PR review -> Player balance and short-lived weapon-effect readability validation; Human/Player/balance remains separate
 ```
 
 ## 01. Source Registry
@@ -51,7 +53,7 @@ Current next gate: PDF_FINAL_REVIEW_PENDING -> fresh-main separate DEC-037 runti
 | `SRC-REPO-01` | `AGENTS.md` | engine, authority, protected boundaries | `CONFIRMED` |
 | `SRC-REPO-02` | `docs/CURRENT_CONFIRMED_DECISIONS.md` | current product/visual/evidence ledger | `CONFIRMED` |
 | `SRC-REPO-03` | `docs/ACTIVE_CONTEXT.md` | mutable resume route | `CONFIRMED` |
-| `SRC-REPO-04` | DEC-014~025, DEC-026~038 | product, encounter, current decisions | `CONFIRMED` |
+| `SRC-REPO-04` | DEC-014~025, DEC-026~039 | product, encounter, current decisions | `CONFIRMED` |
 | `SRC-REPO-05` | `scripts/`, `scenes/`, `assets/`, `tests/` | actual implementation reality | `IMPLEMENTED` where paths exist |
 | `SRC-REPO-06` | `docs/visual/*`, asset manifests | visual grammar and consumer evidence | mixed; see `AST-*` |
 | `SRC-NOTION-01` | former Human Home / Core Systems / Visual Bible / Production Handoff | preserved migration snapshot and attachment provenance | `docs/migration/notion/`; not active canon |
@@ -169,7 +171,7 @@ start school
 
 | ID | system | owner / principal paths | status | next proof |
 | --- | --- | --- | --- | --- |
-| `SYS-COMBAT-001` | movement, automatic combat, DDD | `PlayerController`, `AutoAttackController`, `CombatDDDTracker`, `CombatResolver` | `IMPLEMENTED` / automated | human readability |
+| `SYS-COMBAT-001` | movement, horde pressure, automatic combat, DDD | `PlayerController`, `WaveSpawner`, `BasicWeaponController`, selected `SchoolRuntimeHost`, `CombatDDDTracker`, `CombatResolver` | DEC-039 isolated-branch implementation / exact-head verification pending | human readability and balance |
 | `SYS-SCHOOL-002` | 4 school runtime host | `SchoolRuntimeHost`, `*_runtime.gd` | shallow runtime `IMPLEMENTED` | each school lifecycle |
 | `SYS-ENCOUNTER-003` | Core→Elite→Trace→Boss | `StageEncounterState`, `CheonsulVerticalSliceController`, catalog | domain `IMPLEMENTED`; Cheonsul runtime partial | four-school runtime |
 | `SYS-ROUTE-004` | four-school route and clear order | `RunRouteState` | `IMPLEMENTED` / automated | actual circuit |
@@ -186,9 +188,9 @@ start school
 
 **왜 존재하는가.** 플레이어가 조준 부담 없이 적 거리·군집·위험 지역을 읽고 위치로 자신의 해법을 만들게 한다. 목표 감정은 “손은 단순하지만 나는 전장을 조종하고 있다”다.
 
-**어떻게 플레이하는가.** Player는 input으로 이동한다. 선택 유파 runtime이 자동 행동을 내고, Combat Resolver가 committed modifier를 반영한다. `ui_accept`은 궁극기 요청으로 쓰이며, combat/help/modal state가 입력을 막을 수 있다.
+**어떻게 플레이하는가.** Player는 input으로 이동하고 대시로 적 압박을 회피한다. 선택 후 `WaveSpawner`가 일정 거리 바깥에서 최소 10마리의 일반 적을 유지한다. 공통 일본도와 수리검, 선택 유파 runtime이 함께 자동 행동을 내며, `CombatResolver`가 각 피해 경계를 기록한다. 상단 HUD와 modal/help state가 입력을 막을 수 있다.
 
-**필요 콘텐츠.** player silhouette, generic enemy roles, projectile/field/reward feedback, compact status icon, struck-target-only HP reveal, ultimate readiness feedback. 현재 text badge/HP display는 아직 canonical visual rule과 불일치한다.
+**필요 콘텐츠.** player silhouette, generic enemy roles, katana/shuriken/field/reward feedback, compact status icon, struck-target-only HP reveal. 현재 text badge/HP display는 아직 canonical visual rule과 불일치한다.
 
 **Godot 구조.** `scenes/main/main_scene.tscn`의 `Player`, `WaveSpawner`, `SchoolRuntimeHost`, `CombatDDD`, `GameState`, `HUD`가 `MainController`에 연결된다. `RunBuildState`의 committed modifier snapshot만 item/spatial combat authority다.
 
