@@ -208,6 +208,9 @@ func _connect_mvp3_signals() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _handle_gameplay_pointer_input(event):
+		get_viewport().set_input_as_handled()
+		return
 	if not event.is_action_pressed("ui_accept"):
 		return
 	if game_over:
@@ -224,6 +227,33 @@ func _unhandled_input(event: InputEvent) -> void:
 	if stage_flow != null and stage_flow.phase != StageFlowController.Phase.COMBAT and stage_flow.phase != StageFlowController.Phase.BOSS:
 		return
 	_try_use_selected_ultimate()
+
+
+func _handle_gameplay_pointer_input(event: InputEvent) -> bool:
+	if game_over or not _combat_enabled or player == null:
+		return false
+	if event is InputEventMouseButton:
+		var button_event := event as InputEventMouseButton
+		if button_event.button_index == MOUSE_BUTTON_LEFT:
+			if button_event.pressed:
+				player.set_pointer_target(_pointer_world_position(button_event.position))
+			else:
+				player.clear_pointer_target()
+			return true
+		if button_event.button_index == MOUSE_BUTTON_RIGHT and button_event.pressed:
+			player.set_pointer_target(_pointer_world_position(button_event.position))
+			player.request_dash()
+			return true
+	if event is InputEventMouseMotion:
+		var motion_event := event as InputEventMouseMotion
+		if motion_event.button_mask & MOUSE_BUTTON_MASK_LEFT:
+			player.set_pointer_target(_pointer_world_position(motion_event.position))
+			return true
+	return false
+
+
+func _pointer_world_position(viewport_position: Vector2) -> Vector2:
+	return player.get_canvas_transform().affine_inverse() * viewport_position
 
 
 func _restart_run() -> void:
