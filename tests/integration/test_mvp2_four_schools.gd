@@ -119,6 +119,10 @@ func test_paused_settings_help_renders_above_hud_and_closes_from_parsed_escape()
 	assert_eq(get_viewport().gui_get_focus_owner(), hud.tradition_help_button, "Closing help must return focus to its Settings opener.")
 	assert_true(hud.settings_panel.visible)
 	assert_true(get_tree().paused)
+	var escape_release := escape.duplicate() as InputEventKey
+	escape_release.pressed = false
+	Input.parse_input_event(escape_release)
+	Input.flush_buffered_events()
 	get_tree().paused = false
 
 
