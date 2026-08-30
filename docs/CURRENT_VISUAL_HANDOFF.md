@@ -49,7 +49,7 @@ contract: `NINJA_RUNTIME_BATTLEFIELD_FLOOR_TILE_01`.
 
 | Asset | SHA-256 | Exact current-branch consumer | Approval and evidence state |
 | --- | --- | --- | --- |
-| `moonlit_battlefield_floor_tile_v1.png` | `ceb6e50ce6acc650f4a6e534ae2244e5f0aeae498fa9cefa150c98b2f510d700` | `Main/BattlefieldBackdrop` (`Parallax2D`) → `FloorTile` | `USER_LOCKED`; implementation and focused machine checks on the isolated branch; not merged; live render/Human/device evidence `NOT_RUN` |
+| `moonlit_battlefield_floor_tile_v1.png` | `ceb6e50ce6acc650f4a6e534ae2244e5f0aeae498fa9cefa150c98b2f510d700` | `Main/BattlefieldBackdrop` (`Parallax2D`) → `FloorTile` | `USER_LOCKED`; implemented and scoped live render/input verified on the isolated branch; not merged; Human Usability, Player Experience, and device/export evidence `NOT_RUN` |
 
 `Parallax2D.repeat_size` is set to the native 1254×1254 source size and keeps
 the floor behind gameplay. The prior moonlit backdrop source remains preserved
@@ -61,14 +61,22 @@ The user batch-locked the two companion assets on 2026-08-30:
 
 | Asset | Repository source | Consumer | Current state |
 | --- | --- | --- | --- |
-| `NINJA_RUNTIME_BATTLEFIELD_PROP_ATLAS_01` | `assets/runtime/visual-core/moonlit_battlefield_prop_atlas_v1.png` | `Main/BattlefieldProps` → lantern, dead tree, rocks, talisman stele | `USER_LOCKED` → `IMPLEMENTED_ON_CURRENT_BRANCH`; separate repeat layer, no collision or gameplay ownership; each atlas region clips filtered sampling to prevent neighboring-prop bleed |
-| `NINJA_RUNTIME_CONTACT_SHADOW_01` | `assets/runtime/visual-core/runtime_contact_shadow_v1.png` | `Player`, `EnemyBasic`, `StageBoss` → `GroundShadow` | `USER_LOCKED` → `IMPLEMENTED_ON_CURRENT_BRANCH`; visual-only child behind each unit sprite |
+| `NINJA_RUNTIME_BATTLEFIELD_PROP_ATLAS_01` | `assets/runtime/visual-core/moonlit_battlefield_prop_atlas_v1.png` | `Main/BattlefieldProps` → lantern, dead tree, rocks, talisman stele | `USER_LOCKED` → `IMPLEMENTED_ON_CURRENT_BRANCH` → `SCOPED_LIVE_RENDER_INPUT_VERIFIED`; separate repeat layer, no collision or gameplay ownership; each atlas region clips filtered sampling to prevent neighboring-prop bleed |
+| `NINJA_RUNTIME_CONTACT_SHADOW_01` | `assets/runtime/visual-core/runtime_contact_shadow_v1.png` | `Player`, `EnemyBasic`, `StageBoss` → `GroundShadow` | `USER_LOCKED` → `IMPLEMENTED_ON_CURRENT_BRANCH` → `SCOPED_LIVE_RENDER_INPUT_VERIFIED`; visual-only child behind each unit sprite |
 
 The current isolated branch passed import/parse, headless scene checks, the
-focused Main test, and full GUT `523/523` with `5832` assertions. A Ninja
-Survival live editor was not attached: rendered continuity, Human Usability,
-Player Experience, and device/export evidence remain `NOT_RUN`. No asset is
-merged yet.
+focused Main test, and full GUT `523/523` with `5832` assertions. On
+2026-08-30 KST, a Ninja Survival Godot 4.7.1 editor opened this exact
+worktree, rendered the school-selection scene, selected Cheonsul through the
+visible button, and reached automatic combat with a clean live diagnostic
+readback. The observed floor repeated continuously to the viewport edges;
+lantern, dead tree, rocks, and talisman stele remained sparse independent
+props; Player `GroundShadow` was visible at `z_index = -1` with the locked
+texture. This is scoped `RUNTIME_RENDER_INPUT` evidence only. The temporary
+local bridge and its generated sidecars were removed after the check;
+screenshots were not promoted to project assets. Human Usability, Player
+Experience, and device/export evidence remain `NOT_RUN`. No asset is merged
+yet.
 
 ## 2026-08-28 current combat visual grammar — approved, implementation deferred
 
