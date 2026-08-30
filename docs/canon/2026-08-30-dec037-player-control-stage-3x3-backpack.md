@@ -10,7 +10,8 @@ supersedes_for_player_facing_surfaces:
 runtime_migration_status: IMPLEMENTED_MACHINE_VERIFIED_UNMERGED_2026-08-30_KST
 runtime_evidence_code_head: e9275abbe0a954313f468224bd0ceff21d27a57c
 runtime_machine_evidence: GODOT_4_7_1_IMPORT_EDITOR_PARSE_MAIN_SMOKE_FOCUSED_GUT_23_OF_23_197_ASSERTS_1772_FULL_GUT_71_OF_71_555_ASSERTS_6030_PASS
-scoped_live_runtime_observation: NOT_RUN_USER_INTERRUPTED_2026-08-30_KST
+scoped_live_runtime_observation: GODOT_4_7_1_SCOPED_STAGE_SELECTION_TOP_HUD_KEYBOARD_MOVEMENT_DASH_RECHARGE_AND_GAME_OVER_RENDER_OBSERVED_2026-08-30_KST
+scoped_runtime_balance_signal: IDLE_GAME_OVER_AROUND_PLAY_00_04_TO_00_05_AND_SIMPLE_STRAIGHT_MOVEMENT_PLUS_ONE_DASH_GAME_OVER_AT_PLAY_00_14_OBSERVED_NOT_A_BALANCE_VERDICT
 human_player_touch_gamepad_device_export_balance: NOT_RUN
 ```
 
@@ -38,4 +39,4 @@ human_player_touch_gamepad_device_export_balance: NOT_RUN
 
 ## 증거 경계
 
-문서와 PDF의 변경은 `DOCUMENTED`/publication evidence다. 위의 3×3 runtime과 UI 용어 이행은 `MACHINE_VERIFIED`이나, scoped live Godot observation은 사용자가 중단하여 `NOT_RUN`이다. Human Usability, Player Experience, touch/gamepad/device/export, balance와 release도 계속 `NOT_RUN`이며 기계 검증으로 승격하지 않는다.
+문서와 PDF의 변경은 `DOCUMENTED`/publication evidence다. 위의 3×3 runtime과 UI 용어 이행은 `MACHINE_VERIFIED`이고, Godot 4.7.1 scoped live observation에서 Stage 선택, top-only HUD, keyboard 이동, DASH 충전 소모·회복, Game Over render를 실제로 관찰했다. 정지 시 약 `PLAY 00:04–00:05`, 단순 직선 이동+한 번의 대시 시 `PLAY 00:14`의 Game Over도 관찰했으나, 이는 접촉 압박의 후속 balance 검증 신호일 뿐 balance 판정이 아니다. Human Usability, Player Experience, touch/gamepad/device/export, balance와 release도 계속 `NOT_RUN`이며 기계 또는 scoped live 검증으로 승격하지 않는다.

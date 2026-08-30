@@ -1,6 +1,6 @@
 # DEC-037 Runtime Migration Design
 
-> **Status:** `USER_APPROVED_DESIGN / IMPLEMENTATION_SPEC_PENDING_USER_REVIEW`
+> **Status:** `USER_APPROVED_DESIGN / IMPLEMENTED_MACHINE_VERIFIED_SCOPED_LIVE_OBSERVED_UNMERGED`
 > **Canon owner:** `docs/canon/2026-08-30-dec037-player-control-stage-3x3-backpack.md`
 > **Baseline:** `origin/main` `9855f9a5fa2e4297e3171a1b1903d3517719ad93`
 > **Scope:** the first fresh-main runtime package after Human Blueprint publication: direct movement and dash, top-only combat HUD, public Stage/Phase presentation, and exact 3×3 starting backpack.
