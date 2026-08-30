@@ -4,11 +4,11 @@ Godot 4.x / GDScript로 재구성 중인 `닌자 서바이벌 (닌자의 신)` �
 
 ## 사람용 기획서
 
-[플레이어용 게임 기획서 PDF 내려받기](exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf) · 읽기용 원고는 `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md`이며, 기술 정본은 `docs/design/NINJA_SURVIVAL_MASTER_GDD.md`에 분리해 둔다. PDF의 생성·검수 상태는 `docs/PDF_EXPORT.md`에서 확인한다.
+[사람용 게임 경험 블루프린트 PDF 내려받기](exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf) · 읽기용 원고는 `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md`, 3×3 가방·Stage/Phase·조작 닌자 이행 명세는 `docs/implementation/2026-08-30-player-control-stage-backpack-blueprint-spec.md`, 기술 정본은 `docs/design/NINJA_SURVIVAL_MASTER_GDD.md`에 분리해 둔다. PDF의 생성·검수 상태는 `docs/PDF_EXPORT.md`에서 확인한다.
 
 ## 제품 약속
 
-> 네 유파 전장을 돌며 전승 접근권을 복구하고, 공간·회전·인접 기반 백팩 빌드를 완성해 난세 재앙핵을 평정하는 2D 서바이벌 로그라이크.
+> 한 명의 닌자를 움직여 네 스테이지를 돌고, 3×3에서 시작해 확장하는 공간·회전·인접 기반 백팩 빌드를 완성하는 2D 서바이벌 로그라이크.
 
 플레이어 감정 목표:
 
@@ -99,8 +99,10 @@ T01~T16의 자동화/도메인 증거는 해당 범위의 구현·회귀 증거�
 
 보호된 규칙:
 
-- 6x6 전체 보드
-- 4x3 시작 사용 영역
+- 공개 시작 사용 영역은 **정확히 3×3**이며, 가방 구매로 사용 영역을 확장
+- 6×6은 확장 가능한 기술적 외곽 상한
+- 기존 4×3 시작 사용 영역은 현재 machine baseline의 역사 정보이며, 최종 사람용
+  블루프린트 검수 뒤 별도 runtime migration에서 공개 계약으로 쓰지 않음
 - 가방 구매로 사용 영역 확장
 - 아이템/가방 90도 회전
 - 일반 아이템은 직사각형 중심, 선택적 L/T형 가방
@@ -184,11 +186,12 @@ placeholder/card/text UI는 기술 Spike와 자동 테스트에 사용할 수 �
 ## 정본 / 사람용 workspace
 
 - 제품/시스템 structured canon: repository Markdown/data/code/test
-- 사람용 전체 게임 Flow·핵심 시스템·Visual 방향: Notion `닌자 서바이벌 · Home` 및 관련 Domain
-- 상세 구현 증거/운영 상태: Project Registry/System + `Production · Handoff`
+- 사람용 전체 게임 Flow·핵심 시스템·Visual 방향: `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md`, `docs/design/NINJA_SURVIVAL_MASTER_GDD.md`, `docs/visual/*`, repository asset manifest
+- 상세 구현 증거/운영 상태: repository `docs/`, `scripts/`, `scenes/`, `data/`, `tests/`, workflow
+- Notion migration archive: `HISTORICAL_REFERENCE_ONLY`; current/future work에서 정본으로 읽거나 수정하지 않음
 - Google Sheets: unique unmigrated material이 있을 때만 migration compatibility source
 
-Human Home은 raw PR/SHA/포트/내부 라우팅을 나열하는 개발 dashboard가 아니라, **게임 전체를 이해하고 비교·수정할 수 있는 사용자용 게임 지도**로 유지한다.
+사람용 Human GDD는 raw PR/SHA/포트/내부 라우팅을 나열하는 개발 dashboard가 아니라, **게임 전체를 이해하고 비교·수정할 수 있는 사용자용 게임 지도**로 유지한다.
 
 ## 읽기 순서
 
@@ -201,7 +204,9 @@ Human Home은 raw PR/SHA/포트/내부 라우팅을 나열하는 개발 dashboar
 7. `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
 8. `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
 9. 실제 `scripts/`, `scenes/`, `data/`, `tests/`, workflow
-10. 정확한 Notion Human Home / Production Handoff / Visual surface
+10. 현재 작업에 필요한 repository GDD·visual 문서·asset manifest와 실제 consumer
 11. 현재 작업에 영향을 주는 최신 Base owner
+
+Notion migration archive는 `HISTORICAL_REFERENCE_ONLY`이므로 현재 작업의 읽기 순서나 정본 owner에 포함하지 않는다.
 
 문서와 구현이 다르면 구현 사실은 실제 code/test/runtime evidence로 확인하고, 앞으로 구현할 제품 행동은 최신 승인 Decision/Canon을 따른다.

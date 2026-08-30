@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/enemies/enemy_chaser.gd" id="1_enemy"]
 [ext_resource type="Texture2D" path="res://assets/runtime/visual-core/cursed_lantern_v1.png" id="2_lantern"]
 [ext_resource type="Texture2D" path="res://assets/runtime/visual-core/shadow_beast_v1.png" id="3_shadow"]
 [ext_resource type="Texture2D" path="res://assets/runtime/visual-core/flame_ninja_v1.png" id="4_flame"]
 [ext_resource type="Script" path="res://scripts/enemies/enemy_visual_variant.gd" id="5_variant"]
+[ext_resource type="Texture2D" path="res://assets/runtime/visual-core/runtime_contact_shadow_v1.png" id="6_shadow"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_enemy"]
 radius = 14.0
@@ -16,6 +17,13 @@ script = ExtResource("1_enemy")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_enemy")
+
+[node name="GroundShadow" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(0, 22)
+scale = Vector2(0.065, 0.04)
+texture_filter = 4
+texture = ExtResource("6_shadow")
 
 [node name="Visual" type="Sprite2D" parent="."]
 scale = Vector2(0.05, 0.05)

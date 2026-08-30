@@ -1,6 +1,6 @@
 # CURRENT VISUAL HANDOFF — Ninja Survival / 닌자의 신
 
-> Updated: 2026-08-28 KST
+> Updated: 2026-08-30 KST
 > Purpose: next-chat resume router for the approved visual direction and current image-production state.
 > Product/runtime authority remains `AGENTS.md` → `docs/CURRENT_CONFIRMED_DECISIONS.md` → `docs/ACTIVE_CONTEXT.md` → actual code/data/tests. This file owns the **current visual continuation state only**.
 
@@ -23,6 +23,60 @@ After user `LOCK`, durable visual ownership is
 repository source + SHA-256/provenance manifest + explicit consumer + applicable
 import/runtime evidence. The migration snapshots are provenance receipts only;
 they neither block nor satisfy a current asset gate.
+
+## 2026-08-30 user-locked auto-combat battlefield planning reference
+
+`SCRREF-BATTLE-AUTOCOMBAT-03` is now a repository-local
+`USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME` with source, SHA-256, approval,
+and GDD/PDF consumer recorded in `docs/visual/screen-references/README.md`.
+
+- Background contract: continuous moonlit cracked-stone floor only, without
+  baked architecture, tree clusters, lantern rows, horizon, or arena boundary.
+- Prop contract: lanterns, dead trees, stones, and shrubs are sparse independent
+  objects with their own contact shadows and must not be painted into the tile
+  background.
+- Gameplay contract: the fixed ninja, enemies, blue-to-amber Cheonsul setup and
+  reaction, red danger telegraph, and top-only automatic-combat HUD remain the
+  readable foreground.
+- Runtime boundary at planning-reference lock: no implementation was implied.
+  The later user `LOCK` for the runtime floor candidate is tracked separately
+  below; it does not promote the prop or shadow candidates.
+
+## 2026-08-30 user-locked runtime floor tile — current isolated branch
+
+The user locked the first runtime asset derived from the continuous-floor
+contract: `NINJA_RUNTIME_BATTLEFIELD_FLOOR_TILE_01`.
+
+| Asset | SHA-256 | Exact current-branch consumer | Approval and evidence state |
+| --- | --- | --- | --- |
+| `moonlit_battlefield_floor_tile_v1.png` | `ceb6e50ce6acc650f4a6e534ae2244e5f0aeae498fa9cefa150c98b2f510d700` | `Main/BattlefieldBackdrop` (`Parallax2D`) → `FloorTile` | `USER_LOCKED`; implemented and scoped live render/input verified on the isolated branch; not merged; Human Usability, Player Experience, and device/export evidence `NOT_RUN` |
+
+`Parallax2D.repeat_size` is set to the native 1254×1254 source size and keeps
+the floor behind gameplay. The prior moonlit backdrop source remains preserved
+for provenance and rollback, but is no longer the direct `Main` consumer on
+this branch. Combat, route, reward, input, and player/enemy ownership remain
+unchanged.
+
+The user batch-locked the two companion assets on 2026-08-30:
+
+| Asset | Repository source | Consumer | Current state |
+| --- | --- | --- | --- |
+| `NINJA_RUNTIME_BATTLEFIELD_PROP_ATLAS_01` | `assets/runtime/visual-core/moonlit_battlefield_prop_atlas_v1.png` | `Main/BattlefieldProps` → lantern, dead tree, rocks, talisman stele | `USER_LOCKED` → `IMPLEMENTED_ON_CURRENT_BRANCH` → `SCOPED_LIVE_RENDER_INPUT_VERIFIED`; separate repeat layer, no collision or gameplay ownership; each atlas region clips filtered sampling to prevent neighboring-prop bleed |
+| `NINJA_RUNTIME_CONTACT_SHADOW_01` | `assets/runtime/visual-core/runtime_contact_shadow_v1.png` | `Player`, `EnemyBasic`, `StageBoss` → `GroundShadow` | `USER_LOCKED` → `IMPLEMENTED_ON_CURRENT_BRANCH` → `SCOPED_LIVE_RENDER_INPUT_VERIFIED`; visual-only child behind each unit sprite |
+
+The current isolated branch passed import/parse, headless scene checks, the
+focused Main test, and full GUT `523/523` with `5832` assertions. On
+2026-08-30 KST, a Ninja Survival Godot 4.7.1 editor opened this exact
+worktree, rendered the school-selection scene, selected Cheonsul through the
+visible button, and reached automatic combat with a clean live diagnostic
+readback. The observed floor repeated continuously to the viewport edges;
+lantern, dead tree, rocks, and talisman stele remained sparse independent
+props; Player `GroundShadow` was visible at `z_index = -1` with the locked
+texture. This is scoped `RUNTIME_RENDER_INPUT` evidence only. The temporary
+local bridge and its generated sidecars were removed after the check;
+screenshots were not promoted to project assets. Human Usability, Player
+Experience, and device/export evidence remain `NOT_RUN`. No asset is merged
+yet.
 
 ## 2026-08-28 current combat visual grammar — approved, implementation deferred
 
@@ -76,6 +130,10 @@ The local original is an opaque 1672×941 PNG with SHA-256
 `e5ec25a1429399be7a6ae3f930a5162ab4a935083051f7c2388724921ed9b0fd`.
 Its former Asset Library record is preserved in the migration archive. PR [#88](https://github.com/alsdmlals4-eng/ninja-survival-godot/pull/88)
 is merged; its historical merge SHA is `5a52a30aa6c38cfed17e46d550eef27ab06e53f7`.
+
+On the 2026-08-30 isolated branch, this historical source is retained but
+superseded as the direct `Main` consumer by the separately user-locked repeating
+floor tile described above. This does not rewrite the historical PR receipt.
 
 `EnemyBasic/Visual` selects only the three approved generic-enemy textures;
 no school rule, combat value, reward rule, or route authority moved into the

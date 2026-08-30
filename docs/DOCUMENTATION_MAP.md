@@ -15,16 +15,18 @@
 3. `CURRENT_CONFIRMED_DECISIONS.md`
 4. `canon/2026-08-21-dec014-025-product-canon.md`
 5. `canon/2026-08-22-dec026-encounter-pattern-budget.md`
-6. `design/NINJA_SURVIVAL_HUMAN_GDD.md` (사람이 읽는 게임 설명 원고) → `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf` (다운로드용 파생본); `design/NINJA_SURVIVAL_MASTER_GDD.md`는 기술 canon·구현 계약을 확인할 때 읽는다.
-7. `implementation/2026-08-29-four-school-circuit-implementation-contract.md`
-8. `planning/2026-08-29-phase2-four-school-definition-of-ready.md`
-9. `canon/2026-08-29-dec036-human-player-validation-deferred-from-current-build-gate.md`
-10. `ACTIVE_CONTEXT.md`
-11. `traceability/2026-08-22-dec026-post-gate-traceability.md`
-12. `planning/2026-08-22-dec026-phase-b-definition-of-ready.md` (historical)
-13. 실제 `../scripts/**`, `../scenes/**`, `../data/**`, `../tests/**`, `../.github/workflows/**`
-14. `design/NINJA_SURVIVAL_MASTER_GDD.md`, `CURRENT_VISUAL_HANDOFF.md`, asset manifest/provenance
-15. 현재 작업에 Base freshness가 materially 필요할 때 최신 Base owner
+6. `canon/2026-08-30-dec037-player-control-stage-3x3-backpack.md` (조작 닌자·Stage/Phase·3×3 시작 가방의 최신 공개 경험 결정)
+7. `design/NINJA_SURVIVAL_HUMAN_GDD.md` (28쪽 사람용 게임 경험 블루프린트 원고) → `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf` (다운로드용 파생본); `implementation/2026-08-30-player-control-stage-backpack-blueprint-spec.md`는 user final PDF review 전 runtime 이행 경계를 소유한다.
+8. `design/NINJA_SURVIVAL_MASTER_GDD.md`는 기술 canon·구현 계약을 확인할 때 읽는다.
+9. `implementation/2026-08-29-four-school-circuit-implementation-contract.md`
+10. `planning/2026-08-29-phase2-four-school-definition-of-ready.md`
+11. `canon/2026-08-29-dec036-human-player-validation-deferred-from-current-build-gate.md`
+12. `ACTIVE_CONTEXT.md`
+13. `traceability/2026-08-22-dec026-post-gate-traceability.md`
+14. `planning/2026-08-22-dec026-phase-b-definition-of-ready.md` (historical)
+15. 실제 `../scripts/**`, `../scenes/**`, `../data/**`, `../tests/**`, `../.github/workflows/**`
+16. `design/NINJA_SURVIVAL_MASTER_GDD.md`, `CURRENT_VISUAL_HANDOFF.md`, asset manifest/provenance
+17. 현재 작업에 Base freshness가 materially 필요할 때 최신 Base owner
 
 ## 2. Current product / implementation router
 
@@ -59,7 +61,7 @@ Important:
 
 ### A. Reader GDD와 기술 Master GDD
 
-`design/NINJA_SURVIVAL_HUMAN_GDD.md`는 사람이 바로 읽는 게임 설명 원고다. 사람이 바로 열람·다운로드할 때는 이 원고를 기준으로 발행한 `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf`를 사용한다. PDF는 독립 정본이 아니며 발행/검수 상태는 `PDF_EXPORT.md`와 publication manifest가 소유한다.
+`design/NINJA_SURVIVAL_HUMAN_GDD.md`는 사람이 바로 읽는 28쪽 게임 경험 블루프린트 원고다. 사람이 바로 열람·다운로드할 때는 이 원고를 기준으로 발행한 `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf`를 사용한다. PDF는 독립 정본이 아니며 발행/검수 상태는 `PDF_EXPORT.md`와 publication manifest가 소유한다. `DEC-037`은 플레이어 공개 용어/가방 시작 규칙을, companion spec은 final PDF review 전 runtime 이행 경계를 소유한다.
 
 `design/NINJA_SURVIVAL_MASTER_GDD.md`는 제품 canon, 구현 계약, 증거 경계를 소유하는 기술 정본이다. Human GDD가 기술 정본의 내용을 이해하기 쉽게 풀어 쓸 수는 있지만, 수치·상태·권한이 충돌할 경우 기술 정본과 최신 승인 결정이 우선한다.
 
@@ -87,7 +89,8 @@ Human GDD에서 직접 보여야 하는 정보:
 - Core Gameplay Loop와 전체 Run Flow
 - 4유파의 위험 처리 철학
 - 5분 전장 cadence
-- 6x6 / 4x3 / 회전 / 직교 인접 / 조합 / Workbench / Fate 핵심 규칙
+- 정확히 3×3 시작 / 가방 확장 / 6×6 기술적 외곽 상한 / 회전 / 직교 인접 / 조합 / Workbench / Fate 핵심 규칙
+- 기존 4×3 시작은 구현 migration baseline인 역사 정보이며, 사람용 시작 규칙으로 다시 제시하지 않음
 - 사람이 판단해야 하는 주요 수치·경제·콘텐츠 상한
 - 사람이 알아야 할 수준의 구현 구조 / 현재 구현 현실 / 다음 Gate / Human evidence ceiling
 
@@ -160,7 +163,7 @@ approved Decision/Canon을 따른다.
 | `CURRENT_CONFIRMED_DECISIONS.md` | mutable approved-decision / protected-scope ledger | CURRENT · T12~T16 machine scope integrated / human gate deferred |
 | `ACTIVE_CONTEXT.md` | mutable resume-state router | CURRENT · T16 help merged / human gate deferred |
 | `design/NINJA_SURVIVAL_HUMAN_GDD.md` | 사람용 게임 설명 원고 | CURRENT · 핵심 재미/흐름/선택/구현 구조를 쉬운 말로 설명 |
-| `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf` | 사람이 내려받아 읽는 Player GDD snapshot | ALWAYS_SYNC · Human GDD/source generator 변경 시 재발행; Human visual review는 별도 |
+| `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf` | 사람이 내려받아 읽는 28쪽 게임 경험 Blueprint snapshot | ALWAYS_SYNC · Human GDD/source generator 변경 시 재발행; user final review는 별도 |
 | `design/NINJA_SURVIVAL_MASTER_GDD.md` | 기술 canon·구현 계약·증거 경계 | CURRENT · Human GDD와 중복 소유하지 않음 |
 | `PDF_EXPORT.md` + `publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json` | PDF 발행/신선도/검수 상태 | CURRENT publication contract |
 | `canon/2026-08-28-dec034-generate-then-approve-visual-workflow.md` | concrete consumer/board 후 1개 후보 생성과 사용자 LOCK 기준 | CURRENT · chat-start/gap-only 생성 금지 |

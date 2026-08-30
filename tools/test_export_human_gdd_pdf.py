@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -13,6 +14,22 @@ from reportlab.lib import colors
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 EXPORTER_PATH = REPOSITORY_ROOT / "tools" / "export_human_gdd_pdf.py"
+BLUEPRINT_SOURCE_PATH = REPOSITORY_ROOT / "docs" / "design" / "NINJA_SURVIVAL_HUMAN_GDD.md"
+SCREEN_REFERENCE_README_PATH = REPOSITORY_ROOT / "docs" / "visual" / "screen-references" / "README.md"
+LOCKED_BATTLE_REFERENCE_PATH = (
+    REPOSITORY_ROOT
+    / "docs"
+    / "visual"
+    / "screen-references"
+    / "scrref-battle-autocombat-continuous-floor-v3.png"
+)
+CURRENT_DECISIONS_PATH = REPOSITORY_ROOT / "docs" / "CURRENT_CONFIRMED_DECISIONS.md"
+ACTIVE_CONTEXT_PATH = REPOSITORY_ROOT / "docs" / "ACTIVE_CONTEXT.md"
+MASTER_GDD_PATH = REPOSITORY_ROOT / "docs" / "design" / "NINJA_SURVIVAL_MASTER_GDD.md"
+VISUAL_COVERAGE_PATH = REPOSITORY_ROOT / "docs" / "visual" / "SCREEN_SURFACE_AND_VISUAL_COVERAGE.md"
+DOCUMENTATION_MAP_PATH = REPOSITORY_ROOT / "docs" / "DOCUMENTATION_MAP.md"
+AGENTS_PATH = REPOSITORY_ROOT / "AGENTS.md"
+README_PATH = REPOSITORY_ROOT / "README.md"
 
 
 def load_exporter_module():
@@ -25,6 +42,95 @@ def load_exporter_module():
 
 
 class HumanGddPdfExporterTests(unittest.TestCase):
+    def test_current_visual_and_backpack_authority_do_not_restore_superseded_state(self) -> None:
+        """Break caught: current reader surfaces call an archived backdrop or 4x3 baseline the active product state."""
+        human_source = BLUEPRINT_SOURCE_PATH.read_text(encoding="utf-8")
+        current_decisions = CURRENT_DECISIONS_PATH.read_text(encoding="utf-8")
+        active_context = ACTIVE_CONTEXT_PATH.read_text(encoding="utf-8")
+        master_gdd = MASTER_GDD_PATH.read_text(encoding="utf-8")
+        visual_coverage = VISUAL_COVERAGE_PATH.read_text(encoding="utf-8")
+        documentation_map = DOCUMENTATION_MAP_PATH.read_text(encoding="utf-8")
+        agents = AGENTS_PATH.read_text(encoding="utf-8")
+        readme = README_PATH.read_text(encoding="utf-8")
+
+        self.assertIn("역사적", human_source)
+        self.assertNotIn("현재 게임에 연결된 기존 화면 자산", human_source)
+        self.assertNotIn("기존 배경을 자동으로 교체하지 않으며", human_source)
+        self.assertIn("현재 isolated 브랜치", current_decisions)
+        self.assertNotIn("The existing `Main/BattlefieldBackdrop` runtime texture is not replaced.", current_decisions)
+        self.assertIn("historical/provenance/rollback source", active_context)
+        self.assertNotIn("Its sole consumer is `Main/BattlefieldBackdrop` behind gameplay.", active_context)
+        self.assertIn("moonlit battlefield floor tile", master_gdd)
+        self.assertIn("Main/BattlefieldBackdrop/FloorTile", visual_coverage)
+        self.assertIn("정확히 3×3 시작", documentation_map)
+        self.assertNotIn("6x6 / 4x3 / 회전", documentation_map)
+        self.assertIn("DEC-037", agents)
+        self.assertIn("exactly 3×3", agents)
+        self.assertIn("정확히 3×3", readme)
+        self.assertNotIn("- 4x3 시작 사용 영역", readme)
+        self.assertIn("current isolated-branch extension", master_gdd)
+        self.assertNotIn("current package NOT STARTED", master_gdd)
+        self.assertNotIn("The sole next authorization is approval", master_gdd)
+        self.assertIn("retry wallet machine-implemented", master_gdd)
+        self.assertNotIn("`DOCUMENTED`, no wallet yet", master_gdd)
+        self.assertIn("HISTORICAL / NO_LONGER_NEXT_AUTHORIZATION", master_gdd)
+        self.assertIn("PDF_FINAL_REVIEW_PENDING", master_gdd)
+        self.assertNotIn("| `Q-01` | user approval of unified implementation contract", master_gdd)
+        self.assertIn("HISTORICAL_REFERENCE_ONLY", readme)
+        self.assertNotIn("정확한 Notion Human Home / Production Handoff / Visual surface", readme)
+
+    def test_locked_continuous_floor_reference_is_bound_to_the_human_blueprint(self) -> None:
+        """Break caught: a user-locked combat reference is stored but omitted from its declared reader surface."""
+        source = BLUEPRINT_SOURCE_PATH.read_text(encoding="utf-8")
+        reference_manifest = SCREEN_REFERENCE_README_PATH.read_text(encoding="utf-8")
+
+        self.assertTrue(LOCKED_BATTLE_REFERENCE_PATH.is_file())
+        self.assertIn("scrref-battle-autocombat-continuous-floor-v3.png", source)
+        self.assertIn("연속 바닥", source)
+        self.assertIn("SCRREF-BATTLE-AUTOCOMBAT-03", reference_manifest)
+        self.assertIn("68727c87b5f81dee18f06bb0955d37314a3e0ec03f04fe9dd33f842df0dd6eac", reference_manifest)
+        self.assertIn("USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME", reference_manifest)
+
+    def test_human_blueprint_source_has_28_explicit_review_pages(self) -> None:
+        """Break caught: the reader PDF quietly collapses back into a short prose GDD."""
+        source = BLUEPRINT_SOURCE_PATH.read_text(encoding="utf-8")
+        page_markers = re.findall(r"<!-- BLUEPRINT_PAGE: (\d{2}) / 28 -->", source)
+
+        self.assertEqual(page_markers, [f"{index:02d}" for index in range(1, 29)])
+        self.assertIn("당신은 한 명의 닌자를 움직인다", source)
+        self.assertIn("정확히 3×3", source)
+        self.assertIn("스테이지", source)
+        self.assertIn("페이즈", source)
+        self.assertIn("닌자소울", source)
+        self.assertIn("진짜 Run 종료", source)
+        self.assertIn("제한된 한 번의 같은 스테이지 재도전", source)
+
+    def test_current_blueprint_export_has_28_numbered_pages(self) -> None:
+        """Break caught: source sections exist but the generated PDF loses the review-page contract."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output_path = Path(temp_dir) / "ninja-blueprint.pdf"
+            exporter = load_exporter_module()
+            exporter.export_pdf(
+                BLUEPRINT_SOURCE_PATH,
+                output_path,
+                source_branch="codex/test-blueprint",
+                source_commit="0123456789abcdef0123456789abcdef01234567",
+                generated_at="2026-08-30T00:00:00+09:00",
+                document_title="닌자의 신 - 사람용 게임 경험 블루프린트",
+                header_label="닌자의 신 | 게임 경험 블루프린트",
+                right_header_label="사람 검수용",
+            )
+
+            reader = PdfReader(str(output_path))
+            rendered_text = "\n".join(page.extract_text() or "" for page in reader.pages)
+            self.assertEqual(len(reader.pages), 28)
+            self.assertIn("01 / 28", rendered_text)
+            self.assertIn("28 / 28", rendered_text)
+            self.assertIn("한 명의 닌자", rendered_text)
+            self.assertIn("3×3", rendered_text)
+            self.assertIn("닌자소울", rendered_text)
+            self.assertIn("진짜 Run 종료", rendered_text)
+
     def test_export_uses_reader_facing_document_identity(self) -> None:
         """Break caught: a player guide is published with the technical Master-GDD identity."""
         source = "# 닌자의 신 — 플레이어용 게임 기획서\n\n게임의 핵심 재미를 설명한다.\n"

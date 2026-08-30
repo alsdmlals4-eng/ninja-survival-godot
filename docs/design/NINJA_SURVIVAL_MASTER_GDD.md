@@ -1,16 +1,25 @@
 # 닌자의 신 — Master Game Design Document
 
 > **문서 상태:** `CURRENT_PRODUCT_GDD / IMPLEMENTATION_CONTRACT_COMPANION`
-> **기준 브랜치 / SHA:** `main` / `50fbf203ec3f71af1633a5b6cc74e7167c0604c8`
-> **생성일:** 2026-08-29 KST
-> **사람용 안내:** [플레이어용 게임 기획서 PDF](../../exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf) — `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md`에서 생성한 읽기 전용 설명본
+> **기준:** fresh-read된 마지막 merged `origin/main`은 `b0d310d1b7b8006524e7078fa1a9443430481e38`; 현재 문서는 그 위의 `codex/human-game-blueprint-revision-132` isolated-branch extension을 함께 기록하며 아직 병합되지 않았다.
+> **생성일:** 2026-08-30 KST
+> **사람용 안내:** [사람용 게임 경험 블루프린트 PDF](../../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf) — `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md`에서 생성한 읽기 전용 검수본
 > **발행/검수 계약:** `docs/PDF_EXPORT.md`와 `docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json`; PDF 존재는 runtime·Human Usability·Player Experience 검증을 뜻하지 않는다.
 > **정본 우선순위:** 최신 사용자 승인 → `AGENTS.md` → `CURRENT_CONFIRMED_DECISIONS.md` → dated canon → `ACTIVE_CONTEXT.md` → actual code/data/Scene/test → Base → benchmark
 > **범위:** 이 파일은 제품 canon·구현 계약·증거 경계를 소유하는 기술 정본이다. 사람용 설명은 별도 Human GDD가 소유하며, 둘이 충돌하면 최신 승인과 이 기술 정본의 규칙을 따른다. DEC-035는 기존 Notion 구조와 현재 작업물을 repository migration archive에 보존한 뒤, repository-only owner로 전환한다.
 
 ## 00. Canon Snapshot
 
-`닌자의 신`은 Godot 4.x/GDScript로 만드는 2D top-down survival roguelike다. 플레이어는 하나의 고정 닌자 신분으로 네 유파의 전장을 한 번씩 고르고, 각 유파가 가르치는 서로 다른 위험 처리법을 몸으로 익힌 뒤, 공간 배치형 백팩과 Fate를 조합해 최종 재앙에 맞설 자신만의 인법을 만든다.
+`닌자의 신`은 Godot 4.x/GDScript로 만드는 2D top-down survival roguelike다. 플레이어는 하나의 고정 닌자를 직접 이동해 네 스테이지를 한 번씩 고르고, 각 전승이 가르치는 서로 다른 위험 처리법을 몸으로 익힌 뒤, 공간 배치형 백팩과 Fate를 조합해 최종 재앙에 맞설 자신만의 인법을 만든다.
+
+### 2026-08-30 공개 경험 오버레이 — DEC-037
+
+`docs/canon/2026-08-30-dec037-player-control-stage-3x3-backpack.md`가 사람이 보는 제품 언어와 다음 runtime migration의 기준을 소유한다.
+
+- 플레이어는 **한 명의 닌자**를 직접 이동한다. 자동 공격/전승 반응은 위치와 확정 빌드가 만든 결과다.
+- 공개 목적지는 **스테이지**, 내부 위험 진행 축은 **페이즈 1–4**다. 기존 `school` key/class는 별도 migration 전까지 내부 호환 표현이다.
+- 시작 사용 가능 가방은 **정확히 3×3**이다. 기존 6×6은 확장 가능한 기술 상한이며, 처음부터 열린 시작 보드가 아니다.
+- 이 오버레이는 `DOCUMENTED/CONFIRMED` product contract이며, Godot/UI/data/test 이행과 Human/Player evidence는 user final PDF review 뒤의 별도 package에서 다룬다.
 
 ### 상태 표기
 
@@ -27,11 +36,12 @@
 ### 지금의 Work 5 위치
 
 ```text
-Phase 1 기획/정본화: CONTRACT_READY_FOR_USER_APPROVAL
-Phase 2 preproduction / Definition of Ready: READY_FOR_USER_IMPLEMENTATION_CONTRACT_APPROVAL
+Phase 1 기획/정본화: HISTORICAL / NO_LONGER_NEXT_AUTHORIZATION (당시 통합 구현계약 승인 상태)
+Phase 2 preproduction / Definition of Ready: HISTORICAL / NO_LONGER_NEXT_AUTHORIZATION (당시 DoR 상태)
 Phase 3 asset production: PARTIAL (기존 소비처 asset만)
-Phase 4 Godot implementation: T12~T16 machine baseline merged; current package NOT STARTED
+Phase 4 Godot implementation: T12~T16 machine baseline merged; current isolated-branch extension has the locked battlefield visual core with machine + scoped runtime render/input evidence; DEC-037 3×3/Stage·Phase/HUD migration is deferred until final PDF review
 Phase 5 Human vertical-slice validation: DEFERRED_BY_DEC036_NOT_RUN
+Current next gate: PDF_FINAL_REVIEW_PENDING -> fresh-main separate DEC-037 runtime migration authorization
 ```
 
 ## 01. Source Registry
@@ -41,7 +51,7 @@ Phase 5 Human vertical-slice validation: DEFERRED_BY_DEC036_NOT_RUN
 | `SRC-REPO-01` | `AGENTS.md` | engine, authority, protected boundaries | `CONFIRMED` |
 | `SRC-REPO-02` | `docs/CURRENT_CONFIRMED_DECISIONS.md` | current product/visual/evidence ledger | `CONFIRMED` |
 | `SRC-REPO-03` | `docs/ACTIVE_CONTEXT.md` | mutable resume route | `CONFIRMED` |
-| `SRC-REPO-04` | DEC-014~025, DEC-026~036 | product, encounter, current decisions | `CONFIRMED` |
+| `SRC-REPO-04` | DEC-014~025, DEC-026~038 | product, encounter, current decisions | `CONFIRMED` |
 | `SRC-REPO-05` | `scripts/`, `scenes/`, `assets/`, `tests/` | actual implementation reality | `IMPLEMENTED` where paths exist |
 | `SRC-REPO-06` | `docs/visual/*`, asset manifests | visual grammar and consumer evidence | mixed; see `AST-*` |
 | `SRC-NOTION-01` | former Human Home / Core Systems / Visual Bible / Production Handoff | preserved migration snapshot and attachment provenance | `docs/migration/notion/`; not active canon |
@@ -55,7 +65,7 @@ Phase 5 Human vertical-slice validation: DEFERRED_BY_DEC036_NOT_RUN
 | `CON-02` | icon-first statuses; only struck enemy HP bar | `EnemyEffectBadge` is text and no enemy HP presentation exists | `IMPLEMENTATION_REQUIRED` |
 | `CON-03` | school-owned Core/Elite/Boss compositions | current scene instantiates generic enemy/Boss representations | `IMPLEMENTATION_REQUIRED` |
 | `CON-04` | Workbench is a full spatial decision | current `RestFlowUI` exposes route/Fate but not Boss reward selection or 6×6 placement | `BLOCKING_GAP` |
-| `CON-05` | DEC-033 economy / persistent Soul settlement | current `RunBuildState` grants normal 1G and Boss 25G; no Elite, rank, wallet, or settlement owner | `IMPLEMENTATION_REQUIRED` |
+| `CON-05` | DEC-033 economy / persistent Soul settlement | current `RunBuildState` grants legacy normal 1G and Boss 25G; a retry-only `NinjaSoulWallet`/checkpoint path exists, but Elite/rank/true-end settlement is not implemented | `IMPLEMENTATION_REQUIRED` |
 | `CON-06` | true Run-end Soul settlement | first Human endpoint stops at fourth-Boss `final_binding_eligible` before Final Binding | `CONFIRMED` — no Soul settlement at that endpoint; true conclusion package owns success settlement |
 
 ## 02. One-page Vision
@@ -165,7 +175,7 @@ start school
 | `SYS-ROUTE-004` | four-school route and clear order | `RunRouteState` | `IMPLEMENTED` / automated | actual circuit |
 | `SYS-WORKBENCH-005` | backpack, reward, route/Fate commit | `BackpackState`, `RestBackpackSession`, `RestCommitCoordinator`, `RestFlowUI` | domain `IMPLEMENTED`; UI gap | mouse/key/touch complete path |
 | `SYS-ECONOMY-006` | Run GOLD / Shop / chest | `RunBuildState`, `ShopController`, `RestRewardController` | legacy baseline `IMPLEMENTED`; DEC-033 mismatch | revised reward runtime |
-| `SYS-SOUL-007` | persistent Ninja Soul / retry / settlement | future `NinjaSoulWallet`, `RunSettlementLedger` | `DOCUMENTED` | save + Result verification |
+| `SYS-SOUL-007` | persistent Ninja Soul / retry / settlement | `NinjaSoulWallet`, `RunSettlementLedger` | retry wallet machine-implemented; true-end settlement `DOCUMENTED` | save + Result verification |
 | `SYS-RESULT-008` | contribution result / next action | `CombatContributionTracker`, `RestFlowUI` | `IMPLEMENTED` for segment result | final settlement result |
 | `SYS-VISUAL-009` | screen/asset grammar | visual canon + actual Sprite2D consumers | `PARTIAL` | target-resolution live review |
 | `SYS-ACCESS-010` | help, focus, pointer/key/gamepad/touch | `SchoolSelectionUI`, HUD, Rest UI | machine contracts partial | Human/device test |
@@ -207,7 +217,7 @@ Each school needs `Core x3 / Elite x1 / Boss x1` composition over shared primiti
 
 **Player promise.** “가져온 것을 어디에 놓고 무엇을 감수할지”가 다음 전투의 인법이 된다.
 
-**Rules.** Fixed `6×6` board, centered `4×3` starting active cells; purchased bags enlarge usable cells; 90° item/bag rotation; orthogonal adjacency; selected L/T bag shapes; six-slot REST buffer; preview gives zero power; regular and whole-layout mode have explicit legality. Boss/Shop/Chest acquisition must be atomic and Boss reward remains mandatory pending until selected.
+**Rules.** DEC-037의 공개 계약은 **정확히 `3×3` 시작 사용 영역**이며, 구매한 가방이 사용 가능 영역을 확장하고 `6×6`은 기술적 외곽 상한이다. centered `4×3`는 현 machine baseline의 역사적 구현 정보로만 남으며 공개 시작 규칙으로 다시 제시하지 않는다. 90° item/bag rotation, orthogonal adjacency, selected L/T bag shapes, six-slot REST buffer, preview zero power, regular/whole-layout explicit legality, 그리고 Boss/Shop/Chest의 atomic acquisition은 보호한다. Boss reward remains mandatory pending until selected.
 
 **Atomic boundary.** Final backpack snapshot + one Fate + provisional unvisited route commit together through `RestCommitCoordinator`. UI renders snapshots and emits intent; it never owns geometry, economy, route, Fate, or combat logic.
 
@@ -218,7 +228,7 @@ Each school needs `Core x3 / Elite x1 / Boss x1` composition over shared primiti
 | resource | lifecycle | earns | spends | current contract |
 | --- | --- | --- | --- | --- |
 | `GOLD` | Run-only | normal: recommended 20% × 1G; Elite: 5G; Boss: 10G | Shop / chest / backpack decisions | `CONFIRMED`, runtime mismatch |
-| `Ninja Soul` | persistent | true Run-end only: each distinct school Boss 2 + rank C/B/A/S 0/1/2/4 | once-per-Run same-school retry: 1 | `DOCUMENTED`, no wallet yet |
+| `Ninja Soul` | persistent | true Run-end only: each distinct school Boss 2 + rank C/B/A/S 0/1/2/4 | once-per-Run same-school retry: 1 | retry wallet machine-implemented; true-end settlement `DOCUMENTED` |
 
 Rank is boss progress, not raw score: C=0 Boss, B=1, A=2–3, S=4. No Soul is paid after the first validation endpoint of fourth-Boss `final_binding_eligible`; that is not the true conclusion.
 
@@ -282,8 +292,11 @@ Current `RestFlowUI/ResultView` displays contribution damage/healing/defense/sta
 | `AST-04` | talisman projectile | `ProjectileBasic/Visual` | `IMPLEMENTED` consumer |
 | `AST-05` | golden RewardOrb | `RewardOrb/Visual` | `IMPLEMENTED` consumer |
 | `AST-06` | Bongma familiar | `BongmaFamiliar/Visual` | consumer exists; other-school slice deferred |
-| `AST-07` | moonlit battlefield | `Main/BattlefieldBackdrop` | `IMPLEMENTED` consumer |
+| `AST-07` | historical moonlit battlefield backdrop | provenance / rollback only; no direct consumer on the current isolated branch | `HISTORICAL_SOURCE_ON_CURRENT_BRANCH` |
 | `AST-08` | Cheonsul flame field | `Cheonsul/FlameFieldVisual` | `IMPLEMENTED` consumer |
+| `AST-09` | moonlit battlefield floor tile | `Main/BattlefieldBackdrop/FloorTile` | `USER_LOCKED`, `IMPLEMENTED_ON_CURRENT_ISOLATED_BRANCH`; source/import + scoped runtime evidence only |
+| `AST-10` | moonlit battlefield sparse prop atlas | `Main/BattlefieldProps` | `USER_LOCKED`, `IMPLEMENTED_ON_CURRENT_ISOLATED_BRANCH`; source/import + scoped runtime evidence only |
+| `AST-11` | runtime contact shadow | player / basic-enemy / stage-boss `GroundShadow` | `USER_LOCKED`, `IMPLEMENTED_ON_CURRENT_ISOLATED_BRANCH`; source/import + scoped runtime evidence only |
 
 Existing assets are durable only when repository source + SHA-256/provenance manifest + explicit `LOCK` state + actual consumer are all present, followed by applicable import/runtime evidence. Existing project assets are not regenerated merely for a new sheet.
 
@@ -349,12 +362,18 @@ flowchart LR
 | `DAT-04` | `RunBuildState` | GOLD, selected school, committed modifier snapshot | singular item/spatial combat authority |
 | `DAT-05` | `RunRouteState` | unvisited, active/provisional, clear order, stage | school identity and stage axes separate |
 | `DAT-06` | `StageEncounterState` | Core/Elite/Trace/Boss lifecycle | no economy/route/UI ownership |
-| `DAT-07` | future `RunSettlementLedger` | distinct Boss eligibility, one-time settlement | survives retry without duplicate payout |
-| `DAT-08` | future `NinjaSoulWallet` | persistent balance | only persistent owner writes balance |
+| `DAT-07` | `RunSettlementLedger` | distinct Boss eligibility, one-time settlement contract | final true-end settlement remains unimplemented |
+| `DAT-08` | `NinjaSoulWallet` | retry-only persistent balance | only persistent owner writes retry balance; final Soul credit remains deferred |
 
 ### Save/load and platform
 
-Current slice has no persistent save/profile/Wallet owner. Ninja Soul introduces a bounded persistent save requirement but does not authorize a broad meta-power system. Target engine render method is Godot 4.7 `gl_compatibility` for desktop/mobile configuration. Release title/save/settings/loading, Android export, performance target, pause, reduced-motion, and device QA remain production requirements, not completed features.
+Current slice has a retry-only persistent `NinjaSoulWallet`, but no full profile or
+true-end settlement owner. Ninja Soul introduces a bounded persistent-save
+requirement without authorizing a broad meta-power system. Target engine render
+method is Godot 4.7 `gl_compatibility` for desktop/mobile configuration. Release
+title/save/settings/loading, Android export, performance target, pause,
+reduced-motion, and device QA remain production requirements, not completed
+features.
 
 ## 12. Test and QA Contract
 
@@ -392,13 +411,14 @@ Current slice has no persistent save/profile/Wallet owner. Ninja Soul introduces
 
 | order | package | player value / dependency | primary risk |
 | --- | --- | --- | --- |
-| `Q-01` | user approval of unified implementation contract | prevent canon/code/UI drift before build | implementation before contract sign-off |
-| `Q-02` | Trace/telegraph + combat information grammar | fair, readable encounter learning | target-resolution failure |
-| `Q-03` | complete spatial Workbench inputs | turn planning promise into play | UI/domain authority leakage |
-| `Q-04` | four-school shared lifecycle/content composition | validate selection/route promise | four separate engines/content cost |
-| `Q-05` | DEC-033 Run economy, wallet, retry, true-end settlement | meaningful failure and horizontal future | duplicate save/settlement payout |
-| `Q-06` | optional later Human vertical slice | prove player promise when scheduled | machine evidence mistaken for UX |
-| `Q-07` | Final Binding/final calamity | deliver full legend payoff | premature scope expansion |
+| `Q-01` | final Human Blueprint PDF review | lock the documented player experience before a build package is authorized; the old unified implementation-contract approval is historical only | blueprint/PDF evidence mistaken for runtime completion |
+| `Q-02` | fresh-main separate DEC-037 runtime migration | implement the approved direct-control, dash, top-only HUD, Stage/Phase and exact 3×3 public contract as one bounded package after Q-01 | absorbing broader lifecycle or UI work into the migration |
+| `Q-03` | Trace/telegraph + combat information grammar | fair, readable encounter learning | target-resolution failure |
+| `Q-04` | complete spatial Workbench inputs | turn planning promise into play | UI/domain authority leakage |
+| `Q-05` | four-school shared lifecycle/content composition | validate selection/route promise | four separate engines/content cost |
+| `Q-06` | DEC-033 Run economy, wallet, retry, true-end settlement | meaningful failure and horizontal future | duplicate save/settlement payout |
+| `Q-07` | optional later Human vertical slice | prove player promise when scheduled | machine evidence mistaken for UX |
+| `Q-08` | Final Binding/final calamity | deliver full legend payoff | premature scope expansion |
 
 ### Evidence-based SWOT
 
@@ -415,7 +435,16 @@ Current slice has no persistent save/profile/Wallet owner. Ninja Soul introduces
 
 ## 15. User Decision Required
 
-No new product-meaning decision is required. The sole next authorization is approval of `docs/implementation/2026-08-29-four-school-circuit-implementation-contract.md` before Godot production implementation begins. Values explicitly marked `TUNE_RECOMMENDED` are initial data defaults and require explicit evidence/review before later adjustment; DEC-036 removes Human/Player sessions from this current build gate without creating a PASS claim.
+No new product-meaning decision is required. The next authorization is the user's
+final review of the Human Blueprint PDF. Only after that review may a fresh-main,
+separate DEC-037 package implement direct-movement dash ownership, the top-only
+automatic-combat HUD, public Stage/Phase labels, and the exact 3×3 starting-bag
+migration. The current isolated-branch battlefield visual core is implemented
+with machine + scoped runtime render/input evidence but remains unmerged;
+Human Usability, Player Experience, device/export, merge, and release status
+are not promoted. The older four-school implementation contract is historical
+implementation context, not the sole next authorization. Values explicitly
+marked `TUNE_RECOMMENDED` remain initial data defaults requiring evidence/review.
 
 ## 16. Change Log
 
@@ -428,6 +457,7 @@ No new product-meaning decision is required. The sole next authorization is appr
 | 2026-08-28 | former Notion structure/current work products preserved as a repository migration archive before repository-only cutover | DEC-035 + migration manifest |
 | 2026-08-28 | 사람용 다운로드 PDF와 재생성/검수 계약을 추가 | user-approved repository PDF publication |
 | 2026-08-29 | Human/Player 검수를 current build gate에서 defer하고 네 유파 통합 구현계약/DoR를 작성 | user instruction + DEC-036 + Issue #126 |
+| 2026-08-30 | DEC-037 공개 3×3 시작 계약, isolated-branch 전장 시각 코어, 그리고 PDF 검수 뒤 별도 runtime migration 경계를 정합화 | user approval + DEC-037/038 |
 
 ## 17. Non-negotiable Evidence Ceiling
 

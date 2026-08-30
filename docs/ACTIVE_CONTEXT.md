@@ -2,7 +2,7 @@
 
 ```yaml
 project: NINJA_SURVIVAL
-state_router_updated_at: 2026-08-29 KST
+state_router_updated_at: 2026-08-30 KST
 reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
@@ -14,9 +14,14 @@ resume_state: FOUR_SCHOOL_CIRCUIT_MACHINE_IMPLEMENTED_MERGED_MAIN_PR129
 next_product_gate: STATUS_ICON_ASSET_LOCK_OR_SEPARATE_FINAL_PACKAGE_DEFINITION
 current_master_gdd: docs/design/NINJA_SURVIVAL_MASTER_GDD.md
 current_human_gdd: docs/design/NINJA_SURVIVAL_HUMAN_GDD.md
-human_player_gdd_pdf: exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf
+current_human_blueprint_spec: docs/implementation/2026-08-30-player-control-stage-backpack-blueprint-spec.md
+current_player_control_stage_backpack_canon: docs/canon/2026-08-30-dec037-player-control-stage-3x3-backpack.md
+human_blueprint_runtime_authority: USER_FINAL_PDF_REVIEW_PENDING
+player_facing_vocabulary: STAGE_AND_PHASE
+backpack_starting_usable_area: EXACT_3X3
+human_player_gdd_pdf: exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf
 human_player_gdd_pdf_manifest: docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json
-human_player_gdd_pdf_status: CURRENT_MAIN_5D93F13F03EF0D79D84067F8C87C6DA93B5BE65D
+human_player_gdd_pdf_status: CURRENT_ON_BRANCH_PENDING_MAIN_PUBLICATION_DD047E45E70091D1B4851E0042931D1235BEE6B2
 mandatory_work_gate: FRESH_READ_REUSE_FIRST_TARGETED_WEB_RESEARCH_FEASIBILITY_AND_ADVERSARIAL_REVIEW_UNTIL_CLEAN
 repository_only_policy: docs/canon/2026-08-28-dec035-repository-only-project-record.md
 notion_usage: HISTORICAL_REFERENCE_ONLY_MIGRATION_COMPLETE
@@ -61,6 +66,9 @@ img_02_live_render: NOT_RUN_HERA_CONNECTED_TO_DIFFERENT_PROJECT
 img_03_runtime_battlefield_backdrop: MERGED_MAIN_5A52A30_LOCAL_SOURCE_CURRENT_HISTORICAL_NOTION_ATTACHMENT_RETIRED
 img_03_automated_evidence: GODOT_4_7_1_IMPORT_EDITOR_PARSE_MAIN_SMOKE_GUT_493_OF_493_5380_ASSERTIONS_PASS
 img_03_live_render: NOT_RUN_DESKTOP_VISUAL_TARGET_CHANGED
+runtime_battlefield_floor_tile_01: USER_LOCKED_IMPLEMENTED_ISOLATED_BRANCH_MACHINE_AND_SCOPED_RUNTIME_RENDER_INPUT_VERIFIED_NOT_MERGED
+runtime_battlefield_prop_shadow_batch: USER_LOCKED_IMPLEMENTED_ISOLATED_BRANCH_MACHINE_AND_SCOPED_RUNTIME_RENDER_INPUT_VERIFIED_NOT_MERGED
+runtime_battlefield_prop_shadow_review: docs/reviews/2026-08-30-runtime-battlefield-props-and-shadows-adversarial-review.md
 local_shared_godot_exact_pin: GODOT_4.7.1_STABLE_OFFICIAL_A13DA4FEB_FRESH_LOCAL_VERIFIED_2026_08_27_KST
 local_editor_session: HEADLESS_EDITOR_PARSE_PR129_HEAD_PASS
 phase2_shared_four_school_circuit: MACHINE_IMPLEMENTED_MERGED_MAIN_PR129
@@ -287,8 +295,9 @@ Approved school motifs:
 - Hybrid Key Visual: APPROVED MASTER BRIDGE; historical Notion low-res preview server readback exists but is no longer an active gate.
 - Four-school full-body silhouette sheet: APPROVED SUPPORTING REFERENCE; not four runtime protagonists.
 - SD/action/icon three-panel sheet: WORKING_REFERENCE; structure reusable but exact trace details superseded by current fixed-character/main-school-Stage-3 rules.
+- SCRREF-BATTLE-AUTOCOMBAT-03: USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME; human blueprint page 10 is its consumer. It locks continuous floor + sparse independent-prop direction. The later user-locked `NINJA_RUNTIME_BATTLEFIELD_FLOOR_TILE_01`, `NINJA_RUNTIME_BATTLEFIELD_PROP_ATLAS_01`, and `NINJA_RUNTIME_CONTACT_SHADOW_01` are implemented on the current isolated branch; the floor/prop layer replaces the old direct backdrop binding without deleting the historical source. Prop sprites and ground shadows are visual-only and remain unmerged pending a later package decision.
 - IMG-02 runtime visual core: merged at `03005e7dcc1a2e0b6ee57b4f6ebed9b481ee2fbc` with seven approved repository-local PNG sources. Actual consumers are three generic EnemyBasic variants, Cheonsul StageBoss, ProjectileBasic, RewardOrb and BongmaFamiliar.
-- IMG-03 moonlit battlefield backdrop: merged at `5a52a30aa6c38cfed17e46d550eef27ab06e53f7` with its opaque repository-local PNG. Its sole consumer is `Main/BattlefieldBackdrop` behind gameplay; it changes no game-rule authority.
+- IMG-03 moonlit battlefield backdrop: merged at `5a52a30aa6c38cfed17e46d550eef27ab06e53f7` with its opaque repository-local PNG. It is retained as a historical/provenance/rollback source; on the current isolated branch it is no longer the direct `Main/BattlefieldBackdrop` consumer. The separately locked floor tile, sparse prop atlas, and contact shadow supply that visual-only consumer layer without changing game-rule authority; they remain unmerged pending the later package decision.
 - IMG-04 Cheonsul flame field: merged at `6d538fcf933e2fbcca50f8e6d369d165efac620c` with its transparent repository-local PNG. Its sole consumer is the existing `Cheonsul/FlameFieldVisual`; it changes no combat, route, reward, or school-rule authority.
 
 No corrected trace-layer/action/icon sheet is a pending implementation task by itself. The next visual task begins only after a fresh consumer contract identifies the smallest missing runtime asset; dynamic trace VFX remain intentionally uncreated until then.

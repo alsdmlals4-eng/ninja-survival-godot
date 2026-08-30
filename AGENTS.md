@@ -102,6 +102,9 @@ Current product canon:
 
 - `docs/canon/2026-08-21-dec014-025-product-canon.md`
 - `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`
+- `docs/canon/2026-08-30-dec037-player-control-stage-3x3-backpack.md` for the
+  latest player-facing vocabulary, starting-backpack contract, and deferred
+  runtime-migration boundary
 
 ## 5. Current implementation reality — T12~T16 merged machine scope
 
@@ -157,7 +160,10 @@ The protected atomic Workbench boundary remains:
 
 Do not regress these approved MVP-4 decisions:
 
-- fixed 6x6 total board / centered 4x3 starting active area
+- fixed 6x6 technical outer board / centered 4x3 active area is the protected
+  current machine baseline; DEC-037 supersedes its player-facing and next
+  runtime-migration start with **exactly 3×3** after final Human Blueprint PDF
+  review. Do not present 4×3 as the public starting-bag promise.
 - bag purchase expands usable area
 - item and bag 90-degree rotation
 - rectangular regular items; selected L/T bag shapes

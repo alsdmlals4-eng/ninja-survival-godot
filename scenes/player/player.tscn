@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/player/player_controller.gd" id="1_player"]
 [ext_resource type="Script" path="res://scripts/combat/auto_attack_controller.gd" id="2_attack"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" path="res://docs/assets/approved/img-01-player-runtime-core/player_runtime_attack_v2_alpha.png" id="5_attack"]
 [ext_resource type="Texture2D" path="res://docs/assets/approved/img-01-player-runtime-core/player_runtime_hit_v2_alpha.png" id="6_hit"]
 [ext_resource type="Script" path="res://scripts/player/player_visual_controller.gd" id="7_visual"]
+[ext_resource type="Texture2D" path="res://assets/runtime/visual-core/runtime_contact_shadow_v1.png" id="8_shadow"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 14.0
@@ -18,6 +19,13 @@ script = ExtResource("1_player")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_player")
+
+[node name="GroundShadow" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(0, 24)
+scale = Vector2(0.065, 0.04)
+texture_filter = 4
+texture = ExtResource("8_shadow")
 
 [node name="Visual" type="Sprite2D" parent="."]
 scale = Vector2(0.05, 0.05)

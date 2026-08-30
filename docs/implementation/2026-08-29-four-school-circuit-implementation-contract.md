@@ -1,5 +1,7 @@
 # 네 유파 Circuit 구현계약
 
+> **2026-08-30 후속 정본 주의:** 이 문서는 PR #129의 merged machine package 기록이다. 이후 사용자 승인 DEC-037은 사람용/향후 공개 계약에서 `school`을 **Stage**, 기존 `Stage 1..4`를 **Phase 1–4**, 시작 가방을 **정확히 3×3**으로 정한다. 이 문서의 6×6/4×3 및 school 표현은 당시 구현의 historical machine scope이며, 실제 migration은 user final PDF review 뒤 별도 package가 소유한다.
+
 ```yaml
 contract_id: NINJA_FOUR_SCHOOL_CIRCUIT_V1
 status: MACHINE_IMPLEMENTED_MERGED_MAIN_PR129

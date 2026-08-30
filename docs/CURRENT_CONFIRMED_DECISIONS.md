@@ -2,7 +2,7 @@
 
 ```yaml
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER
-updated_at: 2026-08-29 KST
+updated_at: 2026-08-30 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
 current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
@@ -18,12 +18,21 @@ latest_phase_b: docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md
 current_migration_plan: docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md
 current_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
+runtime_battlefield_floor_tile_01: USER_LOCKED_IMPLEMENTED_ISOLATED_BRANCH_MACHINE_AND_SCOPED_RUNTIME_RENDER_INPUT_VERIFIED_NOT_MERGED
+runtime_battlefield_prop_shadow_batch: USER_LOCKED_IMPLEMENTED_ISOLATED_BRANCH_MACHINE_AND_SCOPED_RUNTIME_RENDER_INPUT_VERIFIED_NOT_MERGED
 current_master_gdd: docs/design/NINJA_SURVIVAL_MASTER_GDD.md
 current_human_gdd: docs/design/NINJA_SURVIVAL_HUMAN_GDD.md
-human_player_gdd_pdf: exports/NINJA_SURVIVAL_HUMAN_GDD_20260828.pdf
+current_human_blueprint_spec: docs/implementation/2026-08-30-player-control-stage-backpack-blueprint-spec.md
+current_player_control_stage_backpack_canon: docs/canon/2026-08-30-dec037-player-control-stage-3x3-backpack.md
+player_facing_vocabulary: STAGE_AND_PHASE
+player_control_contract: ONE_FIXED_NINJA_DIRECT_MOVEMENT_AUTO_ACTIONS_SEPARATE
+backpack_starting_usable_area: EXACT_3X3
+backpack_technical_expansion_ceiling: MAX_6X6
+runtime_build_authority_for_dec037: USER_FINAL_PDF_REVIEW_PENDING
+human_player_gdd_pdf: exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf
 human_player_gdd_pdf_manifest: docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json
 human_player_gdd_pdf_policy: ALWAYS_SYNC_ON_HUMAN_GDD_OR_EXPORTER_CHANGE
-human_player_gdd_pdf_status: CURRENT_MAIN_5D93F13F03EF0D79D84067F8C87C6DA93B5BE65D
+human_player_gdd_pdf_status: CURRENT_ON_BRANCH_PENDING_MAIN_PUBLICATION_A36D06421526DBD38BEFBA13F9F88A8FCB541B0D
 mandatory_work_gate: FRESH_READ_REUSE_FIRST_TARGETED_WEB_RESEARCH_FEASIBILITY_AND_ADVERSARIAL_REVIEW_UNTIL_CLEAN
 current_repository_only_policy: docs/canon/2026-08-28-dec035-repository-only-project-record.md
 current_human_validation_deferment: docs/canon/2026-08-29-dec036-human-player-validation-deferred-from-current-build-gate.md
@@ -59,11 +68,15 @@ This is the current mutable decision router/ledger. Detailed rules live in the d
 
 ## 1. Current product definition
 
-`닌자의 신 / 닌자 서바이벌` is a 2D survival roguelike where the player chooses a starting ninja school, clears all four school battlefields in a player-chosen order, opens their tradition acquisition packages, and uses a spatial/rotation/adjacency backpack build to defeat a separate final calamity.
+### 2026-08-30 public experience override — DEC-037
 
-High-level Run:
+For player-facing documents and future public UI, the destination is called a **Stage** and the internal pressure ladder is called **Phase 1–4**. A player directly moves one fixed Ninja during combat; automatic attack/tradition effects are results of position and committed build. The actual starting usable backpack is exactly **3×3** and grows through bag placement inside the retained 6×6 technical ceiling. Existing `school` terminology remains an internal legacy compatibility detail until the separately authorized runtime migration. This override supersedes older player-facing “school” and “6×6 starting board” statements.
 
-`starting school -> choose unvisited school -> ~5m battlefield with Core/Elite/trace/school Boss -> branch Workbench/Fate -> repeat four schools -> Final Binding Workbench -> separate final calamity Boss -> result/Ninja Soul/legend`.
+`닌자의 신 / 닌자 서바이벌` is a 2D survival roguelike where the player chooses a starting Stage, clears all four Stage battlefields in a player-chosen order, opens their tradition acquisition packages, and uses a spatial/rotation/adjacency backpack build to defeat a separate final calamity.
+
+High-level Run (player-facing vocabulary):
+
+`starting Stage -> choose unvisited Stage -> ~5m battlefield with Core/Elite/Trace/Stage Boss -> branch Workbench/Fate -> repeat four Stages -> Final Binding Workbench -> separate final calamity Boss -> result/Ninja Soul/legend`.
 
 `~20 minutes` is the target active-combat time through the fourth school Boss, not the entire Run end.
 
@@ -121,7 +134,7 @@ A green automated test does not prove the current intended Run is playable or en
 
 Approved:
 
-- fixed `6x6` board and centered `4x3` starting active area,
+- legacy machine baseline is fixed `6x6` board / centered `4x3` starting active area; **DEC-037 supersedes the player-facing and next-runtime target with an exact `3×3` start inside the retained 6×6 ceiling**,
 - purchasable bags expand usable area,
 - item/bag 90-degree rotation,
 - orthogonal adjacency,
@@ -404,6 +417,29 @@ Current visual continuation authority:
 - 전투 상태는 지속적인 단어 배지가 아니라 **색 + 고유 실루엣을 갖춘 작은 아이콘**으로 표현한다. 구현 단계에서는 포커스/도움말 등 접근 가능한 설명 경로를 별도로 검증한다.
 - 적 HP 바는 기본적으로 숨긴다. **피격 직후의 적 하나만** HP 바를 표시한다. 지속 시간·전환은 Human Usability 검증에서 조정할 항목이며, 이 결정은 전투 규칙이나 HP 수치를 바꾸지 않는다.
 - `PROJECT_CORE_SCENE_VISUAL_BOARD`는 현재 대화에서 만든 **GENERATED_EXPLORATION / planning visualization**이다. 런타임 texture, Godot UI 구현, 승인 Project Asset, Human/Player evidence가 아니며 사용자 검토 전에는 어느 것도 대체하지 않는다.
+
+### 2026-08-30 — continuous battlefield and independent-prop planning lock
+
+- User `LOCK` promoted `SCRREF-BATTLE-AUTOCOMBAT-03` to
+  `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME`. Its repository source,
+  SHA-256, approval, and GDD/PDF consumer are owned by
+  `docs/visual/screen-references/README.md`; the full decision boundary is
+  `docs/canon/2026-08-30-dec038-continuous-battlefield-prop-split.md`.
+- The future battlefield base is a seamless, extendable moonlit cracked-stone
+  floor. It must not bake arena edges, buildings, tree clusters, lantern rows,
+  or a horizon into the background.
+- Lanterns, trees, stones, and shrubs are separate sparse props with independent
+  grounding/contact shadows. The locked reference does not set their final
+  density, spawn rules, collision, or gameplay effects.
+- `SCRREF-BATTLE-AUTOCOMBAT-03` itself remains a people-facing planning reference,
+  not a runtime texture. 현재 isolated 브랜치에서는 별도로 `LOCK`한
+  floor-tile, prop-atlas, and contact-shadow assets가 direct
+  `Main/BattlefieldBackdrop/FloorTile`, `Main/BattlefieldProps`, and unit-shadow
+  consumers; the old backdrop PNG remains only as historical provenance and a
+  rollback source.
+- This records source/import and scoped Godot runtime render/input evidence on
+  the isolated branch only. It does not promote Human Usability, Player
+  Experience, device/export, merge, or release status.
 
 The user approved a two-surface visual system that must still read as one IP:
 
