@@ -1,6 +1,7 @@
 extends GutTest
 
 const HUD_SCENE := preload("res://scenes/ui/hud.tscn")
+const MAIN_CONTROLLER_SOURCE_PATH := "res://scripts/core/main_controller.gd"
 
 
 func test_combat_top_bar_shows_dash_play_and_settings_only() -> void:
@@ -78,6 +79,13 @@ func test_stage_phase_is_contextual_and_can_be_hidden() -> void:
 	assert_false(label.visible)
 	hud.show_combat_hud(true)
 	assert_true(label.visible, "Combat re-entry must restore the current contextual Stage/Phase")
+
+
+func test_public_runtime_copy_excludes_legacy_segment_headline() -> void:
+	var source := FileAccess.get_file_as_string(MAIN_CONTROLLER_SOURCE_PATH)
+	assert_ne(source, "", "The public runtime controller source must be readable.")
+	assert_true(source.contains('var headline := "전투 준비 완료"'))
+	assert_false(source.contains('"구간 %d 완료"'))
 
 
 func test_settings_panel_is_pause_safe_and_emits_only_intents() -> void:

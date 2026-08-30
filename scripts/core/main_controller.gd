@@ -1048,7 +1048,7 @@ func _on_workbench_commit_requested() -> void:
 
 
 func _build_preview_summary(new_fate_id: StringName) -> Dictionary:
-	var headline := "구간 %d 완료" % stage_flow.segment_index
+	var headline := "전투 준비 완료"
 	var hints: Array = _latest_result_snapshot.get("growth_hints", [])
 	if not hints.is_empty():
 		headline = str(hints[0])
