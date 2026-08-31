@@ -184,6 +184,10 @@ tests with `6575` assertions, including `test_opening_horde_attack_rhythm.gd`,
 `test_wave_spawner.gd`, dash, weapon/loadout, title and four-school circuit
 coverage.
 
+**Remote evidence.** The exact reviewed implementation commit
+`25fda54ef69344dc53a364dcd41f3edff8e5a5a1` passed both GitHub Actions checks:
+`gut` and `Windows internal build artifact`.
+
 **Disposition.** `CLEAN` for automated scope. Human fairness, the new rendered
 title flow, dense-horde performance and actual player balance remain separate
 `NOT_RUN` gates.
