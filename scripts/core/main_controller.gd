@@ -11,6 +11,7 @@ const NINJUTSU_AUTO_CONTROLLER_SCRIPT = preload("res://scripts/schools/ninjutsu_
 const NINJA_SOUL_WALLET_SCRIPT = preload("res://scripts/core/ninja_soul_wallet.gd")
 const RUN_SETTLEMENT_LEDGER_SCRIPT = preload("res://scripts/core/run_settlement_ledger.gd")
 const RUN_CHECKPOINT_SCRIPT = preload("res://scripts/core/run_checkpoint.gd")
+const RUN_RESUME_STORE_SCRIPT = preload("res://scripts/core/run_resume_store.gd")
 const SHOP_CONTROLLER_SCRIPT = preload("res://scripts/core/shop_controller.gd")
 const FATE_CONTROLLER_SCRIPT = preload("res://scripts/core/fate_controller.gd")
 const STAGE_FLOW_SCRIPT = preload("res://scripts/core/stage_flow_controller.gd")
@@ -51,6 +52,7 @@ var ninjutsu_auto_controller: Node
 var ninja_soul_wallet: Node
 var run_settlement_ledger
 var run_checkpoint
+var run_resume_store
 var shop_controller: ShopController
 var fate_controller: FateController
 var stage_flow: StageFlowController
@@ -106,6 +108,7 @@ func _ready() -> void:
 	rest_flow_ui.hide_all()
 	school_selection.hide()
 	title_screen.show_title()
+	_refresh_title_resume_state()
 
 
 func _setup_mvp3_nodes() -> void:
@@ -134,10 +137,12 @@ func _setup_mvp3_nodes() -> void:
 	ninja_soul_wallet = _ensure_script_node("NinjaSoulWallet", NINJA_SOUL_WALLET_SCRIPT)
 	run_settlement_ledger = RUN_SETTLEMENT_LEDGER_SCRIPT.new()
 	run_checkpoint = RUN_CHECKPOINT_SCRIPT.new()
+	run_resume_store = RUN_RESUME_STORE_SCRIPT.new()
 	var economy_rng := RandomNumberGenerator.new()
 	economy_rng.randomize()
 	run_build_state.configure(_item_defs, _fate_defs, RUN_ECONOMY_POLICY, economy_rng)
 	ninja_soul_wallet.configure()
+	run_resume_store.configure()
 	shop_controller.configure(run_build_state, _item_defs)
 	fate_controller.configure(run_build_state, _fate_defs)
 	combat_resolver.configure(contribution_tracker)
@@ -157,7 +162,10 @@ func _connect_existing_signals() -> void:
 	player.died.connect(_on_player_died)
 	player.dash_state_changed.connect(hud.set_dash_state)
 	wave_spawner.enemy_spawned.connect(_wire_enemy)
-	title_screen.start_requested.connect(_on_title_start_requested)
+	title_screen.new_game_requested.connect(_on_title_new_game_requested)
+	title_screen.new_game_confirmed.connect(_on_title_new_game_confirmed)
+	title_screen.continue_requested.connect(_on_title_continue_requested)
+	title_screen.quit_requested.connect(_on_title_quit_requested)
 	school_selection.school_selected.connect(_on_school_selected)
 	hud.settings_requested.connect(_on_settings_requested)
 	hud.resume_requested.connect(_on_resume_requested)
@@ -236,11 +244,42 @@ func _restart_run() -> void:
 	get_tree().reload_current_scene()
 
 
-func _on_title_start_requested() -> void:
+func _on_title_new_game_requested() -> void:
 	if game_over or _combat_enabled:
 		return
+	if run_resume_store != null and run_resume_store.has_record():
+		title_screen.show_new_game_confirmation()
+		return
+	_begin_new_game()
+
+
+func _on_title_new_game_confirmed() -> void:
+	if game_over or _combat_enabled:
+		return
+	if run_resume_store != null and not run_resume_store.clear_record():
+		title_screen.set_continue_state(false, "이어하기 기록을 삭제하지 못했습니다.")
+		return
+	_begin_new_game()
+
+
+func _begin_new_game() -> void:
 	title_screen.hide_title()
 	school_selection.show_starting_school_selection()
+
+
+func _on_title_continue_requested() -> void:
+	if game_over or _combat_enabled or run_resume_store == null:
+		return
+	var loaded: Dictionary = run_resume_store.load_checkpoint()
+	if not bool(loaded.get("ok", false)):
+		_refresh_title_resume_state()
+		return
+	if not _restore_persistent_resume(loaded.get("checkpoint", {})):
+		_refresh_title_resume_state()
+
+
+func _on_title_quit_requested() -> void:
+	get_tree().quit()
 
 
 func _on_school_selected(school_id: StringName) -> void:
@@ -261,30 +300,8 @@ func _on_school_selected(school_id: StringName) -> void:
 
 
 func _start_school_circuit(school_id: StringName) -> bool:
-	if school_circuit == null:
-		var circuit: Node = SCHOOL_CIRCUIT_SCRIPT.new()
-		if circuit == null:
-			return false
-		var rng := RandomNumberGenerator.new()
-		rng.randomize()
-		if not circuit.configure_workbench(
-			run_build_state,
-			fate_controller,
-			MVP4_CATALOG_SCRIPT.build_items(),
-			MVP4_CATALOG_SCRIPT.build_bags(),
-			rng
-		):
-			circuit.queue_free()
-			return false
-		if ninjutsu_loadout == null or not circuit.configure_ninjutsu_loadout(ninjutsu_loadout):
-			circuit.queue_free()
-			return false
-		add_child(circuit)
-		school_circuit = circuit
-		school_circuit.phase_changed.connect(_on_school_circuit_phase_changed)
-		school_circuit.trace_spawn_requested.connect(_on_school_circuit_trace_spawn_requested)
-		school_circuit.boss_spawn_requested.connect(_on_school_circuit_boss_spawn_requested)
-		school_circuit.normal_spawn_permission_changed.connect(_on_school_circuit_normal_spawn_permission_changed)
+	if not _ensure_school_circuit():
+		return false
 	if not school_circuit.begin_school(school_id):
 		return false
 	for child in get_children():
@@ -292,6 +309,93 @@ func _start_school_circuit(school_id: StringName) -> bool:
 			_wire_enemy(child)
 	_school_circuit_elapsed_seconds = 0.0
 	return true
+
+
+func _ensure_school_circuit() -> bool:
+	if school_circuit != null:
+		return true
+	var circuit: Node = SCHOOL_CIRCUIT_SCRIPT.new()
+	if circuit == null:
+		return false
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	if not circuit.configure_workbench(
+		run_build_state,
+		fate_controller,
+		MVP4_CATALOG_SCRIPT.build_items(),
+		MVP4_CATALOG_SCRIPT.build_bags(),
+		rng
+	):
+		circuit.queue_free()
+		return false
+	if ninjutsu_loadout == null or not circuit.configure_ninjutsu_loadout(ninjutsu_loadout):
+		circuit.queue_free()
+		return false
+	add_child(circuit)
+	school_circuit = circuit
+	school_circuit.phase_changed.connect(_on_school_circuit_phase_changed)
+	school_circuit.trace_spawn_requested.connect(_on_school_circuit_trace_spawn_requested)
+	school_circuit.boss_spawn_requested.connect(_on_school_circuit_boss_spawn_requested)
+	school_circuit.normal_spawn_permission_changed.connect(_on_school_circuit_normal_spawn_permission_changed)
+	return true
+
+
+func _restore_persistent_resume(checkpoint: Dictionary) -> bool:
+	if not (checkpoint is Dictionary) or run_build_state == null or ninjutsu_loadout == null or run_settlement_ledger == null:
+		return false
+	var checkpoint_build: Dictionary = checkpoint.get("build", {})
+	var checkpoint_route: Dictionary = checkpoint.get("route", {})
+	var checkpoint_ledger := {"eligible_school_boss_ids": checkpoint.get("eligible_school_boss_ids", [])}
+	var checkpoint_circuit: Dictionary = checkpoint.get("circuit", {})
+	var checkpoint_loadout: Dictionary = checkpoint.get("loadout", {})
+	var active_school_id := StringName(checkpoint_route.get("active_school_id", &""))
+	if active_school_id == &"" \
+		or not run_build_state.can_restore_from_checkpoint(checkpoint_build) \
+		or not bool(ninjutsu_loadout.call("can_restore_from_snapshot", checkpoint_loadout)) \
+		or not run_settlement_ledger.can_restore_from_snapshot(checkpoint_ledger) \
+		or not _ensure_school_circuit() \
+		or not school_circuit.can_restore_from_persistent_checkpoint(checkpoint_route, checkpoint_circuit):
+		return false
+	if not school_host.select_school(active_school_id):
+		return false
+	if not run_build_state.restore_from_checkpoint(checkpoint_build):
+		return false
+	if not bool(ninjutsu_loadout.call("restore_from_snapshot", checkpoint_loadout)):
+		return false
+	if not run_settlement_ledger.restore_from_snapshot(checkpoint_ledger):
+		return false
+	if not school_circuit.restore_from_persistent_checkpoint(checkpoint_route, checkpoint_circuit):
+		return false
+	_clear_failed_school_runtime_nodes()
+	_school_circuit_elapsed_seconds = 0.0
+	_run_play_elapsed_seconds = 0.0
+	game_over = false
+	title_screen.hide_title()
+	school_selection.hide()
+	rest_flow_ui.hide_all()
+	hud.hide_game_over()
+	_sync_run_modifiers()
+	player.restore_after_retry()
+	contribution_tracker.reset_segment(combat_ddd.reward_count, run_build_state.gold)
+	_set_combat_enabled(true)
+	return true
+
+
+func _refresh_title_resume_state() -> void:
+	if title_screen == null:
+		return
+	title_screen.set_awakening_balance(_ninja_soul_balance())
+	if run_resume_store == null:
+		title_screen.set_continue_state(false, "이어하기 기록을 확인할 수 없습니다.")
+		return
+	var loaded: Dictionary = run_resume_store.load_checkpoint()
+	if bool(loaded.get("ok", false)):
+		title_screen.set_continue_state(true)
+		return
+	if StringName(loaded.get("reason", &"")) == &"missing":
+		title_screen.set_continue_state(false)
+		return
+	title_screen.set_continue_state(false, "이어하기 기록을 확인할 수 없습니다.")
 
 
 func _start_cheonsul_vertical_slice() -> bool:
@@ -1173,14 +1277,19 @@ func _on_player_died() -> void:
 
 
 func _capture_run_checkpoint() -> void:
-	if run_checkpoint == null or run_settlement_ledger == null or school_circuit == null:
+	if run_checkpoint == null or run_settlement_ledger == null or school_circuit == null or ninjutsu_loadout == null:
 		return
-	run_checkpoint.capture(
+	if not run_checkpoint.capture(
 		run_build_state.get_checkpoint_snapshot(),
 		school_circuit.route_state.get_route_snapshot(),
 		run_settlement_ledger.get_snapshot(),
-		school_circuit.get_checkpoint_snapshot()
-	)
+		school_circuit.get_checkpoint_snapshot(),
+		ninjutsu_loadout.call("get_snapshot")
+	):
+		return
+	if run_resume_store != null:
+		run_resume_store.save_checkpoint(run_checkpoint.get_snapshot())
+	_refresh_title_resume_state()
 
 
 func _can_offer_checkpoint_retry() -> bool:

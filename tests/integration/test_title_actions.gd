@@ -51,3 +51,14 @@ func test_title_opens_awakening_codex_and_new_game_confirmation_as_local_present
 	assert_true((title.get_node("NewGameConfirmPanel") as Control).visible)
 	(title.get_node("NewGameConfirmPanel/Dialog/Margin/Actions/Buttons/ConfirmButton") as Button).pressed.emit()
 	assert_signal_emitted(title, "new_game_confirmed")
+
+
+func test_title_exit_requires_a_local_confirmation_before_emitting_its_intent() -> void:
+	var title := (load(TITLE_SCREEN) as PackedScene).instantiate()
+	add_child_autofree(title)
+	await get_tree().process_frame
+	watch_signals(title)
+	(title.get_node("LogoLockup/MenuButtons/QuitButton") as Button).pressed.emit()
+	assert_true((title.get_node("QuitConfirmPanel") as Control).visible)
+	(title.get_node("QuitConfirmPanel/Dialog/Margin/Actions/Buttons/ConfirmButton") as Button).pressed.emit()
+	assert_signal_emitted(title, "quit_requested")

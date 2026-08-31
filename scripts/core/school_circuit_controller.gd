@@ -330,6 +330,35 @@ func restore_after_retry(checkpoint_snapshot: Dictionary) -> bool:
 	return true
 
 
+# 이어하기는 직전 Workbench가 확정한 route·가방만으로 새 Core 압박을 다시 연다.
+# 전투 중 Enemy, 투사체, 장판과 임시 Workbench 편집은 이 경계에 포함하지 않는다.
+func can_restore_from_persistent_checkpoint(route_snapshot: Dictionary, checkpoint_snapshot: Dictionary) -> bool:
+	if _school_started or _workbench_started or not _workbench_configured:
+		return false
+	var candidate_route := RunRouteState.new()
+	if not candidate_route.restore_from_checkpoint(route_snapshot):
+		return false
+	var cleared_school_ids := candidate_route.cleared_school_ids()
+	if cleared_school_ids.is_empty() or candidate_route.active_school_id() == &"":
+		return false
+	var checkpoint_school_id := StringName(checkpoint_snapshot.get("active_school_id", &""))
+	var checkpoint_backpack_state = checkpoint_snapshot.get("committed_backpack_state", null)
+	if checkpoint_school_id != candidate_route.active_school_id() or checkpoint_backpack_state == null or not checkpoint_backpack_state.has_method("copy_value"):
+		return false
+	return _access_state_for_cleared_schools(cleared_school_ids) != null
+
+
+func restore_from_persistent_checkpoint(route_snapshot: Dictionary, checkpoint_snapshot: Dictionary) -> bool:
+	if not can_restore_from_persistent_checkpoint(route_snapshot, checkpoint_snapshot):
+		return false
+	var restored_access = _access_state_for_cleared_schools(Array(route_snapshot.get("cleared_school_ids", [])))
+	if restored_access == null or not route_state.restore_from_checkpoint(route_snapshot):
+		return false
+	_committed_backpack_state = checkpoint_snapshot.get("committed_backpack_state").copy_value()
+	_access_state = restored_access
+	return begin_school(route_state.active_school_id())
+
+
 func next_core_encounter() -> Dictionary:
 	var core_ids: Array = _encounter.get("core_monster_ids", [])
 	var core_names: Array = _encounter.get("core_monster_display_names", [])
@@ -366,6 +395,19 @@ func _reset_school_progress(school_id: StringName) -> void:
 	_next_core_encounter_index = 0
 	_workbench_started = false
 	_school_started = true
+
+
+func _access_state_for_cleared_schools(cleared_school_ids: Array) -> TraditionAccessState:
+	if cleared_school_ids.is_empty():
+		return null
+	var restored_access := TRADITION_ACCESS_STATE_SCRIPT.new()
+	var starting_school_id := StringName(cleared_school_ids[0])
+	if not restored_access.initialize(starting_school_id):
+		return null
+	for index in range(1, cleared_school_ids.size()):
+		if not restored_access.stabilize_school(StringName(cleared_school_ids[index])):
+			return null
+	return restored_access
 
 
 func _begin_workbench_for_cleared_school() -> bool:

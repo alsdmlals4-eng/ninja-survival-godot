@@ -91,8 +91,8 @@ func _decode_build(raw_build: Dictionary) -> Dictionary:
 		return {}
 	if not _validate_owned_items(raw_owned_items) or not _validate_fates(raw_fates):
 		return {}
-	var receipts_result := _to_json_primitive(raw_receipts)
-	if not receipts_result.get("ok", false):
+	var restored_receipts := _restore_economy_receipts(raw_receipts)
+	if restored_receipts.size() != raw_receipts.size():
 		return {}
 	return {
 		"gold": int(raw_gold),
@@ -100,7 +100,7 @@ func _decode_build(raw_build: Dictionary) -> Dictionary:
 		"owned_items": _restore_owned_items(raw_owned_items),
 		"selected_fates": _restore_string_name_array(raw_fates),
 		"committed_backpack_modifiers": modifiers,
-		"economy_receipts": receipts_result.get("value", []),
+		"economy_receipts": restored_receipts,
 	}
 
 
@@ -185,6 +185,19 @@ func _restore_owned_items(raw_owned_items: Dictionary) -> Dictionary:
 	var restored := {}
 	for raw_item_id in raw_owned_items.keys():
 		restored[StringName(raw_item_id)] = int(raw_owned_items.get(raw_item_id))
+	return restored
+
+
+func _restore_economy_receipts(raw_receipts: Array) -> Array[Dictionary]:
+	var restored: Array[Dictionary] = []
+	for raw_receipt in raw_receipts:
+		if not (raw_receipt is Dictionary):
+			return []
+		var primitive_result := _to_json_primitive(raw_receipt)
+		if not primitive_result.get("ok", false) or not (primitive_result.get("value", null) is Dictionary):
+			return []
+		var receipt: Dictionary = primitive_result.get("value", {})
+		restored.append(receipt)
 	return restored
 
 

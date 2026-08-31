@@ -109,10 +109,10 @@ func show_game_over(retry_available: bool = false, ninja_soul_balance: int = 0) 
 	_release_touch_actions()
 	game_over_message.text = "GAME OVER"
 	if retry_available:
-		game_over_message.text += "\n닌자소울 1로 현재 학교 재도전"
+		game_over_message.text += "\n각성 1로 현재 학교 재도전"
 	retry_button.visible = retry_available
 	retry_button.disabled = not retry_available
-	retry_button.text = "재도전 · 닌자소울 1 (보유 %d)" % maxi(ninja_soul_balance, 0)
+	retry_button.text = "재도전 · 각성 1 (보유 %d)" % maxi(ninja_soul_balance, 0)
 	game_over_panel.show()
 	if retry_available:
 		retry_button.grab_focus()
