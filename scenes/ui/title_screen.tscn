@@ -64,10 +64,10 @@ color = Color(0.012, 0.02, 0.038, 0.12)
 
 [node name="TitleMedal" type="TextureRect" parent="."]
 anchors_preset = 0
-anchor_left = 0.275
-anchor_top = 0.24
-anchor_right = 0.405
-anchor_bottom = 0.52
+anchor_left = 0.29
+anchor_top = 0.29
+anchor_right = 0.38
+anchor_bottom = 0.49
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -77,17 +77,17 @@ stretch_mode = 5
 
 [node name="LogoLockup" type="Control" parent="."]
 anchors_preset = 0
-anchor_left = 0.02
-anchor_top = 0.24
-anchor_right = 0.26
-anchor_bottom = 0.82
+anchor_left = 0.025
+anchor_top = 0.14
+anchor_right = 0.295
+anchor_bottom = 0.94
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="TitleLogo" type="TextureRect" parent="LogoLockup"]
 anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 0.42
+anchor_bottom = 0.31
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
@@ -97,9 +97,9 @@ stretch_mode = 5
 
 [node name="AccentRule" type="ColorRect" parent="LogoLockup"]
 anchors_preset = 10
-anchor_top = 0.49
+anchor_top = 0.37
 anchor_right = 0.72
-anchor_bottom = 0.49
+anchor_bottom = 0.37
 offset_bottom = 3.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -108,15 +108,15 @@ color = Color(0.77, 0.595, 0.31, 0.9)
 
 [node name="MenuButtons" type="VBoxContainer" parent="LogoLockup"]
 anchors_preset = 10
-anchor_top = 0.57
-anchor_right = 0.76
+anchor_top = 0.43
+anchor_right = 0.9
 anchor_bottom = 0.98
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_constants/separation = 10
+theme_override_constants/separation = 6
 
 [node name="StartButton" type="Button" parent="LogoLockup/MenuButtons"]
-custom_minimum_size = Vector2(0, 52)
+custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
 focus_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
@@ -125,31 +125,86 @@ theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxStartNormal")
 theme_override_styles/hover = SubResource("StyleBoxStartHover")
 theme_override_styles/focus = SubResource("StyleBoxStartHover")
-text = "시작하기"
+text = "새 게임"
 
-[node name="GuideButton" type="Button" parent="LogoLockup/MenuButtons"]
-custom_minimum_size = Vector2(0, 42)
+[node name="ContinueButton" type="Button" parent="LogoLockup/MenuButtons"]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 focus_mode = 2
 theme_override_colors/font_color = Color(0.84, 0.86, 0.9, 1)
 theme_override_colors/font_hover_color = Color(1, 0.95, 0.82, 1)
 theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxStartNormal")
+theme_override_styles/hover = SubResource("StyleBoxStartHover")
+theme_override_styles/focus = SubResource("StyleBoxStartHover")
+text = "이어하기"
+
+[node name="ContinueStatusLabel" type="Label" parent="LogoLockup/MenuButtons"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.72, 0.76, 0.9)
+theme_override_font_sizes/font_size = 12
+autowrap_mode = 2
+
+[node name="AwakeningButton" type="Button" parent="LogoLockup/MenuButtons"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+focus_mode = 2
+theme_override_colors/font_color = Color(0.84, 0.86, 0.9, 1)
+theme_override_colors/font_hover_color = Color(1, 0.95, 0.82, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxStartNormal")
+theme_override_styles/hover = SubResource("StyleBoxStartHover")
+theme_override_styles/focus = SubResource("StyleBoxStartHover")
+text = "각성"
+
+[node name="CodexButton" type="Button" parent="LogoLockup/MenuButtons"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+focus_mode = 2
+theme_override_colors/font_color = Color(0.84, 0.86, 0.9, 1)
+theme_override_colors/font_hover_color = Color(1, 0.95, 0.82, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxStartNormal")
+theme_override_styles/hover = SubResource("StyleBoxStartHover")
+theme_override_styles/focus = SubResource("StyleBoxStartHover")
+text = "도감"
+
+[node name="GuideButton" type="Button" parent="LogoLockup/MenuButtons"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+focus_mode = 2
+theme_override_colors/font_color = Color(0.84, 0.86, 0.9, 1)
+theme_override_colors/font_hover_color = Color(1, 0.95, 0.82, 1)
+theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("StyleBoxStartNormal")
 theme_override_styles/hover = SubResource("StyleBoxStartHover")
 theme_override_styles/focus = SubResource("StyleBoxStartHover")
 text = "조작 방법"
 
 [node name="SettingsButton" type="Button" parent="LogoLockup/MenuButtons"]
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
 focus_mode = 2
 theme_override_colors/font_color = Color(0.84, 0.86, 0.9, 1)
 theme_override_colors/font_hover_color = Color(1, 0.95, 0.82, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("StyleBoxStartNormal")
 theme_override_styles/hover = SubResource("StyleBoxStartHover")
 theme_override_styles/focus = SubResource("StyleBoxStartHover")
 text = "설정"
+
+[node name="QuitButton" type="Button" parent="LogoLockup/MenuButtons"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+focus_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.78, 0.8, 1)
+theme_override_colors/font_hover_color = Color(1, 0.95, 0.82, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxStartNormal")
+theme_override_styles/hover = SubResource("StyleBoxStartHover")
+theme_override_styles/focus = SubResource("StyleBoxStartHover")
+text = "종료"
 
 [node name="GuidePanel" type="Control" parent="."]
 visible = false
@@ -273,3 +328,328 @@ text = "전체 화면 켜기"
 [node name="CloseButton" type="Button" parent="SettingsPanel/Dialog/Margin/Actions"]
 layout_mode = 2
 text = "닫기"
+
+[node name="AwakeningPanel" type="Control" parent="."]
+visible = false
+process_mode = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Backdrop" type="ColorRect" parent="AwakeningPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.01, 0.02, 0.04, 0.9)
+mouse_filter = 2
+
+[node name="Dialog" type="PanelContainer" parent="AwakeningPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -160.0
+offset_right = 250.0
+offset_bottom = 160.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxStartNormal")
+
+[node name="Margin" type="MarginContainer" parent="AwakeningPanel/Dialog"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 28
+
+[node name="Actions" type="VBoxContainer" parent="AwakeningPanel/Dialog/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TitleLabel" type="Label" parent="AwakeningPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 26
+text = "각성"
+horizontal_alignment = 1
+
+[node name="BalanceLabel" type="Label" parent="AwakeningPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "보유 각성 · 0"
+horizontal_alignment = 1
+
+[node name="BodyLabel" type="Label" parent="AwakeningPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.84, 0.86, 0.9, 1)
+theme_override_font_sizes/font_size = 16
+text = "각성은 유효한 워크벤치 기록에서 현재 학교 재도전에 사용됩니다.\n재도전 1회에 각성 1을 사용합니다."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="CloseButton" type="Button" parent="AwakeningPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+text = "닫기"
+
+[node name="CodexPanel" type="Control" parent="."]
+visible = false
+process_mode = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Backdrop" type="ColorRect" parent="CodexPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.01, 0.02, 0.04, 0.9)
+mouse_filter = 2
+
+[node name="Dialog" type="PanelContainer" parent="CodexPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -470.0
+offset_top = -330.0
+offset_right = 470.0
+offset_bottom = 330.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxStartNormal")
+
+[node name="Margin" type="MarginContainer" parent="CodexPanel/Dialog"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 24
+
+[node name="Actions" type="VBoxContainer" parent="CodexPanel/Dialog/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="TitleLabel" type="Label" parent="CodexPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 26
+text = "도감"
+horizontal_alignment = 1
+
+[node name="Tabs" type="HBoxContainer" parent="CodexPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="EnemyTab" type="Button" parent="CodexPanel/Dialog/Margin/Actions/Tabs"]
+custom_minimum_size = Vector2(118, 34)
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+text = "적"
+
+[node name="NinjutsuTab" type="Button" parent="CodexPanel/Dialog/Margin/Actions/Tabs"]
+custom_minimum_size = Vector2(118, 34)
+layout_mode = 2
+toggle_mode = true
+text = "인법서"
+
+[node name="EquipmentTab" type="Button" parent="CodexPanel/Dialog/Margin/Actions/Tabs"]
+custom_minimum_size = Vector2(118, 34)
+layout_mode = 2
+toggle_mode = true
+text = "장비"
+
+[node name="BagsTab" type="Button" parent="CodexPanel/Dialog/Margin/Actions/Tabs"]
+custom_minimum_size = Vector2(118, 34)
+layout_mode = 2
+toggle_mode = true
+text = "가방"
+
+[node name="CombinationsTab" type="Button" parent="CodexPanel/Dialog/Margin/Actions/Tabs"]
+custom_minimum_size = Vector2(118, 34)
+layout_mode = 2
+toggle_mode = true
+text = "조합"
+
+[node name="Entries" type="RichTextLabel" parent="CodexPanel/Dialog/Margin/Actions"]
+custom_minimum_size = Vector2(0, 430)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.86, 0.88, 0.92, 1)
+theme_override_font_sizes/normal_font_size = 16
+bbcode_enabled = true
+scroll_active = true
+
+[node name="CloseButton" type="Button" parent="CodexPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+text = "닫기"
+
+[node name="NewGameConfirmPanel" type="Control" parent="."]
+visible = false
+process_mode = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Backdrop" type="ColorRect" parent="NewGameConfirmPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.01, 0.02, 0.04, 0.9)
+mouse_filter = 2
+
+[node name="Dialog" type="PanelContainer" parent="NewGameConfirmPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -145.0
+offset_right = 260.0
+offset_bottom = 145.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxStartNormal")
+
+[node name="Margin" type="MarginContainer" parent="NewGameConfirmPanel/Dialog"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 28
+
+[node name="Actions" type="VBoxContainer" parent="NewGameConfirmPanel/Dialog/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TitleLabel" type="Label" parent="NewGameConfirmPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 24
+text = "새 게임 시작"
+horizontal_alignment = 1
+
+[node name="BodyLabel" type="Label" parent="NewGameConfirmPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "새 게임을 시작하면 현재 이어하기 기록이 삭제됩니다.\n계속하시겠습니까?"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Buttons" type="HBoxContainer" parent="NewGameConfirmPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="CancelButton" type="Button" parent="NewGameConfirmPanel/Dialog/Margin/Actions/Buttons"]
+custom_minimum_size = Vector2(150, 38)
+layout_mode = 2
+text = "취소"
+
+[node name="ConfirmButton" type="Button" parent="NewGameConfirmPanel/Dialog/Margin/Actions/Buttons"]
+custom_minimum_size = Vector2(150, 38)
+layout_mode = 2
+text = "새 게임 시작"
+
+[node name="QuitConfirmPanel" type="Control" parent="."]
+visible = false
+process_mode = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Backdrop" type="ColorRect" parent="QuitConfirmPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.01, 0.02, 0.04, 0.9)
+mouse_filter = 2
+
+[node name="Dialog" type="PanelContainer" parent="QuitConfirmPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.0
+offset_top = -125.0
+offset_right = 230.0
+offset_bottom = 125.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxStartNormal")
+
+[node name="Margin" type="MarginContainer" parent="QuitConfirmPanel/Dialog"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 28
+
+[node name="Actions" type="VBoxContainer" parent="QuitConfirmPanel/Dialog/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TitleLabel" type="Label" parent="QuitConfirmPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 24
+text = "게임 종료"
+horizontal_alignment = 1
+
+[node name="BodyLabel" type="Label" parent="QuitConfirmPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "게임을 종료하시겠습니까?"
+horizontal_alignment = 1
+
+[node name="Buttons" type="HBoxContainer" parent="QuitConfirmPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="CancelButton" type="Button" parent="QuitConfirmPanel/Dialog/Margin/Actions/Buttons"]
+custom_minimum_size = Vector2(130, 38)
+layout_mode = 2
+text = "취소"
+
+[node name="ConfirmButton" type="Button" parent="QuitConfirmPanel/Dialog/Margin/Actions/Buttons"]
+custom_minimum_size = Vector2(130, 38)
+layout_mode = 2
+text = "종료"
