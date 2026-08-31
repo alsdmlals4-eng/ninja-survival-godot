@@ -1,6 +1,6 @@
 # CURRENT VISUAL HANDOFF — Ninja Survival / 닌자의 신
 
-> Updated: 2026-08-30 KST
+> Updated: 2026-08-31 KST
 > Purpose: next-chat resume router for the approved visual direction and current image-production state.
 > Product/runtime authority remains `AGENTS.md` → `docs/CURRENT_CONFIRMED_DECISIONS.md` → `docs/ACTIVE_CONTEXT.md` → actual code/data/tests. This file owns the **current visual continuation state only**.
 
@@ -23,6 +23,37 @@ After user `LOCK`, durable visual ownership is
 repository source + SHA-256/provenance manifest + explicit consumer + applicable
 import/runtime evidence. The migration snapshots are provenance receipts only;
 they neither block nor satisfy a current asset gate.
+
+## 2026-08-31 user-locked DEC-040 corrupted-yokai enemy roster reference
+
+The user locked `DEC040_FOUR_SCHOOL_CORRUPTED_YOKAI_ROSTER_01` after reviewing
+the four-school roster-board candidate. It is a repository-local
+`USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME`, with the following source receipt:
+
+| Field | Locked value |
+| --- | --- |
+| Local source | `docs/visual/enemy-references/four-school-corrupted-yokai-roster-v1.png` |
+| SHA-256 | `a49717d3783dd47593f26f9d9f5ed04c49de57aa5aa8c506b811f27b280ed9da` |
+| Metadata | PNG, 1254×1254, opaque four-quadrant planning board |
+| Approval | User `LOCK`, 2026-08-31 KST |
+| Human/planning consumer | `docs/superpowers/specs/2026-08-31-dec040-four-school-encounter-and-ninjutsu-design.md` and the following DEC-040 runtime-asset briefs |
+| Godot consumer | None. This board is not a `Texture2D`, scene binding, or runtime proof. |
+
+**Locked enemy contract.** Future enemy cutouts must read first as either an
+**intruded/corrupted ninja** or a hostile **yokai**. Clean ordinary ninja,
+samurai, or player-like human silhouettes are not valid enemy art. Every
+runtime enemy needs an unmistakably hostile non-human cue at gameplay scale:
+for example a cracked mask or lantern face, glowing eye socket, talisman
+intrusion, horn, claw, warped limb, cursed armour fissure, or supernatural
+shadow body. The four school accents remain 봉마=sealed blue/gold, 천술=
+blue/amber, 귀인=crimson/black, and 흑영=violet/black.
+
+Each roster quadrant pairs a compact Core Monster with a distinctly broader
+Elite/Boss silhouette. This proves the visual direction only: it does not
+promote the board's eight displayed figures, any character cutout, spell,
+telegraph, old generic-enemy texture, stat, spawn rule, or Godot consumer.
+The first actual runtime actor family must be generated, independently user
+locked, registered by SHA-256/consumer, imported and then render-checked.
 
 ## 2026-08-30 user-locked auto-combat battlefield planning reference
 

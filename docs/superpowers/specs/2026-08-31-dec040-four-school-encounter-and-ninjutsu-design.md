@@ -1,6 +1,6 @@
 # DEC-040 — Four-School Encounter Roster and Ninjutsu Design
 
-> **Status:** `USER_DESIGN_APPROVED_IMPLEMENTED_MACHINE_SCOPE_RUNTIME_ASSET_PROMOTION_BLOCKED`
+> **Status:** `USER_DESIGN_APPROVED_IMPLEMENTED_MACHINE_SCOPE_ROSTER_BOARD_USER_LOCKED_RUNTIME_ACTOR_ASSET_PROMOTION_NOT_STARTED`
 > **Product owner:** current user instruction, 2026-08-31 KST
 > **Canon dependencies:** DEC-026 shared primitives and school encounter data; DEC-037 one directly moved Ninja; DEC-039 automatic katana/shuriken plus one selected-school starter ninjutsu.
 > **Current branch baseline:** `codex/dec037-runtime-migration-135` at `3e9c46f` before this design-only commit; PR #135 remains open and unmerged.
@@ -190,11 +190,18 @@ Fate, next Stage and valid pending scrolls.
 
 The implementation deliberately uses the already locked generic
 `basic_weapon_effects_v1.png` only as a temporary machine-test fallback for
-unlocked scroll effects. It does **not** register a generated character,
-spell or telegraph file as a runtime asset. One external Cheonsul Elite style
-exploration exists as `GENERATED_CANDIDATE`, but it is not the required
-four-school roster board, has no repository source or runtime consumer, and
-is neither `USER_LOCKED` nor promotable. It does not satisfy the asset gate.
+unlocked scroll effects. It does **not** yet register a generated character,
+spell or telegraph file as a runtime asset. The former external Cheonsul Elite
+style exploration remains historical `GENERATED_CANDIDATE` only: it has no
+repository source or runtime consumer and is not promoted.
+
+The required prerequisite is now met by the user-locked planning reference
+`DEC040_FOUR_SCHOOL_CORRUPTED_YOKAI_ROSTER_01` at
+`docs/visual/enemy-references/four-school-corrupted-yokai-roster-v1.png`
+(SHA-256 `a49717d3783dd47593f26f9d9f5ed04c49de57aa5aa8c506b811f27b280ed9da`).
+It locks the enemy direction to corrupted ninjas and hostile yokai with a
+small-Core versus broader-Elite/Boss hierarchy. It is not itself a runtime
+texture or a license to bind a board figure to an actor.
 
 ## 6. Image asset plan and gate
 
@@ -206,17 +213,16 @@ no text/UI/watermark, and a strong contact-shadow-compatible lower silhouette.
 
 | Family | Asset count | Runtime consumer | State at this design stage |
 | --- | ---: | --- | --- |
-| Core/Elite/Boss character cutouts | 20 | `SchoolEncounterActor/Visual` | `NEEDED — USER_LOCKED roster board prerequisite` |
-| Ninjutsu visual cutouts/fields | 12 | school spell controllers | `NEEDED — USER_LOCKED roster board prerequisite` |
-| Boss/Elite telegraph effects | bounded per shared primitive, reused by school color hook | `NEEDED — USER_LOCKED roster board prerequisite` |
-| Four-school roster art-direction board | 1 | planning/review only; not runtime | `BRIEF_READY — no conforming board candidate yet` |
+| Core/Elite/Boss character cutouts | 20 | `SchoolEncounterActor/Visual` | `NEEDED — roster-board prerequisite is USER_LOCKED; each runtime candidate still needs its own lock` |
+| Ninjutsu visual cutouts/fields | 12 | school spell controllers | `NEEDED — roster-board prerequisite is USER_LOCKED; each runtime candidate still needs its own lock` |
+| Boss/Elite telegraph effects | bounded per shared primitive, reused by school color hook | `NEEDED — roster-board prerequisite is USER_LOCKED; each runtime candidate still needs its own lock` |
+| Four-school roster art-direction board | 1 | planning/review only; not runtime | `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME` |
 
-Before any runtime asset promotion, generate **one** roster art-direction
-candidate using the image model. It must show all four school palettes and
-the Elite/Boss silhouette separation, but it remains a planning candidate with
-no runtime consumer. Stop for the user to `LOCK / REVISE / REJECT`. Only a
-LOCKED candidate allows the first bounded runtime state-family generation.
-Every later runtime PNG requires repository source, SHA-256, manifest entry,
+The user locked the conforming roster art-direction board after its review.
+Its four palettes, corrupted-ninja/yokai enemy rule and Elite/Boss silhouette
+separation are now the brief for the first bounded runtime state-family
+candidate. The board itself has no runtime consumer. Every later runtime PNG
+still requires its own user lock, repository source, SHA-256, manifest entry,
 explicit state/consumer mapping and import evidence before it is promoted.
 
 ## 7. Data and validation rules
