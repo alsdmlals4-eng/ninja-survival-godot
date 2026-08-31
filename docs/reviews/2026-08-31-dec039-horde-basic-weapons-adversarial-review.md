@@ -97,3 +97,93 @@ Human/Player/balance evidence, all `NOT_RUN`.
 No unresolved code/canon/consumer ownership blocker remains for the DEC-039
 machine package. The retained risk is explicitly a Player-balance/readability
 gate, not a claim that the current numbers are tuned or release-ready.
+
+## 2026-08-31 remediation review — Core pressure and title simplification
+
+```yaml
+review_scope: Core contact-only opening pressure and forced-overlap contact staggering; Elite/Boss special-pattern boundary; title promise removal; Guide/Settings presentation paths
+review_state: FIVE_WHOLE_SCOPE_LOOPS_COMPLETE
+machine_evidence: GODOT_4_7_1_EDITOR_PARSE_300_FRAME_MAIN_SMOKE_FULL_GUT_586_OF_586_6575_ASSERTS_PASS
+live_render_human_player_device_balance: NOT_RUN
+```
+
+### Loop 1 — Core special-pattern re-entry attack
+
+**Attack.** Reintroduce a `ranged` Core tag, a Core pattern definition, or a
+floor/flight primitive through the four-school catalog.
+
+**Evidence.** The 12 Core definitions now have no pattern definitions or
+`ranged` tag. `test_encounter_catalog.gd` and
+`test_encounter_catalog_adversarial.gd` reject any Core that violates this
+contact-only boundary.
+
+**Disposition.** `CLEAN`. The dense normal horde keeps pursuit/contact pressure
+without a starting projectile, talisman or damaging floor zone.
+
+### Loop 2 — runtime controller re-entry attack
+
+**Attack.** Make a valid Core definition silently instantiate an
+`EncounterPatternController`, execute a projectile, or retain a prior special
+controller when its definition changes.
+
+**Evidence.** `SchoolEncounterActor` clears its controller for Core definitions
+and only configures the controller for Elite/Boss roles.
+`test_school_encounter_actor.gd` asserts a Core has no controller and no
+projectile attack.
+
+**Disposition.** `CLEAN`. The data rule is enforced at the actual runtime
+consumer boundary rather than by documentation alone.
+
+### Loop 3 — Elite/Boss fairness regression attack
+
+**Attack.** Simplify all roles so far that Elite/Boss lose their distinct
+telegraph/recovery patterns, or allow a special pattern without a readable
+warning/recovery path.
+
+**Evidence.** Catalog validation still requires at least two Elite patterns,
+three Boss patterns, and positive telegraph/recovery values. The focused
+catalog/actor suites and the full GUT run preserve the line-dash, telegraphed
+zone and delayed-proxy checks.
+
+**Disposition.** `CLEAN`. Special attacks move upward to dedicated encounters;
+they are not deleted from the Elite/Boss gameplay contract.
+
+### Loop 4 — title ownership and stale-text attack
+
+**Attack.** Keep the redundant promise label, let a secondary title button
+start combat, or replace the user-locked title asset with an unapproved medal
+scale candidate.
+
+**Evidence.** `PromiseLabel` is absent. The `조작 방법` and `설정` buttons open
+only their own panels before a Stage selection; `시작하기` remains the sole
+Stage-selector intent. Title tests recheck the existing locked title/logo
+SHA-256 values, so the smaller-medal candidate remains non-runtime until a
+user `LOCK`.
+
+**Disposition.** `CLEAN` for the implemented text/menu scope. Medal scaling is
+explicitly `AWAITING_USER_LOCK`, not silently promoted.
+
+### Loop 5 — whole-build and horde non-regression attack
+
+**Attack.** Break uncapped horde refill, opening-hit staggering, dash,
+automatic katana/shuriken/ninjutsu, title Stage gating, or parse/main startup
+while applying the Core and title changes.
+
+**Validated finding.** The initial stagger was first wired only to the retired
+Core pattern-controller path, so it could not delay the Core contact attack and
+the earlier two-second test could finish before a normal horde reached the
+player.
+
+**Correction and evidence.** `WaveSpawner` now assigns five `0.0` through
+`1.2` second initial contact slots, and `EnemyChaser` consumes that value as
+its first contact cooldown. The integration test forces all ten opening Cores
+onto the Ninja, requires real damage to occur, and rejects more than two
+damage resolutions in one physics frame. Godot 4.7.1 editor parse and a
+300-frame headless main-scene smoke passed. The full suite passed `586/586`
+tests with `6575` assertions, including `test_opening_horde_attack_rhythm.gd`,
+`test_wave_spawner.gd`, dash, weapon/loadout, title and four-school circuit
+coverage.
+
+**Disposition.** `CLEAN` for automated scope. Human fairness, the new rendered
+title flow, dense-horde performance and actual player balance remain separate
+`NOT_RUN` gates.

@@ -2,6 +2,7 @@ extends GutTest
 
 const SPAWNER_PATH := "res://scripts/spawning/wave_spawner.gd"
 const ENEMY_SCENE := preload("res://scenes/enemies/enemy_basic.tscn")
+const OPENING_CONTACT_STAGGER_META := &"ninja_wave_opening_contact_stagger_seconds"
 
 
 func test_ensure_minimum_active_fills_ten_normal_enemies_inside_random_annulus() -> void:
@@ -20,6 +21,24 @@ func test_ensure_minimum_active_fills_ten_normal_enemies_inside_random_annulus()
 		var distance: float = (context.anchor as Node2D).global_position.distance_to(enemy_node.global_position)
 		assert_gte(distance, 420.0)
 		assert_lte(distance, 560.0)
+
+
+func test_initial_horde_assigns_contact_stagger_slots_before_the_first_overlap() -> void:
+	var context := _make_context()
+	if context.is_empty():
+		return
+	var spawner = context.spawner
+	assert_true(spawner.configure_horde_profile(1.0, 3, 10, 420.0, 560.0))
+	assert_eq(spawner.ensure_minimum_active(), 10)
+
+	var stagger_seconds: Array[float] = []
+	for enemy in _living_normal_enemy_children(context.spawn_parent):
+		stagger_seconds.append(float(enemy.get_meta(OPENING_CONTACT_STAGGER_META, -1.0)))
+
+	var expected := [0.0, 0.30, 0.60, 0.90, 1.20, 0.0, 0.30, 0.60, 0.90, 1.20]
+	assert_eq(stagger_seconds.size(), expected.size())
+	for index in range(expected.size()):
+		assert_almost_eq(stagger_seconds[index], expected[index], 0.0001)
 
 
 func test_ensure_minimum_active_restores_only_the_missing_normal_enemy_count() -> void:

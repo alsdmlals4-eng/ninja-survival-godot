@@ -23,7 +23,7 @@ func test_title_screen_exposes_locked_graphic_logo_backdrop_and_start_intent() -
 	assert_true(title.has_signal(&"start_requested"))
 	var backdrop := title.get_node_or_null("Backdrop") as TextureRect
 	var title_logo := title.get_node_or_null("LogoLockup/TitleLogo") as TextureRect
-	var start_button := title.get_node_or_null("LogoLockup/StartButton") as Button
+	var start_button := title.get_node_or_null("LogoLockup/MenuButtons/StartButton") as Button
 	assert_not_null(backdrop)
 	assert_not_null(title_logo)
 	assert_not_null(start_button)
@@ -53,6 +53,9 @@ func test_title_screen_exposes_locked_graphic_logo_backdrop_and_start_intent() -
 	assert_true(manifest_text.contains(TITLE_LOGO_SHA256))
 	assert_true(manifest_text.contains("`assets/runtime/ui/title_logo_ninja_god_v1.png`"))
 	assert_null(title.get_node_or_null("LogoLockup/TitleLabel"), "The actual title must be the locked world-building logo, not a plain fallback label.")
+	assert_null(title.get_node_or_null("LogoLockup/PromiseLabel"), "The redundant title promise must not compete with the world-building logo.")
+	assert_not_null(title.get_node_or_null("LogoLockup/MenuButtons/GuideButton"))
+	assert_not_null(title.get_node_or_null("LogoLockup/MenuButtons/SettingsButton"))
 	assert_eq(get_viewport().gui_get_focus_owner(), start_button)
 	watch_signals(title)
 	start_button.pressed.emit()

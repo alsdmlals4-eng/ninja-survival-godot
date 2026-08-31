@@ -18,11 +18,13 @@ contains a complete, machine-testable roster for every school:
 | school Bosses | 1 | 4 |
 | automatic ninjutsu | 3 | 12 |
 
-Every school has exactly one ranged Core enemy. Every Elite and Boss uses
-readable attack **patterns** and an explicit visual **telegraph** before the
-harmful portion begins. Each Boss owns two or three school-specific techniques
-that remix its Core language. An Elite is a dedicated character, definition,
-visual and attack sequence; it must never be a scaled `EnemyBasic` instance.
+Every Core enemy applies only pursuit and contact pressure. It owns no
+independent projectile, floor zone, flying talisman, mark, barrier, or pattern
+controller. Every Elite and Boss uses readable attack **patterns** and an
+explicit visual **telegraph** before the harmful portion begins. Each Boss owns
+two or three school-specific techniques that remix its school's visual
+language. An Elite is a dedicated character, definition, visual and attack
+sequence; it must never be a scaled `EnemyBasic` instance.
 
 The player still starts every combat with exactly three automatic patterns:
 Japanese katana, shuriken, and the selected school's starter ninjutsu. The
@@ -36,9 +38,10 @@ aiming reticles or player-body attack poses.
    owner. The new implementation gives those already-approved entries real
    actors, assets and attacks; it does not rename them or collapse them into
    generic variants.
-2. A Core roster is `contact pressure + one ranged threat + one school-signature
-   pressure`. The ranged slot is intentionally visible and responds to player
-   movement; it does not turn the game into a manual aiming game.
+2. A Core roster is `visual identity + pursuit + contact pressure`. Its tension
+   comes from the uncapped surrounding horde and the player's movement/dash
+   decisions, not from early floor zones or projectiles. Special attacks are
+   reserved for the dedicated Elite and Boss pattern owners.
 3. Elite spawn, death, chest token and Trace authority remain in
    `StageEncounterState` / `SchoolCircuitController`. Elite death alone opens
    the existing Trace route.
@@ -60,9 +63,9 @@ aiming reticles or player-body attack poses.
 
 | Role | ID / name | Player-visible behavior | Telegraph / recovery |
 | --- | --- | --- | --- |
-| Core A | `seal_chaser` / 봉인 추적자 | Close pursuit that briefly overcommits after contact pressure. | Red-gold seal on the ground beneath its next lunge; short open recovery after it misses. |
-| Core B — ranged | `shikigami_handler` / 식신 사역자 | Fires a slow blue paper-shikigami bolt toward the Ninja from outside contact range. | Paper charm lifts and points at the firing line before launch. |
-| Core C | `barrier_carrier` / 결계 운반자 | Places one temporary blocking seal lane that asks the player to route around it. | Thin square seal border fills from dim gold to bright gold before the lane becomes harmful. |
+| Core A | `seal_chaser` / 봉인 추적자 | Corrupted seal-bearer that closes in and damages only on contact. | None; it has no special attack. |
+| Core B | `shikigami_handler` / 식신 사역자 | Paper-charmer silhouette that joins the surrounding chase and damages only on contact. | None; it launches no talisman. |
+| Core C | `barrier_carrier` / 결계 운반자 | Heavy ward-carrier that narrows movement by body placement and contact pressure only. | None; it creates no damaging lane. |
 | Elite | `mobile_array_caster` / 이동진 술사 | Alternates a relocating seal anchor and a short-lived proxy summon; it is a moving mini-Boss, not a large pursuer. | Anchor glyph appears before relocation; proxy silhouettes remain visibly lighter than the Elite. |
 | Boss | `hundred_demon_array_master` / 백귀진 주재자 | `유동봉진`: moves a circular seal field; `백귀분령`: creates two fragile proxies; `절단봉쇄`: announces and then closes one seal lane. Stage 4 adds `삼중 이동봉진` sequentially. | Every anchor, proxy source and lane has a bright gold/red glyph and a visible dissolve/recovery cue. |
 
@@ -72,9 +75,9 @@ Ninjutsu: `백귀 식신` (starter, existing familiar attack), `봉인쇄` (Elit
 
 | Role | ID / name | Player-visible behavior | Telegraph / recovery |
 | --- | --- | --- | --- |
-| Core A — ranged | `fire_mark_caster` / 화인 술사 | Fires an amber fan of flame marks toward the Ninja. | Caster's fan and arc line light up before the bolts leave. |
-| Core B | `water_vein_caster` / 수맥 술사 | Creates one temporary wet/slowing circle. | Blue boundary expands first and fades at expiry. |
-| Core C | `lightning_chain_caster` / 뇌쇄 술사 | Links a prepared source to a marked target with a delayed lightning line. | Violet endpoints and an explicit line show the future discharge. |
+| Core A | `fire_mark_caster` / 화인 술사 | Ember-marked corrupted ninja that pursues into contact range only. | None; it fires no flame fan. |
+| Core B | `water_vein_caster` / 수맥 술사 | Flowing-robed pursuer that applies contact pressure only. | None; it creates no slowing field. |
+| Core C | `lightning_chain_caster` / 뇌쇄 술사 | Crackling talisman bearer that joins the horde without a link attack. | None; it creates no lightning line. |
 | Elite | `five_element_tuner` / 오행 조율자 | Alternates two-element setup pairs and resolves only the displayed reaction. | Both setup colors are present before the reaction; the first field clears/transforms rather than stacking forever. |
 | Boss | `heavenly_change_taoist` / 천변 도사 | `화인풍쇄`: fan flame arc; `수맥천환`: shifting wet zone; `뇌쇄연결`: delayed chain discharge. Stage 4 uses `연쇄 오행전환` as two sequential, announced reactions. | Distinct amber, blue and violet sources always precede their execution; no all-element burst without setup. |
 
@@ -84,9 +87,9 @@ Ninjutsu: `화염 인장` (starter, existing flame/status cycle), `수맥 결박
 
 | Role | ID / name | Player-visible behavior | Telegraph / recovery |
 | --- | --- | --- | --- |
-| Core A | `surge_fighter` / 쇄도 권객 | Commits to a straight rush past the Ninja, opening a crossing/reposition window after it ends. | Body leans, weapon trail draws a straight red path, then a clear stop/recovery. |
-| Core B — ranged | `pressure_monk` / 압박 승병 | Fires a slower compressed-force orb that blooms into a small ring at its destination. | A red-black hand seal and expanding target ring show where it will land. |
-| Core C | `ghost_blood_chaser` / 귀혈 추적자 | Escalates close pursuit only after sustained proximity, then loses pressure when the player disengages. | Crimson pulse meter and shoulder aura build visibly, then cool down while separated. |
+| Core A | `surge_fighter` / 쇄도 권객 | Aggressive corrupted swordsman that closes in and damages only on contact. | None; it performs no independent rush pattern. |
+| Core B | `pressure_monk` / 압박 승병 | Armored corrupted monk that pushes horde density through pursuit and contact only. | None; it fires no force orb or ring. |
+| Core C | `ghost_blood_chaser` / 귀혈 추적자 | Blood-wreathed yokai pursuer with standard contact pressure only. | None; it applies no separate proximity escalation. |
 | Elite | `melee_chaos_captain` / 난전 대장 | Cycles dash -> proximity ring -> explicit recovery window. The player wins by crossing or orbiting through its rhythm, not by infinite kiting. | Dash line and ring boundary are shown before impact; the captain visibly staggers after the sequence. |
 | Boss | `ghost_general` / 귀신장 | `혈귀 돌진`: heavy charge; `귀혈진`: delayed slam ring; `추혼 압박`: short pursuit phase with a forced recovery. Stage 4 adds `연속 귀혈쇄도` as feint plus two separately telegraphed rushes. | Each phase has its own red/black tell; no permanent contact lock or opaque multi-rush. |
 
@@ -96,9 +99,9 @@ Ninjutsu: `귀혈파` (starter, existing close pulse), `잔영 쇄도` (Elite ch
 
 | Role | ID / name | Player-visible behavior | Telegraph / recovery |
 | --- | --- | --- | --- |
-| Core A — ranged | `shuriken_scout` / 표창 척후 | Repositions to a flank and throws a readable three-shuriken spread. | Throws from a dark-purple wind-up with three thin projected paths. |
-| Core B | `poison_shadow_assassin` / 독영 살수 | Leaves one small temporary poison lane behind its relocation. | Purple stain outline arrives before the damaging center; it dissipates visibly. |
-| Core C | `dark_mark_pursuer` / 암표 추격자 | Marks the Ninja, then releases a delayed line execution. | Eye-mark on the player and an obvious release line identify the source and timing. |
+| Core A | `shuriken_scout` / 표창 척후 | Flanking-looking shadow scout that still applies pursuit/contact pressure only. | None; it throws no shuriken spread. |
+| Core B | `poison_shadow_assassin` / 독영 살수 | Poison-stained shadow pursuer with no independent floor hazard. | None; it leaves no poison lane. |
+| Core C | `dark_mark_pursuer` / 암표 추격자 | Marked shadow yokai that joins the close chase without a mark or execution line. | None; it uses no target-mark pattern. |
 | Elite | `shadow_chief` / 그림자 두령 | Creates one marked execution threat while one lower-weight shadow proxy adds positional pressure. | The real chief has a sharp purple outline; proxy opacity and VFX weight are intentionally lower. |
 | Boss | `night_executioner` / 야행 처형자 | `흑영 낙인`: target mark; `야행 분신`: repositioning feint with one weak proxy; `처형선`: announced execution line. Stage 4 adds `삼영 처형선` as three sequential lines. | Never uses simultaneous opaque one-shot lattice; true source, target and release cue remain legible. |
 
@@ -136,13 +139,16 @@ only for spawning an already chosen definition and attaching existing
 role/encounter metadata; it does not decide attacks, visuals or school stats.
 
 Core actors are selected from the existing `next_core_encounter()` stream.
-Elites and Bosses are selected by the `elite_id` / `boss_id` already supplied
-by `SchoolEncounterDefinition`. Generic `EnemyBasic` remains a normal-horde
-fallback only until every authored Core definition is bound; it is never used
-for a school Elite or Boss.
+Core definitions must keep `pattern_definitions` empty and never create an
+`EncounterPatternController`; `EnemyChaser` pursuit/contact remains their only
+attack. Elites and Bosses are selected by the `elite_id` / `boss_id` already
+supplied by `SchoolEncounterDefinition` and are the only roles that create
+pattern controllers. Generic `EnemyBasic` remains a normal-horde fallback only
+until every authored Core definition is bound; it is never used for a school
+Elite or Boss.
 
-Create a reusable `EncounterPatternController` child for actors. It owns a
-data-defined cadence and state sequence:
+Create a reusable `EncounterPatternController` child for Elite and Boss actors.
+It owns a data-defined cadence and state sequence:
 
 ```text
 idle/chase -> telegraph -> execute -> recovery -> idle/chase
@@ -239,8 +245,9 @@ explicit state/consumer mapping and import evidence before it is promoted.
 1. There are exactly 20 encounter actor definitions: 12 Core, four Elite and
    four Boss definitions. Each has a unique ID matching the current encounter
    catalog.
-2. Each school has exactly three Core definitions, exactly one of which has
-   the `ranged` tag and a non-empty ranged pattern.
+2. Each school has exactly three Core definitions. Every Core definition has
+   an empty pattern list and no `ranged` tag; its only harmful interaction is
+   the inherited pursuit/contact path.
 3. Every Elite has at least two pattern definitions; every Boss has two or
    three school-specific pattern definitions. Every damaging pattern has a
    non-empty telegraph definition and a recovery state.
@@ -259,8 +266,8 @@ explicit state/consumer mapping and import evidence before it is promoted.
 
 ## 8. Verification and evidence ceiling
 
-Machine tests must cover actor/catalog cardinality, unique IDs, one ranged
-Core per school, Elite/Boss pattern/telegraph requirements, wrong-school
+Machine tests must cover actor/catalog cardinality, unique IDs, Core
+contact-only ownership, Elite/Boss pattern/telegraph requirements, wrong-school
 binding rejection, generic-actor rejection for Elite/Boss spawns, player dash
 damage immunity during an actor's damaging phase, and Ninjutsu acquisition
 atomicity/retention. Integration tests must run all four selected schools
@@ -269,10 +276,11 @@ and spell-reward identities.
 
 Godot import/parser, headless main-scene smoke and full GUT are required on
 the exact branch head. Render observation must separately establish that an
-Elite looks unlike its Core units, a Boss technique telegraph is visible before
-harm, and a ranged Core is readable amid the uncapped horde. Human Usability,
-Player Experience, balance, frame-performance at uncapped density,
-touch/gamepad and device/export remain `NOT_RUN` until actually observed.
+Elite looks unlike its Core units, Elite/Boss technique telegraphs are visible
+before harm, and a dense contact-only Core horde remains readable amid the
+uncapped count. Human Usability, Player Experience, balance, frame-performance
+at uncapped density, touch/gamepad and device/export remain `NOT_RUN` until
+actually observed.
 
 ## 9. Alternatives considered
 

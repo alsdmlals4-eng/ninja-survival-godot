@@ -4,6 +4,8 @@ class_name EnemyChaser
 signal died(enemy: Node)
 signal damaged(enemy: Node, actual_damage: int, remaining_health: int, maximum_health: int)
 
+const OPENING_CONTACT_STAGGER_META := &"ninja_wave_opening_contact_stagger_seconds"
+
 @export var max_health: int = 20
 @export var move_speed: float = 90.0
 @export var contact_damage: int = 10
@@ -19,6 +21,7 @@ var _contact_cooldown_remaining: float = 0.0
 func _ready() -> void:
 	health = max(max_health, 1)
 	_dead = false
+	_contact_cooldown_remaining = maxf(float(get_meta(OPENING_CONTACT_STAGGER_META, 0.0)), 0.0)
 	add_to_group("enemies")
 
 

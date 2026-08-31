@@ -209,17 +209,17 @@ func test_actor_catalog_has_twelve_core_four_elite_and_four_boss_definitions() -
 	assert_eq(_count_actor_role(actors, &"boss"), 4)
 
 
-func test_each_school_has_exactly_one_ranged_core_actor() -> void:
+func test_each_school_keeps_core_pressure_contact_only() -> void:
 	var catalog = _catalog()
 	if catalog == null:
 		return
 	var actors: Dictionary = catalog.build_actor_definitions()
 	for school_id in SCHOOL_IDS:
-		var ranged_count := 0
+		var special_core_count := 0
 		for actor in actors.values():
-			if actor.school_id == school_id and actor.role == &"core" and actor.tags.has(&"ranged"):
-				ranged_count += 1
-		assert_eq(ranged_count, 1, "%s requires exactly one ranged Core actor" % school_id)
+			if actor.school_id == school_id and actor.role == &"core" and (actor.tags.has(&"ranged") or not actor.pattern_definitions.is_empty()):
+				special_core_count += 1
+		assert_eq(special_core_count, 0, "%s Core actors must provide pursuit/contact pressure only." % school_id)
 
 
 func test_actor_catalog_rejects_elite_or_boss_without_telegraph_or_recovery() -> void:

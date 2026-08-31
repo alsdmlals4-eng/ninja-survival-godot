@@ -4,6 +4,9 @@ class_name WaveSpawner
 signal enemy_spawned(enemy: Node)
 
 const NORMAL_ENEMY_META := &"ninja_wave_spawner_normal"
+const OPENING_CONTACT_STAGGER_META := &"ninja_wave_opening_contact_stagger_seconds"
+const OPENING_CONTACT_STAGGER_SLOT_COUNT := 5
+const OPENING_CONTACT_STAGGER_STEP_SECONDS := 0.30
 
 @export var enemy_scene: PackedScene
 @export var wave_interval: float = 1.0
@@ -17,6 +20,7 @@ var anchor: Node2D
 var _spawning_enabled: bool = true
 var _time_remaining: float = 1.0
 var _rng := RandomNumberGenerator.new()
+var _opening_contact_stagger_index: int = 0
 
 
 func _ready() -> void:
@@ -97,14 +101,21 @@ func _spawn_count(requested_count: int) -> int:
 			enemy_node.free()
 			continue
 
-		spawn_parent.add_child(enemy_node)
 		var enemy := enemy_node as Node2D
 		enemy.set_meta(NORMAL_ENEMY_META, true)
+		enemy.set_meta(OPENING_CONTACT_STAGGER_META, _next_opening_contact_stagger_seconds())
+		spawn_parent.add_child(enemy)
 		enemy.global_position = _random_annular_spawn_position()
 		enemy_spawned.emit(enemy)
 		spawned += 1
 
 	return spawned
+
+
+func _next_opening_contact_stagger_seconds() -> float:
+	var slot := _opening_contact_stagger_index % OPENING_CONTACT_STAGGER_SLOT_COUNT
+	_opening_contact_stagger_index += 1
+	return float(slot) * OPENING_CONTACT_STAGGER_STEP_SECONDS
 
 
 func _random_annular_spawn_position() -> Vector2:

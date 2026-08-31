@@ -16,7 +16,7 @@ class DamageTarget extends Node2D:
 		return amount
 
 
-func test_ranged_core_execution_spawns_a_pattern_projectile() -> void:
+func test_core_actor_configures_without_a_pattern_controller_or_projectile_attack() -> void:
 	var actor = ACTOR_SCENE.instantiate()
 	add_child_autofree(actor)
 	actor.global_position = Vector2.ZERO
@@ -27,9 +27,29 @@ func test_ranged_core_execution_spawns_a_pattern_projectile() -> void:
 	target.global_position = Vector2(120.0, 0.0)
 	assert_true(actor.configure_target(target))
 
-	actor._on_pattern_execute_requested(actor.definition.pattern_definitions[0])
+	assert_true(actor.definition.pattern_definitions.is_empty(), "Core definitions must not retain a hidden special attack schedule.")
+	assert_null(actor.pattern_controller, "Core actors must use EnemyChaser pursuit/contact instead of creating a pattern controller.")
+	assert_eq(_pattern_projectile_count(actor), 0)
 
-	assert_eq(_pattern_projectile_count(actor), 1, "A ranged Core must emit a physical projectile instead of only resolving contact damage.")
+
+func test_reconfiguring_an_elite_as_a_core_clears_its_special_runtime_effects() -> void:
+	var actor = ACTOR_SCENE.instantiate()
+	add_child_autofree(actor)
+	actor.global_position = Vector2.ZERO
+	assert_true(actor.configure_definition(ENCOUNTER_CATALOG_SCRIPT.actor_definition_for(&"shadow_chief")))
+
+	var target := DamageTarget.new()
+	add_child_autofree(target)
+	target.global_position = Vector2(120.0, 0.0)
+	assert_true(actor.configure_target(target))
+	var proxy_pattern: Dictionary = actor.definition.pattern_definitions[1]
+	actor._on_pattern_state_changed(&"telegraph", proxy_pattern)
+	actor._on_pattern_execute_requested(proxy_pattern)
+	assert_eq(actor.active_proxy_count(), 1)
+
+	assert_true(actor.configure_definition(ENCOUNTER_CATALOG_SCRIPT.actor_definition_for(&"shikigami_handler")))
+	assert_null(actor.pattern_controller)
+	assert_eq(actor.active_proxy_count(), 0, "A Core reconfiguration must not retain an Elite proxy hazard.")
 
 
 func test_telegraphed_zone_uses_the_locked_warning_position() -> void:

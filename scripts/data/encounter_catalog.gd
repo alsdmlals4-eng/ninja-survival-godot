@@ -164,27 +164,27 @@ static func validate_catalog() -> Array[String]:
 
 static func build_actor_definitions() -> Dictionary:
 	var actors: Dictionary = {}
-	_add_actor(actors, &"seal_chaser", &"bongma", &"core", "봉인 추적자", [], 34, 108.0, 8, [&"line_dash"])
-	_add_actor(actors, &"shikigami_handler", &"bongma", &"core", "식신 사역자", [&"ranged"], 26, 78.0, 5, [&"fan_or_arc_projectile"])
-	_add_actor(actors, &"barrier_carrier", &"bongma", &"core", "결계 운반자", [], 42, 68.0, 9, [&"barrier_or_lane"])
+	_add_actor(actors, &"seal_chaser", &"bongma", &"core", "봉인 추적자", [], 34, 108.0, 8, [])
+	_add_actor(actors, &"shikigami_handler", &"bongma", &"core", "식신 사역자", [], 26, 78.0, 5, [])
+	_add_actor(actors, &"barrier_carrier", &"bongma", &"core", "결계 운반자", [], 42, 68.0, 9, [])
 	_add_actor(actors, &"mobile_array_caster", &"bongma", &"elite", "이동진 술사", [&"elite"], 180, 82.0, 13, [&"telegraphed_zone", &"summon_or_proxy"])
 	_add_actor(actors, &"hundred_demon_array_master", &"bongma", &"boss", "백귀진 주재자", [&"boss"], 520, 70.0, 18, [&"telegraphed_zone", &"summon_or_proxy", &"barrier_or_lane"])
 
-	_add_actor(actors, &"fire_mark_caster", &"cheonsul", &"core", "화인 술사", [&"ranged"], 28, 80.0, 5, [&"fan_or_arc_projectile"])
-	_add_actor(actors, &"water_vein_caster", &"cheonsul", &"core", "수맥 술사", [], 36, 74.0, 7, [&"telegraphed_zone"])
-	_add_actor(actors, &"lightning_chain_caster", &"cheonsul", &"core", "뇌쇄 술사", [], 32, 86.0, 7, [&"mark_or_link"])
+	_add_actor(actors, &"fire_mark_caster", &"cheonsul", &"core", "화인 술사", [], 28, 80.0, 5, [])
+	_add_actor(actors, &"water_vein_caster", &"cheonsul", &"core", "수맥 술사", [], 36, 74.0, 7, [])
+	_add_actor(actors, &"lightning_chain_caster", &"cheonsul", &"core", "뇌쇄 술사", [], 32, 86.0, 7, [])
 	_add_actor(actors, &"five_element_tuner", &"cheonsul", &"elite", "오행 조율자", [&"elite"], 190, 78.0, 13, [&"telegraphed_zone", &"mark_or_link"])
 	_add_actor(actors, &"heavenly_change_taoist", &"cheonsul", &"boss", "천변 도사", [&"boss"], 540, 68.0, 19, [&"fan_or_arc_projectile", &"telegraphed_zone", &"mark_or_link"])
 
-	_add_actor(actors, &"surge_fighter", &"guiin", &"core", "쇄도 권객", [], 38, 116.0, 10, [&"line_dash"])
-	_add_actor(actors, &"pressure_monk", &"guiin", &"core", "압박 승병", [&"ranged"], 34, 76.0, 7, [&"pulse_or_ring"])
-	_add_actor(actors, &"ghost_blood_chaser", &"guiin", &"core", "귀혈 추적자", [], 44, 94.0, 11, [&"chase_contact"])
+	_add_actor(actors, &"surge_fighter", &"guiin", &"core", "쇄도 권객", [], 38, 116.0, 10, [])
+	_add_actor(actors, &"pressure_monk", &"guiin", &"core", "압박 승병", [], 34, 76.0, 7, [])
+	_add_actor(actors, &"ghost_blood_chaser", &"guiin", &"core", "귀혈 추적자", [], 44, 94.0, 11, [])
 	_add_actor(actors, &"melee_chaos_captain", &"guiin", &"elite", "난전 대장", [&"elite"], 210, 86.0, 15, [&"line_dash", &"pulse_or_ring"])
 	_add_actor(actors, &"ghost_general", &"guiin", &"boss", "귀신장", [&"boss"], 560, 74.0, 21, [&"line_dash", &"pulse_or_ring", &"chase_contact"])
 
-	_add_actor(actors, &"shuriken_scout", &"heukyeong", &"core", "표창 척후", [&"ranged"], 30, 102.0, 6, [&"fan_or_arc_projectile"])
-	_add_actor(actors, &"poison_shadow_assassin", &"heukyeong", &"core", "독영 살수", [], 34, 96.0, 8, [&"telegraphed_zone"])
-	_add_actor(actors, &"dark_mark_pursuer", &"heukyeong", &"core", "암표 추격자", [], 38, 90.0, 9, [&"mark_or_link"])
+	_add_actor(actors, &"shuriken_scout", &"heukyeong", &"core", "표창 척후", [], 30, 102.0, 6, [])
+	_add_actor(actors, &"poison_shadow_assassin", &"heukyeong", &"core", "독영 살수", [], 34, 96.0, 8, [])
+	_add_actor(actors, &"dark_mark_pursuer", &"heukyeong", &"core", "암표 추격자", [], 38, 90.0, 9, [])
 	_add_actor(actors, &"shadow_chief", &"heukyeong", &"elite", "그림자 두령", [&"elite"], 200, 88.0, 14, [&"mark_or_link", &"summon_or_proxy"])
 	_add_actor(actors, &"night_executioner", &"heukyeong", &"boss", "야행 처형자", [&"boss"], 550, 76.0, 20, [&"mark_or_link", &"summon_or_proxy", &"line_dash"])
 	return actors
@@ -215,9 +215,15 @@ static func validate_actor_definitions(actors: Dictionary) -> Array[String]:
 		roles[actor.role] = int(roles[actor.role]) + 1
 		if actor.display_name.is_empty() or actor.visual_asset_path.is_empty():
 			errors.append("Encounter actor presentation missing: %s" % actor.actor_id)
-		var minimum_pattern_count := 2 if actor.role == &"elite" else 3 if actor.role == &"boss" else 1
-		if actor.pattern_definitions.size() < minimum_pattern_count:
-			errors.append("Encounter actor pattern count too low: %s" % actor.actor_id)
+		if actor.role == &"core":
+			if not actor.pattern_definitions.is_empty():
+				errors.append("Core actors must not own special attack patterns: %s" % actor.actor_id)
+			if actor.tags.has(&"ranged"):
+				errors.append("Core actors must not advertise ranged attacks: %s" % actor.actor_id)
+		else:
+			var minimum_pattern_count := 2 if actor.role == &"elite" else 3
+			if actor.pattern_definitions.size() < minimum_pattern_count:
+				errors.append("Encounter actor pattern count too low: %s" % actor.actor_id)
 		for pattern in actor.pattern_definitions:
 			if not SUPPORTED_PRIMITIVE_IDS.has(StringName(pattern.get("primitive_id", &""))):
 				errors.append("Unknown actor primitive: %s" % actor.actor_id)
@@ -229,13 +235,6 @@ static func validate_actor_definitions(actors: Dictionary) -> Array[String]:
 		var expected := 12 if role == &"core" else 4
 		if int(roles[role]) != expected:
 			errors.append("Encounter actor role cardinality mismatch: %s" % role)
-	for school_id in SCHOOL_IDS:
-		var ranged_core_count := 0
-		for actor in actors.values():
-			if actor != null and actor.school_id == school_id and actor.role == &"core" and actor.tags.has(&"ranged"):
-				ranged_core_count += 1
-		if ranged_core_count != 1:
-			errors.append("School %s requires exactly one ranged Core actor" % school_id)
 	return errors
 
 

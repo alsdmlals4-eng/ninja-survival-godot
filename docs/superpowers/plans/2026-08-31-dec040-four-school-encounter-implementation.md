@@ -13,7 +13,7 @@
 ## Constraints
 
 - Initial combat patterns are katana + shuriken + one selected-school starter spell; no manual spell input, aim control, player attack pose, save/meta system or new normal-wave system.
-- Exactly twelve Core, four dedicated Elite and four dedicated Boss definitions; exactly one ranged Core in each school.
+- Exactly twelve Core, four dedicated Elite and four dedicated Boss definitions; every Core uses pursuit/contact pressure only, while special patterns belong to Elite/Boss roles.
 - Each Elite has at least two patterns. Each Boss has exactly three base school-specific techniques. Harmful patterns have nonzero telegraph and recovery.
 - Enemy harm delegates to PlayerController.take_damage so dash invulnerability remains the only authority.
 - Existing StageEncounterState / SchoolCircuitController own gates, existing RestCommitCoordinator owns route/Fate/backpack atomicity, and WaveSpawner retains uncapped horde behavior.
@@ -37,7 +37,7 @@
 - NinjutsuCatalog.build_definitions() -> Dictionary
 - NinjutsuCatalog.definition_for_lane(school_id: StringName, lane: StringName) -> NinjutsuDefinition
 
-- [ ] **Step 1: Write failing role/range contract tests.**
+- [ ] **Step 1: Write failing role/contact-boundary contract tests.**
 
 ~~~gdscript
 func test_actor_catalog_has_twelve_core_four_elite_and_four_boss() -> void:
@@ -47,9 +47,9 @@ func test_actor_catalog_has_twelve_core_four_elite_and_four_boss() -> void:
 	assert_eq(_count_role(actors, &"elite"), 4)
 	assert_eq(_count_role(actors, &"boss"), 4)
 
-func test_each_school_has_one_ranged_core() -> void:
+func test_each_school_keeps_core_contact_only() -> void:
 	for school_id in SCHOOL_IDS:
-		assert_eq(_count_ranged_cores(_catalog().build_actor_definitions(), school_id), 1)
+		assert_eq(_count_special_cores(_catalog().build_actor_definitions(), school_id), 0)
 ~~~
 
 - [ ] **Step 2: Run RED.**
@@ -76,7 +76,7 @@ class_name EncounterActorDefinition
 @export var visual_asset_path := ""
 ~~~
 
-Use DEC-040 exact IDs. Apply ranged only to shikigami_handler, fire_mark_caster, pressure_monk, shuriken_scout. Every Elite must have >=2 primitives and every Boss exactly three base techniques. Catalog validation rejects missing telemetry/recovery, wrong school/role, duplicate ID, unsupported primitive and a missing ranged Core.
+Use DEC-040 exact IDs. Give every Core an empty pattern list and no `ranged` tag. Every Elite must have >=2 primitives and every Boss exactly three base techniques. Catalog validation rejects a Core special pattern, missing Elite/Boss telemetry/recovery, wrong school/role, duplicate ID and unsupported primitive.
 
 - [ ] **Step 4: Write RED for the twelve spell lanes and implement their data.**
 
@@ -139,9 +139,9 @@ func test_pattern_transitions_chase_telegraph_execute_recovery() -> void:
 	actor.advance_pattern_for_test(actor.current_execute_duration())
 	assert_eq(actor.pattern_state(), &"recovery")
 
-func test_pattern_damage_delegates_to_dashing_player_damage_path() -> void:
+func test_elite_pattern_damage_delegates_to_dashing_player_damage_path() -> void:
 	var player := _dashing_player_fixture()
-	assert_eq(_configured_actor(&"pressure_monk").resolve_pattern_damage_for_test(player), 0)
+	assert_eq(_configured_actor(&"five_element_tuner").resolve_pattern_damage_for_test(player), 0)
 ~~~
 
 - [ ] **Step 2: Run RED.**
@@ -169,7 +169,7 @@ func configure_definition(value: EncounterActorDefinition) -> bool:
 	return true
 ~~~
 
-The scene has fixed collision, contact shadow, Visual and controller children. It does not use EnemyVisualVariant.
+The scene has fixed collision, contact shadow and Visual children. It creates a controller only for Elite/Boss definitions; a Core remains an `EnemyChaser` pursuit/contact actor. It does not use EnemyVisualVariant.
 
 - [ ] **Step 4: Implement shared pattern state behavior.**
 

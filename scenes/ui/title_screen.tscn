@@ -64,16 +64,16 @@ color = Color(0.012, 0.02, 0.038, 0.12)
 [node name="LogoLockup" type="Control" parent="."]
 anchors_preset = 0
 anchor_left = 0.02
-anchor_top = 0.22
+anchor_top = 0.24
 anchor_right = 0.26
-anchor_bottom = 0.76
+anchor_bottom = 0.82
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="TitleLogo" type="TextureRect" parent="LogoLockup"]
 anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 0.46
+anchor_bottom = 0.42
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
@@ -92,25 +92,18 @@ grow_vertical = 0
 mouse_filter = 2
 color = Color(0.77, 0.595, 0.31, 0.9)
 
-[node name="PromiseLabel" type="Label" parent="LogoLockup"]
+[node name="MenuButtons" type="VBoxContainer" parent="LogoLockup"]
 anchors_preset = 10
-anchor_top = 0.54
-anchor_right = 1.0
-anchor_bottom = 0.68
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_color = Color(0.79, 0.81, 0.84, 1)
-theme_override_font_sizes/font_size = 18
-text = "네 유파의 흔적을 모아, 하나의 신이 되어라"
-autowrap_mode = 2
-
-[node name="StartButton" type="Button" parent="LogoLockup"]
-anchors_preset = 10
-anchor_top = 0.75
+anchor_top = 0.57
 anchor_right = 0.76
-anchor_bottom = 0.93
+anchor_bottom = 0.98
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="StartButton" type="Button" parent="LogoLockup/MenuButtons"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
 focus_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
 theme_override_colors/font_hover_color = Color(1, 0.95, 0.82, 1)
@@ -119,3 +112,150 @@ theme_override_styles/normal = SubResource("StyleBoxStartNormal")
 theme_override_styles/hover = SubResource("StyleBoxStartHover")
 theme_override_styles/focus = SubResource("StyleBoxStartHover")
 text = "시작하기"
+
+[node name="GuideButton" type="Button" parent="LogoLockup/MenuButtons"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+focus_mode = 2
+theme_override_colors/font_color = Color(0.84, 0.86, 0.9, 1)
+theme_override_colors/font_hover_color = Color(1, 0.95, 0.82, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxStartNormal")
+theme_override_styles/hover = SubResource("StyleBoxStartHover")
+theme_override_styles/focus = SubResource("StyleBoxStartHover")
+text = "조작 방법"
+
+[node name="SettingsButton" type="Button" parent="LogoLockup/MenuButtons"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+focus_mode = 2
+theme_override_colors/font_color = Color(0.84, 0.86, 0.9, 1)
+theme_override_colors/font_hover_color = Color(1, 0.95, 0.82, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxStartNormal")
+theme_override_styles/hover = SubResource("StyleBoxStartHover")
+theme_override_styles/focus = SubResource("StyleBoxStartHover")
+text = "설정"
+
+[node name="GuidePanel" type="Control" parent="."]
+visible = false
+process_mode = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Backdrop" type="ColorRect" parent="GuidePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.01, 0.02, 0.04, 0.9)
+mouse_filter = 2
+
+[node name="Dialog" type="PanelContainer" parent="GuidePanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -160.0
+offset_right = 220.0
+offset_bottom = 160.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="GuidePanel/Dialog"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 24
+
+[node name="Actions" type="VBoxContainer" parent="GuidePanel/Dialog/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="TitleLabel" type="Label" parent="GuidePanel/Dialog/Margin/Actions"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "조작 방법"
+horizontal_alignment = 1
+
+[node name="BodyLabel" type="Label" parent="GuidePanel/Dialog/Margin/Actions"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "WASD 또는 방향키로 이동\n클릭한 위치로 이동\nSpace 또는 우클릭으로 DASH\n\n공격은 일본도·수리검·선택 인법이 자동으로 실행됩니다."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="GuidePanel/Dialog/Margin/Actions"]
+layout_mode = 2
+text = "닫기"
+
+[node name="SettingsPanel" type="Control" parent="."]
+visible = false
+process_mode = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Backdrop" type="ColorRect" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.01, 0.02, 0.04, 0.9)
+mouse_filter = 2
+
+[node name="Dialog" type="PanelContainer" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -190.0
+offset_top = -126.0
+offset_right = 190.0
+offset_bottom = 126.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="SettingsPanel/Dialog"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 24
+
+[node name="Actions" type="VBoxContainer" parent="SettingsPanel/Dialog/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="TitleLabel" type="Label" parent="SettingsPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "설정"
+horizontal_alignment = 1
+
+[node name="FullscreenButton" type="Button" parent="SettingsPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+text = "전체 화면 켜기"
+
+[node name="CloseButton" type="Button" parent="SettingsPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+text = "닫기"

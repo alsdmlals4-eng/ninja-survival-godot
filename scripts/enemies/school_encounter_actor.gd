@@ -19,7 +19,6 @@ const PROXY_RADIUS := 86.0
 const PROXY_ARM_DURATION := 0.35
 const PROXY_LIFETIME := 0.85
 const MARK_DURATION := 3.5
-
 var definition = null
 var pattern_controller = null
 var _telegraph_visual: Sprite2D
@@ -33,7 +32,6 @@ var _proxy_hazards: Array[Dictionary] = []
 
 func _ready() -> void:
 	super._ready()
-	_ensure_pattern_controller()
 
 
 func _physics_process(delta: float) -> void:
@@ -42,7 +40,6 @@ func _physics_process(delta: float) -> void:
 		_clear_runtime_effects()
 		return
 	_advance_runtime_effects(delta)
-	_ensure_pattern_controller()
 	if pattern_controller != null:
 		pattern_controller.advance(delta)
 		if pattern_controller.state_name() != &"chase":
@@ -52,15 +49,22 @@ func _physics_process(delta: float) -> void:
 
 
 func configure_definition(value) -> bool:
-	if value == null or value.actor_id == &"" or value.role == &"" or value.pattern_definitions.is_empty():
+	if value == null or value.actor_id == &"" or value.role == &"":
+		return false
+	if value.role == &"core" and not value.pattern_definitions.is_empty():
 		return false
 	if value.role == &"elite" and value.pattern_definitions.size() < 2:
 		return false
 	if value.role == &"boss" and value.pattern_definitions.size() != 3:
 		return false
-	_ensure_pattern_controller()
-	if pattern_controller == null or not pattern_controller.configure(value.pattern_definitions):
-		return false
+	if value.role == &"core":
+		_clear_pattern_controller()
+		_clear_telegraph()
+		_clear_runtime_effects()
+	else:
+		_ensure_pattern_controller()
+		if pattern_controller == null or not pattern_controller.configure(value.pattern_definitions):
+			return false
 	definition = value.copy_value()
 	max_health = maxi(definition.max_health, 1)
 	move_speed = maxf(definition.move_speed, 0.0)
@@ -109,7 +113,6 @@ func current_execute_duration() -> float:
 
 
 func advance_pattern_for_test(delta: float) -> void:
-	_ensure_pattern_controller()
 	if pattern_controller == null:
 		return
 	if pattern_controller.state_name() == &"chase":
@@ -130,6 +133,13 @@ func _ensure_pattern_controller() -> void:
 	add_child(pattern_controller)
 	pattern_controller.execute_requested.connect(_on_pattern_execute_requested)
 	pattern_controller.state_changed.connect(_on_pattern_state_changed)
+
+
+func _clear_pattern_controller() -> void:
+	if pattern_controller == null:
+		return
+	pattern_controller.queue_free()
+	pattern_controller = null
 
 
 func _on_pattern_execute_requested(pattern: Dictionary) -> void:

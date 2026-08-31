@@ -44,7 +44,7 @@ func test_each_school_selection_activates_only_matching_runtime_and_combat() -> 
 			return
 
 		var selector = main.get_node("SchoolSelectionUI")
-		var start_button := main.get_node("TitleScreen/LogoLockup/StartButton") as Button
+		var start_button := main.get_node("TitleScreen/LogoLockup/MenuButtons/StartButton") as Button
 		assert_not_null(start_button)
 		if start_button == null:
 			return
