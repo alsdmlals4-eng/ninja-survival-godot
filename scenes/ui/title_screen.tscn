@@ -1,8 +1,9 @@
 [gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/title_screen.gd" id="1_title"]
-[ext_resource type="Texture2D" path="res://assets/runtime/ui/title_screen_four_traditions_medal_v1.png" id="2_backdrop"]
+[ext_resource type="Texture2D" path="res://assets/runtime/ui/title_screen_moonlit_ninja_v2.png" id="2_backdrop"]
 [ext_resource type="Texture2D" path="res://assets/runtime/ui/title_logo_ninja_god_v1.png" id="3_title_logo"]
+[ext_resource type="Texture2D" path="res://assets/runtime/ui/title_four_traditions_medal_v2.png" id="4_title_medal"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxStartNormal"]
 bg_color = Color(0.055, 0.071, 0.106, 0.94)
@@ -60,6 +61,19 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0.012, 0.02, 0.038, 0.12)
+
+[node name="TitleMedal" type="TextureRect" parent="."]
+anchors_preset = 0
+anchor_left = 0.275
+anchor_top = 0.24
+anchor_right = 0.405
+anchor_bottom = 0.52
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_title_medal")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="LogoLockup" type="Control" parent="."]
 anchors_preset = 0

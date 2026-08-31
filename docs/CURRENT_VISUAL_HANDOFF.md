@@ -16,20 +16,35 @@ This does not authorize chat-start generation, gap-only/orphan art, or replaceme
 
 ## 2026-08-31 user-locked title front door, title logo, and four-traditions medal
 
-`NINJA_RUNTIME_TITLE_SCREEN_FOUR_TRADITIONS_MEDAL_01` is the approved opaque
-16:9 front-door key art. It is a presentation-only backdrop, not an in-combat
-unit, player skin, Stage reward, or four-character selection surface.
+`NINJA_RUNTIME_TITLE_SCREEN_MOONLIT_NINJA_02` and
+`NINJA_RUNTIME_TITLE_FOUR_TRADITIONS_MEDAL_02` replace the previous
+single baked-key-art composition. They remain presentation-only title assets,
+not an in-combat unit, player skin, Stage reward, or four-character selection
+surface.
 
-| Field | Recorded value |
+| Field | Medal-free backdrop |
 | --- | --- |
-| Local source | `assets/runtime/ui/title_screen_four_traditions_medal_v1.png` |
-| SHA-256 | `346cb396a0d9236c5818933e2e46dde4f0b904cdf56d58104f175e1c536ece9f` |
-| Metadata | PNG, 1672×941, opaque 16:9 painterly ink key art; fixed ninja and moon on the right, unobstructed left title area |
-| Medal contract | One circular artifact immediately beside the separate `닌자의 신` title-logo overlay: four joined fragments share gold seams and a center core. The quadrants read 봉마=seal/familiar, 천술=reaction geometry, 귀인=oni, 흑영=shadow/shuriken. They are not selectable character panels. |
+| Asset ID | `NINJA_RUNTIME_TITLE_SCREEN_MOONLIT_NINJA_02` |
+| Local source | `assets/runtime/ui/title_screen_moonlit_ninja_v2.png` |
+| SHA-256 | `86f86da33986499bfd98aa003ba52ac65105136197d4530aa3335c9b8f2e030c` |
+| Metadata | PNG, 1672×941, opaque 16:9 painterly ink key art; fixed ninja and moon stay on the right and the left becomes an uninterrupted dark title field. |
 | User approval | `LOCK` / `승인`, 2026-08-31 KST |
-| Runtime consumer | `scenes/ui/title_screen.tscn` → `TitleScreen/Backdrop`; the user-locked logo below is the adjacent `TitleScreen/LogoLockup/TitleLogo` overlay. No plain fallback `TitleLabel` remains. |
-| Machine evidence | Godot 4.7.1 import, editor parse, 300-frame main-scene smoke, focused title/start/MVP-2 GUT `15/15`, `193` assertions, and full GUT `580/580`, `6455` assertions passed on the isolated branch. PR #135 head `ddeaf55` then passed GitHub GUT and Windows internal-build checks. |
-| Render/Human/device evidence | `NOT_RUN`: no exact Ninja Survival live-editor session is currently attached; neither machine test nor source review is a visual usability or player-experience pass. |
+| Runtime consumer | `scenes/ui/title_screen.tscn` → `TitleScreen/Backdrop` |
+| Machine evidence | Godot 4.7.1 import, editor parse, 300-frame main-scene smoke, focused title/start GUT `3/3`, `68` assertions, and full GUT `586/586`, `6587` assertions passed on the isolated branch. |
+| Render/Human/device evidence | `NOT_RUN`: no exact Ninja Survival live-editor session is currently attached; machine checks do not establish visual usability or player experience. |
+
+| Field | Separate four-traditions medal |
+| --- | --- |
+| Asset ID | `NINJA_RUNTIME_TITLE_FOUR_TRADITIONS_MEDAL_02` |
+| Local source | `assets/runtime/ui/title_four_traditions_medal_v2.png` |
+| SHA-256 | `26520188d71f9565fef0263062dcbab6ce23f4998371f55af765c034257c61cc` |
+| Metadata | PNG, 1254×1254, RGBA transparent title emblem. Four joined fragments share gold seams and one center core: 봉마=seal/familiar, 천술=reaction geometry, 귀인=oni, 흑영=shadow/shuriken. It is not a selectable character panel. |
+| User approval | `LOCK` / `승인`, 2026-08-31 KST |
+| Runtime consumer | `scenes/ui/title_screen.tscn` → `TitleScreen/TitleMedal`, a smaller aspect-preserving overlay immediately right of the logo with pointer input ignored. |
+| Machine evidence | Godot 4.7.1 import, editor parse, 300-frame main-scene smoke, focused title/start GUT `3/3`, `68` assertions, and full GUT `586/586`, `6587` assertions passed on the isolated branch. |
+| Render/Human/device evidence | `NOT_RUN`: no exact Ninja Survival live-editor session is currently attached; machine checks do not establish visual usability or player experience. |
+
+The former baked-medal backdrop `NINJA_RUNTIME_TITLE_SCREEN_FOUR_TRADITIONS_MEDAL_01` remains a `USER_LOCKED` historical provenance and rollback source. It has no direct current-title consumer after the separate-medal transition.
 
 `NINJA_RUNTIME_TITLE_LOGO_NINJA_GOD_01` is the approved transparent title mark;
 the supplied GRIMOIRE logo was hierarchy reference only, not copied source or
@@ -41,7 +56,7 @@ runtime content.
 | SHA-256 | `c946ae4b08fd77f1e36bc25b22d0d41fdd5060fc80e98faeb9e6f2d2ac9a7a5b` |
 | Metadata | PNG, 1672×941, RGBA transparent `닌자의 신` wordmark; sampled alpha `0..255`, all four corner alphas `0`; navy ink/stone-gold lettering with crescent and red seal |
 | User approval | `LOCK` / `확정하자`, 2026-08-31 KST |
-| Runtime consumer | `scenes/ui/title_screen.tscn` → `TitleScreen/LogoLockup/TitleLogo`, aspect-preserving and immediately left of the baked four-piece medal |
+| Runtime consumer | `scenes/ui/title_screen.tscn` → `TitleScreen/LogoLockup/TitleLogo`, aspect-preserving and immediately left of the separately positioned four-piece medal |
 | Machine evidence | Godot 4.7.1 import, editor parse, 300-frame main-scene smoke, focused title/start/MVP-2 GUT `15/15`, `193` assertions, and full GUT `580/580`, `6455` assertions passed on the isolated branch. PR #135 head `ddeaf55` then passed GitHub GUT and Windows internal-build checks. |
 | Render/Human/device evidence | `NOT_RUN`: the exact Ninja Survival editor session is not connected; import or headless tests do not establish visual readability. |
 

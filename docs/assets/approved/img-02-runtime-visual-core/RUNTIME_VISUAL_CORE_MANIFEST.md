@@ -13,7 +13,9 @@
 | Asset ID | Local source | SHA-256 | Metadata | Consumer | Status |
 | --- | --- | --- | --- | --- | --- |
 | `NINJA_RUNTIME_TITLE_LOGO_NINJA_GOD_01` | `assets/runtime/ui/title_logo_ninja_god_v1.png` | `c946ae4b08fd77f1e36bc25b22d0d41fdd5060fc80e98faeb9e6f2d2ac9a7a5b` | PNG, 1672×941, RGBA transparent `닌자의 신` title logo; sampled alpha `0..255`, every corner alpha `0`; dark navy ink, stone-gold lettering, crescent, and red seal | `scenes/ui/title_screen.tscn` → `TitleScreen/LogoLockup/TitleLogo` | `USER_LOCKED` → `CANON_REGISTERED` → `IMPLEMENTED` → `MACHINE_VERIFIED` 2026-08-31; source copied hash-identically; Godot 4.7.1 import/editor parse/300-frame main smoke, focused title/start/MVP-2 GUT `15/15` / `193`, and full GUT `580/580` / `6455` pass; runtime-render/Human/device evidence `NOT_RUN` |
-| `NINJA_RUNTIME_TITLE_SCREEN_FOUR_TRADITIONS_MEDAL_01` | `assets/runtime/ui/title_screen_four_traditions_medal_v1.png` | `346cb396a0d9236c5818933e2e46dde4f0b904cdf56d58104f175e1c536ece9f` | PNG, 1672×941, opaque 16:9 title-screen key art; its baked four-piece medal remains immediately beside the separate title-logo overlay | `scenes/ui/title_screen.tscn` → `TitleScreen/Backdrop` | `USER_LOCKED` → `CANON_REGISTERED` → `IMPLEMENTED` → `MACHINE_VERIFIED` 2026-08-31; retained source hash rechecked in the combined logo-and-medal package; Godot 4.7.1 import/editor parse/300-frame main smoke, focused title/start/MVP-2 GUT `15/15` / `193`, and full GUT `580/580` / `6455` pass; runtime-render/Human/device evidence `NOT_RUN` |
+| `NINJA_RUNTIME_TITLE_SCREEN_MOONLIT_NINJA_02` | `assets/runtime/ui/title_screen_moonlit_ninja_v2.png` | `86f86da33986499bfd98aa003ba52ac65105136197d4530aa3335c9b8f2e030c` | PNG, 1672×941, opaque 16:9 painterly title backdrop; the moonlit fixed ninja, moon and distant temples remain while the left title field has no baked medal | `scenes/ui/title_screen.tscn` → `TitleScreen/Backdrop` | `USER_LOCKED` → `CANON_REGISTERED` → `IMPLEMENTED` → `MACHINE_VERIFIED` 2026-08-31; built-in image-model edit of the user-locked v1 backdrop; Godot import/editor parse/300-frame main smoke, focused title/start GUT `3/3` / `68`, full GUT `586/586` / `6587` pass; runtime-render/Human/device evidence `NOT_RUN` |
+| `NINJA_RUNTIME_TITLE_FOUR_TRADITIONS_MEDAL_02` | `assets/runtime/ui/title_four_traditions_medal_v2.png` | `26520188d71f9565fef0263062dcbab6ce23f4998371f55af765c034257c61cc` | PNG, 1254×1254, RGBA transparent standalone title medal; four readable traditions join in gold seams around one core: seal/familiar, reaction geometry, oni, shadow/shuriken | `scenes/ui/title_screen.tscn` → `TitleScreen/TitleMedal` | `USER_LOCKED` → `CANON_REGISTERED` → `IMPLEMENTED` → `MACHINE_VERIFIED` 2026-08-31; built-in image model, alpha-corner sample `0/0/1/0`; Godot import/editor parse/300-frame main smoke, focused title/start GUT `3/3` / `68`, full GUT `586/586` / `6587` pass; runtime-render/Human/device evidence `NOT_RUN` |
+| `NINJA_RUNTIME_TITLE_SCREEN_FOUR_TRADITIONS_MEDAL_01` | `assets/runtime/ui/title_screen_four_traditions_medal_v1.png` | `346cb396a0d9236c5818933e2e46dde4f0b904cdf56d58104f175e1c536ece9f` | PNG, 1672×941, opaque 16:9 historical title-screen key art with a baked four-piece medal | historical provenance/rollback only after DEC-041 v2 separate-medal transition; no direct current consumer | `USER_LOCKED` → `CANON_REGISTERED` → `HISTORICAL_ROLLBACK_SOURCE`; previous machine evidence is retained as history and does not prove the v2 composition |
 | `NINJA_RUNTIME_BATTLEFIELD_FLOOR_TILE_01` | `assets/runtime/visual-core/moonlit_battlefield_floor_tile_v1.png` | `ceb6e50ce6acc650f4a6e534ae2244e5f0aeae498fa9cefa150c98b2f510d700` | PNG, 1254×1254, opaque top-down cracked-stone floor tile | `scenes/main/main_scene.tscn` → `Main/BattlefieldBackdrop/FloorTile` | `USER_LOCKED` 2026-08-30; implemented on the current isolated branch; full GUT and scoped live render/input verified; not merged; Human/device evidence `NOT_RUN` |
 | `NINJA_RUNTIME_BATTLEFIELD_PROP_ATLAS_01` | `assets/runtime/visual-core/moonlit_battlefield_prop_atlas_v1.png` | `0fff1db64a034374d281ba000f751f6cf9efb87bea94ad6612e002cce6a34f98` | PNG, 1265×1243, RGBA transparent four-region sparse-prop atlas; every consumer clips filtered sampling to its assigned region | `scenes/main/main_scene.tscn` → `Main/BattlefieldProps/{Lantern,DeadTree,Rocks,TalismanStele}` | `USER_LOCKED` 2026-08-30; implemented on the current isolated branch; full GUT and scoped live render/input verified; not merged; Human/device evidence `NOT_RUN` |
 | `NINJA_RUNTIME_CONTACT_SHADOW_01` | `assets/runtime/visual-core/runtime_contact_shadow_v1.png` | `fbba1279ff8dc257a7c5d382be89335f3bf9b31de6463d89bcccd88ed69f5458` | PNG, 1254×1254, RGBA transparent soft horizontal contact-shadow source | `Player`, `EnemyBasic`, `StageBoss` → `GroundShadow` | `USER_LOCKED` 2026-08-30; implemented on the current isolated branch; full GUT and scoped live render/input verified; not merged; Human/device evidence `NOT_RUN` |
@@ -30,6 +32,26 @@
 | `NINJA_GENERIC_YOKAI_CURSED_LANTERN_01` | `assets/runtime/visual-core/cursed_lantern_v1.png` | `57fa26d65cabf29d2b1bfb5eab90e27ea717a4647ee1a43f083b421d0318d618` | PNG, 1254×1254, RGBA, transparent corners | `scenes/enemies/enemy_basic.tscn` → variant pool | approved original; exact SHA verified |
 | `NINJA_GENERIC_YOKAI_SHADOW_BEAST_01` | `assets/runtime/visual-core/shadow_beast_v1.png` | `97124c7e935efc667f8205143ea46a89a9be6ecc3a8af4a74ed60634f29c89e1` | PNG, 1254×1254, RGBA, transparent corners | `scenes/enemies/enemy_basic.tscn` → variant pool | approved replacement; exact SHA verified |
 | `NINJA_GENERIC_YOKAI_FLAME_NINJA_01` | `assets/runtime/visual-core/flame_ninja_v1.png` | `d4660883354ffe1e6e854541237c69b9e087fbb1edc2ce9d76239d29c257839e` | PNG, 1254×1254, RGBA, transparent corners | `scenes/enemies/enemy_basic.tscn` → variant pool | approved replacement; exact SHA verified |
+
+### DEC-041 v2 title asset receipts
+
+- User approval: `USER_LOCKED` — user message `승인`, 2026-08-31 KST.
+- Generation method: built-in image model; no paid API, third-party asset, or external binary was introduced.
+- Backdrop edit source: the user-locked
+  `title_screen_four_traditions_medal_v1.png`; the approved edit removes only
+  its baked medal and preserves the moonlit ninja, moon, distant temples,
+  painterly ink framing, and dark navy title field.
+- Medal prompt contract: a one-to-one transparent circular title emblem with
+  four gold-joined segments — 봉마 seal/familiar, 천술 reaction geometry,
+  귀인 oni, and 흑영 shadow/shuriken — without text, UI frame, character, or
+  background.
+- Source handling: both generated files were copied without overwrite into
+  their repository-local v2 paths; SHA-256 readback matches the locked source
+  receipt. The v1 baked-medal background remains a rollback/provenance source
+  and is not deleted.
+- Actual composition: `TitleScreen/Backdrop` owns only the medal-free key art;
+  `TitleScreen/TitleMedal` is a smaller `TextureRect` overlay immediately right
+  of the existing title logo, with pointer input ignored.
 
 ### DEC-040 locked runtime asset receipts
 
