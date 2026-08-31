@@ -43,6 +43,11 @@ dec040_external_style_exploration: HISTORICAL_CHEONSUL_ELITE_GENERATED_CANDIDATE
 dec040_machine_evidence: GODOT_4_7_1_THREE_LOCKED_BONGMA_VISUALS_IMPORT_FOCUSED_ACTOR_MANIFEST_4_OF_4_29_ASSERTS_FOCUSED_DELAYED_PROXY_5_OF_5_23_ASSERTS_EDITOR_PARSE_MAIN_SMOKE_AND_FULL_GUT_578_OF_578_6408_ASSERTS_PASS_2026_08_31_KST
 dec040_adversarial_review: FIVE_POST_LOCK_WHOLE_SCOPE_LOOPS_CLEAN_FOR_BOSS_AND_FAMILIAR_ASSET_INTEGRITY_ACTOR_PATTERN_RUNTIME_CIRCUIT_HORDE_DASH_LOADOUT_AND_FULL_BUILD
 dec040_live_render_human_ux_balance_performance_device_export: NOT_RUN
+dec041_title_front_door_and_four_traditions_medal: USER_APPROVED_ASSET_LOCKED_CANON_REGISTERED_IMPLEMENTED_MACHINE_VERIFIED_UNMERGED
+dec041_title_runtime_asset_sha256: 346CB396A0D9236C5818933E2E46DDE4F0B904CDF56D58104F175E1C536ECE9F
+dec041_title_logo_runtime_asset_sha256: C946AE4B08FD77F1E36BC25B22D0D41FDD5060FC80E98FAEB9E6F2D2AC9A7A5B
+dec041_machine_evidence: GODOT_4_7_1_IMPORT_EDITOR_PARSE_300_FRAME_MAIN_SMOKE_TITLE_START_AND_MVP2_FOCUSED_GUT_15_OF_15_193_ASSERTS_FULL_GUT_580_OF_580_6455_ASSERTS_PASS_2026_08_31_KST
+dec041_runtime_render_human_player_device: NOT_RUN_NO_EXACT_NINJA_LIVE_EDITOR_SESSION
 backpack_starting_usable_area: EXACT_3X3
 backpack_technical_expansion_ceiling: MAX_6X6
 runtime_build_authority_for_dec037: USER_APPROVED_RUNTIME_BUILD_2026-08-30_KST
@@ -154,6 +159,22 @@ disables normal spawning. Elite, Trace, Boss, Workbench, Result, and Game Over
 keep their existing permission gates. Basic weapon effects are separate from
 the player body, which now has Move/Hit only. Exact values and evidence scope
 are owned by DEC-039; Human/Player/device/balance are still `NOT_RUN`.
+
+### 2026-08-31 title front door — DEC-041
+
+The new Run begins with a title screen before the Stage selector. Its locked
+16:9 key-art places one fixed ninja on the right; the left safe area renders a
+user-locked, transparent world-building logo `닌자의 신` and the `시작하기`
+control. The graphic title is directly adjacent to one circular medal visibly assembled from four joined
+tradition fragments: 봉마류 talisman/familiar, 천술류 reaction geometry, 귀인류 oni,
+and 흑영류 shadow/shuriken. It replaces separate tradition panels on the main
+screen; it does not make four player characters or create a new route owner.
+
+`시작하기` only hides the presentation layer and reveals the existing Stage
+selector. Combat remains disabled until the player explicitly selects a Stage.
+The screen intentionally has no fabricated Continue, settings, store, save, or
+Ninja Soul settlement control. `MainController` remains the owner of combat and
+route transitions; `TitleScreen` emits one presentation intent only.
 
 ## 2. Protected integrated baseline
 

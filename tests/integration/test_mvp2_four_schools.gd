@@ -3,19 +3,22 @@ extends GutTest
 const MAIN_SCENE := preload("res://scenes/main/main_scene.tscn")
 
 
-func test_run_starts_paused_behind_school_selection() -> void:
+func test_run_starts_paused_behind_the_title_before_stage_selection() -> void:
 	var main = MAIN_SCENE.instantiate()
 	add_child_autofree(main)
 	await get_tree().process_frame
 
 	assert_true(main.has_node("SchoolRuntimeHost"), "Main must contain SchoolRuntimeHost")
 	assert_true(main.has_node("SchoolSelectionUI"), "Main must contain SchoolSelectionUI")
-	if not main.has_node("SchoolRuntimeHost") or not main.has_node("SchoolSelectionUI"):
+	assert_true(main.has_node("TitleScreen"), "Main must contain the explicit title front door")
+	if not main.has_node("SchoolRuntimeHost") or not main.has_node("SchoolSelectionUI") or not main.has_node("TitleScreen"):
 		return
 
 	var selector = main.get_node("SchoolSelectionUI")
+	var title = main.get_node("TitleScreen") as CanvasLayer
 	var host = main.get_node("SchoolRuntimeHost")
-	assert_true(selector.visible)
+	assert_true(title.visible)
+	assert_false(selector.visible)
 	assert_eq(host.selected_school_id, &"")
 	assert_eq(main.get_node("Player").process_mode, Node.PROCESS_MODE_DISABLED)
 	assert_eq(main.get_node("Player/BasicWeapons").process_mode, Node.PROCESS_MODE_DISABLED)
@@ -36,11 +39,18 @@ func test_each_school_selection_activates_only_matching_runtime_and_combat() -> 
 		var main = MAIN_SCENE.instantiate()
 		add_child_autofree(main)
 		await get_tree().process_frame
-		if not main.has_node("SchoolRuntimeHost") or not main.has_node("SchoolSelectionUI"):
+		if not main.has_node("SchoolRuntimeHost") or not main.has_node("SchoolSelectionUI") or not main.has_node("TitleScreen"):
 			fail_test("MVP-2 school integration nodes are missing")
 			return
 
 		var selector = main.get_node("SchoolSelectionUI")
+		var start_button := main.get_node("TitleScreen/LogoLockup/StartButton") as Button
+		assert_not_null(start_button)
+		if start_button == null:
+			return
+		start_button.pressed.emit()
+		await get_tree().process_frame
+		assert_true(selector.visible)
 		selector._choose(school_id)
 		var host = main.get_node("SchoolRuntimeHost")
 		assert_eq(host.selected_school_id, school_id)

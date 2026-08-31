@@ -81,6 +81,7 @@ var _combat_enabled: bool = false
 @onready var wave_spawner: WaveSpawner = $WaveSpawner
 @onready var school_host: SchoolRuntimeHost = $SchoolRuntimeHost
 @onready var school_selection: SchoolSelectionUI = $SchoolSelectionUI
+@onready var title_screen: TitleScreen = $TitleScreen
 @onready var hud: HUDController = $HUD
 
 
@@ -103,6 +104,8 @@ func _ready() -> void:
 	contribution_tracker.reset_segment(combat_ddd.reward_count, run_build_state.gold)
 	_set_combat_enabled(false)
 	rest_flow_ui.hide_all()
+	school_selection.hide()
+	title_screen.show_title()
 
 
 func _setup_mvp3_nodes() -> void:
@@ -154,6 +157,7 @@ func _connect_existing_signals() -> void:
 	player.died.connect(_on_player_died)
 	player.dash_state_changed.connect(hud.set_dash_state)
 	wave_spawner.enemy_spawned.connect(_wire_enemy)
+	title_screen.start_requested.connect(_on_title_start_requested)
 	school_selection.school_selected.connect(_on_school_selected)
 	hud.settings_requested.connect(_on_settings_requested)
 	hud.resume_requested.connect(_on_resume_requested)
@@ -230,6 +234,13 @@ func _pointer_world_position(viewport_position: Vector2) -> Vector2:
 func _restart_run() -> void:
 	get_tree().paused = false
 	get_tree().reload_current_scene()
+
+
+func _on_title_start_requested() -> void:
+	if game_over or _combat_enabled:
+		return
+	title_screen.hide_title()
+	school_selection.show_starting_school_selection()
 
 
 func _on_school_selected(school_id: StringName) -> void:

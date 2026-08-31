@@ -48,6 +48,14 @@ func _ready() -> void:
 	_help_close_button.pressed.connect(_close_school_help)
 
 
+func show_starting_school_selection() -> void:
+	if _selected:
+		return
+	show()
+	_selection_panel.show()
+	(get_node("Panel/Margin/Choices/BongmaButton") as Button).grab_focus.call_deferred()
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if _help_open:
 		if event.is_action_pressed(&"ui_cancel"):

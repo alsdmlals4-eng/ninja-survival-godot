@@ -14,6 +14,42 @@ Once fresh-read identifies a concrete runtime consumer, screen-reference, or pla
 
 This does not authorize chat-start generation, gap-only/orphan art, or replacement of an approved asset. A candidate remains `GENERATED_EXPLORATION` until `LOCK`; durable repository source/manifest, actual consumer integration, and runtime/Human evidence gates stay unchanged.
 
+## 2026-08-31 user-locked title front door, title logo, and four-traditions medal
+
+`NINJA_RUNTIME_TITLE_SCREEN_FOUR_TRADITIONS_MEDAL_01` is the approved opaque
+16:9 front-door key art. It is a presentation-only backdrop, not an in-combat
+unit, player skin, Stage reward, or four-character selection surface.
+
+| Field | Recorded value |
+| --- | --- |
+| Local source | `assets/runtime/ui/title_screen_four_traditions_medal_v1.png` |
+| SHA-256 | `346cb396a0d9236c5818933e2e46dde4f0b904cdf56d58104f175e1c536ece9f` |
+| Metadata | PNG, 1672×941, opaque 16:9 painterly ink key art; fixed ninja and moon on the right, unobstructed left title area |
+| Medal contract | One circular artifact immediately beside the separate `닌자의 신` title-logo overlay: four joined fragments share gold seams and a center core. The quadrants read 봉마=seal/familiar, 천술=reaction geometry, 귀인=oni, 흑영=shadow/shuriken. They are not selectable character panels. |
+| User approval | `LOCK` / `승인`, 2026-08-31 KST |
+| Runtime consumer | `scenes/ui/title_screen.tscn` → `TitleScreen/Backdrop`; the user-locked logo below is the adjacent `TitleScreen/LogoLockup/TitleLogo` overlay. No plain fallback `TitleLabel` remains. |
+| Machine evidence | Godot 4.7.1 import, editor parse, 300-frame main-scene smoke, focused title/start/MVP-2 GUT `15/15`, `193` assertions, and full GUT `580/580`, `6455` assertions passed on the isolated branch. |
+| Render/Human/device evidence | `NOT_RUN`: no exact Ninja Survival live-editor session is currently attached; neither machine test nor source review is a visual usability or player-experience pass. |
+
+`NINJA_RUNTIME_TITLE_LOGO_NINJA_GOD_01` is the approved transparent title mark;
+the supplied GRIMOIRE logo was hierarchy reference only, not copied source or
+runtime content.
+
+| Field | Recorded value |
+| --- | --- |
+| Local source | `assets/runtime/ui/title_logo_ninja_god_v1.png` |
+| SHA-256 | `c946ae4b08fd77f1e36bc25b22d0d41fdd5060fc80e98faeb9e6f2d2ac9a7a5b` |
+| Metadata | PNG, 1672×941, RGBA transparent `닌자의 신` wordmark; sampled alpha `0..255`, all four corner alphas `0`; navy ink/stone-gold lettering with crescent and red seal |
+| User approval | `LOCK` / `확정하자`, 2026-08-31 KST |
+| Runtime consumer | `scenes/ui/title_screen.tscn` → `TitleScreen/LogoLockup/TitleLogo`, aspect-preserving and immediately left of the baked four-piece medal |
+| Machine evidence | Godot 4.7.1 import, editor parse, 300-frame main-scene smoke, focused title/start/MVP-2 GUT `15/15`, `193` assertions, and full GUT `580/580`, `6455` assertions passed on the isolated branch. |
+| Render/Human/device evidence | `NOT_RUN`: the exact Ninja Survival editor session is not connected; import or headless tests do not establish visual readability. |
+
+`시작하기` emits only a presentation intent. `MainController` hides the title
+and exposes the existing Stage selector; it does not enable combat until a
+Stage choice arrives through the existing path. No false Continue, save,
+settings, store, or Ninja Soul settlement affordance was added.
+
 ## 2026-08-28 DEC-035 — migration-first repository-only visual ownership
 
 The former Notion Visual Bible and Asset Library are preserved read-only under
