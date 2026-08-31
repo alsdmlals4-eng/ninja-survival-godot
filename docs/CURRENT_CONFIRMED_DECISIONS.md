@@ -55,6 +55,10 @@ dec041_medal_scale_candidate: USER_LOCKED_SEPARATE_TITLE_MEDAL_V2_2026_08_31_KST
 dec041_machine_evidence: GODOT_4_7_1_V2_TITLE_ASSET_IMPORT_EDITOR_PARSE_300_FRAME_MAIN_SMOKE_FOCUSED_TITLE_AND_START_GATE_3_OF_3_68_ASSERTS_AND_FULL_GUT_586_OF_586_6587_ASSERTS_PASS_2026_08_31_KST
 dec041_pr_135_current_head_and_ci: 25FDA54EF69344DC53A364DCD41F3EDFF8E5A5A1_GITHUB_GUT_AND_WINDOWS_INTERNAL_BUILD_ARTIFACT_PASS_2026_08_31_KST
 dec041_runtime_render_human_player_device: NOT_RUN_NO_EXACT_NINJA_LIVE_EDITOR_SESSION
+dec042_title_actions_awakening_and_codex: USER_APPROVED_IMPLEMENTATION_SPEC_REVIEW_PENDING
+dec042_design_spec: docs/superpowers/specs/2026-09-01-dec042-title-actions-awakening-codex-design.md
+dec042_player_facing_wallet_label: AWAKENING_INTERNAL_NINJA_SOUL_COMPATIBILITY_PRESERVED
+dec042_codex_scope: READ_ONLY_ENEMY_NINJUTSU_EQUIPMENT_REFERENCE_NOT_RUN_FLOW_OR_DISCOVERY_SYSTEM
 backpack_starting_usable_area: EXACT_3X3
 backpack_technical_expansion_ceiling: MAX_6X6
 runtime_build_authority_for_dec037: USER_APPROVED_RUNTIME_BUILD_2026-08-30_KST
@@ -181,10 +185,13 @@ screen; it does not make four player characters or create a new route owner.
 selector. Combat remains disabled until the player explicitly selects a Stage.
 `조작 방법` opens a local control guide without selecting a Stage; `설정` only
 toggles the current window mode and intentionally creates no new save or
-preference owner. The redundant title promise text is removed. Continue, store,
-save and Ninja Soul settlement controls remain intentionally absent.
-`MainController` remains the owner of combat and route transitions; the title
-screen owns only these presentation intents/panels.
+preference owner. The redundant title promise text is removed. The former
+absence of Continue, Awakening, and Codex entries is superseded by DEC-042.
+DEC-042 adds approved checkpoint-only durable Continue, the player-facing
+`각성` label while preserving the legacy wallet data contract, and a read-only
+enemy/ninjutsu/equipment Codex. `MainController` remains the owner of combat,
+route, and any durable checkpoint transition; the title screen owns only
+presentation intents/panels.
 
 ## 2. Protected integrated baseline
 
