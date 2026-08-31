@@ -6,6 +6,8 @@ const DEATH_COUNTED_META := &"ninja_main_death_counted"
 const MVP3_CATALOG_SCRIPT = preload("res://scripts/data/mvp3_catalog.gd")
 const MVP4_CATALOG_SCRIPT = preload("res://scripts/data/mvp4_catalog.gd")
 const RUN_BUILD_STATE_SCRIPT = preload("res://scripts/core/run_build_state.gd")
+const NINJUTSU_LOADOUT_STATE_SCRIPT = preload("res://scripts/core/ninjutsu_loadout_state.gd")
+const NINJUTSU_AUTO_CONTROLLER_SCRIPT = preload("res://scripts/schools/ninjutsu_auto_controller.gd")
 const NINJA_SOUL_WALLET_SCRIPT = preload("res://scripts/core/ninja_soul_wallet.gd")
 const RUN_SETTLEMENT_LEDGER_SCRIPT = preload("res://scripts/core/run_settlement_ledger.gd")
 const RUN_CHECKPOINT_SCRIPT = preload("res://scripts/core/run_checkpoint.gd")
@@ -44,6 +46,8 @@ const SCHOOL_CIRCUIT_TEST_BOSS_ROLE := &"test_boss"
 
 var game_over: bool = false
 var run_build_state: RunBuildState
+var ninjutsu_loadout: Node
+var ninjutsu_auto_controller: Node
 var ninja_soul_wallet: Node
 var run_settlement_ledger
 var run_checkpoint
@@ -89,6 +93,8 @@ func _ready() -> void:
 	basic_weapons.configure(combat_resolver)
 	school_host.configure(player, self)
 	school_host.configure_run_systems(combat_resolver, contribution_tracker)
+	if ninjutsu_auto_controller != null:
+		ninjutsu_auto_controller.call("configure", player, self, combat_resolver, ninjutsu_loadout)
 
 	for child in get_children():
 		if child.is_in_group("enemies"):
@@ -104,6 +110,8 @@ func _setup_mvp3_nodes() -> void:
 	_fate_defs = MVP3_CATALOG_SCRIPT.build_fates()
 
 	run_build_state = _ensure_script_node("RunBuildState", RUN_BUILD_STATE_SCRIPT) as RunBuildState
+	ninjutsu_loadout = _ensure_script_node("NinjutsuLoadoutState", NINJUTSU_LOADOUT_STATE_SCRIPT)
+	ninjutsu_auto_controller = _ensure_script_node("NinjutsuAutoController", NINJUTSU_AUTO_CONTROLLER_SCRIPT)
 	shop_controller = _ensure_script_node("ShopController", SHOP_CONTROLLER_SCRIPT) as ShopController
 	fate_controller = _ensure_script_node("FateController", FATE_CONTROLLER_SCRIPT) as FateController
 	stage_flow = _ensure_script_node("StageFlow", STAGE_FLOW_SCRIPT) as StageFlowController
@@ -229,6 +237,9 @@ func _on_school_selected(school_id: StringName) -> void:
 		return
 	if not school_host.select_school(school_id):
 		return
+	if ninjutsu_loadout == null or not bool(ninjutsu_loadout.call("activate_starter", school_id)):
+		school_host.deactivate()
+		return
 
 	run_build_state.set_selected_school(school_id)
 	_sync_run_modifiers()
@@ -252,6 +263,9 @@ func _start_school_circuit(school_id: StringName) -> bool:
 			MVP4_CATALOG_SCRIPT.build_bags(),
 			rng
 		):
+			circuit.queue_free()
+			return false
+		if ninjutsu_loadout == null or not circuit.configure_ninjutsu_loadout(ninjutsu_loadout):
 			circuit.queue_free()
 			return false
 		add_child(circuit)
@@ -544,6 +558,8 @@ func _set_combat_enabled(enabled: bool) -> void:
 	var gameplay_mode := Node.PROCESS_MODE_INHERIT if enabled else Node.PROCESS_MODE_DISABLED
 	player.process_mode = gameplay_mode
 	basic_weapons.process_mode = gameplay_mode
+	if ninjutsu_auto_controller != null:
+		ninjutsu_auto_controller.process_mode = gameplay_mode
 	wave_spawner.set_spawning_enabled(enabled)
 	wave_spawner.process_mode = gameplay_mode
 	combat_ddd.process_mode = gameplay_mode

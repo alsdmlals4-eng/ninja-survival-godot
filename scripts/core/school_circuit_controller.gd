@@ -31,6 +31,7 @@ var _combination_resolver: CombinationResolver
 var _reward_controller: RestRewardController
 var _commit_coordinator: RestCommitCoordinator
 var _access_state: TraditionAccessState
+var _ninjutsu_loadout: Node
 var _item_defs: Dictionary = {}
 var _bag_defs: Dictionary = {}
 var _rng: RandomNumberGenerator
@@ -75,6 +76,17 @@ func configure_workbench(
 	return true
 
 
+func configure_ninjutsu_loadout(ninjutsu_loadout: Node) -> bool:
+	if _school_started or _workbench_started or _ninjutsu_loadout != null or ninjutsu_loadout == null:
+		return false
+	if not ninjutsu_loadout.has_method("can_stage_scroll") \
+		or not ninjutsu_loadout.has_method("stage_scroll") \
+		or not ninjutsu_loadout.has_method("get_snapshot"):
+		return false
+	_ninjutsu_loadout = ninjutsu_loadout
+	return true
+
+
 func begin_school(school_id: StringName) -> bool:
 	_connect_encounter_signals()
 	if _school_started or not _load_encounter_identity(school_id):
@@ -111,7 +123,13 @@ func record_normal_enemy_defeated() -> int:
 
 
 func mark_elite_defeated() -> bool:
-	if not _school_started or not encounter_state.mark_elite_cleared():
+	if not _school_started:
+		return false
+	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("can_stage_scroll", _active_school_id, &"elite_scroll")):
+		return false
+	if not encounter_state.mark_elite_cleared():
+		return false
+	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("stage_scroll", _active_school_id, &"elite_scroll")):
 		return false
 	if _build_state != null:
 		_build_state.grant_elite_clear_gold()
@@ -162,6 +180,8 @@ func workbench_snapshot() -> Dictionary:
 		"combination_options": _combination_options(),
 		"combination_pending": combination_pending,
 		"pending_combination": _pending_combination_snapshot(),
+		"ninjutsu_active_spell_ids": _ninjutsu_active_spell_ids(),
+		"ninjutsu_pending_spell_ids": _ninjutsu_pending_spell_ids(),
 		"readiness_failures": _commit_coordinator.commit_failures(
 			_reward_controller.chest_count(),
 			_reward_controller.has_pending_boss_reward(),
@@ -173,7 +193,13 @@ func workbench_snapshot() -> Dictionary:
 func choose_boss_reward(index: int) -> bool:
 	if not _workbench_started or _reward_controller == null:
 		return false
-	return _reward_controller.choose_boss_reward(index)
+	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("can_stage_scroll", _active_school_id, &"boss_scroll")):
+		return false
+	if not _reward_controller.choose_boss_reward(index):
+		return false
+	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("stage_scroll", _active_school_id, &"boss_scroll")):
+		return false
+	return true
 
 
 func place_buffer_item(buffer_index: int, origin: Vector2i, rotation_quarters: int = 0) -> bool:
@@ -361,7 +387,13 @@ func _begin_workbench_for_cleared_school() -> bool:
 		_access_state
 	)
 	_commit_coordinator = REST_COMMIT_COORDINATOR_SCRIPT.new()
-	if not _commit_coordinator.configure(_committed_backpack_state, _build_state, route_state, _fate_controller):
+	if not _commit_coordinator.configure(
+		_committed_backpack_state,
+		_build_state,
+		route_state,
+		_fate_controller,
+		_ninjutsu_loadout
+	):
 		return false
 	_reward_controller.begin_rest(
 		route_state.stage_index(),
@@ -374,6 +406,18 @@ func _begin_workbench_for_cleared_school() -> bool:
 		return false
 	_workbench_started = true
 	return true
+
+
+func _ninjutsu_active_spell_ids() -> Array:
+	if _ninjutsu_loadout == null:
+		return []
+	return Array(_ninjutsu_loadout.call("get_snapshot").get("active_spell_ids", [])).duplicate()
+
+
+func _ninjutsu_pending_spell_ids() -> Array:
+	if _ninjutsu_loadout == null:
+		return []
+	return Array(_ninjutsu_loadout.call("get_snapshot").get("pending_spell_ids", [])).duplicate()
 
 
 func _boss_reward_labels() -> Array[String]:

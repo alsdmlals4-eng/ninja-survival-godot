@@ -1,6 +1,6 @@
 # DEC-040 — Four-School Encounter Roster and Ninjutsu Design
 
-> **Status:** `USER_DESIGN_APPROVED_AWAITING_WRITTEN_SPEC_REVIEW`
+> **Status:** `USER_DESIGN_APPROVED_IMPLEMENTED_MACHINE_SCOPE_RUNTIME_ASSET_PROMOTION_BLOCKED`
 > **Product owner:** current user instruction, 2026-08-31 KST
 > **Canon dependencies:** DEC-026 shared primitives and school encounter data; DEC-037 one directly moved Ninja; DEC-039 automatic katana/shuriken plus one selected-school starter ninjutsu.
 > **Current branch baseline:** `codex/dec037-runtime-migration-135` at `3e9c46f` before this design-only commit; PR #135 remains open and unmerged.
@@ -178,6 +178,24 @@ new `RunBuildState` / route tuple. If any normal Workbench commit prerequisite
 fails, no new spell is activated. Existing spatial item placement, bag
 purchase, combination and route selection retain their current owners.
 
+### 5.4 Implemented machine scope and remaining asset boundary
+
+The data roster, reusable encounter actor, telegraph/recovery execution,
+automatic scroll-loadout and four-Stage Core -> Elite -> Trace -> Boss ->
+Workbench contract are implemented on the current unmerged branch. The Elite
+receipt is staged at Elite defeat beside the existing chest-token event, and
+the Boss receipt is staged only after the chosen Boss reward; both remain
+inactive until the existing Workbench transaction atomically commits Backpack,
+Fate, next Stage and valid pending scrolls.
+
+The implementation deliberately uses the already locked generic
+`basic_weapon_effects_v1.png` only as a temporary machine-test fallback for
+unlocked scroll effects. It does **not** register a generated character,
+spell or telegraph file as a runtime asset. One external Cheonsul Elite style
+exploration exists as `GENERATED_CANDIDATE`, but it is not the required
+four-school roster board, has no repository source or runtime consumer, and
+is neither `USER_LOCKED` nor promotable. It does not satisfy the asset gate.
+
 ## 6. Image asset plan and gate
 
 The required visual family has 20 transparent character cutouts and 12
@@ -188,10 +206,10 @@ no text/UI/watermark, and a strong contact-shadow-compatible lower silhouette.
 
 | Family | Asset count | Runtime consumer | State at this design stage |
 | --- | ---: | --- | --- |
-| Core/Elite/Boss character cutouts | 20 | `SchoolEncounterActor/Visual` | `NEEDED` |
-| Ninjutsu visual cutouts/fields | 12 | school spell controllers | `NEEDED` |
-| Boss/Elite telegraph effects | bounded per shared primitive, reused by school color hook | `NEEDED` |
-| Four-school roster art-direction board | 1 | planning/review only; not runtime | `BRIEF_READY` |
+| Core/Elite/Boss character cutouts | 20 | `SchoolEncounterActor/Visual` | `NEEDED — USER_LOCKED roster board prerequisite` |
+| Ninjutsu visual cutouts/fields | 12 | school spell controllers | `NEEDED — USER_LOCKED roster board prerequisite` |
+| Boss/Elite telegraph effects | bounded per shared primitive, reused by school color hook | `NEEDED — USER_LOCKED roster board prerequisite` |
+| Four-school roster art-direction board | 1 | planning/review only; not runtime | `BRIEF_READY — no conforming board candidate yet` |
 
 Before any runtime asset promotion, generate **one** roster art-direction
 candidate using the image model. It must show all four school palettes and

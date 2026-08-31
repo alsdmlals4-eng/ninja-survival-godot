@@ -9,6 +9,12 @@ const EXPECTED_FIRST_CORE_IDS := {
 	&"guiin": &"surge_fighter",
 	&"heukyeong": &"shuriken_scout",
 }
+const EXPECTED_STARTER_NINJUTSU_IDS := {
+	&"bongma": &"bongma_hundred_demon_familiar",
+	&"cheonsul": &"cheonsul_flame_mark",
+	&"guiin": &"guiin_ghost_blood_wave",
+	&"heukyeong": &"heukyeong_shadow_needle",
+}
 const RETRY_WALLET_PATH := "user://gut_school_circuit_retry_wallet.json"
 
 
@@ -31,6 +37,15 @@ func test_each_school_selection_starts_the_same_circuit_runtime_with_its_own_enc
 			continue
 		assert_eq(main.school_circuit.route_state.active_school_id(), school_id)
 		assert_eq(main.get_node("RunBuildState").selected_school_id, school_id)
+		assert_not_null(main.ninjutsu_auto_controller, "확정 인법서를 위한 자동 시전기가 메인 런에 필요합니다.")
+		if main.ninjutsu_auto_controller != null:
+			assert_eq(main.ninjutsu_auto_controller._loadout, main.ninjutsu_loadout)
+			assert_eq(main.ninjutsu_auto_controller.process_mode, Node.PROCESS_MODE_INHERIT)
+		assert_eq(
+			main.ninjutsu_loadout.active_spell_ids(),
+			[EXPECTED_STARTER_NINJUTSU_IDS[school_id]],
+			"선택한 유파의 시작 인법 한 종만 즉시 활성화해야 합니다."
+		)
 		assert_eq(
 			(main.get_node("HUD/CombatTopBar/Row/StagePhaseLabel") as Label).text,
 			"스테이지 · %s 전장 · 페이즈 1 · Core 압박" % main.school_host.selected_school_name,

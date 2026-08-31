@@ -7,11 +7,22 @@ const TALISMAN_PROJECTILE_TEXTURE = preload("res://assets/runtime/visual-core/ta
 const FALLBACK_TELEGRAPH_TEXTURE = preload("res://assets/runtime/visual-core/cheonsul_flame_field_v1.png")
 const PATTERN_PROJECTILE_META := &"ninja_encounter_pattern_projectile"
 const TELEGRAPHED_ZONE_RADIUS := 92.0
+const LINE_DASH_HALF_WIDTH := 30.0
+const PULSE_RADIUS := 118.0
+const PROXY_RADIUS := 86.0
+const PROXY_ARM_DURATION := 0.35
+const PROXY_LIFETIME := 0.85
+const MARK_DURATION := 3.5
 
 var definition = null
 var pattern_controller = null
 var _telegraph_visual: Sprite2D
 var _telegraphed_position := Vector2.ZERO
+var _telegraph_origin := Vector2.ZERO
+var _marked_target: Node2D
+var _mark_remaining := 0.0
+var _mark_visual: Sprite2D
+var _proxy_hazards: Array[Dictionary] = []
 
 
 func _ready() -> void:
@@ -22,7 +33,9 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if _dead:
 		velocity = Vector2.ZERO
+		_clear_runtime_effects()
 		return
+	_advance_runtime_effects(delta)
 	_ensure_pattern_controller()
 	if pattern_controller != null:
 		pattern_controller.advance(delta)
@@ -68,6 +81,15 @@ func active_pattern_id() -> StringName:
 	return StringName(pattern_controller.active_pattern().get("primitive_id", &""))
 
 
+func active_proxy_count() -> int:
+	return _proxy_hazards.size()
+
+
+func _exit_tree() -> void:
+	_clear_telegraph()
+	_clear_runtime_effects()
+
+
 func is_stage_boss() -> bool:
 	return definition != null and definition.role == &"boss"
 
@@ -106,13 +128,23 @@ func _ensure_pattern_controller() -> void:
 
 func _on_pattern_execute_requested(pattern: Dictionary) -> void:
 	var primitive_id := StringName(pattern.get("primitive_id", &""))
-	if primitive_id == &"fan_or_arc_projectile":
-		_spawn_fan_projectiles()
-		return
-	if primitive_id == &"telegraphed_zone":
-		_resolve_telegraphed_zone_damage()
-		return
-	_resolve_pattern_damage(target)
+	match primitive_id:
+		&"fan_or_arc_projectile":
+			_spawn_fan_projectiles()
+		&"telegraphed_zone":
+			_resolve_telegraphed_zone_damage()
+		&"line_dash":
+			_resolve_line_dash()
+		&"mark_or_link":
+			_apply_target_mark()
+		&"summon_or_proxy":
+			_spawn_proxy_hazard()
+		&"barrier_or_lane":
+			_resolve_locked_lane()
+		&"pulse_or_ring":
+			_resolve_pulse()
+		&"chase_contact":
+			_resolve_chase_contact()
 
 
 func _on_pattern_state_changed(state: StringName, pattern: Dictionary) -> void:
@@ -123,10 +155,11 @@ func _on_pattern_state_changed(state: StringName, pattern: Dictionary) -> void:
 		_clear_telegraph()
 
 
-func _resolve_pattern_damage(target_node: Node) -> int:
+func _resolve_pattern_damage(target_node: Node, multiplier: float = 1.0) -> int:
 	if target_node == null or not is_instance_valid(target_node) or not target_node.has_method("take_damage"):
 		return 0
-	var result = target_node.call("take_damage", maxi(contact_damage, 1))
+	var amount := maxi(roundi(float(maxi(contact_damage, 1)) * maxf(multiplier, 0.0)), 1)
+	var result = target_node.call("take_damage", amount)
 	return int(result) if result is int else 0
 
 
@@ -140,10 +173,135 @@ func _resolve_telegraphed_zone_damage() -> int:
 
 func _capture_telegraph_position(pattern: Dictionary) -> void:
 	var primitive_id := StringName(pattern.get("primitive_id", &""))
-	if primitive_id == &"telegraphed_zone" and target != null and is_instance_valid(target):
+	_telegraph_origin = global_position
+	if primitive_id in [&"telegraphed_zone", &"line_dash", &"mark_or_link", &"summon_or_proxy", &"barrier_or_lane"] \
+		and target != null and is_instance_valid(target):
 		_telegraphed_position = target.global_position
 		return
 	_telegraphed_position = global_position
+
+
+func _resolve_line_dash() -> int:
+	if target == null or not is_instance_valid(target):
+		return 0
+	var dash_start := _telegraph_origin
+	var dash_end := _telegraphed_position
+	global_position = dash_end
+	var closest := Geometry2D.get_closest_point_to_segment(target.global_position, dash_start, dash_end)
+	if target.global_position.distance_squared_to(closest) > LINE_DASH_HALF_WIDTH * LINE_DASH_HALF_WIDTH:
+		return 0
+	return _resolve_pattern_damage(target, _marked_damage_multiplier(target))
+
+
+func _resolve_locked_lane() -> int:
+	if target == null or not is_instance_valid(target):
+		return 0
+	var closest := Geometry2D.get_closest_point_to_segment(target.global_position, _telegraph_origin, _telegraphed_position)
+	if target.global_position.distance_squared_to(closest) > LINE_DASH_HALF_WIDTH * LINE_DASH_HALF_WIDTH:
+		return 0
+	return _resolve_pattern_damage(target, _marked_damage_multiplier(target))
+
+
+func _resolve_pulse() -> int:
+	if target == null or not is_instance_valid(target):
+		return 0
+	if target.global_position.distance_squared_to(global_position) > PULSE_RADIUS * PULSE_RADIUS:
+		return 0
+	return _resolve_pattern_damage(target, _marked_damage_multiplier(target))
+
+
+func _resolve_chase_contact() -> int:
+	if target == null or not is_instance_valid(target):
+		return 0
+	if target.global_position.distance_squared_to(global_position) > contact_range * contact_range:
+		return 0
+	return _resolve_pattern_damage(target, _marked_damage_multiplier(target))
+
+
+func _apply_target_mark() -> void:
+	if target == null or not is_instance_valid(target):
+		return
+	_marked_target = target
+	_mark_remaining = MARK_DURATION
+	_clear_mark_visual()
+	_mark_visual = Sprite2D.new()
+	_mark_visual.name = "EncounterMark"
+	_mark_visual.texture = FALLBACK_TELEGRAPH_TEXTURE
+	_mark_visual.top_level = true
+	_mark_visual.global_position = target.global_position
+	_mark_visual.scale = Vector2.ONE * 0.075
+	_mark_visual.modulate = Color(_school_projectile_color(), 0.72)
+	_mark_visual.z_index = 2
+	add_child(_mark_visual)
+
+
+func _marked_damage_multiplier(target_node: Node) -> float:
+	if _mark_remaining <= 0.0 or not is_instance_valid(_marked_target) or target_node != _marked_target:
+		return 1.0
+	return 1.5
+
+
+func _spawn_proxy_hazard() -> void:
+	var proxy := Node2D.new()
+	proxy.name = "EncounterProxy"
+	proxy.top_level = true
+	proxy.global_position = _telegraphed_position
+	var visual := Sprite2D.new()
+	visual.texture = FALLBACK_TELEGRAPH_TEXTURE
+	visual.scale = Vector2.ONE * 0.085
+	visual.modulate = Color(_school_projectile_color(), 0.55)
+	visual.z_index = 1
+	proxy.add_child(visual)
+	add_child(proxy)
+	_proxy_hazards.append({
+		"node": proxy,
+		"position": _telegraphed_position,
+		"arm_remaining": PROXY_ARM_DURATION,
+		"remaining": PROXY_LIFETIME,
+		"resolved": false,
+	})
+
+
+func _advance_runtime_effects(delta: float) -> void:
+	if _mark_remaining > 0.0:
+		_mark_remaining = maxf(_mark_remaining - delta, 0.0)
+		if is_instance_valid(_mark_visual) and is_instance_valid(_marked_target):
+			_mark_visual.global_position = _marked_target.global_position
+		if _mark_remaining <= 0.0:
+			_marked_target = null
+			_clear_mark_visual()
+	for index in range(_proxy_hazards.size() - 1, -1, -1):
+		var hazard: Dictionary = _proxy_hazards[index]
+		var proxy = hazard.get("node") as Node2D
+		hazard["arm_remaining"] = maxf(float(hazard.get("arm_remaining", 0.0)) - delta, 0.0)
+		hazard["remaining"] = maxf(float(hazard.get("remaining", 0.0)) - delta, 0.0)
+		if not bool(hazard.get("resolved", false)) and float(hazard["arm_remaining"]) <= 0.0:
+			if target != null and is_instance_valid(target) and target.global_position.distance_squared_to(Vector2(hazard["position"])) <= PROXY_RADIUS * PROXY_RADIUS:
+				_resolve_pattern_damage(target, _marked_damage_multiplier(target))
+			hazard["resolved"] = true
+		if float(hazard["remaining"]) <= 0.0 or not is_instance_valid(proxy):
+			if is_instance_valid(proxy) and not proxy.is_queued_for_deletion():
+				proxy.queue_free()
+			_proxy_hazards.remove_at(index)
+		else:
+			_proxy_hazards[index] = hazard
+
+
+func _clear_runtime_effects() -> void:
+	_marked_target = null
+	_mark_remaining = 0.0
+	_clear_mark_visual()
+	for hazard in _proxy_hazards:
+		var proxy = hazard.get("node")
+		if is_instance_valid(proxy) and not proxy.is_queued_for_deletion():
+			proxy.queue_free()
+	_proxy_hazards.clear()
+
+
+func _clear_mark_visual() -> void:
+	if is_instance_valid(_mark_visual) and not _mark_visual.is_queued_for_deletion():
+		_mark_visual.queue_free()
+	_mark_visual = null
 
 
 func _spawn_fan_projectiles() -> void:

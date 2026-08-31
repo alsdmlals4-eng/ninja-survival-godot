@@ -440,3 +440,21 @@ git add tests/integration/test_four_school_battle_contract.gd tests/integration/
 git commit -m "test: verify four-school combat contract"
 ~~~
 
+## Execution record — 2026-08-31 KST
+
+- Tasks 1–4 and the source/test portion of Task 6 are implemented on the
+  unmerged current branch. The roster contains 12 Core, four dedicated Elite,
+  four Boss and 12 scroll definitions; the selected starter stays immediate,
+  while cleared-Stage Elite/Boss scrolls remain pending until the existing
+  Workbench’s atomic Backpack/Fate/route commit succeeds.
+- Boss/Elite execution uses shared state with school data. A line dash uses a
+  locked lane with a sideways-safe response; a proxy creates a delayed hazard
+  rather than generic direct contact damage; marks modify subsequent damage.
+- Task 5 remains intentionally incomplete: no generated runtime PNG is
+  registered or bound before a conforming four-school roster-board candidate
+  receives a user `LOCK`. Existing locked generic effects are machine-only
+  fallbacks and do not satisfy this asset family.
+- Exact evidence is recorded in `docs/ACTIVE_CONTEXT.md`. It establishes
+  import/parse, headless smoke and automated contracts only; render, Human
+  Usability, Player Experience, balance, uncapped-density performance,
+  touch/gamepad and device/export remain `NOT_RUN`.
