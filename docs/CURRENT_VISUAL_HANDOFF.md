@@ -52,8 +52,25 @@ Each roster quadrant pairs a compact Core Monster with a distinctly broader
 Elite/Boss silhouette. This proves the visual direction only: it does not
 promote the board's eight displayed figures, any character cutout, spell,
 telegraph, old generic-enemy texture, stat, spawn rule, or Godot consumer.
-The first actual runtime actor family must be generated, independently user
-locked, registered by SHA-256/consumer, imported and then render-checked.
+### 2026-08-31 first individually locked DEC-040 runtime actor
+
+`NINJA_RUNTIME_ENCOUNTER_BONGMA_MOBILE_ARRAY_CASTER_01` is the first runtime
+asset promoted from this direction, and is intentionally limited to the
+봉마류 Elite `mobile_array_caster` / 이동진 술사:
+
+| Field | Recorded value |
+| --- | --- |
+| Local source | `assets/runtime/encounters/actors/mobile_array_caster.png` |
+| SHA-256 | `1e145d6e00a0322c894cc3b1384a65c9d225b16a700093dd76eb205efd62fbfd` |
+| Metadata | PNG, 1024×1536, RGBA transparent cutout; transparent corners and alpha range checked before repository copy |
+| Approval | User `LOCK` / `승인`, 2026-08-31 KST |
+| Runtime consumer | `EncounterCatalog` → `SchoolEncounterActor/Visual`, only when the actor ID is `mobile_array_caster` |
+| Machine evidence | Godot import plus focused source/manifest/binding contract `2/2`, `14` assertions passed on the isolated branch |
+| Render/Human/device evidence | `NOT_RUN` — the currently discoverable live Godot session belongs to another project, so no Ninja visual/runtime claim is inferred |
+
+This first promotion does not approve a whole family: the remaining 19 actor,
+12 ninjutsu and shared telegraph candidates must each be generated, reviewed,
+user-locked, registered, imported and render-checked independently.
 
 ## 2026-08-30 user-locked auto-combat battlefield planning reference
 

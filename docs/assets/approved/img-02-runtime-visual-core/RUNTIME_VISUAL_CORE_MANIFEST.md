@@ -16,6 +16,7 @@
 | `NINJA_RUNTIME_BATTLEFIELD_PROP_ATLAS_01` | `assets/runtime/visual-core/moonlit_battlefield_prop_atlas_v1.png` | `0fff1db64a034374d281ba000f751f6cf9efb87bea94ad6612e002cce6a34f98` | PNG, 1265×1243, RGBA transparent four-region sparse-prop atlas; every consumer clips filtered sampling to its assigned region | `scenes/main/main_scene.tscn` → `Main/BattlefieldProps/{Lantern,DeadTree,Rocks,TalismanStele}` | `USER_LOCKED` 2026-08-30; implemented on the current isolated branch; full GUT and scoped live render/input verified; not merged; Human/device evidence `NOT_RUN` |
 | `NINJA_RUNTIME_CONTACT_SHADOW_01` | `assets/runtime/visual-core/runtime_contact_shadow_v1.png` | `fbba1279ff8dc257a7c5d382be89335f3bf9b31de6463d89bcccd88ed69f5458` | PNG, 1254×1254, RGBA transparent soft horizontal contact-shadow source | `Player`, `EnemyBasic`, `StageBoss` → `GroundShadow` | `USER_LOCKED` 2026-08-30; implemented on the current isolated branch; full GUT and scoped live render/input verified; not merged; Human/device evidence `NOT_RUN` |
 | `NINJA_RUNTIME_BASIC_WEAPON_EFFECTS_01` | `assets/runtime/visual-core/basic_weapon_effects_v1.png` | `728aff2ed85e233a0adcc195406a9a101b0933da8990078cced1af59c9eaf58a` | PNG, 1774×887, RGBA transparent two-region atlas: left katana slash, right black-steel shuriken | `scripts/combat/basic_weapon_controller.gd` → temporary katana effect; `scenes/projectiles/shuriken_projectile.tscn` → `Visual` right-region clip | `USER_LOCKED` 2026-08-30; isolated-branch implementation; Godot import/parse/main smoke + full GUT `555/555`, `6130` asserts pass; scoped desktop crowd/HUD render observed; not merged; individual weapon-readability/Human/device/balance `NOT_RUN` |
+| `NINJA_RUNTIME_ENCOUNTER_BONGMA_MOBILE_ARRAY_CASTER_01` | `assets/runtime/encounters/actors/mobile_array_caster.png` | `1e145d6e00a0322c894cc3b1384a65c9d225b16a700093dd76eb205efd62fbfd` | PNG, 1024×1536, RGBA transparent cutout; built-in image model; final prompt and alpha receipt below | `SchoolEncounterActor/Visual` when `definition.actor_id == mobile_array_caster` | `USER_LOCKED` 2026-08-31; source copied hash-identically into the isolated branch; Godot import and focused binding evidence pending |
 | `NINJA_RUNTIME_BATTLEFIELD_MOONLIT_01` | `assets/runtime/visual-core/moonlit_battlefield_backdrop_v1.png` | `e5ec25a1429399be7a6ae3f930a5162ab4a935083051f7c2388724921ed9b0fd` | PNG, 1672×941, opaque 16:9 background | historical `Main/BattlefieldBackdrop` direct binding; no current-branch direct consumer | generated v1; migration snapshot preserved; merged main; retained as historical source after the current-branch floor replacement |
 | `NINJA_RUNTIME_CHEONSUL_FLAME_FIELD_01` | `assets/runtime/visual-core/cheonsul_flame_field_v1.png` | `cbb4b1e697f69bf37731f14a32c8ad3890d1557c5ee7ea2ebeb4b2f4f81b3e68` | PNG, 1269×1240, RGBA transparent runtime field texture | `scripts/schools/cheonsul_runtime.gd` → runtime `Cheonsul/FlameFieldVisual` | generated v1; migration snapshot preserved; merged main `6d538fc…` |
 | `NINJA_RUNTIME_BOSS_CHEONSUL_01` | `assets/runtime/visual-core/cheonsul_stage_boss_v1.png` | `d787a4f4d1f646f14641b624a489dbb57dede57cfad8fd2625c8bfe227a9a39f` | PNG, 1224×1285, RGBA, transparent corners | `scenes/enemies/stage_boss.tscn` → `StageBoss/Visual` | generated v1; migration snapshot preserved |
@@ -25,6 +26,31 @@
 | `NINJA_GENERIC_YOKAI_CURSED_LANTERN_01` | `assets/runtime/visual-core/cursed_lantern_v1.png` | `57fa26d65cabf29d2b1bfb5eab90e27ea717a4647ee1a43f083b421d0318d618` | PNG, 1254×1254, RGBA, transparent corners | `scenes/enemies/enemy_basic.tscn` → variant pool | approved original; exact SHA verified |
 | `NINJA_GENERIC_YOKAI_SHADOW_BEAST_01` | `assets/runtime/visual-core/shadow_beast_v1.png` | `97124c7e935efc667f8205143ea46a89a9be6ecc3a8af4a74ed60634f29c89e1` | PNG, 1254×1254, RGBA, transparent corners | `scenes/enemies/enemy_basic.tscn` → variant pool | approved replacement; exact SHA verified |
 | `NINJA_GENERIC_YOKAI_FLAME_NINJA_01` | `assets/runtime/visual-core/flame_ninja_v1.png` | `d4660883354ffe1e6e854541237c69b9e087fbb1edc2ce9d76239d29c257839e` | PNG, 1254×1254, RGBA, transparent corners | `scenes/enemies/enemy_basic.tscn` → variant pool | approved replacement; exact SHA verified |
+
+### DEC-040 locked runtime candidate receipt
+
+- Asset ID: `NINJA_RUNTIME_ENCOUNTER_BONGMA_MOBILE_ARRAY_CASTER_01`
+- User approval: `USER_LOCKED` — user message `승인`, 2026-08-31 KST.
+- Generation method: built-in image model.
+- Source handling: generated source was checked as `1024×1536` RGBA; alpha extrema
+  `0..254`, each corner alpha `0`, and the copied repository file has the exact
+  SHA-256 above. The approved source was copied once into the canonical catalog
+  path without replacing an existing project file.
+- Consumer intent: `EncounterCatalog.actor_definition_for(&"mobile_array_caster")`
+  supplies this exact path to `SchoolEncounterActor/Visual`. It is a Bongma
+  Elite (mid-boss), not a generic Core pool member and not a Boss.
+- Final prompt:
+
+```text
+Use case: stylized-concept
+Asset type: Godot 2D survival-action game runtime enemy candidate, single transparent PNG cutout for the Bongma school Elite named "Mobile Array Caster".
+Primary request: Create exactly one full-body corrupted ninja-yokai Elite, distinct from a normal Core enemy and not a giant generic boss. A mid-boss silhouette: tall hovering exorcist in damaged black and deep-navy shrine robes, asymmetrical brass talisman frames, torn sealing papers, one small bound shikigami mask orbiting at the shoulder, a portable broken barrier-ring behind the back. The face is a cracked wooden demon mask with one cold blue eye; long clawed hands. It should look like an enemy that lays down a telegraphed moving seal zone.
+Scene/backdrop: genuinely transparent RGBA background only; no floor, no scenery, no parchment, no UI.
+Style/medium: premium dark moonlit Korean ninja fantasy; painterly anime ink rendering with readable C-leaning SD runtime proportions, closely aligned to a black/deep-navy/red/warm-gold game palette; restrained blue Bongma accent; crisp separated silhouette, practical for a contact shadow beneath at runtime.
+Composition/framing: one centered whole character in a clear 3/4 top-down gameplay-facing stance; entirely inside canvas with generous transparent margin; no cropped limbs; strong silhouette at small size.
+Lighting/mood: cold moonlit rim light, controlled blue spectral glow only around the sealing papers and small companion.
+Constraints: one character only; transparent background; no text, no letters, no logo, no watermark, no border, no pasted UI, no multi-panel sheet, no player ninja, no generic wolf or lantern, no visible baked ground shadow. Avoid photorealism, over-detailed key-art composition, chibi baby proportions, bright rainbow effects, and copied characters.
+```
 
 ## Binding rules
 
@@ -56,6 +82,13 @@
   `BasicWeaponController`; its right region is clipped by `ShurikenProjectile`.
   Neither changes the player body pose, existing selected-school ninjutsu
   ownership, enemy movement, route, reward, Backpack, or Fate authority.
+- `NINJA_RUNTIME_ENCOUNTER_BONGMA_MOBILE_ARRAY_CASTER_01` is the first
+  individually user-locked DEC-040 actor asset. `SchoolEncounterActor` uses
+  the fixed catalog path whenever the `mobile_array_caster` definition is
+  configured; it does not call the generic enemy variant selector. The other
+  DEC-040 actor, ninjutsu, and telegraph paths remain unapproved future
+  candidates and retain only the implementation's existing fallback behavior;
+  they are not represented as registered runtime art.
 
 ## Evidence required before durable closeout
 

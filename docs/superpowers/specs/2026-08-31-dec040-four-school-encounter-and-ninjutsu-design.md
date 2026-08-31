@@ -1,6 +1,6 @@
 # DEC-040 — Four-School Encounter Roster and Ninjutsu Design
 
-> **Status:** `USER_DESIGN_APPROVED_IMPLEMENTED_MACHINE_SCOPE_ROSTER_BOARD_USER_LOCKED_RUNTIME_ACTOR_ASSET_PROMOTION_NOT_STARTED`
+> **Status:** `USER_DESIGN_APPROVED_IMPLEMENTED_MACHINE_SCOPE_ROSTER_BOARD_USER_LOCKED_ONE_RUNTIME_ACTOR_ASSET_REGISTERED_MACHINE_VERIFIED_FAMILY_PARTIAL`
 > **Product owner:** current user instruction, 2026-08-31 KST
 > **Canon dependencies:** DEC-026 shared primitives and school encounter data; DEC-037 one directly moved Ninja; DEC-039 automatic katana/shuriken plus one selected-school starter ninjutsu.
 > **Current branch baseline:** `codex/dec037-runtime-migration-135` at `3e9c46f` before this design-only commit; PR #135 remains open and unmerged.
@@ -190,18 +190,27 @@ Fate, next Stage and valid pending scrolls.
 
 The implementation deliberately uses the already locked generic
 `basic_weapon_effects_v1.png` only as a temporary machine-test fallback for
-unlocked scroll effects. It does **not** yet register a generated character,
-spell or telegraph file as a runtime asset. The former external Cheonsul Elite
-style exploration remains historical `GENERATED_CANDIDATE` only: it has no
-repository source or runtime consumer and is not promoted.
+unlocked scroll effects. The former external Cheonsul Elite style exploration
+remains historical `GENERATED_CANDIDATE` only: it has no repository source or
+runtime consumer and is not promoted.
 
-The required prerequisite is now met by the user-locked planning reference
+The required art-direction prerequisite is met by the user-locked planning reference
 `DEC040_FOUR_SCHOOL_CORRUPTED_YOKAI_ROSTER_01` at
 `docs/visual/enemy-references/four-school-corrupted-yokai-roster-v1.png`
 (SHA-256 `a49717d3783dd47593f26f9d9f5ed04c49de57aa5aa8c506b811f27b280ed9da`).
 It locks the enemy direction to corrupted ninjas and hostile yokai with a
 small-Core versus broader-Elite/Boss hierarchy. It is not itself a runtime
 texture or a license to bind a board figure to an actor.
+
+The first individual runtime promotion is now complete for the user-locked
+봉마류 Elite `mobile_array_caster` / 이동진 술사. Its exact RGBA source is
+`assets/runtime/encounters/actors/mobile_array_caster.png` (SHA-256
+`1e145d6e00a0322c894cc3b1384a65c9d225b16a700093dd76eb205efd62fbfd`), and
+`SchoolEncounterActor/Visual` loads that catalog path directly. Godot import
+and a focused source/manifest/consumer test pass. This is one of twenty actor
+cutouts only; the remaining 19 actor, 12 ninjutsu and shared telegraph sources
+remain separate unapproved candidates. No family-level asset-completeness or
+runtime-render claim is made from this individual promotion.
 
 ## 6. Image asset plan and gate
 
@@ -213,7 +222,7 @@ no text/UI/watermark, and a strong contact-shadow-compatible lower silhouette.
 
 | Family | Asset count | Runtime consumer | State at this design stage |
 | --- | ---: | --- | --- |
-| Core/Elite/Boss character cutouts | 20 | `SchoolEncounterActor/Visual` | `NEEDED — roster-board prerequisite is USER_LOCKED; each runtime candidate still needs its own lock` |
+| Core/Elite/Boss character cutouts | 20 | `SchoolEncounterActor/Visual` | `1 USER_LOCKED + repository-registered + import/focused-machine-verified (mobile_array_caster); 19 NEEDED — each candidate still needs its own lock` |
 | Ninjutsu visual cutouts/fields | 12 | school spell controllers | `NEEDED — roster-board prerequisite is USER_LOCKED; each runtime candidate still needs its own lock` |
 | Boss/Elite telegraph effects | bounded per shared primitive, reused by school color hook | `NEEDED — roster-board prerequisite is USER_LOCKED; each runtime candidate still needs its own lock` |
 | Four-school roster art-direction board | 1 | planning/review only; not runtime | `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME` |

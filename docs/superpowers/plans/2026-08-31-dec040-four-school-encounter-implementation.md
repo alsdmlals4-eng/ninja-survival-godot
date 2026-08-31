@@ -450,10 +450,15 @@ git commit -m "test: verify four-school combat contract"
 - Boss/Elite execution uses shared state with school data. A line dash uses a
   locked lane with a sideways-safe response; a proxy creates a delayed hazard
   rather than generic direct contact damage; marks modify subsequent damage.
-- Task 5 remains intentionally incomplete: no generated runtime PNG is
-  registered or bound before a conforming four-school roster-board candidate
-  receives a user `LOCK`. Existing locked generic effects are machine-only
-  fallbacks and do not satisfy this asset family.
+- Task 5 is in progress under the per-candidate image gate. The user locked
+  the first independent runtime actor candidate, 봉마류 Elite
+  `mobile_array_caster` / 이동진 술사. Its source was copied once to
+  `assets/runtime/encounters/actors/mobile_array_caster.png`, SHA-256 and
+  final prompt were recorded, Godot imported it, and the focused
+  source/manifest/`SchoolEncounterActor/Visual` contract passed `2/2`, `14`
+  assertions. The full family remains intentionally incomplete: 19 actor,
+  12 ninjutsu and shared telegraph candidates still require their own user
+  `LOCK`; generic effects remain fallbacks and do not satisfy those slots.
 - Exact evidence is recorded in `docs/ACTIVE_CONTEXT.md`. It establishes
   import/parse, headless smoke and automated contracts only; render, Human
   Usability, Player Experience, balance, uncapped-density performance,
