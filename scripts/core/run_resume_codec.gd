@@ -33,6 +33,7 @@ func encode_checkpoint(checkpoint: Dictionary) -> Dictionary:
 	var primitive_result := _to_json_primitive({
 		"schema_version": SCHEMA_VERSION,
 		"checkpoint": {
+			"retry_consumed": bool(checkpoint.get("retry_consumed", false)),
 			"build": persistent_build,
 			"route": route.duplicate(true),
 			"eligible_school_boss_ids": Array(checkpoint.get("eligible_school_boss_ids", [])).duplicate(),
@@ -53,7 +54,8 @@ func decode_checkpoint(payload: Dictionary) -> Dictionary:
 	var raw_route = raw_checkpoint.get("route", null)
 	var raw_circuit = raw_checkpoint.get("circuit", null)
 	var raw_loadout = raw_checkpoint.get("loadout", null)
-	if not (raw_build is Dictionary) or not (raw_route is Dictionary) or not (raw_circuit is Dictionary) or not (raw_loadout is Dictionary):
+	var raw_retry_consumed = raw_checkpoint.get("retry_consumed", false)
+	if not (raw_build is Dictionary) or not (raw_route is Dictionary) or not (raw_circuit is Dictionary) or not (raw_loadout is Dictionary) or typeof(raw_retry_consumed) != TYPE_BOOL:
 		return {"ok": false, "reason": &"invalid_checkpoint"}
 
 	var restored_build = _decode_build(raw_build)
@@ -66,6 +68,7 @@ func decode_checkpoint(payload: Dictionary) -> Dictionary:
 	return {
 		"ok": true,
 		"checkpoint": {
+			"retry_consumed": raw_retry_consumed,
 			"build": restored_build,
 			"route": restored_route,
 			"eligible_school_boss_ids": restored_ledger.get("eligible_school_boss_ids", []).duplicate(),

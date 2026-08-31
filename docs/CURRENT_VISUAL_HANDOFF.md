@@ -60,10 +60,33 @@ runtime content.
 | Machine evidence | Godot 4.7.1 import, editor parse, 300-frame main-scene smoke, focused title/start/MVP-2 GUT `15/15`, `193` assertions, and full GUT `580/580`, `6455` assertions passed on the isolated branch. PR #135 head `ddeaf55` then passed GitHub GUT and Windows internal-build checks. |
 | Render/Human/device evidence | `NOT_RUN`: the exact Ninja Survival editor session is not connected; import or headless tests do not establish visual readability. |
 
-`시작하기` emits only a presentation intent. `MainController` hides the title
-and exposes the existing Stage selector; it does not enable combat until a
-Stage choice arrives through the existing path. No false Continue, save,
-settings, store, or Ninja Soul settlement affordance was added.
+`새 게임` emits only a presentation intent. `MainController` asks for
+confirmation when a Continue record exists, then hides the title and exposes
+the existing Stage selector; it does not enable combat until a Stage choice
+arrives through the existing path. No false save/settings/store ownership or
+Ninja Soul settlement affordance was added; DEC-042 adds the separately
+validated Continue action below.
+
+### 2026-09-01 DEC-042 — retained title art, expanded action surface
+
+The locked backdrop, wordmark, and four-piece medal above are reused without
+new source images or byte changes. The medal remains a smaller independent
+overlay beside the wordmark. The left title action column now presents `새 게임`,
+`이어하기`, `각성`, `도감`, `조작 방법`, `설정`, and `종료`; its local modal
+surfaces do not replace the painterly title composition with a new art style.
+
+`이어하기` is enabled only for a validated Workbench checkpoint. `새 게임` asks
+for confirmation before removing an existing record. `각성` presents the
+existing retry balance using the player-facing name only, while `도감` is a
+read-only text-native catalog for enemy, ninjutsu, equipment, bag, and
+combination facts. No lore promise text, separate school-choice panel, player
+skin, or in-combat title asset was added.
+
+Machine scope rechecked this surface with focused title/resume/retry regression
+GUT `25/25`, `296` assertions, full GUT `604/604`, `6784` assertions, and a
+headless main-scene smoke on Godot `4.7.1`. Exact live render, Human
+Usability/Player Experience, complete keyboard/gamepad/touch visual review,
+and device/export validation remain `NOT_RUN`.
 
 ## 2026-08-28 DEC-035 — migration-first repository-only visual ownership
 

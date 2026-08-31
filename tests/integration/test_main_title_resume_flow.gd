@@ -92,6 +92,31 @@ func test_corrupt_continue_record_stays_present_but_cannot_open_combat() -> void
 	assert_false(main._combat_enabled)
 
 
+func test_continue_keeps_an_already_consumed_awakening_retry_consumed() -> void:
+	var seed_main: Node = await _new_main()
+	if seed_main == null:
+		return
+	assert_true(seed_main.run_resume_store.configure(_storage_path))
+	seed_main.run_build_state.set_selected_school(&"bongma")
+	assert_true(seed_main.ninjutsu_loadout.activate_starter(&"cheonsul"))
+	assert_true(seed_main.run_settlement_ledger.record_school_boss(&"cheonsul"))
+	var consumed_checkpoint := _make_checkpoint(seed_main)
+	consumed_checkpoint["retry_consumed"] = true
+	assert_true(seed_main.run_resume_store.save_checkpoint(consumed_checkpoint))
+	seed_main.queue_free()
+	await get_tree().process_frame
+
+	var main: Node = await _new_main()
+	if main == null:
+		return
+	assert_true(main.run_resume_store.configure(_storage_path))
+	main._on_title_continue_requested()
+	await get_tree().process_frame
+
+	assert_true(main.run_checkpoint.is_valid())
+	assert_false(main.run_checkpoint.can_retry_school(&"bongma"), "A consumed Awakening retry must not reopen after Continue.")
+
+
 func _make_checkpoint(main) -> Dictionary:
 	var route = ROUTE_STATE_SCRIPT.new()
 	assert_true(route.set_provisional_next_school(&"cheonsul"))

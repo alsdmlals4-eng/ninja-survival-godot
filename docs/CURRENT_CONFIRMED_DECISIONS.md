@@ -176,22 +176,40 @@ are owned by DEC-039; Human/Player/device/balance are still `NOT_RUN`.
 The new Run begins with a title screen before the Stage selector. Its locked
 16:9 key-art places one fixed ninja on the right; the left safe area renders a
 user-locked, transparent world-building logo `닌자의 신` and the `시작하기`
-control. The graphic title is directly adjacent to one circular medal visibly assembled from four joined
+control (player-facing label superseded by `새 게임` in DEC-042). The graphic title is directly adjacent to one circular medal visibly assembled from four joined
 tradition fragments: 봉마류 talisman/familiar, 천술류 reaction geometry, 귀인류 oni,
 and 흑영류 shadow/shuriken. It replaces separate tradition panels on the main
 screen; it does not make four player characters or create a new route owner.
 
-`시작하기` only hides the presentation layer and reveals the existing Stage
-selector. Combat remains disabled until the player explicitly selects a Stage.
+`새 게임` reveals the existing Stage selector only when no Continue record
+exists or after the player explicitly confirms that record's deletion. Combat
+remains disabled until the player explicitly selects a Stage.
 `조작 방법` opens a local control guide without selecting a Stage; `설정` only
 toggles the current window mode and intentionally creates no new save or
 preference owner. The redundant title promise text is removed. The former
 absence of Continue, Awakening, and Codex entries is superseded by DEC-042.
-DEC-042 adds approved checkpoint-only durable Continue, the player-facing
-`각성` label while preserving the legacy wallet data contract, and a read-only
-enemy/ninjutsu/equipment Codex. `MainController` remains the owner of combat,
-route, and any durable checkpoint transition; the title screen owns only
-presentation intents/panels.
+DEC-042 is `USER_APPROVED / MACHINE_IMPLEMENTED`: the title now provides
+`새 게임`, `이어하기`, `각성`, `도감`, `조작 방법`, `설정`, and `종료`.
+
+`이어하기` is created only after the existing atomic Workbench commit. It
+stores the committed build, route, ledger, backpack, loadout, and one-time
+retry-consumed state as validated JSON primitives; it deliberately does not
+store live enemies, projectiles, floor hazards, temporary Workbench edits, or
+an arbitrary combat timestamp. Re-entry begins the selected next Stage at
+fresh Core pressure and public `PLAY 00:00`. An invalid record remains in
+place, disables Continue, and reports that the record cannot be checked;
+`새 게임` deletes such a record only after explicit confirmation.
+
+`각성` is the player-facing name for the existing retry balance and retry
+copy. The compatible `NinjaSoulWallet` class and
+`user://ninja_soul_wallet_v1.json` storage contract remain unchanged. A
+consumed retry is also written into the resume record, so relaunching cannot
+reopen it. The Codex is read-only and derives its enemy, ninjutsu, equipment,
+bag, and combination explanations from current catalogs; it creates no
+discovery/unlock/save owner. `MainController` remains the owner of combat,
+route, retry, and durable checkpoint transitions; the title screen owns only
+presentation intents and panels. Existing locked title images are reused
+without source-byte changes.
 
 ## 2. Protected integrated baseline
 

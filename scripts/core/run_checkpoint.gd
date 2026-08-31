@@ -11,7 +11,8 @@ func capture(
 	route_snapshot: Dictionary,
 	ledger_snapshot: Dictionary,
 	circuit_snapshot: Dictionary = {},
-	loadout_snapshot: Dictionary = {}
+	loadout_snapshot: Dictionary = {},
+	retry_consumed := false
 ) -> bool:
 	var active_school_id := StringName(route_snapshot.get("active_school_id", &""))
 	if active_school_id == &"" or build_snapshot.is_empty() or ledger_snapshot.is_empty():
@@ -23,7 +24,7 @@ func capture(
 		"circuit": circuit_snapshot.duplicate(true),
 		"loadout": loadout_snapshot.duplicate(true),
 	}
-	_retry_consumed = false
+	_retry_consumed = retry_consumed
 	return true
 
 
@@ -39,6 +40,13 @@ func consume_retry() -> bool:
 	if not is_valid() or _retry_consumed:
 		return false
 	_retry_consumed = true
+	return true
+
+
+func restore_unconsumed_retry() -> bool:
+	if not is_valid() or not _retry_consumed:
+		return false
+	_retry_consumed = false
 	return true
 
 

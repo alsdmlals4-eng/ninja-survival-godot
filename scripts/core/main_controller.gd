@@ -366,6 +366,15 @@ func _restore_persistent_resume(checkpoint: Dictionary) -> bool:
 		return false
 	if not school_circuit.restore_from_persistent_checkpoint(checkpoint_route, checkpoint_circuit):
 		return false
+	if run_checkpoint == null or not run_checkpoint.capture(
+		run_build_state.get_checkpoint_snapshot(),
+		school_circuit.route_state.get_route_snapshot(),
+		run_settlement_ledger.get_snapshot(),
+		school_circuit.get_checkpoint_snapshot(),
+		ninjutsu_loadout.get_snapshot(),
+		bool(checkpoint.get("retry_consumed", false))
+	):
+		return false
 	_clear_failed_school_runtime_nodes()
 	_school_circuit_elapsed_seconds = 0.0
 	_run_play_elapsed_seconds = 0.0
@@ -1321,7 +1330,15 @@ func _on_retry_requested() -> void:
 		return
 	if not school_circuit.can_restore_after_retry(checkpoint_circuit):
 		return
-	if not ninja_soul_wallet.spend_for_retry() or not run_checkpoint.consume_retry():
+	if not run_checkpoint.consume_retry():
+		return
+	if run_resume_store != null and not run_resume_store.save_checkpoint(run_checkpoint.get_snapshot()):
+		run_checkpoint.restore_unconsumed_retry()
+		return
+	if not ninja_soul_wallet.spend_for_retry():
+		run_checkpoint.restore_unconsumed_retry()
+		if run_resume_store != null:
+			run_resume_store.save_checkpoint(run_checkpoint.get_snapshot())
 		return
 	if not run_build_state.restore_from_checkpoint(checkpoint_build):
 		return

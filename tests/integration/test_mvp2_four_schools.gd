@@ -48,6 +48,7 @@ func test_each_school_selection_activates_only_matching_runtime_and_combat() -> 
 		assert_not_null(start_button)
 		if start_button == null:
 			return
+		assert_true(_configure_empty_resume(main, "user://gut_mvp2_four_school_start_%s.json" % String(school_id)))
 		start_button.pressed.emit()
 		await get_tree().process_frame
 		assert_true(selector.visible)
@@ -319,3 +320,11 @@ func _living_reward_orbs(main: Node) -> Array[Node]:
 		if child.is_in_group("reward_orbs") and not child.is_queued_for_deletion():
 			orbs.append(child)
 	return orbs
+
+
+func _configure_empty_resume(main: Node, storage_path: String) -> bool:
+	for suffix in ["", ".tmp", ".previous"]:
+		var path := storage_path + String(suffix)
+		if FileAccess.file_exists(path) and DirAccess.remove_absolute(ProjectSettings.globalize_path(path)) != OK:
+			return false
+	return main.run_resume_store.configure(storage_path)

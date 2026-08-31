@@ -50,6 +50,19 @@ func test_codec_rejects_an_unsupported_schema_version() -> void:
 	assert_eq(decoded.get("reason"), &"unsupported_schema")
 
 
+func test_codec_round_trips_the_consumed_awakening_retry_without_resetting_it() -> void:
+	assert_true(ResourceLoader.exists(CODEC_PATH), "Committed resume codec is required.")
+	if not ResourceLoader.exists(CODEC_PATH):
+		return
+	var codec = load(CODEC_PATH).new()
+	var checkpoint := _make_committed_checkpoint()
+	checkpoint["retry_consumed"] = true
+	var encoded: Dictionary = codec.encode_checkpoint(checkpoint)
+	var decoded: Dictionary = codec.decode_checkpoint(encoded)
+	assert_true(decoded.get("ok", false))
+	assert_true(decoded.get("checkpoint", {}).get("retry_consumed", false), "A consumed Awakening retry must remain consumed after relaunch.")
+
+
 func _make_committed_checkpoint() -> Dictionary:
 	var backpack = load(BACKPACK_STATE_PATH).new().create_starting_state()
 	assert_not_null(backpack)

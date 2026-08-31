@@ -21,6 +21,7 @@ func test_start_intent_reveals_starting_stage_selection_without_starting_combat(
 	assert_not_null(start_button)
 	if start_button == null:
 		return
+	assert_true(_configure_empty_resume(main, "user://gut_title_start_gate_empty_resume.json"))
 
 	start_button.pressed.emit()
 	await get_tree().process_frame
@@ -69,3 +70,11 @@ func test_title_secondary_buttons_open_only_their_own_panels_before_a_stage_is_s
 	assert_true(settings_panel.visible)
 	assert_not_null(title.get_node_or_null("SettingsPanel/Dialog/Margin/Actions/FullscreenButton"))
 	assert_false(school_selection.visible, "Opening title settings must not reveal the Stage selector.")
+
+
+func _configure_empty_resume(main: Node, storage_path: String) -> bool:
+	for suffix in ["", ".tmp", ".previous"]:
+		var path := storage_path + String(suffix)
+		if FileAccess.file_exists(path) and DirAccess.remove_absolute(ProjectSettings.globalize_path(path)) != OK:
+			return false
+	return main.run_resume_store.configure(storage_path)
