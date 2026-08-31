@@ -52,11 +52,11 @@ Each roster quadrant pairs a compact Core Monster with a distinctly broader
 Elite/Boss silhouette. This proves the visual direction only: it does not
 promote the board's eight displayed figures, any character cutout, spell,
 telegraph, old generic-enemy texture, stat, spawn rule, or Godot consumer.
-### 2026-08-31 first individually locked DEC-040 runtime actor
+### 2026-08-31 individually locked DEC-040 Bongma runtime assets
 
-`NINJA_RUNTIME_ENCOUNTER_BONGMA_MOBILE_ARRAY_CASTER_01` is the first runtime
-asset promoted from this direction, and is intentionally limited to the
-봉마류 Elite `mobile_array_caster` / 이동진 술사:
+`NINJA_RUNTIME_ENCOUNTER_BONGMA_MOBILE_ARRAY_CASTER_01` remains the first runtime
+asset promoted from this direction. The two later locked sources extend only
+the same Bongma encounter family, not the whole DEC-040 asset batch:
 
 | Field | Recorded value |
 | --- | --- |
@@ -68,8 +68,20 @@ asset promoted from this direction, and is intentionally limited to the
 | Machine evidence | Godot import plus focused source/manifest/binding contract `2/2`, `14` assertions passed on the isolated branch |
 | Render/Human/device evidence | `NOT_RUN` — the currently discoverable live Godot session belongs to another project, so no Ninja visual/runtime claim is inferred |
 
-This first promotion does not approve a whole family: the remaining 19 actor,
-12 ninjutsu and shared telegraph candidates must each be generated, reviewed,
+| Field | Boss locked value | Familiar locked value |
+| --- | --- | --- |
+| Asset ID | `NINJA_RUNTIME_ENCOUNTER_BONGMA_HUNDRED_DEMON_ARRAY_MASTER_01` | `NINJA_RUNTIME_ENCOUNTER_BONGMA_HUNDRED_DEMON_FAMILIAR_01` |
+| Local source | `assets/runtime/encounters/actors/hundred_demon_array_master.png` | `assets/runtime/encounters/summons/bongma_hundred_demon_familiar.png` |
+| SHA-256 | `b97f20076b64e0e84eef2714e5d5551a49648ea97b0583226b31f220d5b9527c` | `50cbecfe6982e53537d4caaa731bc06c3e56c95bbf0be6084c2550571176ea75` |
+| Metadata | 1254×1254 RGBA transparent Boss cutout; blue eye, array frame, bound fox shikigami | 1254×1254 RGBA transparent floating fox-mask shikigami cutout |
+| Approval | User `LOCK` / `승인`, 2026-08-31 KST | User `LOCK` / `승인`, 2026-08-31 KST |
+| Runtime consumer | `EncounterCatalog` → `SchoolEncounterActor/Visual`, only `hundred_demon_array_master`, scale `0.09` | `SchoolEncounterActor/EncounterProxy/Visual`, only Bongma `summon_or_proxy`, scale `0.03`, no tint |
+| Scope guard | Existing Boss patterns, timing, hazards, rewards and gates are unchanged | Existing delayed proxy arming, lifetime, radius and damage are unchanged; existing player-side `BongmaFamiliar` is untouched |
+| Machine evidence | Godot import plus focused source/manifest/scale contract `4/4`, `29` asserts; full GUT `578/578`, `6408` asserts | Godot import plus focused delayed-proxy source/scale/no-tint contract `5/5`, `23` asserts; full GUT `578/578`, `6408` asserts |
+| Render/Human/device evidence | `NOT_RUN` | `NOT_RUN` |
+
+This promotion does not approve a whole family: the remaining 18 actor, 12
+ninjutsu and shared telegraph candidates must each be generated, reviewed,
 user-locked, registered, imported and render-checked independently.
 
 ## 2026-08-30 user-locked auto-combat battlefield planning reference

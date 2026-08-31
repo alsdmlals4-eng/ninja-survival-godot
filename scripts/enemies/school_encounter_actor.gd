@@ -6,6 +6,12 @@ const ENEMY_PATTERN_PROJECTILE_SCENE = preload("res://scenes/projectiles/shurike
 const TALISMAN_PROJECTILE_TEXTURE = preload("res://assets/runtime/visual-core/talisman_projectile_v1.png")
 const FALLBACK_TELEGRAPH_TEXTURE = preload("res://assets/runtime/visual-core/cheonsul_flame_field_v1.png")
 const PATTERN_PROJECTILE_META := &"ninja_encounter_pattern_projectile"
+const HUNDRED_DEMON_ARRAY_MASTER_ID := &"hundred_demon_array_master"
+const BONGMA_HUNDRED_DEMON_FAMILIAR_TEXTURE_PATH := "res://assets/runtime/encounters/summons/bongma_hundred_demon_familiar.png"
+const DEFAULT_ACTOR_VISUAL_SCALE := 0.05
+const HUNDRED_DEMON_ARRAY_MASTER_VISUAL_SCALE := 0.09
+const BONGMA_FAMILIAR_PROXY_VISUAL_SCALE := 0.03
+const DEFAULT_PROXY_VISUAL_SCALE := 0.085
 const TELEGRAPHED_ZONE_RADIUS := 92.0
 const LINE_DASH_HALF_WIDTH := 30.0
 const PULSE_RADIUS := 118.0
@@ -247,9 +253,10 @@ func _spawn_proxy_hazard() -> void:
 	proxy.top_level = true
 	proxy.global_position = _telegraphed_position
 	var visual := Sprite2D.new()
-	visual.texture = FALLBACK_TELEGRAPH_TEXTURE
-	visual.scale = Vector2.ONE * 0.085
-	visual.modulate = Color(_school_projectile_color(), 0.55)
+	visual.name = "Visual"
+	visual.texture = _proxy_visual_texture()
+	visual.scale = Vector2.ONE * _proxy_visual_scale()
+	visual.modulate = Color.WHITE if _uses_bongma_familiar_proxy() else Color(_school_projectile_color(), 0.55)
 	visual.z_index = 1
 	proxy.add_child(visual)
 	add_child(proxy)
@@ -380,3 +387,28 @@ func _apply_visual_asset() -> void:
 	var texture = load(definition.visual_asset_path) as Texture2D
 	if visual != null and texture != null:
 		visual.texture = texture
+		visual.scale = Vector2.ONE * _actor_visual_scale()
+
+
+func _actor_visual_scale() -> float:
+	if definition != null and definition.actor_id == HUNDRED_DEMON_ARRAY_MASTER_ID:
+		return HUNDRED_DEMON_ARRAY_MASTER_VISUAL_SCALE
+	return DEFAULT_ACTOR_VISUAL_SCALE
+
+
+func _uses_bongma_familiar_proxy() -> bool:
+	return definition != null \
+		and definition.school_id == &"bongma" \
+		and ResourceLoader.exists(BONGMA_HUNDRED_DEMON_FAMILIAR_TEXTURE_PATH)
+
+
+func _proxy_visual_texture() -> Texture2D:
+	if _uses_bongma_familiar_proxy():
+		var familiar_texture = load(BONGMA_HUNDRED_DEMON_FAMILIAR_TEXTURE_PATH) as Texture2D
+		if familiar_texture != null:
+			return familiar_texture
+	return FALLBACK_TELEGRAPH_TEXTURE
+
+
+func _proxy_visual_scale() -> float:
+	return BONGMA_FAMILIAR_PROXY_VISUAL_SCALE if _uses_bongma_familiar_proxy() else DEFAULT_PROXY_VISUAL_SCALE
