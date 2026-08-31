@@ -28,7 +28,7 @@ unit, player skin, Stage reward, or four-character selection surface.
 | Medal contract | One circular artifact immediately beside the separate `닌자의 신` title-logo overlay: four joined fragments share gold seams and a center core. The quadrants read 봉마=seal/familiar, 천술=reaction geometry, 귀인=oni, 흑영=shadow/shuriken. They are not selectable character panels. |
 | User approval | `LOCK` / `승인`, 2026-08-31 KST |
 | Runtime consumer | `scenes/ui/title_screen.tscn` → `TitleScreen/Backdrop`; the user-locked logo below is the adjacent `TitleScreen/LogoLockup/TitleLogo` overlay. No plain fallback `TitleLabel` remains. |
-| Machine evidence | Godot 4.7.1 import, editor parse, 300-frame main-scene smoke, focused title/start/MVP-2 GUT `15/15`, `193` assertions, and full GUT `580/580`, `6455` assertions passed on the isolated branch. |
+| Machine evidence | Godot 4.7.1 import, editor parse, 300-frame main-scene smoke, focused title/start/MVP-2 GUT `15/15`, `193` assertions, and full GUT `580/580`, `6455` assertions passed on the isolated branch. PR #135 head `ddeaf55` then passed GitHub GUT and Windows internal-build checks. |
 | Render/Human/device evidence | `NOT_RUN`: no exact Ninja Survival live-editor session is currently attached; neither machine test nor source review is a visual usability or player-experience pass. |
 
 `NINJA_RUNTIME_TITLE_LOGO_NINJA_GOD_01` is the approved transparent title mark;
@@ -42,7 +42,7 @@ runtime content.
 | Metadata | PNG, 1672×941, RGBA transparent `닌자의 신` wordmark; sampled alpha `0..255`, all four corner alphas `0`; navy ink/stone-gold lettering with crescent and red seal |
 | User approval | `LOCK` / `확정하자`, 2026-08-31 KST |
 | Runtime consumer | `scenes/ui/title_screen.tscn` → `TitleScreen/LogoLockup/TitleLogo`, aspect-preserving and immediately left of the baked four-piece medal |
-| Machine evidence | Godot 4.7.1 import, editor parse, 300-frame main-scene smoke, focused title/start/MVP-2 GUT `15/15`, `193` assertions, and full GUT `580/580`, `6455` assertions passed on the isolated branch. |
+| Machine evidence | Godot 4.7.1 import, editor parse, 300-frame main-scene smoke, focused title/start/MVP-2 GUT `15/15`, `193` assertions, and full GUT `580/580`, `6455` assertions passed on the isolated branch. PR #135 head `ddeaf55` then passed GitHub GUT and Windows internal-build checks. |
 | Render/Human/device evidence | `NOT_RUN`: the exact Ninja Survival editor session is not connected; import or headless tests do not establish visual readability. |
 
 `시작하기` emits only a presentation intent. `MainController` hides the title
