@@ -14,9 +14,11 @@ const FATE_CONTROLLER_SCRIPT = preload("res://scripts/core/fate_controller.gd")
 const STAGE_FLOW_SCRIPT = preload("res://scripts/core/stage_flow_controller.gd")
 const CONTRIBUTION_TRACKER_SCRIPT = preload("res://scripts/combat/combat_contribution_tracker.gd")
 const COMBAT_RESOLVER_SCRIPT = preload("res://scripts/combat/combat_resolver.gd")
+const ENCOUNTER_CATALOG_SCRIPT = preload("res://scripts/data/encounter_catalog.gd")
 const STAGE_BOSS_SCENE = preload("res://scenes/enemies/stage_boss.tscn")
 const STAGE_BOSS_SCRIPT = preload("res://scripts/enemies/stage_boss.gd")
 const ENEMY_BASIC_SCENE = preload("res://scenes/enemies/enemy_basic.tscn")
+const SCHOOL_ENCOUNTER_ACTOR_SCENE = preload("res://scenes/enemies/school_encounter_actor.tscn")
 const REST_FLOW_UI_SCENE = preload("res://scenes/ui/rest_flow_ui.tscn")
 const CHEONSUL_SLICE_SCRIPT = preload("res://scripts/core/cheonsul_vertical_slice_controller.gd")
 const SCHOOL_CIRCUIT_SCRIPT = preload("res://scripts/core/school_circuit_controller.gd")
@@ -372,7 +374,8 @@ func _on_school_circuit_normal_spawn_permission_changed(allowed: bool) -> void:
 func _spawn_school_circuit_elite() -> void:
 	if game_over or school_circuit == null:
 		return
-	var elite := ENEMY_BASIC_SCENE.instantiate()
+	var encounter_id := _school_circuit_encounter_id("elite_id")
+	var elite: Node = _instantiate_school_encounter_actor(encounter_id, &"elite")
 	if elite == null:
 		return
 	add_child(elite)
@@ -389,9 +392,9 @@ func _on_school_circuit_boss_spawn_requested() -> void:
 	wave_spawner.set_spawning_enabled(false)
 	if is_instance_valid(current_stage_boss) and not current_stage_boss.is_queued_for_deletion():
 		return
-	var boss_node := STAGE_BOSS_SCENE.instantiate()
-	if not boss_node.has_method("configure_tier") or not boss_node.configure_tier(1):
-		boss_node.free()
+	var encounter_id := _school_circuit_encounter_id("boss_id")
+	var boss_node: Node = _instantiate_school_encounter_actor(encounter_id, &"boss")
+	if boss_node == null:
 		return
 	add_child(boss_node)
 	current_stage_boss = boss_node
@@ -806,15 +809,43 @@ func _wire_enemy(enemy: Node) -> void:
 		var circuit_encounter_id := StringName(circuit_encounter.get("id", &""))
 		if circuit_encounter_id != &"":
 			enemy.set_meta(SCHOOL_CIRCUIT_ENCOUNTER_ID_META, circuit_encounter_id)
+			_configure_school_encounter_actor(enemy, circuit_encounter_id, &"core")
 	elif cheonsul_slice != null and enemy.is_in_group("enemies") and not enemy.has_meta(CHEONSUL_SLICE_ROLE_META):
 		var encounter := cheonsul_slice.next_core_encounter()
 		var encounter_id := StringName(encounter.get("id", &""))
 		if encounter_id != &"":
 			enemy.set_meta(CHEONSUL_ENCOUNTER_ID_META, encounter_id)
+			_configure_school_encounter_actor(enemy, encounter_id, &"core")
 	if enemy.has_signal("died"):
 		var death_callback := Callable(self, "_on_enemy_died")
 		if not enemy.is_connected("died", death_callback):
 			enemy.connect("died", death_callback)
+
+
+func _instantiate_school_encounter_actor(encounter_id: StringName, expected_role: StringName):
+	if encounter_id == &"":
+		return null
+	var definition = ENCOUNTER_CATALOG_SCRIPT.actor_definition_for(encounter_id)
+	if definition == null or definition.role != expected_role:
+		return null
+	var actor = SCHOOL_ENCOUNTER_ACTOR_SCENE.instantiate()
+	if actor == null or not actor.has_method("configure_definition"):
+		if actor != null:
+			actor.free()
+		return null
+	if not bool(actor.call("configure_definition", definition)):
+		actor.free()
+		return null
+	return actor
+
+
+func _configure_school_encounter_actor(enemy: Node, encounter_id: StringName, expected_role: StringName) -> bool:
+	if enemy == null or not enemy.has_method("configure_definition"):
+		return false
+	var definition = ENCOUNTER_CATALOG_SCRIPT.actor_definition_for(encounter_id)
+	if definition == null or definition.role != expected_role:
+		return false
+	return bool(enemy.call("configure_definition", definition))
 
 
 func _cheonsul_encounter_id(key: String) -> StringName:
