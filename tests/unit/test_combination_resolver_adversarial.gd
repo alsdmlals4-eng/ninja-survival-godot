@@ -15,7 +15,7 @@ func test_successful_combination_clears_prior_edit_history() -> void:
 	var session = _session(committed)
 	var resolver = _combination_resolver()
 
-	var preview = session.preview_item(spare_id, Vector2i(4, 1), 0)
+	var preview = session.preview_item(spare_id, Vector2i(3, 2), 0)
 	assert_true(preview.valid)
 	assert_true(session.commit_item_preview())
 	assert_true(session.undo())
@@ -81,7 +81,7 @@ func test_begin_rejects_uncommitted_item_preview_and_whole_layout_mode() -> void
 	var session = _session(committed)
 	var resolver = _combination_resolver()
 
-	var preview = session.preview_item(spare_id, Vector2i(4, 1), 0)
+	var preview = session.preview_item(spare_id, Vector2i(3, 2), 0)
 	assert_true(preview.valid)
 	assert_false(resolver.begin_result_preview(session, &"water_mist", water_id, stealth_id))
 	assert_false(session.combination_transaction_active)
@@ -104,10 +104,10 @@ func test_cancel_preserves_prior_normal_edit_history() -> void:
 	var session = _session(committed)
 	var resolver = _combination_resolver()
 
-	var preview = session.preview_item(spare_id, Vector2i(4, 1), 0)
+	var preview = session.preview_item(spare_id, Vector2i(3, 2), 0)
 	assert_true(preview.valid)
 	assert_true(session.commit_item_preview())
-	assert_eq(session.state.get_item(spare_id).origin, Vector2i(4, 1))
+	assert_eq(session.state.get_item(spare_id).origin, Vector2i(3, 2))
 
 	assert_true(resolver.begin_result_preview(session, &"water_mist", water_id, stealth_id))
 	resolver.cancel_result(session)

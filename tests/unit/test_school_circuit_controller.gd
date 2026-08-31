@@ -265,6 +265,7 @@ func test_deterministic_four_school_machine_circuit_reaches_final_binding_eligib
 
 
 func _place_every_buffer_item(circuit) -> bool:
+	_expand_fixture_board(circuit)
 	while not (circuit.workbench_snapshot().get("buffer", []) as Array).is_empty():
 		var placed := false
 		for rotation in range(4):
@@ -280,6 +281,15 @@ func _place_every_buffer_item(circuit) -> bool:
 		if not placed:
 			return false
 	return true
+
+
+func _expand_fixture_board(circuit) -> void:
+	var state = circuit._backpack_session._state
+	if state.bags.size() != 1:
+		return
+	assert_gt(state.add_bag(&"small_pouch", Vector2i(0, 0)), 0)
+	assert_gt(state.add_bag(&"small_pouch", Vector2i(3, 4)), 0)
+	assert_gt(state.add_bag(&"long_pouch", Vector2i(0, 4)), 0)
 
 
 func _choose_smallest_boss_reward(circuit) -> bool:

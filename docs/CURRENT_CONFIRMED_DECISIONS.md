@@ -2,7 +2,7 @@
 
 ```yaml
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER
-updated_at: 2026-08-30 KST
+updated_at: 2026-08-31 KST
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
 current_completed_main_resolution: FRESH_GITHUB_DEFAULT_BRANCH_READ_REQUIRED
@@ -26,13 +26,55 @@ current_human_blueprint_spec: docs/implementation/2026-08-30-player-control-stag
 current_player_control_stage_backpack_canon: docs/canon/2026-08-30-dec037-player-control-stage-3x3-backpack.md
 player_facing_vocabulary: STAGE_AND_PHASE
 player_control_contract: ONE_FIXED_NINJA_DIRECT_MOVEMENT_AUTO_ACTIONS_SEPARATE
+dash_combat_contract: ACTIVE_DASH_0_20_SECONDS_FULL_INVULNERABILITY_USER_APPROVED_2026-08-30_KST
+dash_change_evidence: RED_CONFIRMED_FOCUSED_GUT_1_OF_1_18_TESTS_82_ASSERTS_FULL_GUT_71_OF_71_555_TESTS_6033_ASSERTS_AND_SCOPED_RUNTIME_PASS
+dec039_horde_basic_weapons_and_starting_ninjutsu: USER_APPROVED_ASSET_LOCKED_IMPLEMENTED_MACHINE_VERIFIED_UNMERGED
+dec039_canon: docs/canon/2026-08-30-dec039-horde-basic-weapons-and-starting-ninjutsu.md
+dec039_locked_runtime_asset: NINJA_RUNTIME_BASIC_WEAPON_EFFECTS_01_SHA256_728AFF2ED85E233A0ADCC195406A9A101B0933DA8990078CCED1AF59C9EAF58A
+dec039_machine_evidence: GODOT_4_7_1_EDITOR_IMPORT_PARSE_MAIN_SMOKE_FULL_GUT_555_OF_555_6130_ASSERTS_PASS
+dec039_scoped_runtime: STAGE_SELECTION_TOP_HUD_HORDE_APPROACH_AND_GAME_OVER_RENDER_OBSERVED_2026_08_31_KST
+dec039_opening_core_contact_stagger: FIVE_SLOT_0_0_TO_1_2_SECONDS_CONSUMED_BY_ENEMY_CHASER_AND_FORCED_OVERLAP_MACHINE_VERIFIED_2026_08_31_KST
+dec039_weapon_readability_and_balance: NOT_RUN
+dec039_human_player_device_balance: NOT_RUN
+dec040_four_school_encounters_and_scroll_ninjutsu: USER_APPROVED_IMPLEMENTED_MACHINE_SCOPE_WITH_THREE_USER_LOCKED_BONGMA_RUNTIME_VISUALS_IMPORTED_AND_MACHINE_BOUND_UNMERGED
+dec040_design_spec: docs/superpowers/specs/2026-08-31-dec040-four-school-encounter-and-ninjutsu-design.md
+dec040_enemy_roster_board: DEC040_FOUR_SCHOOL_CORRUPTED_YOKAI_ROSTER_01_USER_LOCKED_PLANNING_REFERENCE_SHA256_A49717D3783DD47593F26F9D9F5ED04C49DE57AA5AA8C506B811F27B280ED9DA
+dec040_runtime_asset_promotion: MOBILE_ARRAY_CASTER_BOSS_AND_FAMILIAR_USER_LOCKED_SOURCE_SHA256_AND_EXACT_CONSUMERS_IMPORTED_AND_MACHINE_BOUND_BOSS_SCALE_AND_BONGMA_DELAYED_PROXY_FAMILIAR_18_ACTORS_12_NINJUTSU_AND_TELEGRAPHS_STILL_SEPARATE_CANDIDATE_GATES
+dec040_external_style_exploration: HISTORICAL_CHEONSUL_ELITE_GENERATED_CANDIDATE_NOT_REPOSITORY_ASSET_NOT_RUNTIME_CONSUMER
+dec040_core_threat_boundary: USER_APPROVED_CORE_PURSUIT_AND_CONTACT_ONLY_ELITE_AND_BOSS_TELEGRAPHED_PATTERN_OWNERS_2026_08_31_KST
+dec040_machine_evidence: GODOT_4_7_1_EDITOR_PARSE_300_FRAME_MAIN_SMOKE_CORE_CONTACT_ONLY_TITLE_SECONDARY_MENU_FORCED_OVERLAP_CONTACT_STAGGER_AND_FULL_GUT_586_OF_586_6575_ASSERTS_PASS_2026_08_31_KST
+dec040_adversarial_review: FIVE_CURRENT_WHOLE_SCOPE_LOOPS_CLEAN_FOR_CORE_CONTACT_BOUNDARY_ELITE_BOSS_PATTERN_OWNERS_TITLE_MENU_NO_PROMISE_TEXT_HORDE_DASH_LOADOUT_AND_FULL_BUILD
+dec040_pr_135_current_head_and_ci: 25FDA54EF69344DC53A364DCD41F3EDFF8E5A5A1_GITHUB_GUT_AND_WINDOWS_INTERNAL_BUILD_ARTIFACT_PASS_2026_08_31_KST
+dec040_live_render_human_ux_balance_performance_device_export: NOT_RUN
+dec041_title_front_door_and_four_traditions_medal: USER_APPROVED_SEPARATE_MEDAL_AND_MEDAL_FREE_BACKDROP_LOCKED_CANON_REGISTERED_IMPLEMENTED_MACHINE_VERIFIED_UNMERGED
+dec041_title_runtime_backdrop_asset_sha256: 86F86DA33986499BFD98AA003BA52AC65105136197D4530AA3335C9B8F2E030C
+dec041_title_runtime_medal_asset_sha256: 26520188D71F9565FEF0263062DCBAB6CE23F4998371F55AF765C034257C61CC
+dec041_title_logo_runtime_asset_sha256: C946AE4B08FD77F1E36BC25B22D0D41FDD5060FC80E98FAEB9E6F2D2AC9A7A5B
+dec041_title_menu: START_STAGE_SELECTOR_GUIDE_MODAL_AND_NON_PERSISTENT_FULLSCREEN_SETTING_TITLE_PROMISE_REMOVED
+dec041_medal_scale_candidate: USER_LOCKED_SEPARATE_TITLE_MEDAL_V2_2026_08_31_KST
+dec041_machine_evidence: GODOT_4_7_1_V2_TITLE_ASSET_IMPORT_EDITOR_PARSE_300_FRAME_MAIN_SMOKE_FOCUSED_TITLE_AND_START_GATE_3_OF_3_68_ASSERTS_AND_FULL_GUT_586_OF_586_6587_ASSERTS_PASS_2026_08_31_KST
+dec041_pr_135_current_head_and_ci: 25FDA54EF69344DC53A364DCD41F3EDFF8E5A5A1_GITHUB_GUT_AND_WINDOWS_INTERNAL_BUILD_ARTIFACT_PASS_2026_08_31_KST
+dec041_runtime_render_human_player_device: NOT_RUN_NO_EXACT_NINJA_LIVE_EDITOR_SESSION
+dec042_title_actions_awakening_and_codex: USER_APPROVED_IMPLEMENTATION_SPEC_REVIEW_PENDING
+dec042_design_spec: docs/superpowers/specs/2026-09-01-dec042-title-actions-awakening-codex-design.md
+dec042_player_facing_wallet_label: AWAKENING_INTERNAL_NINJA_SOUL_COMPATIBILITY_PRESERVED
+dec042_codex_scope: READ_ONLY_ENEMY_NINJUTSU_EQUIPMENT_REFERENCE_NOT_RUN_FLOW_OR_DISCOVERY_SYSTEM
 backpack_starting_usable_area: EXACT_3X3
 backpack_technical_expansion_ceiling: MAX_6X6
-runtime_build_authority_for_dec037: USER_FINAL_PDF_REVIEW_PENDING
+runtime_build_authority_for_dec037: USER_APPROVED_RUNTIME_BUILD_2026-08-30_KST
+dec037_runtime_design_spec: docs/superpowers/specs/2026-08-30-dec037-runtime-migration-design.md
+dec037_runtime_design_review_status: USER_APPROVED_DASH_INVULNERABILITY_IMPLEMENTED_MACHINE_AND_SCOPED_RUNTIME_VERIFIED_UNMERGED_PR_REVIEW_PENDING
+dec037_runtime_evidence_code_head: E9275ABBE0A954313F468224BD0CEFF21D27A57C
+dec037_runtime_machine_evidence: GODOT_4_7_1_IMPORT_EDITOR_PARSE_MAIN_SMOKE_FOCUSED_GUT_3_OF_3_30_TESTS_131_ASSERTS_FULL_GUT_71_OF_71_555_TESTS_6033_ASSERTS_PASS
+dec037_runtime_adversarial_review: FIVE_WHOLE_SCOPE_LOOPS_CLEAN_DOCS_REVIEWS_2026-08-30_DEC037_DASH_INVULNERABILITY_ADVERSARIAL_REVIEW
+dec037_runtime_live_observation: GODOT_4_7_1_SCOPED_STAGE_SELECTION_TOP_HUD_KEYBOARD_MOVEMENT_DASH_RECHARGE_AND_GAME_OVER_RENDER_OBSERVED_2026-08-30_KST
+dec037_dash_scoped_live_runtime: HERA_GODOT_4_7_1_CHEONSUL_REQUEST_DASH_TRUE_ACTIVE_DAMAGE_10_TO_0_POST_WINDOW_DAMAGE_10_DASH_1_OF_2_AND_CLEAN_DIAGNOSTICS
+dec037_runtime_scoped_balance_signal: IDLE_GAME_OVER_AROUND_PLAY_00_04_TO_00_05_AND_SIMPLE_STRAIGHT_MOVEMENT_PLUS_ONE_DASH_GAME_OVER_AT_PLAY_00_14_OBSERVED_NOT_A_BALANCE_VERDICT
+dec037_human_player_touch_gamepad_device_export_balance: NOT_RUN
 human_player_gdd_pdf: exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf
 human_player_gdd_pdf_manifest: docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json
 human_player_gdd_pdf_policy: ALWAYS_SYNC_ON_HUMAN_GDD_OR_EXPORTER_CHANGE
-human_player_gdd_pdf_status: CURRENT_ON_BRANCH_PENDING_MAIN_PUBLICATION_A36D06421526DBD38BEFBA13F9F88A8FCB541B0D
+human_player_gdd_pdf_status: CURRENT_MERGED_MAIN_9855F9A5FA2E4297E3171A1B1903D3517719AD93
 mandatory_work_gate: FRESH_READ_REUSE_FIRST_TARGETED_WEB_RESEARCH_FEASIBILITY_AND_ADVERSARIAL_REVIEW_UNTIL_CLEAN
 current_repository_only_policy: docs/canon/2026-08-28-dec035-repository-only-project-record.md
 current_human_validation_deferment: docs/canon/2026-08-29-dec036-human-player-validation-deferred-from-current-build-gate.md
@@ -70,7 +112,7 @@ This is the current mutable decision router/ledger. Detailed rules live in the d
 
 ### 2026-08-30 public experience override — DEC-037
 
-For player-facing documents and future public UI, the destination is called a **Stage** and the internal pressure ladder is called **Phase 1–4**. A player directly moves one fixed Ninja during combat; automatic attack/tradition effects are results of position and committed build. The actual starting usable backpack is exactly **3×3** and grows through bag placement inside the retained 6×6 technical ceiling. Existing `school` terminology remains an internal legacy compatibility detail until the separately authorized runtime migration. This override supersedes older player-facing “school” and “6×6 starting board” statements.
+For player-facing documents and public runtime UI, the destination is called a **Stage** and the internal pressure ladder is called **Phase 1–4**. A player directly moves one fixed Ninja during combat; automatic attack/tradition effects are results of position and committed build. The actual starting usable backpack is exactly **3×3** and grows through bag placement inside the retained 6×6 technical ceiling. Existing `school` terminology remains an internal legacy compatibility detail only. This override supersedes older player-facing “school” and “6×6 starting board” statements.
 
 `닌자의 신 / 닌자 서바이벌` is a 2D survival roguelike where the player chooses a starting Stage, clears all four Stage battlefields in a player-chosen order, opens their tradition acquisition packages, and uses a spatial/rotation/adjacency backpack build to defeat a separate final calamity.
 
@@ -107,6 +149,67 @@ Detailed DEC-034 generate-then-approve visual workflow: `docs/canon/2026-08-28-d
 Detailed DEC-035 repository-only project record and Notion retirement: `docs/canon/2026-08-28-dec035-repository-only-project-record.md`.
 
 Detailed DEC-036 current-build Human/Player validation deferment: `docs/canon/2026-08-29-dec036-human-player-validation-deferred-from-current-build-gate.md`.
+
+Detailed DEC-039 horde, katana/shuriken base weapons, and selected starter
+ninjutsu: `docs/canon/2026-08-30-dec039-horde-basic-weapons-and-starting-ninjutsu.md`.
+
+### 2026-08-30 base-combat override — DEC-039
+
+After selecting a Stage, one directly moved Ninja automatically begins with
+three concurrent patterns: close katana, ranged shuriken, and exactly one
+selected-tradition starter ninjutsu. The first two are shared base weapons;
+the third remains school-owned and is not a second player body, manual attack,
+or later scroll system.
+
+Normal enemies are no longer placed or reinforced through a four-cardinal
+direction queue. `WaveSpawner` alone maintains at least 10 normal enemies
+from a random annulus outside the player while normal spawning is permitted;
+the user removed the normal-enemy maximum cap on 2026-08-31 KST, so timed
+reinforcement batches continue to accumulate until an existing lifecycle gate
+disables normal spawning. Elite, Trace, Boss, Workbench, Result, and Game Over
+keep their existing permission gates. Basic weapon effects are separate from
+the player body, which now has Move/Hit only. Exact values and evidence scope
+are owned by DEC-039; Human/Player/device/balance are still `NOT_RUN`.
+
+### 2026-08-31 title front door — DEC-041
+
+The new Run begins with a title screen before the Stage selector. Its locked
+16:9 key-art places one fixed ninja on the right; the left safe area renders a
+user-locked, transparent world-building logo `닌자의 신` and the `시작하기`
+control (player-facing label superseded by `새 게임` in DEC-042). The graphic title is directly adjacent to one circular medal visibly assembled from four joined
+tradition fragments: 봉마류 talisman/familiar, 천술류 reaction geometry, 귀인류 oni,
+and 흑영류 shadow/shuriken. It replaces separate tradition panels on the main
+screen; it does not make four player characters or create a new route owner.
+
+`새 게임` reveals the existing Stage selector only when no Continue record
+exists or after the player explicitly confirms that record's deletion. Combat
+remains disabled until the player explicitly selects a Stage.
+`조작 방법` opens a local control guide without selecting a Stage; `설정` only
+toggles the current window mode and intentionally creates no new save or
+preference owner. The redundant title promise text is removed. The former
+absence of Continue, Awakening, and Codex entries is superseded by DEC-042.
+DEC-042 is `USER_APPROVED / MACHINE_IMPLEMENTED`: the title now provides
+`새 게임`, `이어하기`, `각성`, `도감`, `조작 방법`, `설정`, and `종료`.
+
+`이어하기` is created only after the existing atomic Workbench commit. It
+stores the committed build, route, ledger, backpack, loadout, and one-time
+retry-consumed state as validated JSON primitives; it deliberately does not
+store live enemies, projectiles, floor hazards, temporary Workbench edits, or
+an arbitrary combat timestamp. Re-entry begins the selected next Stage at
+fresh Core pressure and public `PLAY 00:00`. An invalid record remains in
+place, disables Continue, and reports that the record cannot be checked;
+`새 게임` deletes such a record only after explicit confirmation.
+
+`각성` is the player-facing name for the existing retry balance and retry
+copy. The compatible `NinjaSoulWallet` class and
+`user://ninja_soul_wallet_v1.json` storage contract remain unchanged. A
+consumed retry is also written into the resume record, so relaunching cannot
+reopen it. The Codex is read-only and derives its enemy, ninjutsu, equipment,
+bag, and combination explanations from current catalogs; it creates no
+discovery/unlock/save owner. `MainController` remains the owner of combat,
+route, retry, and durable checkpoint transitions; the title screen owns only
+presentation intents and panels. Existing locked title images are reused
+without source-byte changes.
 
 ## 2. Protected integrated baseline
 

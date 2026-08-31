@@ -1,9 +1,17 @@
 extends CharacterBody2D
 class_name PlayerController
 
+const MAX_DASH_CHARGES := 2
+const DASH_DURATION_SECONDS := 0.20
+const DASH_SPEED_MULTIPLIER := 3.0
+const DASH_RECHARGE_SECONDS := 1.5
+const POINTER_ARRIVAL_RADIUS := 12.0
+
 signal health_changed(current_health: int, maximum_health: int)
 signal healing_resolved(actual: int)
 signal damage_resolved(requested: int, resolved: int, prevented: int, evaded: bool)
+signal dash_state_changed(charges: int, maximum_charges: int)
+signal dash_started(direction: Vector2)
 signal died
 
 @export var max_health: int = 100
@@ -15,6 +23,14 @@ var _base_max_health: int = 100
 var _base_move_speed: float = 240.0
 var _run_modifiers := RunModifierSet.new()
 var _rng := RandomNumberGenerator.new()
+var _movement_intent := Vector2.ZERO
+var _pointer_target := Vector2.ZERO
+var _has_pointer_target: bool = false
+var _resolved_direction := Vector2.ZERO
+var _dash_charges: int = MAX_DASH_CHARGES
+var _dash_remaining: float = 0.0
+var _dash_direction := Vector2.ZERO
+var _dash_recharge_elapsed: float = 0.0
 
 
 func _ready() -> void:
@@ -26,37 +42,90 @@ func _ready() -> void:
 	_dead = false
 	_rng.randomize()
 	health_changed.emit(health, max_health)
+	dash_state_changed.emit(_dash_charges, MAX_DASH_CHARGES)
 
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if _dead:
 		velocity = Vector2.ZERO
 		return
 
-	var ui_direction := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-	var direction := resolve_movement_direction(
-		ui_direction,
-		Input.is_physical_key_pressed(KEY_A),
-		Input.is_physical_key_pressed(KEY_D),
-		Input.is_physical_key_pressed(KEY_W),
-		Input.is_physical_key_pressed(KEY_S)
+	set_movement_intent(
+		Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
 	)
-	velocity = direction * move_speed
+	_update_resolved_direction()
+	if Input.is_action_just_pressed(&"dash"):
+		request_dash()
+
+	if _dash_remaining > 0.0:
+		velocity = _dash_direction * move_speed * DASH_SPEED_MULTIPLIER
+	else:
+		velocity = _resolved_direction * move_speed
 	move_and_slide()
+	_advance_dash_state(delta)
 
 
-func resolve_movement_direction(
-	ui_direction: Vector2,
-	a_pressed: bool,
-	d_pressed: bool,
-	w_pressed: bool,
-	s_pressed: bool
-) -> Vector2:
-	var wasd_direction := Vector2(
-		float(int(d_pressed) - int(a_pressed)),
-		float(int(s_pressed) - int(w_pressed))
+func set_movement_intent(direction: Vector2) -> void:
+	_movement_intent = direction.limit_length(1.0)
+	_update_resolved_direction()
+
+
+func set_pointer_target(world_position: Vector2) -> void:
+	_pointer_target = world_position
+	_has_pointer_target = true
+	_update_resolved_direction()
+
+
+func clear_pointer_target() -> void:
+	_has_pointer_target = false
+	_update_resolved_direction()
+
+
+func current_dash_charges() -> int:
+	return _dash_charges
+
+
+func request_dash() -> bool:
+	_update_resolved_direction()
+	if _dead or _dash_charges <= 0 or _resolved_direction == Vector2.ZERO:
+		return false
+	var recharge_was_idle := _dash_charges == MAX_DASH_CHARGES
+	_dash_charges -= 1
+	_dash_remaining = DASH_DURATION_SECONDS
+	_dash_direction = _resolved_direction
+	if recharge_was_idle:
+		_dash_recharge_elapsed = 0.0
+	dash_started.emit(_dash_direction)
+	dash_state_changed.emit(_dash_charges, MAX_DASH_CHARGES)
+	return true
+
+
+func _update_resolved_direction() -> void:
+	if not _has_pointer_target:
+		_resolved_direction = _movement_intent
+		return
+	var offset := _pointer_target - global_position
+	_resolved_direction = (
+		Vector2.ZERO
+		if offset.length() <= POINTER_ARRIVAL_RADIUS
+		else offset.normalized()
 	)
-	return (ui_direction + wasd_direction).limit_length(1.0)
+
+
+func _advance_dash_state(delta: float) -> void:
+	if _dead or delta <= 0.0:
+		return
+	_dash_remaining = maxf(_dash_remaining - delta, 0.0)
+	if _dash_charges >= MAX_DASH_CHARGES:
+		_dash_recharge_elapsed = 0.0
+		return
+	_dash_recharge_elapsed += delta
+	while _dash_recharge_elapsed >= DASH_RECHARGE_SECONDS and _dash_charges < MAX_DASH_CHARGES:
+		_dash_recharge_elapsed -= DASH_RECHARGE_SECONDS
+		_dash_charges += 1
+		dash_state_changed.emit(_dash_charges, MAX_DASH_CHARGES)
+	if _dash_charges >= MAX_DASH_CHARGES:
+		_dash_recharge_elapsed = 0.0
 
 
 func apply_run_modifiers(modifiers: RunModifierSet) -> void:
@@ -89,7 +158,15 @@ func restore_after_retry() -> void:
 	_dead = false
 	velocity = Vector2.ZERO
 	health = max_health
+	_movement_intent = Vector2.ZERO
+	_has_pointer_target = false
+	_resolved_direction = Vector2.ZERO
+	_dash_charges = MAX_DASH_CHARGES
+	_dash_remaining = 0.0
+	_dash_direction = Vector2.ZERO
+	_dash_recharge_elapsed = 0.0
 	health_changed.emit(health, max_health)
+	dash_state_changed.emit(_dash_charges, MAX_DASH_CHARGES)
 
 
 func take_damage(amount: int) -> int:
@@ -97,6 +174,10 @@ func take_damage(amount: int) -> int:
 		return 0
 
 	var requested := amount
+	if _dash_remaining > 0.0:
+		damage_resolved.emit(requested, 0, requested, true)
+		return 0
+
 	var evasion_chance := clampf(_run_modifiers.evasion_chance, 0.0, 1.0)
 	if evasion_chance > 0.0 and _rng.randf() < evasion_chance:
 		damage_resolved.emit(requested, 0, requested, true)

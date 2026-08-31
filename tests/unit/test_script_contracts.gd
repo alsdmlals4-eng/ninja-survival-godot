@@ -5,7 +5,7 @@ const REQUIRED_SCRIPTS := [
 	"res://scripts/core/main_controller.gd",
 	"res://scripts/player/player_controller.gd",
 	"res://scripts/enemies/enemy_chaser.gd",
-	"res://scripts/combat/auto_attack_controller.gd",
+	"res://scripts/combat/basic_weapon_controller.gd",
 	"res://scripts/combat/projectile.gd",
 	"res://scripts/ui/hud.gd",
 ]
@@ -93,14 +93,15 @@ func test_enemy_chaser_contract() -> void:
 	enemy.free()
 
 
-func test_auto_attack_controller_contract() -> void:
-	var controller = load("res://scripts/combat/auto_attack_controller.gd").new()
+func test_basic_weapon_controller_contract() -> void:
+	var controller = load("res://scripts/combat/basic_weapon_controller.gd").new()
 	assert_true(controller.has_method("find_nearest_target"))
-	assert_true(controller.has_method("fire_once"))
-	assert_true(_has_property(controller, "attack_interval"))
-	assert_true(_has_property(controller, "projectile_scene"))
-	assert_true(_has_property(controller, "projectile_speed"))
-	assert_true(_has_property(controller, "projectile_damage"))
+	assert_true(controller.has_method("swing_katana_once"))
+	assert_true(controller.has_method("fire_shuriken_once"))
+	assert_true(_has_property(controller, "katana_interval"))
+	assert_true(_has_property(controller, "shuriken_projectile_scene"))
+	assert_true(_has_property(controller, "shuriken_speed"))
+	assert_true(_has_property(controller, "shuriken_damage"))
 	controller.free()
 
 
@@ -149,13 +150,17 @@ func test_wave_spawner_contract() -> void:
 		return
 	var spawner = load(MVP1_WAVE_SPAWNER_PATH).new()
 	assert_true(spawner.has_method("configure"))
+	assert_true(spawner.has_method("configure_horde_profile"))
+	assert_true(spawner.has_method("ensure_minimum_active"))
 	assert_true(spawner.has_method("spawn_wave"))
 	assert_true(spawner.has_method("set_spawning_enabled"))
 	assert_true(_has_property(spawner, "enemy_scene"))
 	assert_true(_has_property(spawner, "wave_interval"))
 	assert_true(_has_property(spawner, "batch_size"))
-	assert_true(_has_property(spawner, "max_active_enemies"))
-	assert_true(_has_property(spawner, "spawn_distance"))
+	assert_true(_has_property(spawner, "minimum_active_enemies"))
+	assert_false(_has_property(spawner, "max_active_enemies"), "DEC-039 user override forbids a normal-enemy maximum cap.")
+	assert_true(_has_property(spawner, "minimum_spawn_distance"))
+	assert_true(_has_property(spawner, "maximum_spawn_distance"))
 	spawner.free()
 
 
@@ -191,8 +196,9 @@ func test_player_visual_controller_contract() -> void:
 	if not ResourceLoader.exists(PLAYER_VISUAL_PATH):
 		return
 	var visual = load(PLAYER_VISUAL_PATH).new()
-	for method_name in ["show_attack", "show_hit", "advance_pose", "current_pose"]:
+	for method_name in ["show_hit", "advance_pose", "current_pose"]:
 		assert_true(visual.has_method(method_name), "Missing player visual method: %s" % method_name)
+	assert_false(visual.has_method("show_attack"))
 	visual.free()
 
 

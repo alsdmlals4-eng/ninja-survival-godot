@@ -3,161 +3,181 @@
 [ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1_hud"]
 
 [node name="HUD" type="CanvasLayer"]
+layer = 10
 script = ExtResource("1_hud")
 
-[node name="HealthLabel" type="Label" parent="."]
-offset_left = 20.0
-offset_top = 20.0
-offset_right = 220.0
-offset_bottom = 48.0
-text = "HP 100 / 100"
+[node name="CombatTopBar" type="MarginContainer" parent="."]
+visible = false
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 18.0
+offset_top = 16.0
+offset_right = -18.0
+offset_bottom = 56.0
+grow_horizontal = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 6
+mouse_filter = 2
 
-[node name="ScoreLabel" type="Label" parent="."]
-offset_left = 20.0
+[node name="Row" type="HBoxContainer" parent="CombatTopBar"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="DashLabel" type="Label" parent="CombatTopBar/Row"]
+custom_minimum_size = Vector2(112, 0)
+layout_mode = 2
+text = "DASH 2 / 2"
+vertical_alignment = 1
+
+[node name="StagePhaseLabel" type="Label" parent="CombatTopBar/Row"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = ""
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="PlayLabel" type="Label" parent="CombatTopBar/Row"]
+custom_minimum_size = Vector2(104, 0)
+layout_mode = 2
+text = "PLAY 00:00"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="SettingsButton" type="Button" parent="CombatTopBar/Row"]
+custom_minimum_size = Vector2(76, 0)
+layout_mode = 2
+text = "설정"
+
+[node name="SettingsPanel" type="Control" parent="."]
+visible = false
+process_mode = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Backdrop" type="ColorRect" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.015, 0.02, 0.04, 0.86)
+mouse_filter = 2
+
+[node name="Dialog" type="PanelContainer" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -126.0
+offset_right = 170.0
+offset_bottom = 126.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="SettingsPanel/Dialog"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 22
+
+[node name="Actions" type="VBoxContainer" parent="SettingsPanel/Dialog/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="SettingsPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+text = "설정"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="SettingsPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+text = "계속"
+
+[node name="TraditionHelpButton" type="Button" parent="SettingsPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+text = "현재 전승 도움말"
+
+[node name="RestartButton" type="Button" parent="SettingsPanel/Dialog/Margin/Actions"]
+layout_mode = 2
+text = "Run 재시작"
+
+[node name="TouchControls" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MovePad" type="Control" parent="TouchControls"]
+layout_mode = 1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 26.0
+offset_top = -188.0
+offset_right = 190.0
+offset_bottom = -24.0
+
+[node name="MoveUpButton" type="Button" parent="TouchControls/MovePad"]
+layout_mode = 0
+offset_left = 52.0
+offset_right = 112.0
+offset_bottom = 52.0
+text = "▲"
+
+[node name="MoveLeftButton" type="Button" parent="TouchControls/MovePad"]
+layout_mode = 0
 offset_top = 52.0
-offset_right = 280.0
-offset_bottom = 80.0
-text = "KILLS 0  SCORE 0"
-
-[node name="ComboLabel" type="Label" parent="."]
-offset_left = 20.0
-offset_top = 84.0
-offset_right = 280.0
+offset_right = 60.0
 offset_bottom = 112.0
+text = "◀"
 
-[node name="StyleLabel" type="Label" parent="."]
-offset_left = 20.0
-offset_top = 116.0
-offset_right = 220.0
-offset_bottom = 144.0
-text = "STYLE 0"
+[node name="MoveRightButton" type="Button" parent="TouchControls/MovePad"]
+layout_mode = 0
+offset_left = 104.0
+offset_top = 52.0
+offset_right = 164.0
+offset_bottom = 112.0
+text = "▶"
 
-[node name="RewardLabel" type="Label" parent="."]
-offset_left = 20.0
-offset_top = 148.0
-offset_right = 220.0
-offset_bottom = 176.0
-text = "ORBS 0"
+[node name="MoveDownButton" type="Button" parent="TouchControls/MovePad"]
+layout_mode = 0
+offset_left = 52.0
+offset_top = 104.0
+offset_right = 112.0
+offset_bottom = 164.0
+text = "▼"
 
-[node name="SchoolLabel" type="Label" parent="."]
-offset_left = 20.0
-offset_top = 180.0
-offset_right = 280.0
-offset_bottom = 208.0
-text = "SCHOOL -"
-
-[node name="SchoolResourceLabel" type="Label" parent="."]
-offset_left = 20.0
-offset_top = 212.0
-offset_right = 280.0
-offset_bottom = 240.0
-text = "RESOURCE 0 / 0"
-
-[node name="UltimateLabel" type="Label" parent="."]
-offset_left = 20.0
-offset_top = 244.0
-offset_right = 280.0
-offset_bottom = 272.0
-text = "ULT charging"
-
-[node name="SchoolFeedbackLabel" type="Label" parent="."]
-offset_left = 20.0
-offset_top = 276.0
-offset_right = 340.0
-offset_bottom = 306.0
-
-[node name="ComboTitleLabel" type="Label" parent="."]
-offset_left = 20.0
-offset_top = 312.0
-offset_right = 340.0
-offset_bottom = 346.0
-
-[node name="StageLabel" type="Label" parent="."]
-offset_left = 20.0
-offset_top = 352.0
-offset_right = 240.0
-offset_bottom = 380.0
-text = "SEGMENT 1/3"
-
-[node name="StageTimeLabel" type="Label" parent="."]
-offset_left = 20.0
-offset_top = 384.0
-offset_right = 240.0
-offset_bottom = 412.0
-text = "TIME 05:00"
-
-[node name="GoldLabel" type="Label" parent="."]
-offset_left = 20.0
-offset_top = 416.0
-offset_right = 240.0
-offset_bottom = 444.0
-text = "GOLD 0"
-
-[node name="RestartButton" type="Button" parent="."]
-anchors_preset = 1
+[node name="DashButton" type="Button" parent="TouchControls"]
+layout_mode = 1
+anchors_preset = 3
 anchor_left = 1.0
+anchor_top = 1.0
 anchor_right = 1.0
-offset_left = -140.0
-offset_top = 20.0
-offset_right = -20.0
-offset_bottom = 56.0
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -128.0
+offset_right = -26.0
+offset_bottom = -28.0
 grow_horizontal = 0
-text = "RESTART"
-
-[node name="SchoolHelpButton" type="Button" parent="."]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -310.0
-offset_top = 20.0
-offset_right = -150.0
-offset_bottom = 56.0
-grow_horizontal = 0
-text = "현재 유파 도움말"
-
-[node name="UltimateButton" type="Button" parent="."]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -510.0
-offset_top = 20.0
-offset_right = -320.0
-offset_bottom = 56.0
-grow_horizontal = 0
-text = "궁극기 [Enter]"
-
-[node name="TestEliteButton" type="Button" parent="."]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -510.0
-offset_top = 64.0
-offset_right = -320.0
-offset_bottom = 100.0
-grow_horizontal = 0
-text = "TEST · 정예 소환"
-
-[node name="TestBossButton" type="Button" parent="."]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -310.0
-offset_top = 64.0
-offset_right = -20.0
-offset_bottom = 100.0
-grow_horizontal = 0
-text = "TEST · 중간 보스 소환"
-
-[node name="CombatGuideLabel" type="Label" parent="."]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -510.0
-offset_top = 152.0
-offset_right = -20.0
-offset_bottom = 204.0
-grow_horizontal = 0
-autowrap_mode = 2
+grow_vertical = 0
+text = "DASH"
 
 [node name="GameOverPanel" type="Control" parent="."]
 visible = false
@@ -199,4 +219,4 @@ offset_right = 150.0
 offset_bottom = 80.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "재도전 · 닌자소울 1"
+text = "재도전 · 각성 1"

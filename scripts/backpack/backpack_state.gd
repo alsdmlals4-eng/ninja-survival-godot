@@ -151,6 +151,8 @@ func remove_bag(instance_id: int):
 	var instance = _bags.get(instance_id)
 	if instance == null:
 		return null
+	if instance.definition_id == MVP4CatalogScript.STARTING_BAG_ID:
+		return null
 	var active_cells := _active_cells_with_replacement(instance_id, null)
 	if not _items_fit_active_cells(active_cells):
 		return null
@@ -188,6 +190,61 @@ func copy_value():
 	return copied
 
 
+# 저장 경계에서는 Godot 객체와 Vector2i를 모두 JSON 원시값으로 낮춘다.
+func to_persistent_snapshot() -> Dictionary:
+	var bag_snapshots: Array[Dictionary] = []
+	var item_snapshots: Array[Dictionary] = []
+	var bag_ids := _bags.keys()
+	bag_ids.sort()
+	for raw_id in bag_ids:
+		bag_snapshots.append(_instance_to_persistent_snapshot(_bags[int(raw_id)]))
+	var item_ids := _items.keys()
+	item_ids.sort()
+	for raw_id in item_ids:
+		item_snapshots.append(_instance_to_persistent_snapshot(_items[int(raw_id)]))
+	return {
+		"next_instance_id": next_instance_id,
+		"bags": bag_snapshots,
+		"items": item_snapshots,
+	}
+
+
+static func from_persistent_snapshot(snapshot: Dictionary):
+	var raw_bags = snapshot.get("bags", null)
+	var raw_items = snapshot.get("items", null)
+	var raw_next_instance_id = snapshot.get("next_instance_id", null)
+	if typeof(raw_bags) != TYPE_ARRAY or typeof(raw_items) != TYPE_ARRAY or not _is_positive_whole_number(raw_next_instance_id):
+		return null
+
+	var restored := BackpackState.new()
+	var starting_bag_count := 0
+	for raw_record in raw_bags:
+		if typeof(raw_record) != TYPE_DICTIONARY:
+			return null
+		var bag_instance = _bag_instance_from_persistent_snapshot(raw_record)
+		if bag_instance == null or not restored.restore_bag_instance(bag_instance):
+			return null
+		if bag_instance.definition_id == MVP4CatalogScript.STARTING_BAG_ID:
+			starting_bag_count += 1
+
+	var starting_bag = restored.get_bag(1)
+	if starting_bag_count != 1 or starting_bag == null or starting_bag.definition_id != MVP4CatalogScript.STARTING_BAG_ID:
+		return null
+
+	for raw_record in raw_items:
+		if typeof(raw_record) != TYPE_DICTIONARY:
+			return null
+		var item_instance = _item_instance_from_persistent_snapshot(raw_record)
+		if item_instance == null or not restored.restore_item_instance(item_instance):
+			return null
+
+	var supplied_next_instance_id := int(raw_next_instance_id)
+	if supplied_next_instance_id < restored.next_instance_id:
+		return null
+	restored.next_instance_id = supplied_next_instance_id
+	return restored
+
+
 func _copy_item_instances() -> Dictionary:
 	var copied := {}
 	for raw_id in _items.keys():
@@ -202,6 +259,64 @@ func _copy_bag_instances() -> Dictionary:
 		var instance_id := int(raw_id)
 		copied[instance_id] = _bags[instance_id].copy_value()
 	return copied
+
+
+func _instance_to_persistent_snapshot(instance) -> Dictionary:
+	return {
+		"instance_id": int(instance.instance_id),
+		"definition_id": String(instance.definition_id),
+		"origin_x": int(instance.origin.x),
+		"origin_y": int(instance.origin.y),
+		"rotation_quarters": int(posmod(instance.rotation_quarters, 4)),
+	}
+
+
+static func _bag_instance_from_persistent_snapshot(record: Dictionary):
+	if not _is_valid_persistent_instance_record(record):
+		return null
+	var instance = BagInstanceScript.new()
+	instance.instance_id = int(record.get("instance_id"))
+	instance.definition_id = StringName(String(record.get("definition_id")))
+	instance.origin = Vector2i(int(record.get("origin_x")), int(record.get("origin_y")))
+	instance.rotation_quarters = int(record.get("rotation_quarters"))
+	return instance
+
+
+static func _item_instance_from_persistent_snapshot(record: Dictionary):
+	if not _is_valid_persistent_instance_record(record):
+		return null
+	var instance = ItemInstanceScript.new()
+	instance.instance_id = int(record.get("instance_id"))
+	instance.definition_id = StringName(String(record.get("definition_id")))
+	instance.origin = Vector2i(int(record.get("origin_x")), int(record.get("origin_y")))
+	instance.rotation_quarters = int(record.get("rotation_quarters"))
+	return instance
+
+
+static func _is_valid_persistent_instance_record(record: Dictionary) -> bool:
+	if record.size() != 5:
+		return false
+	if not _is_positive_whole_number(record.get("instance_id", null)):
+		return false
+	if typeof(record.get("definition_id", null)) != TYPE_STRING or String(record.get("definition_id", "")).is_empty():
+		return false
+	if not _is_whole_number(record.get("origin_x", null)) or not _is_whole_number(record.get("origin_y", null)):
+		return false
+	if not _is_whole_number(record.get("rotation_quarters", null)):
+		return false
+	var rotation := int(record.get("rotation_quarters"))
+	return rotation >= 0 and rotation < 4
+
+
+static func _is_positive_whole_number(value) -> bool:
+	return _is_whole_number(value) and int(value) > 0
+
+
+static func _is_whole_number(value) -> bool:
+	if typeof(value) != TYPE_INT and typeof(value) != TYPE_FLOAT:
+		return false
+	var number := float(value)
+	return is_finite(number) and is_equal_approx(number, floor(number))
 
 
 func _can_place_item(definition_id: StringName, origin: Vector2i, rotation_quarters: int, ignored_instance_id: int) -> bool:

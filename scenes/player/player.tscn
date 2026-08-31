@@ -1,13 +1,13 @@
 [gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/player/player_controller.gd" id="1_player"]
-[ext_resource type="Script" path="res://scripts/combat/auto_attack_controller.gd" id="2_attack"]
-[ext_resource type="PackedScene" path="res://scenes/projectiles/projectile_basic.tscn" id="3_projectile"]
+[ext_resource type="Script" path="res://scripts/combat/basic_weapon_controller.gd" id="2_basic_weapons"]
+[ext_resource type="PackedScene" path="res://scenes/projectiles/shuriken_projectile.tscn" id="3_shuriken"]
 [ext_resource type="Texture2D" path="res://docs/assets/approved/img-01-player-runtime-core/player_runtime_move_v2_alpha.png" id="4_move"]
-[ext_resource type="Texture2D" path="res://docs/assets/approved/img-01-player-runtime-core/player_runtime_attack_v2_alpha.png" id="5_attack"]
-[ext_resource type="Texture2D" path="res://docs/assets/approved/img-01-player-runtime-core/player_runtime_hit_v2_alpha.png" id="6_hit"]
-[ext_resource type="Script" path="res://scripts/player/player_visual_controller.gd" id="7_visual"]
-[ext_resource type="Texture2D" path="res://assets/runtime/visual-core/runtime_contact_shadow_v1.png" id="8_shadow"]
+[ext_resource type="Texture2D" path="res://docs/assets/approved/img-01-player-runtime-core/player_runtime_hit_v2_alpha.png" id="5_hit"]
+[ext_resource type="Script" path="res://scripts/player/player_visual_controller.gd" id="6_visual"]
+[ext_resource type="Texture2D" path="res://assets/runtime/visual-core/runtime_contact_shadow_v1.png" id="7_shadow"]
+[ext_resource type="Texture2D" path="res://assets/runtime/visual-core/basic_weapon_effects_v1.png" id="8_weapon_effects"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 14.0
@@ -25,19 +25,19 @@ z_index = -1
 position = Vector2(0, 24)
 scale = Vector2(0.065, 0.04)
 texture_filter = 4
-texture = ExtResource("8_shadow")
+texture = ExtResource("7_shadow")
 
 [node name="Visual" type="Sprite2D" parent="."]
 scale = Vector2(0.05, 0.05)
 texture = ExtResource("4_move")
-script = ExtResource("7_visual")
+script = ExtResource("6_visual")
 move_texture = ExtResource("4_move")
-attack_texture = ExtResource("5_attack")
-hit_texture = ExtResource("6_hit")
+hit_texture = ExtResource("5_hit")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 enabled = true
 
-[node name="AutoAttack" type="Node" parent="."]
-script = ExtResource("2_attack")
-projectile_scene = ExtResource("3_projectile")
+[node name="BasicWeapons" type="Node" parent="."]
+script = ExtResource("2_basic_weapons")
+shuriken_projectile_scene = ExtResource("3_shuriken")
+weapon_effect_texture = ExtResource("8_weapon_effects")

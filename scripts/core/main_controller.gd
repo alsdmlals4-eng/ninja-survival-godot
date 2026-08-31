@@ -6,22 +6,28 @@ const DEATH_COUNTED_META := &"ninja_main_death_counted"
 const MVP3_CATALOG_SCRIPT = preload("res://scripts/data/mvp3_catalog.gd")
 const MVP4_CATALOG_SCRIPT = preload("res://scripts/data/mvp4_catalog.gd")
 const RUN_BUILD_STATE_SCRIPT = preload("res://scripts/core/run_build_state.gd")
+const NINJUTSU_LOADOUT_STATE_SCRIPT = preload("res://scripts/core/ninjutsu_loadout_state.gd")
+const NINJUTSU_AUTO_CONTROLLER_SCRIPT = preload("res://scripts/schools/ninjutsu_auto_controller.gd")
 const NINJA_SOUL_WALLET_SCRIPT = preload("res://scripts/core/ninja_soul_wallet.gd")
 const RUN_SETTLEMENT_LEDGER_SCRIPT = preload("res://scripts/core/run_settlement_ledger.gd")
 const RUN_CHECKPOINT_SCRIPT = preload("res://scripts/core/run_checkpoint.gd")
+const RUN_RESUME_STORE_SCRIPT = preload("res://scripts/core/run_resume_store.gd")
 const SHOP_CONTROLLER_SCRIPT = preload("res://scripts/core/shop_controller.gd")
 const FATE_CONTROLLER_SCRIPT = preload("res://scripts/core/fate_controller.gd")
 const STAGE_FLOW_SCRIPT = preload("res://scripts/core/stage_flow_controller.gd")
 const CONTRIBUTION_TRACKER_SCRIPT = preload("res://scripts/combat/combat_contribution_tracker.gd")
 const COMBAT_RESOLVER_SCRIPT = preload("res://scripts/combat/combat_resolver.gd")
+const ENCOUNTER_CATALOG_SCRIPT = preload("res://scripts/data/encounter_catalog.gd")
 const STAGE_BOSS_SCENE = preload("res://scenes/enemies/stage_boss.tscn")
 const STAGE_BOSS_SCRIPT = preload("res://scripts/enemies/stage_boss.gd")
 const ENEMY_BASIC_SCENE = preload("res://scenes/enemies/enemy_basic.tscn")
+const SCHOOL_ENCOUNTER_ACTOR_SCENE = preload("res://scenes/enemies/school_encounter_actor.tscn")
 const REST_FLOW_UI_SCENE = preload("res://scenes/ui/rest_flow_ui.tscn")
 const CHEONSUL_SLICE_SCRIPT = preload("res://scripts/core/cheonsul_vertical_slice_controller.gd")
 const SCHOOL_CIRCUIT_SCRIPT = preload("res://scripts/core/school_circuit_controller.gd")
 const TRACE_PICKUP_SCENE = preload("res://scenes/rewards/trace_pickup.tscn")
 const RECENT_HIT_HP_PRESENTER_SCRIPT = preload("res://scripts/ui/recent_hit_hp_presenter.gd")
+const STAGE_PHASE_PRESENTATION_SCRIPT = preload("res://scripts/ui/stage_phase_presentation.gd")
 const RUN_ECONOMY_POLICY = preload("res://resources/run_economy_policy.tres")
 
 const CHEONSUL_SLICE_ROLE_META := &"cheonsul_slice_role"
@@ -37,20 +43,16 @@ const SCHOOL_CIRCUIT_BOSS_ROLE := &"boss"
 const SCHOOL_CIRCUIT_TEST_ELITE_ROLE := &"test_elite"
 const SCHOOL_CIRCUIT_TEST_BOSS_ROLE := &"test_boss"
 
-const SCHOOL_ULTIMATE_GUIDANCE := {
-	&"bongma": "백귀야행: 임시 식신을 불러 짧은 시간 집중 공격합니다.",
-	&"cheonsul": "오행폭주: 상태가 남은 적에게 폭발 피해를 줍니다.",
-	&"guiin": "귀인화: 짧은 시간 근접 공격의 범위·속도·피해가 강해집니다.",
-	&"heukyeong": "암영처형: 쌓인 표식 대상에게 처형 피해를 줍니다.",
-}
-
 @export var reward_orb_scene: PackedScene
 
 var game_over: bool = false
 var run_build_state: RunBuildState
+var ninjutsu_loadout: Node
+var ninjutsu_auto_controller: Node
 var ninja_soul_wallet: Node
 var run_settlement_ledger
 var run_checkpoint
+var run_resume_store
 var shop_controller: ShopController
 var fate_controller: FateController
 var stage_flow: StageFlowController
@@ -70,16 +72,18 @@ var _latest_result_snapshot: Dictionary = {}
 var _pending_trace_spawn_position := Vector2.ZERO
 var _cheonsul_elapsed_seconds: float = 0.0
 var _school_circuit_elapsed_seconds: float = 0.0
+var _run_play_elapsed_seconds: float = 0.0
 var _combat_enabled: bool = false
 
 @onready var game_state: GameState = $GameState
 @onready var combat_ddd: CombatDDDTracker = $CombatDDD
 @onready var player: PlayerController = $Player
 @onready var player_visual: PlayerVisualController = $Player/Visual
-@onready var auto_attack: AutoAttackController = $Player/AutoAttack
+@onready var basic_weapons: BasicWeaponController = $Player/BasicWeapons
 @onready var wave_spawner: WaveSpawner = $WaveSpawner
 @onready var school_host: SchoolRuntimeHost = $SchoolRuntimeHost
 @onready var school_selection: SchoolSelectionUI = $SchoolSelectionUI
+@onready var title_screen: TitleScreen = $TitleScreen
 @onready var hud: HUDController = $HUD
 
 
@@ -88,19 +92,12 @@ func _ready() -> void:
 	_connect_existing_signals()
 	_connect_mvp3_signals()
 
-	hud.set_health(player.health, player.max_health)
-	hud.set_score(game_state.score, game_state.kill_count)
-	hud.set_combo(combat_ddd.combo_count, combat_ddd.max_combo)
-	hud.set_stylish_score(combat_ddd.stylish_score)
-	hud.set_reward_count(combat_ddd.reward_count)
-	hud.set_ultimate_ready(false)
-	hud.set_stage(1, 3)
-	hud.set_stage_time(stage_flow.segment_duration_seconds)
-	hud.set_gold(run_build_state.gold)
-
 	wave_spawner.configure(self, player)
+	basic_weapons.configure(combat_resolver)
 	school_host.configure(player, self)
 	school_host.configure_run_systems(combat_resolver, contribution_tracker)
+	if ninjutsu_auto_controller != null:
+		ninjutsu_auto_controller.call("configure", player, self, combat_resolver, ninjutsu_loadout)
 
 	for child in get_children():
 		if child.is_in_group("enemies"):
@@ -109,6 +106,9 @@ func _ready() -> void:
 	contribution_tracker.reset_segment(combat_ddd.reward_count, run_build_state.gold)
 	_set_combat_enabled(false)
 	rest_flow_ui.hide_all()
+	school_selection.hide()
+	title_screen.show_title()
+	_refresh_title_resume_state()
 
 
 func _setup_mvp3_nodes() -> void:
@@ -116,6 +116,8 @@ func _setup_mvp3_nodes() -> void:
 	_fate_defs = MVP3_CATALOG_SCRIPT.build_fates()
 
 	run_build_state = _ensure_script_node("RunBuildState", RUN_BUILD_STATE_SCRIPT) as RunBuildState
+	ninjutsu_loadout = _ensure_script_node("NinjutsuLoadoutState", NINJUTSU_LOADOUT_STATE_SCRIPT)
+	ninjutsu_auto_controller = _ensure_script_node("NinjutsuAutoController", NINJUTSU_AUTO_CONTROLLER_SCRIPT)
 	shop_controller = _ensure_script_node("ShopController", SHOP_CONTROLLER_SCRIPT) as ShopController
 	fate_controller = _ensure_script_node("FateController", FATE_CONTROLLER_SCRIPT) as FateController
 	stage_flow = _ensure_script_node("StageFlow", STAGE_FLOW_SCRIPT) as StageFlowController
@@ -135,10 +137,12 @@ func _setup_mvp3_nodes() -> void:
 	ninja_soul_wallet = _ensure_script_node("NinjaSoulWallet", NINJA_SOUL_WALLET_SCRIPT)
 	run_settlement_ledger = RUN_SETTLEMENT_LEDGER_SCRIPT.new()
 	run_checkpoint = RUN_CHECKPOINT_SCRIPT.new()
+	run_resume_store = RUN_RESUME_STORE_SCRIPT.new()
 	var economy_rng := RandomNumberGenerator.new()
 	economy_rng.randomize()
 	run_build_state.configure(_item_defs, _fate_defs, RUN_ECONOMY_POLICY, economy_rng)
 	ninja_soul_wallet.configure()
+	run_resume_store.configure()
 	shop_controller.configure(run_build_state, _item_defs)
 	fate_controller.configure(run_build_state, _fate_defs)
 	combat_resolver.configure(contribution_tracker)
@@ -155,30 +159,22 @@ func _ensure_script_node(node_name: String, script: Script) -> Node:
 
 
 func _connect_existing_signals() -> void:
-	game_state.score_changed.connect(hud.set_score)
-	combat_ddd.combo_changed.connect(hud.set_combo)
-	combat_ddd.stylish_score_changed.connect(hud.set_stylish_score)
-	combat_ddd.reward_count_changed.connect(hud.set_reward_count)
-	combat_ddd.title_triggered.connect(hud.show_combo_title)
-	player.health_changed.connect(hud.set_health)
 	player.died.connect(_on_player_died)
+	player.dash_state_changed.connect(hud.set_dash_state)
 	wave_spawner.enemy_spawned.connect(_wire_enemy)
+	title_screen.new_game_requested.connect(_on_title_new_game_requested)
+	title_screen.new_game_confirmed.connect(_on_title_new_game_confirmed)
+	title_screen.continue_requested.connect(_on_title_continue_requested)
+	title_screen.quit_requested.connect(_on_title_quit_requested)
 	school_selection.school_selected.connect(_on_school_selected)
-	school_host.resource_changed.connect(hud.set_school_resource)
-	school_host.ultimate_ready_changed.connect(hud.set_ultimate_ready)
-	school_host.school_feedback.connect(hud.show_school_feedback)
-	school_host.player_action_resolved.connect(player_visual.show_attack)
+	hud.settings_requested.connect(_on_settings_requested)
+	hud.resume_requested.connect(_on_resume_requested)
+	hud.current_tradition_help_requested.connect(_on_current_tradition_help_requested)
 	hud.restart_requested.connect(_restart_run)
 	hud.retry_requested.connect(_on_retry_requested)
-	hud.school_help_requested.connect(_on_school_help_requested)
-	hud.ultimate_requested.connect(_on_ultimate_requested)
-	hud.test_elite_requested.connect(_on_test_elite_requested)
-	hud.test_boss_requested.connect(_on_test_boss_requested)
 
 
 func _connect_mvp3_signals() -> void:
-	run_build_state.gold_changed.connect(hud.set_gold)
-	stage_flow.segment_time_changed.connect(_on_segment_time_changed)
 	stage_flow.boss_requested.connect(_on_boss_requested)
 	player.healing_resolved.connect(contribution_tracker.record_healing)
 	player.damage_resolved.connect(_on_player_damage_resolved)
@@ -207,62 +203,83 @@ func _connect_mvp3_signals() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not event.is_action_pressed("ui_accept"):
+	if _handle_gameplay_pointer_input(event):
+		get_viewport().set_input_as_handled()
+		return
+	if not event.is_action_pressed(&"ui_accept"):
 		return
 	if game_over:
 		_restart_run()
-		return
-	if school_circuit != null:
-		if school_circuit.get_snapshot().get("state", &"") in [&"core", &"elite_warning", &"elite_active", &"trace_available", &"trace_recovered", &"boss_warning", &"boss_active"]:
-			_try_use_selected_ultimate()
-		return
-	if cheonsul_slice != null:
-		if cheonsul_slice.get_snapshot().get("state", &"") in [&"core", &"elite_warning", &"elite_active", &"trace_available", &"trace_recovered", &"boss_warning", &"boss_active"]:
-			_try_use_selected_ultimate()
-		return
-	if stage_flow != null and stage_flow.phase != StageFlowController.Phase.COMBAT and stage_flow.phase != StageFlowController.Phase.BOSS:
-		return
-	_try_use_selected_ultimate()
+
+
+func _handle_gameplay_pointer_input(event: InputEvent) -> bool:
+	if game_over or not _combat_enabled or player == null:
+		return false
+	if event is InputEventMouseButton:
+		var button_event := event as InputEventMouseButton
+		if button_event.button_index == MOUSE_BUTTON_LEFT:
+			if button_event.pressed:
+				player.set_pointer_target(_pointer_world_position(button_event.position))
+			else:
+				player.clear_pointer_target()
+			return true
+		if button_event.button_index == MOUSE_BUTTON_RIGHT and button_event.pressed:
+			player.set_pointer_target(_pointer_world_position(button_event.position))
+			player.request_dash()
+			return true
+	if event is InputEventMouseMotion:
+		var motion_event := event as InputEventMouseMotion
+		if motion_event.button_mask & MOUSE_BUTTON_MASK_LEFT:
+			player.set_pointer_target(_pointer_world_position(motion_event.position))
+			return true
+	return false
+
+
+func _pointer_world_position(viewport_position: Vector2) -> Vector2:
+	return player.get_canvas_transform().affine_inverse() * viewport_position
 
 
 func _restart_run() -> void:
+	get_tree().paused = false
 	get_tree().reload_current_scene()
 
 
-func _on_ultimate_requested() -> void:
-	_try_use_selected_ultimate()
-
-
-func _try_use_selected_ultimate() -> bool:
-	if game_over or not _combat_enabled or school_host.selected_school_id == &"":
-		return false
-	return school_host.try_use_ultimate()
-
-
-func _on_test_elite_requested() -> void:
-	if not _can_spawn_cheonsul_test_encounter():
+func _on_title_new_game_requested() -> void:
+	if game_over or _combat_enabled:
 		return
-	_spawn_cheonsul_test_elite()
-
-
-func _on_test_boss_requested() -> void:
-	if not _can_spawn_cheonsul_test_encounter():
+	if run_resume_store != null and run_resume_store.has_record():
+		title_screen.show_new_game_confirmation()
 		return
-	_spawn_cheonsul_test_boss()
+	_begin_new_game()
 
 
-func _can_spawn_cheonsul_test_encounter() -> bool:
-	var circuit_is_active := school_circuit != null and StringName(school_circuit.get_snapshot().get("state", &"")) in [
-		&"core", &"elite_warning", &"elite_active", &"trace_available",
-		&"trace_recovered", &"boss_warning", &"boss_active",
-	]
-	var legacy_slice_is_active := cheonsul_slice != null
-	return (
-		not game_over
-		and _combat_enabled
-		and (circuit_is_active or legacy_slice_is_active)
-		and school_host.selected_school_id == &"cheonsul"
-	)
+func _on_title_new_game_confirmed() -> void:
+	if game_over or _combat_enabled:
+		return
+	if run_resume_store != null and not run_resume_store.clear_record():
+		title_screen.set_continue_state(false, "이어하기 기록을 삭제하지 못했습니다.")
+		return
+	_begin_new_game()
+
+
+func _begin_new_game() -> void:
+	title_screen.hide_title()
+	school_selection.show_starting_school_selection()
+
+
+func _on_title_continue_requested() -> void:
+	if game_over or _combat_enabled or run_resume_store == null:
+		return
+	var loaded: Dictionary = run_resume_store.load_checkpoint()
+	if not bool(loaded.get("ok", false)):
+		_refresh_title_resume_state()
+		return
+	if not _restore_persistent_resume(loaded.get("checkpoint", {})):
+		_refresh_title_resume_state()
+
+
+func _on_title_quit_requested() -> void:
+	get_tree().quit()
 
 
 func _on_school_selected(school_id: StringName) -> void:
@@ -270,10 +287,12 @@ func _on_school_selected(school_id: StringName) -> void:
 		return
 	if not school_host.select_school(school_id):
 		return
+	if ninjutsu_loadout == null or not bool(ninjutsu_loadout.call("activate_starter", school_id)):
+		school_host.deactivate()
+		return
 
 	run_build_state.set_selected_school(school_id)
 	_sync_run_modifiers()
-	hud.set_school(school_host.selected_school_name)
 	contribution_tracker.reset_segment(combat_ddd.reward_count, run_build_state.gold)
 	if not _start_school_circuit(school_id):
 		return
@@ -281,51 +300,111 @@ func _on_school_selected(school_id: StringName) -> void:
 
 
 func _start_school_circuit(school_id: StringName) -> bool:
-	if school_circuit == null:
-		var circuit: Node = SCHOOL_CIRCUIT_SCRIPT.new()
-		if circuit == null:
-			return false
-		var rng := RandomNumberGenerator.new()
-		rng.randomize()
-		if not circuit.configure_workbench(
-			run_build_state,
-			fate_controller,
-			MVP4_CATALOG_SCRIPT.build_items(),
-			MVP4_CATALOG_SCRIPT.build_bags(),
-			rng
-		):
-			circuit.queue_free()
-			return false
-		add_child(circuit)
-		school_circuit = circuit
-		school_circuit.phase_changed.connect(_on_school_circuit_phase_changed)
-		school_circuit.chest_token_granted.connect(_on_school_circuit_chest_token_granted)
-		school_circuit.trace_spawn_requested.connect(_on_school_circuit_trace_spawn_requested)
-		school_circuit.boss_spawn_requested.connect(_on_school_circuit_boss_spawn_requested)
-		school_circuit.normal_spawn_permission_changed.connect(_on_school_circuit_normal_spawn_permission_changed)
+	if not _ensure_school_circuit():
+		return false
 	if not school_circuit.begin_school(school_id):
 		return false
 	for child in get_children():
 		if child.is_in_group("enemies") and not child.has_meta(SCHOOL_CIRCUIT_ROLE_META):
 			_wire_enemy(child)
 	_school_circuit_elapsed_seconds = 0.0
-	hud.set_stage(school_circuit.route_state.stage_index(), 4)
-	hud.set_stage_time(270.0)
-	hud.show_school_feedback(_school_circuit_opening_feedback(school_id))
 	return true
 
 
-func _school_circuit_opening_feedback(school_id: StringName) -> String:
-	match school_id:
-		&"bongma":
-			return "봉마류: 공간을 준비하고 식신·결계의 빈틈을 지키세요."
-		&"cheonsul":
-			return "천술류: 상태 순서를 만들고 원소 반응을 연결하세요."
-		&"guiin":
-			return "귀인류: 가까운 위험을 버틴 대가로 근접 압박을 되돌리세요."
-		&"heukyeong":
-			return "흑영류: 가장 위험한 표적에 표식을 모아 먼저 끊으세요."
-	return "유파의 핵심 규칙을 확인하세요."
+func _ensure_school_circuit() -> bool:
+	if school_circuit != null:
+		return true
+	var circuit: Node = SCHOOL_CIRCUIT_SCRIPT.new()
+	if circuit == null:
+		return false
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	if not circuit.configure_workbench(
+		run_build_state,
+		fate_controller,
+		MVP4_CATALOG_SCRIPT.build_items(),
+		MVP4_CATALOG_SCRIPT.build_bags(),
+		rng
+	):
+		circuit.queue_free()
+		return false
+	if ninjutsu_loadout == null or not circuit.configure_ninjutsu_loadout(ninjutsu_loadout):
+		circuit.queue_free()
+		return false
+	add_child(circuit)
+	school_circuit = circuit
+	school_circuit.phase_changed.connect(_on_school_circuit_phase_changed)
+	school_circuit.trace_spawn_requested.connect(_on_school_circuit_trace_spawn_requested)
+	school_circuit.boss_spawn_requested.connect(_on_school_circuit_boss_spawn_requested)
+	school_circuit.normal_spawn_permission_changed.connect(_on_school_circuit_normal_spawn_permission_changed)
+	return true
+
+
+func _restore_persistent_resume(checkpoint: Dictionary) -> bool:
+	if not (checkpoint is Dictionary) or run_build_state == null or ninjutsu_loadout == null or run_settlement_ledger == null:
+		return false
+	var checkpoint_build: Dictionary = checkpoint.get("build", {})
+	var checkpoint_route: Dictionary = checkpoint.get("route", {})
+	var checkpoint_ledger := {"eligible_school_boss_ids": checkpoint.get("eligible_school_boss_ids", [])}
+	var checkpoint_circuit: Dictionary = checkpoint.get("circuit", {})
+	var checkpoint_loadout: Dictionary = checkpoint.get("loadout", {})
+	var active_school_id := StringName(checkpoint_route.get("active_school_id", &""))
+	if active_school_id == &"" \
+		or not run_build_state.can_restore_from_checkpoint(checkpoint_build) \
+		or not bool(ninjutsu_loadout.call("can_restore_from_snapshot", checkpoint_loadout)) \
+		or not run_settlement_ledger.can_restore_from_snapshot(checkpoint_ledger) \
+		or not _ensure_school_circuit() \
+		or not school_circuit.can_restore_from_persistent_checkpoint(checkpoint_route, checkpoint_circuit):
+		return false
+	if not school_host.select_school(active_school_id):
+		return false
+	if not run_build_state.restore_from_checkpoint(checkpoint_build):
+		return false
+	if not bool(ninjutsu_loadout.call("restore_from_snapshot", checkpoint_loadout)):
+		return false
+	if not run_settlement_ledger.restore_from_snapshot(checkpoint_ledger):
+		return false
+	if not school_circuit.restore_from_persistent_checkpoint(checkpoint_route, checkpoint_circuit):
+		return false
+	if run_checkpoint == null or not run_checkpoint.capture(
+		run_build_state.get_checkpoint_snapshot(),
+		school_circuit.route_state.get_route_snapshot(),
+		run_settlement_ledger.get_snapshot(),
+		school_circuit.get_checkpoint_snapshot(),
+		ninjutsu_loadout.get_snapshot(),
+		bool(checkpoint.get("retry_consumed", false))
+	):
+		return false
+	_clear_failed_school_runtime_nodes()
+	_school_circuit_elapsed_seconds = 0.0
+	_run_play_elapsed_seconds = 0.0
+	game_over = false
+	title_screen.hide_title()
+	school_selection.hide()
+	rest_flow_ui.hide_all()
+	hud.hide_game_over()
+	_sync_run_modifiers()
+	player.restore_after_retry()
+	contribution_tracker.reset_segment(combat_ddd.reward_count, run_build_state.gold)
+	_set_combat_enabled(true)
+	return true
+
+
+func _refresh_title_resume_state() -> void:
+	if title_screen == null:
+		return
+	title_screen.set_awakening_balance(_ninja_soul_balance())
+	if run_resume_store == null:
+		title_screen.set_continue_state(false, "이어하기 기록을 확인할 수 없습니다.")
+		return
+	var loaded: Dictionary = run_resume_store.load_checkpoint()
+	if bool(loaded.get("ok", false)):
+		title_screen.set_continue_state(true)
+		return
+	if StringName(loaded.get("reason", &"")) == &"missing":
+		title_screen.set_continue_state(false)
+		return
+	title_screen.set_continue_state(false, "이어하기 기록을 확인할 수 없습니다.")
 
 
 func _start_cheonsul_vertical_slice() -> bool:
@@ -348,7 +427,6 @@ func _start_cheonsul_vertical_slice() -> bool:
 	add_child(slice)
 	cheonsul_slice = slice
 	cheonsul_slice.phase_changed.connect(_on_cheonsul_slice_phase_changed)
-	cheonsul_slice.chest_token_granted.connect(_on_cheonsul_chest_token_granted)
 	cheonsul_slice.trace_spawn_requested.connect(_on_cheonsul_trace_spawn_requested)
 	cheonsul_slice.boss_spawn_requested.connect(_on_cheonsul_boss_spawn_requested)
 	cheonsul_slice.normal_spawn_permission_changed.connect(_on_cheonsul_normal_spawn_permission_changed)
@@ -360,22 +438,21 @@ func _start_cheonsul_vertical_slice() -> bool:
 		if child.is_in_group("enemies") and not child.has_meta(CHEONSUL_SLICE_ROLE_META):
 			_wire_enemy(child)
 	_cheonsul_elapsed_seconds = 0.0
-	hud.set_stage(1, 4)
-	hud.set_stage_time(270.0)
-	hud.show_school_feedback("천술류: 원소 반응을 준비하세요.")
 	return true
 
 
 func _process(delta: float) -> void:
-	if game_over or delta <= 0.0:
+	if game_over or delta <= 0.0 or get_tree().paused:
 		return
+	if _combat_enabled:
+		_run_play_elapsed_seconds += delta
+		hud.set_play_time(_run_play_elapsed_seconds)
 	if school_circuit != null:
 		var circuit_state := StringName(school_circuit.get_snapshot().get("state", &""))
 		if circuit_state == &"cleared":
 			return
 		_school_circuit_elapsed_seconds += delta
 		school_circuit.sync_elapsed(_school_circuit_elapsed_seconds)
-		hud.set_stage_time(maxf(270.0 - _school_circuit_elapsed_seconds, 0.0))
 		return
 	if cheonsul_slice == null:
 		return
@@ -384,57 +461,19 @@ func _process(delta: float) -> void:
 		return
 	_cheonsul_elapsed_seconds += delta
 	cheonsul_slice.sync_elapsed(_cheonsul_elapsed_seconds)
-	hud.set_stage_time(maxf(270.0 - _cheonsul_elapsed_seconds, 0.0))
 
 
 func _on_school_circuit_phase_changed(phase: StringName) -> void:
 	if school_circuit == null:
 		return
-	var school_id: StringName = school_circuit.route_state.active_school_id()
-	match phase:
-		&"elite_warning":
-			hud.show_school_feedback("정예 경고: %s가 접근합니다." % _school_circuit_encounter_name("elite_display_name", "정예"))
-		&"elite_active":
-			hud.show_school_feedback(_school_circuit_elite_feedback(school_id))
-			_spawn_school_circuit_elite()
-		&"trace_available":
-			hud.show_school_feedback("흔적 발견: 가까이 다가가 회수하세요.")
-		&"trace_recovered":
-			hud.show_school_feedback("흔적 회수 완료. 보스 게이트를 확인합니다.")
-		&"boss_warning":
-			hud.show_school_feedback("보스 경고: %s가 다가옵니다." % _school_circuit_encounter_name("boss_display_name", "보스"))
-		&"boss_active":
-			hud.show_school_feedback(_school_circuit_boss_feedback(school_id))
-
-
-func _school_circuit_elite_feedback(school_id: StringName) -> String:
-	match school_id:
-		&"bongma":
-			return "정예: 이동 봉진의 경로를 끊기 전에 결계를 유지하세요."
-		&"cheonsul":
-			return "정예: 두 원소를 준비한 뒤 반응을 노리세요."
-		&"guiin":
-			return "정예: 근접 압박을 버틸 회복 창과 퇴로를 남기세요."
-		&"heukyeong":
-			return "정예: 가장 위험한 표적에 표식을 모아 처형 창을 만드세요."
-	return "정예의 핵심 규칙을 확인하세요."
-
-
-func _school_circuit_boss_feedback(school_id: StringName) -> String:
-	match school_id:
-		&"bongma":
-			return "보스: 이동 진형을 지키며 식신과 결계로 압박을 분산하세요."
-		&"cheonsul":
-			return "보스: 준비한 원소 반응을 연결하세요."
-		&"guiin":
-			return "보스: 근접 위험을 오래 버틴 뒤 열린 회복 창을 활용하세요."
-		&"heukyeong":
-			return "보스: 위협 표적을 먼저 지우고 처형 타이밍을 잡으세요."
-	return "보스의 핵심 규칙을 확인하세요."
-
-
-func _on_school_circuit_chest_token_granted(_amount: int) -> void:
-	hud.show_school_feedback("정예 보상: 상자 토큰과 흔적을 얻었습니다.")
+	var view: Dictionary = STAGE_PHASE_PRESENTATION_SCRIPT.describe(school_host.selected_school_id, phase)
+	hud.set_stage_phase(
+		str(view.get("stage", "")),
+		str(view.get("phase", "")),
+		bool(view.get("visible", false)),
+	)
+	if phase == &"elite_active":
+		_spawn_school_circuit_elite()
 
 
 func _on_school_circuit_trace_spawn_requested() -> void:
@@ -473,12 +512,13 @@ func _on_school_circuit_normal_spawn_permission_changed(allowed: bool) -> void:
 func _spawn_school_circuit_elite() -> void:
 	if game_over or school_circuit == null:
 		return
-	var elite := ENEMY_BASIC_SCENE.instantiate()
+	var encounter_id := _school_circuit_encounter_id("elite_id")
+	var elite: Node = _instantiate_school_encounter_actor(encounter_id, &"elite")
 	if elite == null:
 		return
 	add_child(elite)
 	if elite is Node2D:
-		(elite as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
+		(elite as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
 	elite.set_meta(SCHOOL_CIRCUIT_ROLE_META, SCHOOL_CIRCUIT_ELITE_ROLE)
 	elite.set_meta(SCHOOL_CIRCUIT_ENCOUNTER_ID_META, _school_circuit_encounter_id("elite_id"))
 	_wire_enemy(elite)
@@ -490,38 +530,22 @@ func _on_school_circuit_boss_spawn_requested() -> void:
 	wave_spawner.set_spawning_enabled(false)
 	if is_instance_valid(current_stage_boss) and not current_stage_boss.is_queued_for_deletion():
 		return
-	var boss_node := STAGE_BOSS_SCENE.instantiate()
-	if not boss_node.has_method("configure_tier") or not boss_node.configure_tier(1):
-		boss_node.free()
+	var encounter_id := _school_circuit_encounter_id("boss_id")
+	var boss_node: Node = _instantiate_school_encounter_actor(encounter_id, &"boss")
+	if boss_node == null:
 		return
 	add_child(boss_node)
 	current_stage_boss = boss_node
 	if boss_node is Node2D:
-		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
+		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
 	boss_node.set_meta(SCHOOL_CIRCUIT_ROLE_META, SCHOOL_CIRCUIT_BOSS_ROLE)
 	boss_node.set_meta(SCHOOL_CIRCUIT_ENCOUNTER_ID_META, _school_circuit_encounter_id("boss_id"))
 	_wire_enemy(boss_node)
 
 
 func _on_cheonsul_slice_phase_changed(phase: StringName) -> void:
-	match phase:
-		&"elite_warning":
-			hud.show_school_feedback("정예 경고: %s가 접근합니다." % _cheonsul_encounter_name("elite_display_name", "정예"))
-		&"elite_active":
-			hud.show_school_feedback("정예: 두 원소 준비 뒤 반응을 노리세요.")
-			_spawn_cheonsul_elite()
-		&"trace_available":
-			hud.show_school_feedback("흔적 발견: 가까이 다가가 회수하세요.")
-		&"trace_recovered":
-			hud.show_school_feedback("흔적 회수 완료. 보스 게이트를 확인합니다.")
-		&"boss_warning":
-			hud.show_school_feedback("보스 경고: %s가 다가옵니다." % _cheonsul_encounter_name("boss_display_name", "보스"))
-		&"boss_active":
-			hud.show_school_feedback("보스: 준비한 원소 반응을 연결하세요.")
-
-
-func _on_cheonsul_chest_token_granted(_amount: int) -> void:
-	hud.show_school_feedback("정예 보상: 상자 토큰과 흔적을 얻었습니다.")
+	if phase == &"elite_active":
+		_spawn_cheonsul_elite()
 
 
 func _on_cheonsul_trace_spawn_requested() -> void:
@@ -565,7 +589,7 @@ func _spawn_cheonsul_elite() -> void:
 		return
 	add_child(elite)
 	if elite is Node2D:
-		(elite as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
+		(elite as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
 	elite.set_meta(CHEONSUL_SLICE_ROLE_META, CHEONSUL_ELITE_ROLE)
 	elite.set_meta(CHEONSUL_ENCOUNTER_ID_META, _cheonsul_encounter_id("elite_id"))
 	_wire_enemy(elite)
@@ -585,10 +609,9 @@ func _spawn_cheonsul_test_elite() -> void:
 		(elite as Node2D).scale = Vector2.ONE * 1.35
 	add_child(elite)
 	if elite is Node2D:
-		(elite as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
+		(elite as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
 	_set_cheonsul_test_encounter_role(elite, CHEONSUL_TEST_ELITE_ROLE)
 	_wire_enemy(elite)
-	hud.show_school_feedback("TEST 정예: Trace·보상·진행에는 반영되지 않습니다.")
 
 
 func _spawn_cheonsul_test_boss() -> void:
@@ -600,10 +623,9 @@ func _spawn_cheonsul_test_boss() -> void:
 		return
 	add_child(boss_node)
 	if boss_node is Node2D:
-		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
+		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
 	_set_cheonsul_test_encounter_role(boss_node, CHEONSUL_TEST_BOSS_ROLE)
 	_wire_enemy(boss_node)
-	hud.show_school_feedback("TEST 중간 보스: Trace·보상·진행에는 반영되지 않습니다.")
 
 
 func _set_cheonsul_test_encounter_role(enemy: Node, role: StringName) -> void:
@@ -640,7 +662,7 @@ func _on_cheonsul_boss_spawn_requested() -> void:
 	add_child(boss_node)
 	current_stage_boss = boss_node
 	if boss_node is Node2D:
-		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
+		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
 	boss_node.set_meta(CHEONSUL_SLICE_ROLE_META, CHEONSUL_BOSS_ROLE)
 	boss_node.set_meta(CHEONSUL_ENCOUNTER_ID_META, _cheonsul_encounter_id("boss_id"))
 	_wire_enemy(boss_node)
@@ -655,9 +677,13 @@ func _sync_run_modifiers() -> void:
 
 func _set_combat_enabled(enabled: bool) -> void:
 	_combat_enabled = enabled
+	if not enabled:
+		player.clear_pointer_target()
 	var gameplay_mode := Node.PROCESS_MODE_INHERIT if enabled else Node.PROCESS_MODE_DISABLED
 	player.process_mode = gameplay_mode
-	auto_attack.process_mode = Node.PROCESS_MODE_DISABLED
+	basic_weapons.process_mode = gameplay_mode
+	if ninjutsu_auto_controller != null:
+		ninjutsu_auto_controller.process_mode = gameplay_mode
 	wave_spawner.set_spawning_enabled(enabled)
 	wave_spawner.process_mode = gameplay_mode
 	combat_ddd.process_mode = gameplay_mode
@@ -669,32 +695,32 @@ func _set_combat_enabled(enabled: bool) -> void:
 		elif child is RewardOrb:
 			child.process_mode = gameplay_mode
 
-	if enabled and not game_over and school_host.selected_school_id != &"":
-		hud.show_school_help(school_host.selected_school_name)
-		hud.show_combat_controls(
-			school_host.selected_school_name,
-			_school_ultimate_guidance(school_host.selected_school_id),
-			school_host.selected_school_id == &"cheonsul"
-		)
+	var combat_hud_enabled := enabled and not game_over and school_host.selected_school_id != &""
+	hud.show_combat_hud(combat_hud_enabled)
+	if combat_hud_enabled:
+		wave_spawner.ensure_minimum_active()
+		hud.set_dash_state(player.current_dash_charges(), PlayerController.MAX_DASH_CHARGES)
+		hud.set_play_time(_run_play_elapsed_seconds)
 	else:
-		hud.hide_school_help()
-		hud.hide_combat_controls()
+		hud.set_stage_phase("", "", false)
 		school_selection.dismiss_school_help()
 
 
-func _on_school_help_requested() -> void:
+func _on_settings_requested() -> void:
+	if game_over or not _combat_enabled or school_host.selected_school_id == &"":
+		hud.close_settings()
+		return
+	get_tree().paused = true
+
+
+func _on_resume_requested() -> void:
+	get_tree().paused = false
+
+
+func _on_current_tradition_help_requested() -> void:
 	if game_over or not _combat_enabled or school_host.selected_school_id == &"":
 		return
-	school_selection.open_runtime_school_help(school_host.selected_school_id, hud.school_help_button)
-
-
-func _school_ultimate_guidance(school_id: StringName) -> String:
-	return str(SCHOOL_ULTIMATE_GUIDANCE.get(school_id, "궁극기 효과가 준비 중입니다."))
-
-
-func _on_segment_time_changed(segment: int, remaining: float) -> void:
-	hud.set_stage(segment, 3)
-	hud.set_stage_time(remaining)
+	school_selection.open_runtime_school_help(school_host.selected_school_id, hud.tradition_help_button)
 
 
 func _on_boss_requested(tier: int) -> void:
@@ -711,7 +737,7 @@ func _on_boss_requested(tier: int) -> void:
 	add_child(boss_node)
 	current_stage_boss = boss_node
 	if boss_node is Node2D:
-		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.spawn_distance
+		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
 	_wire_enemy(boss_node)
 
 
@@ -923,15 +949,43 @@ func _wire_enemy(enemy: Node) -> void:
 		var circuit_encounter_id := StringName(circuit_encounter.get("id", &""))
 		if circuit_encounter_id != &"":
 			enemy.set_meta(SCHOOL_CIRCUIT_ENCOUNTER_ID_META, circuit_encounter_id)
+			_configure_school_encounter_actor(enemy, circuit_encounter_id, &"core")
 	elif cheonsul_slice != null and enemy.is_in_group("enemies") and not enemy.has_meta(CHEONSUL_SLICE_ROLE_META):
 		var encounter := cheonsul_slice.next_core_encounter()
 		var encounter_id := StringName(encounter.get("id", &""))
 		if encounter_id != &"":
 			enemy.set_meta(CHEONSUL_ENCOUNTER_ID_META, encounter_id)
+			_configure_school_encounter_actor(enemy, encounter_id, &"core")
 	if enemy.has_signal("died"):
 		var death_callback := Callable(self, "_on_enemy_died")
 		if not enemy.is_connected("died", death_callback):
 			enemy.connect("died", death_callback)
+
+
+func _instantiate_school_encounter_actor(encounter_id: StringName, expected_role: StringName):
+	if encounter_id == &"":
+		return null
+	var definition = ENCOUNTER_CATALOG_SCRIPT.actor_definition_for(encounter_id)
+	if definition == null or definition.role != expected_role:
+		return null
+	var actor = SCHOOL_ENCOUNTER_ACTOR_SCENE.instantiate()
+	if actor == null or not actor.has_method("configure_definition"):
+		if actor != null:
+			actor.free()
+		return null
+	if not bool(actor.call("configure_definition", definition)):
+		actor.free()
+		return null
+	return actor
+
+
+func _configure_school_encounter_actor(enemy: Node, encounter_id: StringName, expected_role: StringName) -> bool:
+	if enemy == null or not enemy.has_method("configure_definition"):
+		return false
+	var definition = ENCOUNTER_CATALOG_SCRIPT.actor_definition_for(encounter_id)
+	if definition == null or definition.role != expected_role:
+		return false
+	return bool(enemy.call("configure_definition", definition))
 
 
 func _cheonsul_encounter_id(key: String) -> StringName:
@@ -1166,7 +1220,7 @@ func _on_workbench_commit_requested() -> void:
 
 
 func _build_preview_summary(new_fate_id: StringName) -> Dictionary:
-	var headline := "구간 %d 완료" % stage_flow.segment_index
+	var headline := "전투 준비 완료"
 	var hints: Array = _latest_result_snapshot.get("growth_hints", [])
 	if not hints.is_empty():
 		headline = str(hints[0])
@@ -1232,14 +1286,19 @@ func _on_player_died() -> void:
 
 
 func _capture_run_checkpoint() -> void:
-	if run_checkpoint == null or run_settlement_ledger == null or school_circuit == null:
+	if run_checkpoint == null or run_settlement_ledger == null or school_circuit == null or ninjutsu_loadout == null:
 		return
-	run_checkpoint.capture(
+	if not run_checkpoint.capture(
 		run_build_state.get_checkpoint_snapshot(),
 		school_circuit.route_state.get_route_snapshot(),
 		run_settlement_ledger.get_snapshot(),
-		school_circuit.get_checkpoint_snapshot()
-	)
+		school_circuit.get_checkpoint_snapshot(),
+		ninjutsu_loadout.call("get_snapshot")
+	):
+		return
+	if run_resume_store != null:
+		run_resume_store.save_checkpoint(run_checkpoint.get_snapshot())
+	_refresh_title_resume_state()
 
 
 func _can_offer_checkpoint_retry() -> bool:
@@ -1271,7 +1330,15 @@ func _on_retry_requested() -> void:
 		return
 	if not school_circuit.can_restore_after_retry(checkpoint_circuit):
 		return
-	if not ninja_soul_wallet.spend_for_retry() or not run_checkpoint.consume_retry():
+	if not run_checkpoint.consume_retry():
+		return
+	if run_resume_store != null and not run_resume_store.save_checkpoint(run_checkpoint.get_snapshot()):
+		run_checkpoint.restore_unconsumed_retry()
+		return
+	if not ninja_soul_wallet.spend_for_retry():
+		run_checkpoint.restore_unconsumed_retry()
+		if run_resume_store != null:
+			run_resume_store.save_checkpoint(run_checkpoint.get_snapshot())
 		return
 	if not run_build_state.restore_from_checkpoint(checkpoint_build):
 		return

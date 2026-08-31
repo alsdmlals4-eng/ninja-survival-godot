@@ -10,7 +10,9 @@ func capture(
 	build_snapshot: Dictionary,
 	route_snapshot: Dictionary,
 	ledger_snapshot: Dictionary,
-	circuit_snapshot: Dictionary = {}
+	circuit_snapshot: Dictionary = {},
+	loadout_snapshot: Dictionary = {},
+	retry_consumed := false
 ) -> bool:
 	var active_school_id := StringName(route_snapshot.get("active_school_id", &""))
 	if active_school_id == &"" or build_snapshot.is_empty() or ledger_snapshot.is_empty():
@@ -20,8 +22,9 @@ func capture(
 		"route": route_snapshot.duplicate(true),
 		"eligible_school_boss_ids": Array(ledger_snapshot.get("eligible_school_boss_ids", [])).duplicate(),
 		"circuit": circuit_snapshot.duplicate(true),
+		"loadout": loadout_snapshot.duplicate(true),
 	}
-	_retry_consumed = false
+	_retry_consumed = retry_consumed
 	return true
 
 
@@ -40,6 +43,13 @@ func consume_retry() -> bool:
 	return true
 
 
+func restore_unconsumed_retry() -> bool:
+	if not is_valid() or not _retry_consumed:
+		return false
+	_retry_consumed = false
+	return true
+
+
 func get_snapshot() -> Dictionary:
 	return {
 		"valid": is_valid(),
@@ -48,4 +58,5 @@ func get_snapshot() -> Dictionary:
 		"route": _snapshot.get("route", {}).duplicate(true),
 		"eligible_school_boss_ids": Array(_snapshot.get("eligible_school_boss_ids", [])).duplicate(),
 		"circuit": _snapshot.get("circuit", {}).duplicate(true),
+		"loadout": _snapshot.get("loadout", {}).duplicate(true),
 	}

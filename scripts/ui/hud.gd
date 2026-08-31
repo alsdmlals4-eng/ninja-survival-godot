@@ -1,171 +1,138 @@
 extends CanvasLayer
 class_name HUDController
 
+## The HUD is a presentation and intent surface. Combat, route, backpack,
+## Fate, economy, and tradition runtime state remain outside this controller.
+signal settings_requested
+signal resume_requested
+signal current_tradition_help_requested
 signal restart_requested
 signal retry_requested
-signal school_help_requested
-signal ultimate_requested
-signal test_elite_requested
-signal test_boss_requested
 
-@onready var health_label: Label = $HealthLabel
-@onready var score_label: Label = $ScoreLabel
-@onready var combo_label: Label = $ComboLabel
-@onready var style_label: Label = $StyleLabel
-@onready var reward_label: Label = $RewardLabel
-@onready var school_label: Label = $SchoolLabel
-@onready var school_resource_label: Label = $SchoolResourceLabel
-@onready var ultimate_label: Label = $UltimateLabel
-@onready var school_feedback_label: Label = $SchoolFeedbackLabel
-@onready var combo_title_label: Label = $ComboTitleLabel
-@onready var stage_label: Label = $StageLabel
-@onready var stage_time_label: Label = $StageTimeLabel
-@onready var gold_label: Label = $GoldLabel
-@onready var restart_button: Button = $RestartButton
-@onready var school_help_button: Button = $SchoolHelpButton
-@onready var ultimate_button: Button = $UltimateButton
-@onready var combat_guide_label: Label = $CombatGuideLabel
-@onready var test_elite_button: Button = $TestEliteButton
-@onready var test_boss_button: Button = $TestBossButton
+@onready var combat_top_bar: MarginContainer = $CombatTopBar
+@onready var dash_label: Label = $CombatTopBar/Row/DashLabel
+@onready var stage_phase_label: Label = $CombatTopBar/Row/StagePhaseLabel
+@onready var play_label: Label = $CombatTopBar/Row/PlayLabel
+@onready var settings_button: Button = $CombatTopBar/Row/SettingsButton
+@onready var settings_panel: Control = $SettingsPanel
+@onready var resume_button: Button = $SettingsPanel/Dialog/Margin/Actions/ResumeButton
+@onready var tradition_help_button: Button = $SettingsPanel/Dialog/Margin/Actions/TraditionHelpButton
+@onready var restart_button: Button = $SettingsPanel/Dialog/Margin/Actions/RestartButton
+@onready var touch_controls: Control = $TouchControls
+@onready var move_up_button: Button = $TouchControls/MovePad/MoveUpButton
+@onready var move_down_button: Button = $TouchControls/MovePad/MoveDownButton
+@onready var move_left_button: Button = $TouchControls/MovePad/MoveLeftButton
+@onready var move_right_button: Button = $TouchControls/MovePad/MoveRightButton
+@onready var dash_button: Button = $TouchControls/DashButton
 @onready var game_over_panel: Control = $GameOverPanel
 @onready var game_over_message: Label = $GameOverPanel/Message
 @onready var retry_button: Button = $GameOverPanel/RetryButton
 
-var _title_generation: int = 0
-var _school_feedback_generation: int = 0
-var _ultimate_ready: bool = false
+var _combat_hud_visible: bool = false
+var _touch_available: bool = false
+var _stage_phase_requested_visible: bool = false
 
 
 func _ready() -> void:
-	game_over_panel.visible = false
-	school_help_button.hide()
-	hide_combat_controls()
+	_touch_available = DisplayServer.is_touchscreen_available()
+	combat_top_bar.hide()
+	stage_phase_label.hide()
+	settings_panel.hide()
+	touch_controls.hide()
+	game_over_panel.hide()
+
+	settings_button.pressed.connect(open_settings)
+	resume_button.pressed.connect(_on_resume_pressed)
+	tradition_help_button.pressed.connect(_on_tradition_help_pressed)
 	restart_button.pressed.connect(_on_restart_pressed)
 	retry_button.pressed.connect(_on_retry_pressed)
-	school_help_button.pressed.connect(_on_school_help_pressed)
-	ultimate_button.pressed.connect(_on_ultimate_pressed)
-	test_elite_button.pressed.connect(_on_test_elite_pressed)
-	test_boss_button.pressed.connect(_on_test_boss_pressed)
+	_connect_touch_button(move_up_button, &"move_up")
+	_connect_touch_button(move_down_button, &"move_down")
+	_connect_touch_button(move_left_button, &"move_left")
+	_connect_touch_button(move_right_button, &"move_right")
+	_connect_touch_button(dash_button, &"dash")
 
 
-func set_health(current: int, maximum: int) -> void:
-	health_label.text = "HP %d / %d" % [current, maximum]
+func set_dash_state(charges: int, maximum_charges: int) -> void:
+	dash_label.text = "DASH %d / %d" % [maxi(charges, 0), maxi(maximum_charges, 1)]
 
 
-func set_score(score: int, kills: int) -> void:
-	score_label.text = "KILLS %d  SCORE %d" % [kills, score]
+func set_play_time(elapsed_seconds: float) -> void:
+	var total_seconds := maxi(floori(elapsed_seconds), 0)
+	play_label.text = "PLAY %02d:%02d" % [total_seconds / 60, total_seconds % 60]
 
 
-func set_combo(current: int, maximum: int) -> void:
-	if current <= 0:
-		combo_label.text = ""
+func set_stage_phase(stage_text: String, phase_text: String, visible: bool) -> void:
+	_stage_phase_requested_visible = visible
+	stage_phase_label.visible = visible
+	stage_phase_label.text = "%s · %s" % [stage_text, phase_text] if visible else ""
+
+
+func show_combat_hud(enabled: bool) -> void:
+	_combat_hud_visible = enabled
+	combat_top_bar.visible = enabled
+	touch_controls.visible = enabled and _touch_available
+	stage_phase_label.visible = enabled and _stage_phase_requested_visible
+	if not enabled:
+		close_settings()
+		_release_touch_actions()
+
+
+func combat_persistent_control_names() -> Array[String]:
+	return ["DashLabel", "PlayLabel", "SettingsButton"]
+
+
+func dash_text() -> String:
+	return dash_label.text
+
+
+func play_text() -> String:
+	return play_label.text
+
+
+func open_settings() -> void:
+	if settings_panel.visible:
 		return
-	combo_label.text = "COMBO x%d  MAX %d" % [current, maximum]
+	settings_panel.show()
+	resume_button.grab_focus()
+	settings_requested.emit()
 
 
-func set_stylish_score(score: int) -> void:
-	style_label.text = "STYLE %d" % score
-
-
-func set_reward_count(count: int) -> void:
-	reward_label.text = "ORBS %d" % count
-
-
-func set_school(name: String) -> void:
-	school_label.text = "SCHOOL %s" % name
-
-
-func show_school_help(school_name: String) -> void:
-	if school_name.is_empty():
-		hide_school_help()
-		return
-	school_help_button.text = "%s 기능 도움말" % school_name
-	school_help_button.show()
-
-
-func hide_school_help() -> void:
-	school_help_button.hide()
-
-
-func show_combat_controls(school_name: String, ultimate_description: String, show_test_jumps: bool) -> void:
-	combat_guide_label.text = "기본 공격: 자동 투사체가 가까운 적을 노립니다.\n궁극기 [Enter/버튼] — %s" % ultimate_description
-	combat_guide_label.show()
-	ultimate_button.text = "%s 궁극기 [Enter]" % school_name
-	ultimate_button.disabled = not _ultimate_ready
-	ultimate_button.show()
-	if show_test_jumps:
-		test_elite_button.show()
-		test_boss_button.show()
-	else:
-		test_elite_button.hide()
-		test_boss_button.hide()
-
-
-func hide_combat_controls() -> void:
-	combat_guide_label.hide()
-	ultimate_button.hide()
-	test_elite_button.hide()
-	test_boss_button.hide()
-
-
-func set_school_resource(label: String, current: float, maximum: float) -> void:
-	school_resource_label.text = "%s %d / %d" % [label, roundi(current), roundi(maximum)]
-
-
-func set_ultimate_ready(ready: bool) -> void:
-	_ultimate_ready = ready
-	ultimate_label.text = "ULT READY" if ready else "ULT charging"
-	ultimate_button.disabled = not ready
-
-
-func set_stage(segment: int, total: int = 3) -> void:
-	stage_label.text = "SEGMENT %d/%d" % [maxi(segment, 0), maxi(total, 1)]
-
-
-func set_stage_time(seconds_remaining: float) -> void:
-	var total_seconds := maxi(ceili(maxf(seconds_remaining, 0.0)), 0)
-	var minutes := floori(float(total_seconds) / 60.0)
-	var seconds := total_seconds % 60
-	stage_time_label.text = "TIME %02d:%02d" % [minutes, seconds]
-
-
-func set_gold(gold: int) -> void:
-	gold_label.text = "GOLD %d" % maxi(gold, 0)
-
-
-func show_school_feedback(text: String) -> void:
-	_school_feedback_generation += 1
-	var generation := _school_feedback_generation
-	school_feedback_label.text = text
-	await get_tree().create_timer(1.0).timeout
-	if generation == _school_feedback_generation:
-		school_feedback_label.text = ""
-
-
-func show_combo_title(title: String) -> void:
-	_title_generation += 1
-	var generation := _title_generation
-	combo_title_label.text = title
-	await get_tree().create_timer(1.0).timeout
-	if generation == _title_generation:
-		combo_title_label.text = ""
+func close_settings() -> void:
+	settings_panel.hide()
+	if _combat_hud_visible and settings_button.visible:
+		settings_button.grab_focus()
 
 
 func show_game_over(retry_available: bool = false, ninja_soul_balance: int = 0) -> void:
+	close_settings()
+	_release_touch_actions()
 	game_over_message.text = "GAME OVER"
 	if retry_available:
-		game_over_message.text += "\n닌자소울 1로 현재 학교 재도전"
+		game_over_message.text += "\n각성 1로 현재 학교 재도전"
 	retry_button.visible = retry_available
 	retry_button.disabled = not retry_available
-	retry_button.text = "재도전 · 닌자소울 1 (보유 %d)" % maxi(ninja_soul_balance, 0)
-	game_over_panel.visible = true
+	retry_button.text = "재도전 · 각성 1 (보유 %d)" % maxi(ninja_soul_balance, 0)
+	game_over_panel.show()
+	if retry_available:
+		retry_button.grab_focus()
 
 
 func hide_game_over() -> void:
-	game_over_panel.visible = false
+	game_over_panel.hide()
+
+
+func _on_resume_pressed() -> void:
+	close_settings()
+	resume_requested.emit()
+
+
+func _on_tradition_help_pressed() -> void:
+	current_tradition_help_requested.emit()
 
 
 func _on_restart_pressed() -> void:
+	close_settings()
 	restart_requested.emit()
 
 
@@ -175,17 +142,29 @@ func _on_retry_pressed() -> void:
 	retry_requested.emit()
 
 
-func _on_school_help_pressed() -> void:
-	school_help_requested.emit()
+func _connect_touch_button(button: Button, action_name: StringName) -> void:
+	button.button_down.connect(_press_touch_action.bind(action_name))
+	button.button_up.connect(_release_touch_action.bind(action_name))
 
 
-func _on_ultimate_pressed() -> void:
-	ultimate_requested.emit()
+func _press_touch_action(action_name: StringName) -> void:
+	Input.action_press(action_name)
 
 
-func _on_test_elite_pressed() -> void:
-	test_elite_requested.emit()
+func _release_touch_action(action_name: StringName) -> void:
+	Input.action_release(action_name)
 
 
-func _on_test_boss_pressed() -> void:
-	test_boss_requested.emit()
+func _release_touch_actions() -> void:
+	for action_name in [&"move_left", &"move_right", &"move_up", &"move_down", &"dash"]:
+		Input.action_release(action_name)
+
+
+## Historical parser compatibility only. MainController has no live health or
+## score HUD consumers; normal combat continues to render only the compact bar.
+func set_health(_current: int, _maximum: int) -> void:
+	pass
+
+
+func set_score(_score: int, _kills: int) -> void:
+	pass

@@ -7,6 +7,7 @@ var _source_backpack_state = null
 var _build_state: RunBuildState
 var _route_state: RunRouteState
 var _fate_controller: FateController
+var _ninjutsu_loadout = null
 var _session: RestBackpackSession
 var _session_generation: int = -1
 var _configured: bool = false
@@ -18,17 +19,24 @@ func configure(
 	committed_backpack_state,
 	build_state: RunBuildState,
 	route_state: RunRouteState,
-	fate_controller: FateController
+	fate_controller: FateController,
+	ninjutsu_loadout = null
 ) -> bool:
 	if _session != null or _commit_in_progress or _committed_this_rest:
 		return false
 	if committed_backpack_state == null or build_state == null or route_state == null or fate_controller == null:
+		return false
+	if ninjutsu_loadout != null and (
+		not ninjutsu_loadout.has_method("can_commit_pending")
+		or not ninjutsu_loadout.has_method("commit_pending")
+	):
 		return false
 	_source_backpack_state = committed_backpack_state
 	_committed_backpack_state = committed_backpack_state.copy_value()
 	_build_state = build_state
 	_route_state = route_state
 	_fate_controller = fate_controller
+	_ninjutsu_loadout = ninjutsu_loadout
 	_configured = true
 	_committed_this_rest = false
 	_session_generation = -1
@@ -80,6 +88,8 @@ func commit_failures(
 		or _route_state.is_final_binding_eligible() \
 		or not _route_state.can_commit_provisional_next_school():
 		failures.append(&"route_pending")
+	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("can_commit_pending")):
+		failures.append(&"ninjutsu_pending_invalid")
 	return failures
 
 
@@ -103,6 +113,9 @@ func commit(
 		_commit_in_progress = false
 		return false
 	if not _fate_controller._commit_pending():
+		_commit_in_progress = false
+		return false
+	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("commit_pending")):
 		_commit_in_progress = false
 		return false
 	_committed_this_rest = true

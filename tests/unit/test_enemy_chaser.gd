@@ -1,6 +1,7 @@
 extends GutTest
 
 const EnemyScript = preload("res://scripts/enemies/enemy_chaser.gd")
+const OPENING_CONTACT_STAGGER_META := &"ninja_wave_opening_contact_stagger_seconds"
 
 class DamageTarget:
 	extends Node2D
@@ -83,6 +84,25 @@ func test_contact_damage_is_cooldown_gated() -> void:
 
 	enemy._physics_process(0.65)
 	assert_eq(target.damage_taken, 14)
+
+
+func test_opening_contact_stagger_delays_the_first_overlap_damage() -> void:
+	var enemy = EnemyScript.new()
+	enemy.contact_damage = 7
+	enemy.set_meta(OPENING_CONTACT_STAGGER_META, 0.5)
+	add_child_autofree(enemy)
+	var target = DamageTarget.new()
+	add_child_autofree(target)
+	enemy.set_target(target)
+	enemy.global_position = Vector2.ZERO
+	target.global_position = Vector2.ZERO
+
+	enemy._physics_process(0.0)
+	assert_eq(target.damage_taken, 0)
+	enemy._physics_process(0.49)
+	assert_eq(target.damage_taken, 0)
+	enemy._physics_process(0.02)
+	assert_eq(target.damage_taken, 7)
 
 
 func test_physics_contact_applies_damage_when_bodies_collide() -> void:
