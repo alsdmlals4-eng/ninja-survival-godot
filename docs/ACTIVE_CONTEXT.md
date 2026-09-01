@@ -33,6 +33,10 @@ notion_migration_manifest: docs/migration/notion/MIGRATION_MANIFEST.md
 latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-human-home-alignment.md
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 current_screen_visual_coverage: docs/visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md
+current_screen_blueprint: docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md
+current_screen_blueprint_state: ON_BRANCH_PREPRODUCTION_PENDING_EXACT_PR_HEAD
+current_screen_blueprint_review: docs/reviews/2026-09-01-screen-blueprint-adversarial-review.md
+current_screen_blueprint_visual_input: REUSES_SCRREF_BATTLE_AUTOCOMBAT_03_NO_NEW_IMAGE_BINARY
 current_implementation_contract: docs/implementation/2026-08-29-four-school-circuit-implementation-contract.md
 current_phase2_definition_of_ready: docs/planning/2026-08-29-phase2-four-school-definition-of-ready.md
 current_contract_adversarial_review: docs/reviews/2026-08-29-four-school-contract-adversarial-review.md
@@ -83,6 +87,23 @@ phase2_status_icon_runtime_asset: PARTIAL_AWAITING_USER_LOCKED_ASSET
 phase2_final_binding_and_true_run_settlement: OUT_OF_SCOPE_NOT_IMPLEMENTED
 phase2_machine_evidence: GODOT_4_7_1_LOCAL_EDITOR_PARSE_PASS_HEADLESS_MAIN_SMOKE_PASS_GUT_521_OF_521_5769_ASSERTIONS_GITHUB_GUT_AND_WINDOWS_PASS_PR129
 ```
+
+## 2026-09-01 screen Blueprint — current branch, preproduction only
+
+`NS-BLUEPRINT-001` is the editable screen-flow/wireframe/consumer-link
+surface at `docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md`. It records the
+Title → Stage → Core/Elite/Trace/Boss → Result → Workbench/Fate journey, six
+screen hierarchies, top-only battle HUD, and the dynamic-UI versus image/VFX
+boundary. The five-loop review is
+`docs/reviews/2026-09-01-screen-blueprint-adversarial-review.md`.
+
+This branch reused the already user-locked `SCRREF-BATTLE-AUTOCOMBAT-03` for
+continuous-floor, sparse-prop, grounded-unit, top-HUD composition and created
+**no** new image binary. PR #135 title assets/functions remain open-PR,
+read-only references rather than current-main implementation truth. The
+Blueprint has only documentation/static evidence until its exact PR head is
+checked; Godot runtime/render, Human Play, Player Experience, touch/gamepad,
+and device/export evidence remain `NOT_RUN`.
 
 ## Purpose
 

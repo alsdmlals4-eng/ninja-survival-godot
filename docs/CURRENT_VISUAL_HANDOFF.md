@@ -388,6 +388,24 @@ implementation remains code/assets/runtime evidence.
 
 ## 7. Next visual work — safe resume point
 
+### 2026-09-01 `NS-BLUEPRINT-001` screen-blueprint continuation
+
+The current editable flow/wireframe owner is
+`docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md`. It maps the player journey,
+six screen hierarchies, top-only battle HUD, and actual/planned consumers
+without changing visual canon, asset provenance, or implementation truth.
+
+The Blueprint found that `SCRREF-BATTLE-AUTOCOMBAT-03` already has the exact
+user-locked planning role for continuous floor, sparse props, grounded units,
+and top-only automatic-combat HUD. Therefore this package generated **no**
+duplicate battle/HUD image. A future image remains conditional on a verified
+actual consumer gap, one text brief, one candidate, and user `LOCK`.
+
+Its planned Title screen notes the wordmark/medal/key-art lineage in open PR
+#135 as read-only reference only; it does not claim a merged current-main
+Title consumer. Runtime visual, Human Play, device/export, and release
+evidence remain `NOT_RUN`.
+
 The existing eight runtime originals are final for their present consumer
 contracts. Do not regenerate or replace them merely to make a new sheet.
 
