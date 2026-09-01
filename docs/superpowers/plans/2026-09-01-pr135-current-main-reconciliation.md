@@ -174,10 +174,10 @@ Before live run, prove the connected session project path equals this isolated w
 
 Attack and validate: authority/document loss, normal-core early-hazard regression, Dash/weapon pattern regression, title/checkpoint/wallet ownership drift, asset/provenance/consumer drift, GUT/import/runtime evidence overclaim, and stale-main/owner-PR divergence. Fix only validated findings, rerun affected checks, and continue until no blocker remains.
 
-- [ ] **Step 4: Commit, push, and open a protected current-main PR**
+- [x] **Step 4: Commit, push, and open a protected current-main PR**
 
 Commit the reconciled delta. Push without force. Open a new PR that declares the exact absorbed-owner source, retained owner docs, full verification results, evidence ceiling, and rollback. Check all required checks at that PR's exact head.
 
-- [ ] **Step 5: Merge only after exact-head safety checks, then read back new main**
+- [x] **Step 5: Merge only after exact-head safety checks, then read back new main**
 
 Confirm no unresolved review thread, no P0/P1 finding, required checks are successful at exact head, and repository protections permit merge. Merge without bypass, fetch the new main, confirm the exact files/manifest/Blueprint state, clean task-owned temporary GUT/import caches, and recalculate remaining in-scope work.

@@ -1,6 +1,6 @@
 # PR #135 Current-Main Reconciliation — Adversarial Review
 
-> **Review state:** `LOCAL_CANDIDATE_CLEAN_PR_CI_MERGE_AND_MAIN_READBACK_PENDING`
+> **Review state:** `MERGED_MAIN_PR139_POST_MERGE_MACHINE_VERIFIED_HUMAN_GATES_NOT_RUN`
 > **Scope:** A fresh branch from completed `origin/main`
 > `7b94efa90ec8c577edf0317163c4cf6b30a32531` absorbing selected deltas from
 > the user-approved but read-only source head
@@ -15,8 +15,11 @@ The candidate passed Godot 4.7.1 import and main-scene smoke; focused GUT
 `6,789` assertions. A fresh Ninja Survival editor session rendered the title
 and Stage selector, read the declared input map, and exposed the initial
 horde tree without source diagnostics. These are local machine and scoped
-runtime facts only; they do not establish CI, a merge, Human usability, or
-balance.
+runtime facts only; after this review, PR #139 exact-head CI and the squash
+merge `3428f916f20f545284c337c7eb41b0eacf268351` also succeeded and a fresh
+post-merge main machine readback repeated import/main smoke/full GUT. The
+focused suite and scoped editor observation remain candidate-scope evidence.
+None of these establish Human usability or balance.
 
 ## Five full-scope attack loops
 
@@ -26,7 +29,7 @@ balance.
 | 2 | Could the automatic-combat package make normal Core enemies spam opening projectiles, talismans, or floor zones? | Focused horde, actor, encounter, weapon, Dash, and loadout suites pass. The Core contract stays pursuit/contact only; Elite/Boss retain telegraphed pattern owners. | No source repair was validated as necessary. `21/21` focused combat/encounter tests (`231` assertions) pass. |
 | 3 | Could title actions, checkpoint/Continue, Awakening naming, Codex scope, or top-only HUD duplicate state authority or reintroduce manual skills? | Title/HUD/persistence/Codex/asset suites pass. `MainController` remains transition/checkpoint owner; `TitleScreen` is presentation; the wallet remains internally compatible. | No source repair was validated as necessary. `33/33` focused title/HUD tests (`349` assertions) pass. |
 | 4 | Could runtime evidence be polluted by a stale editor configuration instead of the reconciled source? | An editor opened before the source input map was loaded reported missing movement/Dash actions. The source file had the actions; the stale session was stopped, project settings re-read in a fresh session, and the fresh runtime had no source errors. | Environmental correction only: restart from the exact candidate. Fresh title/Stage render, input-map readback, and initial `Player`/`WaveSpawner`/ten-enemy horde tree observation succeeded. No code claim is based on the stale session. |
-| 5 | Could provenance/docs overclaim full bespoke art, completed merge, or Human validation; or could task-only artifacts leak into the repository? | Eight adopted PNG hashes match their manifest values. The three user-locked Bongma actor binaries are genuine consumers, but the full four-school data roster does not have a complete individually locked actor-art set. Temporary editor/test addons and generated import files were removed from the candidate. | Added current-main evidence overlays to the decision ledger, visual handoff, visual manifest, DEC-037, and Master GDD. GitHub CI, merge/readback, Human/device/balance remain explicit pending states. A task-only GUT archive outside the repository could not be deleted under the host policy and is reported separately; it is not tracked or consumed by the project. |
+| 5 | Could provenance/docs overclaim full bespoke art, completed merge, or Human validation; or could task-only artifacts leak into the repository? | Eight adopted PNG hashes match their manifest values. The three user-locked Bongma actor binaries are genuine consumers, but the full four-school data roster does not have a complete individually locked actor-art set. Temporary editor/test addons and generated import files were removed from the candidate. | Current-main evidence overlays were added to the decision ledger, visual handoff, visual manifest, DEC-037, and Master GDD. PR #139 CI, merge, and post-merge readback are complete; Human/device/balance remain explicit `NOT_RUN` states. A task-only GUT archive outside the repository could not be deleted under the host policy and is reported separately; it is not tracked or consumed by the project. |
 
 ## Better-alternative recheck
 
@@ -41,8 +44,8 @@ balance.
 
 ## Clean exit condition for this review
 
-No local P0/P1 issue remains in the approved reconciliation scope. The
-remaining required gates are protected-PR exact-head CI, merge, post-merge
-main readback, and the explicitly separate Human/player/device/balance
+No local P0/P1 issue remains in the approved reconciliation scope. PR #139
+exact-head CI, merge, and post-merge main readback are complete. The
+remaining explicitly separate gates are Human/player/device/balance
 validation. Any change after this review requires re-running the affected
 machine checks and this whole-scope review.

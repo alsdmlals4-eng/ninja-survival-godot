@@ -10,9 +10,9 @@
 
 ## 2026-09-02 current-main reconciliation evidence boundary
 
-The user-locked title/logo/medal, basic-weapon, and three Bongma encounter binaries listed below were byte-read back against their recorded SHA-256 values on a fresh current-main integration candidate. Their declared consumers pass focused asset/title/encounter checks and the full GUT suite (`605/605`, `6,789` assertions); a fresh Godot 4.7.1 session rendered the title and Stage selector with no source errors.
+The user-locked title/logo/medal, basic-weapon, and three Bongma encounter binaries listed below were byte-read back against their recorded SHA-256 values on a fresh current-main integration candidate. Their declared consumers passed focused asset/title/encounter checks before PR creation; the post-merge main full GUT suite passed (`605/605`, `6,789` assertions). A fresh Godot 4.7.1 session rendered the title and Stage selector with no source errors.
 
-This is **local candidate evidence**, not a retroactive merge claim for the original read-only PR source. GitHub CI, merge, post-merge main readback, Human Usability, player experience, device/export, and balance are still pending or `NOT_RUN`. The three new Bongma actor binaries improve that Stage's bespoke coverage; the four-school data roster does **not** yet mean every Core/Elite/Boss has an individually locked in-game illustration. Existing generic/candidate bindings remain an explicit follow-up gap.
+PR #139 exact-head CI, the squash merge `3428f916f20f545284c337c7eb41b0eacf268351`, and a fresh post-merge main machine readback are complete; the original PR source stays read-only. Human Usability, player experience, device/export, and balance remain `NOT_RUN`. The three new Bongma actor binaries improve that Stage's bespoke coverage; the four-school data roster does **not** yet mean every Core/Elite/Boss has an individually locked in-game illustration. Existing generic/candidate bindings remain an explicit follow-up gap.
 
 ## 2026-08-28 DEC-034 — generate then user-lock
 

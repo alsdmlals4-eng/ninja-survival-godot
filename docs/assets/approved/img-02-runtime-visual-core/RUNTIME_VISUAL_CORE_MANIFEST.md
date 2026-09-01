@@ -12,12 +12,15 @@
 > basic-weapon, and three Bongma actor files were byte-read back against the
 > SHA-256 values below on a fresh `origin/main` candidate that absorbs the
 > read-only source head `d65a712d441d3ca854ee8ae2edff468bb4974983`. Godot
-> 4.7.1 import/main smoke, focused GUT `55/55` (`585` assertions), and full
-> GUT `605/605` (`6,789` assertions) pass; a fresh title/Stage runtime render
-> was observed. Older `not merged` text and test counts below remain source
-> lineage. GitHub CI/merge/main readback and Human/device/player evidence are
-> not implied. The three Bongma files are partial bespoke roster coverage, not
-> a claim that all four-school actors have individual locked art.
+> 4.7.1 import/main smoke and focused GUT `55/55` (`585` assertions) passed
+> on the integration candidate; post-merge main full GUT `605/605` (`6,789`
+> assertions) passes. A fresh title/Stage runtime render
+> was observed. PR #139 exact-head CI, squash merge
+> `3428f916f20f545284c337c7eb41b0eacf268351`, and post-merge machine
+> readback are complete. Older `not merged` text and test counts below remain
+> source lineage. Human/device/player evidence is not implied. The three
+> Bongma files are partial bespoke roster coverage, not a claim that all
+> four-school actors have individual locked art.
 
 ## Runtime assets
 

@@ -7,7 +7,7 @@ owner: PRODUCT_CANON
 supersedes_for_player_facing_surfaces:
   - legacy school terminology
   - 6x6 board presented as the starting backpack
-runtime_migration_status: CURRENT_MAIN_RECONCILIATION_CANDIDATE_LOCAL_MACHINE_AND_SCOPED_RUNTIME_VERIFIED_PR_CI_PENDING_2026-09-02_KST
+runtime_migration_status: MERGED_MAIN_PR139_3428F916F20F545284C337C7EB41B0EACF268351_POST_MERGE_MACHINE_AND_SCOPED_RUNTIME_VERIFIED_2026-09-02_KST
 runtime_evidence_code_head: e9275abbe0a954313f468224bd0ceff21d27a57c
 runtime_machine_evidence: GODOT_4_7_1_IMPORT_EDITOR_PARSE_MAIN_SMOKE_FOCUSED_GUT_3_OF_3_30_TESTS_131_ASSERTS_FULL_GUT_71_OF_71_555_TESTS_6033_ASSERTS_PASS
 dash_damage_policy: USER_APPROVED_ACTIVE_DASH_0_20_SECONDS_INVULNERABILITY_2026-08-30_KST
@@ -18,12 +18,15 @@ human_player_touch_gamepad_device_export_balance: NOT_RUN
 ```
 
 > **2026-09-02 evidence overlay:** the original DEC-037 implementation source
-> remains historical lineage. Its selected runtime deltas are now verified on
-> a fresh current-main candidate: Godot 4.7.1 import/main smoke, focused GUT
-> `55/55` (`585` assertions), full GUT `605/605` (`6,789` assertions), and a
-> fresh title/Stage/input-map/initial-horde scoped runtime observation. This
-> does not promote GitHub CI, merge/main readback, Human/player/touch/gamepad,
-> device/export, or balance to PASS.
+> remains historical lineage. Its selected runtime deltas are merged through
+> PR #139 as `3428f916f20f545284c337c7eb41b0eacf268351` and verified on fresh
+> post-merge `main`: Godot 4.7.1 import/main smoke and full GUT `605/605`
+> (`6,789` assertions); focused GUT `55/55` (`585` assertions) was run on
+> the integration candidate before PR creation. A fresh
+> title/Stage/input-map/initial-horde scoped runtime observation was also
+> recorded there. This
+> does not promote Human/player/touch/gamepad, device/export, or balance to
+> PASS. Exact-head CI, merge, and machine readback are recorded separately.
 
 ## 결정
 

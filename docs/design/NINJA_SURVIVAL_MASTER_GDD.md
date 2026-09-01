@@ -1,7 +1,7 @@
 # 닌자의 신 — Master Game Design Document
 
 > **문서 상태:** `CURRENT_PRODUCT_GDD / IMPLEMENTATION_CONTRACT_COMPANION`
-> **기준:** fresh-read된 completed `origin/main`은 `7b94efa90ec8c577edf0317163c4cf6b30a32531`이다. 현재 문서는 사용자 승인 source head `d65a712d441d3ca854ee8ae2edff468bb4974983`의 선택된 runtime/title/encounter 변경을 새 current-main candidate로 흡수해 기록한다. 원본 source PR은 read-only이며, 이 후보는 GitHub CI와 merge/main readback 전 단계다.
+> **기준:** fresh-read된 completed `origin/main`은 PR #139 squash merge `3428f916f20f545284c337c7eb41b0eacf268351`이다. 사용자 승인 source head `d65a712d441d3ca854ee8ae2edff468bb4974983`의 선택된 runtime/title/encounter 변경은 이 main에 흡수되었고, 원본 source PR과 branch는 read-only로 보존된다.
 > **생성일:** 2026-08-30 KST
 > **사람용 안내:** [사람용 게임 경험 블루프린트 PDF](../../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf) — `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md`에서 생성한 읽기 전용 검수본
 > **발행/검수 계약:** `docs/PDF_EXPORT.md`와 `docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json`; PDF 존재는 runtime·Human Usability·Player Experience 검증을 뜻하지 않는다.
@@ -12,7 +12,7 @@
 
 `닌자의 신`은 Godot 4.x/GDScript로 만드는 2D top-down survival roguelike다. 플레이어는 하나의 고정 닌자를 직접 이동해 네 스테이지를 한 번씩 고르고, 각 전승이 가르치는 서로 다른 위험 처리법을 몸으로 익힌 뒤, 공간 배치형 백팩과 Fate를 조합해 최종 재앙에 맞설 자신만의 인법을 만든다.
 
-> **현재 후보 증거 경계 (2026-09-02):** Godot 4.7.1 import/main smoke, focused GUT `55/55` (`585` assertions), full GUT `605/605` (`6,789` assertions), 그리고 fresh title/Stage/input-map/initial-horde scoped runtime observation까지 통과했다. 이는 local candidate evidence이며, GitHub CI, merge/main readback, Human Usability, Player Experience, device/export, balance, release acceptance는 여전히 별도 `PENDING` 또는 `NOT_RUN`이다.
+> **현재 증거 경계 (2026-09-02):** PR #139 exact-head GitHub GUT와 Windows internal build가 성공했고, squash-merged `main`에서 Godot 4.7.1 import/main smoke와 full GUT `605/605` (`6,789` assertions)을 통과했다. focused GUT `55/55` (`585` assertions)과 fresh title/Stage/input-map/initial-horde scoped runtime observation은 PR 생성 전 통합 후보에서 실행했다. Human Usability, Player Experience, device/export, balance, release acceptance는 여전히 별도 `NOT_RUN`이다.
 
 ### 2026-08-30 공개 경험 오버레이 — DEC-037 / DEC-039
 
