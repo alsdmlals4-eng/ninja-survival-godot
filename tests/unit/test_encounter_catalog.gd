@@ -198,6 +198,47 @@ func test_build_calls_return_independent_resources_and_collections() -> void:
 	assert_false(patterns_b[&"mark_or_link"].telegraph_parameters["hidden_target_selection"])
 
 
+func test_actor_catalog_has_twelve_core_four_elite_and_four_boss_definitions() -> void:
+	var catalog = _catalog()
+	if catalog == null:
+		return
+	var actors: Dictionary = catalog.build_actor_definitions()
+	assert_eq(actors.size(), 20)
+	assert_eq(_count_actor_role(actors, &"core"), 12)
+	assert_eq(_count_actor_role(actors, &"elite"), 4)
+	assert_eq(_count_actor_role(actors, &"boss"), 4)
+
+
+func test_each_school_keeps_core_pressure_contact_only() -> void:
+	var catalog = _catalog()
+	if catalog == null:
+		return
+	var actors: Dictionary = catalog.build_actor_definitions()
+	for school_id in SCHOOL_IDS:
+		var special_core_count := 0
+		for actor in actors.values():
+			if actor.school_id == school_id and actor.role == &"core" and (actor.tags.has(&"ranged") or not actor.pattern_definitions.is_empty()):
+				special_core_count += 1
+		assert_eq(special_core_count, 0, "%s Core actors must provide pursuit/contact pressure only." % school_id)
+
+
+func test_actor_catalog_rejects_elite_or_boss_without_telegraph_or_recovery() -> void:
+	var catalog = _catalog()
+	if catalog == null:
+		return
+	var actors: Dictionary = catalog.build_actor_definitions()
+	actors[&"heavenly_change_taoist"].pattern_definitions[0]["telegraph_duration"] = 0.0
+	assert_true(_contains_fragment(catalog.validate_actor_definitions(actors), "telegraph"))
+
+
+func _count_actor_role(actors: Dictionary, role: StringName) -> int:
+	var count := 0
+	for actor in actors.values():
+		if actor != null and actor.role == role:
+			count += 1
+	return count
+
+
 func _catalog():
 	if not ResourceLoader.exists(CATALOG_PATH):
 		return null

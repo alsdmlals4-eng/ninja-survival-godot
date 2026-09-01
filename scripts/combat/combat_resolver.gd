@@ -41,3 +41,19 @@ func deal_school_damage(
 	if contribution_tracker != null:
 		contribution_tracker.record_damage(actual)
 	return actual
+
+
+func deal_basic_weapon_damage(target: Node, base_damage: float) -> int:
+	if target == null or not is_instance_valid(target) or not target.has_method("take_damage"):
+		return 0
+	if base_damage <= 0.0:
+		return 0
+
+	var requested := maxi(roundi(base_damage), 1)
+	var result = target.call("take_damage", requested)
+	if not result is int:
+		return 0
+	var actual := maxi(int(result), 0)
+	if contribution_tracker != null:
+		contribution_tracker.record_damage(actual)
+	return actual

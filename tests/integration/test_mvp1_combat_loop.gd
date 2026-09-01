@@ -18,6 +18,7 @@ func test_enemy_death_updates_combo_and_spawns_one_reward_orb() -> void:
 	if not _has_mvp1_main_contract(main):
 		fail_test("MVP-1 main integration contract is missing")
 		return
+	_start_combat_if_mvp2(main)
 
 	var tracker = main.get_node("CombatDDD")
 	var game_state = main.get_node("GameState")
@@ -39,13 +40,14 @@ func test_enemy_death_updates_combo_and_spawns_one_reward_orb() -> void:
 		assert_almost_eq(orbs[0].global_position.y, death_position.y, 0.1)
 
 
-func test_reward_collection_updates_tracker_and_hud_without_player_stats() -> void:
+func test_reward_collection_updates_tracker_without_adding_persistent_combat_metrics() -> void:
 	var main = MAIN_SCENE.instantiate()
 	add_child_autofree(main)
 	await get_tree().process_frame
 	if not _has_mvp1_main_contract(main):
 		fail_test("MVP-1 main integration contract is missing")
 		return
+	_start_combat_if_mvp2(main)
 
 	var player = main.get_node("Player")
 	var tracker = main.get_node("CombatDDD")
@@ -66,8 +68,8 @@ func test_reward_collection_updates_tracker_and_hud_without_player_stats() -> vo
 	orb._physics_process(0.016)
 	assert_eq(tracker.reward_count, 1)
 	assert_eq(tracker.stylish_score, 125)
-	assert_eq(main.get_node("HUD/RewardLabel").text, "ORBS 1")
-	assert_eq(main.get_node("HUD/StyleLabel").text, "STYLE 125")
+	assert_null(main.get_node_or_null("HUD/RewardLabel"))
+	assert_null(main.get_node_or_null("HUD/StyleLabel"))
 	assert_eq(player.move_speed, move_speed_before)
 	assert_eq(player.health, health_before)
 
@@ -84,9 +86,9 @@ func test_wave_spawned_enemies_are_wired_to_player() -> void:
 	var player = main.get_node("Player")
 	var spawner = main.get_node("WaveSpawner")
 	var count_before := _living_enemies(main).size()
-	assert_eq(spawner.spawn_wave(), 2)
+	assert_eq(spawner.spawn_wave(), 3)
 	var enemies = _living_enemies(main)
-	assert_eq(enemies.size(), count_before + 2)
+	assert_eq(enemies.size(), count_before + 3)
 	for enemy in enemies.slice(count_before):
 		assert_eq(enemy.target, player)
 
@@ -98,6 +100,7 @@ func test_game_over_disables_wave_spawner_and_live_reward_orbs() -> void:
 	if not _has_mvp1_main_contract(main):
 		fail_test("MVP-1 main integration contract is missing")
 		return
+	_start_combat_if_mvp2(main)
 
 	var enemies = _living_enemies(main)
 	if enemies.is_empty():

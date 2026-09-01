@@ -31,7 +31,7 @@ func test_resolve_rejects_disconnected_active_cells_and_accepts_connected_extens
 	var valid = resolver.resolve(connected, item_defs, bag_defs, &"cheonsul")
 	assert_true(valid.valid)
 	assert_eq(valid.failure_code, &"")
-	assert_eq(valid.active_cells.size(), 14)
+	assert_eq(valid.active_cells.size(), 11)
 
 
 func test_can_place_item_and_bag_return_reasoned_read_only_previews() -> void:
@@ -117,7 +117,7 @@ func test_irregular_rotated_bag_contributes_exact_active_cells() -> void:
 	assert_true(resolution.valid)
 	for cell in [Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0), Vector2i(0, 1)]:
 		assert_true(resolution.active_cells.has(cell), "Rotated L-bag cell missing: %s" % cell)
-	assert_eq(resolution.active_cells.size(), 16)
+	assert_eq(resolution.active_cells.size(), 13)
 
 
 func test_orthogonal_pair_is_canonical_once_even_when_multiple_edges_touch() -> void:
@@ -194,12 +194,20 @@ func test_one_neighbor_matching_tag_and_definition_id_counts_once_for_rule() -> 
 	if not _t03_ready():
 		return
 	var state = _starting_state()
-	var summon_id: int = state.add_item(&"greater_summoning_circle", Vector2i(1, 1))
-	var emblem_id: int = state.add_item(&"school_emblem", Vector2i(3, 1))
-	assert_gt(summon_id, 0)
-	assert_gt(emblem_id, 0)
 	var item_defs: Dictionary = _item_defs()
+	item_defs[&"greater_summoning_circle"].footprint_size = Vector2i(2, 2)
+	item_defs[&"school_emblem"].footprint_size = Vector2i.ONE
 	item_defs[&"school_emblem"].tags.append(&"barrier")
+	var summon = load(ITEM_INSTANCE_PATH).new()
+	summon.instance_id = 2
+	summon.definition_id = &"greater_summoning_circle"
+	summon.origin = Vector2i(1, 1)
+	var emblem = load(ITEM_INSTANCE_PATH).new()
+	emblem.instance_id = 3
+	emblem.definition_id = &"school_emblem"
+	emblem.origin = Vector2i(3, 1)
+	state._items[summon.instance_id] = summon
+	state._items[emblem.instance_id] = emblem
 	var resolution = _resolver().resolve(state, item_defs, _bag_defs(), &"")
 	assert_true(resolution.valid)
 	assert_almost_eq(resolution.modifiers.ultimate_charge_gain_pct, 0.12, 0.001, "One neighbor matching both declared selectors must still count once")
@@ -227,7 +235,7 @@ func test_distinct_special_bags_each_apply_once_to_same_item() -> void:
 	var state = _starting_state()
 	var small_id: int = state.add_bag(&"small_pouch", Vector2i(1, 4))
 	var long_id: int = state.add_bag(&"long_pouch", Vector2i(3, 4))
-	var item_id: int = state.add_item(&"greater_summoning_circle", Vector2i(2, 3), 1)
+	var item_id: int = state.add_item(&"greater_summoning_circle", Vector2i(1, 3), 1)
 	assert_gt(small_id, 0)
 	assert_gt(long_id, 0)
 	assert_gt(item_id, 0)

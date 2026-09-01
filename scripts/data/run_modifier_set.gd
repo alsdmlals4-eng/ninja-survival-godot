@@ -77,3 +77,29 @@ func copy_values() -> RunModifierSet:
 	copied.heukyeong_marked_crit_bonus = heukyeong_marked_crit_bonus
 	copied.heukyeong_mark_duration_pct = heukyeong_mark_duration_pct
 	return copied
+
+
+# 영속 checkpoint에는 RefCounted 자체를 넣지 않고 지원 수치만 JSON 값으로 남긴다.
+func to_persistent_snapshot() -> Dictionary:
+	var snapshot := {}
+	for field_name in SUPPORTED_FIELDS:
+		snapshot[String(field_name)] = float(get(field_name))
+	return snapshot
+
+
+static func from_persistent_snapshot(snapshot: Dictionary):
+	if snapshot.size() != SUPPORTED_FIELDS.size():
+		return null
+	var restored := RunModifierSet.new()
+	for field_name in SUPPORTED_FIELDS:
+		var field_key := String(field_name)
+		if not snapshot.has(field_key):
+			return null
+		var raw_value = snapshot.get(field_key)
+		if typeof(raw_value) != TYPE_INT and typeof(raw_value) != TYPE_FLOAT:
+			return null
+		var value := float(raw_value)
+		if not is_finite(value):
+			return null
+		restored.set(field_name, value)
+	return restored

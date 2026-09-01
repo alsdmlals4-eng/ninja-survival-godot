@@ -1,6 +1,8 @@
 extends GutTest
 
 const ProjectileScript = preload("res://scripts/combat/projectile.gd")
+const CombatResolverScript = preload("res://scripts/combat/combat_resolver.gd")
+const ContributionTrackerScript = preload("res://scripts/combat/combat_contribution_tracker.gd")
 
 class DamageReceiver:
 	extends Node
@@ -58,6 +60,24 @@ func test_hit_body_applies_damage_and_consumes_projectile() -> void:
 	assert_true(did_hit)
 	assert_eq(receiver.damage_taken, 13)
 	assert_true(projectile.is_queued_for_deletion())
+
+
+func test_projectile_uses_basic_weapon_resolver_when_configured() -> void:
+	var tracker = ContributionTrackerScript.new()
+	tracker.reset_segment(0, 0)
+	add_child_autofree(tracker)
+	var resolver = CombatResolverScript.new()
+	resolver.configure(tracker)
+	add_child_autofree(resolver)
+	var projectile = ProjectileScript.new()
+	add_child_autofree(projectile)
+	projectile.configure(Vector2.RIGHT, 100.0, 13, resolver)
+	var receiver = DamageReceiver.new()
+	add_child_autofree(receiver)
+
+	assert_true(projectile.hit_body(receiver))
+	assert_eq(receiver.damage_taken, 13)
+	assert_eq(tracker.damage, 0, "Void-returning legacy receiver is ignored by resolver contribution accounting.")
 
 
 func test_projectile_expires_after_lifetime() -> void:
