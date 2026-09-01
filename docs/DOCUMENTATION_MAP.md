@@ -175,6 +175,7 @@ approved Decision/Canon을 따른다.
 | `reviews/2026-08-29-four-school-contract-adversarial-review.md` | contract/DOR 적대적 검토 evidence | CURRENT · 5 whole-state loops |
 | `migration/notion/MIGRATION_MANIFEST.md` | former Notion structure, work-product and asset continuity audit | CURRENT MIGRATION ARCHIVE · not active canon |
 | `visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md` | canonical screen-first visual coverage and Codex handoff | CURRENT · consumer/board first, user LOCK 전 candidate only |
+| `visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` | editable player-flow, screen-wireframe, HUD-priority, and consumer-link surface | CURRENT_BLUEPRINT_PREPRODUCTION · links owners; does not replace canon, manifests, or runtime evidence |
 | `canon/2026-08-21-dec014-025-product-canon.md` | four-school / route / trace / Workbench / final-binding product canon | CURRENT |
 | `canon/2026-08-22-dec026-encounter-pattern-budget.md` | encounter / gimmick / pattern budget canon | CURRENT · APPROVED |
 | `traceability/2026-08-22-dec026-post-gate-traceability.md` | reuse / supersession / migration coverage | CURRENT DESIGN CONTEXT |
