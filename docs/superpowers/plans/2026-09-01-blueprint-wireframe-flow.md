@@ -220,7 +220,7 @@ git push
 - Consumes: final commit from Task 4 and protected repository rules.
 - Produces: a proposed PR whose exact head can be independently checked; no direct-main push, force push, ruleset bypass, or unrelated PR mutation.
 
-- [ ] **Step 1: Inspect final diff and current remote divergence**
+- [x] **Step 1: Inspect final diff and current remote divergence**
 
 Run:
 
@@ -233,14 +233,14 @@ git status --short
 
 Expected: only scoped Blueprint/documentation commits are ahead, the branch is clean, and no whitespace error exists.
 
-- [ ] **Step 2: Create a protected pull request**
+- [x] **Step 2: Create a protected pull request**
 
 Create one PR from `codex/blueprint-wireframe-flow-137` to current `main`. Its body must identify the exact baseline, documentation-only scope, reused locked reference, no new image binary, evidence ceiling, and `NOT_RUN` runtime/Human/device limits. Do not merge it in this task unless the user separately authorizes the merge action.
 
-- [ ] **Step 3: Check CI at the exact head**
+- [x] **Step 3: Check CI at the exact head**
 
 After the PR is created, read its `headRefOid`, inspect all checks for that exact OID, and distinguish a successful document/static check from runtime/Human validation. If a check reports a validated documentation issue, return to the affected task and correct only that finding.
 
-- [ ] **Step 4: Report the integration gate**
+- [x] **Step 4: Report the integration gate**
 
 Report the PR URL, exact head SHA, checks actually observed, remaining `NOT_RUN` evidence, and the next safe image action: only a verified visual-consumer gap can trigger one candidate and user `LOCK`.
