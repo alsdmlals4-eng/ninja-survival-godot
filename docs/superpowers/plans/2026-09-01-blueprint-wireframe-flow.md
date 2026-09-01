@@ -34,23 +34,23 @@
 - Consumes: `docs/superpowers/specs/2026-09-01-blueprint-wireframe-flow-design.md`, `docs/canon/2026-08-30-dec037-player-control-stage-3x3-backpack.md`, `docs/visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md`, `docs/CURRENT_VISUAL_HANDOFF.md`, and actual `Main`, `HUD`, `RestFlowUI`, `SchoolSelectionUI` consumer names.
 - Produces: `NS-BLUEPRINT-001`, an additive visual/UX Blueprint referenced by the documentation map and usable by later screen, asset, and implementation work.
 
-- [ ] **Step 1: Write the Blueprint metadata, authority boundary, and read order**
+- [x] **Step 1: Write the Blueprint metadata, authority boundary, and read order**
 
 Create `docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` with the identifier `NS-BLUEPRINT-001`, `status: CURRENT_BLUEPRINT_PREPRODUCTION`, the exact baseline SHA, links to the product/visual/asset/implementation owners, and an explicit statement that it is not game-rule canon, an asset manifest, or runtime evidence.
 
-- [ ] **Step 2: Add the full player-journey Mermaid map**
+- [x] **Step 2: Add the full player-journey Mermaid map**
 
 Add an editable Mermaid `flowchart TD` that covers the title routes, starting Stage selection, Core crowd pressure, Elite clear, Trace recovery, Boss warning/encounter, result/reward, Workbench placement, provisional next Stage, Fate commit, and both failure/limited checkpoint-retry paths. Mark `Continue` as a validated checkpoint continuation and never a mid-combat replay.
 
-- [ ] **Step 3: Add the battle-state Mermaid map**
+- [x] **Step 3: Add the battle-state Mermaid map**
 
 Add a second editable Mermaid flow using `CorePressure`, `EliteActive`, `TraceAvailable`, `TraceRecovered`, `BossWarning`, `BossActive`, `Result`, and `GameOver` states. Label the evidence boundary so state names describe intended/owned gameplay lifecycle rather than new implementation proof.
 
-- [ ] **Step 4: Route readers to the new Blueprint**
+- [x] **Step 4: Route readers to the new Blueprint**
 
 In `docs/DOCUMENTATION_MAP.md`, add exactly one authority-map row that describes the Blueprint as the editable player-flow/wireframe/consumer-link surface. Do not change the Human GDD, Master GDD, DEC-037, asset manifest, or screen-coverage owners.
 
-- [ ] **Step 5: Run the foundation static check**
+- [x] **Step 5: Run the foundation static check**
 
 Run:
 
@@ -62,7 +62,7 @@ rg -n "3x3|6x6|SCRREF-BATTLE-AUTOCOMBAT-03|not.*runtime" docs/visual/NINJA_SURVI
 
 Expected: no whitespace error; exactly one Blueprint file and one documentation-map route identify the new owner; the public backpack and reference boundaries are present.
 
-- [ ] **Step 6: Commit the foundation**
+- [x] **Step 6: Commit the foundation**
 
 ```powershell
 git add docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md docs/DOCUMENTATION_MAP.md
@@ -79,27 +79,27 @@ git commit -m "docs: add screen blueprint flow foundation"
 - Consumes: `NS-BLUEPRINT-001` foundation from Task 1; actual names `Main/SchoolSelectionUI`, `Main/HUD`, `RestFlowUI/ResultView`, and `RestFlowUI/WorkbenchView`.
 - Produces: six fixed-width wireframes and an event-visibility matrix that downstream Godot work can map to Controls without using a bitmap UI.
 
-- [ ] **Step 1: Add `BP-TITLE-01` and `BP-SCHOOL-SELECT-01` wireframes**
+- [x] **Step 1: Add `BP-TITLE-01` and `BP-SCHOOL-SELECT-01` wireframes**
 
 Use fixed-width text boxes to define the 16:9 title safe area (wordmark, separate four-piece medal, ordered actions, local modal layer) and starting Stage selection (four danger-philosophy cards/symbols, visited state, help, focus). Label the title consumer as planned/release-surface and PR #135 as read-only reference, never current-main implementation evidence.
 
-- [ ] **Step 2: Add `BP-BATTLE-HUD-01` and `BP-TRACE-GATE-01` wireframes**
+- [x] **Step 2: Add `BP-BATTLE-HUD-01` and `BP-TRACE-GATE-01` wireframes**
 
 Show a continuous battlefield center with a small grounded ninja and crowded pursuing corrupted ninja/yokai. Show only life, Dash charges, elapsed time, and pause/settings in the normal upper HUD. Add annotated transient overlays for Elite clear, Trace available/recovered, Boss warning, boss life, and active telegraph. State explicitly: no lower skill tray, no routine enemy HP bars, no generic early projectile/field spam.
 
-- [ ] **Step 3: Add `BP-RESULT-01` and `BP-WORKBENCH-01` wireframes**
+- [x] **Step 3: Add `BP-RESULT-01` and `BP-WORKBENCH-01` wireframes**
 
 Show result source/reward hierarchy and the Workbench sequence reward → 3x3 usable starting area/6x6 technical board → six REST slots → rotation/adjacency/combination preview → provisional next Stage → Fate commit. Label the commit as an existing protected all-or-none boundary; do not depict it as a UI-owned transaction.
 
-- [ ] **Step 4: Add per-screen interaction and input table**
+- [x] **Step 4: Add per-screen interaction and input table**
 
 For all six screens, state player question, primary action, keyboard/controller focus route, pointer/touch equivalent, feedback state, and actual/planned Godot consumer. Keep dynamic labels and counters text-native. Mark touch/gamepad visual evidence as `NOT_RUN` where no actual observation exists.
 
-- [ ] **Step 5: Add the HUD visibility matrix**
+- [x] **Step 5: Add the HUD visibility matrix**
 
 Create a Core opening / crowd pressure / Elite-Trace / Boss table with persistent, event-only, and forbidden information. The table must preserve the user's no-bottom-skill, no-early-spam, Dash-as-invulnerable-evasion, and hit-only target-HP decisions.
 
-- [ ] **Step 6: Run the wireframe static check**
+- [x] **Step 6: Run the wireframe static check**
 
 Run:
 
@@ -111,7 +111,7 @@ git diff --check
 
 Expected: all six identifiers, the protected HUD rules, and input/evidence boundaries are visible; no whitespace error.
 
-- [ ] **Step 7: Commit the wireframes**
+- [x] **Step 7: Commit the wireframes**
 
 ```powershell
 git add docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md
@@ -130,23 +130,23 @@ git commit -m "docs: add Ninja Survival screen wireframes"
 - Consumes: Task 1 flow, Task 2 wireframes, `SCRREF-BATTLE-AUTOCOMBAT-03`, existing runtime visual manifests, and the benchmark disposition defined in the approved specification.
 - Produces: a cross-linked screen/asset/UI/VFX map that makes asset need versus existing source unambiguous without changing any image binary or provenance record.
 
-- [ ] **Step 1: Add the screen-to-consumer matrix**
+- [x] **Step 1: Add the screen-to-consumer matrix**
 
 For each Blueprint screen, list the consumer name, consumer mode (`GODOT_UI`, `TEXT_LAYER`, `EXISTING_APPROVED_RASTER`, `PLANNING_REFERENCE`, `RUNTIME_VFX`, or `PLANNED_CONSUMER`), existing source, missing state if any, and the exact evidence ceiling. Keep title marked planned while its open PR remains read-only.
 
-- [ ] **Step 2: Add the visual-input ledger and no-duplicate decision**
+- [x] **Step 2: Add the visual-input ledger and no-duplicate decision**
 
 Classify current floor/props/contact shadows, player/enemy/Boss sprites, existing wordmark/medal title lineage, Controls/text, and runtime telegraphs. Add an explicit reuse row for `SCRREF-BATTLE-AUTOCOMBAT-03` and state that no duplicate `SCRREF-BATTLE-HORDE-HUD-01` is produced. A future new image needs a demonstrated actual consumer gap, short brief, one candidate, and user lock.
 
-- [ ] **Step 3: Add the benchmark decision table**
+- [x] **Step 3: Add the benchmark decision table**
 
 Record the twelve inspected games as source patterns with the selected `ADOPT`, `ADAPT`, `REJECT`, or `REFERENCE_ONLY` disposition. Capture only reusable pattern-level findings: automatic combat/movement focus, horde pressure, route/build decision depth, boss telegraph, dynamic UI separation, and early-hazard restraint. Do not copy any game’s names, content, trade dress, item taxonomy, or tuning.
 
-- [ ] **Step 4: Cross-link from the existing visual owners**
+- [x] **Step 4: Cross-link from the existing visual owners**
 
 Add one concise continuation/reference entry in `docs/visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md` and one safe-resume entry in `docs/CURRENT_VISUAL_HANDOFF.md`. Both entries must point to `NS-BLUEPRINT-001`, preserve their existing ownership, state that the Blueprint is documentation/preproduction only, and state that no new image binary was generated by this package.
 
-- [ ] **Step 5: Run the visual-routing static check**
+- [x] **Step 5: Run the visual-routing static check**
 
 Run:
 
@@ -158,7 +158,7 @@ git diff --check
 
 Expected: the locked source is reused, dynamic UI is not turned into bitmap work, and all three owners agree on documentation-only status.
 
-- [ ] **Step 6: Commit the consumer and visual routing**
+- [x] **Step 6: Commit the consumer and visual routing**
 
 ```powershell
 git add docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md docs/visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md docs/CURRENT_VISUAL_HANDOFF.md
@@ -177,19 +177,19 @@ git commit -m "docs: map blueprint consumers and visual inputs"
 - Consumes: Tasks 1–3 and the approved specification.
 - Produces: evidence-correct preproduction review lineage, a current resume pointer, completed plan checkboxes, and a package ready for PR review without asserting runtime or user acceptance.
 
-- [ ] **Step 1: Perform five whole-scope adversarial loops**
+- [x] **Step 1: Perform five whole-scope adversarial loops**
 
 Write `docs/reviews/2026-09-01-screen-blueprint-adversarial-review.md` with five rows. Attack, validate, and record at minimum: duplicate-owner/document drift; user-direction regression (3x3, Stage/Phase, one ninja, auto attacks); fake image/runtime promotion; HUD clutter/early-hazard regression; and incorrect PR/current-main or evidence claims. Each row needs evidence inspected, correction made or reason no correction was needed, and result.
 
-- [ ] **Step 2: Update the mutable resume router**
+- [x] **Step 2: Update the mutable resume router**
 
 Add a compact current-task entry to `docs/ACTIVE_CONTEXT.md` that records `NS-BLUEPRINT-001` as documentation/preproduction complete pending exact PR-head checks, notes that no new image was generated, identifies `SCRREF-BATTLE-AUTOCOMBAT-03` as reused, and preserves `NOT_RUN` for runtime/Human/device evidence.
 
-- [ ] **Step 3: Mark the completed plan steps**
+- [x] **Step 3: Mark the completed plan steps**
 
 Change every completed checkbox in this plan from `- [ ]` to `- [x]`. Do not mark an image-generation/lock task because this plan deliberately has no new image generation task.
 
-- [ ] **Step 4: Run the final static verification**
+- [x] **Step 4: Run the final static verification**
 
 Run:
 
@@ -200,9 +200,9 @@ rg -n -- "- \[ \]" docs/superpowers/plans/2026-09-01-blueprint-wireframe-flow.md
 git status --short
 ```
 
-Expected: no whitespace error; all required owner/evidence statements exist; the unchecked-checkbox search returns no result; only the five scoped documentation paths have changes since the last task commit.
+Expected: no whitespace error; all required owner/evidence statements exist; Task 1–4 checkboxes are checked while Task 5 remains pending its protected PR route; only the scoped documentation paths have changes since the last task commit.
 
-- [ ] **Step 5: Commit and synchronize the complete Blueprint package**
+- [x] **Step 5: Commit and synchronize the complete Blueprint package**
 
 ```powershell
 git add docs/ACTIVE_CONTEXT.md docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md docs/visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md docs/CURRENT_VISUAL_HANDOFF.md docs/reviews/2026-09-01-screen-blueprint-adversarial-review.md docs/superpowers/plans/2026-09-01-blueprint-wireframe-flow.md
@@ -244,4 +244,3 @@ After the PR is created, read its `headRefOid`, inspect all checks for that exac
 - [ ] **Step 4: Report the integration gate**
 
 Report the PR URL, exact head SHA, checks actually observed, remaining `NOT_RUN` evidence, and the next safe image action: only a verified visual-consumer gap can trigger one candidate and user `LOCK`.
-
