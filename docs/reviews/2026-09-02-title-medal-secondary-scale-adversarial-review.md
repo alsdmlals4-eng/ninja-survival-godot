@@ -52,6 +52,9 @@ untracked test dependencies only; they are explicitly excluded from staging and
 will be removed by disposal of this isolated worktree rather than copied into
 the repository.
 
-Exact PR-head CI, PR merge, main readback, attached Ninja Survival live render,
-Human usability, Player Experience, and device/export validation remain
-separate next gates.
+Exact PR-head CI (`gut` and `Windows internal build artifact`) passed for
+`b196c40ece2c55ee66831e84151ba4d026706240`; PR #141 was then squash-merged
+to `main` at `d0e49d0685803849e9013f482f7452830abbf5d4`. Remote main readback
+confirmed the `TitleMedal` anchors and an empty tree delta from the exact PR
+head. Attached Ninja Survival live render, Human Usability, Player Experience,
+and device/export validation remain separate `NOT_RUN` gates.
