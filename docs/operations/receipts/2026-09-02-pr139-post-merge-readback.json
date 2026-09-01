@@ -1,0 +1,41 @@
+{
+  "owner": "PR139_CURRENT_MAIN_RECONCILIATION_POST_MERGE_READBACK",
+  "source_owner_head_read_only": "d65a712d441d3ca854ee8ae2edff468bb4974983",
+  "completed_main_before_reconciliation": "7b94efa90ec8c577edf0317163c4cf6b30a32531",
+  "integration_pr": {
+    "number": 139,
+    "exact_head": "5ed6b7042d68a509c74b0fa2ec1a5f0e566fe071",
+    "github_checks": {
+      "gut": "SUCCESS",
+      "windows_internal_build_artifact": "SUCCESS"
+    },
+    "squash_merge_commit": "3428f916f20f545284c337c7eb41b0eacf268351"
+  },
+  "candidate_before_pr": {
+    "focused_gut": {
+      "tests": 55,
+      "assertions": 585,
+      "state": "PASS"
+    }
+  },
+  "post_merge_main": {
+    "exact_head": "3428f916f20f545284c337c7eb41b0eacf268351",
+    "godot_version": "4.7.1",
+    "import": "PASS",
+    "main_scene_smoke": "PASS",
+    "full_gut": {
+      "tests": 605,
+      "assertions": 6789,
+      "state": "PASS"
+    }
+  },
+  "not_run": [
+    "HUMAN_USABILITY",
+    "PLAYER_EXPERIENCE",
+    "KEYBOARD_GAMEPAD_TOUCH_END_TO_END",
+    "DEVICE_EXPORT",
+    "BALANCE",
+    "RELEASE_ACCEPTANCE"
+  ],
+  "cleanup_boundary": "PR139 integration and post-merge worktrees were removed; original PR135 and all unrelated worktrees were preserved."
+}
