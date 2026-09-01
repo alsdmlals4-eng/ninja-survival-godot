@@ -68,6 +68,31 @@ base_promotion_judgement: REJECT_REFERENCE_ONLY_DUPLICATE_OF_EXISTING_FIVE_PHASE
 
 Base의 BCP-2026-040과 현재 5단계 실행 계약은 이미 다운로드 가능한 internal build, exact build identity, post-merge smoke, Human evidence 분리와 player-facing placeholder 금지를 공용 규칙으로 소유한다. 이 프로젝트의 preset 이름, Windows 경로, artifact 크기, Godot pin은 project-local evidence로만 남기며 별도 Base 변경 제안/구현 PR은 만들지 않았다.
 
+### 2026-09-01 · 프로젝트 네이티브 Base 적응 계약 fresh observation
+
+Current Base observation: `19355b7ef065a21d0f2b685c7d9be64a4a3970f8`.
+Observation reason: `PROJECT_WORK_ORDER_STRUCTURE_AND_CONTRACT_ADAPTATION`.
+Selective current-owner read: `PASS`; full Base rule sync: `NOT_RUN`.
+
+Adoption disposition: `ADAPT`. The project preserves the existing
+`AGENTS.md → Decision/Canon → ACTIVE_CONTEXT → actual Godot implementation`
+authority order and connects Base work ordering, reuse/benchmark, approval,
+dependency, rollback, evidence, and cleanup rules through
+`docs/operations/NINJA_SURVIVAL_PROJECT_WORK_CONTRACT.md`.
+
+Deferred by this package: `skills/PROJECT_BASE_ADAPTER.json`, a project Skill
+Registry, generated operating dashboard/compatibility views, automatic merge,
+continuous operations, and Base promotion. They lack the required current
+consumer, committed baseline, or separate approval.
+
+Protected and excluded: product rules, GDD, visual manifests, actual
+code/scene/data/test owners, open PR #135, historical PR #49, and unknown
+Godot-generated material. This is a documentation-only workstream.
+
+Earlier Base observation SHAs remain their original work provenance. This
+current observation does not replace project canon or automatically change a
+Base release pin.
+
 ## 3. 현재 project-local authority order
 
 1. 최신 사용자 지시
