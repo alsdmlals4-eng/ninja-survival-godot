@@ -105,6 +105,15 @@ The local Godot import metadata is required only to load the existing locked
 PNG sources for verification; it remains untracked and is excluded from the
 branch rather than becoming a new repository asset or runtime dependency.
 
+PR [#141](https://github.com/alsdmlals4-eng/ninja-survival-godot/pull/141)
+passed its exact-head `gut` and `Windows internal build artifact` checks, then
+was squash-merged to `main` at
+`d0e49d0685803849e9013f482f7452830abbf5d4`. The post-merge remote readback
+confirmed the authored `TitleMedal` anchors and an empty tree delta from exact
+PR head to merged `main`. This confirms repository delivery only; attached
+Ninja Survival live render, Human Usability, Player Experience, and
+device/export validation remain `NOT_RUN`.
+
 ### 2026-09-01 DEC-042 — retained title art, expanded action surface
 
 The locked backdrop, wordmark, and four-piece medal above are reused without

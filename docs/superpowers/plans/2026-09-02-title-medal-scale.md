@@ -132,7 +132,7 @@ Attack source-byte drift, input interception/focus, logo hierarchy regression, s
 
 Run `hera status`/`hera instances`; never mutate or capture an unrelated project. If no Ninja Survival session is attached, retain `RUNTIME_RENDER_NOT_RUN` and present the machine-verified source change with that limitation.
 
-- [ ] **Step 4: Commit, push, open a focused PR, and validate its exact head**
+- [x] **Step 4: Commit, push, open a focused PR, and validate its exact head**
 
 ```powershell
 git add scenes/ui/title_screen.tscn tests/integration/test_title_screen.gd docs/CURRENT_CONFIRMED_DECISIONS.md docs/CURRENT_VISUAL_HANDOFF.md docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md docs/ACTIVE_CONTEXT.md docs/reviews/2026-09-02-title-medal-secondary-scale-adversarial-review.md docs/superpowers/plans/2026-09-02-title-medal-scale.md
@@ -141,3 +141,9 @@ git push -u origin codex/title-medal-scale-141
 ```
 
 Create one new PR from this branch; do not modify the user-owned PR #135 or any unrelated open branch. Report exact head CI and merge/readback status separately from Human/player/device acceptance.
+
+Completed as PR [#141](https://github.com/alsdmlals4-eng/ninja-survival-godot/pull/141): exact head
+`b196c40ece2c55ee66831e84151ba4d026706240` passed both required GitHub
+checks, then squash-merged to `main` at
+`d0e49d0685803849e9013f482f7452830abbf5d4`. Remote main readback found the
+same tree as the exact PR head.
