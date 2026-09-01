@@ -73,6 +73,38 @@ arrives through the existing path. No false save/settings/store ownership or
 Ninja Soul settlement affordance was added; DEC-042 adds the separately
 validated Continue action below.
 
+## 2026-09-02 DEC-043 — secondary four-traditions medal scale
+
+The user approved the title/Stage/combat/Workbench visual-blueprint direction
+and requested one exact title correction: the separate four-traditions medal
+must read as a supporting symbol approximately the height of the `닌` glyph in
+the `닌자의 신` wordmark, not as a second hero mark. This is an authored
+`TitleScreen/TitleMedal` layout adjustment only:
+
+- retained binary: `NINJA_RUNTIME_TITLE_FOUR_TRADITIONS_MEDAL_02`, with the
+  existing file path, SHA-256, transparent alpha, approval, and consumer;
+- retained interaction behavior: aspect-preserving stretch and ignored pointer
+  input; and
+- authored viewport rectangle: `left=0.290`, `top=0.350`, `right=0.345`,
+  `bottom=0.470` — a `0.055 × 0.120` secondary box beside the wordmark.
+
+No image binary is generated, replaced, reapproved, or promoted by this
+layout-only correction. The focused geometry contract, import/parse/smoke/GUT
+result, exact branch/PR evidence, and all Human/device evidence are recorded
+only after their respective checks complete.
+
+Local machine verification for the authored rectangle is complete: the focused
+GUT contract first failed on the old `0.090 × 0.200` rectangle (`0/1`,
+`45/48` assertions), then passed after the minimal layout change (`1/1`, `48`
+assertions). Godot `4.7.1` import, headless editor parse, and a 300-frame Main
+smoke passed; the full GUT suite passed `605/605` tests with `6,794`
+assertions. This is not a render, Human Usability, player-experience, or
+device/export PASS: the only current Hera live sessions belong to other
+projects, so no Ninja Survival live-editor surface was attached or mutated.
+The local Godot import metadata is required only to load the existing locked
+PNG sources for verification; it remains untracked and is excluded from the
+branch rather than becoming a new repository asset or runtime dependency.
+
 ### 2026-09-01 DEC-042 — retained title art, expanded action surface
 
 The locked backdrop, wordmark, and four-piece medal above are reused without

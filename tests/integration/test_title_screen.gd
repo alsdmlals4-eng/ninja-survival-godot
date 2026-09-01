@@ -11,6 +11,8 @@ const TITLE_MANIFEST := "res://docs/assets/approved/img-02-runtime-visual-core/R
 const TITLE_MANIFEST_ID := "NINJA_RUNTIME_TITLE_SCREEN_MOONLIT_NINJA_02"
 const TITLE_MEDAL_MANIFEST_ID := "NINJA_RUNTIME_TITLE_FOUR_TRADITIONS_MEDAL_02"
 const TITLE_LOGO_MANIFEST_ID := "NINJA_RUNTIME_TITLE_LOGO_NINJA_GOD_01"
+const MAX_TITLE_MEDAL_VIEWPORT_WIDTH := 0.060
+const MAX_TITLE_MEDAL_VIEWPORT_HEIGHT := 0.130
 
 
 func test_title_screen_exposes_separate_locked_graphic_logo_medal_backdrop_and_start_intent() -> void:
@@ -25,14 +27,16 @@ func test_title_screen_exposes_separate_locked_graphic_logo_medal_backdrop_and_s
 	assert_true(title.visible)
 	assert_true(title.has_signal(&"start_requested"))
 	var backdrop := title.get_node_or_null("Backdrop") as TextureRect
+	var title_lockup := title.get_node_or_null("LogoLockup") as Control
 	var title_logo := title.get_node_or_null("LogoLockup/TitleLogo") as TextureRect
 	var title_medal := title.get_node_or_null("TitleMedal") as TextureRect
 	var start_button := title.get_node_or_null("LogoLockup/MenuButtons/StartButton") as Button
 	assert_not_null(backdrop)
+	assert_not_null(title_lockup)
 	assert_not_null(title_logo)
 	assert_not_null(title_medal, "The four-traditions medal must be an independently positioned title asset, not baked into the backdrop.")
 	assert_not_null(start_button)
-	if backdrop == null or title_logo == null or title_medal == null or start_button == null:
+	if backdrop == null or title_lockup == null or title_logo == null or title_medal == null or start_button == null:
 		return
 
 	assert_not_null(backdrop.texture)
@@ -53,6 +57,13 @@ func test_title_screen_exposes_separate_locked_graphic_logo_medal_backdrop_and_s
 		assert_eq(title_medal.texture.get_size(), Vector2(1254, 1254))
 	assert_eq(title_medal.stretch_mode, TextureRect.STRETCH_KEEP_ASPECT_CENTERED)
 	assert_eq(title_medal.mouse_filter, Control.MOUSE_FILTER_IGNORE)
+	var medal_width := title_medal.anchor_right - title_medal.anchor_left
+	var medal_height := title_medal.anchor_bottom - title_medal.anchor_top
+	var lockup_width := title_lockup.anchor_right - title_lockup.anchor_left
+	assert_true(medal_width <= MAX_TITLE_MEDAL_VIEWPORT_WIDTH, "The title medal must stay a small secondary symbol beside the wordmark.")
+	assert_true(medal_height <= MAX_TITLE_MEDAL_VIEWPORT_HEIGHT, "The title medal must stay close to the height of the 닌 wordmark glyph.")
+	assert_true(medal_width < lockup_width * 0.25, "The title medal must remain visually secondary to the wordmark lockup.")
+	assert_true(title_medal.anchor_left >= 0.28, "The smaller medal must remain beside the wordmark, not become a separate hero panel.")
 	assert_eq(FileAccess.get_sha256(TITLE_MEDAL).to_lower(), TITLE_MEDAL_SHA256)
 	assert_true(manifest_text.contains(TITLE_MEDAL_MANIFEST_ID))
 	assert_true(manifest_text.contains(TITLE_MEDAL_SHA256))
