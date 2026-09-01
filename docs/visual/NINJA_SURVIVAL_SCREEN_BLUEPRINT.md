@@ -174,6 +174,20 @@ stateDiagram-v2
 현재 이 Blueprint package에서 `new_image_binary: NOT_CREATED`다. 이 문서는
 새 image binary, provenance, runtime texture를 만들거나 바꾸지 않는다.
 
+### 2026-09-02 visual-board approval — title hierarchy correction
+
+The review-only title/Stage/combat/Workbench board was used to make the
+blueprint inspectable at a glance. The user approved that direction with one
+specific live-title correction: retain the independent four-traditions medal,
+but render it as a small support mark approximately the height of the `닌`
+glyph in the `닌자의 신` wordmark. The actual `TitleScreen/TitleMedal` contract
+is a `0.055` viewport-width by `0.120` viewport-height aspect-preserved box;
+the user-locked PNG source, its hash, and its current consumer remain owned by
+[`CURRENT_VISUAL_HANDOFF.md`](../CURRENT_VISUAL_HANDOFF.md) and the asset
+manifest. This review direction does not create or register a new runtime
+image binary, and it does not turn a static visual board into runtime/Human
+evidence.
+
 ## 6. 다음 구현·검증 Gate
 
 | 다음 작업 | 시작 조건 | 이 블루프린트가 제공하는 입력 | 아직 필요한 증거 |
