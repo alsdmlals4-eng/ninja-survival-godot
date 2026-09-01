@@ -26,7 +26,8 @@
 14. `planning/2026-08-22-dec026-phase-b-definition-of-ready.md` (historical)
 15. 실제 `../scripts/**`, `../scenes/**`, `../data/**`, `../tests/**`, `../.github/workflows/**`
 16. `design/NINJA_SURVIVAL_MASTER_GDD.md`, `CURRENT_VISUAL_HANDOFF.md`, asset manifest/provenance
-17. 현재 작업에 Base freshness가 materially 필요할 때 최신 Base owner
+17. L1+ proposal 또는 mutation 전, work ordering, reuse, approval, evidence, cleanup, and learning boundary는 `operations/NINJA_SURVIVAL_PROJECT_WORK_CONTRACT.md`를 읽는다. 이 문서는 procedural adapter이며 제품/canon owner가 아니다.
+18. 현재 작업에 Base freshness가 materially 필요할 때 최신 Base owner
 
 ## 2. Current product / implementation router
 

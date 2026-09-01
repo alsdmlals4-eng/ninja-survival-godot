@@ -2,7 +2,7 @@
 
 ```yaml
 project: NINJA_SURVIVAL
-state_router_updated_at: 2026-08-30 KST
+state_router_updated_at: 2026-09-01 KST
 reactivation_reason: USER_APPROVED_PLANNING_CANON_AND_HUMAN_HOME_ALIGNMENT
 completed_main_at_reactivation: 265bab32da087c070ea2ea0d98a3bdace1e10f7f
 current_completed_main: RESOLVE_FROM_REPOSITORY_DEFAULT_BRANCH
@@ -23,6 +23,10 @@ human_player_gdd_pdf: exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf
 human_player_gdd_pdf_manifest: docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json
 human_player_gdd_pdf_status: CURRENT_ON_BRANCH_PENDING_MAIN_PUBLICATION_DD047E45E70091D1B4851E0042931D1235BEE6B2
 mandatory_work_gate: FRESH_READ_REUSE_FIRST_TARGETED_WEB_RESEARCH_FEASIBILITY_AND_ADVERSARIAL_REVIEW_UNTIL_CLEAN
+current_project_work_contract: docs/operations/NINJA_SURVIVAL_PROJECT_WORK_CONTRACT.md
+current_base_observation: 19355b7ef065a21d0f2b685c7d9be64a4a3970f8
+base_adaptation_state: ADAPT_ACTIVE
+full_base_adapter_state: NOT_INSTALLED_SEPARATE_ONBOARDING_REQUIRED
 repository_only_policy: docs/canon/2026-08-28-dec035-repository-only-project-record.md
 notion_usage: HISTORICAL_REFERENCE_ONLY_MIGRATION_COMPLETE
 notion_migration_manifest: docs/migration/notion/MIGRATION_MANIFEST.md
