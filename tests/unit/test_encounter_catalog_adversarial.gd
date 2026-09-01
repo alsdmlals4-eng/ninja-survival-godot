@@ -46,6 +46,22 @@ func test_dec026_display_names_are_preserved_exactly() -> void:
 	)
 
 
+func test_core_actors_are_contact_only_while_elite_and_boss_patterns_stay_telegraphed() -> void:
+	var catalog = load(CATALOG_PATH)
+	var actors: Dictionary = catalog.build_actor_definitions()
+	for actor in actors.values():
+		if actor.role == &"core":
+			assert_eq(actor.pattern_definitions.size(), 0, "%s Core must create pressure through pursuit/contact only." % actor.actor_id)
+			assert_false(actor.tags.has(&"ranged"), "%s Core must not advertise a ranged opening attack." % actor.actor_id)
+			continue
+
+		var expected_pattern_count := 2 if actor.role == &"elite" else 3
+		assert_eq(actor.pattern_definitions.size(), expected_pattern_count)
+		for pattern in actor.pattern_definitions:
+			assert_gt(float(pattern.get("telegraph_duration", 0.0)), 0.0)
+			assert_gt(float(pattern.get("recovery_duration", 0.0)), 0.0)
+
+
 func test_fairness_corruption_fails_closed_instead_of_becoming_valid_pattern_data() -> void:
 	var catalog = load(CATALOG_PATH)
 	var patterns: Dictionary = catalog.build_first_slice_patterns()

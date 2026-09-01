@@ -45,6 +45,8 @@ func test_boss_ledger_is_idempotent_and_checkpoint_allows_only_one_retry_for_its
 	assert_true(checkpoint.consume_retry())
 	assert_false(checkpoint.can_retry_school(&"guiin"))
 	assert_false(checkpoint.consume_retry())
+	assert_true(checkpoint.restore_unconsumed_retry(), "A failed cross-file retry transition must be able to roll back before gameplay resumes.")
+	assert_true(checkpoint.can_retry_school(&"guiin"))
 	assert_eq(checkpoint.get_snapshot().get("eligible_school_boss_ids"), [&"cheonsul", &"bongma"])
 
 

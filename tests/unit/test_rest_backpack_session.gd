@@ -74,8 +74,8 @@ func test_buffer_capacity_is_exactly_six_and_seventh_move_is_atomic() -> void:
 	if committed == null:
 		return
 	var cells: Array[Vector2i] = [
-		Vector2i(1, 1), Vector2i(2, 1), Vector2i(3, 1), Vector2i(4, 1),
-		Vector2i(1, 2), Vector2i(2, 2), Vector2i(3, 2),
+		Vector2i(1, 1), Vector2i(2, 1), Vector2i(3, 1),
+		Vector2i(1, 2), Vector2i(2, 2), Vector2i(3, 2), Vector2i(1, 3),
 	]
 	var ids: Array[int] = []
 	for cell in cells:

@@ -1,6 +1,6 @@
 # CURRENT VISUAL HANDOFF — Ninja Survival / 닌자의 신
 
-> Updated: 2026-08-30 KST
+> Updated: 2026-09-02 KST
 > Purpose: next-chat resume router for the approved visual direction and current image-production state.
 > Product/runtime authority remains `AGENTS.md` → `docs/CURRENT_CONFIRMED_DECISIONS.md` → `docs/ACTIVE_CONTEXT.md` → actual code/data/tests. This file owns the **current visual continuation state only**.
 
@@ -8,11 +8,91 @@
 > It separates whole-screen references from runtime components and does not
 > authorize image generation from a gap.
 
+## 2026-09-02 current-main reconciliation evidence boundary
+
+The user-locked title/logo/medal, basic-weapon, and three Bongma encounter binaries listed below were byte-read back against their recorded SHA-256 values on a fresh current-main integration candidate. Their declared consumers pass focused asset/title/encounter checks and the full GUT suite (`605/605`, `6,789` assertions); a fresh Godot 4.7.1 session rendered the title and Stage selector with no source errors.
+
+This is **local candidate evidence**, not a retroactive merge claim for the original read-only PR source. GitHub CI, merge, post-merge main readback, Human Usability, player experience, device/export, and balance are still pending or `NOT_RUN`. The three new Bongma actor binaries improve that Stage's bespoke coverage; the four-school data roster does **not** yet mean every Core/Elite/Boss has an individually locked in-game illustration. Existing generic/candidate bindings remain an explicit follow-up gap.
+
 ## 2026-08-28 DEC-034 — generate then user-lock
 
 Once fresh-read identifies a concrete runtime consumer, screen-reference, or planning-board brief, generate **one** candidate without asking for a separate pre-generation approval. After viewing it, the user alone chooses `LOCK`, `REVISE`, or `REJECT`.
 
 This does not authorize chat-start generation, gap-only/orphan art, or replacement of an approved asset. A candidate remains `GENERATED_EXPLORATION` until `LOCK`; durable repository source/manifest, actual consumer integration, and runtime/Human evidence gates stay unchanged.
+
+## 2026-08-31 user-locked title front door, title logo, and four-traditions medal
+
+`NINJA_RUNTIME_TITLE_SCREEN_MOONLIT_NINJA_02` and
+`NINJA_RUNTIME_TITLE_FOUR_TRADITIONS_MEDAL_02` replace the previous
+single baked-key-art composition. They remain presentation-only title assets,
+not an in-combat unit, player skin, Stage reward, or four-character selection
+surface.
+
+| Field | Medal-free backdrop |
+| --- | --- |
+| Asset ID | `NINJA_RUNTIME_TITLE_SCREEN_MOONLIT_NINJA_02` |
+| Local source | `assets/runtime/ui/title_screen_moonlit_ninja_v2.png` |
+| SHA-256 | `86f86da33986499bfd98aa003ba52ac65105136197d4530aa3335c9b8f2e030c` |
+| Metadata | PNG, 1672×941, opaque 16:9 painterly ink key art; fixed ninja and moon stay on the right and the left becomes an uninterrupted dark title field. |
+| User approval | `LOCK` / `승인`, 2026-08-31 KST |
+| Runtime consumer | `scenes/ui/title_screen.tscn` → `TitleScreen/Backdrop` |
+| Machine evidence | Godot 4.7.1 import, editor parse, 300-frame main-scene smoke, focused title/start GUT `3/3`, `68` assertions, and full GUT `586/586`, `6587` assertions passed on the isolated branch. |
+| Render/Human/device evidence | `NOT_RUN`: no exact Ninja Survival live-editor session is currently attached; machine checks do not establish visual usability or player experience. |
+
+| Field | Separate four-traditions medal |
+| --- | --- |
+| Asset ID | `NINJA_RUNTIME_TITLE_FOUR_TRADITIONS_MEDAL_02` |
+| Local source | `assets/runtime/ui/title_four_traditions_medal_v2.png` |
+| SHA-256 | `26520188d71f9565fef0263062dcbab6ce23f4998371f55af765c034257c61cc` |
+| Metadata | PNG, 1254×1254, RGBA transparent title emblem. Four joined fragments share gold seams and one center core: 봉마=seal/familiar, 천술=reaction geometry, 귀인=oni, 흑영=shadow/shuriken. It is not a selectable character panel. |
+| User approval | `LOCK` / `승인`, 2026-08-31 KST |
+| Runtime consumer | `scenes/ui/title_screen.tscn` → `TitleScreen/TitleMedal`, a smaller aspect-preserving overlay immediately right of the logo with pointer input ignored. |
+| Machine evidence | Godot 4.7.1 import, editor parse, 300-frame main-scene smoke, focused title/start GUT `3/3`, `68` assertions, and full GUT `586/586`, `6587` assertions passed on the isolated branch. |
+| Render/Human/device evidence | `NOT_RUN`: no exact Ninja Survival live-editor session is currently attached; machine checks do not establish visual usability or player experience. |
+
+The former baked-medal backdrop `NINJA_RUNTIME_TITLE_SCREEN_FOUR_TRADITIONS_MEDAL_01` remains a `USER_LOCKED` historical provenance and rollback source. It has no direct current-title consumer after the separate-medal transition.
+
+`NINJA_RUNTIME_TITLE_LOGO_NINJA_GOD_01` is the approved transparent title mark;
+the supplied GRIMOIRE logo was hierarchy reference only, not copied source or
+runtime content.
+
+| Field | Recorded value |
+| --- | --- |
+| Local source | `assets/runtime/ui/title_logo_ninja_god_v1.png` |
+| SHA-256 | `c946ae4b08fd77f1e36bc25b22d0d41fdd5060fc80e98faeb9e6f2d2ac9a7a5b` |
+| Metadata | PNG, 1672×941, RGBA transparent `닌자의 신` wordmark; sampled alpha `0..255`, all four corner alphas `0`; navy ink/stone-gold lettering with crescent and red seal |
+| User approval | `LOCK` / `확정하자`, 2026-08-31 KST |
+| Runtime consumer | `scenes/ui/title_screen.tscn` → `TitleScreen/LogoLockup/TitleLogo`, aspect-preserving and immediately left of the separately positioned four-piece medal |
+| Machine evidence | Godot 4.7.1 import, editor parse, 300-frame main-scene smoke, focused title/start/MVP-2 GUT `15/15`, `193` assertions, and full GUT `580/580`, `6455` assertions passed on the isolated branch. PR #135 head `ddeaf55` then passed GitHub GUT and Windows internal-build checks. |
+| Render/Human/device evidence | `NOT_RUN`: the exact Ninja Survival editor session is not connected; import or headless tests do not establish visual readability. |
+
+`새 게임` emits only a presentation intent. `MainController` asks for
+confirmation when a Continue record exists, then hides the title and exposes
+the existing Stage selector; it does not enable combat until a Stage choice
+arrives through the existing path. No false save/settings/store ownership or
+Ninja Soul settlement affordance was added; DEC-042 adds the separately
+validated Continue action below.
+
+### 2026-09-01 DEC-042 — retained title art, expanded action surface
+
+The locked backdrop, wordmark, and four-piece medal above are reused without
+new source images or byte changes. The medal remains a smaller independent
+overlay beside the wordmark. The left title action column now presents `새 게임`,
+`이어하기`, `각성`, `도감`, `조작 방법`, `설정`, and `종료`; its local modal
+surfaces do not replace the painterly title composition with a new art style.
+
+`이어하기` is enabled only for a validated Workbench checkpoint. `새 게임` asks
+for confirmation before removing an existing record. `각성` presents the
+existing retry balance using the player-facing name only, while `도감` is a
+read-only text-native catalog for enemy, ninjutsu, equipment, bag, and
+combination facts. No lore promise text, separate school-choice panel, player
+skin, or in-combat title asset was added.
+
+Machine scope rechecked this surface with focused title/resume/retry regression
+GUT `25/25`, `296` assertions, full GUT `604/604`, `6784` assertions, and a
+headless main-scene smoke on Godot `4.7.1`. Exact live render, Human
+Usability/Player Experience, complete keyboard/gamepad/touch visual review,
+and device/export validation remain `NOT_RUN`.
 
 ## 2026-08-28 DEC-035 — migration-first repository-only visual ownership
 
@@ -23,6 +103,66 @@ After user `LOCK`, durable visual ownership is
 repository source + SHA-256/provenance manifest + explicit consumer + applicable
 import/runtime evidence. The migration snapshots are provenance receipts only;
 they neither block nor satisfy a current asset gate.
+
+## 2026-08-31 user-locked DEC-040 corrupted-yokai enemy roster reference
+
+The user locked `DEC040_FOUR_SCHOOL_CORRUPTED_YOKAI_ROSTER_01` after reviewing
+the four-school roster-board candidate. It is a repository-local
+`USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME`, with the following source receipt:
+
+| Field | Locked value |
+| --- | --- |
+| Local source | `docs/visual/enemy-references/four-school-corrupted-yokai-roster-v1.png` |
+| SHA-256 | `a49717d3783dd47593f26f9d9f5ed04c49de57aa5aa8c506b811f27b280ed9da` |
+| Metadata | PNG, 1254×1254, opaque four-quadrant planning board |
+| Approval | User `LOCK`, 2026-08-31 KST |
+| Human/planning consumer | `docs/superpowers/specs/2026-08-31-dec040-four-school-encounter-and-ninjutsu-design.md` and the following DEC-040 runtime-asset briefs |
+| Godot consumer | None. This board is not a `Texture2D`, scene binding, or runtime proof. |
+
+**Locked enemy contract.** Future enemy cutouts must read first as either an
+**intruded/corrupted ninja** or a hostile **yokai**. Clean ordinary ninja,
+samurai, or player-like human silhouettes are not valid enemy art. Every
+runtime enemy needs an unmistakably hostile non-human cue at gameplay scale:
+for example a cracked mask or lantern face, glowing eye socket, talisman
+intrusion, horn, claw, warped limb, cursed armour fissure, or supernatural
+shadow body. The four school accents remain 봉마=sealed blue/gold, 천술=
+blue/amber, 귀인=crimson/black, and 흑영=violet/black.
+
+Each roster quadrant pairs a compact Core Monster with a distinctly broader
+Elite/Boss silhouette. This proves the visual direction only: it does not
+promote the board's eight displayed figures, any character cutout, spell,
+telegraph, old generic-enemy texture, stat, spawn rule, or Godot consumer.
+### 2026-08-31 individually locked DEC-040 Bongma runtime assets
+
+`NINJA_RUNTIME_ENCOUNTER_BONGMA_MOBILE_ARRAY_CASTER_01` remains the first runtime
+asset promoted from this direction. The two later locked sources extend only
+the same Bongma encounter family, not the whole DEC-040 asset batch:
+
+| Field | Recorded value |
+| --- | --- |
+| Local source | `assets/runtime/encounters/actors/mobile_array_caster.png` |
+| SHA-256 | `1e145d6e00a0322c894cc3b1384a65c9d225b16a700093dd76eb205efd62fbfd` |
+| Metadata | PNG, 1024×1536, RGBA transparent cutout; transparent corners and alpha range checked before repository copy |
+| Approval | User `LOCK` / `승인`, 2026-08-31 KST |
+| Runtime consumer | `EncounterCatalog` → `SchoolEncounterActor/Visual`, only when the actor ID is `mobile_array_caster` |
+| Machine evidence | Godot import plus focused source/manifest/binding contract `2/2`, `14` assertions passed on the isolated branch |
+| Render/Human/device evidence | `NOT_RUN` — the currently discoverable live Godot session belongs to another project, so no Ninja visual/runtime claim is inferred |
+
+| Field | Boss locked value | Familiar locked value |
+| --- | --- | --- |
+| Asset ID | `NINJA_RUNTIME_ENCOUNTER_BONGMA_HUNDRED_DEMON_ARRAY_MASTER_01` | `NINJA_RUNTIME_ENCOUNTER_BONGMA_HUNDRED_DEMON_FAMILIAR_01` |
+| Local source | `assets/runtime/encounters/actors/hundred_demon_array_master.png` | `assets/runtime/encounters/summons/bongma_hundred_demon_familiar.png` |
+| SHA-256 | `b97f20076b64e0e84eef2714e5d5551a49648ea97b0583226b31f220d5b9527c` | `50cbecfe6982e53537d4caaa731bc06c3e56c95bbf0be6084c2550571176ea75` |
+| Metadata | 1254×1254 RGBA transparent Boss cutout; blue eye, array frame, bound fox shikigami | 1254×1254 RGBA transparent floating fox-mask shikigami cutout |
+| Approval | User `LOCK` / `승인`, 2026-08-31 KST | User `LOCK` / `승인`, 2026-08-31 KST |
+| Runtime consumer | `EncounterCatalog` → `SchoolEncounterActor/Visual`, only `hundred_demon_array_master`, scale `0.09` | `SchoolEncounterActor/EncounterProxy/Visual`, only Bongma `summon_or_proxy`, scale `0.03`, no tint |
+| Scope guard | Existing Boss patterns, timing, hazards, rewards and gates are unchanged | Existing delayed proxy arming, lifetime, radius and damage are unchanged; existing player-side `BongmaFamiliar` is untouched |
+| Machine evidence | Godot import plus focused source/manifest/scale contract `4/4`, `29` asserts; full GUT `578/578`, `6408` asserts | Godot import plus focused delayed-proxy source/scale/no-tint contract `5/5`, `23` asserts; full GUT `578/578`, `6408` asserts |
+| Render/Human/device evidence | `NOT_RUN` | `NOT_RUN` |
+
+This promotion does not approve a whole family: the remaining 18 actor, 12
+ninjutsu and shared telegraph candidates must each be generated, reviewed,
+user-locked, registered, imported and render-checked independently.
 
 ## 2026-08-30 user-locked auto-combat battlefield planning reference
 
@@ -109,9 +249,20 @@ with dimensions/alpha/consumer evidence retained in the runtime manifest.
 | Shadow Beast | `EnemyBasic/Visual` variant pool | `assets/runtime/visual-core/shadow_beast_v1.png` | `migration/notion/assets/3c81b237-eb1c-8187-827c-d5bf3b51907e.notion.md` |
 | Flame Ninja | `EnemyBasic/Visual` variant pool | `assets/runtime/visual-core/flame_ninja_v1.png` | `migration/notion/assets/3c81b237-eb1c-819b-ac22-df2c6a99b984.notion.md` |
 | Cheonsul stage boss | `StageBoss/Visual` | `assets/runtime/visual-core/cheonsul_stage_boss_v1.png` | `migration/notion/assets/3c91b237-eb1c-8162-84b6-ee6d8c2e7149.notion.md` |
-| Talisman projectile | `ProjectileBasic/Visual` | `assets/runtime/visual-core/talisman_projectile_v1.png` | `migration/notion/assets/3c91b237-eb1c-8125-a3da-db4a959dd387.notion.md` |
+| Talisman trace visual | `TracePickup/TraceVisual` | `assets/runtime/visual-core/talisman_projectile_v1.png` | `migration/notion/assets/3c91b237-eb1c-8125-a3da-db4a959dd387.notion.md` |
 | Golden reward orb | `RewardOrb/Visual` | `assets/runtime/visual-core/golden_reward_orb_v1.png` | `migration/notion/assets/3c91b237-eb1c-81b7-a686-e2423308102b.notion.md` |
 | Bongma familiar | `BongmaFamiliar/Visual` | `assets/runtime/visual-core/bongma_familiar_v1.png` | `migration/notion/assets/3c91b237-eb1c-8102-a8c4-fe46dfc41e8f.notion.md` |
+
+## DEC-039 basic weapon effects — user locked, current isolated branch
+
+`NINJA_RUNTIME_BASIC_WEAPON_EFFECTS_01` is a 1774×887 transparent atlas at
+`assets/runtime/visual-core/basic_weapon_effects_v1.png` with SHA-256
+`728aff2ed85e233a0adcc195406a9a101b0933da8990078cced1af59c9eaf58a`.
+The left katana region is rendered briefly by `BasicWeaponController`; the
+right shuriken region is clipped by `ShurikenProjectile`. These effects make
+automatic base weapons readable without modifying the single Ninja's body
+pose. The asset is user locked and bound on the current isolated branch, but
+is not merged and has no Human/device/balance verdict.
 
 ## IMG-03 runtime battlefield backdrop — merged 2026-08-27
 

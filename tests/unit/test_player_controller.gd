@@ -12,6 +12,11 @@ func before_each() -> void:
 	death_count = 0
 	damage_events.clear()
 	healing_events.clear()
+	_release_movement_actions()
+
+
+func after_each() -> void:
+	_release_movement_actions()
 
 
 func test_damage_reduces_health_clamps_and_dies_once() -> void:
@@ -145,29 +150,129 @@ func test_dead_player_cannot_be_healed_or_damaged_again() -> void:
 	assert_eq(player.health, 0)
 
 
-func test_resolve_movement_direction_supports_wasd_and_ui_keys() -> void:
+func test_movement_intent_is_limited_before_dash_direction_is_resolved() -> void:
+	var player = _spawn_player()
+	watch_signals(player)
+	player.set_movement_intent(Vector2(3.0, 4.0))
+
+	assert_true(player.request_dash())
+	assert_signal_emitted_with_parameters(player, "dash_started", [Vector2(0.6, 0.8)])
+
+
+func test_dash_consumes_one_of_two_charges_and_emits_read_only_state() -> void:
+	var player = _spawn_player()
+	player.set_movement_intent(Vector2.RIGHT)
+	watch_signals(player)
+
+	assert_true(player.request_dash())
+	assert_eq(player.current_dash_charges(), 1)
+	assert_signal_emitted_with_parameters(player, "dash_state_changed", [1, 2])
+
+
+func test_dash_rejects_zero_direction_dead_player_and_empty_charges_without_mutation() -> void:
+	var player = _spawn_player()
+	assert_false(player.request_dash())
+	assert_eq(player.current_dash_charges(), 2)
+
+	player.set_movement_intent(Vector2.RIGHT)
+	assert_true(player.request_dash())
+	assert_true(player.request_dash())
+	assert_eq(player.current_dash_charges(), 0)
+	assert_false(player.request_dash())
+	assert_eq(player.current_dash_charges(), 0)
+
+	var dead_player = _spawn_player()
+	dead_player.set_movement_intent(Vector2.RIGHT)
+	assert_eq(dead_player.take_damage(dead_player.max_health), dead_player.max_health)
+	assert_false(dead_player.request_dash())
+	assert_eq(dead_player.current_dash_charges(), 2)
+
+
+func test_dash_recharges_one_charge_after_one_point_five_seconds() -> void:
+	var player = _spawn_player()
+	player.set_movement_intent(Vector2.RIGHT)
+	assert_true(player.request_dash())
+
+	player._advance_dash_state(1.49)
+	assert_eq(player.current_dash_charges(), 1)
+	player._advance_dash_state(0.01)
+	assert_eq(player.current_dash_charges(), 2)
+
+
+func test_second_dash_does_not_reset_the_running_recharge_cadence() -> void:
+	var player = _spawn_player()
+	player.set_movement_intent(Vector2.RIGHT)
+	assert_true(player.request_dash())
+
+	player._advance_dash_state(1.49)
+	assert_true(player.request_dash())
+	assert_eq(player.current_dash_charges(), 0)
+
+	player._advance_dash_state(0.01)
+	assert_eq(player.current_dash_charges(), 1, "first charge must return 1.5 seconds after the initial spend")
+	player._advance_dash_state(1.49)
+	assert_eq(player.current_dash_charges(), 1)
+	player._advance_dash_state(0.01)
+	assert_eq(player.current_dash_charges(), 2, "remaining charge must follow the original 1.5-second cadence")
+
+
+func test_active_dash_prevents_damage_only_during_the_dash_window() -> void:
+	var player = _spawn_player()
+	player.set_movement_intent(Vector2.RIGHT)
+	player.damage_resolved.connect(_on_damage_resolved)
+	assert_true(player.request_dash())
+
+	assert_eq(player.take_damage(10), 0)
+	assert_eq(player.health, 100)
+	assert_eq(damage_events, [[10, 0, 10, true]])
+
+	player._advance_dash_state(player.DASH_DURATION_SECONDS)
+	assert_eq(player.take_damage(10), 10)
+	assert_eq(player.health, 90)
+
+
+func test_pointer_target_farther_than_arrival_radius_resolves_normalized_direction() -> void:
+	var player = _spawn_player()
+	player.global_position = Vector2(20.0, 30.0)
+	watch_signals(player)
+	player.set_pointer_target(player.global_position + Vector2(30.0, 40.0))
+
+	assert_true(player.request_dash())
+	assert_signal_emitted_with_parameters(player, "dash_started", [Vector2(0.6, 0.8)])
+
+
+func test_pointer_target_inside_arrival_radius_resolves_zero_direction() -> void:
+	var player = _spawn_player()
+	player.set_movement_intent(Vector2.LEFT)
+	player.set_pointer_target(
+		player.global_position + Vector2.RIGHT * (player.POINTER_ARRIVAL_RADIUS - 0.1)
+	)
+
+	assert_false(player.request_dash())
+	assert_eq(player.current_dash_charges(), 2)
+
+
+func test_clearing_pointer_target_restores_action_movement_intent() -> void:
+	var player = _spawn_player()
+	player.set_movement_intent(Vector2.LEFT)
+	player.set_pointer_target(player.global_position)
+	assert_false(player.request_dash())
+	player.clear_pointer_target()
+	watch_signals(player)
+
+	assert_true(player.request_dash())
+	assert_signal_emitted_with_parameters(player, "dash_started", [Vector2.LEFT])
+
+
+func _spawn_player():
 	var player = PlayerScript.new()
 	add_child_autofree(player)
+	return player
 
-	assert_eq(
-		player.resolve_movement_direction(Vector2.ZERO, true, false, false, false),
-		Vector2.LEFT,
-		"A must add left movement without removing the existing UI-key path"
-	)
-	var diagonal: Vector2 = player.resolve_movement_direction(
-		Vector2.ZERO,
-		false,
-		true,
-		true,
-		false
-	)
-	assert_almost_eq(diagonal.x, 0.707106, 0.001)
-	assert_almost_eq(diagonal.y, -0.707106, 0.001)
-	assert_eq(
-		player.resolve_movement_direction(Vector2.RIGHT, true, false, false, false),
-		Vector2.ZERO,
-		"Opposing arrow/WASD directions should cancel"
-	)
+
+func _release_movement_actions() -> void:
+	for action_name in [&"move_left", &"move_right", &"move_up", &"move_down", &"dash"]:
+		Input.action_release(action_name)
 
 
 func _on_player_died() -> void:

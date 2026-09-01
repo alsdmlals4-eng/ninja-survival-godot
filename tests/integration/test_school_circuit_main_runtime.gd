@@ -9,6 +9,12 @@ const EXPECTED_FIRST_CORE_IDS := {
 	&"guiin": &"surge_fighter",
 	&"heukyeong": &"shuriken_scout",
 }
+const EXPECTED_STARTER_NINJUTSU_IDS := {
+	&"bongma": &"bongma_hundred_demon_familiar",
+	&"cheonsul": &"cheonsul_flame_mark",
+	&"guiin": &"guiin_ghost_blood_wave",
+	&"heukyeong": &"heukyeong_shadow_needle",
+}
 const RETRY_WALLET_PATH := "user://gut_school_circuit_retry_wallet.json"
 
 
@@ -31,11 +37,44 @@ func test_each_school_selection_starts_the_same_circuit_runtime_with_its_own_enc
 			continue
 		assert_eq(main.school_circuit.route_state.active_school_id(), school_id)
 		assert_eq(main.get_node("RunBuildState").selected_school_id, school_id)
-		assert_eq(main.get_node("HUD/StageLabel").text, "SEGMENT 1/4")
+		assert_not_null(main.ninjutsu_auto_controller, "확정 인법서를 위한 자동 시전기가 메인 런에 필요합니다.")
+		if main.ninjutsu_auto_controller != null:
+			assert_eq(main.ninjutsu_auto_controller._loadout, main.ninjutsu_loadout)
+			assert_eq(main.ninjutsu_auto_controller.process_mode, Node.PROCESS_MODE_INHERIT)
+		assert_eq(
+			main.ninjutsu_loadout.active_spell_ids(),
+			[EXPECTED_STARTER_NINJUTSU_IDS[school_id]],
+			"선택한 유파의 시작 인법 한 종만 즉시 활성화해야 합니다."
+		)
+		assert_eq(
+			(main.get_node("HUD/CombatTopBar/Row/StagePhaseLabel") as Label).text,
+			"스테이지 · %s 전장 · 페이즈 1 · Core 압박" % main.school_host.selected_school_name,
+		)
 		var core_enemy = _first_live_normal_enemy(main)
 		assert_not_null(core_enemy)
 		if core_enemy != null:
 			assert_eq(core_enemy.get_meta(&"school_circuit_encounter_id", &""), EXPECTED_FIRST_CORE_IDS[school_id])
+
+
+
+func test_circuit_phase_changes_render_public_phase_without_mutating_route_depth() -> void:
+	var main: Node = _new_main()
+	if main == null:
+		return
+	main._on_school_selected(&"cheonsul")
+	var circuit = main.school_circuit
+	assert_not_null(circuit)
+	if circuit == null:
+		return
+	var route_depth: int = int(circuit.route_state.stage_index())
+
+	main._on_school_circuit_phase_changed(&"boss_active")
+
+	assert_eq(
+		(main.get_node("HUD/CombatTopBar/Row/StagePhaseLabel") as Label).text,
+		"스테이지 · 천술류 전장 · 페이즈 4 · Boss 결전",
+	)
+	assert_eq(circuit.route_state.stage_index(), route_depth, "Public Phase rendering must not write route depth.")
 
 
 func test_workbench_ui_intents_delegate_to_the_shared_circuit_without_ui_ownership() -> void:
@@ -166,7 +205,9 @@ func test_checkpoint_retry_spends_one_soul_once_and_restores_the_next_school_bas
 	var checkpoint_gold := int(main.get_node("RunBuildState").gold)
 	assert_true(main.ninja_soul_wallet.configure(RETRY_WALLET_PATH, 1))
 	main.get_node("RunBuildState").grant_gold(9)
-	main.get_node("Player").take_damage(99999)
+	var player: PlayerController = main.get_node("Player")
+	player.set_rng_seed(178) # First roll is 0.99936014, safely above the 0.95 evasion ceiling.
+	assert_gt(player.take_damage(99999), 0, "The deterministic lethal hit must not be evaded.")
 	assert_true(main.game_over)
 	assert_true(main.get_node("HUD/GameOverPanel/RetryButton").visible)
 	main.get_node("HUD").retry_requested.emit()
@@ -176,7 +217,8 @@ func test_checkpoint_retry_spends_one_soul_once_and_restores_the_next_school_bas
 	assert_eq(circuit.route_state.active_school_id(), &"bongma")
 	assert_eq(circuit.get_snapshot().get("elapsed_seconds"), 0.0)
 	assert_false(main.get_node("HUD/GameOverPanel").visible)
-	main.get_node("Player").take_damage(99999)
+	player.set_rng_seed(178)
+	assert_gt(player.take_damage(99999), 0, "The post-retry lethal hit must not be evaded.")
 	assert_true(main.game_over)
 	assert_false(main.get_node("HUD/GameOverPanel/RetryButton").visible, "A Run must not offer a second paid retry.")
 
@@ -190,23 +232,20 @@ func test_invalid_checkpoint_never_debits_a_soul_or_consumes_the_retry() -> void
 	assert_not_null(circuit)
 	if circuit == null:
 		return
-	assert_true(_clear_active_school_to_workbench(main, circuit))
-	assert_true(circuit.choose_boss_reward(0))
-	assert_true(circuit.open_chest())
-	assert_true(_place_every_buffer_item(circuit))
-	var fate_id: StringName = circuit.workbench_snapshot().get("fate_candidate_ids", [])[0]
-	assert_true(circuit.choose_fate(fate_id))
-	assert_true(circuit.choose_next_route(&"bongma"))
-	main.get_node("RestFlowUI").workbench_commit_requested.emit()
+	# This case isolates retry validation. The fully committed next-school retry
+	# path is covered above; no randomized reward-placement fixture is needed here.
+	main._capture_run_checkpoint()
 	assert_true(main.run_checkpoint.is_valid())
 	assert_true(main.ninja_soul_wallet.configure(RETRY_WALLET_PATH, 1))
 	main.run_checkpoint._snapshot["build"] = {}
-	main.get_node("Player").take_damage(99999)
+	var player: PlayerController = main.get_node("Player")
+	player.set_rng_seed(178) # Keep the invalid-checkpoint path independent of build-provided evasion.
+	assert_gt(player.take_damage(99999), 0, "The deterministic lethal hit must not be evaded.")
 	assert_true(main.game_over)
 	main.get_node("HUD").retry_requested.emit()
 	assert_true(main.game_over)
 	assert_eq(main.ninja_soul_wallet.balance(), 1)
-	assert_true(main.run_checkpoint.can_retry_school(&"bongma"))
+	assert_true(main.run_checkpoint.can_retry_school(&"cheonsul"))
 
 
 func _new_main():
@@ -252,6 +291,7 @@ func _clear_active_school_to_workbench(main: Node, circuit) -> bool:
 
 
 func _place_every_buffer_item(circuit) -> bool:
+	_expand_fixture_board(circuit)
 	while not (circuit.workbench_snapshot().get("buffer", []) as Array).is_empty():
 		var placed := false
 		for rotation in range(4):
@@ -267,6 +307,20 @@ func _place_every_buffer_item(circuit) -> bool:
 		if not placed:
 			return false
 	return true
+
+
+func _expand_fixture_board(circuit) -> void:
+	var state = circuit._backpack_session._state
+	if state.bags.size() != 1:
+		return
+	# Retry transaction coverage must not depend on the randomly offered item
+	# footprints. This test-only, legal tiling activates the retained 6x6 ceiling.
+	for y in [0, 4, 5]:
+		for x in [0, 2, 4]:
+			assert_gt(state.add_bag(&"small_pouch", Vector2i(x, y)), 0)
+	for x in [0, 4, 5]:
+		assert_gt(state.add_bag(&"long_pouch", Vector2i(x, 1), 1), 0)
+	assert_eq(state.get_active_cells().size(), 36)
 
 
 func _place_first_buffer_item(circuit) -> bool:

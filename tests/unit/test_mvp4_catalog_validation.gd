@@ -27,3 +27,11 @@ func test_validate_items_rejects_non_numeric_spatial_payload_value() -> void:
 	items[&"katana"].spatial_rules[0].modifier_payload = {&"school_damage_pct": "invalid"}
 	var errors: Array[String] = catalog.validate_items(items)
 	assert_false(errors.is_empty(), "Spatial modifier payload values must be numeric")
+
+
+func test_validate_bags_requires_a_nine_cell_starting_bag() -> void:
+	var catalog = load(CATALOG_PATH)
+	var bags: Dictionary = catalog.build_bags()
+	bags[catalog.STARTING_BAG_ID].cells.pop_back()
+	var errors: Array[String] = catalog._validate_bags(bags)
+	assert_true(errors.has("Starting bag must contain 9 cells"))

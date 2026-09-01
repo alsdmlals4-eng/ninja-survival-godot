@@ -4,6 +4,7 @@ class_name EncounterCatalog
 const SchoolEncounterDefinitionScript = preload("res://scripts/data/school_encounter_definition.gd")
 const StageEncounterProfileScript = preload("res://scripts/data/stage_encounter_profile.gd")
 const EncounterPatternDefinitionScript = preload("res://scripts/data/encounter_pattern_definition.gd")
+const EncounterActorDefinitionScript = preload("res://scripts/data/encounter_actor_definition.gd")
 
 const SCHOOL_IDS: Array[StringName] = [
 	&"bongma",
@@ -157,6 +158,83 @@ static func validate_catalog() -> Array[String]:
 	errors.append_array(validate_school_encounters(build_school_encounters()))
 	errors.append_array(validate_stage_profiles(build_stage_profiles()))
 	errors.append_array(validate_first_slice_patterns(build_first_slice_patterns()))
+	errors.append_array(validate_actor_definitions(build_actor_definitions()))
+	return errors
+
+
+static func build_actor_definitions() -> Dictionary:
+	var actors: Dictionary = {}
+	_add_actor(actors, &"seal_chaser", &"bongma", &"core", "봉인 추적자", [], 34, 108.0, 8, [])
+	_add_actor(actors, &"shikigami_handler", &"bongma", &"core", "식신 사역자", [], 26, 78.0, 5, [])
+	_add_actor(actors, &"barrier_carrier", &"bongma", &"core", "결계 운반자", [], 42, 68.0, 9, [])
+	_add_actor(actors, &"mobile_array_caster", &"bongma", &"elite", "이동진 술사", [&"elite"], 180, 82.0, 13, [&"telegraphed_zone", &"summon_or_proxy"])
+	_add_actor(actors, &"hundred_demon_array_master", &"bongma", &"boss", "백귀진 주재자", [&"boss"], 520, 70.0, 18, [&"telegraphed_zone", &"summon_or_proxy", &"barrier_or_lane"])
+
+	_add_actor(actors, &"fire_mark_caster", &"cheonsul", &"core", "화인 술사", [], 28, 80.0, 5, [])
+	_add_actor(actors, &"water_vein_caster", &"cheonsul", &"core", "수맥 술사", [], 36, 74.0, 7, [])
+	_add_actor(actors, &"lightning_chain_caster", &"cheonsul", &"core", "뇌쇄 술사", [], 32, 86.0, 7, [])
+	_add_actor(actors, &"five_element_tuner", &"cheonsul", &"elite", "오행 조율자", [&"elite"], 190, 78.0, 13, [&"telegraphed_zone", &"mark_or_link"])
+	_add_actor(actors, &"heavenly_change_taoist", &"cheonsul", &"boss", "천변 도사", [&"boss"], 540, 68.0, 19, [&"fan_or_arc_projectile", &"telegraphed_zone", &"mark_or_link"])
+
+	_add_actor(actors, &"surge_fighter", &"guiin", &"core", "쇄도 권객", [], 38, 116.0, 10, [])
+	_add_actor(actors, &"pressure_monk", &"guiin", &"core", "압박 승병", [], 34, 76.0, 7, [])
+	_add_actor(actors, &"ghost_blood_chaser", &"guiin", &"core", "귀혈 추적자", [], 44, 94.0, 11, [])
+	_add_actor(actors, &"melee_chaos_captain", &"guiin", &"elite", "난전 대장", [&"elite"], 210, 86.0, 15, [&"line_dash", &"pulse_or_ring"])
+	_add_actor(actors, &"ghost_general", &"guiin", &"boss", "귀신장", [&"boss"], 560, 74.0, 21, [&"line_dash", &"pulse_or_ring", &"chase_contact"])
+
+	_add_actor(actors, &"shuriken_scout", &"heukyeong", &"core", "표창 척후", [], 30, 102.0, 6, [])
+	_add_actor(actors, &"poison_shadow_assassin", &"heukyeong", &"core", "독영 살수", [], 34, 96.0, 8, [])
+	_add_actor(actors, &"dark_mark_pursuer", &"heukyeong", &"core", "암표 추격자", [], 38, 90.0, 9, [])
+	_add_actor(actors, &"shadow_chief", &"heukyeong", &"elite", "그림자 두령", [&"elite"], 200, 88.0, 14, [&"mark_or_link", &"summon_or_proxy"])
+	_add_actor(actors, &"night_executioner", &"heukyeong", &"boss", "야행 처형자", [&"boss"], 550, 76.0, 20, [&"mark_or_link", &"summon_or_proxy", &"line_dash"])
+	return actors
+
+
+static func actor_definition_for(actor_id: StringName):
+	var definition = build_actor_definitions().get(actor_id)
+	return definition.copy_value() if definition != null else null
+
+
+static func validate_actor_definitions(actors: Dictionary) -> Array[String]:
+	var errors: Array[String] = []
+	if actors.size() != 20:
+		errors.append("Expected exactly twenty encounter actor definitions")
+	var roles: Dictionary = {&"core": 0, &"elite": 0, &"boss": 0}
+	for raw_id in actors.keys():
+		var actor = actors.get(raw_id)
+		if actor == null:
+			errors.append("Null encounter actor: %s" % raw_id)
+			continue
+		if actor.actor_id == &"" or actor.actor_id != StringName(raw_id):
+			errors.append("Encounter actor key/id mismatch: %s" % raw_id)
+		if not SCHOOL_IDS.has(actor.school_id):
+			errors.append("Unknown encounter actor school: %s" % actor.actor_id)
+		if not roles.has(actor.role):
+			errors.append("Unknown encounter actor role: %s" % actor.actor_id)
+			continue
+		roles[actor.role] = int(roles[actor.role]) + 1
+		if actor.display_name.is_empty() or actor.visual_asset_path.is_empty():
+			errors.append("Encounter actor presentation missing: %s" % actor.actor_id)
+		if actor.role == &"core":
+			if not actor.pattern_definitions.is_empty():
+				errors.append("Core actors must not own special attack patterns: %s" % actor.actor_id)
+			if actor.tags.has(&"ranged"):
+				errors.append("Core actors must not advertise ranged attacks: %s" % actor.actor_id)
+		else:
+			var minimum_pattern_count := 2 if actor.role == &"elite" else 3
+			if actor.pattern_definitions.size() < minimum_pattern_count:
+				errors.append("Encounter actor pattern count too low: %s" % actor.actor_id)
+		for pattern in actor.pattern_definitions:
+			if not SUPPORTED_PRIMITIVE_IDS.has(StringName(pattern.get("primitive_id", &""))):
+				errors.append("Unknown actor primitive: %s" % actor.actor_id)
+			if float(pattern.get("telegraph_duration", 0.0)) <= 0.0:
+				errors.append("Encounter actor telegraph missing: %s" % actor.actor_id)
+			if float(pattern.get("recovery_duration", 0.0)) <= 0.0:
+				errors.append("Encounter actor recovery missing: %s" % actor.actor_id)
+	for role in roles.keys():
+		var expected := 12 if role == &"core" else 4
+		if int(roles[role]) != expected:
+			errors.append("Encounter actor role cardinality mismatch: %s" % role)
 	return errors
 
 
@@ -307,6 +385,47 @@ static func _add_school(
 	definition.stage4_boss_capstone_id = capstone_id
 	definition.stage4_boss_capstone_display_name = capstone_name
 	schools[school_id] = definition
+
+
+static func _add_actor(
+	actors: Dictionary,
+	actor_id: StringName,
+	school_id: StringName,
+	role: StringName,
+	display_name: String,
+	tags: Array[StringName],
+	max_health: int,
+	move_speed: float,
+	contact_damage: int,
+	primitive_ids: Array[StringName]
+) -> void:
+	var definition = EncounterActorDefinitionScript.new()
+	definition.actor_id = actor_id
+	definition.school_id = school_id
+	definition.role = role
+	definition.display_name = display_name
+	definition.tags = tags.duplicate()
+	definition.max_health = max_health
+	definition.move_speed = move_speed
+	definition.contact_damage = contact_damage
+	definition.contact_range = 30.0 if role == &"core" else 38.0 if role == &"elite" else 44.0
+	definition.visual_asset_path = "res://assets/runtime/encounters/actors/%s.png" % actor_id
+	for primitive_id in primitive_ids:
+		definition.pattern_definitions.append(_actor_pattern(primitive_id, school_id, role))
+	actors[actor_id] = definition
+
+
+static func _actor_pattern(primitive_id: StringName, school_id: StringName, role: StringName) -> Dictionary:
+	var telegraph_duration := 0.45 if role == &"core" else 0.70 if role == &"elite" else 0.85
+	var execute_duration := 0.15 if role == &"core" else 0.22 if role == &"elite" else 0.28
+	var recovery_duration := 0.40 if role == &"core" else 0.55 if role == &"elite" else 0.65
+	return {
+		"primitive_id": primitive_id,
+		"school_id": school_id,
+		"telegraph_duration": telegraph_duration,
+		"execute_duration": execute_duration,
+		"recovery_duration": recovery_duration,
+	}
 
 
 static func _add_stage_profile(

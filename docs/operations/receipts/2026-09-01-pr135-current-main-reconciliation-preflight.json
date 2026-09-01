@@ -1,0 +1,78 @@
+{
+  "work_level": "L3",
+  "benchmark_preflight_receipt": {
+    "state": "PASS",
+    "entries": [
+      {
+        "source_and_evidence": "origin/main at 7b94efa90ec8c577edf0317163c4cf6b30a32531; actual Main, HUD, Player, WaveSpawner, tests, and the merged NS-BLUEPRINT-001 consumer map were read in the isolated worktree.",
+        "observed_pattern": "Current main owns the continuous floor/props, direct player movement, legacy automatic attack controller, WaveSpawner, CanvasLayer HUD, and protected Workbench/route domains.",
+        "project_fit_and_difference": "ADAPT only the approved automatic-combat, top-HUD, title, and encounter delta while preserving current-main Blueprint and transactional owners.",
+        "disposition": "ADAPT"
+      },
+      {
+        "source_and_evidence": "NS-BLUEPRINT-001 at origin/main documents the user-approved twelve-game survivor benchmark table and the exact 3x3, automatic katana/shuriken/one-ninjutsu, top-only HUD, early-hazard restraint, and uncapped-horde requirements.",
+        "observed_pattern": "Survivor combat concentrates attention on movement, crowd positioning, visible automatic effects, readable telegraphs, and out-of-combat build decisions rather than attack buttons or opening projectile spam.",
+        "project_fit_and_difference": "REUSE the approved project-level benchmark conclusion; Ninja Survival keeps its four-school, Trace, Workbench, Fate, and fixed-ninja identity instead of copying any benchmark surface or tuning.",
+        "disposition": "ADOPT"
+      },
+      {
+        "source_and_evidence": "Godot official UI, Container, Control, CanvasLayer, and 4.7.2 maintenance-release documentation checked on 2026-09-01; project CI remains pinned to Godot 4.7.1 and the local 4.7.1 import/main smoke passed.",
+        "observed_pattern": "CanvasLayer keeps HUD screen-space; Control anchors and Container nodes provide responsive UI composition without a new UI framework.",
+        "project_fit_and_difference": "REUSE existing Godot built-ins for title and HUD composition; do not introduce a third-party UI addon or silently upgrade the CI engine pin.",
+        "disposition": "ADOPT"
+      },
+      {
+        "source_and_evidence": "bitwes/Gut official repository and releases were checked on 2026-09-01; the project CI pins GUT 9.7.1 for Godot 4.7.x and the current test suite already uses GUT.",
+        "observed_pattern": "Focused GDScript tests can isolate public scene/resource contracts and runtime/domain behavior before full regression.",
+        "project_fit_and_difference": "REUSE the existing CI/GUT test authority; no second test framework or vendored production dependency is added.",
+        "disposition": "ADOPT"
+      },
+      {
+        "source_and_evidence": "Open PR #135 exact head d65a712d441d3ca854ee8ae2edff468bb4974983, its 43 commits, exact changed-path inventory, status checks, and current-main merge conflict were read before mutation. The user explicitly approved PR #135 package handoff, reconciliation, validation, and protected integration in this task.",
+        "observed_pattern": "Direct merge is DIRTY and rebasing the owner branch would require prohibited force-push; the material delta contains the approved target runtime behavior but is not current canonical state.",
+        "project_fit_and_difference": "ADAPT only the necessary PR #135 material into a new current-main branch, preserve the owner branch unchanged, retain newer Blueprint/contract documents, and test the reconciled result at a new exact head.",
+        "disposition": "ADAPT"
+      }
+    ]
+  },
+  "context_configuration_hygiene": {
+    "scope": "PR #135 user-authorized automatic-combat, horde, dash, encounter, title, awakening, Codex, HUD, asset-consumer, and verification reconciliation only; unrelated worktrees, PRs, and project systems are excluded.",
+    "inventory": [
+      {
+        "path": "docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "Merged current-main NS-BLUEPRINT-001",
+        "references_and_consumers": "Documentation Map routes it as the screen/flow consumer owner; its protected HUD, title, player, horde, and backpack constraints were read.",
+        "removal_proposed": false
+      },
+      {
+        "path": "docs/operations/NINJA_SURVIVAL_PROJECT_WORK_CONTRACT.md",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "Merged project-native Base adaptation contract",
+        "references_and_consumers": "Documentation Map routes all L1+ work through it; it requires isolated current-main work and separates evidence levels.",
+        "removal_proposed": false
+      },
+      {
+        "path": "PR #135 / d65a712d441d3ca854ee8ae2edff468bb4974983",
+        "classification": "COMPATIBILITY",
+        "owner_or_provenance": "User-authorized read-only source branch for the same approved product package",
+        "references_and_consumers": "GitHub PR metadata, changed paths, exact head checks, and merge conflict were read; the source branch itself remains unmodified.",
+        "removal_proposed": false
+      },
+      {
+        "path": "assets/runtime/visual-core and docs/assets/approved",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "Current repository approved asset and provenance surfaces",
+        "references_and_consumers": "Main scene consumes continuous floor/props and approved runtime character art; manifest/consumer readback is required before any PR asset is adopted.",
+        "removal_proposed": false
+      },
+      {
+        "path": ".godot and first-import .import/.uid outputs in this isolated worktree",
+        "classification": "OBSOLETE_CANDIDATE",
+        "owner_or_provenance": "Task-owned local Godot import cache only",
+        "references_and_consumers": "Generated by the recorded baseline import; preview confirmed only import/cache outputs and untracked files were removed before implementation. The remaining ignored cache is never a repository source of truth.",
+        "removal_proposed": false
+      }
+    ]
+  }
+}

@@ -31,6 +31,7 @@ var _combination_resolver: CombinationResolver
 var _reward_controller: RestRewardController
 var _commit_coordinator: RestCommitCoordinator
 var _access_state: TraditionAccessState
+var _ninjutsu_loadout: Node
 var _item_defs: Dictionary = {}
 var _bag_defs: Dictionary = {}
 var _rng: RandomNumberGenerator
@@ -75,6 +76,17 @@ func configure_workbench(
 	return true
 
 
+func configure_ninjutsu_loadout(ninjutsu_loadout: Node) -> bool:
+	if _school_started or _workbench_started or _ninjutsu_loadout != null or ninjutsu_loadout == null:
+		return false
+	if not ninjutsu_loadout.has_method("can_stage_scroll") \
+		or not ninjutsu_loadout.has_method("stage_scroll") \
+		or not ninjutsu_loadout.has_method("get_snapshot"):
+		return false
+	_ninjutsu_loadout = ninjutsu_loadout
+	return true
+
+
 func begin_school(school_id: StringName) -> bool:
 	_connect_encounter_signals()
 	if _school_started or not _load_encounter_identity(school_id):
@@ -111,7 +123,13 @@ func record_normal_enemy_defeated() -> int:
 
 
 func mark_elite_defeated() -> bool:
-	if not _school_started or not encounter_state.mark_elite_cleared():
+	if not _school_started:
+		return false
+	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("can_stage_scroll", _active_school_id, &"elite_scroll")):
+		return false
+	if not encounter_state.mark_elite_cleared():
+		return false
+	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("stage_scroll", _active_school_id, &"elite_scroll")):
 		return false
 	if _build_state != null:
 		_build_state.grant_elite_clear_gold()
@@ -162,6 +180,8 @@ func workbench_snapshot() -> Dictionary:
 		"combination_options": _combination_options(),
 		"combination_pending": combination_pending,
 		"pending_combination": _pending_combination_snapshot(),
+		"ninjutsu_active_spell_ids": _ninjutsu_active_spell_ids(),
+		"ninjutsu_pending_spell_ids": _ninjutsu_pending_spell_ids(),
 		"readiness_failures": _commit_coordinator.commit_failures(
 			_reward_controller.chest_count(),
 			_reward_controller.has_pending_boss_reward(),
@@ -173,7 +193,13 @@ func workbench_snapshot() -> Dictionary:
 func choose_boss_reward(index: int) -> bool:
 	if not _workbench_started or _reward_controller == null:
 		return false
-	return _reward_controller.choose_boss_reward(index)
+	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("can_stage_scroll", _active_school_id, &"boss_scroll")):
+		return false
+	if not _reward_controller.choose_boss_reward(index):
+		return false
+	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("stage_scroll", _active_school_id, &"boss_scroll")):
+		return false
+	return true
 
 
 func place_buffer_item(buffer_index: int, origin: Vector2i, rotation_quarters: int = 0) -> bool:
@@ -304,6 +330,35 @@ func restore_after_retry(checkpoint_snapshot: Dictionary) -> bool:
 	return true
 
 
+# 이어하기는 직전 Workbench가 확정한 route·가방만으로 새 Core 압박을 다시 연다.
+# 전투 중 Enemy, 투사체, 장판과 임시 Workbench 편집은 이 경계에 포함하지 않는다.
+func can_restore_from_persistent_checkpoint(route_snapshot: Dictionary, checkpoint_snapshot: Dictionary) -> bool:
+	if _school_started or _workbench_started or not _workbench_configured:
+		return false
+	var candidate_route := RunRouteState.new()
+	if not candidate_route.restore_from_checkpoint(route_snapshot):
+		return false
+	var cleared_school_ids := candidate_route.cleared_school_ids()
+	if cleared_school_ids.is_empty() or candidate_route.active_school_id() == &"":
+		return false
+	var checkpoint_school_id := StringName(checkpoint_snapshot.get("active_school_id", &""))
+	var checkpoint_backpack_state = checkpoint_snapshot.get("committed_backpack_state", null)
+	if checkpoint_school_id != candidate_route.active_school_id() or checkpoint_backpack_state == null or not checkpoint_backpack_state.has_method("copy_value"):
+		return false
+	return _access_state_for_cleared_schools(cleared_school_ids) != null
+
+
+func restore_from_persistent_checkpoint(route_snapshot: Dictionary, checkpoint_snapshot: Dictionary) -> bool:
+	if not can_restore_from_persistent_checkpoint(route_snapshot, checkpoint_snapshot):
+		return false
+	var restored_access = _access_state_for_cleared_schools(Array(route_snapshot.get("cleared_school_ids", [])))
+	if restored_access == null or not route_state.restore_from_checkpoint(route_snapshot):
+		return false
+	_committed_backpack_state = checkpoint_snapshot.get("committed_backpack_state").copy_value()
+	_access_state = restored_access
+	return begin_school(route_state.active_school_id())
+
+
 func next_core_encounter() -> Dictionary:
 	var core_ids: Array = _encounter.get("core_monster_ids", [])
 	var core_names: Array = _encounter.get("core_monster_display_names", [])
@@ -342,6 +397,19 @@ func _reset_school_progress(school_id: StringName) -> void:
 	_school_started = true
 
 
+func _access_state_for_cleared_schools(cleared_school_ids: Array) -> TraditionAccessState:
+	if cleared_school_ids.is_empty():
+		return null
+	var restored_access := TRADITION_ACCESS_STATE_SCRIPT.new()
+	var starting_school_id := StringName(cleared_school_ids[0])
+	if not restored_access.initialize(starting_school_id):
+		return null
+	for index in range(1, cleared_school_ids.size()):
+		if not restored_access.stabilize_school(StringName(cleared_school_ids[index])):
+			return null
+	return restored_access
+
+
 func _begin_workbench_for_cleared_school() -> bool:
 	if _backpack_session == null or _reward_controller == null or _fate_controller == null or _access_state == null:
 		return false
@@ -361,7 +429,13 @@ func _begin_workbench_for_cleared_school() -> bool:
 		_access_state
 	)
 	_commit_coordinator = REST_COMMIT_COORDINATOR_SCRIPT.new()
-	if not _commit_coordinator.configure(_committed_backpack_state, _build_state, route_state, _fate_controller):
+	if not _commit_coordinator.configure(
+		_committed_backpack_state,
+		_build_state,
+		route_state,
+		_fate_controller,
+		_ninjutsu_loadout
+	):
 		return false
 	_reward_controller.begin_rest(
 		route_state.stage_index(),
@@ -374,6 +448,18 @@ func _begin_workbench_for_cleared_school() -> bool:
 		return false
 	_workbench_started = true
 	return true
+
+
+func _ninjutsu_active_spell_ids() -> Array:
+	if _ninjutsu_loadout == null:
+		return []
+	return Array(_ninjutsu_loadout.call("get_snapshot").get("active_spell_ids", [])).duplicate()
+
+
+func _ninjutsu_pending_spell_ids() -> Array:
+	if _ninjutsu_loadout == null:
+		return []
+	return Array(_ninjutsu_loadout.call("get_snapshot").get("pending_spell_ids", [])).duplicate()
 
 
 func _boss_reward_labels() -> Array[String]:

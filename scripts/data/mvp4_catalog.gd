@@ -146,7 +146,7 @@ static func build_items() -> Dictionary:
 
 static func build_bags() -> Dictionary:
 	var bags := {}
-	_add_bag(bags, STARTING_BAG_ID, "기본 가방", 0, _rectangle_cells(Vector2i(4, 3)))
+	_add_bag(bags, STARTING_BAG_ID, "기본 가방", 0, _rectangle_cells(Vector2i(3, 3)))
 	_add_bag(bags, &"small_pouch", "소형 주머니", 20, [Vector2i(0, 0), Vector2i(1, 0)])
 	_add_bag(bags, &"long_pouch", "긴 주머니", 30, [Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0)])
 	_add_bag(bags, &"square_pouch", "사각 주머니", 40, [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)])
@@ -257,8 +257,8 @@ static func _validate_bags(bags: Dictionary) -> Array[String]:
 		errors.append("Missing starting bag")
 	else:
 		var starting = bags[STARTING_BAG_ID]
-		if starting.cells.size() != 12:
-			errors.append("Starting bag must contain 12 cells")
+		if starting.cells.size() != 9:
+			errors.append("Starting bag must contain 9 cells")
 	for bag_id in PURCHASABLE_BAG_IDS:
 		if not bags.has(bag_id):
 			errors.append("Missing purchasable bag: %s" % bag_id)

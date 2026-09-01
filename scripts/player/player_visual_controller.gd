@@ -1,17 +1,14 @@
-# 플레이어 전투 포즈 스프라이트를 짧게 전환한다.
+# 플레이어 본체는 이동과 피격만 보이며, 자동 공격은 별도 무기 이펙트가 표현한다.
 extends Sprite2D
 class_name PlayerVisualController
 
 enum Pose {
 	MOVE,
-	ATTACK,
 	HIT,
 }
 
 @export var move_texture: Texture2D
-@export var attack_texture: Texture2D
 @export var hit_texture: Texture2D
-@export var attack_hold_seconds: float = 0.18
 @export var hit_hold_seconds: float = 0.16
 
 var _pose: Pose = Pose.MOVE
@@ -27,14 +24,6 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	advance_pose(delta)
-
-
-func show_attack() -> void:
-	if _pose == Pose.HIT:
-		return
-	_pose = Pose.ATTACK
-	_remaining_seconds = maxf(attack_hold_seconds, 0.0)
-	texture = attack_texture
 
 
 func show_hit() -> void:
