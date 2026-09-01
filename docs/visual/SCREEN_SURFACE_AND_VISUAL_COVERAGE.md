@@ -83,6 +83,18 @@ actual Godot consumer. Their screen-composition/readability confirmation is
 treated as passed. Therefore current P0 image-production blockers are `0`; the
 explicit deferred validation gate is retained in section 7.
 
+### 2026-09-01 Blueprint continuation link — `NS-BLUEPRINT-001`
+
+`docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` is the current editable
+player-flow/wireframe/HUD-priority link surface. It does not replace this
+screen-coverage owner, product canon, asset manifests, or runtime evidence.
+The Blueprint reuses the user-locked `SCRREF-BATTLE-AUTOCOMBAT-03` planning
+reference for continuous-floor/top-HUD composition and generated **no** new
+image binary. Its Title surface remains planned while PR #135 is an open
+read-only reference, not current-main runtime evidence. Runtime render,
+Human usability, Player Experience, and device/export evidence remain
+`NOT_RUN`.
+
 ## 2. Target Screen Inventory
 
 `consumer_kind` distinguishes an actual game surface from a future planned

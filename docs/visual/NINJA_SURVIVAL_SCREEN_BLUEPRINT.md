@@ -393,3 +393,74 @@ normal combat HUD
 | `BP-TRACE-GATE-01` | battle path unchanged | battle path unchanged | Elite/Trace/Boss state change | lifecycle machine / live read `NOT_RUN` |
 | `BP-RESULT-01` | primary action then safe back | Control card/action | source-to-Workbench handoff | machine surface / Human `NOT_RUN` |
 | `BP-WORKBENCH-01` | item → board → REST → route → Fate → commit | drag/tap/rotate path required | legal/illegal/preview/pending/commit states | domain machine / input UX `NOT_RUN` |
+
+## 10. 화면 → Godot 소비처·시각 입력 매트릭스
+
+이 표는 새 이미지를 요청하는 목록이 아니다. 현재 화면이 무엇을 실제로
+소비하는지, 무엇은 text/Control로 충분한지, 무엇은 별도 consumer가 생긴
+뒤에만 검토할지 구분한다. asset approval/SHA/provenance의 정본은 기존
+manifest이며, 여기서는 그 역할을 복제하지 않는다.
+
+| Blueprint screen | Godot consumer | surface mode | existing visual/text input | missing state / boundary | evidence ceiling |
+| --- | --- | --- | --- | --- | --- |
+| `BP-TITLE-01` | planned `TitleScreen`; PR #135 reference only | `PLANNED_CONSUMER`, `GODOT_UI`, `TEXT_LAYER`, existing title raster lineage | user-approved wordmark, four-piece medal, moonlit key-art backdrop in read-only title package | current `main` title consumer 없음; 새 key art/medal 생성 금지 | contract only; runtime/input `NOT_RUN` |
+| `BP-SCHOOL-SELECT-01` | `Main/SchoolSelectionUI` | `GODOT_UI`, `TEXT_LAYER`, `PLANNING_REFERENCE` | existing school-select v2 screen reference; four equal symbols/help dialog | final focus scale and touch/gamepad cue are unverified | machine/UI surface; visual `NOT_RUN` |
+| `BP-BATTLE-HUD-01` | `Main`, `Main/HUD`, player/enemy/projectile/field actors | `GODOT_UI`, `TEXT_LAYER`, `EXISTING_APPROVED_RASTER`, `PLANNING_REFERENCE`, `RUNTIME_VFX` | `SCRREF-BATTLE-AUTOCOMBAT-03`; runtime floor/prop/contact-shadow/player/enemy core lineage | live layering, horde density, Dash feel, target-size readability | source/consumer only; runtime/visual/Human `NOT_RUN` |
+| `BP-TRACE-GATE-01` | encounter lifecycle + HUD feedback | `GODOT_UI`, `TEXT_LAYER`, `RUNTIME_VFX` | existing event/lifecycle and feedback owners | Elite/Boss telegraph animation and actual pattern readability need future proof | machine lifecycle only; live/Human `NOT_RUN` |
+| `BP-RESULT-01` | `RestFlowUI/ResultView` | `GODOT_UI`, `TEXT_LAYER`, `PLANNING_REFERENCE` | result v2 screen reference; dynamic result control tree | reward selection/placement is not made true by an image | machine surface; UX `NOT_RUN` |
+| `BP-WORKBENCH-01` | `RestFlowUI/WorkbenchView`, `BackpackState`, resolver/session, Route/Fate | `GODOT_UI`, `TEXT_LAYER`, `PLANNING_REFERENCE` | Workbench v2 screen reference; board/cards/controls come from snapshots | exact 3×3 UI migration, pointer/touch/gamepad usability, full placement loop | domain/machine scope; runtime/Human `NOT_RUN` |
+
+### 시각 입력 ledger
+
+| Input family | Reuse / production decision | Consumer boundary | Why it is or is not new image work |
+| --- | --- | --- | --- |
+| continuous floor, sparse props, contact shadows | `REUSE_LOCKED_REFERENCE` + existing runtime source lineage | `SCRREF-BATTLE-AUTOCOMBAT-03`; `Main/BattlefieldBackdrop/FloorTile`, `Main/BattlefieldProps`, actor ground shadows | the locked reference already owns the desired open-floor/grounded-unit composition. This package makes no duplicate background/HUD image. |
+| fixed ninja, corrupted ninja/yokai Core, Elite, Boss | `EXISTING_APPROVED_RASTER` | player/enemy/Boss Sprite2D consumers and approved visual-core manifest | visual state gaps must be proven against an actual state consumer; no generic new enemy sheet is requested here. |
+| Japanese sword, shuriken, starting ninjutsu read | `RUNTIME_VFX` + current actor behavior | battle actors and effect owners | distance/effect readability is a runtime composition question, not a button icon request. |
+| wordmark, four-piece medal, key-art backdrop | `EXISTING_APPROVED_TITLE_LINEAGE` | planned release title surface; PR #135 is read-only | title imagery exists in a separate candidate package; no replacement art or automatic merge is authorized. |
+| menu buttons, settings, modal copy, Codex tabs, result cards, Workbench controls | `GODOT_UI` + `TEXT_LAYER` | title/selection/HUD/Rest Flow Controls | values, disabled reasons, Korean localization, focus, and input state must remain dynamic. |
+| Elite/Boss warnings and pattern shapes | `RUNTIME_VFX` + `GODOT_UI` | active encounter/HUD only | only active threat needs a spatial telegraph; a static whole-screen PNG would be inaccurate. |
+| `SCRREF-BATTLE-HORDE-HUD-01` | `DO_NOT_CREATE_DUPLICATE` | none | its proposed role is already covered by user-locked `SCRREF-BATTLE-AUTOCOMBAT-03`. |
+
+### 미래 이미지 후보의 최소 Gate
+
+| Condition | Required action | Cannot be claimed yet |
+| --- | --- | --- |
+| live review finds an actual screen/state without a suitable existing source | declare exact Godot consumer and a one-paragraph brief | that a gap automatically justifies an asset |
+| brief is reviewed as necessary | create exactly one image-model `GENERATED_CANDIDATE` | approval, provenance, runtime import, or visual PASS |
+| user `LOCK` | copy source, record SHA-256/provenance/consumer, then perform applicable import evidence | Human play/device/release acceptance |
+
+## 11. 벤치마크 판정 — 12개 패턴의 역공학
+
+조사는 표면 모방이 아니라 장기적으로 유지 가능한 판단 구조를 찾기 위한
+것이다. 각 작품의 캐릭터, 이름, 아이템, map, 조형, 수치, UI trade dress를
+복사하지 않는다. 아래 `source` 링크는 패턴을 확인한 1차/직접 판매·개발자
+자료이며, 이 Blueprint의 게임 규칙 정본은 아니다.
+
+| Benchmark | Observed pattern | Decision | Ninja Survival disposition |
+| --- | --- | --- | --- |
+| [Vampire Survivors](https://store.steampowered.com/app/1794680/Vampire_Survivors/) | escalating horde and survival-time tension | `ADAPT` | 군중 압력과 failure→다음 판단의 의미만 채택; 무기/레벨업 surface는 복사하지 않는다. |
+| [Brotato](https://store.steampowered.com/app/1942280/Brotato) | short decision cadence and readable trade-off | `ADAPT` | 선택의 읽기 쉬움을 Workbench 배치/조합/Fate에 적용; wave shop 구조는 채택하지 않는다. |
+| [Halls of Torment](https://store.steampowered.com/app/2218750/Halls_of_Torment/) | horde 안의 Elite/Boss와 전조형 threat | `ADAPT` | Core와 Elite/Boss 전조를 시각적으로 분리; Diablo-like loot surface는 채택하지 않는다. |
+| [Death Must Die](https://store.steampowered.com/app/2334730/Death_Must_Die/) | build synergy plus items in dark-fantasy survivor loop | `ADAPT` | 인법서·장비·가방 조합의 설명 가능성만 채택; item rarity/hero roster는 복사하지 않는다. |
+| [Soulstone Survivors](https://soulstonesurvivors.com/) | large skill/build volume and boss capstones | `REFERENCE_ONLY` | Boss capstone과 synergy readability만 참고; content-volume race와 3D spectacle 목표는 거절한다. |
+| [20 Minutes Till Dawn](https://store.steampowered.com/app/1966900/20_Minutes_Till_Dawn/) | short runs and weapon/build differentiation | `REFERENCE_ONLY` | 짧은 run의 명료한 시작 pattern만 참고; manual shooter loop는 자동전투 닌자와 다르다. |
+| [Nordic Ashes](https://store.steampowered.com/app/2068280/Nordic_Ashes_Survivors_of_Ragnarok/) | horde survival plus relic customization | `REFERENCE_ONLY` | build customization의 정보 구조만 참고; Norse theme/relic surface는 채택하지 않는다. |
+| [Rogue: Genesia](https://puls.games/rogue-genesia) | auto-attacking horde survival with route map/shop/rest/boss choices | `ADAPT` | provisional route와 risk/reward의 흐름만 적용; Fate/Workbench atomic ownership을 유지한다. |
+| [Army of Ruin](https://store.steampowered.com/app/1918040/Army_of_Ruin/) | automatic attacks leave movement and build choice as attention focus | `ADAPT` | 공격 버튼 대신 battlefield effect 가독성을 채택; weapon surface와 HUD는 복사하지 않는다. |
+| [Yet Another Zombie Survivors](https://store.steampowered.com/app/2163330/Yet_Another_Zombie_Survivors/) | automatic aim/fire while a large horde pursues | `REFERENCE_ONLY` | automatic accessibility와 crowd presence만 참고; squad structure와 zombie setting은 거절한다. |
+| [Deep Rock Galactic: Survivor](https://store.steampowered.com/app/2321470/Deep_Rock_Galactic_Survivor/) | auto-shooter missions, upgrade cards, environment objectives | `REFERENCE_ONLY` | mission/objective clarity만 참고; mining/terrain destruction은 현재 scope 밖이다. |
+| [Magic Survival](https://play.google.com/store/apps/details?id=com.vkslrzm.Zombie) | one-hand auto-survival and early-wave projectile restraint | `ADAPT` | early Core는 crowd/contact learning을 우선하고, 복합 원거리/장판은 Elite/Boss introduction 뒤에 둔다. |
+
+### 블루프린트에 반영한 공통 결론
+
+1. 자동 공격의 재미는 공격 버튼 수가 아니라 **이동·위치·Dash·build**에
+   집중된 판단에서 나온다.
+2. 군중은 화면의 중심 압력이고, Boss 전조는 그 압력 위에 덧씌워지는
+   별도 읽기 층이다.
+3. 고급 UI는 전투 중 지속 노출하지 않고, Result/Workbench에서 의도적으로
+   넓어진다.
+4. 장기 성장은 item 목록 수가 아니라 가방 공간·인접·조합·경로 확정이
+   실제 전투 결과에 연결될 때 의미가 생긴다.
+5. 초반에 일반 적의 투사체와 장판을 동시에 쌓으면 Dash의 학습 대상이
+   흐려지므로, 한 번에 하나의 주요 위험만 강화한다.
