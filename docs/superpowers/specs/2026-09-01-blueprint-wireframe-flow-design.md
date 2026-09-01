@@ -12,6 +12,10 @@ authority:
   implementation: scenes/** + scripts/** + data/** + tests/**
   execution: docs/operations/NINJA_SURVIVAL_PROJECT_WORK_CONTRACT.md
 scope_state: USER_APPROVED_BLUEPRINT_AWAITING_SPEC_REVIEW
+minor_technical_drift_2026_09_01:
+  finding: SCRREF-BATTLE-AUTOCOMBAT-03 is already user-locked for the exact continuous-floor and top-HUD planning role.
+  correction: reuse the locked reference; do not generate a duplicate Battle HUD candidate.
+  rollback: additive documentation-only correction; no asset or runtime consumer changes.
 ```
 
 ## 1. Outcome and boundary
@@ -48,7 +52,7 @@ any current document/implementation mismatch without silently changing it.
 | HUD | No bottom skill bar. Normal HUD is top-only: life, Dash charges, elapsed time, pause/settings. Elite/Trace/Boss information appears only when relevant. |
 | Visual split | Key art/title uses moonlit painterly ninja/ink language. Runtime uses small top-down SD units, continuous floor, sparse modular props, grounded contact shadows, and high-signal effects. |
 | Player identity | One black/deep-navy ninja stays visually fixed; four schools appear as acquired trace/effect layers rather than replacement protagonists. |
-| Backpack | Player-facing beginning is approximately 3x3 usable space, growing toward a 6x6 board. Existing 4x3 document/implementation references are a discrepancy to trace, not a silent code change in this package. |
+| Backpack | Player-facing beginning is exactly 3x3 usable space, growing toward a 6x6 technical outer board, as owned by DEC-037. Existing 4x3 runtime baseline references are a separately deferred migration boundary, not a silent code change in this package. |
 | Title and menu | Wordmark + separately placed four-piece medal; 새 게임, 이어하기, 각성, 도감, 조작 방법, 설정, 종료. `각성` is player copy; legacy technical wallet identifiers remain compatibility-only. |
 | Codex | Read-only explanations for 적, 인법서, 장비, 가방, 조합; not a Run journal or new progression system. |
 
@@ -165,26 +169,21 @@ Workbench
   replacements.
 - Dynamic button, tab, card, counter, and localization text stay Godot UI.
 
-### New candidate request: `SCRREF-BATTLE-HORDE-HUD-01`
+### Reused planning reference and future candidate boundary
 
-Only after approval of the implementation plan, generate exactly one
-16:9 screen-composition candidate for the existing `Main/HUD` consumer:
+`SCRREF-BATTLE-AUTOCOMBAT-03` already has the exact needed human consumer and
+user `LOCK` state for continuous floor, sparse independent props, grounded
+units, and top-only automatic-combat HUD. The Blueprint must link to that
+existing reference and must **not** generate a duplicate `SCRREF-BATTLE-HORDE-HUD-01`.
 
-- moonlit continuous dark floor with sparse modular lantern/tree/stone props;
-- one small SD black/deep-navy ninja visibly grounded by contact shadow;
-- a dense pursuing group of corrupted ninja/yokai, positioned on the floor;
-- automatic sword, shuriken, and one ninjutsu read as separate effects without
-  an animation-button row;
-- upper-only life/Dash/time/settings hierarchy;
-- no lower skill bar, no generic stage text panel, and no early talisman/field
-  spam;
-- no baked values or mandatory Korean labels whose runtime form must remain
-  editable.
-
-The candidate is `GENERATED_CANDIDATE` only. The next action is mandatory:
+The first new image is permitted only if an actual post-Blueprint runtime or
+screen review identifies a missing visual consumer that existing locked or
+approved sources cannot satisfy. The owner then records the consumer and a
+text brief before exactly one candidate is generated:
 
 ```text
-show candidate → user LOCK / REVISE / REJECT
+actual visual-consumer gap → text brief → one GENERATED_CANDIDATE
+→ user LOCK / REVISE / REJECT
 ```
 
 Only `LOCK` permits a repository copy, SHA-256/provenance record, planning
@@ -217,10 +216,10 @@ second wave system, paid service, or external owner.
 3. All six wireframes declare purpose, player question, primary action,
    information hierarchy, input path, and actual/planned Godot consumer.
 4. HUD rules visibly protect the no-bottom-skill and event-only danger rules.
-5. Existing assets versus Godot UI versus runtime VFX versus candidate image
-   are unambiguous.
-6. The 3x3-to-6x6 user direction is recorded as a follow-up discrepancy
-   rather than misrepresented as current implementation.
+5. Existing assets versus Godot UI versus runtime VFX are unambiguous, and
+   the existing locked battle reference is reused rather than duplicated.
+6. The DEC-037 3x3-to-6x6 player direction is represented accurately while
+   its runtime migration remains explicitly deferred.
 7. Benchmark records contain `ADOPT / ADAPT / REJECT` decisions and sources.
 
 ### Rollback
@@ -246,8 +245,7 @@ approve this specification
 → write reviewed implementation plan
 → create Blueprint source + cross-links
 → static/link validation and five whole-scope adversarial loops
-→ generate one SCRREF-BATTLE-HORDE-HUD-01 candidate
-→ user LOCK / REVISE / REJECT
-→ only after LOCK: provenance + implementation-ready package
+→ reuse SCRREF-BATTLE-AUTOCOMBAT-03 as the battle visual anchor
+→ runtime/screen review finds a real visual-consumer gap only if one exists
+→ then, and only then, one candidate → user LOCK / REVISE / REJECT
 ```
-
