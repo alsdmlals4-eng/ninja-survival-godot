@@ -44,24 +44,24 @@ Human/device 증거를 대신하지 않는다.
 | 현재 재개 지점과 증거 한계 | [`ACTIVE_CONTEXT.md`](../ACTIVE_CONTEXT.md) |
 | 화면 커버리지/실제 소비처 | [`SCREEN_SURFACE_AND_VISUAL_COVERAGE.md`](SCREEN_SURFACE_AND_VISUAL_COVERAGE.md) |
 | 시각 방향·잠금 자산·후속 시각 게이트 | [`CURRENT_VISUAL_HANDOFF.md`](../CURRENT_VISUAL_HANDOFF.md) |
-| 사람용 전체 여정·핵심 재미·가방 선택 설명 | [`NINJA_SURVIVAL_HUMAN_GDD.md`](../design/NINJA_SURVIVAL_HUMAN_GDD.md), [28쪽 Human Blueprint PDF](../../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf) |
+| 사람용 전체 여정·핵심 재미·가방 선택·현재 wireframe/visual companion | [통합 Human Blueprint PDF](../../exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf), [`NINJA_SURVIVAL_HUMAN_GDD.md`](../design/NINJA_SURVIVAL_HUMAN_GDD.md), [보존 28쪽 snapshot](../../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf) |
 | 실제 행동 | `scenes/**`, `scripts/**`, `data/**`, `tests/**` |
 
 ### 먼저 이렇게 읽는다 — 이전 Blueprint를 보존하는 열람 경로
 
-이 문서가 28쪽 사람용 Blueprint/PDF를 대체하거나 줄인 것이 아니다. PDF와
+이 문서는 28쪽 사람용 Blueprint/PDF를 대체하거나 줄이지 않는다. 기본 PDF 열람본은
+기존 28쪽을 page object 그대로 보존한 [통합 Human Blueprint](../../exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf)다. 이 문서의 editable
+flow/wireframe과 잠금 화면·Title·봉마 Boss/식신 참조는 통합본의 보강부로 결합되며,
 `NINJA_SURVIVAL_HUMAN_GDD.md`는 플레이어 판타지·장르·Stage 여정·무기와 인법·가방
-성장·조합/Fate를 순서대로 읽는 **상세 독자용 원본**이다. 이 문서는 그 원본의
-화면 단위를 실제 현재-main Scene/Script와 잠금된 화면 참조로 다시 연결하는
-**현재 상태 atlas**다.
+성장·조합/Fate를 순서대로 읽는 **상세 독자용 원본**으로 남는다.
 
 | 보고 싶은 것 | 먼저 볼 문서 | 이어서 확인할 것 | 현재 증거 경계 |
 | --- | --- | --- | --- |
-| 게임을 처음 이해하는 전체 흐름 | [28쪽 Human Blueprint PDF](../../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf) | `NINJA_SURVIVAL_HUMAN_GDD.md` | 문서/설계 snapshot; human play PASS가 아님 |
+| 게임을 처음 이해하는 전체 흐름과 화면 보강 | [통합 Human Blueprint PDF](../../exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf) | `NINJA_SURVIVAL_HUMAN_GDD.md`, [보존 28쪽 snapshot](../../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf) | PDF/문서/설계 snapshot; human play PASS가 아님 |
 | 한 화면의 우선순위와 전환 | 이 Screen Blueprint의 wireframe·flow | 아래 Visual Atlas와 `scenes/**` | current-main source/machine scope; live render 별도 |
 | 실제 이미지 상태·승인·hash | `CURRENT_VISUAL_HANDOFF.md`와 asset manifest | `screen-references/README.md` | planning reference는 runtime texture가 아님 |
 
-> **시간축 주의.** 28쪽 PDF는 당시의 사람용 검수 snapshot을 보존한다. 그 안의
+> **시간축 주의.** 통합본은 앞 3쪽과 끝 7쪽에서 current-main 화면 흐름·와이어프레임·잠금 image 소비처를 보강한다. 그 안의 28쪽 PDF는 당시의 사람용 검수 snapshot을 보존한다. 그 안의
 > “다음 runtime migration” 문구는 이후 PR #139와 현재 `main`에 합쳐진 Title,
 > Stage/Phase, 3×3 start의 구현 상태를 되돌리지 않는다. 현재 runtime 사실은 이
 > 문서의 consumer 표와 실제 Scene/Script/Test가 소유한다.

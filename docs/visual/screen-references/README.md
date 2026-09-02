@@ -10,12 +10,12 @@ GitHub Issue #98의 화면 우선 시각 커버리지 자료다. v1은 병합 �
 
 | ID | Target screen(s) | Local source | SHA-256 | Status | Current documentation consumer |
 | --- | --- | --- | --- | --- | --- |
-| `SCRREF-SCHOOL-SELECT-02` | `SCR-SCHOOL-SELECT` | `scrref-school-select-v2-sd.png` | `8dd2a751b230c0b74104a59daa1cfee933c4b0c57ecdc10dc90de22b20d0f24b` | `DUAL_STORED_REFERENCE` | `NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` Visual Atlas |
+| `SCRREF-SCHOOL-SELECT-02` | `SCR-SCHOOL-SELECT` | `scrref-school-select-v2-sd.png` | `8dd2a751b230c0b74104a59daa1cfee933c4b0c57ecdc10dc90de22b20d0f24b` | `DUAL_STORED_REFERENCE` | `NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` Visual Atlas; integrated Human Blueprint Stage companion |
 | `SCRREF-BATTLE-CHEONSUL-02` | `SCR-BATTLE-CHEONSUL` | `scrref-battle-cheonsul-v2-topdown-sd.png` | `0d179dce4108043c251cb51d88c554493e1a9e90a5fab3bb5b91b8ab41afa61d` | `DUAL_STORED_REFERENCE` | visual coverage comparison only |
-| `SCRREF-BATTLE-AUTOCOMBAT-03` | `SCR-BATTLE-AUTOCOMBAT-CONTINUOUS-FLOOR` | `scrref-battle-autocombat-continuous-floor-v3.png` | `68727c87b5f81dee18f06bb0955d37314a3e0ec03f04fe9dd33f842df0dd6eac` | `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME` | Human GDD/PDF page 10; Screen Blueprint Visual Atlas |
-| `SCRREF-WORKBENCH-02` | `SCR-ROUTE-WORKBENCH`, `SCR-FATE`, `SCR-NEXT-PREVIEW` | `scrref-workbench-v2-sd.png` | `dd3b90ed11b242d3f09de4748f65d0a12ff44f8eede0eba7b4e013c22d3cf9a8` | `DUAL_STORED_REFERENCE` | `NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` Visual Atlas |
-| `SCRREF-RESULT-02` | `SCR-RESULT` | `scrref-result-v2-sd.png` | `d125a2e04c467baff7450d98b28b8325b425140fd6b7406ee6d540d8b65330e4` | `DUAL_STORED_REFERENCE` | `NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` Visual Atlas |
-| `SCRREF-GAME-OVER-02` | `SCR-GAME-OVER` | `scrref-game-over-v2-topdown-sd.png` | `00382fe0e3a649b3594e2e78eae500ef4354ecd616b9502f5d29c7da1de07ca7` | `DUAL_STORED_REFERENCE` | `NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` Visual Atlas |
+| `SCRREF-BATTLE-AUTOCOMBAT-03` | `SCR-BATTLE-AUTOCOMBAT-CONTINUOUS-FLOOR` | `scrref-battle-autocombat-continuous-floor-v3.png` | `68727c87b5f81dee18f06bb0955d37314a3e0ec03f04fe9dd33f842df0dd6eac` | `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME` | Human GDD/PDF page 10; Screen Blueprint Visual Atlas; integrated Human Blueprint battle companion |
+| `SCRREF-WORKBENCH-02` | `SCR-ROUTE-WORKBENCH`, `SCR-FATE`, `SCR-NEXT-PREVIEW` | `scrref-workbench-v2-sd.png` | `dd3b90ed11b242d3f09de4748f65d0a12ff44f8eede0eba7b4e013c22d3cf9a8` | `DUAL_STORED_REFERENCE` | `NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` Visual Atlas; integrated Human Blueprint Workbench companion |
+| `SCRREF-RESULT-02` | `SCR-RESULT` | `scrref-result-v2-sd.png` | `d125a2e04c467baff7450d98b28b8325b425140fd6b7406ee6d540d8b65330e4` | `DUAL_STORED_REFERENCE` | `NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` Visual Atlas; integrated Human Blueprint Result companion |
+| `SCRREF-GAME-OVER-02` | `SCR-GAME-OVER` | `scrref-game-over-v2-topdown-sd.png` | `00382fe0e3a649b3594e2e78eae500ef4354ecd616b9502f5d29c7da1de07ca7` | `DUAL_STORED_REFERENCE` | `NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` Visual Atlas; integrated Human Blueprint Game Over companion |
 
 The five v2 files are 1672×941 PNGs. They were generated with the built-in
 image generation tool on 2026-08-28, visually inspected, and checked against
@@ -36,7 +36,7 @@ are now recorded here.
 | Approval | User `LOCK`, 2026-08-30 KST |
 | Status | `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME` |
 | Producer | Built-in image generation edit of the prior auto-combat battle candidate; user-requested infinite-floor and separate-prop revision |
-| Human consumer | `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md` page 10, then `exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf`, and `docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` Visual Atlas |
+| Human consumer | `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md` page 10, `exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf`, `exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf` battle companion, and `docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` Visual Atlas |
 | Godot consumer | Planning-reference PNG: none. The separately user-locked derived floor, prop atlas, and contact-shadow sources are bound on the current isolated branch; see `docs/CURRENT_VISUAL_HANDOFF.md`. |
 
 **Locked visual contract.** The background is only a continuous, walkable,

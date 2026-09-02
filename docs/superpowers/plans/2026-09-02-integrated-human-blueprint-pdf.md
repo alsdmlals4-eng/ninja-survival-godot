@@ -44,7 +44,7 @@ result = module.export_integrated_pdf(
 assert result.page_count >= 38
 ```
 
-- [ ] **Step 2: Run the test to verify it fails because the composer does not exist.**
+- [x] **Step 2: Run the test to verify it fails because the composer does not exist.**
 
 Run: `python -m unittest tools/test_export_integrated_human_blueprint_pdf.py -v`
 
@@ -60,7 +60,7 @@ Expected: `FAIL` stating that `tools/export_integrated_human_blueprint_pdf.py` i
 - Consumes: `historical_pdf: Path`, `output: Path`, `source_commit: str`, `generated_at: str`.
 - Produces: `ExportResult(page_count: int, output_sha256: str, historical_page_count: int, companion_page_count: int)`.
 
-- [ ] **Step 1: Implement the minimum `export_integrated_pdf` API.**
+- [x] **Step 1: Implement the minimum `export_integrated_pdf` API.**
 
 ```python
 def export_integrated_pdf(*, historical_pdf: Path, output: Path,
@@ -68,7 +68,7 @@ def export_integrated_pdf(*, historical_pdf: Path, output: Path,
     ...
 ```
 
-- [ ] **Step 2: Create 3 guide pages and 7 companion pages with ReportLab, then append original PDF pages with pypdf.**
+- [x] **Step 2: Create 3 guide pages and 7 companion pages with ReportLab, then append original PDF pages with pypdf.**
 
 ```python
 for page in guide_pages + companion_pages:
@@ -77,7 +77,7 @@ for page in PdfReader(historical_pdf).pages:
     writer.add_page(page)
 ```
 
-- [ ] **Step 3: Run the focused test and confirm it passes.**
+- [x] **Step 3: Run the focused test and confirm it passes.**
 
 Run: `python -m unittest tools/test_export_integrated_human_blueprint_pdf.py -v`
 
@@ -97,17 +97,17 @@ Expected: `PASS`; output begins `%PDF-`, contains 38+ pages, preserves original 
 - Consumes: exporter result, source hashes, locked asset provenance.
 - Produces: one current-reader route with historical snapshot retained.
 
-- [ ] **Step 1: Generate the PDF after the source contract commit.**
+- [x] **Step 1: Generate the PDF after the source contract commit.**
 
 Run: `python tools/export_integrated_human_blueprint_pdf.py --historical-pdf ... --output ... --source-commit <source-commit> --generated-at <timestamp>`
 
-- [ ] **Step 2: Record exact artifact/source/generator hashes and 10 asset bindings in the manifest.**
+- [x] **Step 2: Record exact artifact/source/generator hashes and 10 asset bindings in the manifest.**
 
 ```json
 {"role":"DOWNLOADABLE_INTEGRATED_HUMAN_REVIEW_DERIVATIVE","sync_status":"CURRENT_ON_BRANCH_PENDING_MAIN_PUBLICATION"}
 ```
 
-- [ ] **Step 3: Add new PDF to reader routes while preserving the historical 28-page snapshot route.**
+- [x] **Step 3: Add new PDF to reader routes while preserving the historical 28-page snapshot route.**
 
 ### Task 4: Validate, review, and publish
 
@@ -119,7 +119,7 @@ Run: `python tools/export_integrated_human_blueprint_pdf.py --historical-pdf ...
 - Consumes: final artifact, source, manifest, page renders, current documentation routes.
 - Produces: five whole-scope review loops and evidence ceiling.
 
-- [ ] **Step 1: Execute focused and existing PDF tests, static link/hash checks, `pdfinfo`, pypdf semantic checks, and `git diff --check`.**
-- [ ] **Step 2: Render all PDF pages with `pdftoppm`; visually inspect every new page and representative preserved pages.**
-- [ ] **Step 3: Record five full adversarial loops covering preservation, asset provenance, wireframe completeness, download route, evidence boundaries, and long-term regeneration.**
+- [x] **Step 1: Execute focused and existing PDF tests, static link/hash checks, `pdfinfo`, pypdf semantic checks, and `git diff --check`.**
+- [x] **Step 2: Render all PDF pages with `pdftoppm`; visually inspect every new page and representative preserved pages.**
+- [x] **Step 3: Record five full adversarial loops covering preservation, asset provenance, wireframe completeness, download route, evidence boundaries, and long-term regeneration.**
 - [ ] **Step 4: Commit source, artifact, manifest, review, tests, and routes; push branch; create PR; verify exact-head CI; merge normally; fresh-read `main`.**

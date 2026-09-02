@@ -16,7 +16,7 @@
 4. `canon/2026-08-21-dec014-025-product-canon.md`
 5. `canon/2026-08-22-dec026-encounter-pattern-budget.md`
 6. `canon/2026-08-30-dec037-player-control-stage-3x3-backpack.md` (조작 닌자·Stage/Phase·3×3 시작 가방의 최신 공개 경험 결정)
-7. `design/NINJA_SURVIVAL_HUMAN_GDD.md` (28쪽 사람용 게임 경험 블루프린트 원고) → `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf` (다운로드용 파생본); `implementation/2026-08-30-player-control-stage-backpack-blueprint-spec.md`는 user final PDF review 전 runtime 이행 경계를 소유한다.
+7. `design/NINJA_SURVIVAL_HUMAN_GDD.md` (28쪽 사람용 게임 경험 블루프린트 원고) → `../exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf` (기본 다운로드 열람본: 기존 28쪽 + wireframe·flow·잠금 이미지 보강부) → `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf` (보존 snapshot); `implementation/2026-08-30-player-control-stage-backpack-blueprint-spec.md`는 user final PDF review 전 runtime 이행 경계를 소유한다.
 8. `design/NINJA_SURVIVAL_MASTER_GDD.md`는 기술 canon·구현 계약을 확인할 때 읽는다.
 9. `implementation/2026-08-29-four-school-circuit-implementation-contract.md`
 10. `planning/2026-08-29-phase2-four-school-definition-of-ready.md`
@@ -62,7 +62,7 @@ Important:
 
 ### A. Reader GDD와 기술 Master GDD
 
-`design/NINJA_SURVIVAL_HUMAN_GDD.md`는 사람이 바로 읽는 28쪽 게임 경험 블루프린트 원고다. 사람이 바로 열람·다운로드할 때는 이 원고를 기준으로 발행한 `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf`를 사용한다. PDF는 독립 정본이 아니며 발행/검수 상태는 `PDF_EXPORT.md`와 publication manifest가 소유한다. `DEC-037`은 플레이어 공개 용어/가방 시작 규칙을, companion spec은 final PDF review 전 runtime 이행 경계를 소유한다.
+`design/NINJA_SURVIVAL_HUMAN_GDD.md`는 사람이 바로 읽는 28쪽 게임 경험 블루프린트 원고다. 기본 열람·다운로드는 기존 28쪽을 보존한 `../exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf`를 사용한다. 이 통합본은 current-main screen wireframe·flow·user-locked visual companion을 더하지만 원고/기술 정본을 대체하지 않는다. `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf`는 historical snapshot으로 남긴다. 발행/검수 상태는 `PDF_EXPORT.md`와 각각의 publication manifest가 소유한다. `DEC-037`은 플레이어 공개 용어/가방 시작 규칙을, companion spec은 final PDF review 전 runtime 이행 경계를 소유한다.
 
 `design/NINJA_SURVIVAL_MASTER_GDD.md`는 제품 canon, 구현 계약, 증거 경계를 소유하는 기술 정본이다. Human GDD가 기술 정본의 내용을 이해하기 쉽게 풀어 쓸 수는 있지만, 수치·상태·권한이 충돌할 경우 기술 정본과 최신 승인 결정이 우선한다.
 
@@ -164,9 +164,10 @@ approved Decision/Canon을 따른다.
 | `CURRENT_CONFIRMED_DECISIONS.md` | mutable approved-decision / protected-scope ledger | CURRENT · T12~T16 machine scope integrated / human gate deferred |
 | `ACTIVE_CONTEXT.md` | mutable resume-state router | CURRENT · T16 help merged / human gate deferred |
 | `design/NINJA_SURVIVAL_HUMAN_GDD.md` | 사람용 게임 설명 원고 | CURRENT · 핵심 재미/흐름/선택/구현 구조를 쉬운 말로 설명 |
-| `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf` | 사람이 내려받아 읽는 28쪽 게임 경험 Blueprint snapshot | ALWAYS_SYNC · Human GDD/source generator 변경 시 재발행; user final review는 별도 |
+| `../exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf` | 사람이 내려받아 읽는 기본 통합 Blueprint: 3쪽 읽기 지도 + 보존 28쪽 + 7쪽 wireframe/flow/locked visual companion | CURRENT_ON_BRANCH_PENDING_MAIN_PUBLICATION · integration composer/visual route 변경 시 재발행; runtime/Human/device evidence는 별도 |
+| `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf` | historical 28쪽 게임 경험 Blueprint snapshot | RETAINED · 기존 레이아웃/검수 snapshot을 보존하며 통합본의 pages 4–31에 다시 포함 |
 | `design/NINJA_SURVIVAL_MASTER_GDD.md` | 기술 canon·구현 계약·증거 경계 | CURRENT · Human GDD와 중복 소유하지 않음 |
-| `PDF_EXPORT.md` + `publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json` | PDF 발행/신선도/검수 상태 | CURRENT publication contract |
+| `PDF_EXPORT.md` + `publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json` + `publication/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_PDF_MANIFEST.json` | PDF 발행/신선도/검수 상태 | CURRENT contract; 통합본은 기존 snapshot·wireframe·flow·locked assets의 결합 상태도 기록 |
 | `canon/2026-08-28-dec034-generate-then-approve-visual-workflow.md` | concrete consumer/board 후 1개 후보 생성과 사용자 LOCK 기준 | CURRENT · chat-start/gap-only 생성 금지 |
 | `canon/2026-08-28-dec035-repository-only-project-record.md` | preservation-first Notion migration / repository-only cutover | CURRENT · final remote readback complete |
 | `canon/2026-08-29-dec036-human-player-validation-deferred-from-current-build-gate.md` | current implementation gate에서 Human/Player 검수 deferment | CURRENT · NOT_RUN evidence를 PASS로 바꾸지 않음 |

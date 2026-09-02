@@ -52,6 +52,23 @@ surface.
 
 The former baked-medal backdrop `NINJA_RUNTIME_TITLE_SCREEN_FOUR_TRADITIONS_MEDAL_01` remains a `USER_LOCKED` historical provenance and rollback source. It has no direct current-title consumer after the separate-medal transition.
 
+## 2026-09-02 integrated Human Blueprint documentation consumer
+
+No visual binary is generated, edited, reapproved, or promoted by the
+integrated Human Blueprint publication. The existing title backdrop, wordmark,
+small four-fragment medal, five screen references, and locked Bongma Boss/
+shikigami are reused as a **human-reader PDF consumer** at
+`exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf`. Their source
+bytes, SHA-256 values, user `LOCK` state, runtime consumer, and planning-vs-
+runtime boundary remain owned by their existing handoff/manifest rows. The
+publication-specific 10-asset binding, artifact hash and PDF-only validation
+are recorded in
+`docs/publication/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_PDF_MANIFEST.json`.
+
+This new PDF consumer does not turn a planning reference into a Godot texture,
+does not substitute for a live runtime capture, and does not promote Human,
+Player Experience, or device/export evidence.
+
 `NINJA_RUNTIME_TITLE_LOGO_NINJA_GOD_01` is the approved transparent title mark;
 the supplied GRIMOIRE logo was hierarchy reference only, not copied source or
 runtime content.

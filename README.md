@@ -4,7 +4,7 @@ Godot 4.x / GDScript로 재구성 중인 `닌자 서바이벌 (닌자의 신)` �
 
 ## 사람용 기획서
 
-[사람용 게임 경험 블루프린트 PDF 내려받기](exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf) · 읽기용 원고는 `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md`, 3×3 가방·Stage/Phase·조작 닌자 이행 명세는 `docs/implementation/2026-08-30-player-control-stage-backpack-blueprint-spec.md`, 기술 정본은 `docs/design/NINJA_SURVIVAL_MASTER_GDD.md`에 분리해 둔다. PDF의 생성·검수 상태는 `docs/PDF_EXPORT.md`에서 확인한다.
+[통합 Human Blueprint PDF 내려받기](exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf) — 기존 28쪽 본문 + 현재 화면 와이어프레임·플로우·잠금 이미지 보강부를 한 파일에 담은 기본 열람본이다. [기존 28쪽 snapshot](exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf)은 보존한다. 읽기용 원고는 `docs/design/NINJA_SURVIVAL_HUMAN_GDD.md`, 3×3 가방·Stage/Phase·조작 닌자 이행 명세는 `docs/implementation/2026-08-30-player-control-stage-backpack-blueprint-spec.md`, 기술 정본은 `docs/design/NINJA_SURVIVAL_MASTER_GDD.md`에 분리해 둔다. PDF의 생성·검수 상태는 `docs/PDF_EXPORT.md`에서 확인한다.
 
 ## 제품 약속
 

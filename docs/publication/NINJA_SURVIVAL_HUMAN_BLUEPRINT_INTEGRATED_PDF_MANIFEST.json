@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "document_id": "NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902",
+  "role": "DOWNLOADABLE_INTEGRATED_HUMAN_REVIEW_DERIVATIVE",
+  "sync_status": "CURRENT_ON_BRANCH_PENDING_MAIN_PUBLICATION",
+  "publication_policy": "ALWAYS_SYNC_ON_INTEGRATION_COMPOSER_OR_INCLUDED_CURRENT_VISUAL_ROUTE_CHANGE",
+  "reader_purpose": "Preserves the historical 28-page Human Blueprint and combines it with current-main wireframes, flow maps, and user-locked visual references in one downloadable PDF.",
+  "baseline": {
+    "completed_main": "16cf7a6bb2a8676ad979985605d66f1ca3edd28c",
+    "integration_source_commit": "cc40626c2158d561e94d1689d9b9c20e7b79da9e",
+    "integration_design": "docs/superpowers/specs/2026-09-02-integrated-human-blueprint-pdf-design.md",
+    "screen_blueprint": "docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md",
+    "visual_handoff": "docs/CURRENT_VISUAL_HANDOFF.md"
+  },
+  "historical_blueprint": {
+    "path": "exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf",
+    "sha256": "0cf567a7f7462ecc8b1b5c85d4b50da782622d89ff15ed588cb22975809fc5e8",
+    "page_count": 28,
+    "integration_position": "pages 4 through 31 are copied as original historical PDF page objects without layout rewrite",
+    "preservation_status": "RETAINED_HISTORICAL_READER_SNAPSHOT"
+  },
+  "composer": {
+    "path": "tools/export_integrated_human_blueprint_pdf.py",
+    "sha256": "2c528bda8b91fc41735bb84e2cda14f1884ca25b2e70311abdb3a30751263a57",
+    "test_path": "tools/test_export_integrated_human_blueprint_pdf.py",
+    "test_sha256": "485e344ab8e1733540f759eadd9592731cceb581066bd02a97bea2a701572c27",
+    "runtime": "bundled Python 3 + ReportLab 4.4.9 + pypdf 6.14.2 + Pillow 12.3.0",
+    "korean_font_requirement": "Windows Malgun Gothic regular/bold",
+    "atomic_output_policy": "compose companion to temporary PDF, write final to .tmp, validate header/page count, then replace output"
+  },
+  "artifact": {
+    "path": "exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf",
+    "sha256": "c3761aa5a31e43b6934f22271aa80965aeecd66fb65ec2929c83269065433295",
+    "generated_at": "2026-09-02T09:42:51+09:00",
+    "byte_size": 53699895,
+    "page_count": 38,
+    "page_size": "landscape A4",
+    "structure": {
+      "front_matter_pages": 3,
+      "preserved_historical_pages": 28,
+      "current_visual_companion_pages": 7,
+      "companion_total_pages": 10
+    },
+    "github_routes_after_main_merge": {
+      "blob": "https://github.com/alsdmlals4-eng/ninja-survival-godot/blob/main/exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf",
+      "download": "https://raw.githubusercontent.com/alsdmlals4-eng/ninja-survival-godot/main/exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf"
+    }
+  },
+  "reused_locked_assets": [
+    {
+      "asset_id": "NINJA_RUNTIME_TITLE_SCREEN_MOONLIT_NINJA_02",
+      "path": "assets/runtime/ui/title_screen_moonlit_ninja_v2.png",
+      "sha256": "86f86da33986499bfd98aa003ba52ac65105136197d4530aa3335c9b8f2e030c",
+      "state": "USER_LOCKED_RUNTIME_TITLE_ASSET",
+      "pdf_role": "cover and Title companion"
+    },
+    {
+      "asset_id": "NINJA_RUNTIME_TITLE_LOGO_NINJA_GOD_01",
+      "path": "assets/runtime/ui/title_logo_ninja_god_v1.png",
+      "sha256": "c946ae4b08fd77f1e36bc25b22d0d41fdd5060fc80e98faeb9e6f2d2ac9a7a5b",
+      "state": "USER_LOCKED_RUNTIME_TITLE_ASSET",
+      "pdf_role": "cover wordmark"
+    },
+    {
+      "asset_id": "NINJA_RUNTIME_TITLE_FOUR_TRADITIONS_MEDAL_02",
+      "path": "assets/runtime/ui/title_four_traditions_medal_v2.png",
+      "sha256": "26520188d71f9565fef0263062dcbab6ce23f4998371f55af765c034257c61cc",
+      "state": "USER_LOCKED_RUNTIME_TITLE_ASSET",
+      "pdf_role": "cover supporting medal"
+    },
+    {
+      "asset_id": "SCRREF-SCHOOL-SELECT-02",
+      "path": "docs/visual/screen-references/scrref-school-select-v2-sd.png",
+      "sha256": "8dd2a751b230c0b74104a59daa1cfee933c4b0c57ecdc10dc90de22b20d0f24b",
+      "state": "DUAL_STORED_REFERENCE_NOT_RUNTIME",
+      "pdf_role": "Stage selection companion"
+    },
+    {
+      "asset_id": "SCRREF-BATTLE-AUTOCOMBAT-03",
+      "path": "docs/visual/screen-references/scrref-battle-autocombat-continuous-floor-v3.png",
+      "sha256": "68727c87b5f81dee18f06bb0955d37314a3e0ec03f04fe9dd33f842df0dd6eac",
+      "state": "USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME",
+      "pdf_role": "auto-combat companion"
+    },
+    {
+      "asset_id": "SCRREF-WORKBENCH-02",
+      "path": "docs/visual/screen-references/scrref-workbench-v2-sd.png",
+      "sha256": "dd3b90ed11b242d3f09de4748f65d0a12ff44f8eede0eba7b4e013c22d3cf9a8",
+      "state": "DUAL_STORED_REFERENCE_NOT_RUNTIME",
+      "pdf_role": "Workbench companion"
+    },
+    {
+      "asset_id": "SCRREF-RESULT-02",
+      "path": "docs/visual/screen-references/scrref-result-v2-sd.png",
+      "sha256": "d125a2e04c467baff7450d98b28b8325b425140fd6b7406ee6d540d8b65330e4",
+      "state": "DUAL_STORED_REFERENCE_NOT_RUNTIME",
+      "pdf_role": "Result companion"
+    },
+    {
+      "asset_id": "SCRREF-GAME-OVER-02",
+      "path": "docs/visual/screen-references/scrref-game-over-v2-topdown-sd.png",
+      "sha256": "00382fe0e3a649b3594e2e78eae500ef4354ecd616b9502f5d29c7da1de07ca7",
+      "state": "DUAL_STORED_REFERENCE_NOT_RUNTIME",
+      "pdf_role": "Game Over companion"
+    },
+    {
+      "asset_id": "NINJA_RUNTIME_ENCOUNTER_BONGMA_HUNDRED_DEMON_ARRAY_MASTER_01",
+      "path": "assets/runtime/encounters/actors/hundred_demon_array_master.png",
+      "sha256": "b97f20076b64e0e84eef2714e5d5551a49648ea97b0583226b31f220d5b9527c",
+      "state": "USER_LOCKED_RUNTIME_ENCOUNTER_ASSET",
+      "pdf_role": "Elite-Trace-Boss companion"
+    },
+    {
+      "asset_id": "NINJA_RUNTIME_ENCOUNTER_BONGMA_HUNDRED_DEMON_FAMILIAR_01",
+      "path": "assets/runtime/encounters/summons/bongma_hundred_demon_familiar.png",
+      "sha256": "50cbecfe6982e53537d4caaa731bc06c3e56c95bbf0be6084c2550571176ea75",
+      "state": "USER_LOCKED_RUNTIME_ENCOUNTER_ASSET",
+      "pdf_role": "Elite-Trace-Boss companion"
+    }
+  ],
+  "validation": {
+    "focused_export_test": "PASSED: 1/1; red state first failed because the composer was absent, then real temporary PDF output passed header/page/preservation/integration checks",
+    "pdfinfo": "PASSED: opens, 38 pages, landscape A4, not encrypted",
+    "pypdf": "PASSED: 38 pages; page 4 begins preserved historical 28-page source; title/subject metadata present",
+    "render_command": "pdftoppm -png -r 144",
+    "automated_render_review": "PASSED: 38/38 PNG, 0 zero-byte pages",
+    "codex_visual_review": "PASSED: front matter 3/3, preserved representative historical page, and all 7 visual companion pages visually inspected after a first Result/Workbench clipping finding was corrected and re-rendered",
+    "human_visual_review": "NOT_RUN"
+  },
+  "evidence_ceiling": "PDF composition, hashes, and rendered-page inspection prove this derived reader artifact only. They do not prove Godot runtime render/input, crowd performance, telegraph fairness, Human Usability, Player Experience, controller/touch, device/export, or release readiness."
+}
