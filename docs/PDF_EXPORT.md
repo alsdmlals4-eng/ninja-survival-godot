@@ -7,8 +7,17 @@
 - **사람용 다운로드 snapshot:** `exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf`
 - **발행 상태/해시:** `docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json`
 - **생성기:** `tools/export_human_gdd_pdf.py`
+- **통합 다운로드 열람본:** `exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf`
+- **통합본 manifest:** `docs/publication/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_PDF_MANIFEST.json`
+- **통합본 composer:** `tools/export_integrated_human_blueprint_pdf.py`
 
 PDF는 사람이 한 파일로 읽고 내려받는 파생본이다. Human GDD는 28개의 명시적 검수 페이지로 핵심 재미·플레이 흐름·선택·구현 경계를 쉬운 말로 설명한다. 각 페이지는 검수 질문과 한 줄 결론을 가지며, 실제 화면 참고와 수정 가능한 설계 도식을 구분한다. 기술 정본의 SHA/PR/CI receipt/경로 세부는 PDF 본문에 반복하지 않는다. PDF 안의 설명, 표, 링크 또는 생성 성공은 Godot runtime, Human Usability, Player Experience, device/export, release evidence를 승격하지 않는다.
+
+`NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf`는 기존 28쪽을 다시
+렌더하거나 교체하지 않는다. 3쪽의 읽기 지도 뒤에 기존 PDF page object 28쪽을
+그대로 보존하고, 7쪽의 current-main 화면 wireframe·flow·잠금 이미지 보강부를 한
+파일로 결합한다. 이 통합본이 사람용 기본 다운로드 경로이며, 기존 PDF는 재현성과
+historical reader snapshot을 위해 유지한다.
 
 ## 조사·실현성 판정
 
@@ -47,6 +56,33 @@ $generatedAt = (Get-Date).ToString('yyyy-MM-ddTHH:mm:ssK')
 
 출력 파일은 generator가 임시 `.tmp` 파일에 먼저 작성하고 PDF header를 확인한 뒤에만 대상 경로로 교체한다.
 
+### 통합 Human Blueprint 재생성
+
+통합본의 source는 historical 28쪽 PDF + current screen Blueprint + approved visual
+handoff + integration design이다. 새 visual companion이 필요할 때에는 먼저 기존
+잠금/승인 asset으로 gap이 채워지는지 확인한다. 새 image binary가 필요한 경우에는
+DEC-034의 single-candidate `LOCK / REVISE / REJECT` gate를 별도로 따른다.
+
+다운로드본은 GitHub의 50 MiB 권고선 아래를 유지한다. 따라서 opaque visual
+reference만 composer 메모리 안에서 최대 1600px·JPEG quality 94로 넣고, source PNG
+bytes·SHA·provenance·runtime consumer는 수정하지 않는다. 투명도가 있는 title/encounter
+asset은 silhouette 보존을 위해 source PNG 그대로 넣는다.
+
+```powershell
+$sourceCommit = '<commit containing the integration design and test contract>'
+$generatedAt = (Get-Date).ToString('yyyy-MM-ddTHH:mm:ssK')
+& 'C:\Users\user\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' tools\export_integrated_human_blueprint_pdf.py `
+  --historical-pdf exports\NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf `
+  --output exports\NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf `
+  --source-commit $sourceCommit `
+  --generated-at $generatedAt
+```
+
+그 뒤 `NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_PDF_MANIFEST.json`의 source,
+composer, artifact, 모든 reused locked asset SHA, page count, render 결과를 함께
+갱신한다. 통합본은 3 front-matter + 28 preserved historical + 7 visual companion,
+총 38쪽을 유지한다.
+
 ## 필수 검수
 
 1. `python -m unittest tools\test_export_human_gdd_pdf.py -v`로 Korean content와 publication metadata 보존을 확인한다.
@@ -54,3 +90,4 @@ $generatedAt = (Get-Date).ToString('yyyy-MM-ddTHH:mm:ssK')
 3. `pdftoppm -png`로 **전 페이지**를 렌더하고 빈 페이지, 한글·특수문자 대체, 카드/흐름도/3×3 도식/실제 화면 참고의 잘림, footer/header 겹침을 시각 검수한다.
 4. source SHA-256, generator SHA-256, PDF SHA-256, branch/commit, 생성 시각, render 상태를 manifest에 기록한다.
 5. `sync_status: CURRENT`와 `human_visual_review: NOT_RUN`을 혼동하지 않는다. 사람이 실제로 읽어 승인한 경우에만 후자를 변경한다.
+6. 통합본은 `python -m unittest tools\test_export_integrated_human_blueprint_pdf.py -v`, `pdfinfo`, pypdf, 전 페이지 `pdftoppm` render와 새 보강부 전체의 시각 검수를 추가로 통과해야 한다.
