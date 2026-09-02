@@ -8,7 +8,7 @@ candidate_branch: codex/blueprint-regression-repair-143
 new_runtime_code: false
 new_image_binary: false
 required_loops: 5
-status: CLEAN_CANDIDATE_PENDING_PR_CI_AND_MERGE
+status: CLEAN_MERGED_MAIN_PR143_POST_READBACK
 ```
 
 ## 검토 방법
@@ -41,8 +41,9 @@ consumer, evidence 경계, 파생 문서 owner, asset provenance, rollback/장�
 
 ## Clean exit and follow-up
 
-No validated `MUST_FIX` remains inside this documentation-only scope. The next
-safe actions are exact candidate commit, normal PR creation, exact-head CI,
-normal merge, current-main readback, and a small receipt only if the mutable
-router must change from candidate to merged state. Runtime code, assets and
-the 28-page PDF remain untouched.
+No validated `MUST_FIX` remains inside this documentation-only scope. PR #143
+was squash-merged at `77fc0509662b0ec580425ec4b38e76c254b78903` after its exact
+head `7316c7aafd445815d1d86668dd2cee15312e9b12` passed `gut` and Windows internal
+build checks; post-merge `origin/main` tree readback was equivalent to that
+exact head. This receipt updates the mutable router from candidate to merged
+state. Runtime code, assets and the 28-page PDF remain untouched.

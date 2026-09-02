@@ -34,12 +34,16 @@ latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-hum
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 current_screen_visual_coverage: docs/visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md
 current_screen_blueprint: docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md
-current_screen_blueprint_state: CURRENT_MAIN_RECONCILIATION_CANDIDATE_LOCAL_MACHINE_VALIDATION_PENDING_PR
+current_screen_blueprint_state: CURRENT_MAIN_RECONCILIATION_MERGED_MAIN_PR143
 current_screen_blueprint_predecessor_pr: PR_137
 current_screen_blueprint_predecessor_exact_pr_head: b54819336c75aab6d60606821a6a734049406f2e
 current_screen_blueprint_predecessor_merge: e6cbaedfa558f9646dc7cd960c2ef06ac67a9549
 current_screen_blueprint_reconciliation_baseline: 477ac7343bd655278d4f045d3152f6b7e4214062
-current_screen_blueprint_reconciliation_branch: codex/blueprint-regression-repair-143
+current_screen_blueprint_reconciliation_pr: PR_143
+current_screen_blueprint_reconciliation_exact_pr_head: 7316c7aafd445815d1d86668dd2cee15312e9b12
+current_screen_blueprint_reconciliation_merge: 77fc0509662b0ec580425ec4b38e76c254b78903
+current_screen_blueprint_reconciliation_ci: GUT_AND_WINDOWS_INTERNAL_BUILD_ARTIFACT_SUCCESS
+current_screen_blueprint_reconciliation_main_readback: TREE_EQUIVALENT_TO_EXACT_PR_HEAD
 current_screen_blueprint_reconciliation_plan: docs/superpowers/plans/2026-09-02-blueprint-regression-repair.md
 current_screen_blueprint_reconciliation_review: docs/reviews/2026-09-02-blueprint-regression-repair-adversarial-review.md
 current_screen_blueprint_visual_input: REUSES_FIVE_LOCKED_SCREEN_REFERENCES_NO_NEW_IMAGE_BINARY
@@ -133,21 +137,21 @@ Blueprint has repository/documentation and exact-PR-head CI evidence only;
 Godot runtime/render, Human Play, Player Experience, touch/gamepad, and
 device/export evidence remain `NOT_RUN`.
 
-## 2026-09-02 screen Blueprint — current-main reconciliation candidate
+## 2026-09-02 screen Blueprint — current-main reconciliation merged
 
 The user reported that the newer screen Blueprint had regressed relative to
-the prior reader-facing Blueprint. The candidate at
+the prior reader-facing Blueprint. The merged atlas at
 `docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` therefore preserves the 28-page
 Human Blueprint/PDF as the first reader route, restores a five-image locked
 reference atlas, and updates stale `planned` Title/3×3/Stage/Phase wording
 against current main `477ac7343bd655278d4f045d3152f6b7e4214062`.
 
-It is a documentation-only candidate: no scene, script, save structure or
-image binary changes. Source/machine readback, fresh Godot import/editor/main
-smoke, adversarial review, exact-head CI, merge and post-main readback are
-still required before this router is promoted to merged state. Live render,
-Human Play, Player Experience, touch/gamepad and device/export remain
-`NOT_RUN`.
+PR #143 squash-merged this documentation-only package at
+`77fc0509662b0ec580425ec4b38e76c254b78903` after exact head
+`7316c7aafd445815d1d86668dd2cee15312e9b12` passed `gut` and Windows internal
+build checks; fresh `origin/main` tree readback was equivalent to that head.
+No scene, script, save structure or image binary changed. Live render, Human
+Play, Player Experience, touch/gamepad and device/export remain `NOT_RUN`.
 
 ## Purpose
 

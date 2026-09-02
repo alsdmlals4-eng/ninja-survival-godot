@@ -2,7 +2,7 @@
 
 ```yaml
 blueprint_id: NS-BLUEPRINT-001
-status: CURRENT_MAIN_RECONCILED_SCREEN_ATLAS_CANDIDATE
+status: CURRENT_MAIN_RECONCILED_SCREEN_ATLAS
 revision: 2
 created_at: 2026-09-01 KST
 reconciled_at: 2026-09-02 KST
