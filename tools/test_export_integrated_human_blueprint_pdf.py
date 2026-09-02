@@ -46,6 +46,11 @@ class IntegratedHumanBlueprintPdfTests(unittest.TestCase):
             extracted_text = "\n".join(page.extract_text() or "" for page in integrated_reader.pages)
 
             self.assertTrue(output.read_bytes().startswith(b"%PDF-"))
+            self.assertLess(
+                output.stat().st_size,
+                50 * 1024 * 1024,
+                "the downloadable PDF should stay below GitHub's 50 MiB guidance threshold",
+            )
             self.assertEqual(len(historical_reader.pages), 28)
             self.assertEqual(result.historical_page_count, 28)
             self.assertEqual(result.companion_page_count, module.COMPANION_PAGE_COUNT)

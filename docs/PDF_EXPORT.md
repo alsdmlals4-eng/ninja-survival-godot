@@ -63,6 +63,11 @@ handoff + integration design이다. 새 visual companion이 필요할 때에는 
 잠금/승인 asset으로 gap이 채워지는지 확인한다. 새 image binary가 필요한 경우에는
 DEC-034의 single-candidate `LOCK / REVISE / REJECT` gate를 별도로 따른다.
 
+다운로드본은 GitHub의 50 MiB 권고선 아래를 유지한다. 따라서 opaque visual
+reference만 composer 메모리 안에서 최대 1600px·JPEG quality 94로 넣고, source PNG
+bytes·SHA·provenance·runtime consumer는 수정하지 않는다. 투명도가 있는 title/encounter
+asset은 silhouette 보존을 위해 source PNG 그대로 넣는다.
+
 ```powershell
 $sourceCommit = '<commit containing the integration design and test contract>'
 $generatedAt = (Get-Date).ToString('yyyy-MM-ddTHH:mm:ssK')

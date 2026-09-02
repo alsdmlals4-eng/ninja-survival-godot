@@ -9,7 +9,7 @@ candidate_source_commit: cc40626c2158d561e94d1689d9b9c20e7b79da9e
 new_runtime_code: false
 new_image_binary: false
 required_full_loops: 5
-status: CLEAN_ON_BRANCH_PENDING_PR_CI_MERGE_AND_MAIN_READBACK
+status: CLEAN_ON_BRANCH_PR_145_PENDING_EXACT_HEAD_CI_MERGE_AND_MAIN_READBACK
 ```
 
 ## 검토 기준
@@ -27,6 +27,7 @@ future regeneration을 모두 다시 공격한다.
 | 3 | image source가 새 candidate/무소비자 decorative binary가 되거나 planning reference를 runtime texture로 바꾸는가? | title 3, screen reference 5, Bongma Boss/familiar 2의 SHA and status; actual title/encounter consumers; screen-reference README boundary | 새 이미지 생성 필요 없음. 10 existing user-locked/dual-stored source의 PDF documentation consumer만 manifest에 추가 | imagegen은 concrete gap이 없으므로 **REJECT**. `git status`에서 new PNG 0, 10 asset hashes read back, manifest roles verified | PASS — provenance/consumer separation |
 | 4 | 제작은 성공했어도 가독성·잘림·문서 route가 깨지지 않는가? | full `pdftoppm -png -r 144` output initially showed a clipped Result/Workbench wireframe row; existing full PDF regression test also failed before this branch’s content change | Result/Workbench wireframe을 4개 좁은 행에서 3개 충분한 높이 행으로 수정하고 re-export/re-render. stale test expected `PDF_FINAL_REVIEW_PENDING`, but fresh `origin/main` Master GDD had already moved to semantic `final Human Blueprint PDF review`; assertion을 current main fact로 교정 | re-rendered Result/Workbench page has no overlap. focused integrated test `1/1` and legacy PDF suite `9/9` pass. stale test was traced to `6d695768`, while Master GDD changed by #139; restoring old state was **REJECT** | PASS — visual clipping corrected; regression expectation current |
 | 5 | 다운로드 경로/manifest/reader navigation이 current artifact를 가리키면서도 runtime/Human proof를 과장하지 않는가? | README, Documentation Map, PDF_EXPORT, Screen Blueprint, ACTIVE_CONTEXT, visual handoff, manifest all route to one new `exports/` file; `pdfinfo`/pypdf/readback complete | GitHub blob + raw-download routes are recorded for post-main use. `CURRENT_ON_BRANCH_PENDING_MAIN_PUBLICATION` is retained until exact CI/merge/readback; no false `CURRENT_ON_MAIN` claim | external hosting/SaaS is cost/dependency increase로 **REJECT**. `pdfinfo`: 38 pages/A4/not encrypted; 38/38 render, 0 zero-byte; front matter + every new companion + representative first/last historical pages visually inspected | PASS — download route and evidence ceiling honest |
+| 6 | GitHub가 50 MiB 초과 artifact를 경고해도, 원본 visual asset을 바꾸지 않고 다운로드 경로를 가볍게 유지하는가? | 최초 integrated PDF는 `53,699,895` bytes (51.21 MiB)로 push는 됐지만 GitHub 권고선보다 컸다 | opaque reference만 PDF composer 메모리 안에서 최대 1600px/JPEG quality 94로 encoding하고, alpha title/encounter asset과 모든 source PNG bytes/SHA/provenance는 보존 | Git LFS는 새 저장 의존성과 reader friction을 늘리므로 **REJECT**. 새 artifact `35,265,832` bytes (33.63 MiB), focused test의 `<50 MiB` contract, 38-page re-render와 5-page targeted visual inspection | PASS — source asset 불변, artifact 17.58 MiB 감소 |
 
 ## Evidence record
 
@@ -35,15 +36,15 @@ future regeneration을 모두 다시 공격한다.
 | Fresh repository/Base authority read | PASS | fetched `origin/main` `16cf7a6…`, latest Base remote `aaa94caf…`, project AGENTS, existing publication contract, screen Blueprint, visual handoff, asset owner tables read before mutation |
 | External implementation research | PASS | current GitHub Docs confirms repository file/raw download routing; selection remains repository-owned binary rather than external host |
 | TDD RED | PASS | `test_export_integrated_human_blueprint_pdf.py` first failed because the composer did not exist |
-| Focused integrated exporter | PASS | `1/1`; temporary real PDF output checks header, page count, retained 28-page source, and integration copy |
+| Focused integrated exporter | PASS | `1/1`; temporary real PDF output checks header, <50 MiB size, page count, retained 28-page source, and integration copy |
 | Existing Human PDF exporter suite | PASS | `9/9`; one stale source assertion was root-caused against fresh `origin/main`, then corrected to current Master GDD language |
-| Manifest/static | PASS | JSON parser, expected path presence, exact artifact/source/asset SHA checks, `git diff --check` |
+| Manifest/static | PASS | JSON parser, expected path presence, exact artifact/composer/test/asset SHA checks, original 28-page extracted-text equivalence, <50 MiB check, `git diff --check` |
 | PDF structure | PASS | `pdfinfo` and pypdf: 38 pages, landscape A4, unencrypted, metadata present; historical source starts at page 4 |
-| Render | PASS | `pdftoppm -png -r 144`: `38/38`, zero-byte pages `0`; no blank new page observed |
-| Codex visual review | PASS | guide pages 1–3, historical pages 4 and 31, and companion pages 32–38 were directly rendered/inspected; Result wireframe clipping was corrected before clean exit |
+| Render | PASS | final `pdftoppm -png -r 144`: `38/38`, zero-byte pages `0`; no blank new page observed |
+| Codex visual review | PASS | final output guide cover, Title, Battle HUD, Result/Workbench and evidence pages were directly re-rendered/inspected; first-pass Result wireframe clipping was corrected before clean exit |
 | Godot runtime/render/input | NOT_RUN | no Godot runtime behavior was changed by this PDF-only package |
 | Human Usability / Player Experience / device/export / release | NOT_RUN | PDF visual inspection is not player, accessibility, device, or release validation |
-| Remote CI / merge / post-main readback | NOT_RUN | required next delivery gates; candidate is not yet a main artifact |
+| Remote CI / merge / post-main readback | NOT_RUN | PR #145 exists; exact-head CI, regular merge, and main readback are the remaining delivery gates |
 
 ## Clean-exit boundary and remaining delivery work
 

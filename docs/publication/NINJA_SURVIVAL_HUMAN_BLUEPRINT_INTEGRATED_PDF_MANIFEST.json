@@ -21,18 +21,19 @@
   },
   "composer": {
     "path": "tools/export_integrated_human_blueprint_pdf.py",
-    "sha256": "2c528bda8b91fc41735bb84e2cda14f1884ca25b2e70311abdb3a30751263a57",
+    "sha256": "269ce11242ceae0e92c5630d86069a6ff5cd6216afd8ea70cde05dfd011c6d79",
     "test_path": "tools/test_export_integrated_human_blueprint_pdf.py",
-    "test_sha256": "485e344ab8e1733540f759eadd9592731cceb581066bd02a97bea2a701572c27",
+    "test_sha256": "38c23e5e838e83f2127ff69e1d25fd29ff433d1b8817ee226af3928abe6aeb7c",
     "runtime": "bundled Python 3 + ReportLab 4.4.9 + pypdf 6.14.2 + Pillow 12.3.0",
     "korean_font_requirement": "Windows Malgun Gothic regular/bold",
-    "atomic_output_policy": "compose companion to temporary PDF, write final to .tmp, validate header/page count, then replace output"
+    "atomic_output_policy": "compose companion to temporary PDF, write final to .tmp, validate header/page count, then replace output",
+    "pdf_only_image_encoding": "opaque visual references are downsampled to a 1600px maximum edge and JPEG quality 94 in memory; source PNG bytes and provenance remain unchanged; alpha assets stay source PNG"
   },
   "artifact": {
     "path": "exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf",
-    "sha256": "c3761aa5a31e43b6934f22271aa80965aeecd66fb65ec2929c83269065433295",
-    "generated_at": "2026-09-02T09:42:51+09:00",
-    "byte_size": 53699895,
+    "sha256": "dff66d9e1937d2e1335406cf82d16f18a9309715c30a6b355a107aeade2931a0",
+    "generated_at": "2026-09-02T10:02:28+09:00",
+    "byte_size": 35265832,
     "page_count": 38,
     "page_size": "landscape A4",
     "structure": {

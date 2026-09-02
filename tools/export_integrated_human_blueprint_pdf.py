@@ -11,9 +11,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import re
+from io import BytesIO
 from dataclasses import dataclass
 from pathlib import Path
 
+from PIL import Image
 from pypdf import PdfReader, PdfWriter
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4, landscape
@@ -33,6 +35,8 @@ HISTORICAL_PAGE_COUNT = 28
 GUIDE_PAGE_COUNT = 3
 VISUAL_COMPANION_PAGE_COUNT = 7
 COMPANION_PAGE_COUNT = GUIDE_PAGE_COUNT + VISUAL_COMPANION_PAGE_COUNT
+PDF_IMAGE_MAX_EDGE = 1600
+PDF_IMAGE_JPEG_QUALITY = 94
 
 NAVY = colors.HexColor("#081426")
 PANEL = colors.HexColor("#132741")
@@ -173,7 +177,7 @@ def draw_image_fit(
     """이미지를 비율 보존으로 page slot에 배치한다. source PNG는 수정하지 않는다."""
     canvas.setFillColor(fill)
     canvas.roundRect(x, y_bottom, width, height, 9, fill=1, stroke=0)
-    image = ImageReader(str(path))
+    image = image_reader_for_pdf(path)
     image_width, image_height = image.getSize()
     scale = min((width - 12) / image_width, (height - 12) / image_height)
     rendered_width = image_width * scale
@@ -187,6 +191,31 @@ def draw_image_fit(
         mask="auto",
         preserveAspectRatio=True,
     )
+
+
+def image_reader_for_pdf(path: Path) -> ImageReader:
+    """PDF 안에서만 opaque visual reference를 적정 해상도 JPEG로 압축한다.
+
+    원본 PNG bytes와 provenance는 바꾸지 않는다. 화면 도식은 PDF slot의 실제 표시
+    해상도보다 과도하게 큰 source raster를 그대로 넣지 않아 GitHub raw-download
+    경로가 50 MiB 권고치를 넘지 않도록 한다. alpha가 있는 title/encounter asset은
+    투명도와 silhouette을 보존하기 위해 source PNG를 그대로 쓴다.
+    """
+    with Image.open(path) as source:
+        if source.mode != "RGB":
+            return ImageReader(str(path))
+        image = source.copy()
+    image.thumbnail((PDF_IMAGE_MAX_EDGE, PDF_IMAGE_MAX_EDGE), Image.Resampling.LANCZOS)
+    encoded = BytesIO()
+    image.save(
+        encoded,
+        format="JPEG",
+        quality=PDF_IMAGE_JPEG_QUALITY,
+        optimize=True,
+        progressive=True,
+    )
+    encoded.seek(0)
+    return ImageReader(encoded)
 
 
 def draw_footer(canvas: Canvas, page_number: int, label: str) -> None:
