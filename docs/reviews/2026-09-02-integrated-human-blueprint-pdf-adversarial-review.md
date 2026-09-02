@@ -9,7 +9,7 @@ candidate_source_commit: cc40626c2158d561e94d1689d9b9c20e7b79da9e
 new_runtime_code: false
 new_image_binary: false
 required_full_loops: 5
-status: CLEAN_ON_BRANCH_PR_145_PENDING_EXACT_HEAD_CI_MERGE_AND_MAIN_READBACK
+status: CLEAN_PR_145_MERGED_ARTIFACT_MAIN_READBACK_E39ADE1CEF351ED0323FD450F051EA3439D706C0
 ```
 
 ## 검토 기준
@@ -44,13 +44,12 @@ future regeneration을 모두 다시 공격한다.
 | Codex visual review | PASS | final output guide cover, Title, Battle HUD, Result/Workbench and evidence pages were directly re-rendered/inspected; first-pass Result wireframe clipping was corrected before clean exit |
 | Godot runtime/render/input | NOT_RUN | no Godot runtime behavior was changed by this PDF-only package |
 | Human Usability / Player Experience / device/export / release | NOT_RUN | PDF visual inspection is not player, accessibility, device, or release validation |
-| Remote CI / merge / post-main readback | NOT_RUN | PR #145 exists; exact-head CI, regular merge, and main readback are the remaining delivery gates |
+| Remote CI / merge / post-main artifact readback | PASS | PR #145 exact head `84ce02e…` passed `gut` and `Windows internal build artifact`; regular squash merge `e39ade1…`; fresh `origin/main` worktree readback confirms 38-page `dff66d9…` artifact at `35,265,832` bytes |
 
 ## Clean-exit boundary and remaining delivery work
 
-No validated `MUST_FIX` remains within the **branch-local PDF composition and
-documentation-route** scope. The only remaining required work is delivery
-routing: branch commit/push → PR → exact-head GitHub CI → regular merge → fresh
-main source/artifact readback → small receipt update changing pending publication
-status to current-on-main. No user product-meaning decision is needed for that
-remaining delivery sequence.
+No validated `MUST_FIX` remains within the **PDF composition, documentation-route,
+and artifact publication** scope. PR #145 delivery completed; this small receipt
+updates the state router/manifest to the exact main readback. Its own documentation
+commit still follows ordinary branch/PR/CI/merge hygiene, but no new product
+artifact, runtime code, image binary, or player-facing meaning is introduced.
