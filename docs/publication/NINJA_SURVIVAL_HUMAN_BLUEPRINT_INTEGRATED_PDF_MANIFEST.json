@@ -2,7 +2,7 @@
   "schema_version": 1,
   "document_id": "NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902",
   "role": "DOWNLOADABLE_INTEGRATED_HUMAN_REVIEW_DERIVATIVE",
-  "sync_status": "CURRENT_ON_BRANCH_PENDING_MAIN_PUBLICATION",
+  "sync_status": "ARTIFACT_CURRENT_ON_MAIN_POST_READBACK_E39ADE1CEF351ED0323FD450F051EA3439D706C0",
   "publication_policy": "ALWAYS_SYNC_ON_INTEGRATION_COMPOSER_OR_INCLUDED_CURRENT_VISUAL_ROUTE_CHANGE",
   "reader_purpose": "Preserves the historical 28-page Human Blueprint and combines it with current-main wireframes, flow maps, and user-locked visual references in one downloadable PDF.",
   "baseline": {
@@ -45,6 +45,14 @@
     "github_routes_after_main_merge": {
       "blob": "https://github.com/alsdmlals4-eng/ninja-survival-godot/blob/main/exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf",
       "download": "https://raw.githubusercontent.com/alsdmlals4-eng/ninja-survival-godot/main/exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf"
+    },
+    "main_publication_readback": {
+      "pull_request": 145,
+      "merge_commit": "e39ade1cef351ed0323fd450f051ea3439d706c0",
+      "main_readback_commit": "e39ade1cef351ed0323fd450f051ea3439d706c0",
+      "artifact_sha256": "dff66d9e1937d2e1335406cf82d16f18a9309715c30a6b355a107aeade2931a0",
+      "artifact_byte_size": 35265832,
+      "status": "VERIFIED_ON_ORIGIN_MAIN"
     }
   },
   "reused_locked_assets": [
@@ -120,7 +128,7 @@
     }
   ],
   "validation": {
-    "focused_export_test": "PASSED: 1/1; red state first failed because the composer was absent, then real temporary PDF output passed header/page/preservation/integration checks",
+    "focused_export_test": "PASSED: 1/1; red state first failed because the composer was absent, then real temporary PDF output passed <50 MiB/header/page/preservation/integration checks",
     "pdfinfo": "PASSED: opens, 38 pages, landscape A4, not encrypted",
     "pypdf": "PASSED: 38 pages; page 4 begins preserved historical 28-page source; title/subject metadata present",
     "render_command": "pdftoppm -png -r 144",
