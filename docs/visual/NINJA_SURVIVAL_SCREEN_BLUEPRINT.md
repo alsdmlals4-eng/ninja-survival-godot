@@ -2,13 +2,21 @@
 
 ```yaml
 blueprint_id: NS-BLUEPRINT-001
-status: CURRENT_BLUEPRINT_PREPRODUCTION
+status: CURRENT_MAIN_RECONCILED_SCREEN_ATLAS_CANDIDATE
+revision: 2
 created_at: 2026-09-01 KST
-baseline_main: afbba903d5fcf32b8ecc8082c59baecb01e895c5
-scope: screen_flow_wireframe_consumer_linkage
-package_kind: DOCUMENTATION_PREPRODUCTION_ONLY
+reconciled_at: 2026-09-02 KST
+baseline_main: 477ac7343bd655278d4f045d3152f6b7e4214062
+scope: human_reader_route_screen_flow_wireframe_consumer_linkage
+package_kind: DOCUMENTATION_CURRENT_MAIN_RECONCILIATION
 new_image_binary: NOT_CREATED
-reused_visual_reference: SCRREF-BATTLE-AUTOCOMBAT-03
+reused_visual_references:
+  - SCRREF-SCHOOL-SELECT-02
+  - SCRREF-BATTLE-AUTOCOMBAT-03
+  - SCRREF-WORKBENCH-02
+  - SCRREF-RESULT-02
+  - SCRREF-GAME-OVER-02
+source_machine_evidence: CURRENT_MAIN_SCENE_SCRIPT_TEST_READBACK
 runtime_render_evidence: NOT_RUN
 human_play_evidence: NOT_RUN
 device_export_evidence: NOT_RUN
@@ -17,10 +25,10 @@ device_export_evidence: NOT_RUN
 ## 1. 역할·정본 경계·읽는 순서
 
 이 문서는 **플레이어가 어떤 화면에서 무엇을 보고, 무엇을 선택하며, 다음
-화면으로 어떻게 넘어가는지**를 편집 가능한 text-native 형태로 보여 주는
-블루프린트다. Mermaid 플로우와 고정폭 와이어프레임은 이후 Godot `Control`,
-`CanvasLayer`, Scene, asset consumer, 테스트로 번역할 수 있는 설명 원본이며,
-픽셀 이미지나 런타임 구현 사실을 대체하지 않는다.
+화면으로 어떻게 넘어가는지**를 보여 주는 현재-main 기준 화면 아틀라스다.
+Mermaid 플로우와 고정폭 와이어프레임은 Godot `Control`, `CanvasLayer`, Scene,
+asset consumer, 테스트의 관계를 설명한다. 다만 pixel capture, 실제 runtime render,
+Human/device 증거를 대신하지 않는다.
 
 이 문서는 다음을 소유하지 않는다.
 
@@ -36,7 +44,27 @@ device_export_evidence: NOT_RUN
 | 현재 재개 지점과 증거 한계 | [`ACTIVE_CONTEXT.md`](../ACTIVE_CONTEXT.md) |
 | 화면 커버리지/실제 소비처 | [`SCREEN_SURFACE_AND_VISUAL_COVERAGE.md`](SCREEN_SURFACE_AND_VISUAL_COVERAGE.md) |
 | 시각 방향·잠금 자산·후속 시각 게이트 | [`CURRENT_VISUAL_HANDOFF.md`](../CURRENT_VISUAL_HANDOFF.md) |
+| 사람용 전체 여정·핵심 재미·가방 선택 설명 | [`NINJA_SURVIVAL_HUMAN_GDD.md`](../design/NINJA_SURVIVAL_HUMAN_GDD.md), [28쪽 Human Blueprint PDF](../../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf) |
 | 실제 행동 | `scenes/**`, `scripts/**`, `data/**`, `tests/**` |
+
+### 먼저 이렇게 읽는다 — 이전 Blueprint를 보존하는 열람 경로
+
+이 문서가 28쪽 사람용 Blueprint/PDF를 대체하거나 줄인 것이 아니다. PDF와
+`NINJA_SURVIVAL_HUMAN_GDD.md`는 플레이어 판타지·장르·Stage 여정·무기와 인법·가방
+성장·조합/Fate를 순서대로 읽는 **상세 독자용 원본**이다. 이 문서는 그 원본의
+화면 단위를 실제 현재-main Scene/Script와 잠금된 화면 참조로 다시 연결하는
+**현재 상태 atlas**다.
+
+| 보고 싶은 것 | 먼저 볼 문서 | 이어서 확인할 것 | 현재 증거 경계 |
+| --- | --- | --- | --- |
+| 게임을 처음 이해하는 전체 흐름 | [28쪽 Human Blueprint PDF](../../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf) | `NINJA_SURVIVAL_HUMAN_GDD.md` | 문서/설계 snapshot; human play PASS가 아님 |
+| 한 화면의 우선순위와 전환 | 이 Screen Blueprint의 wireframe·flow | 아래 Visual Atlas와 `scenes/**` | current-main source/machine scope; live render 별도 |
+| 실제 이미지 상태·승인·hash | `CURRENT_VISUAL_HANDOFF.md`와 asset manifest | `screen-references/README.md` | planning reference는 runtime texture가 아님 |
+
+> **시간축 주의.** 28쪽 PDF는 당시의 사람용 검수 snapshot을 보존한다. 그 안의
+> “다음 runtime migration” 문구는 이후 PR #139와 현재 `main`에 합쳐진 Title,
+> Stage/Phase, 3×3 start의 구현 상태를 되돌리지 않는다. 현재 runtime 사실은 이
+> 문서의 consumer 표와 실제 Scene/Script/Test가 소유한다.
 
 ### 현재 범위와 증거 한계
 
@@ -174,6 +202,41 @@ stateDiagram-v2
 현재 이 Blueprint package에서 `new_image_binary: NOT_CREATED`다. 이 문서는
 새 image binary, provenance, runtime texture를 만들거나 바꾸지 않는다.
 
+### Visual Atlas — 이미 잠금된 화면 참조를 다시 한눈에 본다
+
+아래는 새로 만든 이미지를 채운 보드가 아니다. 기존에 승인/잠금된 원본을
+Markdown 문서 소비처로 다시 연결한 것이다. 각 이미지의 SHA-256·승인 상태·원본
+경로는 [`screen-references/README.md`](screen-references/README.md)와 visual handoff가
+소유한다. **모두 planning reference이며 Godot texture가 아니다.**
+
+| 화면 | 사람에게 보여 주는 질문 | 잠금 참조 | current-main surface / 검증 경계 |
+| --- | --- | --- | --- |
+| 다음 Stage 선택 | “어떤 위험 방식을 고를까?” | `SCRREF-SCHOOL-SELECT-02` | `Main/SchoolSelectionUI`; source/machine surface, live focus/readability `NOT_RUN` |
+| 자동전투 전장 | “어디로 빠지고 어떤 군집을 유도할까?” | `SCRREF-BATTLE-AUTOCOMBAT-03` | `Main`, HUD, actor runtime; live composition/crowd feel `NOT_RUN` |
+| Result → Workbench | “무엇을 얻었고 무엇을 배치할까?” | `SCRREF-WORKBENCH-02` | `RestFlowUI/WorkbenchView`; pointer/touch/gamepad UX `NOT_RUN` |
+| 결과·보상 | “방금 얻은 보상이 다음 판단에 어떻게 연결되나?” | `SCRREF-RESULT-02` | `RestFlowUI/ResultView`; Human comprehension `NOT_RUN` |
+| 실패·재도전 | “왜 멈췄고 어디서 다시 시작하나?” | `SCRREF-GAME-OVER-02` | `HUD/GameOverPanel`; target-resolution visual review `NOT_RUN` |
+
+#### Stage 선택
+
+![다음 Stage 선택의 잠금 화면 참조](screen-references/scrref-school-select-v2-sd.png)
+
+#### 자동전투 — 연속 바닥과 접지된 군중
+
+![자동전투 연속 바닥의 잠금 화면 참조](screen-references/scrref-battle-autocombat-continuous-floor-v3.png)
+
+#### Workbench — 보상에서 가방·경로·Fate 확정으로
+
+![Workbench의 잠금 화면 참조](screen-references/scrref-workbench-v2-sd.png)
+
+#### Result
+
+![결과와 보상의 잠금 화면 참조](screen-references/scrref-result-v2-sd.png)
+
+#### Game Over
+
+![실패와 재도전의 잠금 화면 참조](screen-references/scrref-game-over-v2-topdown-sd.png)
+
 ### 2026-09-02 visual-board approval — title hierarchy correction
 
 The review-only title/Stage/combat/Workbench board was used to make the
@@ -190,11 +253,11 @@ evidence.
 
 ## 6. 다음 구현·검증 Gate
 
-| 다음 작업 | 시작 조건 | 이 블루프린트가 제공하는 입력 | 아직 필요한 증거 |
+| 작업/검증 | 현재 상태·시작 조건 | 이 블루프린트가 제공하는 입력 | 아직 필요한 증거 |
 | --- | --- | --- | --- |
-| Stage/Phase와 3×3 가방 runtime migration | DEC-037 이행 범위 별도 승인 | 공개 용어·화면 상태·3×3 가시화 wireframe | data/save/resolver/UI/test/runtime evidence |
-| Title/Continue/각성/도감 | 별도 현재-main package 승인 | title hierarchy, modal, dynamic text/UI boundary | exact branch/PR/head tests, runtime render/input |
-| Battle HUD/telegraph implementation | 실제 HUD consumer 범위 승인 | top-only visibility matrix, event priority, forbidden clutter | Godot parse/smoke, live render/input, Human readability |
+| Stage/Phase와 3×3 시작 가방 current-main readback | PR #139 이후 current `main` Scene/Script/Test와 DEC-037을 함께 읽는다 | 공개 용어·화면 상태·3×3 가시화 wireframe | exact Workbench visual/input path, touch/gamepad, Human decision value |
+| Title/Continue/각성/도감/조작/설정/종료 readback | `Main/TitleScreen`과 title integration tests를 함께 읽는다 | title hierarchy, modal, dynamic text/UI boundary | target-resolution render, full keyboard/controller/touch modal UX, Human readability |
+| Battle HUD/telegraph human slice | current `Main/HUD` consumer와 encounter owner가 존재 | top-only visibility matrix, event priority, forbidden clutter | live render/input, actual telegraph fairness, crowd performance, Human readability |
 | New image asset | actual visual gap 확인 | brief placement, existing-source reuse decision | one candidate + user lock + provenance + import |
 | Human vertical slice | exact playable candidate | questions for readability, Dash, Trace, Workbench, Korean copy | E6 human playtest; currently NOT_RUN |
 
@@ -235,8 +298,8 @@ evidence.
 | 정보 우선순위 | wordmark → 작은 별도 메달 → 현재 포커스 action → 이어하기 상태 → Key Art. |
 | keyboard/controller | 새 게임 기본 focus → 이어하기 → 각성 → 도감 → 조작 방법 → 설정 → 종료. Modal은 첫 안전 action으로 focus하고 닫으면 origin으로 복귀. |
 | pointer/touch | action 전체가 누를 수 있는 Control이며 backdrop은 pointer를 가로채지 않는다. Modal backdrop만 뒤 입력을 막는다. |
-| actual consumer | `PLANNED_CONSUMER`. PR #135의 `TitleScreen`/title assets은 read-only implementation reference이며 현재-main 구현 증거가 아니다. |
-| evidence | `E0_CONTRACT` wireframe only. title runtime/input/Human evidence is `NOT_RUN`. |
+| actual consumer | `Main/TitleScreen` → [`scenes/ui/title_screen.tscn`](../../scenes/ui/title_screen.tscn), with `MainController` as the Run/save/exit owner. PR #135 itself stays historical/read-only; its current-main reconciliation is PR #139. |
+| evidence | scene/script/test current-main readback and prior exact-head machine CI exist. Target-resolution render, full controller/touch modal route, Human readability and device evidence remain `NOT_RUN`. |
 
 ### `BP-SCHOOL-SELECT-01` — 다음 위험 선택
 
@@ -379,7 +442,7 @@ normal combat HUD
 | keyboard/controller | item/bag focus → board cell focus → rotate/place/cancel → REST → route → Fate → commit. |
 | pointer/touch | drag/tap/rotate 대안이 필요하지만 현재 touch/gamepad visual proof는 `NOT_RUN`. |
 | actual consumer | `RestFlowUI/WorkbenchView`, `BackpackState`, resolver/session, Route/Fate owners. |
-| evidence | atomic domain/machine scope exists. exact 3×3 runtime migration, touch/gamepad usability, placement UX, Human decision value는 `NOT_RUN`. |
+| evidence | `BackpackState.create_starting_state()` and its current unit contract establish the centered 3×3 active area; atomic domain/machine scope exists. Exact Workbench visual/input path, touch/gamepad usability, placement UX and Human decision value는 `NOT_RUN`. |
 
 ## 8. HUD 가시성 계약
 
@@ -401,9 +464,9 @@ normal combat HUD
 
 | Screen | keyboard/controller | pointer/touch | focus/feedback | evidence ceiling |
 | --- | --- | --- | --- | --- |
-| `BP-TITLE-01` | vertical menu, modal focus trap/restore | button hit target, modal backdrop block | selected/disabled/confirm states | planned / `NOT_RUN` runtime |
+| `BP-TITLE-01` | vertical menu and current modal focus/restore contracts | button hit target and modal backdrop block | selected/disabled/confirm states | current-main machine surface; target-resolution/controller/touch/Human `NOT_RUN` |
 | `BP-SCHOOL-SELECT-01` | four-card move + help restore | card/help tap | selected vs provisional clarity | partial machine / visual `NOT_RUN` |
-| `BP-BATTLE-HUD-01` | movement + Dash + pause/settings | movement/Dash equivalent requires later validation | Dash charge, hit-only HP, event cue | runtime composition `NOT_RUN` |
+| `BP-BATTLE-HUD-01` | movement + Dash; HUD settings intent is runtime-owned | movement/Dash equivalent requires later validation | Dash charge, hit-only HP, event cue | current scene/machine scope; runtime composition/Human `NOT_RUN` |
 | `BP-TRACE-GATE-01` | battle path unchanged | battle path unchanged | Elite/Trace/Boss state change | lifecycle machine / live read `NOT_RUN` |
 | `BP-RESULT-01` | primary action then safe back | Control card/action | source-to-Workbench handoff | machine surface / Human `NOT_RUN` |
 | `BP-WORKBENCH-01` | item → board → REST → route → Fate → commit | drag/tap/rotate path required | legal/illegal/preview/pending/commit states | domain machine / input UX `NOT_RUN` |
@@ -417,12 +480,12 @@ manifest이며, 여기서는 그 역할을 복제하지 않는다.
 
 | Blueprint screen | Godot consumer | surface mode | existing visual/text input | missing state / boundary | evidence ceiling |
 | --- | --- | --- | --- | --- | --- |
-| `BP-TITLE-01` | planned `TitleScreen`; PR #135 reference only | `PLANNED_CONSUMER`, `GODOT_UI`, `TEXT_LAYER`, existing title raster lineage | user-approved wordmark, four-piece medal, moonlit key-art backdrop in read-only title package | current `main` title consumer 없음; 새 key art/medal 생성 금지 | contract only; runtime/input `NOT_RUN` |
+| `BP-TITLE-01` | `Main/TitleScreen` → `scenes/ui/title_screen.tscn`; `MainController` connects new/continue/quit and resume state | `CURRENT_MAIN_CONSUMER`, `GODOT_UI`, `TEXT_LAYER`, existing title raster lineage | user-approved wordmark, four-piece medal, moonlit key-art backdrop; dynamic action/modal UI is Godot Control | no title-screen screenshot is substituted for actual live render; new key art/medal 생성 금지 | source/test and exact-head machine CI; target render/input/Human `NOT_RUN` |
 | `BP-SCHOOL-SELECT-01` | `Main/SchoolSelectionUI` | `GODOT_UI`, `TEXT_LAYER`, `PLANNING_REFERENCE` | existing school-select v2 screen reference; four equal symbols/help dialog | final focus scale and touch/gamepad cue are unverified | machine/UI surface; visual `NOT_RUN` |
 | `BP-BATTLE-HUD-01` | `Main`, `Main/HUD`, player/enemy/projectile/field actors | `GODOT_UI`, `TEXT_LAYER`, `EXISTING_APPROVED_RASTER`, `PLANNING_REFERENCE`, `RUNTIME_VFX` | `SCRREF-BATTLE-AUTOCOMBAT-03`; runtime floor/prop/contact-shadow/player/enemy core lineage | live layering, horde density, Dash feel, target-size readability | source/consumer only; runtime/visual/Human `NOT_RUN` |
 | `BP-TRACE-GATE-01` | encounter lifecycle + HUD feedback | `GODOT_UI`, `TEXT_LAYER`, `RUNTIME_VFX` | existing event/lifecycle and feedback owners | Elite/Boss telegraph animation and actual pattern readability need future proof | machine lifecycle only; live/Human `NOT_RUN` |
 | `BP-RESULT-01` | `RestFlowUI/ResultView` | `GODOT_UI`, `TEXT_LAYER`, `PLANNING_REFERENCE` | result v2 screen reference; dynamic result control tree | reward selection/placement is not made true by an image | machine surface; UX `NOT_RUN` |
-| `BP-WORKBENCH-01` | `RestFlowUI/WorkbenchView`, `BackpackState`, resolver/session, Route/Fate | `GODOT_UI`, `TEXT_LAYER`, `PLANNING_REFERENCE` | Workbench v2 screen reference; board/cards/controls come from snapshots | exact 3×3 UI migration, pointer/touch/gamepad usability, full placement loop | domain/machine scope; runtime/Human `NOT_RUN` |
+| `BP-WORKBENCH-01` | `RestFlowUI/WorkbenchView`, `BackpackState`, resolver/session, Route/Fate | `GODOT_UI`, `TEXT_LAYER`, `PLANNING_REFERENCE` | Workbench v2 screen reference; board/cards/controls come from snapshots; state starts with centered 3×3 active area | pointer/touch/gamepad usability, full placement loop and Human decision value | domain/current 3×3 unit scope; runtime/Human `NOT_RUN` |
 
 ### 시각 입력 ledger
 
@@ -431,7 +494,7 @@ manifest이며, 여기서는 그 역할을 복제하지 않는다.
 | continuous floor, sparse props, contact shadows | `REUSE_LOCKED_REFERENCE` + existing runtime source lineage | `SCRREF-BATTLE-AUTOCOMBAT-03`; `Main/BattlefieldBackdrop/FloorTile`, `Main/BattlefieldProps`, actor ground shadows | the locked reference already owns the desired open-floor/grounded-unit composition. This package makes no duplicate background/HUD image. |
 | fixed ninja, corrupted ninja/yokai Core, Elite, Boss | `EXISTING_APPROVED_RASTER` | player/enemy/Boss Sprite2D consumers and approved visual-core manifest | visual state gaps must be proven against an actual state consumer; no generic new enemy sheet is requested here. |
 | Japanese sword, shuriken, starting ninjutsu read | `RUNTIME_VFX` + current actor behavior | battle actors and effect owners | distance/effect readability is a runtime composition question, not a button icon request. |
-| wordmark, four-piece medal, key-art backdrop | `EXISTING_APPROVED_TITLE_LINEAGE` | planned release title surface; PR #135 is read-only | title imagery exists in a separate candidate package; no replacement art or automatic merge is authorized. |
+| wordmark, four-piece medal, key-art backdrop | `EXISTING_APPROVED_TITLE_LINEAGE` | `Main/TitleScreen/LogoLockup`, `TitleMedal`, and title backdrop; PR #135 itself remains historical/read-only | title imagery is an existing current-main runtime lineage; the 2026-09-02 reduced medal box is preserved. No replacement art is authorized. |
 | menu buttons, settings, modal copy, Codex tabs, result cards, Workbench controls | `GODOT_UI` + `TEXT_LAYER` | title/selection/HUD/Rest Flow Controls | values, disabled reasons, Korean localization, focus, and input state must remain dynamic. |
 | Elite/Boss warnings and pattern shapes | `RUNTIME_VFX` + `GODOT_UI` | active encounter/HUD only | only active threat needs a spatial telegraph; a static whole-screen PNG would be inaccurate. |
 | `SCRREF-BATTLE-HORDE-HUD-01` | `DO_NOT_CREATE_DUPLICATE` | none | its proposed role is already covered by user-locked `SCRREF-BATTLE-AUTOCOMBAT-03`. |

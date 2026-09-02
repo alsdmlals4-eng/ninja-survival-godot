@@ -1,9 +1,9 @@
 # Ninja Survival Screen Surface & Visual Coverage
 
 > Issue: [#93](https://github.com/alsdmlals4-eng/ninja-survival-godot/issues/93)
-> Scope date: 2026-08-27 KST
-> Repository baseline read: `1841041055026c4f6b211447488a682b914a57b6`
-> Status: `SCREEN_INVENTORY_HANDOFF_READY_FOR_DEFERRED_HUMAN_SLICE`
+> Scope date: 2026-08-27 KST; current-main reconciliation: 2026-09-02 KST
+> Repository baseline read: `477ac7343bd655278d4f045d3152f6b7e4214062`
+> Status: `SCREEN_INVENTORY_CURRENT_MAIN_RECONCILED_HUMAN_SLICE_DEFERRED`
 > This is the project-local canonical screen-first coverage owner. It is
 > subordinate to product canon and links existing asset manifests rather than
 > replacing their approval, provenance, or lifecycle authority.
@@ -14,8 +14,8 @@ The user explicitly requested that missing visual work be produced after a
 screen-first audit. This amendment supersedes the earlier audit's
 `NO_AUTOMATIC_IMAGE_GENERATION_FROM_GAPS` boundary **only for the five current
 P0 whole-screen design references**. It does not authorize an orphan runtime
-texture, a replacement of an approved runtime image, or a title/save/final
-screen that has no current consumer.
+texture, a replacement of an approved runtime image, or a future screen that
+has no current consumer.
 
 The initial v1 reference set was rejected before merge because it used a
 poster-like, adult-proportion composition rather than the actual top-down SD
@@ -53,12 +53,15 @@ rules; they do not prove an implemented HUD or live render.
 
 The current target is the **Cheonsul release-near machine vertical slice**:
 
-`launch Main -> select a starting school -> Cheonsul battlefield -> Elite -> Trace -> Boss -> Result / Boss reward pending -> Persistent Workbench -> provisional next-route and Fate intent`.
+`launch Main -> Title -> new game or safe checkpoint continue -> select a starting school -> Cheonsul battlefield -> Elite -> Trace -> Boss -> Result / Boss reward pending -> Persistent Workbench -> provisional next-route and Fate intent`.
 
-The target is not the full four-school release, title/save shell, final binding,
-final calamity, platform release, or a Human-validated player experience. The
-last product implementation is T16's in-combat school-help slice; live render,
-Human Usability, Player Experience, touch/gamepad completion, and device/export
+The target is not the full four-school release, final binding, final calamity,
+platform release, or a Human-validated player experience. Current `main` now
+does include a title front door and bounded checkpoint/continue, Awakening,
+Codex, guide, fullscreen settings, new-game confirmation and quit confirmation
+surfaces. It does **not** thereby gain multi-profile selection, in-combat pause,
+audio/input settings, or a full searchable archive. Live render, Human
+Usability, Player Experience, touch/gamepad completion, and device/export
 evidence remain `NOT_RUN` or user-deferred.
 
 ### Hard boundaries
@@ -83,17 +86,17 @@ actual Godot consumer. Their screen-composition/readability confirmation is
 treated as passed. Therefore current P0 image-production blockers are `0`; the
 explicit deferred validation gate is retained in section 7.
 
-### 2026-09-01 Blueprint continuation link — `NS-BLUEPRINT-001`
+### 2026-09-02 Blueprint current-main reconciliation — `NS-BLUEPRINT-001`
 
 `docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` is the current editable
 player-flow/wireframe/HUD-priority link surface. It does not replace this
 screen-coverage owner, product canon, asset manifests, or runtime evidence.
-The Blueprint reuses the user-locked `SCRREF-BATTLE-AUTOCOMBAT-03` planning
-reference for continuous-floor/top-HUD composition and generated **no** new
-image binary. Its Title surface remains planned while PR #135 is an open
-read-only reference, not current-main runtime evidence. Runtime render,
-Human usability, Player Experience, and device/export evidence remain
-`NOT_RUN`.
+The Blueprint now restores the 28-page Human Blueprint/PDF as its first reader
+route and embeds the existing locked five-reference atlas. It reuses those
+references and generates **no** new image binary. `Main/TitleScreen` is a
+current-main consumer; PR #135 remains historical/read-only while its runtime
+content was reconciled through merged PR #139. Runtime render, Human usability,
+Player Experience, and device/export evidence remain `NOT_RUN`.
 
 ## 2. Target Screen Inventory
 
@@ -103,10 +106,10 @@ not a bitmap to place in the game.
 
 | screen_id | family | priority / stage | entry -> exit | player goal / question | consumer & evidence | coverage status / decision |
 | --- | --- | --- | --- | --- | --- | --- |
-| `SCR-BOOT-DIRECT-MAIN` | Boot / splash / loading | P0 / VERTICAL_SLICE | executable start -> `SCR-SCHOOL-SELECT` | “Can I enter the current test slice?” | `project.godot` -> `scenes/main/main_scene.tscn`; no dedicated boot/loading scene | `COVERED_EXISTING` for direct development entry; release splash/loading is P2 |
-| `SCR-TITLE-MENU` | Main / title menu | P2 / RELEASE | N/A -> N/A | “Start, continue, settings, quit?” | no title/menu scene or consumer | `NOT_APPLICABLE` to the direct-launch current slice; future release-shell requirement |
-| `SCR-SAVE-PROFILE` | New / continue / save load | P2 / RELEASE | N/A -> N/A | “Which saved run do I play?” | no save/profile owner or scene | `NOT_APPLICABLE` to the current no-save slice |
-| `SCR-SCHOOL-SELECT` | Starting build selection | P0 / VERTICAL_SLICE | direct Main start -> school selected / help dismissed | “Which danger-handling school do I start with?” | `Main/SchoolSelectionUI`; `scenes/ui/school_selection_ui.tscn`; four school buttons + Korean help dialog; integration test covers selection/help | `COVERED_EXISTING`; `SCRREF-SCHOOL-SELECT` deferred pending Human-slice visual review |
+| `SCR-BOOT-DIRECT-MAIN` | Boot / splash / loading | P0 / VERTICAL_SLICE | executable start -> `SCR-TITLE-MENU` | “Can I reach a clear front door?” | `project.godot` -> `scenes/main/main_scene.tscn` -> `Main/TitleScreen`; no dedicated boot/loading scene | `COVERED_EXISTING` for direct development entry; release splash/loading is P2 |
+| `SCR-TITLE-MENU` | Main / title menu | P1 / CURRENT_MAIN | `Main/TitleScreen` -> new game / continue / local modal / quit | “Start a run, resume a safe checkpoint, or inspect support information?” | `scenes/ui/title_screen.tscn`, `scripts/ui/title_screen.gd`, `MainController`; title integration contracts | `COVERED_EXISTING` for source/machine surface; target-resolution/Human visual review deferred |
+| `SCR-SAVE-PROFILE` | New / continue / save load | P2 / RELEASE | Title -> checkpoint continue or new-game confirmation | “Can I resume the safe checkpoint or deliberately start over?” | one `RunResumeStore` checkpoint path and Title Continue state; no profile chooser | `PARTIAL`; bounded checkpoint continue is covered, multi-profile/save management remains deferred |
+| `SCR-SCHOOL-SELECT` | Starting build selection | P0 / VERTICAL_SLICE | Title new game -> school selected / help dismissed | “Which danger-handling school do I start with?” | `Main/SchoolSelectionUI`; `scenes/ui/school_selection_ui.tscn`; four school buttons + Korean help dialog; integration test covers selection/help | `COVERED_EXISTING`; `SCRREF-SCHOOL-SELECT` deferred pending Human-slice visual review |
 | `SCR-ROUTE-WORKBENCH` | Hub / route / build preparation | P0 / VERTICAL_SLICE | Boss-clear Workbench -> commit preview or retain pending state | “Which unvisited school and Fate should I prepare for?” | dynamically instantiated `Main/RestFlowUI`, `WorkbenchView`; `scripts/ui/rest_flow_ui.gd`; T12~T14 machine contracts | `COVERED_EXISTING` for runtime contract; `SCRREF-WORKBENCH` deferred; backpack placement/Boss-reward interaction remains an implementation gap |
 | `SCR-BATTLE-CHEONSUL` | Core gameplay / battle | P0 / VERTICAL_SLICE | school selected -> Elite/Trace/Boss/result/game over | “How do I survive and read Cheonsul's status/reaction field?” | `scenes/main/main_scene.tscn` + Player / Enemy / HUD / WaveSpawner / Cheonsul runtime; `BattlefieldBackdrop`; automated Main and slice tests | `COVERED_EXISTING` for actual scene; `SCRREF-BATTLE-CHEONSUL` deferred; live visual readability is `NOT_RUN` |
 | `SCR-SCHOOL-HELP` | Guidance / help overlay | P1 / VERTICAL_SLICE | selection or combat HUD help -> close / return focus | “How does the selected school work?” | `SchoolSelectionUI/HelpDialog`; HUD `SchoolHelpButton`; T15/T16 machine tests | `COVERED_EXISTING`; existing Godot UI/text, no image file required; visible modal confirmation `NOT_RUN` |
@@ -115,13 +118,32 @@ not a bitmap to place in the game.
 | `SCR-FATE` | Fate choice | P0 / VERTICAL_SLICE | result/shop -> Workbench intent | “Which benefit/cost do I accept?” | `RestFlowUI/FateView`; `FateController`; dynamic candidate buttons | `COVERED_EXISTING`; `SCRREF-WORKBENCH` covers its shared full-screen composition |
 | `SCR-NEXT-PREVIEW` | Route preview / transition | P1 / VERTICAL_SLICE | successful commit -> start next combat | “What is my next committed route?” | `RestFlowUI/PreviewView`; current T13 presentation contract | `COVERED_EXISTING` as machine/UI surface; next-school combat start outside Cheonsul slice is not a verified gameplay claim |
 | `SCR-GAME-OVER` | Failure / retry | P0 / VERTICAL_SLICE | player death -> restart | “Why did the run stop and how do I retry?” | `HUD/GameOverPanel` + `RestartButton`; `MainController` game-over path; integration test | `COVERED_EXISTING`; failure copy is present but visual hierarchy review is deferred |
-| `SCR-PAUSE-SETTINGS` | Pause / settings | P1 / PRODUCTION | N/A -> N/A | “Pause, adjust input/audio, return safely?” | no pause/settings scene, menu, or setting system | `GAP_NONBLOCKING`; not needed for direct current machine slice, required before a player-facing production build |
-| `SCR-CODEX-TUTORIAL` | Archive / tutorial | P1 / PRODUCTION | N/A -> N/A | “Where do I re-read mechanics and controls?” | school help is implemented; no archive/search/tutorial surface | `GAP_NONBLOCKING`; help is not a full Codex/archive |
+| `SCR-PAUSE-SETTINGS` | Pause / settings | P1 / PRODUCTION | Title settings modal -> close / restore focus | “Can I change the available display setting before starting?” | Title owns a fullscreen setting modal; no in-combat pause or audio/input settings surface | `PARTIAL`; title fullscreen control is current, in-combat pause and broader settings remain `GAP_NONBLOCKING` |
+| `SCR-CODEX-TUTORIAL` | Archive / tutorial | P1 / PRODUCTION | Title Codex/guide modal -> close / restore focus | “Where can I re-read the basic enemy, ninjutsu, equipment, bag and combination information?” | `TitleScreen` Codex and guide local panels plus school help; no searchable/full discovery archive | `PARTIAL`; current reference panels exist, deep archive/search/tutorial remains `GAP_NONBLOCKING` |
 | `SCR-LOADING-ERROR` | Loading / error / recovery | P1 / PRODUCTION | N/A -> N/A | “What happened and how can I recover?” | one local main scene; no loading, save conflict, offline, or recovery consumer | `NOT_APPLICABLE` to the no-save direct slice; `GAP_NONBLOCKING` for production shell |
 | `SCR-FINAL-BINDING-END` | Final binding / ending / credits | P2 / PLANNED_GAME_SURFACE | future four-school clear -> future final flow | “How does this run conclude?” | product canon only; no current scene/runtime consumer | `DEFERRED_BY_DECISION`; do not create a runtime image queue before its consumer exists |
 | `SCR-DEBUG-ONLY` | Development diagnostics | P2 / DEBUG | developer input -> developer exit | “Can development state be inspected?” | Godot/editor and tests only | `NOT_APPLICABLE` to player-facing visual coverage |
 
 ## 3. Screen -> Asset Coverage Matrix
+
+### `SCR-TITLE-MENU`, `SCR-SAVE-PROFILE`, `SCR-CODEX-TUTORIAL`, `SCR-PAUSE-SETTINGS`
+
+- **Composition / identity:** `Main/TitleScreen` is a full-viewport CanvasLayer.
+  It composes the locked title backdrop, wordmark, separately scaled four-piece
+  medal, and a dynamic action stack. The title runtime uses existing approved
+  assets; the screen-reference folder does not provide a replacement title PNG.
+- **Actions / ownership:** New Game, Continue, Quit and checkpoint/new-game
+  confirmation signals are emitted by `TitleScreen`; `MainController` owns
+  run transition, persisted record handling and exit. Awakening, Codex, guide
+  and fullscreen settings are local Title panels, not an independent Run/save
+  authority.
+- **Implemented boundary:** one safe checkpoint path can enable/disable
+  Continue. This is not a profile chooser, cloud save UI, loading sequence or
+  in-combat pause system.
+- **Evidence:** `test_title_actions.gd`, `test_title_start_gate.gd` and
+  `test_main_title_resume_flow.gd` exercise current machine behavior. A
+  target-aspect rendered title, full controller/touch path, visual readability
+  and player validation remain `NOT_RUN`.
 
 ### `SCR-SCHOOL-SELECT`
 
@@ -198,7 +220,7 @@ not a bitmap to place in the game.
 | `COV-INPUT-01` | keyboard/pointer/touch/gamepad cues | partial | focus implemented; device visual cue unverified | button focus contracts; no glyph asset consumer | `GAP_NONBLOCKING` |
 | `COV-GUIDANCE-01` | school function help | yes | open/close/return focus | HelpDialog + HUD entry | `COVERED_EXISTING` |
 | `COV-OUTCOME-01` | result/reward/failure feedback | yes | result/shop/fate/pending/game-over | RestFlowUI + HUD | `COVERED_EXISTING` for machine surfaces |
-| `COV-MENU-01` | title/save/settings/loading | no for direct slice | N/A | no consumers | `NOT_APPLICABLE` with release-shell follow-up |
+| `COV-MENU-01` | title/checkpoint continue/title fullscreen/Codex-guide/loading | partial | Title normal/modal/continue disabled or enabled; no load scene | `Main/TitleScreen`, `RunResumeStore`; no multi-profile/loading consumer | `PARTIAL`; title surface is covered, profile/loading/in-combat pause remain follow-up |
 | `COV-MARKETING-01` | store/distribution art | no current distribution consumer | N/A | Visual Bible key art only | `DEFERRED_BY_DECISION` |
 
 `PARTIAL` is a state-family assessment, not an approval or image-generation
@@ -249,10 +271,10 @@ composition/readability validation, not another generation pass.
 
 ### Codex implementation handoff
 
-- **Read first:** this file; `docs/ACTIVE_CONTEXT.md`; `docs/CURRENT_CONFIRMED_DECISIONS.md`; `docs/CURRENT_VISUAL_HANDOFF.md`; Notion Flow Map / Visual Bible; and the actual scene/script named by the selected queue row.
-- **Do not implement from this audit alone:** title/save/settings/final binding, remaining-school art, or any new runtime raster asset. They require a separately approved product scope. The v2 files are references only, and must not be promoted as textures.
-- **Current actual consumers:** `scenes/main/main_scene.tscn`, `scenes/ui/school_selection_ui.tscn`, `scenes/ui/hud.tscn`, dynamically instantiated `scenes/ui/rest_flow_ui.tscn`, plus the asset consumers listed in section 5.
-- **Next permitted validation package:** target-aspect live capture of `SCR-SCHOOL-SELECT`, `SCR-BATTLE-CHEONSUL`, `SCR-RESULT/WORKBENCH`, and `SCR-GAME-OVER`; verify focus, disabled/pending states, Korean readability, overlap and safe exit. This is validation, not implementation completion.
+- **Read first:** this file; `docs/ACTIVE_CONTEXT.md`; `docs/CURRENT_CONFIRMED_DECISIONS.md`; `docs/CURRENT_VISUAL_HANDOFF.md`; `docs/migration/notion/MIGRATION_MANIFEST.md` for historical continuity only; and the actual scene/script named by the selected queue row.
+- **Do not implement from this audit alone:** multi-profile/save management, in-combat pause or broad settings, final binding, remaining-school art, or any new runtime raster asset. They require a separately approved product scope. The v2 files are references only, and must not be promoted as textures.
+- **Current actual consumers:** `scenes/main/main_scene.tscn`, `scenes/ui/title_screen.tscn`, `scenes/ui/school_selection_ui.tscn`, `scenes/ui/hud.tscn`, dynamically instantiated `scenes/ui/rest_flow_ui.tscn`, plus the asset consumers listed in section 5.
+- **Next permitted validation package:** target-aspect live capture of `SCR-TITLE-MENU`, `SCR-SCHOOL-SELECT`, `SCR-BATTLE-CHEONSUL`, `SCR-RESULT/WORKBENCH`, and `SCR-GAME-OVER`; verify focus, disabled/pending states, Korean readability, overlap and safe exit. This is validation, not implementation completion.
 - **Acceptance:** do not claim Human/Player/device PASS without separate evidence; preserve all current domain owners; keep PR #49 unchanged; update this owner and Production Handoff after a future approved capture or implementation.
 
 ## 7. Adversarial Review Record
@@ -267,7 +289,7 @@ validation.
 | 2 | Does a screen row claim a flow that no scene/controller owns? | `main_scene`, selector, HUD, RestFlowUI, MainController, and test references | retained actual consumer paths; next-school play beyond Cheonsul is explicitly not claimed | pass |
 | 3 | Are state families or input claims inflated from machine tests? | player/Enemy assets, Help/HUD/Rest test contracts, no Ninja live HERA session | player/enemy state coverage remains `PARTIAL`; touch/gamepad and modal readability remain `NOT_RUN` | pass with deferred evidence |
 | 4 | Could a visual gap accidentally become an image-production order? | user no-generation boundary; asset manifests; procedural ward and Control/text owners | separated whole-screen reference queue from runtime assets; records `DO_NOT_GENERATE` and approval gate | pass |
-| 5 | Did the audit drift into T12/full-release/PR #49 scope? | current canon/router; open-PR inventory; direct-slice scene reality | title/save/final and remaining-school work stay noncurrent; PR #49 untouched | pass |
+| 5 | Did the audit drift into T12/full-release/PR #49 scope? | current canon/router; open-PR inventory; direct-slice scene reality | multi-profile/loading/final and remaining-school work stay noncurrent; PR #49 untouched | pass |
 
 Validated correction made during loop 3: the player source is a per-state
 `RASTER_TEXTURE` relay, not a sprite sheet. No code or asset was changed.
@@ -288,8 +310,9 @@ Validated correction made during loop 3: the player source is a per-state
 
 ### Nonblocking gaps
 
-- Pause/settings, title/save/load, archive/tutorial, loading/error/recovery,
-  final binding/ending and distribution screens have no current consumer.
+- Multi-profile/save management, in-combat pause/audio/input settings,
+  searchable/deep archive/tutorial, loading/error/recovery, final
+  binding/ending and distribution screens have no current consumer.
 - Player idle/death, enemy wind-up/recovery, live accessibility cue and
   device-specific input prompt completeness require future scope and evidence.
 - Boss-reward selection and backpack placement are intentionally unavailable
@@ -300,6 +323,6 @@ Validated correction made during loop 3: the player source is a per-state
 
 - Reopen Human vertical-slice validation for target-resolution capture against
   the completed v2 references.
-- Approve any future title/save/settings/full-run/remaining-school scope before
-  implementation. Future image work follows the latest user authorization and
+- Approve any future multi-profile/pause/broad-settings/full-run/remaining-school
+  scope before implementation. Future image work follows the latest user authorization and
   its required local/Notion storage rule.

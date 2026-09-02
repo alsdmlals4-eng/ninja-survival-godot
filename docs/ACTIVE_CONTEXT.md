@@ -34,14 +34,15 @@ latest_docs_alignment_plan: docs/superpowers/plans/2026-08-25-planning-canon-hum
 current_visual_handoff: docs/CURRENT_VISUAL_HANDOFF.md
 current_screen_visual_coverage: docs/visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md
 current_screen_blueprint: docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md
-current_screen_blueprint_state: MERGED_MAIN_PREPRODUCTION_STATIC_EVIDENCE
-current_screen_blueprint_pr: PR_137
-current_screen_blueprint_exact_pr_head: b54819336c75aab6d60606821a6a734049406f2e
-current_screen_blueprint_merge: e6cbaedfa558f9646dc7cd960c2ef06ac67a9549
-current_screen_blueprint_ci: GUT_AND_WINDOWS_INTERNAL_BUILD_ARTIFACT_SUCCESS
-current_screen_blueprint_main_readback: TREE_EQUIVALENT_TO_EXACT_PR_HEAD
-current_screen_blueprint_review: docs/reviews/2026-09-01-screen-blueprint-adversarial-review.md
-current_screen_blueprint_visual_input: REUSES_SCRREF_BATTLE_AUTOCOMBAT_03_NO_NEW_IMAGE_BINARY
+current_screen_blueprint_state: CURRENT_MAIN_RECONCILIATION_CANDIDATE_LOCAL_MACHINE_VALIDATION_PENDING_PR
+current_screen_blueprint_predecessor_pr: PR_137
+current_screen_blueprint_predecessor_exact_pr_head: b54819336c75aab6d60606821a6a734049406f2e
+current_screen_blueprint_predecessor_merge: e6cbaedfa558f9646dc7cd960c2ef06ac67a9549
+current_screen_blueprint_reconciliation_baseline: 477ac7343bd655278d4f045d3152f6b7e4214062
+current_screen_blueprint_reconciliation_branch: codex/blueprint-regression-repair-143
+current_screen_blueprint_reconciliation_plan: docs/superpowers/plans/2026-09-02-blueprint-regression-repair.md
+current_screen_blueprint_reconciliation_review: docs/reviews/2026-09-02-blueprint-regression-repair-adversarial-review.md
+current_screen_blueprint_visual_input: REUSES_FIVE_LOCKED_SCREEN_REFERENCES_NO_NEW_IMAGE_BINARY
 current_title_medal_secondary_scale: DEC043_USER_APPROVED_SEPARATE_MEDAL_APPROX_NIN_GLYPH_HEIGHT_MERGED_MAIN_PR141_D0E49D0685803849E9013F482F7452830ABBF5D4
 current_title_medal_secondary_scale_branch: PR141_MERGED_REMOTE_BRANCH_DELETED
 current_title_medal_secondary_scale_plan: docs/superpowers/plans/2026-09-02-title-medal-scale.md
@@ -109,7 +110,7 @@ phase2_final_binding_and_true_run_settlement: OUT_OF_SCOPE_NOT_IMPLEMENTED
 phase2_machine_evidence: GODOT_4_7_1_LOCAL_EDITOR_PARSE_PASS_HEADLESS_MAIN_SMOKE_PASS_GUT_521_OF_521_5769_ASSERTIONS_GITHUB_GUT_AND_WINDOWS_PASS_PR129
 ```
 
-## 2026-09-01 screen Blueprint — merged main, preproduction only
+## 2026-09-01 screen Blueprint — historical predecessor
 
 `NS-BLUEPRINT-001` is the editable screen-flow/wireframe/consumer-link
 surface at `docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md`. It records the
@@ -124,13 +125,29 @@ PR #137 was squash-merged at
 internal-build-artifact checks. Fresh `main` readback confirmed the merged tree
 is identical to that PR head.
 
-The merged package reused the already user-locked `SCRREF-BATTLE-AUTOCOMBAT-03` for
+The predecessor package reused the already user-locked `SCRREF-BATTLE-AUTOCOMBAT-03` for
 continuous-floor, sparse-prop, grounded-unit, top-HUD composition and created
 **no** new image binary. PR #135 title assets/functions remain open-PR,
 read-only references rather than current-main implementation truth. The
 Blueprint has repository/documentation and exact-PR-head CI evidence only;
 Godot runtime/render, Human Play, Player Experience, touch/gamepad, and
 device/export evidence remain `NOT_RUN`.
+
+## 2026-09-02 screen Blueprint — current-main reconciliation candidate
+
+The user reported that the newer screen Blueprint had regressed relative to
+the prior reader-facing Blueprint. The candidate at
+`docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` therefore preserves the 28-page
+Human Blueprint/PDF as the first reader route, restores a five-image locked
+reference atlas, and updates stale `planned` Title/3×3/Stage/Phase wording
+against current main `477ac7343bd655278d4f045d3152f6b7e4214062`.
+
+It is a documentation-only candidate: no scene, script, save structure or
+image binary changes. Source/machine readback, fresh Godot import/editor/main
+smoke, adversarial review, exact-head CI, merge and post-main readback are
+still required before this router is promoted to merged state. Live render,
+Human Play, Player Experience, touch/gamepad and device/export remain
+`NOT_RUN`.
 
 ## Purpose
 
