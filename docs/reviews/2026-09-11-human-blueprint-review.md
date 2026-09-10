@@ -94,7 +94,22 @@ Raw GitHub PDF download also matched local SHA-256
 74 pages. Completed main remains unchanged; final user approval still pending.
 This receipt-only follow-up does not alter the PDF, design or raster assets.
 
+Post-readback visual rescan: removed the standalone research section lead-in
+that still occupied an almost-empty page. The source comparison table now opens
+that section directly; no research evidence or game rule removed. The earlier
+74-page hash above remains historical evidence for ca7394d, not the revised
+publication identity. Current manifest owns the revised PDF and page count.
+
 Task-only duplicate download/archive/extracted snapshot and obsolete Aseprite
 staging may be removed after hash-verified preservation. Tool-generated source
 originals and historical project assets/PDFs are retained. Regenerable page
 renders are not additional approved assets.
+
+Revised publication: 73 pages, SHA-256
+`cc499d6bab806244e73ec381e8388d14440fbb3d5241498e2cec4f29ab60799f`.
+Publication hashes/content/page bounds/asset checks PASS; final research and
+approval pages 70–73 visually inspected. All 9 preparation tests PASS via
+`python tools/test_blueprint_preparation.py`. An initial package-style unittest
+invocation failed to resolve the script-local import; the documented direct
+entry point passed without code changes. Revised exact-head CI/readback must be
+checked after push; earlier CI identities above remain historical evidence.
