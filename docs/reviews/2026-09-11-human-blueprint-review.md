@@ -82,5 +82,19 @@ is a candidate only; no Base rule or another project was modified.
 ## Delivery
 
 Continuing Draft PR #147 only. No merge, direct-main push or ruleset bypass.
-Exact-head CI and remote readback are pending at the time of this source commit;
-delivery result will be reported from the actual GitHub checks, not inferred here.
+Content commit: `ca7394db033bb1702eadb865eae3af89093ac99b`.
+Exact-head Actions run `34502677168`: GUT (import/main-scene smoke/full suite)
+and Windows internal build both SUCCESS. This covers existing branch runtime
+regression, not implementation of the newly specified game.
+
+Fetched remote task branch at that commit and extracted a separate readback
+snapshot: all publication/asset/source checks and 9 preparation tests PASS.
+Raw GitHub PDF download also matched local SHA-256
+`cb23409c6c89aeb695229aa8dea6f2b42b2c8d6facf28eab64ba66106404fbbd`,
+74 pages. Completed main remains unchanged; final user approval still pending.
+This receipt-only follow-up does not alter the PDF, design or raster assets.
+
+Task-only duplicate download/archive/extracted snapshot and obsolete Aseprite
+staging may be removed after hash-verified preservation. Tool-generated source
+originals and historical project assets/PDFs are retained. Regenerable page
+renders are not additional approved assets.
