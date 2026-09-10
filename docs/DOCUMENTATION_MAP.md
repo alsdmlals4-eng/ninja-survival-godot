@@ -2,6 +2,17 @@
 
 ## 목적
 
+### 2026-09-10 active-cycle routing override
+
+Read the dated replanning entries in Decisions, Active Context and Visual Handoff
+first. The A+B automatic-attack/manual-movement-dash-ultimate boundary is approved.
+The dated first section of `visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` now owns its
+representative screen flow, motion contracts and implementation handoff. Its one
+new image is candidate-only, not an approved replacement or actual runtime capture.
+The prior Human GDD and PDF remain unchanged historical reader artifacts for this
+replanning cycle. They do not yet include the new A+B supplement. Historical
+current-main/T16 labels below are not the latest implementation frontier.
+
 현재 작업자가 **어떤 정보를 어디서 읽고 수정해야 하는지** 빠르게 판단하고, 역사 문서·AI 작업 로그·사람용 기획면·실제 구현 증거가 서로 정본을 침범하지 않도록 라우팅한다.
 
 이 문서는 제품 규칙 자체의 정본이 아니라 **정본 위치와 읽기 순서를 설명하는 navigation contract**다.

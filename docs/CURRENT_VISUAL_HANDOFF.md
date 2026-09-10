@@ -13,7 +13,16 @@ and transition table → key poses/new raster frames → Aseprite candidate laye
 durations and PNG+JSON export → frame/pivot/alpha inspection → approved Godot
 integration → actual movement, contact, dash, hit and death capture.
 Frame count, facing directions, event times and pixels per character are
-design outputs, not generic fixed presets. No new asset or animation is ready yet.
+design outputs, not generic fixed presets. No new runtime asset or animation is ready yet.
+
+Current candidate: `visual/candidates/ab-gameplay-composition-v1.png`, one newly
+generated battle-composition review image. The adjacent Markdown receipt owns
+its exact prompt, source, hash and visual concerns. State is
+`GENERATED_CANDIDATE / USER_APPROVAL_PENDING / NOT_CANON / NOT_RUNTIME`.
+It is embedded in the dated A+B screen-blueprint section. No UI is baked into
+the image; no Godot binding or Aseprite motion export was performed. Candidate
+expansion pauses for user LOCK / REVISE / REJECT. The ultimate-input/HUD planning
+package is independent of this visual approval gate.
 
 > Updated: 2026-09-02 KST
 > Purpose: next-chat resume router for the approved visual direction and current image-production state.

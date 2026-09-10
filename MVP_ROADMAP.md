@@ -2,10 +2,12 @@
 
 ## Active roadmap — 2026-09-10 planning restart
 
-1. Full genre/core reassessment is authorized. Review the 15-game comparison,
-   SWOT and element dispositions in
-   `docs/research/2026-09-10-full-product-reassessment.md`; its recommended
-   hypothesis remains PROPOSED. Existing elements can be reused or changed.
+1. A+B control boundary is approved: automatic ordinary attacks plus direct
+   movement, invulnerable dash, pattern counterplay and ultimate timing.
+   The 15-game comparison and other element dispositions in
+   `docs/research/2026-09-10-full-product-reassessment.md` remain research inputs.
+   Use the dated A+B screen-blueprint section for the next bounded input/HUD
+   package; reuse existing school ultimate owners, then verify rejection paths.
 2. Compare viable art and animation production methods at actual play size.
 3. Define screen flow, representative gameplay, state transitions and asset specs.
 4. Produce a new representative character/frame family and suitable Aseprite

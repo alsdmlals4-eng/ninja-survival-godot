@@ -6,8 +6,8 @@ The user explicitly restarts planning and requests newly produced images,
 with motion and game behavior designed together. All existing images are
 REFERENCE_ONLY for this new cycle. Prior LOCK entries below remain historical
 approval/provenance records for the existing build, not replacement-asset approval.
-Existing game rules are inputs for re-evaluation; the new core promise, art
-direction and production dimensions are not yet selected. No old phase, PDF,
+Existing game rules are inputs for re-evaluation; the A+B control boundary is
+approved below, while final art direction and production dimensions remain open. No old phase, PDF,
 PR number or approval silently authorizes replacement gameplay implementation.
 
 The work begins with current project authority and consumers, then applicable
@@ -22,8 +22,31 @@ The user's follow-up authorizes full reassessment, including genre and core
 mechanics. Existing elements may be reused, changed, supplemented or removed
 from a future design based on Internet benchmarks, professional evidence,
 SWOT, improvement potential and originality. This is not a blanket deletion
-instruction. The research recommendation is PROPOSED, not an approved new core:
+instruction. The research recommendations outside the approved control boundary
+below remain PROPOSED:
 `docs/research/2026-09-10-full-product-reassessment.md`.
+
+### Approved follow-up — A+B player control boundary
+
+The user explicitly selected automatic attacks with directly controlled movement,
+invulnerable dash, pattern counterplay and ultimate activation timing, then
+approved proceeding with that recommendation. A+B does not mean manual ordinary
+attacks or a second aiming/combo-input mode.
+
+- Automatic: katana, shuriken and acquired school ninjutsu attack execution.
+- Direct: movement/positioning, invulnerable dash, reading/responding to patterns,
+  and choosing when to request the active school's ultimate.
+- Preparation: backpack placement/rotation/combination remains the build input.
+- Ordinary skill trays stay excluded. The manual ultimate needs explicit
+  readiness and an available input; the proposed top-bar presentation is owned
+  by the dated section of `visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md`.
+- Existing school runtimes already own ultimate readiness, cost and effects.
+  Preserve those owners; a new global charge system is not approved.
+- Exact ultimate tuning, new movement-triggered item effects, Trace/Fate/route
+  removal, final art lock and production-wide migration are NOT approved by
+  this control decision. Remaining research dispositions stay proposals.
+
+This records the new design boundary, not a claim of live input/HUD integration.
 
 ```yaml
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER

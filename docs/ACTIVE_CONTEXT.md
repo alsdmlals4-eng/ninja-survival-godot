@@ -5,9 +5,17 @@
 - Resume: PLANNING_REOPENED_BY_USER; read the dated restart entry in Decisions.
 - Scope confirmed: full product reassessment, including genre/core; existing
   elements are reusable inputs evaluated through evidence, not deletion targets.
-- Research: docs/research/2026-09-10-full-product-reassessment.md (PROPOSED).
-- Next: review the A/B/C comparison and recommended test hypothesis, then define
-  the selected player promise and representative character-motion-gameplay package.
+- Research: docs/research/2026-09-10-full-product-reassessment.md (PARTIALLY_DECIDED).
+- Approved: A+B = auto ordinary attacks; direct movement, invulnerable dash,
+  pattern counterplay and ultimate timing. No manual ordinary attack mode.
+- Blueprint: dated A+B section in docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md
+  defines representative decisions, input/HUD gaps, motion and acceptance targets.
+- Next: execute the bounded ultimate input/HUD package against existing runtime
+  owners with TDD. Image production pauses at the one-candidate review gate;
+  new art remains candidate-only until user LOCK.
+- Candidate: docs/visual/candidates/ab-gameplay-composition-v1.png; one generated
+  and visually inspected composition, no baked UI, no runtime binding or motion.
+  Prompt/source/hash and concerns are in its adjacent candidate receipt.
 - Old images: REFERENCE_ONLY_FOR_NEW_CYCLE; existing runtime binding remains.
 - Existing PDF: historical design/reference, not the new Blueprint approval gate.
 - Read baseline: origin/main b5c2dd61cd589ebd218d1b4da3f016fb94a02126.
@@ -17,7 +25,11 @@
 - Aseprite: CLIENT_DISCOVERED and CALL_VERIFIED by candidate-only canvas creation
   and metadata readback (16×16, RGB, one 100ms frame). This is a transport probe,
   not image, motion, export, runtime or Human completion.
-- New game design/art direction: scope answered; no specific new core/art locked.
+- New game design/art direction: control boundary approved; new art not locked.
+- Source finding: school ultimates exist, but MainController/HUD/project input
+  currently have no live ultimate request connection. Cheonsul may be charged
+  yet reject activation when no status-bearing target exists. Do not invent a
+  new resource owner or report readiness as guaranteed successful activation.
 - Research evidence: official product comparison, professional sources and small
   response sample; new design/runtime/Human/device validation NOT_RUN.
 
