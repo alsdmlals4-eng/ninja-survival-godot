@@ -2,8 +2,10 @@
 
 ## Active roadmap — 2026-09-10 planning restart
 
-1. Re-evaluate the player promise and core loop with the user; existing design
-   and implementation are evidence inputs, not automatic new-design decisions.
+1. Full genre/core reassessment is authorized. Review the 15-game comparison,
+   SWOT and element dispositions in
+   `docs/research/2026-09-10-full-product-reassessment.md`; its recommended
+   hypothesis remains PROPOSED. Existing elements can be reused or changed.
 2. Compare viable art and animation production methods at actual play size.
 3. Define screen flow, representative gameplay, state transitions and asset specs.
 4. Produce a new representative character/frame family and suitable Aseprite

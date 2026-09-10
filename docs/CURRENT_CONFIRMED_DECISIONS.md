@@ -18,6 +18,13 @@ choose a pixel-art aesthetic. Motion states and game events must be specified
 before expanding a visual family. Existing runtime assets remain bound until
 replacement candidates and their integration are ready and approved.
 
+The user's follow-up authorizes full reassessment, including genre and core
+mechanics. Existing elements may be reused, changed, supplemented or removed
+from a future design based on Internet benchmarks, professional evidence,
+SWOT, improvement potential and originality. This is not a blanket deletion
+instruction. The research recommendation is PROPOSED, not an approved new core:
+`docs/research/2026-09-10-full-product-reassessment.md`.
+
 ```yaml
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER
 updated_at: 2026-09-02 KST

@@ -3,8 +3,11 @@
 ## Active task override — 2026-09-10
 
 - Resume: PLANNING_REOPENED_BY_USER; read the dated restart entry in Decisions.
-- Next: settle the new core promise, compare production/art approaches, then
-  define one representative character-motion-gameplay package.
+- Scope confirmed: full product reassessment, including genre/core; existing
+  elements are reusable inputs evaluated through evidence, not deletion targets.
+- Research: docs/research/2026-09-10-full-product-reassessment.md (PROPOSED).
+- Next: review the A/B/C comparison and recommended test hypothesis, then define
+  the selected player promise and representative character-motion-gameplay package.
 - Old images: REFERENCE_ONLY_FOR_NEW_CYCLE; existing runtime binding remains.
 - Existing PDF: historical design/reference, not the new Blueprint approval gate.
 - Read baseline: origin/main b5c2dd61cd589ebd218d1b4da3f016fb94a02126.
@@ -14,7 +17,9 @@
 - Aseprite: CLIENT_DISCOVERED and CALL_VERIFIED by candidate-only canvas creation
   and metadata readback (16×16, RGB, one 100ms frame). This is a transport probe,
   not image, motion, export, runtime or Human completion.
-- New game design/art direction: awaiting the user's core-scope answer.
+- New game design/art direction: scope answered; no specific new core/art locked.
+- Research evidence: official product comparison, professional sources and small
+  response sample; new design/runtime/Human/device validation NOT_RUN.
 
 The older router block below is the previous cycle's evidence snapshot. Its
 resume/next-gate/style statements do not override this active-task entry.
