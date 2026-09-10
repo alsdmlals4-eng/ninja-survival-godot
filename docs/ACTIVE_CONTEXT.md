@@ -1,5 +1,23 @@
 # ACTIVE_CONTEXT
 
+## Active task override — 2026-09-11
+
+- Scope: HUMAN_BLUEPRINT_AND_IMPLEMENTATION_INPUT_PREPARATION. Latest user
+  explicitly reopened needed image/atlas production; the image pause below is
+  historical. No new game implementation, save migration, canonical asset LOCK
+  or combined Draft PR #147 merge is authorized by this preparation task.
+- Reader source: `design/NINJA_SURVIVAL_HUMAN_BLUEPRINT.md`; detailed rules remain
+  `design/NINJA_SURVIVAL_DETAILED_RULES.md`; technical handoff is
+  `design/NINJA_SURVIVAL_IMPLEMENTATION_PACKET.md`.
+- Current bounded workflow: user review of the new standalone PDF at
+  `../exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_20260911.pdf`. Source/asset checks
+  and player Aseprite pixel comparison are separate from gameplay verification.
+  Review/delivery evidence: `reviews/2026-09-11-human-blueprint-review.md`.
+  Final design and asset LOCK pending; next safe product work after approval
+  is P01 in the implementation packet, not automatic merge of combined PR #147.
+- Working location: rediscover current continuation worktree/PR before mutation;
+  do not infer main from the old checkout or dated PR evidence below.
+
 ## Active task override — 2026-09-10
 
 - Latest scope: PLANNING_ONLY_DELEGATED_DETAIL_SELECTION. The user asked to

@@ -1,0 +1,491 @@
+{
+  "source_pixel_comparison": "PASS_ALPHA_AND_VISIBLE_PIXELS_12_FRAMES",
+  "aseprite_version": "1.3.18.5-dev",
+  "clips": {
+    "player": {
+      "run": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idle": [
+        4
+      ],
+      "dash": [
+        5
+      ],
+      "hit": [
+        6
+      ],
+      "recover": [
+        7
+      ],
+      "death": [
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    "bongma": {
+      "seal_chaser": {
+        "idle": [
+          0
+        ],
+        "walk": [
+          1,
+          2
+        ],
+        "prepare": [
+          3
+        ],
+        "release": [
+          4
+        ],
+        "recover": [
+          0
+        ],
+        "death": [
+          5
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      },
+      "shikigami_handler": {
+        "idle": [
+          6
+        ],
+        "walk": [
+          7,
+          8
+        ],
+        "prepare": [
+          9
+        ],
+        "release": [
+          10
+        ],
+        "recover": [
+          6
+        ],
+        "death": [
+          11
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      },
+      "barrier_carrier": {
+        "idle": [
+          12
+        ],
+        "walk": [
+          13,
+          14
+        ],
+        "prepare": [
+          15
+        ],
+        "release": [
+          16
+        ],
+        "recover": [
+          12
+        ],
+        "death": [
+          17
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      },
+      "mobile_array_caster": {
+        "idle": [
+          18
+        ],
+        "walk": [
+          19,
+          20
+        ],
+        "prepare": [
+          21
+        ],
+        "release": [
+          22
+        ],
+        "recover": [
+          18
+        ],
+        "death": [
+          23
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      },
+      "hundred_demon_array_master": {
+        "idle": [
+          24
+        ],
+        "walk": [
+          25,
+          26
+        ],
+        "prepare": [
+          27
+        ],
+        "release": [
+          28
+        ],
+        "recover": [
+          24
+        ],
+        "death": [
+          29
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      }
+    },
+    "cheonsul": {
+      "fire_mark_caster": {
+        "idle": [
+          0
+        ],
+        "walk": [
+          1,
+          2
+        ],
+        "prepare": [
+          3
+        ],
+        "release": [
+          4
+        ],
+        "recover": [
+          0
+        ],
+        "death": [
+          5
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      },
+      "water_vein_caster": {
+        "idle": [
+          6
+        ],
+        "walk": [
+          7,
+          8
+        ],
+        "prepare": [
+          9
+        ],
+        "release": [
+          10
+        ],
+        "recover": [
+          6
+        ],
+        "death": [
+          11
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      },
+      "lightning_chain_caster": {
+        "idle": [
+          12
+        ],
+        "walk": [
+          13,
+          14
+        ],
+        "prepare": [
+          15
+        ],
+        "release": [
+          16
+        ],
+        "recover": [
+          12
+        ],
+        "death": [
+          17
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      },
+      "five_element_tuner": {
+        "idle": [
+          18
+        ],
+        "walk": [
+          19,
+          20
+        ],
+        "prepare": [
+          21
+        ],
+        "release": [
+          22
+        ],
+        "recover": [
+          18
+        ],
+        "death": [
+          23
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      },
+      "heavenly_change_taoist": {
+        "idle": [
+          24
+        ],
+        "walk": [
+          25,
+          26
+        ],
+        "prepare": [
+          27
+        ],
+        "release": [
+          28
+        ],
+        "recover": [
+          24
+        ],
+        "death": [
+          29
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      }
+    },
+    "guiin": {
+      "surge_fighter": {
+        "idle": [
+          0
+        ],
+        "walk": [
+          1,
+          2
+        ],
+        "prepare": [
+          3
+        ],
+        "release": [
+          4
+        ],
+        "recover": [
+          0
+        ],
+        "death": [
+          5
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      },
+      "pressure_monk": {
+        "idle": [
+          6
+        ],
+        "walk": [
+          7,
+          8
+        ],
+        "prepare": [
+          9
+        ],
+        "release": [
+          10
+        ],
+        "recover": [
+          6
+        ],
+        "death": [
+          11
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      },
+      "ghost_blood_chaser": {
+        "idle": [
+          12
+        ],
+        "walk": [
+          13,
+          14
+        ],
+        "prepare": [
+          15
+        ],
+        "release": [
+          16
+        ],
+        "recover": [
+          12
+        ],
+        "death": [
+          17
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      },
+      "melee_chaos_captain": {
+        "idle": [
+          18
+        ],
+        "walk": [
+          19,
+          20
+        ],
+        "prepare": [
+          21
+        ],
+        "release": [
+          22
+        ],
+        "recover": [
+          18
+        ],
+        "death": [
+          23
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      },
+      "ghost_general": {
+        "idle": [
+          24
+        ],
+        "walk": [
+          25,
+          26
+        ],
+        "prepare": [
+          27
+        ],
+        "release": [
+          28
+        ],
+        "recover": [
+          24
+        ],
+        "death": [
+          29
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      }
+    },
+    "heukyeong": {
+      "shuriken_scout": {
+        "idle": [
+          0
+        ],
+        "walk": [
+          1,
+          2
+        ],
+        "prepare": [
+          3
+        ],
+        "release": [
+          4
+        ],
+        "recover": [
+          0
+        ],
+        "death": [
+          5
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      },
+      "poison_shadow_assassin": {
+        "idle": [
+          6
+        ],
+        "walk": [
+          7,
+          8
+        ],
+        "prepare": [
+          9
+        ],
+        "release": [
+          10
+        ],
+        "recover": [
+          6
+        ],
+        "death": [
+          11
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      },
+      "dark_mark_pursuer": {
+        "idle": [
+          12
+        ],
+        "walk": [
+          13,
+          14
+        ],
+        "prepare": [
+          15
+        ],
+        "release": [
+          16
+        ],
+        "recover": [
+          12
+        ],
+        "death": [
+          17
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      },
+      "shadow_chief": {
+        "idle": [
+          18
+        ],
+        "walk": [
+          19,
+          20
+        ],
+        "prepare": [
+          21
+        ],
+        "release": [
+          22
+        ],
+        "recover": [
+          18
+        ],
+        "death": [
+          23
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      },
+      "night_executioner": {
+        "idle": [
+          24
+        ],
+        "walk": [
+          25,
+          26
+        ],
+        "prepare": [
+          27
+        ],
+        "release": [
+          28
+        ],
+        "recover": [
+          24
+        ],
+        "death": [
+          29
+        ],
+        "hit": "existing tint overlay; no attack interruption"
+      }
+    }
+  },
+  "enemy_source": "manifest.json regions; proposed SpriteFrames import, not yet engine-bound",
+  "durations": "NS-IMPLEMENTATION-PACKET section G; gameplay clocks own enemy pattern durations",
+  "hashes": {
+    "motion/player-motion.aseprite": "4bb1b3a74dd4407cf80e3a96f6dfbb6c5ef05d29b1e6f5ea722a5cecaf3739a3",
+    "motion/player-motion-packed.png": "08a62e1da0cebb5dae23bdc51cac9646c453e746751e51454f50e35e08bd27c6",
+    "motion/player-motion-packed.json": "974a19f77db7a86f86b7028b78e8adde3bae610d74fcabc11c4f4cf453075696",
+    "player.png": "2f5c61d1d9fa48ed2fdaa8eb32725c5d9f1a880059acc3bdc6c642da27cd83c3"
+  },
+  "runtime": "NOT_RUN",
+  "motion_continuity": "NOT_RUN",
+  "approval": "PENDING"
+}

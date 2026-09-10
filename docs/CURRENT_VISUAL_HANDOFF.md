@@ -1,5 +1,17 @@
 # CURRENT VISUAL HANDOFF — Ninja Survival / 닌자의 신
 
+## Active visual cycle — 2026-09-11 Blueprint batch
+
+Latest user explicitly requests new game-use images and atlases inside a complete
+human Blueprint. This supersedes the historical image pause below, not final LOCK.
+Candidate source/provenance/inspection: `visual/candidates/blueprint-20260911/`.
+The human book is `design/NINJA_SURVIVAL_HUMAN_BLUEPRINT.md`; implementation input
+and motion contracts: `design/NINJA_SURVIVAL_IMPLEMENTATION_PACKET.md`.
+All images remain candidates. Existing canonical assets and old PDFs are preserved.
+Alpha channels, cell boundaries, Aseprite frame exports, motion continuity,
+Godot integration and Human approval are reported separately. A visually plausible
+checkerboard background is not transparency. Do not bind a REWORK candidate.
+
 ## Active visual cycle — 2026-09-10 restart
 
 Latest user override: **PLANNING_ONLY / IMAGE_PRODUCTION_PAUSED**. Detailed

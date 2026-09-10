@@ -1,5 +1,13 @@
 # 닌자의 신 — 화면 블루프린트·와이어프레임·플로우맵
 
+## 2026-09-11 사람용 통합 Blueprint
+
+새 요청의 통합 열람면은 [사람용 Blueprint 원고](../design/NINJA_SURVIVAL_HUMAN_BLUEPRINT.md)다.
+이 문서의 기존 화면 계약을 설명·데이터·시각 후보와 합성하며 상세 규칙은
+NS-DESIGN-RULES를 따른다. 새로 허용된 이미지 후보는 `candidates/blueprint-20260911/`에
+분리한다. 아래 기획 전용/이미지 보류 문장은 당시 상태이며 현재 제작 금지가 아니다.
+생성 화면 구성은 실제 Godot 캡처가 아니고 게임 적용은 최종 승인 뒤다.
+
 ## 2026-09-10 재기획 — A+B 대표 플레이·조작·모션
 
 최신 상세 규칙: [NS-DESIGN-RULES](../design/NINJA_SURVIVAL_DETAILED_RULES.md).

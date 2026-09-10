@@ -2,6 +2,18 @@
 
 ## 목적
 
+### 2026-09-11 human Blueprint preparation overlay
+
+Latest reader-facing source: `design/NINJA_SURVIVAL_HUMAN_BLUEPRINT.md`.
+Downloadable derived view: `../exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_20260911.pdf`.
+Publication source/hash binding: `publication/NINJA_SURVIVAL_HUMAN_BLUEPRINT_20260911_MANIFEST.json`.
+Current inspection/delivery: `reviews/2026-09-11-human-blueprint-review.md`.
+It includes the detailed-rule owner and `design/NINJA_SURVIVAL_IMPLEMENTATION_PACKET.md`
+as derived publication sections, not new competing rules. Images in
+`visual/candidates/blueprint-20260911/` are candidates, not approved runtime assets.
+The latest user permits needed image production; the pause in the historical
+2026-09-10 entry below no longer applies. Historical exported PDFs remain preserved.
+
 ### 2026-09-10 active-cycle routing override
 
 NS-DESIGN-RULES: `design/NINJA_SURVIVAL_DETAILED_RULES.md` is the single new-cycle

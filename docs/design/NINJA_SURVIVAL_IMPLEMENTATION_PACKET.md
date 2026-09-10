@@ -1,0 +1,150 @@
+# 닌자의 신 — 구현 입력 명세
+
+문서 ID: NS-IMPLEMENTATION-PACKET · 2026-09-11 · 최종 설계 승인 대기
+
+## 준비 범위와 실행 경계
+
+상세 규칙의 수치는 NS-DESIGN-RULES가 소유한다. 이 명세는 그 규칙을 기존 Godot 책임자에 연결하는 계약이다. 기존 main과 작업 브랜치의 차이를 지우지 않는다. 새 게임 기능은 이번 문서 작업으로 구현되지 않는다. 설계 승인 후 아래 P01부터 별도 exact-main 작업을 시작할 수 있으나 이미지의 알파·모션 검수가 실패한 상태로 최종 아트를 런타임에 넣지 않는다.
+
+시각 후보의 상태는 자산 manifest가 소유한다. 새로운 자동 로드, 외부 서버, 유료 API, 다른 게임 엔진은 필요하지 않다. 기존 Scene/Resource 및 GUT를 재사용한다. 새 순서형 반응 엔진을 하나 더 만드는 대신 기존 천술의 상태 책임을 공유 효과 처리로 명시적으로 추출한다.
+
+## A. 현재 구현 → 변경 지점
+
+| 현재 소비처 | 현재 상태 | 승인 뒤 변경 | 완료 증거 |
+|---|---|---|---|
+| `scripts/combat/basic_weapon_controller.gd` | 기본 자동무기 존재 | 일본도 부채꼴·개별 비전 범주, 수리검 관통 | 경계 안/밖·동일 적 1회·무비전 시작 시험 |
+| `scripts/player/player_controller.gd` | 이동·대시 기반 | 정지 대시·피격 보호·메뉴 입력 차단 | 0/1/2충전·동시 피해·중지 재개 시험 |
+| `scripts/schools/ninjutsu_auto_controller.gd` | 보조 기술 공통 피해 | 효과 종류·상태·연쇄·명중 사건 | 8보조 기술 효과별 표 기반 시험 |
+| `scripts/schools/cheonsul_runtime.gd` | 화상·순서형 젖음→번개 | 기존 의미 유지, 타 보조 효과와 상태 공유 | 역순 무반응·중복 자원 금지·틱 갱신 |
+| `scripts/core/ninjutsu_loadout_state.gd` | 시작유파 중심 | 시작유파 고정 + 배치 기반 혼합 검사 | 최대2/외부1/해금·배치 모두 검사 |
+| `scripts/data/mvp4_catalog.gd` | 19아이템/5주머니/3조합 | 8인법서 정의 연결, 비전·조합 payload 교체 | 기존 ID 보존·기본무기 소실 없음 |
+| `scripts/core/run_build_state.gd` | 확정 modifier·운명 집합 | 무기별 modifier와 활성 인법 참조 | preview=0·중복 운명 거부 |
+| `scripts/core/run_resume_codec.gd` | schema 1 | schema 2 전체 유효성 검사 | 손상·미래버전·잘못된 배치 전부 실패 |
+| `scripts/core/run_resume_store.gd` | tmp/previous 교체 | 하나의 회복 가능한 거래 파일로 통합 | 쓰기/이름변경/정리 실패 주입 |
+| `scripts/core/ninja_soul_wallet.gd` | 잔액 직접 저장·소비 중심 | 원자적 거래의 wallet projection | 중복 지급·차감·클릭·재실행 무효 |
+| `scenes/player/player.tscn` | Sprite2D 이동/피격 표현 | SpriteFrames+표현 상태, 본체 공격 없음 | 발 접점·속도·좌우·사망 확인 |
+| `scenes/enemies/school_encounter_actor.tscn` | 패턴 actor 소비처 | 데이터 시간표+독립 적 외형 | 전조와 판정·회복 구간 동일 |
+| `scenes/ui/title_screen.tscn`, `hud.tscn`, `rest_flow_ui.tscn` | 기존 UI 입력 경로 | 6메뉴·상단 HUD·통합 준비 | 마우스/키·패드/터치 왕복 |
+
+테이블의 경로는 현재 존재하는 파일이다. 새로운 `EffectDefinition` Resource와 `CombatEvent` 값은 기존 data/combat 계층에 추가하는 제안이며 별도 전역 manager가 아니다.
+
+## B. 데이터 계약
+
+| 레코드 | 필수 필드 / 불변식 |
+|---|---|
+| EffectDefinition | id, school_id, effect_kind, cooldown, target_policy, range, shape, damage, duration, status_id, boss_response, event_family. 수치 유한·음수 금지; 알려진 enum만 |
+| CombatEvent | run_id, cast_id, event_sequence, source_actor_id, target_id, family, amount. sequence는 런 내 단조 증가; 동일 cast/target/family 중복 거부 |
+| LoadoutSnapshot | starting_school, starter_id, committed_additional_ids. starter 정확히1; 추가≤2; 외부≤1; committed 배치에서 재산출해 일치 검사 |
+| EncounterPattern | id, primitive, shape, target_policy, telegraph_duration, lock_duration, active_duration, recovery_duration, slot_cost. 경고/피해가 같은 shape 인스턴스 사용 |
+| SpriteAtlasEntry | source_sha256, image_path, region, state, duration_ms, pivot, facing, consumer, approval_state, alpha_check. region 내부·양수·발 접점 확인 |
+| CodexEntry | 기존 enemy/item/ninjutsu ID 참조, kind, role_text, acquisition_text, recipe_refs, counterplay, exceptions. UI 설명에 별도 수치 복제 금지 |
+
+물리 초당 delta를 전투 시간으로 사용하고 메뉴에서는 전투 시간을 멈춘다. wall-clock 날짜로 상태·패턴을 진행하지 않는다. 판정과 표현은 같은 사건을 관찰하되 피해 권한은 domain에만 있다. 죽은 적은 이후 사건의 유효 대상에서 즉시 제외하고 시체 그림은 잠시 남겨도 전투 대상이 아니다.
+
+## C. 상태·피해 충돌표
+
+| 입력 상황 | 단일 결과 | 회귀 시험 |
+|---|---|---|
+| 화상 중 젖음 | 두 상태 공존, 증기 없음 | 기존 천술 반응 훼손 금지 |
+| 젖음 → 번개 | 두 토큰 소비, 주 대상10/추가 최대2명6 | 같은 cast/target 반응1회 |
+| 번개 → 젖음 | 반응 없음, 각 만료 유지 | 같은 시각 sequence 역순 시험 |
+| 뇌쇄 기본 피해 + 반응 | 기본12 뒤 반응; 젖음 1.25배는 없음 | 숨은 삼중 피해 금지 |
+| 상태 지속 재부여 | 만료=max(기존,신규); 다음 tick 유지 | 계속 재부여해도 피해 정지/폭증 없음 |
+| 반응·장비 부가 피해 | 다른 반응/명중 효과 재귀 생성 없음 | 두 뇌명도가 서로 재발동하지 않음 |
+| 대시/입장/피격 보호 중 명중 | 피해0, 피격 보상·물안개 발동 없음 | 무적을 이용한 피격 효과 파밍 방지 |
+| 독+화상 동시 틱 | 독/화상 각1회, 죽으면 후속 무효 | 처치·소울 자격 중복 금지 |
+| 엘리트/보스 속박 | 둔화로 대체, 패턴 시계 계속 | 기절 잠금으로 보스 무력화 금지 |
+
+피해 순서: 유효성 → 방어/무적 → 적용 범주별 가산 modifier → 피해량 0 이상 → HP 차감 → 실제 피격 사건 → 사망 1회. 회피가 있는 경우 한 명중 사건당 1회만 추첨한다. seed와 사건 순서를 시험 fixture에 기록한다. 무기·인법·반응·오의·장비의 범주를 섞어 두 번 곱하지 않는다.
+
+## D. 획득·경제·운명
+
+구슬/기록 소비처는 `scripts/combat/reward_orb.gd`와 `scripts/combat/combat_ddd_tracker.gd`다. 현재 구슬은 회수 수와 STYLE만 올리므로 신규 XP 레벨·수동 스킬 선택창을 구현하지 않는다. 결과 설명에서 경제 재화와 분리한다. 준비 회복은 거래에 healed_prepare_session_ids를 기록해 재진입/저장복구에 멱등 적용한다.
+
+추가 인법서 8종의 첫 시험 가격은 40골드로 통일한다. 시작 인법은 비매품. 기존 19종 가격과 5가방 가격은 기존 정의를 유지한다. 상점의 첫 제안은 구매 가능한 가장 저렴한 확장 주머니 우선; 전체 가방이 채워졌으면 확장 후보 보장은 해제한다. 인법서가 해금되지 않았으면 표본 풀에서 제외한다.
+
+보상 lane은 빌드 연속성 / 새 전승 / 공용 지원 순으로 최대1개씩 후보를 가져온다. 비어 있는 lane은 다른 유효 lane에서 중복 ID 없이 보충한다. 유효 후보가 총1개면 1개만 표시. 무료 새로고침 반복으로 후보를 바꾸지 않으며 prepare_session_id와 seed로 보존한다. 상자 토큰 소비·후보 선택·버퍼 입고는 하나의 준비 거래다.
+
+판매는 원래 구매 정의 가격의 50% 내림, 시작 각성 지급품은 0골드다. 조합 결과는 재료 가격 합의 50%를 판매 기준으로 사용하고 조합 비용은 0. 장비의 위치만 바꿔 판매가가 바뀌지 않는다. 출전 후 장착 변경은 불가하며 준비에 재진입했을 때만 판매한다. 취소로 상자/골드를 복제할 수 없다.
+
+운명은 기존 5종 중 아직 선택하지 않은 것만 선택한다. 서로 다른 운명은 런 동안 누적, 같은 ID는 중복 불가. 매 출전 확정에서 신규 선택 최대1개; 4전장 뒤 마지막 결속에는 남은 선택 또는 건너뛰기 허용. 빈 운명 선택 때문에 마지막 보스 진입이 막히지 않는다. 운명 이득/손해는 기존 modifier 가산 규칙을 유지하고 NS-DESIGN-RULES의 이동·회피·피해감소 상한을 마지막에 적용한다.
+
+## E. schema 2와 영구 거래
+
+별도 신규 autoload 없이 기존 저장 책임자를 확장한다. 새 `user://ninja_profile_v2.json` **한 파일**에 지갑·정산 ID·현재 checkpoint를 넣어 두 파일 사이 소울 복제를 막는다. 기존 wallet API는 이 profile의 읽기/거래 facade가 된다. 전체 저장 실패면 메모리 잔액과 checkpoint도 바꾸지 않는다.
+
+| 저장 영역 | 필드 / 정책 |
+|---|---|
+| 루트 | schema_version=2, revision, content_contract=ns-replan-20260911 |
+| meta | soul_balance 정수≥0, unlocked_support_choice, settled_run_ids, applied_transaction_ids |
+| active_run | null 또는 run_id, starting_school, eligible_boss_ids 집합, elite_qualified, retry_consumed, checkpoint |
+| checkpoint | 기존 build/route/circuit/backpack/buffer + active_ninjutsu_ids + prepare_session_id + selected_fates + rules_version |
+| 무결성 | 알려진 ID·형·범위 검사, snapshot에서 modifier/활성 인법 재산출; 저장된 계산값 맹신 금지 |
+
+쓰기 순서: 후보 snapshot 검증 → tmp 쓰기/flush → 다시 읽어 decode → 기존 파일을 previous로 이동 → tmp를 정본 경로로 이동 → 정본 decode readback → 메모리 갱신. previous 정리 실패는 거래 실패로 되돌리지 않고 **정리 경고**로 구분한다. 다음 시작에서 revision/transaction_id로 정본을 판정한다. 파일이 손상되면 previous 유효성 검사와 복구 확인을 제공하고 원본을 보존한다. 파일 시스템 수준 crash-proof 보장은 실제 실패 주입 전에는 주장하지 않는다.
+
+정산 거래 ID는 `settle:run_id`, 재도전은 `retry:run_id`, 각성은 `unlock:support-choice-v1`. 같은 ID는 결과를 다시 보여주기만 하고 재지급/차감하지 않는다. 재도전은 소울1 차감·retry_consumed=true·checkpoint 복원 예약을 **같이** 기록한다. 새 게임은 확인 뒤 미정산 포기를 정산하고 새 run_id를 한 거래로 만든다. 강제 종료 뒤에는 마지막 확정 지점에서 재개한다.
+
+schema1의 진행 중 런은 아이템 의미가 달라져 자동 변환을 **REJECT**한다. 구형 파일을 덮어쓰거나 삭제하지 않고 구형 런 유지 불가 이유를 설명한 뒤 새 런을 선택하게 한다. 기존 wallet의 유효한 정수 잔액만 profile2 생성 시 한 번 이관하고 원본 해시/이관 거래 ID를 기록한다. 미래 버전은 읽기 실패; 손상 wallet은 0으로 초기화하지 않는다. 테스트 전용 경로로 모든 이행을 검증한다.
+
+## F. 화면·입력·실패 계약
+
+| 화면 | 마우스 | 키보드/패드 | 터치 | 실패·복귀 |
+|---|---|---|---|---|
+| 메인 | 6버튼 클릭 | 방향/Tab 초점, Enter/A 확인 | 큰 버튼 탭 | 이어하기 실패 이유, 파괴적 새 게임 재확인 |
+| 시작 선택 | 유파/전장 카드 별도 | 두 그룹 간 이동 | 카드 탭 후 시작 | 처음 초점 복원, 선택이 곧 출전 아님 |
+| 전투 | 상단 오의/설정 | WASD/스틱, Space/B 대시, E/Y 오의 | 좌 이동패드, 우 대시/오의 | 메뉴가 열리면 held 입력 초기화 |
+| 준비 가방 | 드래그/회전 버튼 | pick→방향→R/회전 버튼→place, B 취소 | 탭 pick→셀 탭 place, 회전 | 불법 배치 빨간 윤곽+이유, 원위치 복귀 |
+| 보상/운명 | 카드 선택 | 순차 초점·확인 | 탭→선택 표시 | 선택≠거래 확정, 중복 클릭 무효 |
+| 도감/각성 | 목록/상세 | 목록→본문→뒤로 | 스크롤/뒤로 | 각성 부족 비용 표시, 읽기 중 게임 입력 없음 |
+| 설정 | 슬라이더/토글 | 좌우/확인/뒤로 | 드래그/탭 | 저장 실패 경고, 이전 화면/초점 복귀 |
+
+설정의 첫 범위는 음량, 효과 강도, 화면 흔들림, 전체화면, 입력 안내다. 키 재매핑은 기존 기능 여부 확인 후 별도 착수 범위로 남기며 없는 기능을 버튼으로 속이지 않는다. 효과 강도 최소에서도 적 경고 경계와 상태 단서는 유지한다. 긴 한국어·125/150% 배율·1280×720에서 잘림을 검사한다.
+
+## G. 아틀라스·모션·성능 제작 계약
+
+적의 기존 encounter ID는 보존하고 그림의 새 역할을 매핑한다. 봉마의 `mobile_array_caster`는 기존 엘리트 ID로 유지하되 새 외형은 수호 요괴 엘리트, `hundred_demon_array_master`는 보스 ID를 유지하고 이동진술사·식신 사용 보스로 표시한다. 이름 때문에 두 ID의 등급·보상·저장 의미를 뒤바꾸지 않는다. 네 유파의 5행과 기존 ID 매핑은 후보 manifest의 logical_id가 소유한다.
+
+최종전 제작 입력: 방문 완료 순서의 유파 테마를 HP 100~75 / 75~50 / 50~25 / 25~0% 구간에 순서대로 배치한다. 구간 전환은 현재 패턴 종료 후 적용하며 HP를 인위적으로 잠그지 않는다. 큰 피해로 여러 구간을 건너뛰면 현재 HP 구간으로 한 번만 전환한다. 각 테마 첫 패턴은 전승 지원 문양/힌트와 고정 구간 +0.2초의 읽기 기회, 런당 테마당 1회. 직접 피해·새 오의 지급 없음. 이후에는 해당 유파의 이미 배운 세 기술 중 합법 후보를 쓰고 다른 테마의 큰 위협을 동시에 4개 펼치지 않는다.
+
+안전 경로 검사는 최대2개 패턴 도형을 플레이어 반경으로 팽창시킨 뒤 근처 후보 지점과 경로를 검사하는 보수적 판정으로 시작한다. 후보는 위험 도형 밖의 방사 방향 16개×거리4단계, 선분을 캐릭터 충돌 크기로 sweep하고 고정 구간 안 이동 가능한 것만 채택한다. 샘플링은 경로를 못 찾을 수 있으므로 실패는 공격 대기이지 안전 증명으로 간주하지 않는다. 움직이는 위협은 발동 구간의 예측 도형 합집합으로 검사한다. 벽/화면 경계/둔화/두 위협의 틈 사례를 fixture에 넣고 실제 캐릭터로 재검증한다.
+
+인게임은 키아트보다 간결한 형태, 어두운 바닥에서 구분되는 외곽, 작은 발 그림자를 사용한다. 후보 생성은 스타일 제안이며 알파/셀 검사 실패는 REWORK다. 캐릭터 높이 비교 기준은 플레이어48~64px, 일반40~64px, 엘리트80~100px, 보스100~128px의 1280×720 화면이다. 이는 실제 카메라 캡처 후 조정할 초기값이지 원본 이미지를 임의 확대해 적 등급을 만드는 규칙이 아니다.
+
+| 상태 | 첫 타이밍 계약 | 게임 연결 |
+|---|---|---|
+| 이동 | 플레이어4프레임×100ms, 적2프레임×140ms 반복 | 실제 속도 비율로 재생, 정지시 idle |
+| 대시 | 1자세×실제 dash duration | 끝나면 move/idle, 공격 프레임 없음 |
+| 피격 | 1자세80ms 후 복귀 | 보스 패턴 준비 상태를 덮지 않고 overlay 가능 |
+| 일반 사망 | 1자세250ms 뒤 fade150ms | 판정 즉시 제거, 보상 한번 |
+| 플레이어 사망 | 4프레임×120ms, 마지막 유지 | 입력/무기 정지와 동일 사건 |
+| 강적 준비/발동/회복 | 준비/발동 자세를 실제 패턴 구간에 유지, 회복 idle로 연결 | frame timer가 공격 시점을 새로 만들지 않음 |
+
+6포즈 적 시트가 6프레임 자연스러운 달리기라는 뜻은 아니다. 초기 이동2접점의 미끄러짐이 확인되면 사이 프레임을 추가 제작한다. 발 pivot과 머리 크기 변동은 전 프레임 1px 급으로 강제 수치 보장하지 않고 실제 표시 크기에서 검수한다. Aseprite 자동 선택은 등크기 프레임·타이밍·PNG/JSON 검수가 필요한 시트에 적용; 키아트/바닥은 불필요한 픽셀화 없이 원본 PNG 유지다.
+
+최적화 선택은 단순 node pool → 공간 조회/업데이트 분산 → 렌더 묶음 비교 순서. 일반 몹 하드캡은 추가하지 않는다. 강공격 예산과 개체 수 예산은 별개. 100/300/600/1000 및 누적 런에서 frame time p50/p95/max와 메모리를 측정한다. 목표 장비가 확정되지 않았으므로 60fps 보장·최소사양 확정은 NOT_RUN이다.
+
+## H. 착수 순서와 인수 시험
+
+각 패키지는 fresh main/중첩 PR 확인 → 실패하는 시험 → 최소 구현 → focused/full GUT → 필요한 실제 화면/입력 검증 → 정본 갱신 → exact-head CI·보호된 전달 순서다. 아래는 아직 실행하지 않은 계획이다.
+
+| 순서 | 작업 / 선행 | 핵심 인수 fixture |
+|---|---|---|
+| P01 | 데이터 계약·상태 충돌 / 설계 승인 | 12인법 ID,8추가 정의,19기존 ID,5가방,3조합; wet→shock/역순/동일사건 |
+| P02 | 자동무기·보호 / P01 | 무장 없어도3공격,부채꼴경계,관통1회,대시0/1/2,동시10명 접촉1피해 |
+| P03 | 혼합·가방 / P01 | 추가2/외부1,잠금·면적·회전·버퍼6,취소·구매·조합·출전 전체 원자성 |
+| P04 | profile2·메타 / P03 | 정상/손상/v1/vfuture,중복정산/재도전,쓰기 단계별 실패,메모리-디스크 일치 |
+| P05 | 천술 대표 전장 / P02~P04 | 30초정체성,180엘리트,흔적,경고/보스,준비→다음; 강공격동시1 |
+| P06 | UI/대표 자산 / 자산LOCK·P05 | 6메뉴와3입력경로,상단HUD,전조/VFX읽기,발접점/모션·게임캡처 |
+| P07 | 네 유파·최종전 / P05~P06 | 시작4×방문24=96 도메인 조건,최종 지원/2위협 이하,서로다른 적 외형 |
+| P08 | 회귀·최적화·사람 검수 / P07 | 2빌드 비교,군중 표본,전체런 대표,한글/접근성/실기기 |
+
+기능별 proposed test 파일은 기존 `tests/`의 같은 책임 파일을 먼저 확장한다. 없을 때만 `test_effect_contract.gd`, `test_profile_v2_transaction.gd`, `test_full_route_matrix.gd`를 추가한다. 표의 시험 이름은 새 파일이 이미 존재한다는 뜻이 아니다. 코드 식별자·경로를 현 main과 재확인한 뒤 생성한다.
+
+## I. 완료 수준·롤백·잔여 위험
+
+설계 검토와 PDF 생성은 문서 증거다. 승인 전 게임 변경은 하지 않는다. 자산은 GENERATED_CANDIDATE / REWORK / REVIEWED를 구분한다. 실제 runtime, 사람의 재미·가독성, Android/패드 실기기, 라이선스·출시 최종 심사는 별도 gate다.
+
+롤백은 패키지별 변경과 데이터 계약 버전을 함께 되돌리며 이미 생성된 profile2를 구형 codec으로 억지 해석하지 않는다. 구형 파일 보존, 새 테스트 경로, feature/package 단위 통합으로 복구 범위를 작게 만든다. main 직접 push·강제 push·기존 Draft 임의 merge는 하지 않는다.
+
+전체 구현 입력의 최종 판정은 자산 검사·문서 교차검사·5회 전체 검토 결과와 함께 보고한다. 이미지 준비가 실패한 경우 승인만 받으면 모든 아트를 바로 적용할 수 있다고 주장하지 않는다. 대신 논리 P01~P05 착수 가능성과 아트 P06의 실제 blocker를 분리한다.

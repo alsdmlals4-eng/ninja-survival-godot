@@ -1,5 +1,22 @@
 # CURRENT_CONFIRMED_DECISIONS
 
+## 2026-09-11 — Human Blueprint and implementation-input preparation
+
+The user requests a complete reader-facing Blueprint using the supplied Ten Paces
+92-page PDF as structure-only reference, adapted to this game. Required coverage:
+screen atlas, detailed SWOT with concrete strengthening/mitigation, systems,
+visuals, data tables, and implementation-ready detail selected by research-backed
+judgement. The user authorizes necessary image production now and will give final
+approval after reading the Blueprint. This supersedes the September 10 image pause
+and per-candidate stop for this bounded batch, not the final asset approval gate.
+Produce project-bound game-use candidate textures/atlases and motion contracts;
+do not substitute explanatory posters for engine inputs. Keep candidates separate
+from current runtime assets. No gameplay implementation, live save migration,
+historical asset/PDF deletion, paid service or combined-PR merge in this package.
+Design/detail owner remains NS-DESIGN-RULES; human publication composes it with
+the current screen/visual and implementation-input owners. Final user approval,
+asset technical readiness and actual game verification are separate states.
+
 ## 2026-09-10 — delegated detailed planning; production paused
 
 Latest user instruction: “상세 규칙 및 기획사항은 네가 인터넷 조사,벤치마킹 및 권장안대로 판단해서 정리해줘”. The user delegates evidence-based detail selection and documentation within the approved A+B direction. Do not repeatedly ask for tuning decisions already delegated.

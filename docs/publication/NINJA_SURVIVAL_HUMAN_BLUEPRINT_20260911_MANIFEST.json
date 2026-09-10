@@ -1,0 +1,45 @@
+{
+  "document_id": "NS-HUMAN-BLUEPRINT",
+  "status": "REVIEW_CANDIDATE_NOT_IMPLEMENTATION_PASS",
+  "pdf": "exports\\NINJA_SURVIVAL_HUMAN_BLUEPRINT_20260911.pdf",
+  "pdf_sha256": "cb23409c6c89aeb695229aa8dea6f2b42b2c8d6facf28eab64ba66106404fbbd",
+  "page_count": 74,
+  "sources": [
+    {
+      "path": "docs\\design\\NINJA_SURVIVAL_HUMAN_BLUEPRINT.md",
+      "sha256": "63340b5716fb10c9d544969efeea22479851f85aa7008ba3b8d54e63eee798c2"
+    },
+    {
+      "path": "docs\\design\\NINJA_SURVIVAL_DETAILED_RULES.md",
+      "sha256": "2a933021e1d70438897ab77802fb7b17b384097abaa69de00edbf571a0f0604d"
+    },
+    {
+      "path": "docs\\design\\NINJA_SURVIVAL_IMPLEMENTATION_PACKET.md",
+      "sha256": "10c72f2e186ef78cf6b0c2f67c0564811c07e896660b076183cbc14577403661"
+    },
+    {
+      "path": "docs\\research\\2026-09-11-blueprint-production-research.md",
+      "sha256": "d1772f66688565b3f7366f6eece06d2aa2edaed5eb4dca359ae57523c8478115"
+    },
+    {
+      "path": "docs\\visual\\candidates\\blueprint-20260911\\manifest.json",
+      "sha256": "56e91b616a5fee8886e2a33be600ac5b6d8259f3647303aee66401aa30a02e55"
+    },
+    {
+      "path": "docs\\visual\\candidates\\blueprint-20260911\\provenance.json",
+      "sha256": "5a5fcaaecb976704652319c0e6ee0700459ea54108d0c5aa9e42ddcbec2c33a8"
+    },
+    {
+      "path": "docs\\visual\\candidates\\blueprint-20260911\\motion\\contract.json",
+      "sha256": "2dc4f6733ff3d590bd729f801dc99fb33ccbc80fcc1d8f6c914a53d7d923ae61"
+    },
+    {
+      "path": "tools\\export_replanned_blueprint_pdf.py",
+      "sha256": "b400adf9427a02488181156587e10e6afe4e13273b24fedf9d29c503e7a18b61"
+    }
+  ],
+  "asset_count": 14,
+  "runtime": "NOT_RUN",
+  "human": "NOT_RUN",
+  "user_approval": "PENDING"
+}
