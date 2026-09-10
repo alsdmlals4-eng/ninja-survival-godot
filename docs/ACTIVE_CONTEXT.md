@@ -13,7 +13,9 @@
 - Current branch implementation: E / pad Y / top-button ultimate request, existing
   runtime readiness and failure feedback. See `reviews/2026-09-10-manual-ultimate-review.md`
   for exact tests, live input capture, limitations and delivery status.
-- Next: close exact-head PR checks, then repair/verify the observed battlefield
+- Delivery: Draft PR #147; implementation `33ece77` passed GUT and Windows
+  internal build CI. Resolve current final-head checks from that PR; not merged.
+- Next: verify final receipt-head checks, then repair/verify the observed battlefield
   coverage gap before calling the representative screen visually ready.
   Image production pauses at the one-candidate review gate;
   new art remains candidate-only until user LOCK.

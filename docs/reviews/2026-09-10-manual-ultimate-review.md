@@ -118,5 +118,15 @@ settings-panel guard, and isolate visible selection-panel rejection from other
 noncombat conditions. Existing combined cases do not independently prove each
 guard. Source includes both guards; no runtime behavior fix was requested.
 
-PR/head/checks: PENDING. Unrelated open PRs #135 and #49 remain read-only.
-No direct-main push, merge, force push or ruleset bypass.
+Current-task [Draft PR #147](https://github.com/alsdmlals4-eng/ninja-survival-godot/pull/147).
+Implementation commit: `33ece7734b95c78d7b1c03c674aed23eb014f422`.
+[Exact implementation-head CI](https://github.com/alsdmlals4-eng/ninja-survival-godot/actions/runs/34487562362):
+GUT PASS (1m0s), Windows internal build artifact PASS (48s). Local HEAD and remote
+branch readback matched that commit before this documentation-only receipt.
+The PR check surface owns the final receipt revision's exact-head check status;
+do not infer it from the earlier implementation run. No code changes follow
+the recorded full suite and live input verification in this receipt.
+
+Unrelated open PRs #135 and #49 remain read-only. No direct-main push, merge,
+force push or ruleset bypass. Main/root checkout remains the existing release
+baseline; the tested change is on this isolated task branch, not installed there.

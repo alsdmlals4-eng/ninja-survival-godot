@@ -31,7 +31,9 @@ Tech stack: existing Godot 4.7.1 GDScript / GUT 9.7.1. No new runtime dependency
 - [x] Run focused and full GUT, import and headless smoke; inspect live rendered
   HUD at the actual viewport. Test key, pad-event, button and modal boundaries.
 - [x] Review all changed behavior/canon/evidence five times under project rules.
-- [ ] Commit/push exact revision, open current-task PR and inspect exact-head checks.
+- [x] Commit/push implementation revision, open Draft PR #147 and inspect passing
+  exact-head GUT/Windows checks. The later documentation receipt's checks are
+  resolved on the same PR; merge/main and full redesign completion are excluded.
 
 ## Alternatives and feasibility
 
