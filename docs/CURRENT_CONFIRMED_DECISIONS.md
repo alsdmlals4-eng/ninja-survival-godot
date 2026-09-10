@@ -46,7 +46,10 @@ attacks or a second aiming/combo-input mode.
   removal, final art lock and production-wide migration are NOT approved by
   this control decision. Remaining research dispositions stay proposals.
 
-This records the new design boundary, not a claim of live input/HUD integration.
+Bounded follow-up implementation is now on the current task branch: dedicated
+E / pad Y input and a top-bar ultimate button use the existing runtime owner.
+This does not approve new effects, tuning, art, or the full redesign. Exact
+implementation and evidence status: `reviews/2026-09-10-manual-ultimate-review.md`.
 
 ```yaml
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER

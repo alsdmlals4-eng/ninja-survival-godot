@@ -10,8 +10,12 @@
   pattern counterplay and ultimate timing. No manual ordinary attack mode.
 - Blueprint: dated A+B section in docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md
   defines representative decisions, input/HUD gaps, motion and acceptance targets.
-- Next: execute the bounded ultimate input/HUD package against existing runtime
-  owners with TDD. Image production pauses at the one-candidate review gate;
+- Current branch implementation: E / pad Y / top-button ultimate request, existing
+  runtime readiness and failure feedback. See `reviews/2026-09-10-manual-ultimate-review.md`
+  for exact tests, live input capture, limitations and delivery status.
+- Next: close exact-head PR checks, then repair/verify the observed battlefield
+  coverage gap before calling the representative screen visually ready.
+  Image production pauses at the one-candidate review gate;
   new art remains candidate-only until user LOCK.
 - Candidate: docs/visual/candidates/ab-gameplay-composition-v1.png; one generated
   and visually inspected composition, no baked UI, no runtime binding or motion.
@@ -26,12 +30,14 @@
   and metadata readback (16×16, RGB, one 100ms frame). This is a transport probe,
   not image, motion, export, runtime or Human completion.
 - New game design/art direction: control boundary approved; new art not locked.
-- Source finding: school ultimates exist, but MainController/HUD/project input
-  currently have no live ultimate request connection. Cheonsul may be charged
+- Resolved source finding: MainController/HUD/project input now connect to the
+  existing school ultimates on this branch (not merged main). Cheonsul may be charged
   yet reject activation when no status-bearing target exists. Do not invent a
   new resource owner or report readiness as guaranteed successful activation.
 - Research evidence: official product comparison, professional sources and small
-  response sample; new design/runtime/Human/device validation NOT_RUN.
+  response sample; full redesign/Human/device validation NOT_RUN. Bounded live
+  E/button activation was observed; live paused-input QA was blocked by the
+  temporary inspector pausing with SceneTree. Automated modal checks are separate.
 
 The older router block below is the previous cycle's evidence snapshot. Its
 resume/next-gate/style statements do not override this active-task entry.

@@ -95,6 +95,16 @@ func try_use_ultimate() -> bool:
 	return active_runtime.try_use_ultimate()
 
 
+func ultimate_block_reason() -> StringName:
+	if active_runtime == null:
+		return &"inactive"
+	return active_runtime.ultimate_block_reason()
+
+
+func is_ultimate_ready() -> bool:
+	return active_runtime != null and active_runtime.is_ultimate_ready()
+
+
 func deactivate() -> void:
 	if active_runtime == null:
 		return

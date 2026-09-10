@@ -22,7 +22,11 @@ its exact prompt, source, hash and visual concerns. State is
 It is embedded in the dated A+B screen-blueprint section. No UI is baked into
 the image; no Godot binding or Aseprite motion export was performed. Candidate
 expansion pauses for user LOCK / REVISE / REJECT. The ultimate-input/HUD planning
-package is independent of this visual approval gate.
+package is independent of this visual approval gate and is now branch-implemented.
+`reviews/manual-ultimate-runtime-20260910.png` is a real 1152×648 input-QA capture
+using the existing runtime art, not the new candidate or a visual approval image.
+It shows the ultimate activation label and an unresolved right-side floor gap.
+Do not use it as evidence of seamless-floor or full-screen visual quality PASS.
 
 > Updated: 2026-09-02 KST
 > Purpose: next-chat resume router for the approved visual direction and current image-production state.

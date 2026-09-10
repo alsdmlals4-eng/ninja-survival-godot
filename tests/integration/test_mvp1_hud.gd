@@ -17,7 +17,7 @@ func test_mvp1_hud_exposes_only_compact_combat_presentation_controls() -> void:
 	var hud = HUD_SCENE.instantiate()
 	add_child_autofree(hud)
 	hud.show_combat_hud(true)
-	assert_eq(hud.combat_persistent_control_names(), ["DashLabel", "PlayLabel", "SettingsButton"])
+	assert_eq(hud.combat_persistent_control_names(), ["DashLabel", "PlayLabel", "UltimateButton", "SettingsButton"])
 	assert_true((hud.get_node("CombatTopBar/Row/DashLabel") as Label).visible)
 	assert_true((hud.get_node("CombatTopBar/Row/PlayLabel") as Label).visible)
 	assert_true((hud.get_node("CombatTopBar/Row/SettingsButton") as Button).visible)

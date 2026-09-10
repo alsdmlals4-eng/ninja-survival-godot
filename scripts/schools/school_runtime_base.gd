@@ -53,6 +53,12 @@ func is_ultimate_ready() -> bool:
 	return false
 
 
+func ultimate_block_reason() -> StringName:
+	if not active:
+		return &"inactive"
+	return &"" if is_ultimate_ready() else &"charging"
+
+
 func emit_player_action_resolved() -> void:
 	if active:
 		player_action_resolved.emit()

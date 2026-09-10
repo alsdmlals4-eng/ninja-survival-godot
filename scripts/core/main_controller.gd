@@ -172,6 +172,8 @@ func _connect_existing_signals() -> void:
 	hud.current_tradition_help_requested.connect(_on_current_tradition_help_requested)
 	hud.restart_requested.connect(_restart_run)
 	hud.retry_requested.connect(_on_retry_requested)
+	hud.ultimate_requested.connect(_on_ultimate_requested)
+	school_host.ultimate_ready_changed.connect(_on_ultimate_ready_changed)
 
 
 func _connect_mvp3_signals() -> void:
@@ -203,6 +205,10 @@ func _connect_mvp3_signals() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed(&"ultimate") and not event.is_echo():
+		_on_ultimate_requested()
+		get_viewport().set_input_as_handled()
+		return
 	if _handle_gameplay_pointer_input(event):
 		get_viewport().set_input_as_handled()
 		return
@@ -210,6 +216,22 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if game_over:
 		_restart_run()
+
+
+func _on_ultimate_ready_changed(ready: bool) -> void:
+	hud.set_ultimate_ready(ready)
+
+
+func _on_ultimate_requested() -> void:
+	if game_over or not _combat_enabled or get_tree().paused or player.health <= 0:
+		return
+	if hud.settings_panel.visible or school_selection.blocks_combat_input() or title_screen.visible:
+		return
+	var reason := school_host.ultimate_block_reason()
+	if reason == &"":
+		reason = &"activated" if school_host.try_use_ultimate() else &"unavailable"
+	hud.set_ultimate_ready(school_host.is_ultimate_ready())
+	hud.show_ultimate_feedback(reason)
 
 
 func _handle_gameplay_pointer_input(event: InputEvent) -> bool:
@@ -697,6 +719,7 @@ func _set_combat_enabled(enabled: bool) -> void:
 
 	var combat_hud_enabled := enabled and not game_over and school_host.selected_school_id != &""
 	hud.show_combat_hud(combat_hud_enabled)
+	hud.set_ultimate_ready(school_host.is_ultimate_ready())
 	if combat_hud_enabled:
 		wave_spawner.ensure_minimum_active()
 		hud.set_dash_state(player.current_dash_charges(), PlayerController.MAX_DASH_CHARGES)

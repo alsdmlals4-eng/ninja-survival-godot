@@ -197,6 +197,16 @@ func try_use_ultimate() -> bool:
 	return true
 
 
+func ultimate_block_reason() -> StringName:
+	var reason := super.ultimate_block_reason()
+	if reason != &"":
+		return reason
+	for state: Dictionary in _states.values():
+		if _state_has_any_status(state) and _is_valid_enemy(state["enemy"]):
+			return &""
+	return &"no_target"
+
+
 func _apply_burn(enemy: Node2D) -> void:
 	var state := _ensure_state(enemy)
 	state["burn_remaining"] = BURN_DURATION

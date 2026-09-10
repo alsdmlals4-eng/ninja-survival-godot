@@ -4,6 +4,9 @@
 
 ### 2026-09-10 active-cycle routing override
 
+Bounded input implementation/evidence: `reviews/2026-09-10-manual-ultimate-review.md`.
+Execution checklist: `superpowers/plans/2026-09-10-manual-ultimate-input.md`.
+
 Read the dated replanning entries in Decisions, Active Context and Visual Handoff
 first. The A+B automatic-attack/manual-movement-dash-ultimate boundary is approved.
 The dated first section of `visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` now owns its

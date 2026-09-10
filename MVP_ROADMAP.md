@@ -6,8 +6,10 @@
    movement, invulnerable dash, pattern counterplay and ultimate timing.
    The 15-game comparison and other element dispositions in
    `docs/research/2026-09-10-full-product-reassessment.md` remain research inputs.
-   Use the dated A+B screen-blueprint section for the next bounded input/HUD
-   package; reuse existing school ultimate owners, then verify rejection paths.
+   Bounded ultimate input/HUD is implemented on the current task branch;
+   see `docs/reviews/2026-09-10-manual-ultimate-review.md` for evidence and PR status.
+   Next verify exact-head CI and address the observed floor coverage gap before
+   expanding the representative screen. Full redesign is not implementation-complete.
 2. Compare viable art and animation production methods at actual play size.
 3. Define screen flow, representative gameplay, state transitions and asset specs.
 4. Produce a new representative character/frame family and suitable Aseprite
