@@ -10,6 +10,14 @@
 
 ## A. 현재 구현 → 변경 지점
 
+### 최신 장비 분리 수정 — 이전 패키지보다 우선
+
+규칙 책임자는 R-EQUIPMENT/R-LOADOUT/R-TRACE다. 아래 표의 8보조/고정 starter1/추가2/무비전3공격 목표는 이전 버전이다. 현재 코드는 바꾸지 않았다. 24인법 상세, 조합 재료, 시작 유파 흔적 예외가 해결될 때까지 P01 전체 착수 게이트는 닫혀 있다.
+
+RunBuildState가 런 소유 장비·3슬롯·장비별 강화 단계를 단일 확정 스냅샷으로 소유한다. BasicWeaponController는 확정 근접/투사 장비만 소비한다. BackpackState/Resolver는 인법서 두 개의 4칸 배치를 처리하고 장비의 가상 셀/인접을 계산하지 않는다. NinjutsuLoadoutState는 시작3택1×2와 해금/배치를 검사한다. TraditionAccessState는 전장 완료와 인법 해금/포기를 분리한다. 새 autoload나 두 번째 가방 시스템은 만들지 않는다.
+
+필수 인수 시험: 서로 다른 시작 인법2개, 숨은 starter 없음, 전체4/외부1, 장비 슬롯3/점유0, 책4칸/여유5칸, 미장착·미확정 전투력0, 선택 장비만 강화, 교체 시 단계 복사 없음, 강화한 타 유파 후보 제외, 경로 완료 보존, 취소0소비/반복확인1회, 저장 실패 전부 원복. 아직 실행하지 않은 게임 시험이다.
+
 | 현재 소비처 | 현재 상태 | 승인 뒤 변경 | 완료 증거 |
 |---|---|---|---|
 | `scripts/combat/basic_weapon_controller.gd` | 기본 자동무기 존재 | 일본도 부채꼴·개별 비전 범주, 수리검 관통 | 경계 안/밖·동일 적 1회·무비전 시작 시험 |
@@ -34,7 +42,9 @@
 |---|---|
 | EffectDefinition | id, school_id, effect_kind, cooldown, target_policy, range, shape, damage, duration, status_id, boss_response, event_family. 수치 유한·음수 금지; 알려진 enum만 |
 | CombatEvent | run_id, cast_id, event_sequence, source_actor_id, target_id, family, amount. sequence는 런 내 단조 증가; 동일 cast/target/family 중복 거부 |
-| LoadoutSnapshot | starting_school, starter_id, committed_additional_ids. starter 정확히1; 추가≤2; 외부≤1; committed 배치에서 재산출해 일치 검사 |
+| LoadoutSnapshot | starting_school, draft_picks[2], committed_ninjutsu_ids. picks 서로 다른2; 활성≤4; 외부≤1; 해금과 committed 배치에서 재산출해 일치 검사. fixed starter 없음 |
+| EquipmentSnapshot | owned_instances, equipped_slots{melee,projectile,outfit}, upgrade_rank_by_instance, revision. 슬롯 적합성·고유 인스턴스 검사; rank 정수0..4; backpack 좌표 없음; 미장착 전투력0 |
+| TraceDecision | run_id, cleared_school, decision, target_equipment_instance_id, expected_revision, transaction_id. absorb면 target 없음; equipment_upgrade면 현재 장착 대상 정확히1. 흔적당 확정1회; 해금과 포기 동시 불가 |
 | EncounterPattern | id, primitive, shape, target_policy, telegraph_duration, lock_duration, active_duration, recovery_duration, slot_cost. 경고/피해가 같은 shape 인스턴스 사용 |
 | SpriteAtlasEntry | source_sha256, image_path, region, state, duration_ms, pivot, facing, consumer, approval_state, alpha_check. region 내부·양수·발 접점 확인 |
 | CodexEntry | 기존 enemy/item/ninjutsu ID 참조, kind, role_text, acquisition_text, recipe_refs, counterplay, exceptions. UI 설명에 별도 수치 복제 금지 |
@@ -95,6 +105,8 @@ schema1의 진행 중 런은 아이템 의미가 달라져 자동 변환을 **RE
 | 시작 선택 | 유파/전장 카드 별도 | 두 그룹 간 이동 | 카드 탭 후 시작 | 처음 초점 복원, 선택이 곧 출전 아님 |
 | 전투 | 상단 오의/설정 | WASD/스틱, Space/B 대시, E/Y 오의 | 좌 이동패드, 우 대시/오의 | 메뉴가 열리면 held 입력 초기화 |
 | 준비 가방 | 드래그/회전 버튼 | pick→방향→R/회전 버튼→place, B 취소 | 탭 pick→셀 탭 place, 회전 | 불법 배치 빨간 윤곽+이유, 원위치 복귀 |
+| 캐릭터 장비 | 슬롯→목록→비교→교체 | 순차 초점·확인·B 취소 | 슬롯 탭→목록 탭→확인 | 교체는 미리보기, 출전 전 원복 가능 |
+| 흔적 강화 | 강화→장비1개→확인 | 단계별 초점·뒤로 | 카드 탭→대상 탭→확인 | 해금 포기 경고, 취소0소비, 저장 실패 전부 원복 |
 | 보상/운명 | 카드 선택 | 순차 초점·확인 | 탭→선택 표시 | 선택≠거래 확정, 중복 클릭 무효 |
 | 도감/각성 | 목록/상세 | 목록→본문→뒤로 | 스크롤/뒤로 | 각성 부족 비용 표시, 읽기 중 게임 입력 없음 |
 | 설정 | 슬라이더/토글 | 좌우/확인/뒤로 | 드래그/탭 | 저장 실패 경고, 이전 화면/초점 복귀 |

@@ -1,6 +1,18 @@
 # ACTIVE_CONTEXT
 
-## Latest approval — starting contents use backpack, 2026-09-11
+## Current — three equipment slots / ninja outfit / one-item trace upgrade
+
+Latest user moved katana, shuriken and ninja outfit outside backpack. The 8/9-cell
+start below is historical: two starting books now use 4/9 cells. Updated owners:
+Detailed Rules R-EQUIPMENT/R-LOADOUT/R-TRACE and Implementation Packet.
+Stage trace upgrade forfeits that school's ninjutsu access and upgrades one item.
+Starting-school exception is USER_DECISION_PENDING; no implicit spell removal.
+Existing recipes and 24-ninjutsu detail expansion still need reconciliation.
+73-page PDF is preserved previous publication, not this revision; its live source
+hash comparison is now stale. No gameplay mutation or merge. Next: resolve exception
+and recipes, finish content/screens, regenerate and inspect the complete Blueprint.
+
+## Historical approval — starting contents use backpack, 2026-09-11
 
 User approved the prior revision direction and explicitly rejected free intrinsic
 starting spells/equipment. All four initial contents (katana, shuriken, two picked

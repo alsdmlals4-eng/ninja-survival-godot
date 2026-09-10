@@ -1,5 +1,13 @@
 # DOCUMENTATION_MAP
 
+## Latest equipment revision — publication pending
+
+Current rules: Detailed Rules R-EQUIPMENT/R-LOADOUT/R-TRACE and Implementation Packet.
+Three gear slots, zero gear bag cells, two initial books use four cells. Screen
+Blueprint now describes gear/bag separation. Research page retains superseded
+8/9-cell history only. Existing 73-page PDF/manifest are preserved prior publication;
+live source comparison is STALE until the complete revised book is exported/reviewed.
+
 ## 목적
 
 ### Latest follow-up — 2026-09-11 tag/draft/trace revision

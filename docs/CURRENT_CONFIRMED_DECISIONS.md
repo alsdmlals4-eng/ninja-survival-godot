@@ -1,6 +1,16 @@
 # CURRENT_CONFIRMED_DECISIONS
 
-## 2026-09-11 — revision direction approved; starting contents occupy backpack
+## Latest 2026-09-11 — character equipment / ninja outfit / trace upgrade
+
+Latest user overrides the previous equipment-in-backpack rule. Katana, shuriken
+and ninja outfit occupy character equipment slots and zero backpack cells.
+Starting ninjutsu books still occupy the bag. Trace strengthening now forfeits
+that school's ninjutsu access for this run to upgrade exactly one equipment item,
+not general school stats. Owner: Detailed Rules R-EQUIPMENT/R-LOADOUT/R-TRACE.
+Already-unlocked starting-school exception awaits the user's answer: no implicit
+spell revocation. Numbers are test proposals; no art LOCK, runtime or PR merge.
+
+## Historical, equipment occupancy superseded — starting contents occupy backpack
 
 Latest user: “좋아 그렇게하자. 시작인법,장비도 가방 잠식할거야.”
 The preceding recommended direction is approved for planning: five tags including
