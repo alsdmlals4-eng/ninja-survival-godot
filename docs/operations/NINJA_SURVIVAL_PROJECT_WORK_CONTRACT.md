@@ -16,6 +16,34 @@ current_autonomy_ceiling: A2_EXECUTE_ISOLATED
 
 ## 1. Purpose and boundary
 
+### 2026-09-10 selective art/motion routing
+
+Current Base observed at `2f93e872d9ed4fa18018ac759b01acd7d34e9b58`.
+Read owners: `ART_DIRECTION_AND_ASSET_PLANNING_GUIDE.md` section 11,
+`ANIMATION_AND_PRESENTATION_METHOD.md`, and
+`ANIMATION_PRESENTATION_SKILL_MATRIX.md`. Their conditional Aseprite selection
+and state/event/pivot contracts are ADAPT for the user-requested replanning.
+This observation does not replace the original adoption record or install the
+full adapter. Base now prescribes two review loops while this project prescribes
+at least five; retain the project rule pending a separately justified change.
+
+Transport comparison: available restricted Aseprite MCP is selected for allowed
+candidate operations; official batch CLI is a conditional fallback only within
+reviewed local permissions; manual editing is a fallback for unsupported art
+operations. Do not build another bridge or infer a live-editor connection.
+Sources read: https://www.aseprite.org/docs/cli/ and
+https://docs.godotengine.org/en/stable/tutorials/2d/2d_sprite_animation.html.
+
+Read local tool contract at
+`C:/Users/user/.local/share/aseprite-local/LOCAL_USAGE.md` before calls.
+Current transport probe: `ninja-replan-20260910-probe/transport-probe.aseprite`,
+16×16 RGB, one frame at 100ms; create and metadata calls succeeded. This proves
+only those operations. New frames/art, export, Godot integration, performance
+and Human evidence remain unverified. Existing `PlayerVisualController` is a
+two-texture MOVE/HIT presentation; actual motion needs a newly specified state
+family. `BasicWeaponController` owns automatic katana/shuriken timing; sprite
+durations must not become a second damage or movement authority.
+
 This document is the single project-local owner for **how** Ninja Survival
 accepts and executes Base-derived work practices. It does not own a game rule,
 balance value, scene state, asset approval, or implementation claim.

@@ -1,5 +1,20 @@
 # CURRENT VISUAL HANDOFF — Ninja Survival / 닌자의 신
 
+## Active visual cycle — 2026-09-10 restart
+
+All pre-existing images below are reference material for the new production
+cycle under the latest user instruction. Preserve their historical approval,
+source hashes and existing-build consumers. Produce new candidate art after
+the replanned consumer and art direction are defined; do not re-promote old
+images or infer final art direction from their historical LOCK.
+
+Production dependency: player action/role → camera and on-screen size → state
+and transition table → key poses/new raster frames → Aseprite candidate layers,
+durations and PNG+JSON export → frame/pivot/alpha inspection → approved Godot
+integration → actual movement, contact, dash, hit and death capture.
+Frame count, facing directions, event times and pixels per character are
+design outputs, not generic fixed presets. No new asset or animation is ready yet.
+
 > Updated: 2026-09-02 KST
 > Purpose: next-chat resume router for the approved visual direction and current image-production state.
 > Product/runtime authority remains `AGENTS.md` → `docs/CURRENT_CONFIRMED_DECISIONS.md` → `docs/ACTIVE_CONTEXT.md` → actual code/data/tests. This file owns the **current visual continuation state only**.

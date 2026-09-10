@@ -1,5 +1,22 @@
 # MVP_ROADMAP
 
+## Active roadmap — 2026-09-10 planning restart
+
+1. Re-evaluate the player promise and core loop with the user; existing design
+   and implementation are evidence inputs, not automatic new-design decisions.
+2. Compare viable art and animation production methods at actual play size.
+3. Define screen flow, representative gameplay, state transitions and asset specs.
+4. Produce a new representative character/frame family and suitable Aseprite
+   candidate export; inspect motion continuity, pivot and required states.
+5. Integrate the approved family with movement, combat feedback and timing in
+   one Godot slice; capture the actual scene before expanding content.
+6. Expand the validated production pattern and update the new Human Blueprint.
+
+The MVP/Txx sections below are historical roadmap and existing-build evidence.
+Their old 4×3 starting-bag and deferred DEC-037 migration statements are stale:
+the current existing build uses 3×3 through the merged #139 migration. New
+gameplay decisions require the restarted planning process, not a historical phase.
+
 ## 목적
 
 기존 `MVP-0~MVP-5` 번호를 유지하면서 최신 DEC-014~026 제품 방향과 실제 merged implementation 상태를 분리해 관리한다.

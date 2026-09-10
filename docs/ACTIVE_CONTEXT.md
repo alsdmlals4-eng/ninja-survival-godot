@@ -1,5 +1,24 @@
 # ACTIVE_CONTEXT
 
+## Active task override — 2026-09-10
+
+- Resume: PLANNING_REOPENED_BY_USER; read the dated restart entry in Decisions.
+- Next: settle the new core promise, compare production/art approaches, then
+  define one representative character-motion-gameplay package.
+- Old images: REFERENCE_ONLY_FOR_NEW_CYCLE; existing runtime binding remains.
+- Existing PDF: historical design/reference, not the new Blueprint approval gate.
+- Read baseline: origin/main b5c2dd61cd589ebd218d1b4da3f016fb94a02126.
+- Open PRs observed: #135 and #49; both read-only. #135 overlaps visual, combat,
+  scene and decision files; its selected earlier changes already have #139 lineage.
+- Base observed: 2f93e872d9ed4fa18018ac759b01acd7d34e9b58; selective routing only.
+- Aseprite: CLIENT_DISCOVERED and CALL_VERIFIED by candidate-only canvas creation
+  and metadata readback (16×16, RGB, one 100ms frame). This is a transport probe,
+  not image, motion, export, runtime or Human completion.
+- New game design/art direction: awaiting the user's core-scope answer.
+
+The older router block below is the previous cycle's evidence snapshot. Its
+resume/next-gate/style statements do not override this active-task entry.
+
 ```yaml
 project: NINJA_SURVIVAL
 state_router_updated_at: 2026-09-02 KST

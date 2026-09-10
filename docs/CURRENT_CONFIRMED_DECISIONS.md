@@ -1,5 +1,23 @@
 # CURRENT_CONFIRMED_DECISIONS
 
+## 2026-09-10 — user-directed replanning and new visual production
+
+The user explicitly restarts planning and requests newly produced images,
+with motion and game behavior designed together. All existing images are
+REFERENCE_ONLY for this new cycle. Prior LOCK entries below remain historical
+approval/provenance records for the existing build, not replacement-asset approval.
+Existing game rules are inputs for re-evaluation; the new core promise, art
+direction and production dimensions are not yet selected. No old phase, PDF,
+PR number or approval silently authorizes replacement gameplay implementation.
+
+The work begins with current project authority and consumers, then applicable
+current Base owners. The existing project-native Base adaptation stays in place.
+New art is authored using the image model; suitable frame/layer/export work uses
+the discovered candidate-only Aseprite transport. Aseprite selection does not
+choose a pixel-art aesthetic. Motion states and game events must be specified
+before expanding a visual family. Existing runtime assets remain bound until
+replacement candidates and their integration are ready and approved.
+
 ```yaml
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER
 updated_at: 2026-09-02 KST
