@@ -8,10 +8,13 @@
    `docs/research/2026-09-10-full-product-reassessment.md` remain research inputs.
    Bounded ultimate input/HUD is implemented on the current task branch;
    see `docs/reviews/2026-09-10-manual-ultimate-review.md` for evidence and PR status.
-   Next verify exact-head CI and address the observed floor coverage gap before
-   expanding the representative screen. Full redesign is not implementation-complete.
-2. Compare viable art and animation production methods at actual play size.
-3. Define screen flow, representative gameplay, state transitions and asset specs.
+   Latest user direction pauses images/runtime and delegates detailed planning.
+   Read `docs/design/NINJA_SURVIVAL_DETAILED_RULES.md` and its review record.
+   Floor coverage is a deferred implementation defect, not the next planning action.
+2. Resolve representative-slice implementation readiness: status/reaction ownership,
+   loadout/backpack mapping, save migration and acceptance tasks from the detail owner.
+3. Refine screen flow, state transitions and asset specifications; compare viable
+   art/motion methods without producing images while the planning-only scope holds.
 4. Produce a new representative character/frame family and suitable Aseprite
    candidate export; inspect motion continuity, pivot and required states.
 5. Integrate the approved family with movement, combat feedback and timing in

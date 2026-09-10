@@ -2,6 +2,15 @@
 
 ## Active task override — 2026-09-10
 
+- Latest scope: PLANNING_ONLY_DELEGATED_DETAIL_SELECTION. The user asked to
+  review planning before images, then delegated Internet-informed detailed rules.
+- Current detail owner: `design/NINJA_SURVIVAL_DETAILED_RULES.md`;
+  DELEGATED_DESIGN / SPECIFIED_FOR_REVIEW, not implemented or Human approved.
+- Next: read the detail owner and its review record, then refine implementation
+  readiness and representative-slice requirements within planning. Do not resume
+  floor repair, image generation, asset binding or save migration in this step.
+- Delivery/readback for this documentation package:
+  `reviews/2026-09-10-detailed-rules-review.md`.
 - Resume: PLANNING_REOPENED_BY_USER; read the dated restart entry in Decisions.
 - Scope confirmed: full product reassessment, including genre/core; existing
   elements are reusable inputs evaluated through evidence, not deletion targets.
@@ -15,10 +24,9 @@
   for exact tests, live input capture, limitations and delivery status.
 - Delivery: Draft PR #147; implementation `33ece77` passed GUT and Windows
   internal build CI. Resolve current final-head checks from that PR; not merged.
-- Next: verify final receipt-head checks, then repair/verify the observed battlefield
-  coverage gap before calling the representative screen visually ready.
-  Image production pauses at the one-candidate review gate;
-  new art remains candidate-only until user LOCK.
+- Deferred implementation follow-up: repair/verify the observed battlefield
+  coverage gap when runtime work resumes. The latest planning-only request
+  overrides this as an immediate action. New art remains candidate-only.
 - Candidate: docs/visual/candidates/ab-gameplay-composition-v1.png; one generated
   and visually inspected composition, no baked UI, no runtime binding or motion.
   Prompt/source/hash and concerns are in its adjacent candidate receipt.

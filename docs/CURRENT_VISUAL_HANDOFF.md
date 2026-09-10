@@ -2,6 +2,11 @@
 
 ## Active visual cycle — 2026-09-10 restart
 
+Latest user override: **PLANNING_ONLY / IMAGE_PRODUCTION_PAUSED**. Detailed
+rules are now selected in `design/NINJA_SURVIVAL_DETAILED_RULES.md` under delegated
+judgement. Its R-PRESENTATION requirements inform future briefs, not new image
+approval or authorization to generate. Existing candidate/provenance below remains.
+
 All pre-existing images below are reference material for the new production
 cycle under the latest user instruction. Preserve their historical approval,
 source hashes and existing-build consumers. Produce new candidate art after

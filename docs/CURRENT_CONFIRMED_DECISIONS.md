@@ -1,5 +1,24 @@
 # CURRENT_CONFIRMED_DECISIONS
 
+## 2026-09-10 — delegated detailed planning; production paused
+
+Latest user instruction: “상세 규칙 및 기획사항은 네가 인터넷 조사,벤치마킹 및 권장안대로 판단해서 정리해줘”. The user delegates evidence-based detail selection and documentation within the approved A+B direction. Do not repeatedly ask for tuning decisions already delegated.
+
+Detailed design owner: `design/NINJA_SURVIVAL_DETAILED_RULES.md` (NS-DESIGN-RULES).
+State: DELEGATED_DESIGN / SPECIFIED_FOR_REVIEW, not individual USER_APPROVED
+rules, implemented gameplay, balanced values, or production-wide BUILD_READY.
+Selected mixed-school loadout, meaningful ninjutsu effects, basic-weapon upgrade
+separation and growth details are scoped new-design choices. They do not rewrite
+historical canon/runtime facts. The prior research's proposals are resolved only
+where this detailed owner explicitly selects a rule; other ideas remain proposals.
+
+The immediately preceding user instruction to review planning before images
+still governs. **No new image generation, runtime edits, save migration, asset
+deletion, or merge of the combined implementation PR is authorized by this
+documentation step.** Existing runtime and approved historical artifacts remain.
+The previous Active Context floor-fix next action is deferred until implementation
+resumes. Review and delivery evidence: `reviews/2026-09-10-detailed-rules-review.md`.
+
 ## 2026-09-10 — user-directed replanning and new visual production
 
 The user explicitly restarts planning and requests newly produced images,

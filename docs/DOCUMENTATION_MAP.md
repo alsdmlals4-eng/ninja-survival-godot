@@ -4,6 +4,15 @@
 
 ### 2026-09-10 active-cycle routing override
 
+NS-DESIGN-RULES: `design/NINJA_SURVIVAL_DETAILED_RULES.md` is the single new-cycle
+detailed-rule owner, authored under delegated planning judgement. Publication:
+repository-native review source now; milestone PDF after design/visual review,
+not an automatic replacement of the historical integrated Human Blueprint.
+Its rules are DELEGATED_DESIGN, tuning values are initial tests, and implementation
+readiness is separate. Current review evidence:
+`reviews/2026-09-10-detailed-rules-review.md`. Latest task is planning-only;
+image generation and runtime implementation remain paused.
+
 Bounded input implementation/evidence: `reviews/2026-09-10-manual-ultimate-review.md`.
 Execution checklist: `superpowers/plans/2026-09-10-manual-ultimate-input.md`.
 
