@@ -1,5 +1,21 @@
 # CURRENT_CONFIRMED_DECISIONS
 
+## 2026-09-11 — revision direction approved; starting contents occupy backpack
+
+Latest user: “좋아 그렇게하자. 시작인법,장비도 가방 잠식할거야.”
+The preceding recommended direction is approved for planning: five tags including
+투사, two three-choice starting-ninjutsu picks, 24-ninjutsu/8-weapon expansion,
+melee1/projectile1 weapon replacement, and the proposed absorb/strengthen flow.
+The explicit correction supersedes bag-free intrinsic starter slots: starting
+weapons, starting ninjutsu books and other starting equipment all occupy real
+backpack cells. No hidden free katana/shuriken or free starter spell remains in
+the new design. Planned placement dimensions/guards are recorded in the change
+analysis owner below and remain engineering/tuning choices, not tested gameplay.
+This is not a final clean-cutout asset LOCK, complete Blueprint approval,
+runtime implementation authorization or combined PR merge authorization.
+Owner: `research/2026-09-11-tags-draft-and-trace-review.md`.
+Older pending/direction notes below are historical where this entry supersedes them.
+
 ## 2026-09-11 — requested Blueprint revisions; recommendations pending
 
 User requests [근접]/[이동]/[생존]/[인술]/a ranged-family tag, two rounds

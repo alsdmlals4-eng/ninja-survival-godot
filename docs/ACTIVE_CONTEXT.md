@@ -1,5 +1,15 @@
 # ACTIVE_CONTEXT
 
+## Latest approval — starting contents use backpack, 2026-09-11
+
+User approved the prior revision direction and explicitly rejected free intrinsic
+starting spells/equipment. All four initial contents (katana, shuriken, two picked
+ninjutsu books) occupy the 3×3 bag. The approved direction plus recommended 8/9-cell
+initial packing lives at the top of the change analysis below. Reconcile detailed
+rules, item/activation contracts, initial-arrangement screen, packet and the next
+PDF together; do not resume the old bag-free automatic-weapon implementation.
+Final art/cutout/motion work and revised Blueprint remain pending; no game mutation.
+
 ## Follow-up review — tags / draft / trace / player, 2026-09-11
 
 The user requests five tag families, two three-choice starting-ninjutsu picks,
