@@ -1,5 +1,18 @@
 # ACTIVE_CONTEXT
 
+## Follow-up review — tags / draft / trace / player, 2026-09-11
+
+The user requests five tag families, two three-choice starting-ninjutsu picks,
+more weapons/ninjutsu and a more appealing anime player. Absorb-versus-strengthen
+after Stage clear is explicitly under consideration, not final approval.
+Current change proposal: `research/2026-09-11-tags-draft-and-trace-review.md`.
+The 73-page PDF below remains the previous review snapshot, not a publication of
+this follow-up. Reconcile rules, packet, visual tables and PDF after resolving
+these product choices; do not start the previous P01 unchanged.
+Player appearance: `visual/candidates/player-refinement-20260911/README.md`.
+Appearance source prepared, but clean-cutout QA failed; no runtime asset LOCK.
+Weapon/ninjutsu additional imagery and player motion remain pending.
+
 ## Active task override — 2026-09-11
 
 - Scope: HUMAN_BLUEPRINT_AND_IMPLEMENTATION_INPUT_PREPARATION. Latest user

@@ -1,5 +1,18 @@
 # CURRENT_CONFIRMED_DECISIONS
 
+## 2026-09-11 — requested Blueprint revisions; recommendations pending
+
+User requests [근접]/[이동]/[생존]/[인술]/a ranged-family tag, two rounds
+of three-option starting-school ninjutsu selection, expanded weapons/ninjutsu,
+and an anime player closer to the newly supplied reference. The label [투사],
+24 ninjutsu/8 weapons, replacement weapon slots and trace branch safeguards are
+recommendations, not user-approved details. Absorb-versus-strengthen is explicitly
+tentative. Change analysis owner:
+`research/2026-09-11-tags-draft-and-trace-review.md`.
+This reopens affected Blueprint readiness; do not implement the old starter1/
+pre-Boss trace gate unchanged or describe the existing PDF as this revised design.
+No game changes, historical PDF deletion or combined PR merge is authorized.
+
 ## 2026-09-11 — Human Blueprint and implementation-input preparation
 
 The user requests a complete reader-facing Blueprint using the supplied Ten Paces

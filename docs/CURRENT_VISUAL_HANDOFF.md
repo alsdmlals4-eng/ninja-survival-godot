@@ -1,5 +1,15 @@
 # CURRENT VISUAL HANDOFF — Ninja Survival / 닌자의 신
 
+## Latest player revision request — 2026-09-11
+
+User supplied the handsome anime ninja reference again. Appearance review source
+and exact prompt/failed cutout attempts are in
+`visual/candidates/player-refinement-20260911/README.md`.
+The earlier Blueprint player is not the accepted answer to this revision.
+New source remains APPEARANCE_REVIEW_ONLY / TECHNICAL_REVISION_REQUIRED: halo,
+camera and motion must be corrected before runtime use. No asset LOCK or binding.
+Additional weapon/ninjutsu imagery remains pending the follow-up design/visual work.
+
 ## Active visual cycle — 2026-09-11 Blueprint batch
 
 Latest user explicitly requests new game-use images and atlases inside a complete

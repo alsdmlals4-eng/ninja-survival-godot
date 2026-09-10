@@ -2,6 +2,14 @@
 
 ## 목적
 
+### Latest follow-up — 2026-09-11 tag/draft/trace revision
+
+`research/2026-09-11-tags-draft-and-trace-review.md` owns proposed changes requested
+after the 73-page publication. The PDF below is the prior review snapshot and
+does not yet include those proposals. Rules/packet/PDF need reconciliation after
+product review; implementation readiness is reopened. Player appearance attempt:
+`visual/candidates/player-refinement-20260911/README.md` (technical rework required).
+
 ### 2026-09-11 human Blueprint preparation overlay
 
 Latest reader-facing source: `design/NINJA_SURVIVAL_HUMAN_BLUEPRINT.md`.
