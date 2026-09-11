@@ -7,7 +7,8 @@ Do not reuse target-centered blast or radial-pulse imagery as their new effects.
 R-ULTIMATE owns dimensions/ticks/lifetime/cancel; presentation follows those events.
 Needed: breath begin/sustain/end/dash-cancel and sword-mode begin/slash/end,
 with player pivot and enemy telegraph visibility. No raster generated or approved
-in this revision. Non-sword temporary sword policy remains a review proposal.
+in this revision. Temporary sword across melee loadouts is direction-approved
+2026-09-12, not approval of a sword image or animation.
 
 ## Latest player revision request — 2026-09-11
 

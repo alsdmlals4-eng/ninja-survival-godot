@@ -20,7 +20,7 @@ CombatResolver의 원천 판정과 NinjutsuAutoController의 발동 차단이 �
 추가 인수 요구: 브레스 앞/뒤/±30°/거리320 경계, 이동·고정 방향,6틱, 같은 틱 재진입,
 대시 즉시 취소, 일시정지. 귀인화는 근접4종×공격/보호 책 조합, 기존 투사체·소환체·독·
 조합 피해 차단, 보호 유지, 원래 쿨다운/장비 단계 복구, 사망/장면 이탈 중복 정리를 시험한다.
-임시검 대안은 사용자 답변 전이며 이 시험 목록도 구현 완료 증거가 아니다.
+임시검 전환은2026-09-12 사용자 진행 승인으로 채택했다. 이 시험 목록은 구현 완료 증거가 아니다.
 
 아래 이전 패키지의 ‘호환성 명세가 남음’ 상태를 대체한다. 기본 충전·독립 효과는 상세 규칙에 명세했으며 실행 검증/최종 승인은 아직 남았다. 숫자는 상세 규칙만 소유한다.
 
@@ -28,7 +28,7 @@ CombatResolver의 원천 판정과 NinjutsuAutoController의 발동 차단이 �
 - 자원/상한/비용/활성 지속과 발동 원자성은 각 runtime이 소유한다. 흑영은 살아 있는 적의 표식 합이 아니라 독립 준비 값을 소유한다. 표식은 책 효과로 남는다.
 - 기본 충전은 전투 delta만, 보너스는 중복 제거한 CombatEvent만 소비한다. 천술 reaction-resolved는 자원 통지 전용 예외다. 보너스 내부주기는 벽시계가 아닌 전투 시간으로 잰다.
 - UI 상태는 CHARGING / READY_NO_TARGET / READY / ACTIVE / BLOCKED. resource_changed는 수치, ultimate_ready_changed는 충전 도달을 알리되 실제 요청에서 대상·pause·생존을 재검사한다. UI 활성 상태를 권한으로 신뢰하지 않는다.
-- schema2 스테이지 경계 저장에 school_id/resource_amount를 기존 런 스냅샷에 포함한다. 진행 중 오의 객체·적 ID는 저장하지 않는다. 구형 저장 자동 변환 금지. 전투 중 저장 경로와 충돌하지 않는지 후속 통합한다.
+- schema2의 정확한 필드는 E의 checkpoint.ultimate_charge를 따른다. 진행 중 오의 객체·적 ID는 저장하지 않는다. 구형 저장 자동 변환 금지. 전투 중 실시간 저장으로 이 경계를 우회하지 않는지 검증한다.
 - 인수 fixture는24정의에서 유파별 서로 다른2개를 열거해60행 생성한다. 각 행은 일반 적 단독/보스 단독 성공, 비선택 자동 효과0, 실패 비용0을 검증한다. 빈 맵·메뉴·보너스 중복·지속 정리·NaN 저장 검증을 추가한다. 문서 조합 산술은 GUT를 대신하지 않는다.
 - 새 오의는 기존 밸런스 교체이므로 최종 Blueprint 승인 후 구현한다. VFX4종 duration/타격 마커/발 접점/적 전조 비가림 검수는 별도이며 현재 자산 준비 완료로 표시하지 않는다.
 
@@ -113,6 +113,32 @@ TraceDecision 검증은 시작 유파이면 강화만 허용하고 기존 open �
 
 ## E. schema 2와 영구 거래
 
+### 오의·장비 복원 경계 — 2026-09-12 보강
+
+현재 `scripts/core/main_controller.gd`의 `_capture_run_checkpoint()`와
+`RunResumeCodec`는 확정 build/route/circuit/loadout 저장을 소유하며 실행 중 오의는
+직렬화하지 않는다. 이 책임을 재사용한다. 아래는 새 schema2 구현 계약이며 코드 변경 아님.
+
+- 임시 귀인검은 장비 인스턴스가 아니다. 소유 장비/3슬롯/강화 단계는 원래 스냅샷 그대로
+  저장한다. `guiin_sword`를 구매품·가방 아이템·소유 장비 목록에 추가하지 않는다.
+- 준비/출전의 확정 거래 경계에서만 `ultimate_charge`를 저장한다. 시작 유파 runtime의
+  자원을 읽고, 모든 오의·일반 투사체·피해 영역이 정리된 상태인지 확인한 다음 후보를
+  검증한다. 새 런 최초 자원은0. 전투 도중 메뉴/종료는 마지막 확정 경계로 재개한다는
+  안내를 표시하며 현재 전투 상태 일부를 그 스냅샷에 섞어 넣지 않는다.
+- 브레스 방향·틱 번호·잔여 지속, 귀인검 모드 토큰·공격 차단 플래그, 적/소환체 인스턴스
+  ID는 저장하지 않는다. 경계 저장에 활성 모드가 남으면 저장을 실패 처리하고 기존 파일
+  유지·재시도 안내를 제공한다. 활성 상태를 조용히 빼고 성공했다고 보고하지 않는다.
+- 복원은 전체 decode/검증 → 현재 임시 효과 정리 → 원래 장비·가방·경로 복원 → 시작
+  유파 runtime 활성화 → 저장 자원 적용 순서다. activate의 초기화로 복원 자원이0이
+  되거나, 과거 모드 토큰이 남아 투사/인법이 계속 막히면 실패다. 전체 복원 성공 전에는
+  전투 입력·피해 처리를 열지 않는다.
+- 재도전/강제 종료 복구는 checkpoint에 기록된 자원만 복원한다. 저장 이후 전투 중 쓴
+  비용/얻은 자원을 추가 합산하거나 환불하지 않는다. 현재 잔액과 과거 경계 잔액을 섞지 않는다.
+
+추가 인수 요구: 근접4종×강화0..4의 장비 동일성, 자원0/상한, 음수/상한초과/NaN/다른
+school_id 거부, 활성 모드 저장 거부, activate 뒤 자원 readback, 반복 복원 후 공격 차단
+잔류0·임시검 소유 아이템0. 문서 검사와 실제 게임 저장/실패주입 시험을 구분한다.
+
 별도 신규 autoload 없이 기존 저장 책임자를 확장한다. 새 `user://ninja_profile_v2.json` **한 파일**에 지갑·정산 ID·현재 checkpoint를 넣어 두 파일 사이 소울 복제를 막는다. 기존 wallet API는 이 profile의 읽기/거래 facade가 된다. 전체 저장 실패면 메모리 잔액과 checkpoint도 바꾸지 않는다.
 
 | 저장 영역 | 필드 / 정책 |
@@ -120,7 +146,8 @@ TraceDecision 검증은 시작 유파이면 강화만 허용하고 기존 open �
 | 루트 | schema_version=2, revision, content_contract=ns-replan-20260911 |
 | meta | soul_balance 정수≥0, unlocked_support_choice, settled_run_ids, applied_transaction_ids |
 | active_run | null 또는 run_id, starting_school, eligible_boss_ids 집합, elite_qualified, retry_consumed, checkpoint |
-| checkpoint | 기존 build/route/circuit/backpack/buffer + active_ninjutsu_ids + prepare_session_id + selected_fates + rules_version |
+| checkpoint | 기존 build/route/circuit/backpack/buffer + active_ninjutsu_ids + prepare_session_id + selected_fates + rules_version + ultimate_charge |
+| checkpoint.ultimate_charge | school_id는 active_run.starting_school과 동일, resource_amount는 유한한 수이며 해당 유파0..상한. 상한/비용은 저장값 대신 R-ULTIMATE 정의로 검사 |
 | 무결성 | 알려진 ID·형·범위 검사, snapshot에서 modifier/활성 인법 재산출; 저장된 계산값 맹신 금지 |
 
 쓰기 순서: 후보 snapshot 검증 → tmp 쓰기/flush → 다시 읽어 decode → 기존 파일을 previous로 이동 → tmp를 정본 경로로 이동 → 정본 decode readback → 메모리 갱신. previous 정리 실패는 거래 실패로 되돌리지 않고 **정리 경고**로 구분한다. 다음 시작에서 revision/transaction_id로 정본을 판정한다. 파일이 손상되면 previous 유효성 검사와 복구 확인을 제공하고 원본을 보존한다. 파일 시스템 수준 crash-proof 보장은 실제 실패 주입 전에는 주장하지 않는다.

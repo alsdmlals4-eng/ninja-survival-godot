@@ -5,9 +5,11 @@
 User replaces Cheonsul area blast with forward elemental breath and Guiin radial
 pulse with stronger sword-only offense. R-ULTIMATE contains proposed geometry,
 timing, non-sword attack suppression and restore semantics. Temporary Guiin sword
-for non-sword loadouts is an asynchronous question / REVIEW_PROPOSAL, not LOCK.
-No code/image/PDF changes. Next: resolve that selection, integrate legacy book,
-route/save/economy text and visuals before final Blueprint publication.
+for every melee loadout is direction-approved by the user's 2026-09-12 continuation.
+The former asynchronous question is resolved; no art LOCK is implied.
+Checkpoint fields now separate persistent charge from temporary effects.
+No code/image/PDF changes. Next: integrate legacy book/route/economy text and
+visuals before final Blueprint publication; runtime checks remain NOT_RUN.
 
 ## Current — three equipment slots / ninja outfit / one-item trace upgrade
 
