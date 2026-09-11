@@ -1,5 +1,15 @@
 # CURRENT_CONFIRMED_DECISIONS
 
+## Latest 2026-09-12 — implementation through integration validation
+
+User: “좋아 권장안대로 진행해. 통합 검증까지 남은 작업 다 진행해줘”.
+Execute the previously enumerated remaining implementation packages and their
+integration checks. This supersedes historical planning-only restrictions for
+those packages. Preserve atomic build/save ownership and user-managed deletion.
+No blanket approval of unseen art, Human playtest result, destructive migration,
+other PR takeover or protected-main bypass is inferred. Current implementation
+and remaining work are owned by Active Context and Implementation Packet.
+
 ## Latest — forward elemental breath / sword-only Guiin transformation
 
 User explicitly changed Cheonsul's 오행폭주 to forward elemental breath and

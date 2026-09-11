@@ -27,10 +27,25 @@ var _movement_intent := Vector2.ZERO
 var _pointer_target := Vector2.ZERO
 var _has_pointer_target: bool = false
 var _resolved_direction := Vector2.ZERO
+var _last_movement_direction := Vector2.ZERO
+var _last_weapon_direction := Vector2.ZERO
+
+
 var _dash_charges: int = MAX_DASH_CHARGES
 var _dash_remaining: float = 0.0
 var _dash_direction := Vector2.ZERO
 var _dash_recharge_elapsed: float = 0.0
+
+
+func combat_facing_direction() -> Vector2:
+	if not _last_movement_direction.is_zero_approx():
+		return _last_movement_direction
+	return _last_weapon_direction if not _last_weapon_direction.is_zero_approx() else Vector2.RIGHT
+
+
+func record_auto_weapon_direction(direction: Vector2) -> void:
+	if direction.is_finite() and not direction.is_zero_approx():
+		_last_weapon_direction = direction.normalized()
 
 
 func _ready() -> void:
@@ -103,6 +118,8 @@ func request_dash() -> bool:
 func _update_resolved_direction() -> void:
 	if not _has_pointer_target:
 		_resolved_direction = _movement_intent
+		if not _resolved_direction.is_zero_approx():
+			_last_movement_direction = _resolved_direction.normalized()
 		return
 	var offset := _pointer_target - global_position
 	_resolved_direction = (
@@ -110,6 +127,8 @@ func _update_resolved_direction() -> void:
 		if offset.length() <= POINTER_ARRIVAL_RADIUS
 		else offset.normalized()
 	)
+	if not _resolved_direction.is_zero_approx():
+		_last_movement_direction = _resolved_direction.normalized()
 
 
 func _advance_dash_state(delta: float) -> void:

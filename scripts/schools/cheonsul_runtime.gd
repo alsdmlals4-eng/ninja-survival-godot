@@ -15,7 +15,11 @@ const REACTION_DAMAGE := 10
 const CHAIN_RADIUS := 120.0
 const CHAIN_DAMAGE := 6
 const REACTION_MAXIMUM := 3.0
-const ULTIMATE_DAMAGE := 18
+const ULTIMATE_DAMAGE := 8
+const BREATH_DURATION := 1.5
+const BREATH_TICK_INTERVAL := 0.25
+const BREATH_RANGE := 320.0
+const BREATH_HALF_ANGLE := PI / 6.0
 
 @export var badge_scene: PackedScene
 
@@ -26,12 +30,18 @@ var _next_token: StringName = &"wet"
 var _states: Dictionary = {}
 var _field_visuals: Array[Dictionary] = []
 var _last_ultimate_ready: bool = false
+var _breath_remaining := 0.0
+var _breath_elapsed := 0.0
+var _breath_ticks := 0
+var _breath_direction := Vector2.RIGHT
 
 
 func activate() -> void:
 	if active:
 		return
 	super.activate()
+	if is_instance_valid(player) and not player.dash_started.is_connected(_cancel_breath_on_dash):
+		player.dash_started.connect(_cancel_breath_on_dash)
 	reaction_count = 0.0
 	_cast_remaining = CAST_INTERVAL
 	_next_token = &"wet"
@@ -42,16 +52,22 @@ func activate() -> void:
 
 
 func deactivate() -> void:
+	_breath_remaining = 0.0
+	if is_instance_valid(player) and player.dash_started.is_connected(_cancel_breath_on_dash):
+		player.dash_started.disconnect(_cancel_breath_on_dash)
 	_clear_states()
 	_clear_field_visuals()
 	super.deactivate()
 
 
 func _process(delta: float) -> void:
-	if not active or delta <= 0.0:
+	if not active or delta <= 0.0 or get_tree().paused:
 		return
+	if not is_instance_valid(player) or player.is_dead():
+		_breath_remaining = 0.0
+		return
+	_advance_breath(delta)
 
-	_tick_states(delta)
 	_tick_field_visuals(delta)
 
 	_cast_remaining -= delta
@@ -165,32 +181,20 @@ func on_enemy_died(enemy: Node) -> void:
 
 
 func is_ultimate_ready() -> bool:
-	return active and reaction_count >= REACTION_MAXIMUM
+	return active and _breath_remaining <= 0.0 and reaction_count >= REACTION_MAXIMUM
 
 
 func try_use_ultimate() -> bool:
-	if not is_ultimate_ready():
+	if not is_ultimate_ready() or not is_instance_valid(player) or player.is_dead() or get_tree().paused:
 		return false
-
-	_prune_invalid_states()
-	var targets: Array[Node2D] = []
-	for instance_id in _states.keys():
-		var state: Dictionary = _states[instance_id]
-		if not _state_has_any_status(state):
-			continue
-		var enemy = state["enemy"]
-		if _is_valid_enemy(enemy):
-			targets.append(enemy as Node2D)
-
-	if targets.is_empty():
+	_breath_direction = player.combat_facing_direction()
+	if _breath_targets(_breath_direction, true).is_empty():
 		return false
-
-	for enemy in targets:
-		if _is_valid_enemy(enemy):
-			_deal_damage(enemy, ULTIMATE_DAMAGE, &"ultimate")
-
-	_clear_states()
 	reaction_count = 0.0
+	_breath_remaining = BREATH_DURATION
+	_breath_elapsed = 0.0
+	_breath_ticks = 0
+	_breath_tick()
 	_emit_resource()
 	_emit_ultimate_ready_if_changed(true)
 	school_feedback.emit("오행폭주")
@@ -201,10 +205,51 @@ func ultimate_block_reason() -> StringName:
 	var reason := super.ultimate_block_reason()
 	if reason != &"":
 		return reason
-	for state: Dictionary in _states.values():
-		if _state_has_any_status(state) and _is_valid_enemy(state["enemy"]):
-			return &""
-	return &"no_target"
+	if not is_instance_valid(player) or player.is_dead() or get_tree().paused:
+		return &"inactive"
+	return &"no_target" if _breath_targets(player.combat_facing_direction(), true).is_empty() else &""
+
+
+func _breath_targets(direction: Vector2, visible_only: bool = false) -> Array[Node2D]:
+	var targets: Array[Node2D] = []
+	for enemy in _valid_enemies():
+		if visible_only:
+			var screen_position := enemy.get_global_transform_with_canvas().origin
+			if not enemy.is_visible_in_tree() or not enemy.get_viewport_rect().has_point(screen_position):
+				continue
+		var offset: Vector2 = enemy.global_position - player.global_position
+		if offset.length_squared() > BREATH_RANGE * BREATH_RANGE:
+			continue
+		if offset.is_zero_approx() or offset.normalized().dot(direction) >= cos(BREATH_HALF_ANGLE) - 0.000001:
+			targets.append(enemy)
+	return targets
+
+
+func _breath_tick() -> void:
+	_breath_ticks += 1
+	for enemy in _breath_targets(_breath_direction):
+		var bonus := 2 if has_status(enemy, &"burn") or has_status(enemy, &"wet") or has_status(enemy, &"shock") else 0
+		_deal_damage(enemy, ULTIMATE_DAMAGE + bonus, &"ultimate")
+	emit_player_action_resolved()
+
+
+func _advance_breath(delta: float) -> void:
+	var remaining := delta
+	while _breath_remaining > CAST_EPSILON and remaining > CAST_EPSILON:
+		var next_boundary := _breath_ticks * BREATH_TICK_INTERVAL if _breath_ticks < 6 else BREATH_DURATION
+		var step := minf(remaining, maxf(next_boundary - _breath_elapsed, 0.0))
+		_tick_states(step)
+		_breath_elapsed += step
+		remaining -= step
+		_breath_remaining = maxf(BREATH_DURATION - _breath_elapsed, 0.0)
+		if _breath_ticks < 6 and _breath_elapsed + CAST_EPSILON >= next_boundary:
+			_breath_tick()
+	if remaining > 0.0:
+		_tick_states(remaining)
+
+
+func _cancel_breath_on_dash(_direction: Vector2) -> void:
+	_breath_remaining = 0.0
 
 
 func _apply_burn(enemy: Node2D) -> void:

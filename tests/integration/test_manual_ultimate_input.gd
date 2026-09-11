@@ -166,6 +166,24 @@ func test_clicked_ultimate_does_not_capture_space_dash_focus() -> void:
 		"Clicking ultimate must not make the next Space dash activate it through ui_accept")
 
 
+func test_cheonsul_button_to_breath_to_dash_cancels_pending_ticks() -> void:
+	var main = _main(&"cheonsul")
+	var runtime = main.school_host.active_runtime
+	runtime._cast_remaining = 999.0
+	var enemy = load("res://scripts/enemies/enemy_chaser.gd").new()
+	enemy.max_health = 1000
+	main.add_child(enemy)
+	enemy.global_position = main.player.global_position
+	runtime.reaction_count = 3.0
+	main.hud.get_node("CombatTopBar/Row/UltimateButton").pressed.emit()
+	assert_eq(enemy.health, 992)
+	assert_eq(runtime.reaction_count, 0.0)
+	main.player.set_movement_intent(Vector2.RIGHT)
+	assert_true(main.player.request_dash())
+	runtime._process(1.5)
+	assert_eq(enemy.health, 992, "Host/button and player dash share the runtime cancellation contract")
+
+
 func test_button_intent_is_blocked_during_pause_and_noncombat() -> void:
 	var main = _main()
 	_charge_guiin(main)

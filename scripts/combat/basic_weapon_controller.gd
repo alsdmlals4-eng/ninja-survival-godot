@@ -78,6 +78,8 @@ func swing_katana_once() -> int:
 	if targets.is_empty():
 		return 0
 
+	if source is PlayerController:
+		source.record_auto_weapon_direction(targets[0].global_position - source.global_position)
 	for target in targets:
 		_resolve_basic_damage(target, katana_damage)
 	_spawn_katana_effect(source, targets[0])
@@ -113,6 +115,8 @@ func fire_shuriken_once() -> Node2D:
 	projectile.global_position = source.global_position
 	if projectile.has_method("configure"):
 		projectile.call("configure", aim, shuriken_speed, shuriken_damage, combat_resolver)
+	if source is PlayerController:
+		source.record_auto_weapon_direction(aim)
 	shuriken_fired.emit(projectile)
 	return projectile
 

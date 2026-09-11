@@ -1,5 +1,40 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-12 implementation checkpoint (not completion review)
+
+Input b83b6e9 plus prior uncommitted breath increment; fetched main b5c2dd61,
+Base2f93e872 unchanged. Current continuation PR147;135/49 read-only.
+Scope requested: all remaining implementation through integration. Actual changed
+scope this checkpoint: breath logic, player/weapon facing, regression tests,
+authority routers and one quarantined candidate. Other packages not completed.
+
+Validated findings: no weapon-facing fallback before movement; hidden targets
+spend charge; old tiny viewport fixture cannot exercise visible-range semantics.
+RED:25 tests,23 passing,2 failures. Added real1152x648 SubViewport fixture;
+setting canvas transform before tree entry caused engine errors, corrected order.
+Later explicit Viewport/Transform2D types fixed test-script parse failures.
+Discarded602-test green banner because91-script coverage fell to90; error scan
+and inventory are required alongside exit status. Final91scripts/629tests/6896
+assertions pass. Includes pause/deactivation, world geometry after offscreen move,
+death,30/31-degree and320/321-distance boundaries and Main button/dash integration.
+
+Approaches: ADAPT existing runtime + stateless canvas transform visibility;
+DEFER VisibleOnScreenNotifier (extra per-enemy scene state unnecessary here);
+REJECT fixed screen/world-coordinate bounds (camera zoom/translation mismatch).
+Official source: https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html
+and https://docs.godotengine.org/en/stable/tutorials/2d/2d_transforms.html.
+CI-pinned4.7.1 retained; no shared engine update or added paid dependency.
+
+Visual finding: new1254px candidate has alpha/cell separation but inconsistent
+emission pivots and extent. ALIGNMENT_REQUIRED, not production-ready. Existing
+old field art is wrong semantics, rejected as replacement breath. Current Hera
+is another project, no live mutation performed. Full new-design integration,
+render/Human/device checks and five whole-state completion loops NOT_COMPLETE.
+This is a WIP evidence checkpoint, not a clean exit or merge recommendation.
+Project lesson: GUT green/exit0 can accompany a skipped parse-error script;
+retain explicit error/warning and expected script/test-count readback. No Base
+promotion performed without a separate cross-project evidence package.
+
 ## Scope and authority
 
 User: “상세 규칙 및 기획사항은 네가 인터넷 조사,벤치마킹 및 권장안대로 판단해서 정리해줘”.

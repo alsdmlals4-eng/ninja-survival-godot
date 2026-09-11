@@ -11,13 +11,164 @@ const MODIFIER_PATH := "res://scripts/data/run_modifier_set.gd"
 const FIELD_VISUAL_TEXTURE_PATH := "res://assets/runtime/visual-core/cheonsul_flame_field_v1.png"
 
 
+func test_breath_hits_unmarked_front_not_back_and_stops_after_six_ticks() -> void:
+	var runtime = _make_runtime()
+	runtime._cast_remaining = 999.0
+	var front = _enemy(runtime.world, Vector2(100, 0), 300)
+	var back = _enemy(runtime.world, Vector2(-100, 0), 300)
+	runtime.reaction_count = 3.0
+	assert_true(runtime.try_use_ultimate())
+	assert_eq(front.health, 292)
+	assert_eq(back.health, 300)
+	runtime._process(1.5)
+	assert_eq(front.health, 252)
+	assert_eq(back.health, 300)
+	runtime._process(1.0)
+	assert_eq(front.health, 252)
+
+
+func test_breath_dash_cancels_remaining_damage_without_refund() -> void:
+	var runtime = _make_runtime()
+	runtime._cast_remaining = 999.0
+	var enemy = _enemy(runtime.world, Vector2(100, 0))
+	runtime.player.set_movement_intent(Vector2.RIGHT)
+	runtime.reaction_count = 3.0
+	assert_true(runtime.try_use_ultimate())
+	assert_true(runtime.player.request_dash())
+	runtime._process(1.5)
+	assert_eq(enemy.health, 92)
+	assert_eq(runtime.reaction_count, 0.0)
+
+
+func test_breath_direct_request_cannot_bypass_pause() -> void:
+	var runtime = _make_runtime()
+	var enemy = _enemy(runtime.world, Vector2(100, 0))
+	runtime.apply_token(enemy, &"wet")
+	runtime.reaction_count = 3.0
+	get_tree().paused = true
+	var used: bool = runtime.try_use_ultimate()
+	get_tree().paused = false
+	assert_false(used)
+	assert_eq(enemy.health, 100)
+	assert_eq(runtime.reaction_count, 3.0)
+
+
+func test_breath_remembers_movement_and_locks_direction_while_origin_moves() -> void:
+	var runtime = _make_runtime()
+	runtime._cast_remaining = 999.0
+	runtime.player.set_movement_intent(Vector2.UP)
+	runtime.player.set_movement_intent(Vector2.ZERO)
+	var front = _enemy(runtime.world, Vector2(0, -100))
+	var back = _enemy(runtime.world, Vector2(0, 100))
+	runtime.reaction_count = 3.0
+	assert_true(runtime.try_use_ultimate())
+	assert_eq(front.health, 92)
+	assert_eq(back.health, 100)
+	runtime.player.set_movement_intent(Vector2.DOWN)
+	runtime.player.position = Vector2(0, -250)
+	runtime._process(0.25)
+	assert_eq(front.health, 92, "Previously hit target is now behind the moving origin")
+	assert_eq(back.health, 100)
+
+
+func test_breath_catchup_respects_status_expiry_between_ticks() -> void:
+	var runtime = _make_runtime()
+	runtime._cast_remaining = 999.0
+	var enemy = _enemy(runtime.world, Vector2(100, 0), 300)
+	runtime.apply_token(enemy, &"wet")
+	runtime._states[enemy.get_instance_id()]["wet_remaining"] = 0.3
+	runtime.reaction_count = 3.0
+	assert_true(runtime.try_use_ultimate())
+	runtime._process(1.5)
+	assert_eq(enemy.health, 248, "Only ticks at 0 and 0.25 receive the status bonus")
+
+
+func test_breath_uses_automatic_weapon_direction_before_first_movement() -> void:
+	var runtime = _make_runtime()
+	var weapon = load("res://scripts/combat/basic_weapon_controller.gd").new()
+	runtime.player.add_child(weapon)
+	var enemy = _enemy(runtime.world, Vector2(0, 80), 300)
+	assert_eq(weapon.swing_katana_once(), 1)
+	runtime.reaction_count = 3.0
+	assert_true(runtime.try_use_ultimate())
+	assert_eq(enemy.health, 282)
+
+
+func test_breath_rejects_hidden_activation_target_without_cost() -> void:
+	var runtime = _make_runtime()
+	var enemy = _enemy(runtime.world, Vector2(100, 0))
+	enemy.hide()
+	runtime.reaction_count = 3.0
+	assert_false(runtime.try_use_ultimate())
+	assert_eq(runtime.reaction_count, 3.0)
+	assert_eq(enemy.health, 100)
+
+
+func test_breath_geometry_boundaries_and_death_stop() -> void:
+	var runtime = _make_runtime()
+	runtime._cast_remaining = 999.0
+	var inside = _enemy(runtime.world, Vector2(320, 0), 300)
+	var outside = _enemy(runtime.world, Vector2(321, 0), 300)
+	var angle_in = _enemy(runtime.world, Vector2(100, 0).rotated(deg_to_rad(30)), 300)
+	var angle_out = _enemy(runtime.world, Vector2(100, 0).rotated(deg_to_rad(31)), 300)
+	runtime.reaction_count = 3.0
+	assert_true(runtime.try_use_ultimate())
+	assert_eq(inside.health, 292)
+	assert_eq(outside.health, 300)
+	assert_eq(angle_in.health, 292)
+	assert_eq(angle_out.health, 300)
+	runtime.player.take_damage(10000)
+	runtime._process(1.5)
+	assert_eq(inside.health, 292)
+	assert_false(runtime.try_use_ultimate())
+
+
+func test_breath_offscreen_start_rejected_but_active_ticks_use_world_geometry() -> void:
+	var runtime = _make_runtime()
+	runtime._cast_remaining = 999.0
+	var enemy = _enemy(runtime.world, Vector2(100, 0), 300)
+	var viewport: Viewport = runtime.get_viewport()
+	var original: Transform2D = viewport.canvas_transform
+	viewport.canvas_transform = Transform2D(0, Vector2(2000, 2000))
+	runtime.reaction_count = 3.0
+	assert_false(runtime.try_use_ultimate())
+	assert_eq(runtime.reaction_count, 3.0)
+	viewport.canvas_transform = original
+	assert_true(runtime.try_use_ultimate())
+	viewport.canvas_transform = Transform2D(0, Vector2(2000, 2000))
+	runtime._process(0.25)
+	assert_eq(enemy.health, 284, "Active world-space attack does not shrink with the viewport")
+
+
+func test_breath_pause_freezes_ticks_and_deactivate_cancels_without_refund() -> void:
+	var runtime = _make_runtime()
+	runtime._cast_remaining = 999.0
+	var enemy = _enemy(runtime.world, Vector2(100, 0), 300)
+	runtime.reaction_count = 3.0
+	assert_true(runtime.try_use_ultimate())
+	get_tree().paused = true
+	runtime._process(1.5)
+	get_tree().paused = false
+	assert_eq(enemy.health, 292)
+	runtime._process(0.25)
+	assert_eq(enemy.health, 284)
+	runtime.deactivate()
+	runtime._process(1.5)
+	assert_eq(enemy.health, 284)
+	assert_eq(runtime.reaction_count, 0.0)
+
+
 func _make_runtime():
 	assert_true(ResourceLoader.exists(RUNTIME_PATH), "Cheonsul runtime script must exist")
 	assert_true(ResourceLoader.exists(BADGE_SCENE_PATH), "Enemy effect badge scene must exist")
 	if not ResourceLoader.exists(RUNTIME_PATH) or not ResourceLoader.exists(BADGE_SCENE_PATH):
 		return null
+	var viewport := SubViewport.new()
+	viewport.size = Vector2i(1152, 648)
+	add_child_autofree(viewport)
+	viewport.canvas_transform = Transform2D(0, Vector2(576, 324))
 	var world := Node2D.new()
-	add_child_autofree(world)
+	viewport.add_child(world)
 	var player = load(PLAYER_PATH).new()
 	world.add_child(player)
 	var runtime = load(RUNTIME_PATH).new()
@@ -177,7 +328,7 @@ func test_fractional_reaction_readiness_uses_resource_and_ultimate_gain() -> voi
 	assert_true(runtime.is_ultimate_ready())
 
 
-func test_reaction_charge_clamps_at_three_and_ultimate_clears_statuses() -> void:
+func test_reaction_charge_clamps_and_breath_preserves_status_for_bonus() -> void:
 	var runtime = _make_runtime()
 	if runtime == null:
 		return
@@ -191,9 +342,9 @@ func test_reaction_charge_clamps_at_three_and_ultimate_clears_statuses() -> void
 	runtime.apply_token(enemy, &"wet")
 	var health_before: int = enemy.health
 	assert_true(runtime.try_use_ultimate())
-	assert_eq(enemy.health, health_before - 18)
+	assert_eq(enemy.health, health_before - 10)
 	assert_eq(runtime.reaction_count, 0.0)
-	assert_false(runtime.has_status(enemy, &"wet"))
+	assert_true(runtime.has_status(enemy, &"wet"))
 	assert_false(runtime.is_ultimate_ready())
 
 
@@ -243,7 +394,7 @@ func test_seal_path_penalizes_non_ultimate_damage_but_strengthens_ultimate() -> 
 	runtime.reaction_count = 3.0
 	var health_before: int = enemy.health
 	assert_true(runtime.try_use_ultimate())
-	assert_eq(enemy.health, health_before - 27)
+	assert_eq(enemy.health, health_before - 15)
 
 
 func test_successful_status_applications_and_reaction_are_recorded_once_each() -> void:

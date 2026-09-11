@@ -1,5 +1,45 @@
 # ACTIVE_CONTEXT
 
+## Latest — integration continuation checkpoint, 2026-09-12
+
+User authorizes all previously listed implementation work through integration
+validation. Work remains IN_PROGRESS, not complete and not ready to merge.
+Breath additions: actual automatic-weapon direction before first movement,
+visible-in-viewport activation eligibility, geometry/death/pause/deactivation
+tests, and real Main HUD button -> Host -> breath -> dash cancellation test.
+Godot4.7.1/GUT9.7.1:91 scripts,629/629 tests,6896 assertions, no error/warning.
+One intermediate run skipped a test script due to type inference errors;
+its602-test green banner was REJECTED. Explicit types corrected the fixture;
+final scan checked engine errors, warnings and expected script coverage.
+Candidate `visual/candidates/breath-20260912/README.md` owns new VFX provenance,
+alpha checks and required alignment. It is NOT_LOCKED and not bound to runtime.
+No claim of full-run/new-design integration, render/Human/device pass or five-loop
+completion. Other equipment/book/save/trace/UI packages listed below remain open.
+Current Hera pid37728 belongs to OMENWARD, not this project; no mutation there.
+Next: approve/refine breath appearance, align/export, exact Ninja render session;
+continue equipment/start draft/24book/ultimate/save/route/UI packages as authorized.
+
+Cleanup readback: local date folder currently contains breath-test-download;
+the historical README mentioned below was not found. Do not repeat its claimed
+counts as current or infer deletion. No disposable files deleted this turn.
+
+## Latest — implementation resumed, 2026-09-12
+
+Latest user explicitly requested remaining implementation inspection and execution.
+This supersedes planning-only continuation below, not final art/Blueprint approval.
+Current-task Draft147 now contains a local Cheonsul forward-breath logic increment:
+fixed movement-facing direction, moving origin, six ticks, range/cone targeting,
+status bonus without consumption, dash cancellation and pause request guard.
+GUT on Godot 4.7.1 / GUT 9.7.1: 623/623 tests, 6860 assertions (91 scripts).
+An additional RED test exposed status expiry during large-delta catch-up; corrected
+by advancing status time before each tick. Runtime visual/Human validation NOT_RUN.
+Not merged/pushed for this increment. Full five-loop completion gate remains open.
+Remaining breath work: auto-weapon-facing fallback before first movement, visible
+target policy, dedicated VFX, expanded death/angle/range boundaries and final review.
+Remaining product work: equipment slots/24 books/start draft, charge redesign,
+other ultimates, schema2 persistence, trace/route/economy, UI/art and full-run QA.
+Do not interpret passing legacy-catalog tests as these packages being implemented.
+
 ## Latest — user-managed cleanup, 2026-09-12
 
 User requests confirmed disposable files gathered for manual deletion, never
