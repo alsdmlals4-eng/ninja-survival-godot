@@ -1,5 +1,14 @@
 # ACTIVE_CONTEXT
 
+## Latest — breath / sword-only ultimate revision
+
+User replaces Cheonsul area blast with forward elemental breath and Guiin radial
+pulse with stronger sword-only offense. R-ULTIMATE contains proposed geometry,
+timing, non-sword attack suppression and restore semantics. Temporary Guiin sword
+for non-sword loadouts is an asynchronous question / REVIEW_PROPOSAL, not LOCK.
+No code/image/PDF changes. Next: resolve that selection, integrate legacy book,
+route/save/economy text and visuals before final Blueprint publication.
+
 ## Current — three equipment slots / ninja outfit / one-item trace upgrade
 
 Latest user moved katana, shuriken and ninja outfit outside backpack. The 8/9-cell

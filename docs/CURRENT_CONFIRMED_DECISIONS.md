@@ -1,5 +1,15 @@
 # CURRENT_CONFIRMED_DECISIONS
 
+## Latest — forward elemental breath / sword-only Guiin transformation
+
+User explicitly changed Cheonsul's 오행폭주 to forward elemental breath and
+Guiin transformation to sword-only offense in exchange for stronger effects.
+These supersede the prior target-centered blast and independent radial pulse.
+Detailed Rules R-ULTIMATE owns the proposed timing/geometry/suppression contract.
+Non-sword equipment handling was asked asynchronously; temporary Guiin sword is
+the recommended REVIEW_PROPOSAL, not a separately user-approved decision.
+No runtime mutation, asset LOCK, final Blueprint approval or merge is implied.
+
 ## Latest 2026-09-11 — character equipment / ninja outfit / trace upgrade
 
 Latest user overrides the previous equipment-in-backpack rule. Katana, shuriken
