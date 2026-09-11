@@ -12,7 +12,7 @@
 
 ### 최신 장비 분리 수정 — 이전 패키지보다 우선
 
-규칙 책임자는 R-EQUIPMENT/R-LOADOUT/R-TRACE다. 아래 표의 8보조/고정 starter1/추가2/무비전3공격 목표는 이전 버전이다. 현재 코드는 바꾸지 않았다. 24인법 상세, 조합 재료, 시작 유파 흔적 예외가 해결될 때까지 P01 전체 착수 게이트는 닫혀 있다.
+규칙 책임자는 R-EQUIPMENT/R-LOADOUT/R-TRACE다. 아래 표의 8보조/고정 starter1/추가2/무비전3공격 목표는 이전 버전이다. 현재 코드는 바꾸지 않았다. 시작 유파 예외는 승인되어 해금/책 유지 + 장비 강화만 제공한다. 24인법 상세와 조합 재료 정리가 남아 P01 전체 착수 게이트는 닫혀 있다.
 
 RunBuildState가 런 소유 장비·3슬롯·장비별 강화 단계를 단일 확정 스냅샷으로 소유한다. BasicWeaponController는 확정 근접/투사 장비만 소비한다. BackpackState/Resolver는 인법서 두 개의 4칸 배치를 처리하고 장비의 가상 셀/인접을 계산하지 않는다. NinjutsuLoadoutState는 시작3택1×2와 해금/배치를 검사한다. TraditionAccessState는 전장 완료와 인법 해금/포기를 분리한다. 새 autoload나 두 번째 가방 시스템은 만들지 않는다.
 
@@ -45,6 +45,12 @@ RunBuildState가 런 소유 장비·3슬롯·장비별 강화 단계를 단일 �
 | LoadoutSnapshot | starting_school, draft_picks[2], committed_ninjutsu_ids. picks 서로 다른2; 활성≤4; 외부≤1; 해금과 committed 배치에서 재산출해 일치 검사. fixed starter 없음 |
 | EquipmentSnapshot | owned_instances, equipped_slots{melee,projectile,outfit}, upgrade_rank_by_instance, revision. 슬롯 적합성·고유 인스턴스 검사; rank 정수0..4; backpack 좌표 없음; 미장착 전투력0 |
 | TraceDecision | run_id, cleared_school, decision, target_equipment_instance_id, expected_revision, transaction_id. absorb면 target 없음; equipment_upgrade면 현재 장착 대상 정확히1. 흔적당 확정1회; 해금과 포기 동시 불가 |
+
+TraceDecision 검증은 시작 유파이면 강화만 허용하고 기존 open 상태와 보유 책을 보존한다. 타 유파 강화에서만 forfeited_ninjutsu_school_ids에 추가한다. open/forfeited 교집합은 비어 있어야 하고 시작 유파는 항상 open이다. cleared_school_ids/trace_decisions는 접근 권한과 별도 필드로 보존한다. 보상 풀은 인법 후보에만 해당 잠금을 적용하고 공용 조합 재료·경로 완료를 차단하지 않는다.
+
+흔적 확정 거래와 출전 거래는 별도 revision을 갖되 동일 저장 책임자를 사용한다. 흔적 미리보기 취소는 0소비; 흔적 저장 확정 후 출전 취소는 해금/강화 선택을 환불하지 않는다. pending 출전 장비가 흔적 처리 이전 revision이면 다시 비교/검증한다. 저장 실패 시 접근 권한/포기/장비 단계/흔적 소비/처리 ID 전부 원복한다.
+
+인수 사례: 4시작 유파 각각에서 시작 흔적 강화 후 책2개/해금 유지; 다른 유파3개 각각 흡수·강화 분기; 장착3슬롯 각각 대상 선택; 뒤로/취소/중복 transaction_id/손상 rank/옛 revision; 흡수한 유파를 재강화하려는 불법 입력; 네 전장 순서24개에서 완료 기록과 최종 진입 보존. 이 표는 구현할 시험이며 아직 게임 PASS가 아니다.
 | EncounterPattern | id, primitive, shape, target_policy, telegraph_duration, lock_duration, active_duration, recovery_duration, slot_cost. 경고/피해가 같은 shape 인스턴스 사용 |
 | SpriteAtlasEntry | source_sha256, image_path, region, state, duration_ms, pivot, facing, consumer, approval_state, alpha_check. region 내부·양수·발 접점 확인 |
 | CodexEntry | 기존 enemy/item/ninjutsu ID 참조, kind, role_text, acquisition_text, recipe_refs, counterplay, exceptions. UI 설명에 별도 수치 복제 금지 |

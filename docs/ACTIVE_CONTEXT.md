@@ -6,11 +6,12 @@ Latest user moved katana, shuriken and ninja outfit outside backpack. The 8/9-ce
 start below is historical: two starting books now use 4/9 cells. Updated owners:
 Detailed Rules R-EQUIPMENT/R-LOADOUT/R-TRACE and Implementation Packet.
 Stage trace upgrade forfeits that school's ninjutsu access and upgrades one item.
-Starting-school exception is USER_DECISION_PENDING; no implicit spell removal.
+Starting-school exception is USER_APPROVED: retain access/books, enhancement only.
 Existing recipes and 24-ninjutsu detail expansion still need reconciliation.
 73-page PDF is preserved previous publication, not this revision; its live source
-hash comparison is now stale. No gameplay mutation or merge. Next: resolve exception
-and recipes, finish content/screens, regenerate and inspect the complete Blueprint.
+hash comparison is now stale. No gameplay mutation or merge. Next: reconcile recipes,
+finish content/screens, regenerate and inspect the complete Blueprint. No repeat
+question about the starting-school exception is needed.
 
 ## Historical approval — starting contents use backpack, 2026-09-11
 

@@ -7,8 +7,10 @@ and ninja outfit occupy character equipment slots and zero backpack cells.
 Starting ninjutsu books still occupy the bag. Trace strengthening now forfeits
 that school's ninjutsu access for this run to upgrade exactly one equipment item,
 not general school stats. Owner: Detailed Rules R-EQUIPMENT/R-LOADOUT/R-TRACE.
-Already-unlocked starting-school exception awaits the user's answer: no implicit
-spell revocation. Numbers are test proposals; no art LOCK, runtime or PR merge.
+User then approved the recommended exception: starting-school access and acquired
+books remain intact; its trace offers equipment enhancement only. Forfeiting access
+applies only to a still-locked other school. No starter revocation or redundant
+absorb option. Numbers are test proposals; no art LOCK, runtime or PR merge.
 
 ## Historical, equipment occupancy superseded — starting contents occupy backpack
 
