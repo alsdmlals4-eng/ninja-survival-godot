@@ -1,5 +1,14 @@
 # ACTIVE_CONTEXT
 
+## Latest — user-managed cleanup, 2026-09-12
+
+User requests confirmed disposable files gathered for manual deletion, never
+directly deleted by the agent. Local review folder:
+`C:/Users/user/Documents/GitHub/Ninza/DELETE_REVIEW/ninja-survival-godot/2026-09-12/`.
+Its README owns exact local sources/counts/reasons. Original dirty checkout,
+assets/provenance/PDF publications and registered worktrees remain preserved.
+Planning continuation is unchanged: integrate legacy book/route/economy and visuals.
+
 ## Latest — breath / sword-only ultimate revision
 
 User replaces Cheonsul area blast with forward elemental breath and Guiin radial

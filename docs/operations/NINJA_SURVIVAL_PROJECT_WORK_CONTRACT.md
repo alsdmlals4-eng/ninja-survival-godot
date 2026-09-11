@@ -16,6 +16,17 @@ current_autonomy_ceiling: A2_EXECUTE_ISOLATED
 
 ## 1. Purpose and boundary
 
+### 2026-09-12 user-managed deletion review
+
+Do not directly delete obsolete project outputs. Verify consumers, ownership,
+Git state and recoverability first, then move confirmed disposable local outputs
+to `C:/Users/user/Documents/GitHub/Ninza/DELETE_REVIEW/ninja-survival-godot/<date>/`.
+Provide a clickable folder/README link with original paths, counts, sizes and
+reason. The user performs final deletion. Keep this payload outside Git.
+Do not move live assets, dirty worktrees, approval/provenance evidence or uncertain
+user files merely because they look old. Git worktree/branch cleanup requires
+separate verification; do not move registered worktrees as ordinary directories.
+
 ### 2026-09-10 selective art/motion routing
 
 Current Base observed at `2f93e872d9ed4fa18018ac759b01acd7d34e9b58`.
