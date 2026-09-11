@@ -8,11 +8,23 @@
 
 시각 후보의 상태는 자산 manifest가 소유한다. 새로운 자동 로드, 외부 서버, 유료 API, 다른 게임 엔진은 필요하지 않다. 기존 Scene/Resource 및 GUT를 재사용한다. 새 순서형 반응 엔진을 하나 더 만드는 대신 기존 천술의 상태 책임을 공유 효과 처리로 명시적으로 추출한다.
 
+## 오의 호환성 명세 보강 — R-ULTIMATE
+
+아래 이전 패키지의 ‘호환성 명세가 남음’ 상태를 대체한다. 기본 충전·독립 효과는 상세 규칙에 명세했으며 실행 검증/최종 승인은 아직 남았다. 숫자는 상세 규칙만 소유한다.
+
+- 기존 네 SchoolRuntime에서 평상시 내장 공격을 제거하고 선택 인법 소비처에만 둔다. 기존 Host/자원 신호는 재사용한다. 봉마 상시 식신/결계, 천술 원소 교대, 귀인 기본 맥동, 흑영 자동 다중 암영침이 제거 검증 대상이다.
+- 자원/상한/비용/활성 지속과 발동 원자성은 각 runtime이 소유한다. 흑영은 살아 있는 적의 표식 합이 아니라 독립 준비 값을 소유한다. 표식은 책 효과로 남는다.
+- 기본 충전은 전투 delta만, 보너스는 중복 제거한 CombatEvent만 소비한다. 천술 reaction-resolved는 자원 통지 전용 예외다. 보너스 내부주기는 벽시계가 아닌 전투 시간으로 잰다.
+- UI 상태는 CHARGING / READY_NO_TARGET / READY / ACTIVE / BLOCKED. resource_changed는 수치, ultimate_ready_changed는 충전 도달을 알리되 실제 요청에서 대상·pause·생존을 재검사한다. UI 활성 상태를 권한으로 신뢰하지 않는다.
+- schema2 스테이지 경계 저장에 school_id/resource_amount를 기존 런 스냅샷에 포함한다. 진행 중 오의 객체·적 ID는 저장하지 않는다. 구형 저장 자동 변환 금지. 전투 중 저장 경로와 충돌하지 않는지 후속 통합한다.
+- 인수 fixture는24정의에서 유파별 서로 다른2개를 열거해60행 생성한다. 각 행은 일반 적 단독/보스 단독 성공, 비선택 자동 효과0, 실패 비용0을 검증한다. 빈 맵·메뉴·보너스 중복·지속 정리·NaN 저장 검증을 추가한다. 문서 조합 산술은 GUT를 대신하지 않는다.
+- 새 오의는 기존 밸런스 교체이므로 최종 Blueprint 승인 후 구현한다. VFX4종 duration/타격 마커/발 접점/적 전조 비가림 검수는 별도이며 현재 자산 준비 완료로 표시하지 않는다.
+
 ## A. 현재 구현 → 변경 지점
 
 ### 최신 장비 분리 수정 — 이전 패키지보다 우선
 
-규칙 책임자는 R-EQUIPMENT/R-WEAPON-CONTENT/R-NINJUTSU/R-COMBINATION/R-TRACE다. 24인법 발동표·8무기·3조합 재료가 검토용 명세로 준비됐다. 현재 코드는 바꾸지 않았다. 시작 유파 예외는 승인되어 해금/책 유지 + 장비 강화만 제공한다. 모든 시작 인법 쌍에서 오의를 사용할 수 있는 자원/효과 호환성과 최종 자산·Blueprint 승인이 남아 전체 착수 게이트는 닫혀 있다.
+규칙 책임자는 R-EQUIPMENT/R-WEAPON-CONTENT/R-NINJUTSU/R-COMBINATION/R-TRACE/R-ULTIMATE다. 24인법·8무기·3조합·책에 의존하지 않는 오의가 검토용 명세로 준비됐다. 현재 코드는 바꾸지 않았다. 시작 유파 예외는 승인되어 해금/책 유지 + 장비 강화만 제공한다. 시작60쌍 실행 검증, 저장·여정 통합, 최종 자산·Blueprint 승인이 남아 전체 착수 게이트는 닫혀 있다.
 
 RunBuildState가 런 소유 장비·3슬롯·장비별 강화 단계를 단일 확정 스냅샷으로 소유한다. BasicWeaponController는 확정 근접/투사 장비만 소비한다. BackpackState/Resolver는 인법서 두 개의 4칸 배치를 처리하고 장비의 가상 셀/인접을 계산하지 않는다. NinjutsuLoadoutState는 시작3택1×2와 해금/배치를 검사한다. TraditionAccessState는 전장 완료와 인법 해금/포기를 분리한다. 새 autoload나 두 번째 가방 시스템은 만들지 않는다.
 
@@ -23,7 +35,7 @@ RunBuildState가 런 소유 장비·3슬롯·장비별 강화 단계를 단일 �
 | `scripts/combat/basic_weapon_controller.gd` | 기본 자동무기 존재 | 근접4/투사4 정의·장비 슬롯 소비 | 경계·투사 수명·시전당 hit set·미장착0 |
 | `scripts/player/player_controller.gd` | 이동·대시 기반 | 정지 대시·피격 보호·메뉴 입력 차단 | 0/1/2충전·동시 피해·중지 재개 시험 |
 | `scripts/schools/ninjutsu_auto_controller.gd` | 보조 기술 공통 피해 | 24종 효과·상태·대시 종료 훅·분신 | 표 기반24종·재귀금지·정리·pause 시험 |
-| `scripts/schools/cheonsul_runtime.gd` | 화상·순서형 젖음→번개 | 기존 의미 유지, 타 보조 효과와 상태 공유 | 역순 무반응·중복 자원 금지·틱 갱신 |
+| `scripts/schools/cheonsul_runtime.gd` | 고정 원소 교대·반응 충전·상태 대상 오의 | 선택 책만 상태 생성, 기본 충전+반응 보너스, 무상태 오의 허용 | 역순 무반응·중복 자원 금지·무상태 단독 보스 |
 | `scripts/core/ninjutsu_loadout_state.gd` | 시작유파 중심 | 시작2선택 + 배치 기반 혼합 검사 | 활성4/외부1/해금·배치, 시작60쌍 |
 | `scripts/data/mvp4_catalog.gd` | 19아이템/5주머니/3조합 | 공간3ID 대체·책24 연결·3조합 교정 | 장비 비소모·원타/부가타 중복 없음 |
 | `scripts/core/run_build_state.gd` | 확정 modifier·운명 집합 | 무기별 modifier와 활성 인법 참조 | preview=0·중복 운명 거부 |
