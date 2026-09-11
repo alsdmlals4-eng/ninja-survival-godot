@@ -12,7 +12,7 @@
 
 ### 최신 장비 분리 수정 — 이전 패키지보다 우선
 
-규칙 책임자는 R-EQUIPMENT/R-LOADOUT/R-TRACE다. 아래 표의 8보조/고정 starter1/추가2/무비전3공격 목표는 이전 버전이다. 현재 코드는 바꾸지 않았다. 시작 유파 예외는 승인되어 해금/책 유지 + 장비 강화만 제공한다. 24인법 상세와 조합 재료 정리가 남아 P01 전체 착수 게이트는 닫혀 있다.
+규칙 책임자는 R-EQUIPMENT/R-WEAPON-CONTENT/R-NINJUTSU/R-COMBINATION/R-TRACE다. 24인법 발동표·8무기·3조합 재료가 검토용 명세로 준비됐다. 현재 코드는 바꾸지 않았다. 시작 유파 예외는 승인되어 해금/책 유지 + 장비 강화만 제공한다. 모든 시작 인법 쌍에서 오의를 사용할 수 있는 자원/효과 호환성과 최종 자산·Blueprint 승인이 남아 전체 착수 게이트는 닫혀 있다.
 
 RunBuildState가 런 소유 장비·3슬롯·장비별 강화 단계를 단일 확정 스냅샷으로 소유한다. BasicWeaponController는 확정 근접/투사 장비만 소비한다. BackpackState/Resolver는 인법서 두 개의 4칸 배치를 처리하고 장비의 가상 셀/인접을 계산하지 않는다. NinjutsuLoadoutState는 시작3택1×2와 해금/배치를 검사한다. TraditionAccessState는 전장 완료와 인법 해금/포기를 분리한다. 새 autoload나 두 번째 가방 시스템은 만들지 않는다.
 
@@ -20,12 +20,12 @@ RunBuildState가 런 소유 장비·3슬롯·장비별 강화 단계를 단일 �
 
 | 현재 소비처 | 현재 상태 | 승인 뒤 변경 | 완료 증거 |
 |---|---|---|---|
-| `scripts/combat/basic_weapon_controller.gd` | 기본 자동무기 존재 | 일본도 부채꼴·개별 비전 범주, 수리검 관통 | 경계 안/밖·동일 적 1회·무비전 시작 시험 |
+| `scripts/combat/basic_weapon_controller.gd` | 기본 자동무기 존재 | 근접4/투사4 정의·장비 슬롯 소비 | 경계·투사 수명·시전당 hit set·미장착0 |
 | `scripts/player/player_controller.gd` | 이동·대시 기반 | 정지 대시·피격 보호·메뉴 입력 차단 | 0/1/2충전·동시 피해·중지 재개 시험 |
-| `scripts/schools/ninjutsu_auto_controller.gd` | 보조 기술 공통 피해 | 효과 종류·상태·연쇄·명중 사건 | 8보조 기술 효과별 표 기반 시험 |
+| `scripts/schools/ninjutsu_auto_controller.gd` | 보조 기술 공통 피해 | 24종 효과·상태·대시 종료 훅·분신 | 표 기반24종·재귀금지·정리·pause 시험 |
 | `scripts/schools/cheonsul_runtime.gd` | 화상·순서형 젖음→번개 | 기존 의미 유지, 타 보조 효과와 상태 공유 | 역순 무반응·중복 자원 금지·틱 갱신 |
-| `scripts/core/ninjutsu_loadout_state.gd` | 시작유파 중심 | 시작유파 고정 + 배치 기반 혼합 검사 | 최대2/외부1/해금·배치 모두 검사 |
-| `scripts/data/mvp4_catalog.gd` | 19아이템/5주머니/3조합 | 8인법서 정의 연결, 비전·조합 payload 교체 | 기존 ID 보존·기본무기 소실 없음 |
+| `scripts/core/ninjutsu_loadout_state.gd` | 시작유파 중심 | 시작2선택 + 배치 기반 혼합 검사 | 활성4/외부1/해금·배치, 시작60쌍 |
+| `scripts/data/mvp4_catalog.gd` | 19아이템/5주머니/3조합 | 공간3ID 대체·책24 연결·3조합 교정 | 장비 비소모·원타/부가타 중복 없음 |
 | `scripts/core/run_build_state.gd` | 확정 modifier·운명 집합 | 무기별 modifier와 활성 인법 참조 | preview=0·중복 운명 거부 |
 | `scripts/core/run_resume_codec.gd` | schema 1 | schema 2 전체 유효성 검사 | 손상·미래버전·잘못된 배치 전부 실패 |
 | `scripts/core/run_resume_store.gd` | tmp/previous 교체 | 하나의 회복 가능한 거래 파일로 통합 | 쓰기/이름변경/정리 실패 주입 |
@@ -51,6 +51,8 @@ TraceDecision 검증은 시작 유파이면 강화만 허용하고 기존 open �
 흔적 확정 거래와 출전 거래는 별도 revision을 갖되 동일 저장 책임자를 사용한다. 흔적 미리보기 취소는 0소비; 흔적 저장 확정 후 출전 취소는 해금/강화 선택을 환불하지 않는다. pending 출전 장비가 흔적 처리 이전 revision이면 다시 비교/검증한다. 저장 실패 시 접근 권한/포기/장비 단계/흔적 소비/처리 ID 전부 원복한다.
 
 인수 사례: 4시작 유파 각각에서 시작 흔적 강화 후 책2개/해금 유지; 다른 유파3개 각각 흡수·강화 분기; 장착3슬롯 각각 대상 선택; 뒤로/취소/중복 transaction_id/손상 rank/옛 revision; 흡수한 유파를 재강화하려는 불법 입력; 네 전장 순서24개에서 완료 기록과 최종 진입 보존. 이 표는 구현할 시험이며 아직 게임 PASS가 아니다.
+| 추가 레코드 | 필수 필드 / 불변식 |
+|---|---|
 | EncounterPattern | id, primitive, shape, target_policy, telegraph_duration, lock_duration, active_duration, recovery_duration, slot_cost. 경고/피해가 같은 shape 인스턴스 사용 |
 | SpriteAtlasEntry | source_sha256, image_path, region, state, duration_ms, pivot, facing, consumer, approval_state, alpha_check. region 내부·양수·발 접점 확인 |
 | CodexEntry | 기존 enemy/item/ninjutsu ID 참조, kind, role_text, acquisition_text, recipe_refs, counterplay, exceptions. UI 설명에 별도 수치 복제 금지 |
@@ -77,9 +79,9 @@ TraceDecision 검증은 시작 유파이면 강화만 허용하고 기존 open �
 
 구슬/기록 소비처는 `scripts/combat/reward_orb.gd`와 `scripts/combat/combat_ddd_tracker.gd`다. 현재 구슬은 회수 수와 STYLE만 올리므로 신규 XP 레벨·수동 스킬 선택창을 구현하지 않는다. 결과 설명에서 경제 재화와 분리한다. 준비 회복은 거래에 healed_prepare_session_ids를 기록해 재진입/저장복구에 멱등 적용한다.
 
-추가 인법서 8종의 첫 시험 가격은 40골드로 통일한다. 시작 인법은 비매품. 기존 19종 가격과 5가방 가격은 기존 정의를 유지한다. 상점의 첫 제안은 구매 가능한 가장 저렴한 확장 주머니 우선; 전체 가방이 채워졌으면 확장 후보 보장은 해제한다. 인법서가 해금되지 않았으면 표본 풀에서 제외한다.
+인법서24종은 해금된 미소유 후보에 한해40G, 시작 지급 두 책은 무료·판매0G다. 무기8/의복1과 공간 보조19종은 별도 풀이다. 공간19종 중 교체된3개는 R-COMBINATION 가격, 나머지16종과5가방은 기존 정의를 유지한다. 상점의 첫 제안은 구매 가능한 가장 저렴한 확장 주머니 우선; 전체 가방이 채워졌으면 확장 후보 보장은 해제한다. 미해금/포기 인법은 제외하되 전장 안정화로 열린 조합 재료는 별도 자격이다.
 
-보상 lane은 빌드 연속성 / 새 전승 / 공용 지원 순으로 최대1개씩 후보를 가져온다. 비어 있는 lane은 다른 유효 lane에서 중복 ID 없이 보충한다. 유효 후보가 총1개면 1개만 표시. 무료 새로고침 반복으로 후보를 바꾸지 않으며 prepare_session_id와 seed로 보존한다. 상자 토큰 소비·후보 선택·버퍼 입고는 하나의 준비 거래다.
+보상 lane은 빌드 연속성 / 새 전승 / 공용 지원 순으로 최대1개씩 후보를 가져온다. 비어 있는 lane은 다른 유효 lane에서 중복 ID 없이 보충한다. 유효 후보가 총1개면 1개만 표시. 무료 새로고침 반복으로 후보를 바꾸지 않으며 prepare_session_id와 seed로 보존한다. 상자 토큰 소비·후보 선택·수령은 하나의 준비 거래다. 수령 목적지는 공간 아이템이면 REST 버퍼, 실물 무기/의복이면 런 장비 목록이며 한 아이템을 양쪽에 중복 입고하지 않는다.
 
 판매는 원래 구매 정의 가격의 50% 내림, 시작 각성 지급품은 0골드다. 조합 결과는 재료 가격 합의 50%를 판매 기준으로 사용하고 조합 비용은 0. 장비의 위치만 바꿔 판매가가 바뀌지 않는다. 출전 후 장착 변경은 불가하며 준비에 재진입했을 때만 판매한다. 취소로 상자/골드를 복제할 수 없다.
 
@@ -148,9 +150,9 @@ schema1의 진행 중 런은 아이템 의미가 달라져 자동 변환을 **RE
 
 | 순서 | 작업 / 선행 | 핵심 인수 fixture |
 |---|---|---|
-| P01 | 데이터 계약·상태 충돌 / 설계 승인 | 12인법 ID,8추가 정의,19기존 ID,5가방,3조합; wet→shock/역순/동일사건 |
-| P02 | 자동무기·보호 / P01 | 무장 없어도3공격,부채꼴경계,관통1회,대시0/1/2,동시10명 접촉1피해 |
-| P03 | 혼합·가방 / P01 | 추가2/외부1,잠금·면적·회전·버퍼6,취소·구매·조합·출전 전체 원자성 |
+| P01 | 데이터 계약·상태 충돌 / 최종 설계 승인 | 인법24(기존12 보존),무기8/의복1,공간19 매핑,5가방,3조합 |
+| P02 | 자동무기·보호 / P01 | 슬롯당1공격・범위・빈 슬롯0,대시0/1/2,동시10명 접촉1피해 |
+| P03 | 혼합·가방 / P01 | 시작2/활성4/외부1,책4칸,버퍼6,무기 비소모 조합・취소・원자성 |
 | P04 | profile2·메타 / P03 | 정상/손상/v1/vfuture,중복정산/재도전,쓰기 단계별 실패,메모리-디스크 일치 |
 | P05 | 천술 대표 전장 / P02~P04 | 30초정체성,180엘리트,흔적,경고/보스,준비→다음; 강공격동시1 |
 | P06 | UI/대표 자산 / 자산LOCK·P05 | 6메뉴와3입력경로,상단HUD,전조/VFX읽기,발접점/모션·게임캡처 |

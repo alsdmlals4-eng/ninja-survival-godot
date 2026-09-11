@@ -7,10 +7,15 @@ start below is historical: two starting books now use 4/9 cells. Updated owners:
 Detailed Rules R-EQUIPMENT/R-LOADOUT/R-TRACE and Implementation Packet.
 Stage trace upgrade forfeits that school's ninjutsu access and upgrades one item.
 Starting-school exception is USER_APPROVED: retain access/books, enhancement only.
-Existing recipes and 24-ninjutsu detail expansion still need reconciliation.
+R-NINJUTSU now specifies 24 effects; R-WEAPON-CONTENT specifies eight weapons;
+R-COMBINATION specifies three support recipes without consuming equipped gear.
+These are delegated review specs, not runtime/asset/final approval. Actual current
+catalog remains twelve and old acquisition lanes; do not confuse source tables
+with implemented definitions. New blocker: ultimate/resource compatibility across
+all 60 starting spell pairs, especially support-only pairs, requires specification.
 73-page PDF is preserved previous publication, not this revision; its live source
-hash comparison is now stale. No gameplay mutation or merge. Next: reconcile recipes,
-finish content/screens, regenerate and inspect the complete Blueprint. No repeat
+hash comparison is now stale. No gameplay mutation or merge. Next: specify ultimate
+compatibility, synchronize remaining book/economy/art, then export/review. No repeat
 question about the starting-school exception is needed.
 
 ## Historical approval — starting contents use backpack, 2026-09-11
