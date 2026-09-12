@@ -12,12 +12,16 @@ Architecture: 기존 BackpackState/Resolver와 NinjutsuLoadoutState를 재사용
 Tech stack: Godot 4.7.1 / GDScript / GUT. Spec: 상세 규칙 R-LOADOUT/R-EQUIPMENT/R-NINJUTSU.
 새 저장 profile2 및 실제 인법 효과가 준비되기 전에는 기본 Main 시작 경로를 교체하지 않는다.
 
-- [ ] Book geometry: `scripts/data/ninjutsu_book_catalog.gd`에서 24개 인법에 무료 시작/유상 책 ID를 매핑한다. 둘 다 1×2이며 판매가는 각각 0/20G. 기존 경제 목록을 변경하지 않는다.
-- [ ] `BackpackState`에 명시적 선택형 카탈로그 모드를 추가한다. 복사/JSON 왕복 시 모드를 유지하며 schema1 codec은 새 모드를 거부한다. 기존 모드의 지오메트리/저장은 유지한다.
-- [ ] `scripts/core/start_loadout_session.gd`에서 시작3택1×2, 취소/재선택, 배치 이동/회전, 실제 배치에서 추출한 ID로만 최종 확정을 연결한다. 장비는 EquipmentLoadoutState의 별도 스냅샷이다.
-- [ ] GUT에서 중복/가방 밖/충돌/미선택/복사 오염/확정 후 편집/JSON 모드 손실을 실패시킨 후 최소 구현한다. 전체60쌍의 실제 네 칸 배치와 단일 확정을 확인한다.
-- [ ] 독립 시작 준비 UI 소비처에서 선택/배치/장비 표시를 검사한다. Main 전투·새 저장 연결과 혼동하지 않도록 준비 검증 화면임을 표시한다.
-- [ ] 전체 회귀, 실제 화면 검증, 5회 범위 검토 후 증거를 기존 review/Active Context에 기록하고 task branch를 동기화한다.
+- [x] Book geometry: `scripts/data/ninjutsu_book_catalog.gd`에서 24개 인법에 무료 시작/유상 책 ID를 매핑한다. 둘 다 1×2이며 판매가는 각각 0/20G. 기존 경제 목록을 변경하지 않는다.
+- [x] `BackpackState`에 명시적 선택형 카탈로그 모드를 추가한다. 복사/JSON 왕복 시 모드를 유지하며 schema1 codec은 새 모드를 거부한다. 기존 모드의 지오메트리/저장은 유지한다.
+- [x] `scripts/core/start_loadout_session.gd`에서 시작3택1×2, 취소/재선택, 배치 이동/회전, 실제 배치에서 추출한 ID로만 최종 확정을 연결한다. 장비는 EquipmentLoadoutState의 별도 스냅샷이다.
+- [x] GUT에서 중복/가방 밖/충돌/미선택/복사 오염/확정 후 편집/JSON 모드 손실을 검사한다. 핵심 신규 경로의 RED→GREEN 뒤 전체60쌍의 실제 네 칸 배치와 단일 확정을 확인했다.
+- [x] 독립 시작 준비 UI 소비처에서 선택/배치/장비 표시를 검사한다. Main 전투·새 저장 연결과 혼동하지 않도록 준비 검증 화면임을 표시한다.
+- [x] 전체 회귀707tests, 실제 화면 검증, 5회 제한 범위 자체 검토 후 증거를 기존 review/Active Context에 기록하고 task branch를 동기화했다. 전체 게임/독립 검토/병합 완료는 아니다.
+
+구현 코드 head: `01ab502b9f13ca3ac067215b5de3930d4fe9baf3`.
+다음 계획: 선택한 인법의 실제 효과와 기존 내장 공격 제거를 한 묶음으로 검증한 후
+장비/준비 확정/profile2를 연결한다. 그 전에는 Main을 전환하지 않는다.
 
 Research: ADAPT Godot JSON primitive encoding and explicit value copies
 (https://docs.godotengine.org/en/latest/tutorials/io/saving_games.html,
