@@ -104,7 +104,7 @@ func begin_school(school_id: StringName) -> bool:
 		if not _access_state.initialize(school_id):
 			return false
 	_reset_school_progress(school_id)
-	if _build_state != null:
+	if _build_state != null and _build_state.selected_school_id == &"":
 		_build_state.set_selected_school(school_id)
 	phase_changed.emit(encounter_state.state_name())
 	return true
@@ -125,11 +125,12 @@ func record_normal_enemy_defeated() -> int:
 func mark_elite_defeated() -> bool:
 	if not _school_started:
 		return false
-	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("can_stage_scroll", _active_school_id, &"elite_scroll")):
+	var grants_origin_scroll := _is_origin_school_battlefield()
+	if grants_origin_scroll and not bool(_ninjutsu_loadout.call("can_stage_scroll", _active_school_id, &"elite_scroll")):
 		return false
 	if not encounter_state.mark_elite_cleared():
 		return false
-	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("stage_scroll", _active_school_id, &"elite_scroll")):
+	if grants_origin_scroll and not bool(_ninjutsu_loadout.call("stage_scroll", _active_school_id, &"elite_scroll")):
 		return false
 	if _build_state != null:
 		_build_state.grant_elite_clear_gold()
@@ -193,13 +194,21 @@ func workbench_snapshot() -> Dictionary:
 func choose_boss_reward(index: int) -> bool:
 	if not _workbench_started or _reward_controller == null:
 		return false
-	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("can_stage_scroll", _active_school_id, &"boss_scroll")):
+	var grants_origin_scroll := _is_origin_school_battlefield()
+	if grants_origin_scroll and not bool(_ninjutsu_loadout.call("can_stage_scroll", _active_school_id, &"boss_scroll")):
 		return false
 	if not _reward_controller.choose_boss_reward(index):
 		return false
-	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("stage_scroll", _active_school_id, &"boss_scroll")):
+	if grants_origin_scroll and not bool(_ninjutsu_loadout.call("stage_scroll", _active_school_id, &"boss_scroll")):
 		return false
 	return true
+
+
+func _is_origin_school_battlefield() -> bool:
+	# Legacy origin scroll rewards must not gate another battlefield's lifecycle.
+	return _ninjutsu_loadout != null and StringName(
+		_ninjutsu_loadout.call("get_snapshot").get("origin_school_id", &"")
+	) == _active_school_id
 
 
 func place_buffer_item(buffer_index: int, origin: Vector2i, rotation_quarters: int = 0) -> bool:
@@ -434,7 +443,8 @@ func _begin_workbench_for_cleared_school() -> bool:
 		_build_state,
 		route_state,
 		_fate_controller,
-		_ninjutsu_loadout
+		_ninjutsu_loadout,
+		route_state.is_final_binding_eligible()
 	):
 		return false
 	_reward_controller.begin_rest(

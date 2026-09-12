@@ -1,5 +1,65 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-12 whole-run implementation loop — still active
+
+Approved scope includes all four battlefields, preparation/shop/backpack and final
+calamity. This increment is not completion of the approved equipment/book/save
+redesign. Fresh Base remote d830c0f selective adoption is recorded in the native
+work contract. No other PR or Base checkout was mutated.
+
+Validated failures and changes:
+- Real Main's second-school Elite stalled on origin-only scroll eligibility.
+  Separate optional legacy origin reward from battlefield progression; do not
+  grant foreign books. Keep player origin modifiers fixed and render actual
+  battlefield identity in HUD.
+- Five Fate definitions left only two candidates at preparation4; old sampler
+  returned an empty array. Offer remaining unique candidates, no new Fate IDs.
+- Final preparation required an impossible fifth route. Explicit final mode of
+  the existing commit coordinator retains session/reward/Fate validation and
+  one-shot commit; route remains four clears, never stage5.
+- Actual final actor uses clear-order HP quarters,1800 initial HP, existing
+  three-pattern school compositions and existing art as provisional reuse.
+  Transition waits until attack/projectile/proxy completion, skips crossed HP
+  quarters, never heals. First pattern per theme gains0.2sec reading time.
+- Main creates that actor after final build commit and shows a Korean completion
+  screen on death. This does NOT implement terminal soul payout/profile-v2 yet.
+- Dash collision ignores enemy bodies but retains terrain(mask16), then restores
+  exact prior masks. Player scene mask18 distinguishes terrain from enemies.
+- GPU inspection exposed clipped preparation controls and incomplete floor.
+  Keep all existing UI paths, replace the layout-only Margin container with a
+  focus-following ScrollContainer; retain font readability. Floor now covers the
+  positive repeat canvas from(0,0), without adding brute-force repeats.
+
+Alternatives: ADAPT existing coordinator + explicit final transaction mode;
+REJECT simulated fifth school; DEFER separate final-workbench system (duplicate
+authority). ADOPT native scroll/focus; REJECT shrinking text to fit; DEFER a new
+multi-panel redesign until equipment/book consumers are present.
+Primary references:
+https://docs.godotengine.org/en/stable/classes/class_scrollcontainer.html
+https://docs.godotengine.org/en/stable/tutorials/2d/2d_parallax.html
+The latter explicitly explains negative texture placement causing repeat gaps.
+
+Evidence: focused RED failures were observed before the corresponding fixes.
+Latest full GUT:92scripts/645tests/7055assertions, zero failures/errors/warnings.
+An earlier full run had a transient pre-existing orb lifetime assertion; isolated
+and later full runs passed. Do not erase that observation or claim flake-free.
+GPU fixture `tools/qa_full_route_render.gd` uses real Main, title/start selection,
+four lifecycle sequences, final actor and completion view. It accelerates time,
+forces kills and legally expands the test-only board; it is NOT a normal-speed
+or normal-capacity playtest. Wallet/resume paths are isolated before Main ready.
+First capture wrongly bypassed title dismissal; rejected and corrected to use
+new-game/selection flow. Later capture exposed real floor/UI defects, corrected.
+Retained screenshots: `full-route-final-preparation-20260912.png`,
+`full-route-final-battle-20260912.png`, `full-route-complete-20260912.png`.
+
+Open: final battle readability/telegraph geometry, new equipment/24books/start
+draft, trace choice, profile-v2/settlement, remaining ultimates, normal-speed
+combat, Human/device/export. Actors/VFX remain tiny/overlapping in GPU capture.
+No final five full-scope clean loops, independent completion review or merge.
+Reusable lesson: test actual screen entry and end-of-pool/final-route boundaries;
+scene instantiation + direct callbacks can pass while title overlays hide play.
+Base promotion is a candidate only, not performed.
+
 ## 2026-09-12 second implementation checkpoint — not a completion gate
 
 Approved continuation: breath presentation and R-INPUT alignment. Source head

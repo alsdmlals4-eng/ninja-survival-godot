@@ -1,5 +1,13 @@
 # CURRENT_CONFIRMED_DECISIONS
 
+## Latest 2026-09-12 — continuous whole-game implementation
+
+User explicitly requests Base fresh-read and continued implementation/improvement
+without routine approval pauses, including four-school selection/battle,
+preparation, shop, backpack and final boss. Continue the approved detailed rules
+and implementation packet. Do not treat partial integration as whole-game done.
+Preserve unseen-art approval, user-managed deletion and protected-main boundaries.
+
 ## Latest 2026-09-12 — breath appearance approval and continuation
 
 User accepted the displayed blue-white/gold breath direction and requested continued

@@ -35,6 +35,9 @@ var _dash_charges: int = MAX_DASH_CHARGES
 var _dash_remaining: float = 0.0
 var _dash_direction := Vector2.ZERO
 var _dash_recharge_elapsed: float = 0.0
+var _dash_saved_layer: int = 0
+var _dash_saved_mask: int = 0
+var _dash_collision_override: bool = false
 
 
 func combat_facing_direction() -> Vector2:
@@ -107,6 +110,11 @@ func request_dash() -> bool:
 	var recharge_was_idle := _dash_charges == MAX_DASH_CHARGES
 	_dash_charges -= 1
 	_dash_remaining = DASH_DURATION_SECONDS
+	_dash_saved_layer = collision_layer
+	_dash_saved_mask = collision_mask
+	_dash_collision_override = true
+	set_collision_layer_value(1, false)
+	set_collision_mask_value(2, false)
 	_dash_direction = _last_movement_direction if not _last_movement_direction.is_zero_approx() else Vector2.DOWN
 	if recharge_was_idle:
 		_dash_recharge_elapsed = 0.0
@@ -135,6 +143,8 @@ func _advance_dash_state(delta: float) -> void:
 	if _dead or delta <= 0.0:
 		return
 	_dash_remaining = maxf(_dash_remaining - delta, 0.0)
+	if _dash_remaining <= 0.0:
+		_restore_dash_collision()
 	if _dash_charges >= MAX_DASH_CHARGES:
 		_dash_recharge_elapsed = 0.0
 		return
@@ -174,6 +184,7 @@ func heal(amount: int) -> int:
 
 
 func restore_after_retry() -> void:
+	_restore_dash_collision()
 	_dead = false
 	velocity = Vector2.ZERO
 	health = max_health
@@ -186,6 +197,14 @@ func restore_after_retry() -> void:
 	_dash_recharge_elapsed = 0.0
 	health_changed.emit(health, max_health)
 	dash_state_changed.emit(_dash_charges, MAX_DASH_CHARGES)
+
+
+func _restore_dash_collision() -> void:
+	if not _dash_collision_override:
+		return
+	collision_layer = _dash_saved_layer
+	collision_mask = _dash_saved_mask
+	_dash_collision_override = false
 
 
 func take_damage(amount: int) -> int:

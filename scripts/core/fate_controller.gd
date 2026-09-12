@@ -89,9 +89,7 @@ func _roll_candidates() -> Array[StringName]:
 		if not _build_state.has_fate(fate_id):
 			pool.append(fate_id)
 
-	if pool.size() < 3:
-		return []
-	if pool.size() == 3:
+	if pool.size() <= 3:
 		return pool
 
 	var rolled: Array[StringName] = []

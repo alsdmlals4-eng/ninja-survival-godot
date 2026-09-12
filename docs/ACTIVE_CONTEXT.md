@@ -1,5 +1,31 @@
 # ACTIVE_CONTEXT
 
+## Latest — whole-run continuation, 2026-09-12
+
+CONTINUOUS_WORK_ACTIVE. Base remote d830c0f freshly read; selective adoption in
+the native work contract, not full adapter replacement. Current task remains
+PR147/codex/replanning-art-motion-20260910; other PRs read-only.
+
+Local implementation: foreign battlefield Elite/Boss progression no longer
+requires an origin-only legacy scroll. Final preparation commits build/Fate
+without a nonexistent fifth route. Fate pool with two remaining candidates stays
+selectable. Actual Main now reaches a final calamity actor and completion view.
+Final actor reuses existing school patterns/approved runtime assets provisionally,
+HP1800 and clear-order quarters; theme changes wait for pattern/projectile/proxy
+completion and never heal or clamp damage. New art is NOT approved by this wiring.
+
+Latest full GUT:92scripts/645tests/7055assertions PASS, engine-error scan included.
+Earlier transient live-orb assertion failed; isolated and full reruns passed.
+Real GPU Main fixture reached final preparation/battle/completion, with accelerated
+time, forced kills and test-only expanded board. It exposed and fixed repeat-floor
+negative-origin gaps and overflowing UI (native scroll, paths preserved). New
+save-path injection isolates this fixture before Main ready. Dash now traverses
+enemies while retaining terrain and restores exact masks. Origin identity remains
+fixed; HUD uses current battlefield. First final-theme pattern gets0.2sec extra.
+Actors/VFX remain tiny/overlapping. Terminal save/settlement, normal-speed runtime,
+equipment/24books/draft/trace/save/ultimates/art queue remains.
+No five-loop completion, merge or full-game completion claimed.
+
 ## Latest — breath rendering and basic combat continuation, 2026-09-12
 
 IN_PROGRESS. User approved displayed breath appearance and resumed implementation.

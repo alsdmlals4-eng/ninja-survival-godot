@@ -109,6 +109,17 @@ func test_already_selected_fate_cannot_be_selected_again_even_if_requested() -> 
 	assert_false(fate.can_continue())
 
 
+func test_fourth_preparation_offers_two_remaining_fates_without_duplicates() -> void:
+	var fixture := _new_fixture(49)
+	for fate_id in [&"slaughter_path", &"guardian_path", &"shadow_path"]:
+		assert_true(fixture.state.select_fate(fate_id))
+	fixture.fate.begin_rest()
+	assert_eq(fixture.fate.candidate_ids.size(), 2)
+	assert_eq(_unique_count(fixture.fate.candidate_ids), 2)
+	for fate_id in fixture.fate.candidate_ids:
+		assert_false(fixture.state.has_fate(fate_id))
+
+
 func _new_fixture(seed_value: int) -> Dictionary:
 	if not ResourceLoader.exists(FATE_CONTROLLER_PATH):
 		return {}

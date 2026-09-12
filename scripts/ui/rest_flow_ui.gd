@@ -248,6 +248,14 @@ func show_workbench(
 	_show_only(workbench_view)
 	var provisional_school_id := StringName(route_snapshot.get("provisional_school_id", &""))
 	var has_route := _render_workbench_routes(route_snapshot, provisional_school_id)
+	var final_preparation := bool(route_snapshot.get("final_binding_eligible", false))
+	get_node("Panel/Margin/Content/WorkbenchView/TitleLabel").text = (
+		"최종 준비 — 백팩과 운명을 확정하면 재앙 보스에 도전합니다."
+		if final_preparation else "작업대 — 다음 전장은 출전 확정 전까지 임시 선택입니다."
+	)
+	if final_preparation:
+		has_route = true
+	workbench_commit_button.text = "최종전 출전 확정" if final_preparation else "출전 확정"
 	var has_fate := _render_workbench_fates(fate_candidate_ids, fate_definitions, pending_fate_id)
 	_render_workbench_reward_status(workbench_context)
 	_render_workbench_spatial_inputs(workbench_context)

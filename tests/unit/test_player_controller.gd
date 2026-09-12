@@ -159,6 +159,23 @@ func test_movement_intent_is_limited_before_dash_direction_is_resolved() -> void
 	assert_signal_emitted_with_parameters(player, "dash_started", [Vector2(0.6, 0.8)])
 
 
+func test_dash_passes_enemy_bodies_but_preserves_terrain_and_restores_exact_masks() -> void:
+	var player = PlayerScript.new()
+	player.collision_layer = 5
+	player.collision_mask = 14
+	add_child_autofree(player)
+	assert_true(player.request_dash())
+	assert_eq(player.collision_layer, 4, "Enemies must not collide against the dashing player layer.")
+	assert_eq(player.collision_mask, 12, "Only the enemy body bit is ignored; terrain bits remain.")
+	player._advance_dash_state(0.2)
+	assert_eq(player.collision_layer, 5)
+	assert_eq(player.collision_mask, 14)
+	assert_true(player.request_dash())
+	player.restore_after_retry()
+	assert_eq(player.collision_layer, 5)
+	assert_eq(player.collision_mask, 14)
+
+
 func test_dash_consumes_one_of_two_charges_and_emits_read_only_state() -> void:
 	var player = _spawn_player()
 	player.set_movement_intent(Vector2.RIGHT)

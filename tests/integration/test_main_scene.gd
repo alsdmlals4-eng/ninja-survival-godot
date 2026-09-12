@@ -66,6 +66,7 @@ func test_main_scene_repeats_the_locked_battlefield_floor_behind_gameplay() -> v
 	if floor_tile == null:
 		return
 	assert_not_null(floor_tile.texture, "Floor tile must consume the locked local texture")
+	assert_eq(floor_tile.position, Vector2.ZERO, "Infinite repeat tile must cover the positive repeat canvas.")
 	assert_eq(floor_tile.texture.resource_path, BATTLEFIELD_FLOOR_TILE)
 	assert_lt(backdrop.z_index, player.z_index, "Backdrop must remain behind gameplay")
 
@@ -152,7 +153,7 @@ func test_player_scene_has_collision_visual_camera_and_basic_weapon_config() -> 
 		assert_not_null(basic_weapons.shuriken_projectile_scene)
 		assert_not_null(basic_weapons.weapon_effect_texture)
 	assert_eq(player.collision_layer, 1)
-	assert_eq(player.collision_mask, 2)
+	assert_eq(player.collision_mask, 18, "Enemy bodies and terrain have distinct collision layers.")
 
 
 func test_enemy_scene_has_collision_and_visual() -> void:

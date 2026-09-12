@@ -13,6 +13,7 @@ var _session_generation: int = -1
 var _configured: bool = false
 var _committed_this_rest: bool = false
 var _commit_in_progress: bool = false
+var _final_preparation: bool = false
 
 
 func configure(
@@ -20,7 +21,8 @@ func configure(
 	build_state: RunBuildState,
 	route_state: RunRouteState,
 	fate_controller: FateController,
-	ninjutsu_loadout = null
+	ninjutsu_loadout = null,
+	final_preparation: bool = false
 ) -> bool:
 	if _session != null or _commit_in_progress or _committed_this_rest:
 		return false
@@ -37,6 +39,7 @@ func configure(
 	_route_state = route_state
 	_fate_controller = fate_controller
 	_ninjutsu_loadout = ninjutsu_loadout
+	_final_preparation = final_preparation
 	_configured = true
 	_committed_this_rest = false
 	_session_generation = -1
@@ -83,10 +86,7 @@ func commit_failures(
 		or not _fate_controller._is_bound_to_build_state(_build_state) \
 		or not _fate_controller._can_commit_pending():
 		failures.append(&"fate_pending")
-	if _route_state == null \
-		or _route_state.cleared_school_ids().is_empty() \
-		or _route_state.is_final_binding_eligible() \
-		or not _route_state.can_commit_provisional_next_school():
+	if not _route_ready():
 		failures.append(&"route_pending")
 	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("can_commit_pending")):
 		failures.append(&"ninjutsu_pending_invalid")
@@ -109,7 +109,7 @@ func commit(
 	_commit_in_progress = true
 	_committed_backpack_state = candidate_state.copy_value()
 	_build_state.set_committed_backpack_modifiers(resolution.modifiers)
-	if not _route_state.commit_provisional_next_school():
+	if not _final_preparation and not _route_state.commit_provisional_next_school():
 		_commit_in_progress = false
 		return false
 	if not _fate_controller._commit_pending():
@@ -123,3 +123,14 @@ func commit(
 	_session_generation = -1
 	_commit_in_progress = false
 	return true
+
+
+func _route_ready() -> bool:
+	if _route_state == null or _route_state.cleared_school_ids().is_empty():
+		return false
+	if _final_preparation:
+		return _route_state.is_final_binding_eligible() \
+			and _route_state.active_school_id() == &"" \
+			and _route_state.provisional_school_id() == &""
+	return not _route_state.is_final_binding_eligible() \
+		and _route_state.can_commit_provisional_next_school()

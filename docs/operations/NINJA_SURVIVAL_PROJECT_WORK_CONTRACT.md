@@ -16,6 +16,18 @@ current_autonomy_ceiling: A2_EXECUTE_ISOLATED
 
 ## 1. Purpose and boundary
 
+### 2026-09-12 continuous implementation selective adoption
+
+Fresh remote Base observation: `d830c0f6967678eed3c208ac6b24f9cd1b262ec3`.
+Read `continuous-work-execution.md`, `running-adversarial-review-and-refinement`
+and `FULL_ADVERSARIAL_REVIEW_LOOP_POLICY.md`. ADAPT continuous execution of
+approved implementation through user-testable delivery; partial green tests do
+not close the whole-game queue. Keep this native contract and five whole-state
+review loops; do not silently install a full adapter or adopt Base's two-loop
+count. Blocked art/Human/device evidence does not prevent safe logic work.
+Current-task PR147 may continue; other open PRs remain read-only. Exact-head
+checks, review and branch protection still gate integration.
+
 ### 2026-09-12 user-managed deletion review
 
 Do not directly delete obsolete project outputs. Verify consumers, ownership,

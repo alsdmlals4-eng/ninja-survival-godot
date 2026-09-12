@@ -16,6 +16,7 @@ const EXPECTED_STARTER_NINJUTSU_IDS := {
 	&"heukyeong": &"heukyeong_shadow_needle",
 }
 const RETRY_WALLET_PATH := "user://gut_school_circuit_retry_wallet.json"
+const RESUME_PATH := "user://gut_school_circuit_resume.json"
 
 
 func before_each() -> void:
@@ -223,6 +224,64 @@ func test_checkpoint_retry_spends_one_soul_once_and_restores_the_next_school_bas
 	assert_false(main.get_node("HUD/GameOverPanel/RetryButton").visible, "A Run must not offer a second paid retry.")
 
 
+func test_second_school_can_clear_without_unlocking_foreign_origin_scrolls() -> void:
+	var main: Node = _new_main()
+	main._on_school_selected(&"cheonsul")
+	var circuit = main.school_circuit
+	assert_true(_clear_active_school_to_workbench(main, circuit))
+	assert_true(circuit.choose_boss_reward(0))
+	assert_true(circuit.open_chest())
+	assert_true(_place_every_buffer_item(circuit))
+	assert_true(circuit.choose_fate(circuit.workbench_snapshot()["fate_candidate_ids"][0]))
+	assert_true(circuit.choose_next_route(&"bongma"))
+	main.get_node("RestFlowUI").workbench_commit_requested.emit()
+	var origin_spells: Array = main.ninjutsu_loadout.active_spell_ids().duplicate()
+	assert_eq(circuit.route_state.active_school_id(), &"bongma")
+	assert_true(main.get_node("HUD/CombatTopBar/Row/StagePhaseLabel").text.contains("봉마류"), "HUD describes the current battlefield, not the player's origin.")
+	assert_true(_clear_active_school_to_workbench(main, circuit), "Foreign battlefield progress must not require an origin-only scroll grant.")
+	assert_eq(main.run_build_state.selected_school_id, &"cheonsul", "Battlefield theme must not replace the player's origin modifier identity.")
+	assert_true(circuit.choose_boss_reward(0), "Foreign boss spatial reward must remain available.")
+	assert_eq(main.ninjutsu_loadout.active_spell_ids(), origin_spells)
+	assert_true(main.ninjutsu_loadout.pending_spell_ids().is_empty())
+
+
+func test_four_battlefields_prepare_final_binding_without_a_fifth_route() -> void:
+	var main: Node = _new_main()
+	main._on_title_new_game_requested()
+	main.school_selection._choose(&"cheonsul")
+	var circuit = main.school_circuit
+	circuit._rng.seed = 178
+	var order: Array[StringName] = [&"cheonsul", &"bongma", &"guiin", &"heukyeong"]
+	for index in range(order.size()):
+		assert_true(_clear_active_school_to_workbench(main, circuit))
+		assert_true(circuit.choose_boss_reward(0))
+		assert_true(circuit.open_chest())
+		assert_true(_place_every_buffer_item(circuit))
+		assert_true(circuit.choose_fate(circuit.workbench_snapshot()["fate_candidate_ids"][0]))
+		if index < 3:
+			assert_true(circuit.choose_next_route(order[index + 1]))
+			main.get_node("RestFlowUI").workbench_commit_requested.emit()
+	assert_eq(circuit.route_state.clear_order(), order)
+	assert_true(circuit.route_state.is_final_binding_eligible())
+	assert_true(circuit.workbench_snapshot()["readiness_failures"].is_empty(), "Final preparation must not require an impossible fifth-school route.")
+	main._render_school_circuit_workbench()
+	assert_false(main.get_node("RestFlowUI").workbench_commit_button.disabled)
+	main.get_node("RestFlowUI").workbench_commit_requested.emit()
+	assert_false(circuit.commit_workbench(), "Final build may commit only once.")
+	assert_eq(circuit.route_state.stage_index(), 4)
+	assert_eq(circuit.route_state.active_school_id(), &"")
+	var final_boss = _role_enemy(main, &"final_boss")
+	assert_not_null(final_boss, "Final preparation must launch an actual enemy in Main.")
+	if final_boss == null:
+		return
+	assert_eq(final_boss.theme_school_id(), order[0])
+	assert_true(main._combat_enabled)
+	final_boss.take_damage(99999)
+	assert_false(main._combat_enabled)
+	assert_true(main.get_node("RestFlowUI").complete_view.visible)
+	assert_true(main.get_node("RestFlowUI").complete_summary_label.text.contains("최종 재앙"))
+
+
 func test_invalid_checkpoint_never_debits_a_soul_or_consumes_the_retry() -> void:
 	var main: Node = _new_main()
 	if main == null:
@@ -250,6 +309,13 @@ func test_invalid_checkpoint_never_debits_a_soul_or_consumes_the_retry() -> void
 
 func _new_main():
 	var main = MAIN_SCENE.instantiate()
+	var fields: Array[StringName] = []
+	for field in main.get_property_list():
+		fields.append(StringName(field["name"]))
+	assert_true(fields.has(&"wallet_storage_path"), "Test storage must be injectable before Main ready writes a wallet.")
+	if fields.has(&"wallet_storage_path"):
+		main.wallet_storage_path = RETRY_WALLET_PATH + ".initial"
+		main.resume_storage_path = RESUME_PATH
 	add_child_autofree(main)
 	return main
 
@@ -346,5 +412,10 @@ func _first_legal_item_move(circuit, item_id: int, source_origin: Vector2i) -> D
 
 
 func _remove_retry_wallet_storage() -> void:
+	if FileAccess.file_exists(RETRY_WALLET_PATH + ".initial"):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(RETRY_WALLET_PATH + ".initial"))
 	if FileAccess.file_exists(RETRY_WALLET_PATH):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(RETRY_WALLET_PATH))
+	for suffix in ["", ".tmp", ".previous"]:
+		if FileAccess.file_exists(RESUME_PATH + suffix):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(RESUME_PATH + suffix))

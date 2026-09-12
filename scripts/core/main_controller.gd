@@ -19,6 +19,7 @@ const CONTRIBUTION_TRACKER_SCRIPT = preload("res://scripts/combat/combat_contrib
 const COMBAT_RESOLVER_SCRIPT = preload("res://scripts/combat/combat_resolver.gd")
 const ENCOUNTER_CATALOG_SCRIPT = preload("res://scripts/data/encounter_catalog.gd")
 const STAGE_BOSS_SCENE = preload("res://scenes/enemies/stage_boss.tscn")
+const FINAL_CALAMITY_SCENE = preload("res://scenes/enemies/final_calamity.tscn")
 const STAGE_BOSS_SCRIPT = preload("res://scripts/enemies/stage_boss.gd")
 const ENEMY_BASIC_SCENE = preload("res://scenes/enemies/enemy_basic.tscn")
 const SCHOOL_ENCOUNTER_ACTOR_SCENE = preload("res://scenes/enemies/school_encounter_actor.tscn")
@@ -44,6 +45,8 @@ const SCHOOL_CIRCUIT_TEST_ELITE_ROLE := &"test_elite"
 const SCHOOL_CIRCUIT_TEST_BOSS_ROLE := &"test_boss"
 
 @export var reward_orb_scene: PackedScene
+@export var wallet_storage_path: String = NINJA_SOUL_WALLET_SCRIPT.DEFAULT_STORAGE_PATH
+@export var resume_storage_path: String = RUN_RESUME_STORE_SCRIPT.DEFAULT_STORAGE_PATH
 
 var game_over: bool = false
 var run_build_state: RunBuildState
@@ -74,6 +77,7 @@ var _cheonsul_elapsed_seconds: float = 0.0
 var _school_circuit_elapsed_seconds: float = 0.0
 var _run_play_elapsed_seconds: float = 0.0
 var _combat_enabled: bool = false
+var _final_battle_started: bool = false
 
 @onready var game_state: GameState = $GameState
 @onready var combat_ddd: CombatDDDTracker = $CombatDDD
@@ -141,8 +145,8 @@ func _setup_mvp3_nodes() -> void:
 	var economy_rng := RandomNumberGenerator.new()
 	economy_rng.randomize()
 	run_build_state.configure(_item_defs, _fate_defs, RUN_ECONOMY_POLICY, economy_rng)
-	ninja_soul_wallet.configure()
-	run_resume_store.configure()
+	ninja_soul_wallet.configure(wallet_storage_path)
+	run_resume_store.configure(resume_storage_path)
 	shop_controller.configure(run_build_state, _item_defs)
 	fate_controller.configure(run_build_state, _fate_defs)
 	combat_resolver.configure(contribution_tracker)
@@ -488,7 +492,8 @@ func _process(delta: float) -> void:
 func _on_school_circuit_phase_changed(phase: StringName) -> void:
 	if school_circuit == null:
 		return
-	var view: Dictionary = STAGE_PHASE_PRESENTATION_SCRIPT.describe(school_host.selected_school_id, phase)
+	var battlefield_id := StringName(school_circuit.get_snapshot().get("encounter", {}).get("school_id", &""))
+	var view: Dictionary = STAGE_PHASE_PRESENTATION_SCRIPT.describe(battlefield_id, phase)
 	hud.set_stage_phase(
 		str(view.get("stage", "")),
 		str(view.get("phase", "")),
@@ -706,7 +711,7 @@ func _set_combat_enabled(enabled: bool) -> void:
 	basic_weapons.process_mode = gameplay_mode
 	if ninjutsu_auto_controller != null:
 		ninjutsu_auto_controller.process_mode = gameplay_mode
-	wave_spawner.set_spawning_enabled(enabled)
+	wave_spawner.set_spawning_enabled(enabled and not _final_battle_started)
 	wave_spawner.process_mode = gameplay_mode
 	combat_ddd.process_mode = gameplay_mode
 	school_host.process_mode = gameplay_mode
@@ -721,7 +726,8 @@ func _set_combat_enabled(enabled: bool) -> void:
 	hud.show_combat_hud(combat_hud_enabled)
 	hud.set_ultimate_ready(school_host.is_ultimate_ready())
 	if combat_hud_enabled:
-		wave_spawner.ensure_minimum_active()
+		if not _final_battle_started:
+			wave_spawner.ensure_minimum_active()
 		hud.set_dash_state(player.current_dash_charges(), PlayerController.MAX_DASH_CHARGES)
 		hud.set_play_time(_run_play_elapsed_seconds)
 	else:
@@ -795,7 +801,9 @@ func _on_enemy_died(enemy: Node) -> void:
 	contribution_tracker.record_kill(combat_ddd.combo_count)
 	_spawn_reward_orb(death_position)
 
-	if circuit_role == SCHOOL_CIRCUIT_ELITE_ROLE and school_circuit != null:
+	if circuit_role == &"final_boss":
+		_settle_final_calamity_death(enemy)
+	elif circuit_role == SCHOOL_CIRCUIT_ELITE_ROLE and school_circuit != null:
 		_pending_trace_spawn_position = death_position
 		school_circuit.mark_elite_defeated()
 	elif circuit_role == SCHOOL_CIRCUIT_BOSS_ROLE and school_circuit != null:
@@ -1225,6 +1233,9 @@ func _on_workbench_route_selected_requested_legacy(school_id: StringName) -> voi
 
 func _on_workbench_commit_requested() -> void:
 	if school_circuit != null:
+		if school_circuit.route_state.is_final_binding_eligible():
+			_start_final_calamity()
+			return
 		if not school_circuit.commit_workbench():
 			_render_school_circuit_workbench()
 			return
@@ -1240,6 +1251,49 @@ func _on_workbench_commit_requested() -> void:
 	if cheonsul_slice == null:
 		return
 	_render_cheonsul_workbench()
+
+
+func _start_final_calamity() -> void:
+	if game_over or _final_battle_started or school_circuit == null:
+		return
+	# Validate the actual consumer before publishing the final build transaction.
+	var boss = FINAL_CALAMITY_SCENE.instantiate()
+	if not boss.configure_clear_order(school_circuit.route_state.clear_order()):
+		boss.free()
+		return
+	if not school_circuit.commit_workbench():
+		boss.free()
+		_render_school_circuit_workbench()
+		return
+	_final_battle_started = true
+	_sync_run_modifiers()
+	add_child(boss)
+	current_stage_boss = boss
+	boss.global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
+	boss.set_meta(SCHOOL_CIRCUIT_ROLE_META, &"final_boss")
+	_wire_enemy(boss)
+	boss.theme_changed.connect(_on_final_theme_changed)
+	rest_flow_ui.hide_all()
+	_set_combat_enabled(true)
+	_on_final_theme_changed(boss.theme_school_id())
+
+
+func _on_final_theme_changed(school_id: StringName) -> void:
+	var details: Dictionary = RestFlowUI.WORKBENCH_SCHOOL_DETAILS.get(school_id, {})
+	hud.set_stage_phase("최종 재앙", "%s의 전승" % str(details.get("name", school_id)), true)
+
+
+func _settle_final_calamity_death(enemy: Node) -> void:
+	if game_over or not _final_battle_started or enemy != current_stage_boss:
+		return
+	current_stage_boss = null
+	game_over = true
+	_cleanup_remaining_normal_enemies()
+	_set_combat_enabled(false)
+	rest_flow_ui.show_complete({
+		"headline": "최종 재앙 격파 · 네 전장 여정 완료",
+		"gold": run_build_state.gold,
+	})
 
 
 func _build_preview_summary(new_fate_id: StringName) -> Dictionary:
