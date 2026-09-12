@@ -40,10 +40,18 @@ func _exit_tree() -> void:
 
 
 func tick_auto_cast(delta: float) -> void:
-	if delta <= 0.0 or not is_instance_valid(_player) or not is_instance_valid(_world) or _loadout == null:
+	if not is_finite(delta) or delta <= 0.0 or not is_instance_valid(_player) or not is_instance_valid(_world) or not is_instance_valid(_loadout):
+		return
+	if get_tree() != null and get_tree().paused:
+		return
+	if _player.has_method("is_dead") and bool(_player.call("is_dead")):
+		clear_runtime_effects()
 		return
 	_advance_effects(delta)
 	if _combat_resolver != null and _combat_resolver.sword_only_mode:
+		return
+	if _loadout.has_method("get_snapshot") and _loadout.call("get_snapshot").get("selection_contract", "") == "selectable-v2":
+		_tick_selected_books(delta)
 		return
 	for raw_spell_id in _loadout.call("active_spell_ids"):
 		var spell_id := StringName(raw_spell_id)
@@ -58,6 +66,42 @@ func tick_auto_cast(delta: float) -> void:
 			_remaining_by_spell[spell_id] = CAST_INTERVAL
 		else:
 			_remaining_by_spell[spell_id] = 0.12
+
+
+# Opt-in consumer: unsupported books never fall through to legacy generic attacks.
+# Cooldowns are retained while unequipped; a fresh controller is a fresh Stage.
+func _tick_selected_books(delta: float) -> void:
+	for raw_id in _loadout.call("active_spell_ids"):
+		var id := StringName(raw_id)
+		if id != &"guiin_ghost_blood_wave":
+			continue
+		var definition = NINJUTSU_CATALOG_SCRIPT.definition_for_id(id)
+		var config: Dictionary = definition.effect_config
+		var cooldown := float(config.cooldown)
+		var remaining := maxf(float(_remaining_by_spell.get(id, cooldown)) - delta, 0.0)
+		_remaining_by_spell[id] = remaining
+		if remaining > 0.000001:
+			continue
+		var origin := _player.global_position
+		var targets: Array[Node2D] = []
+		for enemy in _valid_enemies():
+			if _world.is_ancestor_of(enemy) and origin.distance_squared_to(enemy.global_position) <= pow(float(config.radius), 2):
+				targets.append(enemy)
+		if targets.is_empty():
+			_remaining_by_spell[id] = 0.12
+			continue
+		# Reserve before damage callbacks to prevent reentrant duplicate casts.
+		_remaining_by_spell[id] = cooldown
+		for enemy in targets:
+			if not is_instance_valid(_loadout) or not _loadout.call("active_spell_ids").has(id):
+				break
+			if not is_instance_valid(enemy) or enemy.is_queued_for_deletion():
+				continue
+			if _combat_resolver != null:
+				_combat_resolver.deal_school_damage(enemy, float(config.damage), &"direct_injutsu")
+			else:
+				enemy.call("take_damage", int(config.damage))
+		_spawn_effect(definition, origin, 0.13)
 
 
 func _cast_definition(definition) -> bool:

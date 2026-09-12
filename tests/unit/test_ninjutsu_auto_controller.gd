@@ -5,6 +5,44 @@ const AUTO_CONTROLLER_PATH := "res://scripts/schools/ninjutsu_auto_controller.gd
 const LOADOUT_SCRIPT = preload("res://scripts/core/ninjutsu_loadout_state.gd")
 
 
+func test_selectable_pulse_uses_book_period_range_and_committed_membership() -> void:
+	var player := Node2D.new()
+	add_child_autofree(player)
+	var enemy := DummyEnemy.new()
+	add_child_autofree(enemy)
+	enemy.position = Vector2(80, 0)
+	enemy.add_to_group("enemies")
+	var loadout = LOADOUT_SCRIPT.new()
+	add_child_autofree(loadout)
+	assert_true(loadout.begin_start_draft(&"guiin", 12))
+	for index in range(2):
+		assert_true(loadout.choose_start_draft(loadout.start_draft_snapshot().options[0]))
+	assert_true(loadout.commit_drafted_start(loadout.start_draft_snapshot().picks))
+	assert_true(loadout.commit_placed_ninjutsu([&"guiin_ghost_blood_wave"], [&"guiin"]))
+	var controller = load(AUTO_CONTROLLER_PATH).new()
+	add_child_autofree(controller)
+	controller.set_process(false)
+	assert_true(controller.configure(player, self, null, loadout))
+	controller.tick_auto_cast(0.4)
+	assert_eq(enemy.health, 50)
+	controller.tick_auto_cast(0.5)
+	assert_eq(enemy.health, 40, "Selected starter must consume the book definition, not be skipped.")
+	enemy.position.x = 80.01
+	controller.tick_auto_cast(0.9)
+	assert_eq(enemy.health, 40)
+	enemy.position.x = 80
+	controller.tick_auto_cast(0.12)
+	assert_eq(enemy.health, 30, "No target retries without spending a full cooldown.")
+	assert_true(loadout.commit_placed_ninjutsu([], [&"guiin"]))
+	controller.tick_auto_cast(2.0)
+	assert_eq(enemy.health, 30)
+	assert_true(loadout.commit_placed_ninjutsu([&"guiin_ghost_blood_wave"], [&"guiin"]))
+	controller.tick_auto_cast(0.4)
+	assert_eq(enemy.health, 30, "Re-equipping must not reset the retained cooldown.")
+	controller.tick_auto_cast(0.5)
+	assert_eq(enemy.health, 20)
+
+
 class DummyEnemy extends Node2D:
 	var health: int = 50
 

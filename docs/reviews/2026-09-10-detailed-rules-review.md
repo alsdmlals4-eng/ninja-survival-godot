@@ -1,5 +1,18 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-13 selected pulse consumer — WIP evidence
+
+Official Brotato/Vampire Survivors product descriptions informed the research
+disposition in Implementation Packet. Existing catalogue is the sole effect
+definition owner. A real Loadout draft/commit regression reproduced skipped
+selected starters before implementation (1 failing test, six assertions).
+After opt-in consumer wiring: focused2/22 and full708/9563 passed.
+Reviewed risks: preserve legacy path, no unsupported-book generic fallback,
+world-scope damage, cooldown retained across unequip. Remaining tag integration,
+Stage reuse reset and intrinsic duplication are explicit integration gates.
+No claim of five completed adversarial loops, new GPU/render evidence, entire
+24-book implementation, normal-speed player validation or release readiness.
+
 ## 2026-09-13 start-loadout preparation slice
 
 Plan-first execution is recorded in the existing Implementation Packet rather

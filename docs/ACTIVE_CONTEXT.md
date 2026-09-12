@@ -1,5 +1,21 @@
 # ACTIVE_CONTEXT
 
+## Latest — selected-book combat consumer WIP, 2026-09-13
+
+User clarified the loop means benchmark → specify → implement → verify/correct,
+not repeated checks alone. Existing Implementation Packet records the next plan.
+NinjutsuAutoController now has an opt-in selectable-v2 branch consuming only
+guiin_ghost_blood_wave config (0.9s/80radius/10damage), with initial cooldown,
+0.12s no-target retry, committed membership and retained unequip cooldown.
+Legacy starter handling stays unchanged. Unsupported new books do not fall
+through to generic attacks. Target must belong to the configured world.
+RED reproduced starter skip; focused2tests/22assertions then full96scripts/
+708tests/9563assertions passed with Godot4.7.1/GUT9.7.1.
+This is WIP, not P03 completion: remaining23 effects, tag-modifier integration,
+intrinsic-attack suppression, reused Stage timer-reset, Main/profile2 cutover,
+new render/input evidence and five full adversarial loops remain open.
+No new assets, production save-format change, merge or Human approval.
+
 ## Latest — plan-first start-loadout preparation, 2026-09-13
 
 User approved the proposed plan-first continuation. Implemented an isolated
