@@ -14,6 +14,10 @@ func _run() -> void:
 	main.resume_storage_path = "user://qa_full_route_" + fixture_id + "_resume.json"
 	root.add_child(main)
 	main._on_title_new_game_requested()
+	if "--guiin" in OS.get_cmdline_user_args():
+		main.school_selection._choose(&"guiin")
+		await _guiin_capture(main)
+		return
 	main.school_selection._choose(&"cheonsul")
 	paused = true
 	var circuit = main.school_circuit
@@ -61,6 +65,25 @@ func _run() -> void:
 	final_boss.take_damage(99999)
 	await _capture("full-route-complete-20260912")
 	print("FULL_ROUTE_RENDER_OK: accelerated four-school route, final actor, complete screen; isolated storage")
+	main.queue_free()
+	await process_frame
+	quit(0)
+
+
+func _guiin_capture(main: Node) -> void:
+	main.player.get_node("Camera2D").force_update_scroll()
+	for point in [Vector2(60, 0), Vector2(110, 50), Vector2(-100, 20)]:
+		var enemy = load("res://scenes/enemies/enemy_basic.tscn").instantiate()
+		enemy.max_health = 1000
+		main.add_child(enemy)
+		enemy.global_position = main.player.global_position + point
+	main.school_host.active_runtime._set_gwihyeol(100.0, true)
+	main.hud.ultimate_button.pressed.emit()
+	if not main.combat_resolver.sword_only_mode:
+		_fail("guiin mode not active")
+		return
+	await _capture("guiin-sword-runtime-20260912")
+	print("GUIIN_RENDER_OK: actual Main ultimate input, temporary sword; isolated storage; legacy effect art")
 	main.queue_free()
 	await process_frame
 	quit(0)

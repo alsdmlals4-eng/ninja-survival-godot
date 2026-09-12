@@ -1,5 +1,31 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-12 Guiin charge / activation / rank refinement
+
+Latest full GUT93scripts/666tests/7358assertions PASS. RED checks exposed legacy
+hit/kill/decay behavior, empty activation and missing rank inheritance. Charge now
+uses4/sec at living-target480 plus4/sec at110, no empty-map decay or charge,
+no paused/dead/active-form gain. Existing charge modifiers apply once. Activation
+checks screen visibility and168radius separately; no-target failure costs0.
+All4melee types×ranks0..4 produce temporary sword20/23/26/29/32 base damage,
+without copying normal weapon damage/shape. Melee tag modifiers remain pending
+with equipment/build integration. Legacy normal pulse/low-HP buffs remain pending
+the24book cutover; no claim that all Guiin book behavior has been replaced.
+
+Integration fixture initially failed because headless viewport64x64 placed its
+40-unit target at screen72,32 outside the viewport. Measured transforms verified
+the cause. Fixtures now use1152x648 and restore the old viewport afterward;
+production visibility checks were retained. Manual-input Main fixtures now inject
+isolated wallet/resume paths before ready and clean their own outputs.
+
+Real Godot4.7.1/OpenGL3.3/NVIDIA3050 Main capture inspected:
+`guiin-sword-runtime-20260912.png`, tools/qa_full_route_render.gd `--guiin`.
+Actual input/HUD/form flag plus old slash/enemy assets, not generated art, new art
+approval, final readability or Human gameplay evidence. First capture attempt
+used an incorrect enemy scene path and failed; own process was stopped, verified
+enemy_basic scene used, rerun exited0/GUIIN_RENDER_OK. No other editor touched.
+Tiny actors and dense details remain a visible quality finding, not a PASS.
+
 ## 2026-09-12 Guiin sword-only integration — continuation
 
 Full local GUT93scripts/662tests/7210assertions PASS, explicit error scan.

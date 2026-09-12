@@ -2,6 +2,17 @@
 
 ## Latest — whole-run continuation, 2026-09-12
 
+Latest Guiin refinement:93scripts/666tests/7358assertions PASS. Replaced hit/kill
+charge and decay with4/sec for a living target<=480 plus4/sec for danger<=110;
+modifiers apply once, no gain while paused/dead/form active. Form activation
+requires a visible target<=168. Temporary sword inherits only current melee rank
+(20/23/26/29/32 at ranks0..4), not the old weapon damage/shape. Tested all4melee
+types×5ranks. Exact21ccd94 passed both remote checks; new changes need own CI.
+Real GPU Main capture `reviews/guiin-sword-runtime-20260912.png` inspected:
+actual HUD/input/sword-only mode, legacy art; tiny detailed actors remain a visual
+quality issue. New equipment/profile2 integration, other school charges/ultimates,
+24books/start choices/buffer/trace/full normal-speed flow remain open.
+
 Newest local continuation:93scripts/662tests/7210assertions PASS. Guiin manual
 input now starts a6second temporary sword profile (20damage,0.325sec,168range,
 150degree cone), immediate strike, frozen original weapon clocks, no projectile

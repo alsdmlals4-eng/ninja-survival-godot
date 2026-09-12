@@ -8,11 +8,11 @@ const BERSERKER_RADIUS := 110.0
 const BERSERKER_DAMAGE := 15.0
 const HIGH_GWIHYEOL_THRESHOLD := 75.0
 const HIGH_GWIHYEOL_MULTIPLIER := 1.20
-const HIT_GWIHYEOL := 4.0
-const KILL_GWIHYEOL := 12.0
+const BASE_CHARGE_PER_SECOND := 4.0
+const CLOSE_CHARGE_PER_SECOND := 4.0
+const CHARGE_TARGET_RADIUS := 480.0
+const CLOSE_CHARGE_RADIUS := 110.0
 const GWIHYEOL_MAX := 100.0
-const DECAY_DELAY := 1.0
-const DECAY_PER_SECOND := 6.0
 const ULTIMATE_DURATION := 6.0
 const TIMER_EPSILON := 0.000001
 
@@ -56,7 +56,7 @@ func _exit_tree() -> void:
 
 
 func _process(delta: float) -> void:
-	if not active or delta <= 0.0 or get_tree().paused:
+	if not active or delta <= 0.0 or not is_finite(delta) or get_tree().paused:
 		return
 	if not is_instance_valid(player) or player.is_dead():
 		cancel_ultimate()
@@ -69,13 +69,15 @@ func _process(delta: float) -> void:
 			_emit_ultimate_ready_if_changed()
 		return
 
-	var previous_time_since_gain := time_since_gain
-	time_since_gain += delta
-	var previous_decay_time := maxf(previous_time_since_gain - DECAY_DELAY, 0.0)
-	var current_decay_time := maxf(time_since_gain - DECAY_DELAY, 0.0)
-	var decay_delta := maxf(current_decay_time - previous_decay_time, 0.0)
-	if decay_delta > 0.0 and gwihyeol > 0.0:
-		_set_gwihyeol(gwihyeol - DECAY_PER_SECOND * decay_delta, false)
+	var charge_rate := 0.0
+	for enemy in _valid_enemies():
+		var distance_squared := player.global_position.distance_squared_to(enemy.global_position)
+		if distance_squared <= CHARGE_TARGET_RADIUS * CHARGE_TARGET_RADIUS:
+			charge_rate = BASE_CHARGE_PER_SECOND
+		if distance_squared <= CLOSE_CHARGE_RADIUS * CLOSE_CHARGE_RADIUS:
+			charge_rate += CLOSE_CHARGE_PER_SECOND
+			break
+	_gain_gwihyeol(charge_rate * delta)
 
 	_pulse_remaining -= delta
 	if _pulse_remaining <= TIMER_EPSILON:
@@ -99,7 +101,6 @@ func perform_melee_pulse() -> int:
 			continue
 		hit_count += 1
 	if hit_count > 0:
-		_gain_gwihyeol(HIT_GWIHYEOL * float(hit_count))
 		emit_player_action_resolved()
 	return hit_count
 
@@ -121,9 +122,7 @@ func current_pulse_damage() -> int:
 
 
 func on_enemy_died(_enemy: Node) -> void:
-	if not active or ultimate_time_remaining > 0.0:
-		return
-	_gain_gwihyeol(KILL_GWIHYEOL)
+	pass # Charge rewards proximity time, not hit count or kill count.
 
 
 func is_ultimate_ready() -> bool:
@@ -131,7 +130,7 @@ func is_ultimate_ready() -> bool:
 
 
 func try_use_ultimate() -> bool:
-	if not is_ultimate_ready() or not is_instance_valid(basic_weapons) or not is_instance_valid(player) or player.is_dead() or get_tree().paused:
+	if ultimate_block_reason() != &"" or not is_instance_valid(basic_weapons):
 		return false
 	_set_gwihyeol(0.0, true)
 	ultimate_time_remaining = ULTIMATE_DURATION
@@ -142,6 +141,20 @@ func try_use_ultimate() -> bool:
 	_emit_ultimate_ready_if_changed(true)
 	school_feedback.emit("귀인화")
 	return true
+
+
+func ultimate_block_reason() -> StringName:
+	var reason := super.ultimate_block_reason()
+	if reason != &"":
+		return reason
+	if not is_instance_valid(player) or player.is_dead() or get_tree().paused:
+		return &"inactive"
+	for enemy in _valid_enemies():
+		if not enemy.is_visible_in_tree() or not enemy.get_viewport_rect().has_point(enemy.get_global_transform_with_canvas().origin):
+			continue
+		if player.global_position.distance_squared_to(enemy.global_position) <= 168.0 * 168.0:
+			return &""
+	return &"no_target"
 
 
 func _is_berserker_active() -> bool:

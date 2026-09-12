@@ -27,6 +27,7 @@ var _active_katana_effects: Array[Dictionary] = []
 var _melee_shape: String = "cone"
 var _melee_width: float = 0.0
 var _projectile_profile: Dictionary = {}
+var _melee_equipment_bonus: float = 0.0
 var _guiin_original: Dictionary = {}
 var _guiin_sword_remaining: float = 0.0
 
@@ -44,6 +45,7 @@ func apply_equipment_snapshot(snapshot: Dictionary) -> bool:
 	var melee: Dictionary = EQUIPMENT_CATALOG_SCRIPT.definition(equipment.equipped_definition(&"melee"))
 	var projectile: Dictionary = EQUIPMENT_CATALOG_SCRIPT.definition(equipment.equipped_definition(&"projectile"))
 	katana_interval = float(melee["interval"])
+	_melee_equipment_bonus = equipment.equipped_damage_bonus(&"melee")
 	katana_radius = float(melee["range"])
 	katana_damage = float(melee["damage"]) * (1.0 + equipment.equipped_damage_bonus(&"melee"))
 	katana_half_angle_degrees = float(melee.get("angle", 0.0)) * 0.5
@@ -65,7 +67,7 @@ func begin_guiin_form() -> bool:
 		return false
 	_guiin_original = {"damage": katana_damage, "radius": katana_radius, "angle": katana_half_angle_degrees,
 		"interval": katana_interval, "shape": _melee_shape, "width": _melee_width}
-	katana_damage = 20.0
+	katana_damage = 20.0 * (1.0 + _melee_equipment_bonus)
 	katana_radius = 168.0
 	katana_half_angle_degrees = 75.0
 	katana_interval = 0.325
@@ -76,7 +78,7 @@ func begin_guiin_form() -> bool:
 	for projectile in get_tree().get_nodes_in_group("friendly_weapon_projectiles"):
 		if projectile is BasicProjectile and projectile.get_parent() == source.get_parent() and projectile.combat_resolver == combat_resolver:
 			projectile.queue_free()
-	_guiin_sword_remaining = 0.325 if swing_katana_once() > 0 else 0.1
+	_guiin_sword_remaining = 0.325 if swing_katana_once() > 0 else 0.12
 	return true
 
 
@@ -112,7 +114,7 @@ func _process(delta: float) -> void:
 	if not _guiin_original.is_empty():
 		_guiin_sword_remaining = maxf(_guiin_sword_remaining - delta, 0.0)
 		if _guiin_sword_remaining <= 0.0:
-			_guiin_sword_remaining = katana_interval if swing_katana_once() > 0 else 0.1
+			_guiin_sword_remaining = katana_interval if swing_katana_once() > 0 else 0.12
 		return
 	_katana_remaining = maxf(_katana_remaining - delta, 0.0)
 	_shuriken_remaining = maxf(_shuriken_remaining - delta, 0.0)

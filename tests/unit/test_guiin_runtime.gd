@@ -6,6 +6,17 @@ const ENEMY_PATH := "res://scripts/enemies/enemy_chaser.gd"
 const TRACKER_PATH := "res://scripts/combat/combat_contribution_tracker.gd"
 const RESOLVER_PATH := "res://scripts/combat/combat_resolver.gd"
 const MODIFIER_PATH := "res://scripts/data/run_modifier_set.gd"
+var _viewport_before := Vector2i.ZERO
+
+
+func before_each() -> void:
+	_viewport_before = get_tree().root.size
+	get_tree().root.size = Vector2i(1152, 648)
+
+
+func after_each() -> void:
+	get_tree().paused = false
+	get_tree().root.size = _viewport_before
 
 class ImmuneEnemy:
 	extends Node2D
@@ -94,13 +105,14 @@ func test_school_emblem_multiplies_final_melee_radius() -> void:
 	assert_almost_eq(runtime.current_pulse_radius(), 92.0, 0.001)
 	runtime.player.health = 50
 	assert_almost_eq(runtime.current_pulse_radius(), 126.5, 0.001)
+	_enemy(runtime.world, Vector2(40, 0))
 	runtime.gwihyeol = 100.0
 	assert_true(runtime.try_use_ultimate())
 	assert_almost_eq(runtime.basic_weapons.katana_radius, 168.0, 0.001)
 	assert_eq(runtime.perform_melee_pulse(), 0)
 
 
-func test_melee_pulse_hits_only_enemies_inside_current_radius_and_gains_four_each() -> void:
+func test_melee_pulse_hits_only_enemies_inside_current_radius_without_hit_based_charge() -> void:
 	var runtime = _make_runtime()
 	if runtime == null:
 		return
@@ -114,11 +126,11 @@ func test_melee_pulse_hits_only_enemies_inside_current_radius_and_gains_four_eac
 	assert_eq(edge_enemy.health, 90)
 	assert_eq(far_enemy.health, 100)
 	assert_signal_emitted(runtime, "player_action_resolved")
-	assert_almost_eq(runtime.gwihyeol, 8.0, 0.001)
+	assert_almost_eq(runtime.gwihyeol, 0.0, 0.001)
 	assert_almost_eq(runtime.time_since_gain, 0.0, 0.001)
 
 
-func test_resource_and_readiness_modifiers_multiply_hit_and_kill_gwihyeol_gain() -> void:
+func test_resource_and_readiness_modifiers_apply_once_to_proximity_charge() -> void:
 	var runtime = _make_runtime()
 	if runtime == null:
 		return
@@ -128,11 +140,13 @@ func test_resource_and_readiness_modifiers_multiply_hit_and_kill_gwihyeol_gain()
 	_configure_run_systems(runtime, modifiers)
 	_enemy(runtime.world, Vector2(20, 0))
 	assert_eq(runtime.perform_melee_pulse(), 1)
-	assert_almost_eq(runtime.gwihyeol, 6.0, 0.001)
+	assert_almost_eq(runtime.gwihyeol, 0.0, 0.001)
+	runtime._process(1.0)
+	assert_almost_eq(runtime.gwihyeol, 12.0, 0.001)
 	var killed := Node.new()
 	runtime.on_enemy_died(killed)
 	killed.free()
-	assert_almost_eq(runtime.gwihyeol, 24.0, 0.001)
+	assert_almost_eq(runtime.gwihyeol, 12.0, 0.001)
 
 
 func test_only_actual_damage_counts_as_hit_and_resource_gain() -> void:
@@ -182,7 +196,7 @@ func test_seal_path_reduces_normal_pulse_but_strengthens_only_the_guiin_sword() 
 	assert_eq(enemy.health, 162)
 
 
-func test_enemy_kill_adds_twelve_and_resource_clamps_at_one_hundred() -> void:
+func test_proximity_charge_clamps_at_one_hundred_without_kill_bonus() -> void:
 	var runtime = _make_runtime()
 	if runtime == null:
 		return
@@ -190,11 +204,14 @@ func test_enemy_kill_adds_twelve_and_resource_clamps_at_one_hundred() -> void:
 	var enemy := Node.new()
 	runtime.on_enemy_died(enemy)
 	enemy.free()
+	assert_almost_eq(runtime.gwihyeol, 95.0, 0.001)
+	_enemy(runtime.world, Vector2(40, 0))
+	runtime._process(1.0)
 	assert_almost_eq(runtime.gwihyeol, 100.0, 0.001)
 	assert_almost_eq(runtime.time_since_gain, 0.0, 0.001)
 
 
-func test_gwihyeol_waits_one_second_then_decays_six_per_second() -> void:
+func test_gwihyeol_is_retained_while_the_battlefield_is_empty() -> void:
 	var runtime = _make_runtime()
 	if runtime == null:
 		return
@@ -207,10 +224,10 @@ func test_gwihyeol_waits_one_second_then_decays_six_per_second() -> void:
 	runtime._process(0.25)
 	assert_almost_eq(runtime.gwihyeol, 50.0, 0.001)
 	runtime._process(0.50)
-	assert_almost_eq(runtime.gwihyeol, 47.0, 0.001)
+	assert_almost_eq(runtime.gwihyeol, 50.0, 0.001)
 
 
-func test_pulse_gain_is_not_aged_by_same_process_delta() -> void:
+func test_pulse_does_not_duplicate_the_elapsed_proximity_charge() -> void:
 	var runtime = _make_runtime()
 	if runtime == null:
 		return
@@ -222,7 +239,7 @@ func test_pulse_gain_is_not_aged_by_same_process_delta() -> void:
 	runtime._process(2.0)
 
 	assert_eq(enemy.health, 90)
-	assert_almost_eq(runtime.gwihyeol, 4.0, 0.001)
+	assert_almost_eq(runtime.gwihyeol, 16.0, 0.001)
 	assert_almost_eq(runtime.time_since_gain, 0.0, 0.001)
 
 
@@ -242,6 +259,7 @@ func test_guiin_form_cost_duration_interval_radius_and_rounding() -> void:
 	if runtime == null:
 		return
 	runtime.player.health = 50
+	_enemy(runtime.world, Vector2(40, 0))
 	runtime.gwihyeol = 100.0
 	assert_true(runtime.is_ultimate_ready())
 	assert_true(runtime.try_use_ultimate())
@@ -260,6 +278,7 @@ func test_ultimate_ends_after_six_seconds_and_blocks_resource_gain_while_active(
 	var runtime = _make_runtime()
 	if runtime == null:
 		return
+	_enemy(runtime.world, Vector2(40, 0))
 	runtime.gwihyeol = 100.0
 	assert_true(runtime.try_use_ultimate())
 	runtime._pulse_remaining = 999.0
@@ -286,3 +305,51 @@ func test_deactivated_runtime_does_not_pulse_or_decay() -> void:
 	runtime._process(10.0)
 	assert_eq(enemy.health, 100)
 	assert_almost_eq(runtime.gwihyeol, 50.0, 0.001)
+
+
+func test_charge_uses_four_per_second_plus_four_for_close_danger_not_hits_or_kills() -> void:
+	var runtime = _make_runtime()
+	runtime._pulse_remaining = 999.0
+	var enemy = _enemy(runtime.world, Vector2(200, 0), 10000)
+	runtime._process(1.0)
+	assert_eq(runtime.gwihyeol, 4.0)
+	enemy.position = Vector2(110, 0)
+	runtime._process(1.0)
+	assert_eq(runtime.gwihyeol, 12.0)
+	enemy.position = Vector2(40, 0)
+	runtime.perform_melee_pulse()
+	runtime.on_enemy_died(enemy)
+	assert_eq(runtime.gwihyeol, 12.0)
+
+
+func test_charge_does_not_decay_or_generate_without_a_living_target_or_while_paused() -> void:
+	var runtime = _make_runtime()
+	runtime.gwihyeol = 50.0
+	runtime._pulse_remaining = 999.0
+	runtime._process(10.0)
+	assert_eq(runtime.gwihyeol, 50.0)
+	var enemy = _enemy(runtime.world, Vector2(481, 0), 10000)
+	runtime._process(1.0)
+	assert_eq(runtime.gwihyeol, 50.0)
+	enemy.position.x = 480
+	get_tree().paused = true
+	runtime._process(1.0)
+	get_tree().paused = false
+	assert_eq(runtime.gwihyeol, 50.0)
+	runtime._process(1.0)
+	assert_eq(runtime.gwihyeol, 54.0)
+
+
+func test_ready_guiin_requires_a_visible_target_within_168_before_spending() -> void:
+	var runtime = _make_runtime()
+	runtime.gwihyeol = 100.0
+	var enemy = _enemy(runtime.world, Vector2(169, 0), 1000)
+	assert_eq(runtime.ultimate_block_reason(), &"no_target")
+	assert_false(runtime.try_use_ultimate())
+	assert_eq(runtime.gwihyeol, 100.0)
+	enemy.position.x = 168
+	enemy.hide()
+	assert_false(runtime.try_use_ultimate())
+	enemy.show()
+	assert_true(runtime.try_use_ultimate())
+	assert_eq(runtime.gwihyeol, 0.0)

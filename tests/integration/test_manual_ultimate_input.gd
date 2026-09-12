@@ -1,11 +1,22 @@
 extends GutTest
 
 const MAIN_SCENE := preload("res://scenes/main/main_scene.tscn")
+var _viewport_before := Vector2i.ZERO
+
+
+func before_each() -> void:
+	_viewport_before = get_tree().root.size
+	get_tree().root.size = Vector2i(1152, 648)
 
 
 func after_each() -> void:
 	get_tree().paused = false
+	get_tree().root.size = _viewport_before
 	Input.action_release(&"dash")
+	for path in ["user://gut_manual_ultimate_wallet.json", "user://gut_manual_ultimate_resume.json"]:
+		for suffix in ["", ".tmp", ".previous"]:
+			if FileAccess.file_exists(path + suffix):
+				DirAccess.remove_absolute(ProjectSettings.globalize_path(path + suffix))
 
 
 func test_persisted_action_accepts_all_input_devices() -> void:
@@ -17,14 +28,21 @@ func test_persisted_action_accepts_all_input_devices() -> void:
 
 func _main(school: StringName = &"guiin"):
 	var main = MAIN_SCENE.instantiate()
+	main.wallet_storage_path = "user://gut_manual_ultimate_wallet.json"
+	main.resume_storage_path = "user://gut_manual_ultimate_resume.json"
 	add_child_autofree(main)
 	main.title_screen.hide()
 	main.school_selection.show_starting_school_selection()
 	main.school_selection._choose(school)
+	main.player.get_node("Camera2D").force_update_scroll()
 	return main
 
 
 func _charge_guiin(main) -> void:
+	var target = load("res://scripts/enemies/enemy_chaser.gd").new()
+	target.max_health = 1000
+	main.add_child(target)
+	target.global_position = main.player.global_position + Vector2(40, 0)
 	main.school_host.active_runtime._set_gwihyeol(100.0, true)
 
 

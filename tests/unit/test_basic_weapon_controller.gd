@@ -293,3 +293,24 @@ func test_guiin_clears_precast_projectiles_so_early_exit_cannot_revive_their_dam
 	fixture.controller.end_guiin_form()
 	assert_false(projectile.hit_body(target))
 	assert_eq(target.health, 100)
+
+
+func test_guiin_temporary_sword_inherits_rank_but_never_original_weapon_damage() -> void:
+	var fixture := _new_fixture()
+	var target := DamageTarget.new()
+	fixture.world.add_child(target)
+	target.position = Vector2(40, 0)
+	target.add_to_group("enemies")
+	for weapon in [&"katana", &"dual_tanto", &"naginata", &"kusarigama"]:
+		for rank in range(5):
+			var equipment = load("res://scripts/core/equipment_loadout_state.gd").new()
+			if weapon != &"katana":
+				assert_true(equipment.acquire(weapon))
+				assert_true(equipment.equip(&"melee", weapon))
+			for index in range(rank):
+				assert_true(equipment.upgrade_equipped(&"melee"))
+			assert_true(fixture.controller.apply_equipment_snapshot(equipment.get_snapshot()))
+			target.health = 100
+			assert_true(fixture.controller.begin_guiin_form())
+			assert_eq(target.health, [80, 77, 74, 71, 68][rank])
+			fixture.controller.end_guiin_form()
