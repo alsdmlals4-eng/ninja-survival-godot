@@ -1,5 +1,29 @@
 # ACTIVE_CONTEXT
 
+## Latest — breath rendering and basic combat continuation, 2026-09-12
+
+IN_PROGRESS. User approved displayed breath appearance and resumed implementation.
+VFX registered in existing Runtime Visual Core Manifest; aligned4frame Aseprite
+source+JSON retained. Runtime follows player/fixed direction, pause freezes,
+dash/deactivate/death hide, expiration fades; recast opacity reset regression added.
+Godot4.7.1 OpenGL/NVIDIA3050 actual fixture capture:
+`reviews/breath-runtime-20260912.png`; real existing scenes, no Main/profile/wallet.
+Not a human test or full-run capture. Existing actors remain tiny/low-contrast.
+Hera now points to GRIMOIRE; session list contains other projects only. No mutations
+to them. Own CLI fixture used instead, no claim of Ninja live-editor attachment.
+
+R-INPUT continuation: stationary dash uses last movement orDOWN; active reentry
+and direct paused requests reject without spending. Katana120degree front cone
+removes3target cap; shuriken targeting limited480; paused/dead direct weapon calls
+reject. Stable instance-ID distance ties. Full GUT91scripts/637tests/6936assertions
+passed after RED failures; error/warning scan included. No final5-loop or merge.
+
+Remaining: equipment3slots/8weapons/outfit and committed-preview transaction,
+24books/start2draft/bag rules, new charge/other ultimates, schema2 wallet+save,
+trace/route/economy/UI, collision-through dash and hit/entry protection, complete
+art and end-to-end/Human/device validation. Basic-weapon VFX cone agreement still
+needs render review; old slash asset was not newly approved. Continue approved work.
+
 ## Latest — integration continuation checkpoint, 2026-09-12
 
 User authorizes all previously listed implementation work through integration

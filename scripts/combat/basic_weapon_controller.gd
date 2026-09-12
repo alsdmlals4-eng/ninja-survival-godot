@@ -6,12 +6,13 @@ signal shuriken_fired(projectile: Node2D)
 
 @export var katana_interval: float = 0.65
 @export var katana_radius: float = 112.0
-@export var katana_max_targets: int = 3
+@export var katana_half_angle_degrees: float = 60.0
 @export var katana_damage: float = 10.0
 @export var shuriken_interval: float = 0.75
 @export var shuriken_projectile_scene: PackedScene
 @export var shuriken_speed: float = 560.0
 @export var shuriken_damage: int = 9
+@export var shuriken_target_radius: float = 480.0
 @export var weapon_effect_texture: Texture2D
 @export var katana_effect_lifetime: float = 0.14
 @export var katana_effect_scale := Vector2(0.075, 0.075)
@@ -27,6 +28,8 @@ func configure(new_combat_resolver: CombatResolver) -> void:
 
 
 func _process(delta: float) -> void:
+	if delta <= 0.0 or get_tree().paused:
+		return
 	var source := get_parent() as Node2D
 	if source == null:
 		return
@@ -57,7 +60,7 @@ func find_nearest_target(candidates: Array, origin: Vector2) -> Node2D:
 			continue
 		var target := candidate as Node2D
 		var distance := origin.distance_squared_to(target.global_position)
-		if distance < nearest_distance:
+		if distance < nearest_distance or (distance == nearest_distance and nearest != null and target.get_instance_id() < nearest.get_instance_id()):
 			nearest_distance = distance
 			nearest = target
 
@@ -66,36 +69,47 @@ func find_nearest_target(candidates: Array, origin: Vector2) -> Node2D:
 
 func swing_katana_once() -> int:
 	var source := get_parent() as Node2D
-	if source == null or get_tree() == null or katana_radius <= 0.0 or katana_max_targets <= 0:
+	if source == null or get_tree() == null or get_tree().paused or katana_radius <= 0.0:
+		return 0
+	if source.has_method("is_dead") and source.call("is_dead"):
 		return 0
 
 	var targets := _closest_targets_in_radius(
 		get_tree().get_nodes_in_group("enemies"),
 		source.global_position,
-		katana_radius,
-		katana_max_targets
+		katana_radius
 	)
 	if targets.is_empty():
 		return 0
+	var aim := (targets[0].global_position - source.global_position).normalized()
+	if aim.is_zero_approx():
+		aim = source.combat_facing_direction() if source is PlayerController else Vector2.RIGHT
+	var cone_targets: Array[Node2D] = []
+	for target in targets:
+		var offset := target.global_position - source.global_position
+		if offset.is_zero_approx() or offset.normalized().dot(aim) >= cos(deg_to_rad(katana_half_angle_degrees)) - 0.000001:
+			cone_targets.append(target)
 
 	if source is PlayerController:
-		source.record_auto_weapon_direction(targets[0].global_position - source.global_position)
-	for target in targets:
+		source.record_auto_weapon_direction(aim)
+	for target in cone_targets:
 		_resolve_basic_damage(target, katana_damage)
 	_spawn_katana_effect(source, targets[0])
-	katana_resolved.emit(targets.size())
-	return targets.size()
+	katana_resolved.emit(cone_targets.size())
+	return cone_targets.size()
 
 
 func fire_shuriken_once() -> Node2D:
 	if shuriken_projectile_scene == null:
 		return null
 	var source := get_parent() as Node2D
-	if source == null or get_tree() == null:
+	if source == null or get_tree() == null or get_tree().paused:
+		return null
+	if source.has_method("is_dead") and source.call("is_dead"):
 		return null
 
 	var target := find_nearest_target(get_tree().get_nodes_in_group("enemies"), source.global_position)
-	if target == null:
+	if target == null or source.global_position.distance_squared_to(target.global_position) > shuriken_target_radius * shuriken_target_radius:
 		return null
 	var aim := target.global_position - source.global_position
 	if aim.is_zero_approx():
@@ -124,8 +138,7 @@ func fire_shuriken_once() -> Node2D:
 func _closest_targets_in_radius(
 	candidates: Array,
 	origin: Vector2,
-	radius: float,
-	limit: int
+	radius: float
 ) -> Array[Node2D]:
 	var valid_targets: Array[Node2D] = []
 	var radius_squared := radius * radius
@@ -137,9 +150,11 @@ func _closest_targets_in_radius(
 			valid_targets.append(target)
 
 	valid_targets.sort_custom(func(a: Node2D, b: Node2D) -> bool:
-		return origin.distance_squared_to(a.global_position) < origin.distance_squared_to(b.global_position)
+		var a_distance := origin.distance_squared_to(a.global_position)
+		var b_distance := origin.distance_squared_to(b.global_position)
+		return a.get_instance_id() < b.get_instance_id() if a_distance == b_distance else a_distance < b_distance
 	)
-	return valid_targets.slice(0, mini(limit, valid_targets.size()))
+	return valid_targets
 
 
 func _resolve_basic_damage(target: Node, base_damage: float) -> int:
@@ -152,7 +167,7 @@ func _resolve_basic_damage(target: Node, base_damage: float) -> int:
 
 
 func _is_valid_target(candidate: Variant) -> bool:
-	if not is_instance_valid(candidate) or not candidate is Node2D:
+	if not is_instance_valid(candidate) or not candidate is Node2D or candidate.is_queued_for_deletion():
 		return false
 	if candidate.has_method("is_dead") and bool(candidate.call("is_dead")):
 		return false

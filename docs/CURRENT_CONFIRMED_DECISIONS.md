@@ -1,5 +1,13 @@
 # CURRENT_CONFIRMED_DECISIONS
 
+## Latest 2026-09-12 — breath appearance approval and continuation
+
+User accepted the displayed blue-white/gold breath direction and requested continued
+implementation, then resumed work again. This approves that displayed state family,
+not all other candidate assets or whole-game visual/Human quality. Mechanical pivot
+registration and runtime binding are within scope; current asset provenance is in
+the existing Runtime Visual Core Manifest. Do not request the same approval again.
+
 ## Latest 2026-09-12 — implementation through integration validation
 
 User: “좋아 권장안대로 진행해. 통합 검증까지 남은 작업 다 진행해줘”.

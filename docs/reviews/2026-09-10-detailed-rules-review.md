@@ -1,5 +1,31 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-12 second implementation checkpoint — not a completion gate
+
+Approved continuation: breath presentation and R-INPUT alignment. Source head
+0659189; main b5c2dd61. RED: missing visible breath2tests; fade/recast opacity1;
+stationary/reentrant/paused dash4; cone/crowd/ranged/pause weapons4. Each verified
+failing before implementation. Final91scripts/637tests/6936assertions PASS with
+full output engine-error/warning scan. Scope remains WIP, no5full-scope loops claim.
+
+ADAPT existing Sprite2D ownership and fixed sheet cells, no second animation timer
+owning damage. REJECT raw unregistered2x2 frames (pivot jumps); DEFER new particle
+system (extra authoring/ownership for no proven benefit). Official region reference:
+https://docs.godotengine.org/en/stable/classes/class_atlastexture.html . Existing
+Sprite2D hframes is sufficient after equal-cell mechanical registration.
+
+Validated artifact defect: Aseprite newFrame copied populated previous cel;
+drawImage import composited rather than replaced it. First export REJECTED after
+visual inspection. All blank frames created before imports fixed contamination.
+Keep this order/check in future project motion work; Base promotion remains a
+candidate, not an unreviewed shared-tool mutation. Recast retained faded opacity
+also reproduced RED, corrected reset. No paid dependency or global tool changes.
+
+Actual GPU render from tools/qa_breath_render.gd uses real existing player/enemy
+scenes and consumer but no MainController/wallet. Screenshot shows correct forward
+origin and translucent flow; old actor size/contrast remains deficient. Do not
+equate fixture rendering with integrated gameplay or Human readability PASS.
+
 ## 2026-09-12 implementation checkpoint (not completion review)
 
 Input b83b6e9 plus prior uncommitted breath increment; fetched main b5c2dd61,

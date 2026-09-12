@@ -4,10 +4,13 @@
 
 `visual/candidates/breath-20260912/README.md` owns one newly generated 2x2
 blue-white/amber breath state family, original path, exact prompt and SHA256.
-Alpha and center-cell separation checked; differing emission pivots/extents need
-alignment before Aseprite motion export. Appearance approval remains pending.
-No production texture binding, art LOCK or rendered combat evidence is implied.
-Implementation authorization is current; asset approval remains separate.
+User accepted the displayed appearance. Aseprite mechanically registered four
+700px frames at pivot64,350; PNG+JSON and editable source retained. Bound to
+CheonsulRuntime/BreathVisual through the existing Runtime Visual Core Manifest.
+`reviews/breath-runtime-20260912.png` is an actual GPU-rendered isolated fixture
+with existing player/enemy/floor scenes, not a full Main run or human playtest.
+Old player/enemy imagery remains tiny and low-contrast; overall readability and
+new player production art are NOT_APPROVED by this breath appearance approval.
 
 ## Latest ultimate briefs — design only
 

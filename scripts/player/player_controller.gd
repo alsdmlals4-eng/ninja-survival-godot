@@ -101,13 +101,13 @@ func current_dash_charges() -> int:
 
 
 func request_dash() -> bool:
-	_update_resolved_direction()
-	if _dead or _dash_charges <= 0 or _resolved_direction == Vector2.ZERO:
+	if _dead or _dash_charges <= 0 or _dash_remaining > 0.0 or get_tree().paused:
 		return false
+	_update_resolved_direction()
 	var recharge_was_idle := _dash_charges == MAX_DASH_CHARGES
 	_dash_charges -= 1
 	_dash_remaining = DASH_DURATION_SECONDS
-	_dash_direction = _resolved_direction
+	_dash_direction = _last_movement_direction if not _last_movement_direction.is_zero_approx() else Vector2.DOWN
 	if recharge_was_idle:
 		_dash_recharge_elapsed = 0.0
 	dash_started.emit(_dash_direction)

@@ -169,13 +169,26 @@ func test_dash_consumes_one_of_two_charges_and_emits_read_only_state() -> void:
 	assert_signal_emitted_with_parameters(player, "dash_state_changed", [1, 2])
 
 
-func test_dash_rejects_zero_direction_dead_player_and_empty_charges_without_mutation() -> void:
+func test_stationary_dash_defaults_down_then_remembers_last_movement() -> void:
 	var player = _spawn_player()
-	assert_false(player.request_dash())
-	assert_eq(player.current_dash_charges(), 2)
+	watch_signals(player)
+	assert_true(player.request_dash())
+	assert_signal_emitted_with_parameters(player, "dash_started", [Vector2.DOWN])
+	player._advance_dash_state(0.2)
+	player.set_movement_intent(Vector2.LEFT)
+	player.set_movement_intent(Vector2.ZERO)
+	assert_true(player.request_dash())
+	assert_signal_emitted_with_parameters(player, "dash_started", [Vector2.LEFT])
+
+
+func test_dash_rejects_reentry_dead_player_and_empty_charges_without_mutation() -> void:
+	var player = _spawn_player()
 
 	player.set_movement_intent(Vector2.RIGHT)
 	assert_true(player.request_dash())
+	assert_false(player.request_dash())
+	assert_eq(player.current_dash_charges(), 1)
+	player._advance_dash_state(0.2)
 	assert_true(player.request_dash())
 	assert_eq(player.current_dash_charges(), 0)
 	assert_false(player.request_dash())
@@ -241,27 +254,37 @@ func test_pointer_target_farther_than_arrival_radius_resolves_normalized_directi
 	assert_signal_emitted_with_parameters(player, "dash_started", [Vector2(0.6, 0.8)])
 
 
-func test_pointer_target_inside_arrival_radius_resolves_zero_direction() -> void:
+func test_pointer_arrival_preserves_last_direction_for_stationary_dash() -> void:
 	var player = _spawn_player()
 	player.set_movement_intent(Vector2.LEFT)
 	player.set_pointer_target(
 		player.global_position + Vector2.RIGHT * (player.POINTER_ARRIVAL_RADIUS - 0.1)
 	)
 
-	assert_false(player.request_dash())
-	assert_eq(player.current_dash_charges(), 2)
+	watch_signals(player)
+	assert_true(player.request_dash())
+	assert_signal_emitted_with_parameters(player, "dash_started", [Vector2.LEFT])
 
 
 func test_clearing_pointer_target_restores_action_movement_intent() -> void:
 	var player = _spawn_player()
 	player.set_movement_intent(Vector2.LEFT)
 	player.set_pointer_target(player.global_position)
-	assert_false(player.request_dash())
 	player.clear_pointer_target()
 	watch_signals(player)
 
 	assert_true(player.request_dash())
 	assert_signal_emitted_with_parameters(player, "dash_started", [Vector2.LEFT])
+
+
+func test_direct_dash_request_cannot_spend_charge_while_paused() -> void:
+	var player = _spawn_player()
+	player.set_movement_intent(Vector2.RIGHT)
+	get_tree().paused = true
+	var accepted: bool = player.request_dash()
+	get_tree().paused = false
+	assert_false(accepted)
+	assert_eq(player.current_dash_charges(), 2)
 
 
 func _spawn_player():

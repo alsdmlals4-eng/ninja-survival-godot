@@ -11,6 +11,65 @@ const MODIFIER_PATH := "res://scripts/data/run_modifier_set.gd"
 const FIELD_VISUAL_TEXTURE_PATH := "res://assets/runtime/visual-core/cheonsul_flame_field_v1.png"
 
 
+func test_breath_visual_follows_origin_locks_direction_and_freezes_when_paused() -> void:
+	var runtime = _make_runtime()
+	runtime._cast_remaining = 999.0
+	_enemy(runtime.world, Vector2(100, 0), 300)
+	runtime.reaction_count = 3.0
+	assert_true(runtime.try_use_ultimate())
+	var visual = runtime.get_node_or_null("BreathVisual")
+	assert_not_null(visual, "Accepted breath must be visible")
+	if visual == null:
+		return
+	assert_true(visual.visible)
+	assert_eq(visual.frame, 0)
+	runtime.player.position = Vector2(20, 30)
+	runtime.player.set_movement_intent(Vector2.UP)
+	runtime._process(0.15)
+	assert_eq(visual.global_position, Vector2(20, 30))
+	assert_almost_eq(visual.global_rotation, 0.0, 0.001)
+	assert_eq(visual.frame, 1)
+	get_tree().paused = true
+	runtime._process(0.3)
+	get_tree().paused = false
+	assert_eq(visual.frame, 1)
+	runtime._process(1.35)
+	assert_false(visual.visible, "No damaging-looking effect after the attack expires")
+
+
+func test_breath_visual_clears_immediately_on_dash_and_deactivation() -> void:
+	var runtime = _make_runtime()
+	_enemy(runtime.world, Vector2(100, 0), 300)
+	runtime.reaction_count = 3.0
+	assert_true(runtime.try_use_ultimate())
+	var visual = runtime.get_node_or_null("BreathVisual")
+	assert_not_null(visual)
+	if visual == null:
+		return
+	runtime.player.set_movement_intent(Vector2.RIGHT)
+	assert_true(runtime.player.request_dash())
+	assert_false(visual.visible)
+	runtime.reaction_count = 3.0
+	assert_true(runtime.try_use_ultimate())
+	runtime.deactivate()
+	assert_false(visual.visible)
+
+
+func test_breath_recast_resets_faded_opacity() -> void:
+	var runtime = _make_runtime()
+	runtime._cast_remaining = 999.0
+	_enemy(runtime.world, Vector2(100, 0), 300)
+	runtime.reaction_count = 3.0
+	assert_true(runtime.try_use_ultimate())
+	runtime._process(1.45)
+	var visual = runtime.get_node("BreathVisual")
+	assert_lt(visual.modulate.a, 0.3)
+	runtime._process(0.05)
+	runtime.reaction_count = 3.0
+	assert_true(runtime.try_use_ultimate())
+	assert_almost_eq(visual.modulate.a, 0.65, 0.001)
+
+
 func test_breath_hits_unmarked_front_not_back_and_stops_after_six_ticks() -> void:
 	var runtime = _make_runtime()
 	runtime._cast_remaining = 999.0

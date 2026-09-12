@@ -20,6 +20,7 @@ const BREATH_DURATION := 1.5
 const BREATH_TICK_INTERVAL := 0.25
 const BREATH_RANGE := 320.0
 const BREATH_HALF_ANGLE := PI / 6.0
+const BREATH_TEXTURE: Texture2D = preload("res://assets/runtime/visual-core/cheonsul_breath_v1.png")
 
 @export var badge_scene: PackedScene
 
@@ -34,6 +35,7 @@ var _breath_remaining := 0.0
 var _breath_elapsed := 0.0
 var _breath_ticks := 0
 var _breath_direction := Vector2.RIGHT
+var _breath_visual: Sprite2D
 
 
 func activate() -> void:
@@ -53,6 +55,7 @@ func activate() -> void:
 
 func deactivate() -> void:
 	_breath_remaining = 0.0
+	_sync_breath_visual()
 	if is_instance_valid(player) and player.dash_started.is_connected(_cancel_breath_on_dash):
 		player.dash_started.disconnect(_cancel_breath_on_dash)
 	_clear_states()
@@ -65,8 +68,10 @@ func _process(delta: float) -> void:
 		return
 	if not is_instance_valid(player) or player.is_dead():
 		_breath_remaining = 0.0
+		_sync_breath_visual()
 		return
 	_advance_breath(delta)
+	_sync_breath_visual()
 
 	_tick_field_visuals(delta)
 
@@ -195,6 +200,7 @@ func try_use_ultimate() -> bool:
 	_breath_elapsed = 0.0
 	_breath_ticks = 0
 	_breath_tick()
+	_sync_breath_visual()
 	_emit_resource()
 	_emit_ultimate_ready_if_changed(true)
 	school_feedback.emit("오행폭주")
@@ -250,6 +256,37 @@ func _advance_breath(delta: float) -> void:
 
 func _cancel_breath_on_dash(_direction: Vector2) -> void:
 	_breath_remaining = 0.0
+	_sync_breath_visual()
+
+
+func _sync_breath_visual() -> void:
+	if _breath_remaining <= CAST_EPSILON or not is_instance_valid(player):
+		if is_instance_valid(_breath_visual):
+			_breath_visual.hide()
+		return
+	if not is_instance_valid(_breath_visual):
+		_breath_visual = Sprite2D.new()
+		_breath_visual.name = "BreathVisual"
+		_breath_visual.texture = BREATH_TEXTURE
+		_breath_visual.hframes = 4
+		_breath_visual.centered = false
+		# Aseprite registration: identical emission pivot in each 700px cell.
+		_breath_visual.offset = Vector2(-64, -350)
+		_breath_visual.scale = Vector2.ONE * (BREATH_RANGE / 600.0)
+		_breath_visual.modulate.a = 0.65
+		add_child(_breath_visual)
+	_breath_visual.show()
+	_breath_visual.global_position = player.global_position
+	_breath_visual.global_rotation = _breath_direction.angle()
+	if _breath_elapsed < 0.1:
+		_breath_visual.frame = 0
+		_breath_visual.modulate.a = 0.65
+	elif _breath_remaining <= 0.15:
+		_breath_visual.frame = 3
+		_breath_visual.modulate.a = 0.65 * _breath_remaining / 0.15
+	else:
+		_breath_visual.frame = 1 + (int((_breath_elapsed - 0.1) / 0.125) % 2)
+		_breath_visual.modulate.a = 0.65
 
 
 func _apply_burn(enemy: Node2D) -> void:

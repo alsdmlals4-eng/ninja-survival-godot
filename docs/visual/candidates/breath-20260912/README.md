@@ -1,7 +1,10 @@
 # Cheonsul breath candidate
 
-Status: GENERATED_CANDIDATE / APPEARANCE_REVIEW_PENDING / ALIGNMENT_REQUIRED.
-No asset approval or runtime binding. `.gdignore` prevents accidental import.
+Status: USER_APPEARANCE_APPROVED / ALIGNED / BRANCH_IMPLEMENTED / FIXTURE_RENDERED.
+The latest user accepted the displayed blue-white/gold direction and continued.
+`.gdignore` excludes retained production sources from game import. Runtime binding
+is `assets/runtime/visual-core/cheonsul_breath_v1.png`; asset registration is owned
+by `docs/assets/approved/img-02-runtime-visual-core/RUNTIME_VISUAL_CORE_MANIFEST.md`.
 Consumer: CheonsulRuntime presentation for R-ULTIMATE. Existing vfx.png contains
 individual motifs, not a continuous directional breath. Old flame-field texture
 is a ground area and cannot communicate this attack.
@@ -20,6 +23,29 @@ Use built-in image model, not paid CLI fallback. Preserve source and provenance.
 Final LOCK and runtime visual QA remain separate gates.
 
 ## Generation and inspection
+
+### Mechanical registration and runtime readback, 2026-09-12
+
+Restricted Aseprite1.3.18.5-dev imported each627px cell into a separate canvas,
+then translated copies onto700px cells: (10,15),(37,15),(10,16),(37,16).
+Nominal common emission pivot64,350; artwork itself was not redrawn/resized.
+`breath-motion-v1.aseprite` and raw `breath-motion-v1.json` preserve editable
+frames and100/125/125/150ms state hints. Game logic owns actual1.5s duration,
+begin100ms, alternating sustain125ms, final150ms fading; cancellation hides
+immediately rather than displaying a damaging-looking lingering cast.
+Runtime export2800x700 SHA256:
+`b151f40c0def23e2719ba7cc5e9d3a797f618704899d2691cecba10b901a9199`.
+At320/600 scale with65% alpha the effect follows the player without changing
+the cast direction. Capture: `docs/reviews/breath-runtime-20260912.png`.
+This is fixture-render evidence, not full-run/input/Human/device acceptance.
+
+Validated tooling failure: adding a frame after importing copied the previous
+cel, and import drawImage composited new art over it. Rejected first export.
+Fix: create all blank frames first, then import each cell; inspect all four
+outputs (especially end) before promotion. Failed local output goes to manual
+deletion review, never shipped. Raw source hash remains unchanged.
+
+### Original candidate inspection (historical)
 
 Built-in image model, 2026-09-12. Original preserved:
 `C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-288d6fa6-d2dd-4d4d-a498-60867bb15138.png`.
