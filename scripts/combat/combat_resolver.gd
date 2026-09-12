@@ -4,6 +4,8 @@ class_name CombatResolver
 var contribution_tracker: CombatContributionTracker
 var run_modifiers := RunModifierSet.new()
 var sword_only_mode: bool = false
+var _resolving_target_id: int = 0
+var _resolving_damage_kind: StringName = &""
 
 
 func configure(tracker: CombatContributionTracker) -> void:
@@ -37,7 +39,7 @@ func deal_school_damage(
 		return 0
 
 	var requested := maxi(roundi(value), 1)
-	var result = target.call("take_damage", requested)
+	var result = _apply_owned_damage(target, requested, damage_kind)
 	if not result is int:
 		return 0
 	var actual := maxi(int(result), 0)
@@ -55,7 +57,7 @@ func deal_basic_weapon_damage(target: Node, base_damage: float) -> int:
 		return 0
 
 	var requested := maxi(roundi(base_damage), 1)
-	var result = target.call("take_damage", requested)
+	var result = _apply_owned_damage(target, requested, &"weapon")
 	if not result is int:
 		return 0
 	var actual := maxi(int(result), 0)
@@ -70,8 +72,28 @@ func deal_guiin_sword_damage(target: Node, base_damage: float) -> int:
 	var value := base_damage * maxf(1.0 + run_modifiers.ultimate_power_pct, 0.0)
 	if value <= 0.0:
 		return 0
-	var result = target.call("take_damage", maxi(roundi(value), 1))
+	var result = _apply_owned_damage(target, maxi(roundi(value), 1), &"ultimate")
 	var actual := maxi(int(result), 0) if result is int else 0
 	if contribution_tracker != null:
 		contribution_tracker.record_damage(actual)
 	return actual
+
+
+func current_damage_kind_for(target: Node) -> StringName:
+	if not is_instance_valid(target) or target.get_instance_id() != _resolving_target_id:
+		return &""
+	return _resolving_damage_kind
+
+
+func _apply_owned_damage(target: Node, amount: int, kind: StringName):
+	if target.is_queued_for_deletion() or (target.has_method("is_dead") and target.is_dead()):
+		return 0
+	# Enemy death is synchronous. Preserve nested calls without leaving stale ownership.
+	var previous_target := _resolving_target_id
+	var previous_kind := _resolving_damage_kind
+	_resolving_target_id = target.get_instance_id()
+	_resolving_damage_kind = kind
+	var result = target.call("take_damage", amount)
+	_resolving_target_id = previous_target
+	_resolving_damage_kind = previous_kind
+	return result

@@ -714,6 +714,8 @@ func _set_combat_enabled(enabled: bool) -> void:
 		player.clear_pointer_target()
 		if school_host.active_runtime is GuiinRuntime:
 			(school_host.active_runtime as GuiinRuntime).cancel_ultimate()
+		elif school_host.active_runtime is BongmaRuntime:
+			(school_host.active_runtime as BongmaRuntime).cancel_ultimate()
 	var gameplay_mode := Node.PROCESS_MODE_INHERIT if enabled else Node.PROCESS_MODE_DISABLED
 	player.process_mode = gameplay_mode
 	basic_weapons.process_mode = gameplay_mode

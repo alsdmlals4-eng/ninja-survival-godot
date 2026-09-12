@@ -16,6 +16,35 @@ class DamageTarget:
 		return before - health
 
 
+class ContextTarget:
+	extends Node
+	var callback: Callable
+	func take_damage(amount: int) -> int:
+		callback.call()
+		return amount
+
+
+func test_owned_damage_context_is_target_specific_and_restored_after_nested_damage() -> void:
+	var fixture := _new_fixture()
+	var outer := ContextTarget.new()
+	var inner := ContextTarget.new()
+	add_child_autofree(outer)
+	add_child_autofree(inner)
+	var observations: Array = []
+	inner.callback = func():
+		observations.append(fixture.resolver.current_damage_kind_for(inner))
+		observations.append(fixture.resolver.current_damage_kind_for(outer))
+	outer.callback = func():
+		observations.append(fixture.resolver.current_damage_kind_for(outer))
+		fixture.resolver.deal_school_damage(inner, 8.0, &"ultimate")
+		observations.append(fixture.resolver.current_damage_kind_for(outer))
+	assert_eq(fixture.resolver.deal_basic_weapon_damage(outer, 10.0), 10)
+	assert_eq(observations, [&"weapon", &"ultimate", &"", &"weapon"])
+	assert_eq(fixture.resolver.current_damage_kind_for(outer), &"")
+	assert_eq(fixture.resolver.current_damage_kind_for(inner), &"")
+	assert_eq(fixture.tracker.damage, 18)
+
+
 func test_combat_resolver_resource_exists() -> void:
 	assert_true(ResourceLoader.exists(RESOLVER_PATH), "Missing MVP-3 combat resolver")
 

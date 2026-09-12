@@ -176,12 +176,13 @@ func test_school_kill_keeps_single_mvp1_kill_combo_orb_and_school_gain() -> void
 	var combo_before: int = main.get_node("CombatDDD").combo_count
 	var spirit_before: float = bongma.spirit
 
-	enemy.take_damage(enemy.max_health)
+	enemy.global_position = main.get_node("Player").global_position + Vector2(100, 0)
+	main.combat_resolver.deal_basic_weapon_damage(enemy, enemy.max_health)
 
 	assert_eq(main.get_node("GameState").kill_count, kills_before + 1)
 	assert_eq(main.get_node("CombatDDD").combo_count, combo_before + 1)
 	assert_eq(_living_reward_orbs(main).size(), 1)
-	assert_almost_eq(bongma.spirit, spirit_before + 10.0, 0.001)
+	assert_almost_eq(bongma.spirit, spirit_before + 2.0, 0.001)
 
 
 func test_repeated_enemy_death_callback_is_idempotent() -> void:

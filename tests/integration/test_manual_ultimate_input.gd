@@ -225,6 +225,31 @@ func test_feedback_returns_to_latest_readiness_after_expiry() -> void:
 	assert_string_contains(main.hud.ultimate_button.text, "충전 중")
 
 
+func test_bongma_button_spawns_two_dedicated_familiars_and_preparation_cancels_without_refund() -> void:
+	var main = _main(&"bongma")
+	var enemy = load("res://scripts/enemies/enemy_chaser.gd").new()
+	enemy.max_health = 1000
+	main.add_child(enemy)
+	enemy.global_position = main.player.global_position + Vector2(40, 0)
+	var runtime = main.school_host.active_runtime
+	runtime.spirit = 120.0
+	main.hud.ultimate_button.pressed.emit()
+	assert_eq(enemy.health, 984)
+	assert_eq(runtime.spirit, 20.0)
+	assert_true(is_instance_valid(runtime._temporary_familiar))
+	assert_true(is_instance_valid(runtime._second_temporary_familiar))
+	assert_eq(runtime._base_familiar.damage_kind, &"normal")
+	main._set_combat_enabled(false)
+	assert_null(runtime._temporary_familiar)
+	assert_null(runtime._second_temporary_familiar)
+	assert_eq(runtime.spirit, 20.0)
+	assert_eq(runtime.ultimate_time_remaining, 0.0)
+	main._set_combat_enabled(true)
+	main._unhandled_input(_key())
+	assert_eq(runtime.spirit, 20.0)
+	assert_eq(enemy.health, 984)
+
+
 func test_guiin_input_switches_to_sword_only_then_restores_on_preparation_entry() -> void:
 	var main = _main()
 	var enemy = load("res://scripts/enemies/enemy_chaser.gd").new()

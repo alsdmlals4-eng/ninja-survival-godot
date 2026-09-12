@@ -12,6 +12,10 @@ var damage: int = 8
 var damage_kind: StringName = &"normal"
 var combat_resolver: CombatResolver
 var _cooldown_remaining: float = 0.0
+var target_radius: float = INF
+var target_from_player: bool = false
+var maximum_follow_distance: float = INF
+var follow_offset := Vector2.ZERO
 
 
 func configure(
@@ -41,17 +45,20 @@ func set_damage_kind(kind: StringName) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if delta <= 0.0 or not is_instance_valid(player):
+	if delta <= 0.0 or not is_finite(delta) or not is_instance_valid(player) or player.is_dead() or get_tree().paused or is_queued_for_deletion():
 		return
 
 	var offset := player.global_position - global_position
+	if offset.length_squared() > maximum_follow_distance * maximum_follow_distance:
+		global_position = player.global_position - offset.normalized() * maximum_follow_distance
+	offset = player.global_position + follow_offset - global_position
 	if offset.length_squared() <= follow_distance * follow_distance:
 		return
-	global_position = global_position.move_toward(player.global_position, follow_speed * delta)
+	global_position = global_position.move_toward(player.global_position + follow_offset, follow_speed * delta)
 
 
 func _process(delta: float) -> void:
-	if delta <= 0.0:
+	if delta <= 0.0 or not is_finite(delta) or get_tree().paused or is_queued_for_deletion():
 		return
 	_cooldown_remaining = maxf(_cooldown_remaining - delta, 0.0)
 	if _cooldown_remaining > 0.0:
@@ -64,6 +71,8 @@ func _process(delta: float) -> void:
 
 
 func attack_once() -> Node:
+	if not is_instance_valid(player) or player.is_dead() or get_tree().paused or is_queued_for_deletion():
+		return null
 	var target := _nearest_target()
 	if target == null:
 		return null
@@ -92,6 +101,13 @@ func _nearest_target() -> Node2D:
 			continue
 
 		var node := candidate as Node2D
+		if node.is_queued_for_deletion():
+			continue
+		if is_instance_valid(player) and player.get_parent() != null and not player.get_parent().is_ancestor_of(node):
+			continue
+		var origin := player.global_position if target_from_player and is_instance_valid(player) else global_position
+		if origin.distance_squared_to(node.global_position) > target_radius * target_radius:
+			continue
 		var distance := global_position.distance_squared_to(node.global_position)
 		if distance < nearest_distance:
 			nearest_distance = distance

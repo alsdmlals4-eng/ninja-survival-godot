@@ -1,5 +1,35 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-12 Bongma independent ultimate continuation
+
+BEFORE: empty-field passive charge, unowned kill+10 and conversion of normal
+familiar to an accelerated ultimate. AFTER: approved R-ULTIMATE5/sec proximity
+charge, owned nonultimate kill+2/max1persec, two separate6sec dedicated summons.
+ADAPT existing familiar scene/CombatResolver and Main cancellation boundary;
+REJECT boosting the normal familiar or a second summon manager/autoload. Direct
+unowned enemy.take_damage is deliberately not player kill ownership evidence.
+Normal book cutover and [injutsu] channel migration remain separate pending work.
+
+Primary check: [Godot Node queue_free](https://docs.godotengine.org/en/stable/classes/class_node.html#class-node-method-queue-free).
+Queued nodes remain alive until frame end: disable processing on cancellation and
+reject queued targets/summons in direct calls. REJECT immediate free during death
+signal callbacks. Preserve nested resolver target/kind context without a lasting
+global owner marker. No new cost, dependency, asset or save-format change.
+
+Regression:94scripts/682tests/7538assertions PASS, no parse/error hits. Added
+formation/follow180/range320, pause-clock freeze, death/no refund, cross-world
+isolation, synchronous nested damage context, actual Main button/preparation
+cleanup cases. Legacy integration kill+10 expectation failed as expected and was
+updated to actual owned weapon damage/+2, preserving kill/combo/orb assertions.
+GPU Godot4.7.1 OpenGL/NVIDIA RTX3050 capture inspected: two dedicated familiar
+positions visible with existing art; actual Main button and cleanup assertions
+passed. Fixture1848417 uses isolated paths. No normal-speed balance/Human/device
+pass. This bounded regression review is not five final whole-scope closure loops.
+
+Remaining: baseline familiar/ward removal with24book authority, damage tag and
+profile2 charge persistence, other-school ultimates, full equipment/preparation/
+settlement integration. Screenshot is runtime evidence, not a new approved asset.
+
 ## 2026-09-12 carried buffer / real preparation shop continuation
 
 Reused current approved detail rules, RestBackpackSession, Circuit, ResumeCodec,

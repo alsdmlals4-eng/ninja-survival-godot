@@ -2,6 +2,20 @@
 
 ## Latest — whole-run continuation, 2026-09-12
 
+Newest Bongma increment:94scripts/682tests/7538assertions PASS with parse/error
+scan. Living same-world target<=480 gates5/sec charge; owned nonultimate kills
+give2 at most once/sec with death-ID dedupe. Resolver scopes synchronous damage
+ownership and restores nested contexts. Ultimate pays100 only after two valid
+dedicated familiars exist, immediate8damage each,0.5sec attacks for6sec, target320,
+follow<=180 with separate formation positions. Legacy base familiar stays normal;
+its removal depends on the24-book cutover, not this increment. Pause/death/
+preparation/duplicate input/range/other-world cases covered. Actual Main GPU
+capture `reviews/bongma-dedicated-familiars-20260912.png` inspected; HUD activation
+and preparation cleanup verified. Legacy tiny art is not new-asset/Human approval.
+Exact0fdc357 both remote checks passed. Bongma increment needs own CI; no merge.
+Next: Cheonsul charge and lifecycle, Heukyeong ultimate, then remaining equipment/
+profile2/24-book/trace integration and normal-speed full-run validation.
+
 Current local increment: persistent six-slot buffer is connected to real Circuit
 departure, retry, JSON save/load and following preparations; held items remain
 outside resolved combat power. Existing stricter legacy RestBackpackSession mode
