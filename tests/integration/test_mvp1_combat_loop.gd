@@ -110,6 +110,7 @@ func test_game_over_disables_wave_spawner_and_live_reward_orbs() -> void:
 	await get_tree().process_frame
 	var orbs = _living_reward_orbs(main)
 	assert_eq(orbs.size(), 1)
+	main.get_node("Player").advance_damage_protection(1.01)
 	main.get_node("Player").take_damage(100000)
 	assert_true(main.game_over)
 	assert_eq(main.get_node("WaveSpawner").process_mode, Node.PROCESS_MODE_DISABLED)

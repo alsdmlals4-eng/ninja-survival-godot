@@ -2,6 +2,29 @@
 
 ## Latest — whole-run continuation, 2026-09-12
 
+Continuation checkpoint: whole-run increment `efbf249` was pushed and its exact
+head passed both remote checks (GUT and Windows internal build). No merge.
+Latest local continuation:93scripts/659tests/7182assertions PASS, including error
+scan. Hit protection0.35sec and entry protection1sec are wired into actual Main;
+pause freezes protection, blocked hits do not extend it. Existing forced-death
+fixtures now advance protection first; incoming-horde fixture disables outgoing
+damage to keep its crowd alive and tests max1resolved hit/frame.
+
+Equipment catalog/loadout:9definitions, external3slots, unique owned types,
+per-instance ranks, replacement-before-sale and price-based proceeds. BasicWeapon
+consumer now accepts validated copied equipment snapshots:4melee shapes,
+kunai2shot, shortbow1pierce, fixed-position delayed powder blast. Projectile hit
+sets prevent repeat contact/deferred-deletion double hits. These new equipment
+profiles are component-tested, NOT yet Main/Workbench/shop/save-bound; no new
+weapon visual approval or runtime-render claim. Next bind single RunBuildState
+owner, preparation economics and profile2 together; old schema1 must not silently
+discard new equipment or auto-convert changed inventory meanings.
+
+ResumeStore now rejects invalid encoded candidates before touching the valid
+record; previous-backup cleanup failure reports a warning instead of falsely
+reporting committed data as rolled back. These fixes do not complete profile2
+atomic wallet/settlement or crash/power-loss verification.
+
 CONTINUOUS_WORK_ACTIVE. Base remote d830c0f freshly read; selective adoption in
 the native work contract, not full adapter replacement. Current task remains
 PR147/codex/replanning-art-motion-20260910; other PRs read-only.
@@ -14,7 +37,7 @@ Final actor reuses existing school patterns/approved runtime assets provisionall
 HP1800 and clear-order quarters; theme changes wait for pattern/projectile/proxy
 completion and never heal or clamp damage. New art is NOT approved by this wiring.
 
-Latest full GUT:92scripts/645tests/7055assertions PASS, engine-error scan included.
+Earlier full GUT:92scripts/645tests/7055assertions PASS, engine-error scan included.
 Earlier transient live-orb assertion failed; isolated and full reruns passed.
 Real GPU Main fixture reached final preparation/battle/completion, with accelerated
 time, forced kills and test-only expanded board. It exposed and fixed repeat-floor

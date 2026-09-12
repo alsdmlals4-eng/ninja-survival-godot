@@ -144,6 +144,7 @@ func test_game_over_during_combat_is_terminal_and_never_opens_rest() -> void:
 	if circuit == null:
 		return
 	assert_eq(circuit.get_snapshot().get("state"), &"core")
+	main.get_node("Player").advance_damage_protection(1.01)
 	main.get_node("Player").take_damage(99999)
 	assert_true(main.game_over)
 	assert_eq(circuit.get_snapshot().get("state"), &"core")

@@ -703,6 +703,8 @@ func _sync_run_modifiers() -> void:
 
 
 func _set_combat_enabled(enabled: bool) -> void:
+	if enabled and not _combat_enabled:
+		player.grant_entry_protection()
 	_combat_enabled = enabled
 	if not enabled:
 		player.clear_pointer_target()

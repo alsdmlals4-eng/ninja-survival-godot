@@ -3,14 +3,18 @@ extends GutTest
 
 const MAIN_SCENE := preload("res://scenes/main/main_scene.tscn")
 const NORMAL_ENEMY_META := &"ninja_wave_spawner_normal"
-const OPENING_WINDOW_PHYSICS_FRAMES := 90
-const MAX_DAMAGE_EVENTS_PER_PHYSICS_FRAME := 2
+const OPENING_WINDOW_PHYSICS_FRAMES := 150
+const MAX_DAMAGE_EVENTS_PER_PHYSICS_FRAME := 1
 
 
 func test_opening_horde_spreads_resolved_damage_across_physics_frames() -> void:
 	var main = MAIN_SCENE.instantiate()
 	add_child_autofree(main)
 	main._on_school_selected(&"bongma")
+	# Isolate incoming pressure: do not kill the entire fixture crowd before entry protection expires.
+	main.basic_weapons.process_mode = Node.PROCESS_MODE_DISABLED
+	main.school_host.process_mode = Node.PROCESS_MODE_DISABLED
+	main.ninjutsu_auto_controller.process_mode = Node.PROCESS_MODE_DISABLED
 	await get_tree().process_frame
 
 	var player = main.get_node("Player") as PlayerController

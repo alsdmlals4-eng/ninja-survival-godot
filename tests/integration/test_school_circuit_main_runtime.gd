@@ -208,6 +208,7 @@ func test_checkpoint_retry_spends_one_soul_once_and_restores_the_next_school_bas
 	main.get_node("RunBuildState").grant_gold(9)
 	var player: PlayerController = main.get_node("Player")
 	player.set_rng_seed(178) # First roll is 0.99936014, safely above the 0.95 evasion ceiling.
+	player.advance_damage_protection(1.01)
 	assert_gt(player.take_damage(99999), 0, "The deterministic lethal hit must not be evaded.")
 	assert_true(main.game_over)
 	assert_true(main.get_node("HUD/GameOverPanel/RetryButton").visible)
@@ -219,6 +220,7 @@ func test_checkpoint_retry_spends_one_soul_once_and_restores_the_next_school_bas
 	assert_eq(circuit.get_snapshot().get("elapsed_seconds"), 0.0)
 	assert_false(main.get_node("HUD/GameOverPanel").visible)
 	player.set_rng_seed(178)
+	player.advance_damage_protection(1.01)
 	assert_gt(player.take_damage(99999), 0, "The post-retry lethal hit must not be evaded.")
 	assert_true(main.game_over)
 	assert_false(main.get_node("HUD/GameOverPanel/RetryButton").visible, "A Run must not offer a second paid retry.")
@@ -299,6 +301,7 @@ func test_invalid_checkpoint_never_debits_a_soul_or_consumes_the_retry() -> void
 	main.run_checkpoint._snapshot["build"] = {}
 	var player: PlayerController = main.get_node("Player")
 	player.set_rng_seed(178) # Keep the invalid-checkpoint path independent of build-provided evasion.
+	player.advance_damage_protection(1.01)
 	assert_gt(player.take_damage(99999), 0, "The deterministic lethal hit must not be evaded.")
 	assert_true(main.game_over)
 	main.get_node("HUD").retry_requested.emit()

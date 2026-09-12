@@ -1,6 +1,9 @@
 extends Node
 class_name BasicWeaponController
 
+const EQUIPMENT_STATE_SCRIPT = preload("res://scripts/core/equipment_loadout_state.gd")
+const EQUIPMENT_CATALOG_SCRIPT = preload("res://scripts/data/equipment_catalog.gd")
+
 signal katana_resolved(target_count: int)
 signal shuriken_fired(projectile: Node2D)
 
@@ -21,10 +24,33 @@ var combat_resolver: CombatResolver
 var _katana_remaining: float = 0.0
 var _shuriken_remaining: float = 0.0
 var _active_katana_effects: Array[Dictionary] = []
+var _melee_shape: String = "cone"
+var _melee_width: float = 0.0
+var _projectile_profile: Dictionary = {}
 
 
 func configure(new_combat_resolver: CombatResolver) -> void:
 	combat_resolver = new_combat_resolver
+
+
+func apply_equipment_snapshot(snapshot: Dictionary) -> bool:
+	var equipment = EQUIPMENT_STATE_SCRIPT.new()
+	if not equipment.restore_snapshot(snapshot):
+		return false
+	var melee: Dictionary = EQUIPMENT_CATALOG_SCRIPT.definition(equipment.equipped_definition(&"melee"))
+	var projectile: Dictionary = EQUIPMENT_CATALOG_SCRIPT.definition(equipment.equipped_definition(&"projectile"))
+	katana_interval = float(melee["interval"])
+	katana_radius = float(melee["range"])
+	katana_damage = float(melee["damage"]) * (1.0 + equipment.equipped_damage_bonus(&"melee"))
+	katana_half_angle_degrees = float(melee.get("angle", 0.0)) * 0.5
+	_melee_shape = str(melee["shape"])
+	_melee_width = float(melee.get("width", 0.0))
+	_projectile_profile = projectile
+	shuriken_interval = float(projectile["interval"])
+	shuriken_target_radius = float(projectile["range"])
+	shuriken_speed = float(projectile.get("speed", 0.0))
+	shuriken_damage = roundi(float(projectile["damage"]) * (1.0 + equipment.equipped_damage_bonus(&"projectile")))
+	return true
 
 
 func _process(delta: float) -> void:
@@ -84,10 +110,18 @@ func swing_katana_once() -> int:
 	var aim := (targets[0].global_position - source.global_position).normalized()
 	if aim.is_zero_approx():
 		aim = source.combat_facing_direction() if source is PlayerController else Vector2.RIGHT
+	if _melee_shape == "rectangle":
+		targets = _closest_targets_in_radius(get_tree().get_nodes_in_group("enemies"), source.global_position,
+			sqrt(katana_radius * katana_radius + _melee_width * _melee_width * 0.25))
 	var cone_targets: Array[Node2D] = []
 	for target in targets:
 		var offset := target.global_position - source.global_position
-		if offset.is_zero_approx() or offset.normalized().dot(aim) >= cos(deg_to_rad(katana_half_angle_degrees)) - 0.000001:
+		var inside: bool
+		if _melee_shape == "rectangle":
+			inside = offset.dot(aim) >= 0.0 and offset.dot(aim) <= katana_radius and absf(offset.cross(aim)) <= _melee_width * 0.5
+		else:
+			inside = offset.is_zero_approx() or offset.normalized().dot(aim) >= cos(deg_to_rad(katana_half_angle_degrees)) - 0.000001
+		if inside:
 			cone_targets.append(target)
 
 	if source is PlayerController:
@@ -114,7 +148,25 @@ func fire_shuriken_once() -> Node2D:
 	var aim := target.global_position - source.global_position
 	if aim.is_zero_approx():
 		return null
+	if _projectile_profile.get("shape", "") == "delayed_blast":
+		var bomb := _spawn_projectile(source, Vector2.ZERO)
+		if bomb != null:
+			bomb.global_position = target.global_position
+		return bomb
 
+	var first: Node2D = null
+	var count := int(_projectile_profile.get("count", 1))
+	for index in range(count):
+		var offset_degrees := float(_projectile_profile.get("spread", 0.0)) * (-1.0 if index == 0 else 1.0) if count > 1 else 0.0
+		var projectile := _spawn_projectile(source, aim.rotated(deg_to_rad(offset_degrees)))
+		if first == null:
+			first = projectile
+	if first != null and source is PlayerController:
+		source.record_auto_weapon_direction(aim)
+	return first
+
+
+func _spawn_projectile(source: Node2D, aim: Vector2) -> Node2D:
 	var projectile_node := shuriken_projectile_scene.instantiate()
 	if not projectile_node is Node2D:
 		projectile_node.free()
@@ -124,13 +176,24 @@ func fire_shuriken_once() -> Node2D:
 		projectile_node.free()
 		return null
 
+	if projectile_node is BasicProjectile and not _projectile_profile.is_empty():
+		projectile_node.lifetime = float(_projectile_profile.get("lifetime", 1.0))
+		projectile_node.pierce_count = int(_projectile_profile.get("pierce", 0))
+		if _projectile_profile.get("shape", "") == "delayed_blast":
+			projectile_node.blast_radius = float(_projectile_profile["radius"])
+			projectile_node.blast_delay = float(_projectile_profile["delay"])
+			projectile_node.collision_layer = 0
+			projectile_node.collision_mask = 0
+			projectile_node.monitoring = false
+		var collision := projectile_node.get_node_or_null("CollisionShape2D") as CollisionShape2D
+		if collision != null and collision.shape is CircleShape2D:
+			collision.shape = collision.shape.duplicate()
+			collision.shape.radius = float(_projectile_profile["radius"])
 	world.add_child(projectile_node)
 	var projectile := projectile_node as Node2D
 	projectile.global_position = source.global_position
 	if projectile.has_method("configure"):
 		projectile.call("configure", aim, shuriken_speed, shuriken_damage, combat_resolver)
-	if source is PlayerController:
-		source.record_auto_weapon_direction(aim)
 	shuriken_fired.emit(projectile)
 	return projectile
 

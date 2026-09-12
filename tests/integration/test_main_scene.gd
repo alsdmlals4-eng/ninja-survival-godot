@@ -286,9 +286,11 @@ func test_main_keeps_enemy_and_game_over_owners_without_persistent_score_or_heal
 	assert_null(recent_hit_presenter.visible_enemy(), "사망한 적의 HP bar는 즉시 정리해야 합니다.")
 	assert_eq(state.kill_count, 2)
 
+	player.advance_damage_protection(1.01)
 	player.take_damage(25)
 	assert_eq(player.health, 75)
 
+	player.advance_damage_protection(0.36)
 	player.take_damage(1000)
 	assert_true(main.game_over)
 	assert_true(game_over_panel.visible)

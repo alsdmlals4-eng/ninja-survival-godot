@@ -10,6 +10,7 @@ const RUN_RESUME_CODEC_SCRIPT = preload("res://scripts/core/run_resume_codec.gd"
 var _storage_path := DEFAULT_STORAGE_PATH
 var _codec = RUN_RESUME_CODEC_SCRIPT.new()
 var _configured := false
+var _last_save_warning: StringName = &""
 
 
 func configure(storage_path: String = DEFAULT_STORAGE_PATH) -> bool:
@@ -28,7 +29,7 @@ func save_checkpoint(checkpoint: Dictionary) -> bool:
 	if not _configured:
 		return false
 	var payload: Dictionary = _codec.encode_checkpoint(checkpoint)
-	if payload.is_empty():
+	if payload.is_empty() or not bool(_codec.decode_checkpoint(payload).get("ok", false)):
 		return false
 	return _write_payload(payload)
 
@@ -62,6 +63,7 @@ func storage_path() -> String:
 
 
 func _write_payload(payload: Dictionary) -> bool:
+	_last_save_warning = &""
 	var serialized := JSON.stringify(payload)
 	if serialized.is_empty():
 		return false
@@ -97,9 +99,17 @@ func _write_payload(payload: Dictionary) -> bool:
 			DirAccess.rename_absolute(previous_absolute_path, target_path)
 		_remove_if_present(temporary_path)
 		return false
-	if moved_previous and DirAccess.remove_absolute(previous_absolute_path) != OK:
-		return false
+	if moved_previous and _remove_previous_record() != OK:
+		_last_save_warning = &"previous_cleanup_pending"
 	return true
+
+
+func last_save_warning() -> StringName:
+	return _last_save_warning
+
+
+func _remove_previous_record() -> Error:
+	return DirAccess.remove_absolute(ProjectSettings.globalize_path(_previous_storage_path()))
 
 
 func _remove_if_present(storage_path: String) -> void:

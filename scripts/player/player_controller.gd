@@ -6,6 +6,8 @@ const DASH_DURATION_SECONDS := 0.20
 const DASH_SPEED_MULTIPLIER := 3.0
 const DASH_RECHARGE_SECONDS := 1.5
 const POINTER_ARRIVAL_RADIUS := 12.0
+const HIT_PROTECTION_SECONDS := 0.35
+const ENTRY_PROTECTION_SECONDS := 1.0
 
 signal health_changed(current_health: int, maximum_health: int)
 signal healing_resolved(actual: int)
@@ -38,6 +40,7 @@ var _dash_recharge_elapsed: float = 0.0
 var _dash_saved_layer: int = 0
 var _dash_saved_mask: int = 0
 var _dash_collision_override: bool = false
+var _damage_protection_remaining: float = 0.0
 
 
 func combat_facing_direction() -> Vector2:
@@ -64,6 +67,9 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if get_tree().paused:
+		return
+	advance_damage_protection(delta)
 	if _dead:
 		velocity = Vector2.ZERO
 		return
@@ -195,6 +201,7 @@ func restore_after_retry() -> void:
 	_dash_remaining = 0.0
 	_dash_direction = Vector2.ZERO
 	_dash_recharge_elapsed = 0.0
+	grant_entry_protection()
 	health_changed.emit(health, max_health)
 	dash_state_changed.emit(_dash_charges, MAX_DASH_CHARGES)
 
@@ -208,10 +215,13 @@ func _restore_dash_collision() -> void:
 
 
 func take_damage(amount: int) -> int:
-	if amount <= 0 or _dead:
+	if amount <= 0 or _dead or (is_inside_tree() and get_tree().paused):
 		return 0
 
 	var requested := amount
+	if _damage_protection_remaining > 0.0:
+		damage_resolved.emit(requested, 0, requested, false)
+		return 0
 	if _dash_remaining > 0.0:
 		damage_resolved.emit(requested, 0, requested, true)
 		return 0
@@ -231,6 +241,8 @@ func take_damage(amount: int) -> int:
 	var before := health
 	health = max(health - resolved, 0)
 	var actual := before - health
+	if actual > 0:
+		_damage_protection_remaining = HIT_PROTECTION_SECONDS
 	damage_resolved.emit(requested, resolved, prevented, false)
 	health_changed.emit(health, max_health)
 
@@ -238,6 +250,16 @@ func take_damage(amount: int) -> int:
 		_dead = true
 		died.emit()
 	return actual
+
+
+func grant_entry_protection() -> void:
+	_damage_protection_remaining = maxf(_damage_protection_remaining, ENTRY_PROTECTION_SECONDS)
+
+
+func advance_damage_protection(delta: float) -> void:
+	if delta <= 0.0 or not is_finite(delta) or _dead or (is_inside_tree() and get_tree().paused):
+		return
+	_damage_protection_remaining = maxf(_damage_protection_remaining - delta, 0.0)
 
 
 func set_rng_seed(seed_value: int) -> void:

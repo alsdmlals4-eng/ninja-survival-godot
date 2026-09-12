@@ -151,3 +151,100 @@ func _new_fixture() -> Dictionary:
 		"resolver": resolver,
 		"controller": controller,
 	}
+
+
+func test_equipped_naginata_uses_forward_rectangle_and_instance_upgrade() -> void:
+	var fixture := _new_fixture()
+	var controller = fixture.controller
+	assert_true(controller.has_method("apply_equipment_snapshot"))
+	if not controller.has_method("apply_equipment_snapshot"):
+		return
+	var equipment = load("res://scripts/core/equipment_loadout_state.gd").new()
+	assert_true(equipment.acquire(&"naginata"))
+	assert_true(equipment.equip(&"melee", &"naginata"))
+	assert_true(equipment.upgrade_equipped(&"melee"))
+	assert_true(controller.apply_equipment_snapshot(equipment.get_snapshot()))
+	var targets: Array[DamageTarget] = []
+	for point in [Vector2(20, 0), Vector2(179, 23), Vector2(100, 25), Vector2(-1, 0), Vector2(181, 0)]:
+		var target := DamageTarget.new()
+		fixture.world.add_child(target)
+		target.position = point
+		target.add_to_group("enemies")
+		targets.append(target)
+	# Rear target would be the nearest: remove it from automatic aim by positioning it outside range.
+	targets[3].position = Vector2(-181, 0)
+	assert_eq(controller.swing_katana_once(), 2)
+	assert_eq(targets[0].health, 80) # 17 * 1.15 = 19.55, rounded once.
+	assert_eq(targets[1].health, 80)
+	assert_eq(targets[2].health, 100)
+	assert_eq(targets[3].health, 100)
+	assert_eq(targets[4].health, 100)
+
+
+func test_kunai_emits_two_projectiles_at_six_degree_offsets_with_bounded_lifetime() -> void:
+	var fixture := _new_fixture()
+	assert_true(fixture.controller.has_method("apply_equipment_snapshot"))
+	if not fixture.controller.has_method("apply_equipment_snapshot"):
+		return
+	var equipment = load("res://scripts/core/equipment_loadout_state.gd").new()
+	assert_true(equipment.acquire(&"kunai"))
+	assert_true(equipment.equip(&"projectile", &"kunai"))
+	assert_true(fixture.controller.apply_equipment_snapshot(equipment.get_snapshot()))
+	fixture.controller.shuriken_projectile_scene = SHURIKEN_SCENE
+	var target := DamageTarget.new()
+	fixture.world.add_child(target)
+	target.position = Vector2(120, 0)
+	target.add_to_group("enemies")
+	var emitted: Array[Node2D] = []
+	fixture.controller.shuriken_fired.connect(func(projectile: Node2D): emitted.append(projectile))
+	assert_not_null(fixture.controller.fire_shuriken_once())
+	assert_eq(emitted.size(), 2)
+	if emitted.size() != 2:
+		return
+	assert_almost_eq(rad_to_deg(emitted[0].direction.angle()), -6.0, 0.001)
+	assert_almost_eq(rad_to_deg(emitted[1].direction.angle()), 6.0, 0.001)
+	assert_eq(emitted[0].damage, 6)
+	assert_eq(emitted[0].lifetime, 1.0)
+	assert_eq(emitted[0].get_node("CollisionShape2D").shape.radius, 6.0)
+
+
+func test_invalid_equipment_does_not_replace_current_weapon_profile() -> void:
+	var fixture := _new_fixture()
+	assert_true(fixture.controller.has_method("apply_equipment_snapshot"))
+	if not fixture.controller.has_method("apply_equipment_snapshot"):
+		return
+	assert_false(fixture.controller.apply_equipment_snapshot({}))
+	assert_eq(fixture.controller.katana_damage, 10.0)
+	assert_eq(fixture.controller.shuriken_damage, 9)
+
+
+func test_powder_bomb_locks_target_position_then_damages_only_current_blast_occupants() -> void:
+	var fixture := _new_fixture()
+	var equipment = load("res://scripts/core/equipment_loadout_state.gd").new()
+	assert_true(equipment.acquire(&"powder_bomb"))
+	assert_true(equipment.equip(&"projectile", &"powder_bomb"))
+	assert_true(fixture.controller.apply_equipment_snapshot(equipment.get_snapshot()))
+	if fixture.controller.shuriken_target_radius != 360.0:
+		return
+	fixture.controller.shuriken_projectile_scene = SHURIKEN_SCENE
+	var first := DamageTarget.new()
+	var second := DamageTarget.new()
+	fixture.world.add_child(first)
+	fixture.world.add_child(second)
+	first.position = Vector2(100, 0)
+	second.position = Vector2(160, 0)
+	first.add_to_group("enemies")
+	second.add_to_group("enemies")
+	var bomb: Node2D = fixture.controller.fire_shuriken_once()
+	assert_not_null(bomb)
+	if bomb == null:
+		return
+	assert_eq(bomb.position, Vector2(100, 0))
+	first.position = Vector2(300, 0)
+	bomb._physics_process(0.44)
+	assert_eq(second.health, 100)
+	bomb._physics_process(0.02)
+	assert_eq(first.health, 100)
+	assert_eq(second.health, 82)
+	bomb._physics_process(1.0)
+	assert_eq(second.health, 82)

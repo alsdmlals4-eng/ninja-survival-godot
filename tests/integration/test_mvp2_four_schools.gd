@@ -294,6 +294,9 @@ func test_game_over_deactivates_school_runtime_and_freezes_school_effects() -> v
 	hud.current_tradition_help_requested.emit()
 	assert_true((main.get_node("SchoolSelectionUI/HelpDialog") as Control).visible)
 
+	assert_eq(main.get_node("Player").take_damage(100000), 0, "Settings pause must prevent damage.")
+	get_tree().paused = false
+	main.get_node("Player").advance_damage_protection(1.01)
 	main.get_node("Player").take_damage(100000)
 	assert_true(main.game_over)
 	assert_false(heukyeong.active)

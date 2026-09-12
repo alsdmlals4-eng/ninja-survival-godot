@@ -1,5 +1,54 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-12 combat protection / weapon consumer / save correction — continuation
+
+Approved full-run scope remains open. Latest local full GUT:93scripts,
+659tests,7182assertions PASS with engine-error/parse/warning scan. Exact prior
+commit efbf249 passed remote GUT and Windows artifact checks; current changes
+still require their own remote verification. No merge or five-loop closure.
+
+Validated RED findings and corrections:
+- Consecutive hit sources could stack damage without the specified0.35sec
+  protection. Added central Player protection and1sec entry protection on actual
+  Main's disabled-to-enabled transition/retry. Pause blocks incoming damage and
+  protection decay; blocked hits do not extend the window. Old immediate-lethal
+  fixtures now explicitly advance time, not bypass production protection. Horde
+  incoming-pressure fixture disables outgoing weapons so the crowd survives the
+  grace period;150physics frames,max1resolved hit per frame. Not Human fairness.
+- ResumeStore serialized a negative-gold checkpoint and replaced a valid file.
+  It now decodes/validates the candidate before I/O. Failure leaves prior bytes
+  identical. Injected previous-file deletion failure leaves the new42gold record
+  committed and reports previous_cleanup_pending, rather than prompting a retry
+  of an already committed transaction. Remaining: staged/final readback,
+  revision-based recovery, profile2 single-file wallet/checkpoint/settlement.
+- A consumed projectile could deliver13damage twice before deferred deletion.
+  Queued/dead/repeated targets now reject; piercing tracks distinct targets.
+- Equipment definitions/loadout support9unique types,3external slots,ranks0..4,
+  immutable validated snapshots and replacement-before-sale (45G purchase sells
+  for22 regardless of rank; free starter sells0). These components are staged
+  for the single RunBuildState owner, NOT an additional autoload.
+- Existing BasicWeaponController consumes validated equipment snapshots in
+  component tests: naginata forward rectangle with upgraded17*1.15 rounded20,
+  kunai±6degrees×2 with per-instance radius/lifetime, shortbow pierce primitive,
+  powder fixed target position/delay0.45/radius80/no follow or repeated blast.
+  New profile activation in Main/shop/preparation/save is still open. Existing
+  generic effect art is only fallback; no new weapon visual approval claimed.
+
+Alternatives: ADAPT existing projectile/weapon owners with bounded definition
+profiles; REJECT one independent attack controller per weapon; DEFER scene-per-
+weapon only until a genuinely different lifecycle warrants it. ADOPT validate
+before replace; REJECT raw successful file write as domain validity; profile2
+single transaction remains the target over two-file wallet/checkpoint mutation.
+Technical source rechecked:
+[Godot FileAccess](https://docs.godotengine.org/en/stable/classes/class_fileaccess.html?highlight=fileaccess).
+Flush/serialization support is engine evidence, not proof of crash atomicity.
+
+Reusable learning candidate: storage success and backup-cleanup status are
+separate; test deferred-deletion duplicate collisions; don't let an outgoing-
+damage system destroy an incoming-pressure fixture before its observation window.
+Recorded here; no unreviewed Base-wide mutation. No final art/Human/device/export
+acceptance, full equipment cutover, whole-loop completion or main merge implied.
+
 ## 2026-09-12 whole-run implementation loop — still active
 
 Approved scope includes all four battlefields, preparation/shop/backpack and final

@@ -29,6 +29,7 @@ func test_damage_reduces_health_clamps_and_dies_once() -> void:
 	assert_eq(player.health, 18)
 	assert_false(player.is_dead())
 
+	player.advance_damage_protection(0.35)
 	assert_eq(player.take_damage(99), 18)
 	assert_eq(player.health, 0)
 	assert_true(player.is_dead())
@@ -46,6 +47,35 @@ func test_non_positive_damage_is_ignored() -> void:
 	assert_eq(player.take_damage(0), 0)
 	assert_eq(player.take_damage(-5), 0)
 	assert_eq(player.health, 30)
+
+
+func test_successful_hit_blocks_other_sources_for_point_three_five_seconds() -> void:
+	var player = _spawn_player()
+	assert_eq(player.take_damage(10), 10)
+	assert_eq(player.take_damage(20), 0)
+	assert_true(player.has_method("advance_damage_protection"))
+	if not player.has_method("advance_damage_protection"):
+		return
+	player.advance_damage_protection(0.34)
+	assert_eq(player.take_damage(20), 0)
+	player.advance_damage_protection(0.011)
+	assert_eq(player.take_damage(20), 20)
+
+
+func test_entry_protection_freezes_while_paused_and_is_not_extended_by_blocked_hits() -> void:
+	var player = _spawn_player()
+	assert_true(player.has_method("grant_entry_protection"))
+	if not player.has_method("grant_entry_protection"):
+		return
+	player.grant_entry_protection()
+	assert_eq(player.take_damage(20), 0)
+	get_tree().paused = true
+	player.advance_damage_protection(10.0)
+	get_tree().paused = false
+	player.advance_damage_protection(0.99)
+	assert_eq(player.take_damage(20), 0)
+	player.advance_damage_protection(0.011)
+	assert_eq(player.take_damage(20), 20)
 
 
 func test_run_modifiers_recompute_max_health_and_move_speed_from_base_stats() -> void:
