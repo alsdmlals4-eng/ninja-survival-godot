@@ -1,5 +1,13 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — chain execution, 2026-09-13
+
+Selected effects now15/24;9remain. Chain execution selects mark→lowHP ratio→
+distance→stableID, ordinary HP<=15% execution, heavy17.5 rounded damage,
+max2followups within140 only after confirmed kill. Class and role protect bosses.
+Final full97scripts/747tests/9763assertions PASS. Execution-specific GPU smoke
+not run; normal-speed full new-mode run and final visuals still not proven.
+
 ## Latest correction — selected combined caps, 2026-09-13
 
 Selected Loadout rules now cap combined movement at1.6x and add equipment/

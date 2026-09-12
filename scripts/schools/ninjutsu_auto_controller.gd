@@ -193,7 +193,7 @@ func _tick_selected_books(delta: float) -> void:
 	_advance_selected_casts(delta)
 	for raw_id in _loadout.call("active_spell_ids"):
 		var id := StringName(raw_id)
-		if not [&"guiin_ghost_blood_wave", &"guiin_afterimage_charge", &"guiin_asura_ring", &"guiin_rakshasa_kicks", &"cheonsul_wind_pillar", &"heukyeong_shadow_needle", &"heukyeong_pursuit_dart"].has(id):
+		if not [&"guiin_ghost_blood_wave", &"guiin_afterimage_charge", &"guiin_asura_ring", &"guiin_rakshasa_kicks", &"cheonsul_wind_pillar", &"heukyeong_shadow_needle", &"heukyeong_pursuit_dart", &"heukyeong_chain_execution"].has(id):
 			continue
 		var definition = NINJUTSU_CATALOG_SCRIPT.definition_for_id(id)
 		var config: Dictionary = definition.effect_config
@@ -204,6 +204,8 @@ func _tick_selected_books(delta: float) -> void:
 			continue
 		var origin := _player.global_position
 		var target := _selected_target(origin, float(config.target_range), config.kind in ["needle", "dart"])
+		if config.kind == "execution":
+			target = _execution_target(origin, float(config.target_range), {})
 		if target == null:
 			_remaining_by_spell[id] = 0.12
 			continue
@@ -213,6 +215,7 @@ func _tick_selected_books(delta: float) -> void:
 		if direction.is_zero_approx():
 			direction = Vector2.RIGHT
 		var cast: Dictionary = {"id": id, "config": config, "origin": origin, "direction": direction, "elapsed": 0.0, "next_tick": 1, "hit_ids": {}}
+		cast.target = target
 		_selected_casts.append(cast)
 		_hit_selected_cast(cast)
 		if not _selected_casts.has(cast):
@@ -333,6 +336,9 @@ func _advance_selected_casts(delta: float) -> void:
 
 func _hit_selected_cast(cast: Dictionary) -> void:
 	var config: Dictionary = cast.config
+	if config.kind == "execution":
+		_hit_execution(cast)
+		return
 	if config.kind in ["needle", "dart"]:
 		_hit_single_selected_projectile(cast)
 		return
@@ -413,6 +419,55 @@ func _hit_single_selected_projectile(cast: Dictionary) -> void:
 		_combat_resolver.deal_school_damage(first, float(config.damage), &"direct_injutsu")
 	else:
 		first.call("take_damage", int(config.damage))
+
+
+func _execution_target(origin: Vector2, radius: float, visited: Dictionary) -> EnemyChaser:
+	var candidates: Array[EnemyChaser] = []
+	for enemy in _valid_enemies():
+		if enemy is EnemyChaser and _world.is_ancestor_of(enemy) and not visited.has(enemy.get_instance_id()) and origin.distance_squared_to(enemy.global_position) <= radius * radius:
+			candidates.append(enemy)
+	candidates.sort_custom(func(a: EnemyChaser, b: EnemyChaser) -> bool:
+		if has_selected_mark(a) != has_selected_mark(b):
+			return has_selected_mark(a)
+		var a_hp := float(a.health) / maxi(a.max_health, 1)
+		var b_hp := float(b.health) / maxi(b.max_health, 1)
+		if a_hp != b_hp:
+			return a_hp < b_hp
+		var a_distance := origin.distance_squared_to(a.global_position)
+		var b_distance := origin.distance_squared_to(b.global_position)
+		return a_distance < b_distance if a_distance != b_distance else a.get_instance_id() < b.get_instance_id()
+	)
+	return candidates[0] if not candidates.is_empty() else null
+
+
+func _hit_execution(cast: Dictionary) -> void:
+	var config: Dictionary = cast.config
+	var target: EnemyChaser = cast.target
+	for index in range(int(config.max_followups) + 1):
+		if not _selected_casts.has(cast) or not is_instance_valid(target) or target.is_queued_for_deletion() or target.is_dead():
+			return
+		if not is_instance_valid(_player) or (_player.has_method("is_dead") and _player.call("is_dead")) or get_tree().paused:
+			return
+		if _combat_resolver != null and _combat_resolver.sword_only_mode:
+			return
+		var center := target.global_position
+		cast.hit_ids[target.get_instance_id()] = true
+		var role: StringName = target.get_meta(&"school_circuit_role", &"")
+		if target is SchoolEncounterActor and target.definition != null:
+			role = target.definition.role
+		var heavy := target is StageBoss or role in [&"elite", &"boss", &"final_boss"] or target.is_in_group("boss")
+		var amount := float(config.damage)
+		if heavy:
+			amount *= float(config.elite_boss_multiplier)
+		elif float(target.health) / maxi(target.max_health, 1) <= float(config.execute_hp_ratio):
+			amount = maxf(amount, float(target.health))
+		if _combat_resolver != null:
+			_combat_resolver.deal_school_damage(target, amount, &"direct_injutsu")
+		else:
+			target.take_damage(roundi(amount))
+		if not is_instance_valid(target) or not target.is_dead():
+			return
+		target = _execution_target(center, float(config.link_range), cast.hit_ids)
 
 
 func _cast_definition(definition) -> bool:

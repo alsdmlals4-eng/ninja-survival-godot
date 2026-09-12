@@ -289,6 +289,62 @@ func test_selected_caps_apply_without_books_and_do_not_change_legacy_contract() 
 	assert_eq(f.player.take_damage(20), 2, "Legacy saves keep their old calculation until explicit migration.")
 
 
+func test_execution_kills_low_health_normal_but_never_executes_elite() -> void:
+	var f := _fixture([&"heukyeong_chain_execution"], &"heukyeong")
+	f.enemy.health = 100
+	f.controller.tick_auto_cast(4.0)
+	assert_true(f.enemy.is_dead(), "A normal enemy at10% HP is eligible for execution.")
+	var elite = load("res://scripts/enemies/enemy_chaser.gd").new()
+	elite.max_health = 1000
+	f.world.add_child(elite)
+	elite.set_physics_process(false)
+	elite.health = 100
+	elite.position = Vector2(60, 0)
+	elite.set_meta(&"school_circuit_role", &"elite")
+	f.controller.tick_auto_cast(4.0)
+	assert_eq(elite.health, 82, "Elite receives rounded17.5 damage instead of execution.")
+	elite.set_meta(&"school_circuit_role", &"final_boss")
+	f.controller.tick_auto_cast(4.0)
+	assert_eq(elite.health, 64, "Final boss also cannot be executed.")
+
+
+func test_execution_follows_only_kills_and_at_most_two_links() -> void:
+	var f := _fixture([&"heukyeong_chain_execution"], &"heukyeong")
+	f.enemy.health = 10
+	var targets: Array = [f.enemy]
+	for index in range(3):
+		var enemy = load("res://scripts/enemies/enemy_chaser.gd").new()
+		enemy.max_health = 1000
+		f.world.add_child(enemy)
+		enemy.health = 10
+		enemy.position = Vector2(160 + index * 100, 0)
+		enemy.set_physics_process(false)
+		targets.append(enemy)
+	f.controller.tick_auto_cast(4.0)
+	assert_true(targets[0].is_dead())
+	assert_true(targets[1].is_dead())
+	assert_true(targets[2].is_dead())
+	assert_false(targets[3].is_dead(), "Maximum is first target plus two followups.")
+
+
+func test_execution_stops_on_survival_and_protects_standalone_stage_boss() -> void:
+	var f := _fixture([&"heukyeong_chain_execution"], &"heukyeong")
+	f.enemy.health = 200
+	var boss = load("res://scripts/enemies/stage_boss.gd").new()
+	boss.max_health = 1000
+	f.world.add_child(boss)
+	boss.health = 100
+	boss.position = Vector2(1000, 0)
+	boss.set_physics_process(false)
+	f.controller.tick_auto_cast(4.0)
+	assert_eq(f.enemy.health, 186)
+	assert_eq(boss.health, 100)
+	f.enemy.position = Vector2(1000, 1000)
+	boss.position = Vector2(60, 0)
+	f.controller.tick_auto_cast(4.0)
+	assert_eq(boss.health, 82, "Boss class is protected even without Main role metadata.")
+
+
 func test_all_school_runtimes_keep_charge_but_do_not_supply_unowned_attacks() -> void:
 	for school in [&"bongma", &"cheonsul", &"heukyeong"]:
 		var f := _fixture([], school)

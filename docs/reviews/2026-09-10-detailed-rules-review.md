@@ -649,6 +649,12 @@ was removed. User experience, final art, runtime, performance, platform and
 balance of the new design: NOT_RUN. Combined PR #147 remains Draft/unmerged.
 # 2026-09-13 풍주 연속 구현 검증
 
+사슬 처형 후속: 일반 저HP 대상이 죽지 않는 RED 후 시전기/기존 피해 owner에 연결했다.
+4초/14피해/일반15% 이하 처형/엘리트·보스17.5/처치한 경우에만140 이내2후속을 검사했다.
+단독 StageBoss에 role metadata가 없을 때 즉사하는 RED를 추가 발견해 실제 클래스도 보호했다.
+전체97scripts/747tests/9763assertions PASS (`%TEMP%/ninja-selected-fifteen-final-gut-20260913.log`).
+범용 저장/오의 시스템은 추가하지 않았다. 최종 VFX 및 처형 전용 GPU 실행은 NOT_RUN.
+
 최신 상한 교정: 장비50%+인법10% 피해감소가9피해(요청20), 장비90%+인법10%가2피해,
 이동50%+귀일보15%가396속도로 재현되어 합산60%/1.6배 규칙과 불일치했다.
 선택형 계약에서는 각각8피해/8피해/384속도로 교정했고 기존 계약의2피해/480속도는 보존했다.
