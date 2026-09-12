@@ -1286,6 +1286,8 @@ func _start_final_calamity() -> void:
 		return
 	_final_battle_started = true
 	_sync_run_modifiers()
+	if ninjutsu_auto_controller != null:
+		ninjutsu_auto_controller.call("configure", player, self, combat_resolver, ninjutsu_loadout)
 	add_child(boss)
 	current_stage_boss = boss
 	boss.global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance

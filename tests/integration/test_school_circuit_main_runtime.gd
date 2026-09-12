@@ -372,7 +372,9 @@ func test_four_battlefields_prepare_final_binding_without_a_fifth_route() -> voi
 	assert_true(circuit.workbench_snapshot()["readiness_failures"].is_empty(), "Final preparation must not require an impossible fifth-school route.")
 	main._render_school_circuit_workbench()
 	assert_false(main.get_node("RestFlowUI").workbench_commit_button.disabled)
+	main.ninjutsu_auto_controller._remaining_by_spell[&"cheonsul_wind_pillar"] = 0.01
 	main.get_node("RestFlowUI").workbench_commit_requested.emit()
+	assert_false(main.ninjutsu_auto_controller._remaining_by_spell.has(&"cheonsul_wind_pillar"), "Successful final battlefield entry resets all per-book clocks.")
 	assert_false(circuit.commit_workbench(), "Final build may commit only once.")
 	assert_eq(circuit.route_state.stage_index(), 4)
 	assert_eq(circuit.route_state.active_school_id(), &"")

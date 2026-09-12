@@ -649,6 +649,13 @@ was removed. User experience, final art, runtime, performance, platform and
 balance of the new design: NOT_RUN. Combined PR #147 remains Draft/unmerged.
 # 2026-09-13 풍주 연속 구현 검증
 
+후속: 최종보스 전장 주기 초기화 누락을 실제 4전장→최종 Main 테스트에서 재현 후 수정.
+최종 준비 commit 성공 이후에만 기존 configure를 호출하며 원자적 확정 경계는 그대로다.
+전체734tests/9693assertions PASS (`%TEMP%/ninja-final-clock-gut-20260913.log`).
+테스트 수정 시 반복 문맥이 다른 전장 테스트에 먼저 매칭된 것을 readback으로 발견했다.
+그 PASS는 최종보스 증거로 쓰지 않았고 고유 문맥으로 위치를 고친 뒤 실제 RED→GREEN을 확인했다.
+학습: 반복 UI 호출 구문을 패치할 때 테스트명/고유 assert를 함께 사용하고 삽입 위치를 즉시 확인한다.
+
 기존 BasicProjectile은 장비 피해 및 첫 명중 소멸 owner여서 신규 풍주에 그대로 쓰지 않았다.
 기존 선택형 시전 레코드에 시간별 이동 구간/폭 판정과 대상별 중복 방지를 연결했다.
 RED: 120/360거리 대상이 계속50HP였다. GREEN: 시간 도달 후36HP, 폭 밖/360초과는50HP 유지.

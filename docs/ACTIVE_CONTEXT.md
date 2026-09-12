@@ -2,6 +2,10 @@
 
 ## Latest increment — wind projectile, 2026-09-13
 
+Follow-up: final calamity entry now resets per-book clocks only after successful
+final Workbench commit. Actual four-school→final Main test reproduced the old
+0.01s clock leak and now passes. Full734tests/9693assertions PASS.
+
 Selected book consumers now cover11/24;13remain. Wind uses swept movement with
 per-target dedupe, full lifetime clamp and direct_injutsu damage. Final local
 GUT97scripts/734tests/9692assertions PASS; GPU real-process wind smoke PASS.
