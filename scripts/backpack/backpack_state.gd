@@ -4,6 +4,7 @@ class_name BackpackState
 const MVP4CatalogScript = preload("res://scripts/data/mvp4_catalog.gd")
 const ItemInstanceScript = preload("res://scripts/data/item_instance.gd")
 const BagInstanceScript = preload("res://scripts/data/bag_instance.gd")
+const BOOK_CATALOG = preload("res://scripts/data/ninjutsu_book_catalog.gd")
 
 const BOARD_SIZE := Vector2i(6, 6)
 const STARTING_BAG_ORIGIN := Vector2i(1, 1)
@@ -11,6 +12,7 @@ const STARTING_BAG_ORIGIN := Vector2i(1, 1)
 var _bags: Dictionary = {}
 var _items: Dictionary = {}
 var next_instance_id: int = 1
+var _selectable_books: bool = false
 
 var bags: Dictionary:
 	get:
@@ -27,6 +29,21 @@ func create_starting_state():
 	if starting_id == 0:
 		return null
 	return state
+
+
+func create_selectable_starting_state():
+	var state = create_starting_state()
+	if state != null:
+		state._selectable_books = true
+	return state
+
+
+func uses_selectable_books() -> bool:
+	return _selectable_books
+
+
+func _item_definitions() -> Dictionary:
+	return BOOK_CATALOG.build_items() if _selectable_books else MVP4CatalogScript.build_items()
 
 
 func add_item(definition_id: StringName, origin: Vector2i, rotation_quarters: int = 0) -> int:
@@ -180,6 +197,7 @@ func get_active_cells() -> Dictionary:
 
 func copy_value():
 	var copied = get_script().new()
+	copied._selectable_books = _selectable_books
 	copied.next_instance_id = next_instance_id
 	for raw_id in _items.keys():
 		var instance_id := int(raw_id)
@@ -202,11 +220,14 @@ func to_persistent_snapshot() -> Dictionary:
 	item_ids.sort()
 	for raw_id in item_ids:
 		item_snapshots.append(_instance_to_persistent_snapshot(_items[int(raw_id)]))
-	return {
+	var snapshot := {
 		"next_instance_id": next_instance_id,
 		"bags": bag_snapshots,
 		"items": item_snapshots,
 	}
+	if _selectable_books:
+		snapshot["catalog_contract"] = BOOK_CATALOG.CONTRACT
+	return snapshot
 
 
 static func from_persistent_snapshot(snapshot: Dictionary):
@@ -217,6 +238,10 @@ static func from_persistent_snapshot(snapshot: Dictionary):
 		return null
 
 	var restored := BackpackState.new()
+	if snapshot.has("catalog_contract"):
+		if snapshot["catalog_contract"] != BOOK_CATALOG.CONTRACT:
+			return null
+		restored._selectable_books = true
 	var starting_bag_count := 0
 	for raw_record in raw_bags:
 		if typeof(raw_record) != TYPE_DICTIONARY:
@@ -320,7 +345,7 @@ static func _is_whole_number(value) -> bool:
 
 
 func _can_place_item(definition_id: StringName, origin: Vector2i, rotation_quarters: int, ignored_instance_id: int) -> bool:
-	var definitions: Dictionary = MVP4CatalogScript.build_items()
+	var definitions: Dictionary = _item_definitions()
 	var definition = definitions.get(definition_id)
 	if definition == null:
 		return false
@@ -358,7 +383,7 @@ func _can_place_bag(definition_id: StringName, origin: Vector2i, rotation_quarte
 
 func _occupied_item_cells(ignored_instance_id: int = -1) -> Dictionary:
 	var occupied := {}
-	var definitions: Dictionary = MVP4CatalogScript.build_items()
+	var definitions: Dictionary = _item_definitions()
 	for raw_id in _items.keys():
 		var instance_id := int(raw_id)
 		if instance_id == ignored_instance_id:
@@ -412,7 +437,7 @@ func _active_cells_with_replacement(replaced_instance_id: int, replacement) -> D
 
 
 func _items_fit_active_cells(active_cells: Dictionary) -> bool:
-	var definitions: Dictionary = MVP4CatalogScript.build_items()
+	var definitions: Dictionary = _item_definitions()
 	for instance in _items.values():
 		var definition = definitions.get(instance.definition_id)
 		if definition == null:

@@ -28,6 +28,8 @@ func encode_checkpoint(checkpoint: Dictionary) -> Dictionary:
 	var backpack_state = circuit.get("committed_backpack_state", null)
 	if modifiers == null or not modifiers.has_method("to_persistent_snapshot") or backpack_state == null or not backpack_state.has_method("to_persistent_snapshot"):
 		return {}
+	if backpack_state.to_persistent_snapshot().has("catalog_contract"):
+		return {} # Even an empty new board cannot be interpreted by schema1.
 
 	var persistent_build: Dictionary = build.duplicate(true)
 	persistent_build["committed_backpack_modifiers"] = modifiers.to_persistent_snapshot()
@@ -151,6 +153,8 @@ func _decode_ledger(raw_eligible_school_boss_ids) -> Dictionary:
 func _decode_circuit(raw_circuit: Dictionary, restored_route: Dictionary) -> Dictionary:
 	var active_school_id := StringName(raw_circuit.get("active_school_id", ""))
 	var backpack_snapshot = raw_circuit.get("backpack", null)
+	if backpack_snapshot is Dictionary and backpack_snapshot.has("catalog_contract"):
+		return {}
 	if active_school_id == &"" or active_school_id != StringName(restored_route.get("active_school_id", &"")) or not (backpack_snapshot is Dictionary):
 		return {}
 	var backpack_state = BACKPACK_STATE_SCRIPT.from_persistent_snapshot(backpack_snapshot)

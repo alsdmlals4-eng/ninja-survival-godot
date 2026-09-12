@@ -1,5 +1,15 @@
 # CURRENT_CONFIRMED_DECISIONS
 
+## Latest 2026-09-13 — plan before implementation
+
+User requests a concrete implementation/modification plan before each work
+package, then approves the recommended sequence and first start-loadout slice.
+Present scope, reasons, affected owners and acceptance checks before edits;
+continue previously approved technical work without repeated routine approval.
+Start selection, book geometry and external gear preparation are first;
+default Main cutover follows actual effects and safe profile2 integration.
+This is not a final art approval, destructive save migration or main bypass.
+
 ## Latest 2026-09-12 — continuous whole-game implementation
 
 User explicitly requests Base fresh-read and continued implementation/improvement

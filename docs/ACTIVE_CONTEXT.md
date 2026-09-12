@@ -1,5 +1,38 @@
 # ACTIVE_CONTEXT
 
+## Latest — plan-first start-loadout preparation, 2026-09-13
+
+User approved the proposed plan-first continuation. Implemented an isolated
+start preparation session/UI: two seeded three-choice rounds, two real1×2
+starting books on the existing3×3 board, move/rotate, restart without reroll,
+three external equipment slots, explicit single confirmation and defensive
+snapshots. Book item records project the existing24 Ninjutsu definitions;
+free/paid acquisition variants do not add new skills or enter legacy rewards.
+BackpackState keeps an explicit selectable-books-v2 mode through copy/JSON;
+schema1 refuses this mode even for an empty board. Existing geometry/copy/
+resolver and old-save defaults remain intact. This slice supports books only;
+new support/combination economy is not yet mapped into its catalog.
+
+Correction: `MVP4Catalog.build_bags()` already has3×3 starting area. Earlier
+status text saying the geometry itself was not implemented was stale; the
+new start-book/selection integration was missing. Treat old entries below as
+increment history, not current geometry authority.
+
+Fresh local full GUT:96scripts/707tests/9548assertions PASS, including new
+60-pair real geometry/confirmation coverage. Actual GPU pointer draft/move/
+confirm PASS; keyboard selection/confirm integration PASS. Capture:
+`reviews/start-loadout-preparation-20260913.png`. Native functional layout,
+not final art, human approval or device QA. Hera reported no live editor;
+render used the verified Godot4.7.1 CLI, no editor-attachment claim.
+Default wallet/resume hashes remain equal to the prior isolation baseline.
+
+Main is intentionally unchanged until24-effect consumers and profile2 are ready.
+No default-new-game cutover, new-save transaction, combat-pair validation,
+whole-game completion or merge. Next: effect consumers + committed equipment/
+Workbench/profile2, then attach this prepared snapshot to real Main atomically.
+Current branch/remote and CI evidence are recorded after exact-head verification;
+PR147 remains the current continuation and other PRs stay read-only.
+
 ## Latest — whole-run continuation, 2026-09-12
 
 Delivery readback: code/data headca44becd1366c97a771b2275e44fdc74adb57051 equals

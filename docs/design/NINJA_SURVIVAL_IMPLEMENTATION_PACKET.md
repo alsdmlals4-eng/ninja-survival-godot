@@ -4,6 +4,30 @@
 
 ## 준비 범위와 실행 경계
 
+### 2026-09-13 승인된 시작 빌드 연결 계획
+
+Goal: 실제 3×3 공간과 시작 인법 두 권, 외부 장비 세 슬롯을 하나의 검증된 시작 입력으로 만든다.
+Architecture: 기존 BackpackState/Resolver와 NinjutsuLoadoutState를 재사용한다.
+새 시작 세션은 선택과 배치를 임시로 보유하고, 확정 시에만 읽기 전용 스냅샷을 제공한다.
+Tech stack: Godot 4.7.1 / GDScript / GUT. Spec: 상세 규칙 R-LOADOUT/R-EQUIPMENT/R-NINJUTSU.
+새 저장 profile2 및 실제 인법 효과가 준비되기 전에는 기본 Main 시작 경로를 교체하지 않는다.
+
+- [ ] Book geometry: `scripts/data/ninjutsu_book_catalog.gd`에서 24개 인법에 무료 시작/유상 책 ID를 매핑한다. 둘 다 1×2이며 판매가는 각각 0/20G. 기존 경제 목록을 변경하지 않는다.
+- [ ] `BackpackState`에 명시적 선택형 카탈로그 모드를 추가한다. 복사/JSON 왕복 시 모드를 유지하며 schema1 codec은 새 모드를 거부한다. 기존 모드의 지오메트리/저장은 유지한다.
+- [ ] `scripts/core/start_loadout_session.gd`에서 시작3택1×2, 취소/재선택, 배치 이동/회전, 실제 배치에서 추출한 ID로만 최종 확정을 연결한다. 장비는 EquipmentLoadoutState의 별도 스냅샷이다.
+- [ ] GUT에서 중복/가방 밖/충돌/미선택/복사 오염/확정 후 편집/JSON 모드 손실을 실패시킨 후 최소 구현한다. 전체60쌍의 실제 네 칸 배치와 단일 확정을 확인한다.
+- [ ] 독립 시작 준비 UI 소비처에서 선택/배치/장비 표시를 검사한다. Main 전투·새 저장 연결과 혼동하지 않도록 준비 검증 화면임을 표시한다.
+- [ ] 전체 회귀, 실제 화면 검증, 5회 범위 검토 후 증거를 기존 review/Active Context에 기록하고 task branch를 동기화한다.
+
+Research: ADAPT Godot JSON primitive encoding and explicit value copies
+(https://docs.godotengine.org/en/latest/tutorials/io/saving_games.html,
+https://docs.godotengine.org/en/stable/classes/class_dictionary.html).
+REJECT adding books to the legacy shop pool globally; REJECT a second geometry engine.
+ADOPT an explicit catalog mode in the existing spatial owner, preventing silent old-save interpretation.
+Feasibility: existing geometry/resolver/draft/gear owners suffice; no new autoload, paid service or art dependency.
+Rollback: legacy defaults unchanged; reject new mode at schema1 boundary, preserve user files.
+Correction: current `MVP4Catalog.build_bags()` already defines 3×3. Previous status claiming geometry itself was absent was stale; new draft/book integration is the missing work.
+
 2026-09-12 최신 지시: 남은 구현을 통합 검증까지 진행한다. 아래의 과거 문서 작업
 한정/구현 착수 대기 문장은 이번 진행 승인을 막지 않는다. 다만 새 이미지 최종 승인,
 실제 사용자 플레이 평가, 파괴적 저장 이관과 보호된 main 경계는 유지한다.

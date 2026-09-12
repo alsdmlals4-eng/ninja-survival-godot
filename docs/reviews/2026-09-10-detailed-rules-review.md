@@ -1,5 +1,42 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-13 start-loadout preparation slice
+
+Plan-first execution is recorded in the existing Implementation Packet rather
+than a second roadmap. ADAPT existing BackpackState/Resolver and Loadout;
+the new book catalog is a projection of NinjutsuCatalog, not another effect
+authority. It represents24skills with free/paid acquisition variants.
+REJECT adding these to the old reward pool; REJECT rewriting spatial legality.
+Explicit mode makes old saves reject new meanings without touching user data.
+Official sources: https://docs.godotengine.org/en/latest/tutorials/io/saving_games.html
+and https://docs.godotengine.org/en/stable/classes/class_dictionary.html.
+JSON-safe primitive snapshots and explicit object copies are adopted, not generic
+Resource sharing. No new paid tool/autoload/art production dependency.
+
+Red evidence: first three preparation tests failed for missing implementation;
+schema1 test reproduced acceptance of an empty selectable board in both encode
+and decode; real UI consumer test failed before its scene existed. All corrected.
+Final full suite:96scripts/707tests/9548assertions PASS; no SCRIPT ERROR/ERROR.
+The sixty start pairs now exercise actual four-cell placement plus confirmation,
+not combat behavior. Keyboard and real GPU pointer draft/move/confirm passed.
+Capture `start-loadout-preparation-20260913.png` inspected at1152×760, Korean
+text readable, two books occupy4/9cells. Native functional preview only.
+
+Five bounded whole-slice self-review passes (not whole-game independent review):
+1. Scope/ownership: preserve legacy Main/rewards; new mode only explicitly entered.
+2. Spatial transaction: collision/out-of-bounds/rotation rejection preserves board;
+   all60pairs four cells; equipment excluded; confirm uses placed IDs not UI labels.
+3. Lifetime/aliasing: restart preserves seed, preview contributes no active books,
+   confirmed edits/reconfirmation/cancel rejected; exposed copies cannot change owner.
+4. Persistence/rollback: unsupported/omitted catalog rejected; schema1 empty-board
+   bypass reproduced and fixed; legacy encode/decode and current wallet hashes preserved.
+5. Consumer/regression: actual pointer route and keyboard tested; full707 suite;
+   no actor/effect/save/Human/device claims from this standalone UI.
+
+Remaining: support/combination catalog mapping,24effect consumers, equipment/
+Workbench/profile2 binding, real Main transition, final UI assets and three-device
+input paths. Do not call this the complete approved start-to-battle package.
+
 ## 2026-09-12 selectable24 data and draft domain preparation
 
 ADAPT existing NinjutsuDefinition/Catalog/Loadout owners, retaining original12 IDs
