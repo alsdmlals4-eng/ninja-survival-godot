@@ -94,9 +94,10 @@ func test_breath_dash_cancels_remaining_damage_without_refund() -> void:
 	runtime.reaction_count = 3.0
 	assert_true(runtime.try_use_ultimate())
 	assert_true(runtime.player.request_dash())
+	assert_eq(runtime.reaction_count, 0.0, "Cancellation does not refund.")
 	runtime._process(1.5)
 	assert_eq(enemy.health, 92)
-	assert_eq(runtime.reaction_count, 0.0)
+	assert_eq(runtime.reaction_count, 0.1875, "Normal combat charge resumes after cancellation.")
 
 
 func test_breath_direct_request_cannot_bypass_pause() -> void:
@@ -215,6 +216,65 @@ func test_breath_pause_freezes_ticks_and_deactivate_cancels_without_refund() -> 
 	runtime._process(1.5)
 	assert_eq(enemy.health, 284)
 	assert_eq(runtime.reaction_count, 0.0)
+
+
+func test_basic_charge_without_reaction_reaches_ready_in_24_combat_seconds() -> void:
+	var runtime = _make_runtime()
+	runtime._cast_remaining = 999.0
+	runtime._process(24.0)
+	assert_eq(runtime.reaction_count, 0.0)
+	var enemy = _enemy(runtime.world, Vector2(481, 0), 1000)
+	runtime._process(8.0)
+	assert_eq(runtime.reaction_count, 0.0)
+	enemy.position.x = 480
+	runtime._process(8.0)
+	assert_eq(runtime.reaction_count, 1.0)
+	get_tree().paused = true
+	runtime._process(8.0)
+	get_tree().paused = false
+	assert_eq(runtime.reaction_count, 1.0)
+	runtime._process(16.0)
+	assert_eq(runtime.reaction_count, 3.0)
+	assert_true(runtime.is_ultimate_ready())
+
+
+func test_reaction_bonus_is_quarter_once_per_second_and_never_during_breath() -> void:
+	var runtime = _make_runtime()
+	runtime._cast_remaining = 999.0
+	var enemy = _enemy(runtime.world, Vector2(100, 0), 1000)
+	for index in range(2):
+		runtime.apply_token(enemy, &"wet")
+		assert_true(runtime.apply_token(enemy, &"shock"))
+	assert_eq(runtime.reaction_count, 0.25)
+	assert_false(runtime.apply_token(enemy, &"shock"), "Consumed wet cannot replay the same reaction.")
+	runtime._process(1.0)
+	runtime.apply_token(enemy, &"wet")
+	assert_true(runtime.apply_token(enemy, &"shock"))
+	assert_eq(runtime.reaction_count, 0.625)
+	runtime.reaction_count = 3.0
+	assert_true(runtime.try_use_ultimate())
+	runtime.apply_token(enemy, &"wet")
+	assert_true(runtime.apply_token(enemy, &"shock"))
+	runtime._process(1.5)
+	assert_eq(runtime.reaction_count, 0.0)
+
+
+func test_breath_cannot_revive_when_damage_callback_cancels_during_state_tick() -> void:
+	var runtime = _make_runtime()
+	runtime._cast_remaining = 999.0
+	var burning = _enemy(runtime.world, Vector2(100, 0), 1000)
+	var survivor = _enemy(runtime.world, Vector2(150, 0), 1000)
+	runtime._apply_burn(burning)
+	runtime.reaction_count = 3.0
+	assert_true(runtime.try_use_ultimate())
+	var survivor_before: int = survivor.health
+	burning.health = 1
+	runtime._states[burning.get_instance_id()]["burn_tick_remaining"] = 0.1
+	burning.died.connect(func(_enemy): runtime.cancel_ultimate())
+	runtime._process(0.25)
+	assert_eq(runtime._breath_remaining, 0.0)
+	assert_eq(survivor.health, survivor_before)
+	assert_false(runtime._breath_visual.visible)
 
 
 func _make_runtime():
@@ -347,7 +407,7 @@ func test_wet_then_shock_reacts_once_and_chain_is_non_recursive() -> void:
 	assert_eq(target.health, 90)
 	assert_eq(chain.health, 94)
 	assert_eq(far_enemy.health, 100)
-	assert_eq(runtime.reaction_count, 1.0)
+	assert_eq(runtime.reaction_count, 0.25)
 	assert_false(runtime.has_status(target, &"wet"))
 	assert_false(runtime.has_status(target, &"shock"))
 	assert_false(runtime.has_status(chain, &"wet"))
@@ -365,7 +425,7 @@ func test_shock_then_wet_waits_for_next_shock() -> void:
 	assert_true(runtime.has_status(enemy, &"shock"))
 	assert_true(runtime.has_status(enemy, &"wet"))
 	assert_true(runtime.apply_token(enemy, &"shock"))
-	assert_eq(runtime.reaction_count, 1.0)
+	assert_eq(runtime.reaction_count, 0.25)
 
 
 func test_fractional_reaction_readiness_uses_resource_and_ultimate_gain() -> void:
@@ -374,17 +434,20 @@ func test_fractional_reaction_readiness_uses_resource_and_ultimate_gain() -> voi
 		return
 	var modifiers = load(MODIFIER_PATH).new()
 	modifiers.ultimate_charge_gain_pct = 0.25
+	modifiers.school_resource_gain_pct = 0.20
 	_configure_run_systems(runtime, modifiers)
 	var enemy = _enemy(runtime.world, Vector2.ZERO, 300)
+	runtime._cast_remaining = 999.0
 	for _index in range(2):
 		runtime.apply_token(enemy, &"wet")
 		assert_true(runtime.apply_token(enemy, &"shock"))
-	assert_almost_eq(float(runtime.reaction_count), 2.5, 0.001)
+	assert_almost_eq(float(runtime.reaction_count), 0.375, 0.001)
 	assert_false(runtime.is_ultimate_ready())
+	runtime._process(1.0)
 	runtime.apply_token(enemy, &"wet")
 	assert_true(runtime.apply_token(enemy, &"shock"))
-	assert_almost_eq(float(runtime.reaction_count), 3.0, 0.001)
-	assert_true(runtime.is_ultimate_ready())
+	assert_almost_eq(float(runtime.reaction_count), 0.9375, 0.001)
+	assert_false(runtime.is_ultimate_ready())
 
 
 func test_reaction_charge_clamps_and_breath_preserves_status_for_bonus() -> void:
@@ -392,9 +455,10 @@ func test_reaction_charge_clamps_and_breath_preserves_status_for_bonus() -> void
 	if runtime == null:
 		return
 	var enemy = _enemy(runtime.world, Vector2.ZERO, 300)
-	for _index in range(4):
-		runtime.apply_token(enemy, &"wet")
-		runtime.apply_token(enemy, &"shock")
+	runtime._cast_remaining = 999.0
+	runtime.reaction_count = 2.9
+	runtime.apply_token(enemy, &"wet")
+	runtime.apply_token(enemy, &"shock")
 	assert_eq(runtime.reaction_count, 3.0)
 	assert_true(runtime.is_ultimate_ready())
 
@@ -507,7 +571,7 @@ func test_automatic_cast_waits_one_point_eight_seconds_and_alternates_tokens() -
 	assert_eq(enemy.health, 194)
 	assert_true(runtime.has_status(enemy, &"wet"))
 	runtime._process(1.80)
-	assert_eq(runtime.reaction_count, 1.0)
+	assert_almost_eq(runtime.reaction_count, 0.7, 0.00001)
 
 
 func test_automatic_shock_prioritizes_existing_wet_target() -> void:
@@ -522,6 +586,6 @@ func test_automatic_shock_prioritizes_existing_wet_target() -> void:
 
 	runtime._process(0.01)
 
-	assert_eq(runtime.reaction_count, 1.0, "SHOCK should chase a live WET target so reaction charge progresses reliably")
+	assert_almost_eq(runtime.reaction_count, 0.25125, 0.00001, "Basic charge plus one bounded reaction bonus.")
 	assert_lt(wet_enemy.health, 200)
 	assert_eq(fresh_near_enemy.health, 200, "The closer fresh enemy should not steal the SHOCK cast from an existing WET target")

@@ -24,6 +24,9 @@ func _run() -> void:
 		await _guiin_capture(main)
 		return
 	main.school_selection._choose(&"cheonsul")
+	if "--cheonsul" in OS.get_cmdline_user_args():
+		await _cheonsul_capture(main)
+		return
 	paused = true
 	var circuit = main.school_circuit
 	circuit._rng.seed = 178
@@ -94,6 +97,31 @@ func _run() -> void:
 	final_boss.take_damage(99999)
 	await _capture("full-route-complete-20260912")
 	print("FULL_ROUTE_RENDER_OK: accelerated four-school route, final actor, complete screen; isolated storage")
+	main.queue_free()
+	await process_frame
+	quit(0)
+
+
+func _cheonsul_capture(main: Node) -> void:
+	main.player.get_node("Camera2D").force_update_scroll()
+	var enemy = load("res://scenes/enemies/enemy_basic.tscn").instantiate()
+	enemy.max_health = 1000
+	main.add_child(enemy)
+	enemy.global_position = main.player.global_position + Vector2(150, 0)
+	var runtime = main.school_host.active_runtime
+	runtime._cast_remaining = 999.0
+	runtime.reaction_count = 3.0
+	main.hud.ultimate_button.pressed.emit()
+	if runtime._breath_remaining <= 0.0 or enemy.health != 992:
+		_fail("cheonsul breath activation")
+		return
+	runtime._process(0.25)
+	await _capture("cheonsul-breath-lifecycle-20260912")
+	main._set_combat_enabled(false)
+	if runtime._breath_remaining != 0.0 or runtime._breath_visual.visible:
+		_fail("cheonsul preparation cleanup")
+		return
+	print("CHEONSUL_RENDER_OK: actual Main button, forward breath, preparation cleanup; isolated storage")
 	main.queue_free()
 	await process_frame
 	quit(0)

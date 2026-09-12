@@ -225,6 +225,27 @@ func test_feedback_returns_to_latest_readiness_after_expiry() -> void:
 	assert_string_contains(main.hud.ultimate_button.text, "충전 중")
 
 
+func test_cheonsul_preparation_cancels_breath_without_resuming_pending_hits() -> void:
+	var main = _main(&"cheonsul")
+	var enemy = load("res://scripts/enemies/enemy_chaser.gd").new()
+	enemy.max_health = 1000
+	main.add_child(enemy)
+	enemy.global_position = main.player.global_position + Vector2(40, 0)
+	var runtime = main.school_host.active_runtime
+	runtime._cast_remaining = 999.0
+	runtime.reaction_count = 3.0
+	main.hud.ultimate_button.pressed.emit()
+	assert_eq(enemy.health, 992)
+	main._set_combat_enabled(false)
+	assert_eq(runtime._breath_remaining, 0.0)
+	assert_false(runtime._breath_visual.visible)
+	assert_eq(runtime.reaction_count, 0.0)
+	main._set_combat_enabled(true)
+	runtime._process(0.5)
+	assert_eq(enemy.health, 992)
+	assert_eq(runtime.reaction_count, 0.0625)
+
+
 func test_bongma_button_spawns_two_dedicated_familiars_and_preparation_cancels_without_refund() -> void:
 	var main = _main(&"bongma")
 	var enemy = load("res://scripts/enemies/enemy_chaser.gd").new()

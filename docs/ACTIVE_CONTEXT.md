@@ -2,6 +2,16 @@
 
 ## Latest — whole-run continuation, 2026-09-12
 
+Newest Cheonsul increment:94scripts/686tests/7570assertions PASS including error
+scan. Nearby live same-world targets gate0.125/sec base charge; wet->shock adds
+0.25/max1persec, modifiers once, no paused/dead/active-breath charge. Preparation
+cancels breath. A reproduced callback bug revived canceled breath during burn
+processing; generation checks now prevent pending ticks from restarting it.
+Real GPU Main button/breath/preparation-cleanup verified and capture inspected:
+`reviews/cheonsul-breath-lifecycle-20260912.png`. Legacy automatic elemental casts
+still await24-book cutover. Exact4fbed23 remote GUT/Windows checks passed; current
+increment needs own CI. No full normal-speed/Human/device/whole-scope closure.
+
 Newest Bongma increment:94scripts/682tests/7538assertions PASS with parse/error
 scan. Living same-world target<=480 gates5/sec charge; owned nonultimate kills
 give2 at most once/sec with death-ID dedupe. Resolver scopes synchronous damage

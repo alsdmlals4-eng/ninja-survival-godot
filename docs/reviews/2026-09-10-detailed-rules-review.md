@@ -1,5 +1,31 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-12 Cheonsul charge and cancellation continuation
+
+BEFORE: reactions were the sole readiness path, each gave1 without an event
+cooldown; preparation disabled processing but retained pending breath. ADAPT
+approved R-ULTIMATE0.125/sec at living target<=480 plus0.25/reaction/max1persec;
+REJECT requiring a particular starting-book pair or charging in an empty field.
+Reuse current runtime-owned wet consumption as the non-replayable reaction
+transition; consume before notification, freeze cooldown during breath/pause.
+No added damage recursion, new status system or economy/save authority.
+
+RED:24seconds without reactions stayed0; two same-frame reactions gave2 instead
+of0.25. Corrected and updated legacy numeric expectations, retaining damage/
+status/chain assertions. Further re-attack reproduced cancellation inside burn
+death callback: remaining breath revived to1.25 and hit the next target. An
+activation-generation guard now aborts continuation after nested cancellation.
+ADAPT existing lifecycle plus local generation token; REJECT a separate scheduler
+or delayed cancellation. This follows the existing synchronous damage/queued-node
+source research above and is directly reproduced on Godot4.7.1.
+
+94scripts/686tests/7570assertions PASS with parse/error scan. Actual Main input,
+preparation/resume, no refund and no pending-hit revival tested. GPU OpenGL
+capture inspected, forward breath rendered and hides on preparation. Fixture
+1759769 uses isolated paths. Not a normal-speed balance/Human/device pass.
+Other books/legacy automatic casts, profile2 charge persistence and whole-scope
+five-loop closure remain open. No Base rule promotion or new image candidate.
+
 ## 2026-09-12 Bongma independent ultimate continuation
 
 BEFORE: empty-field passive charge, unowned kill+10 and conversion of normal
