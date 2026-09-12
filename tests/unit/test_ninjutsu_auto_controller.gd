@@ -114,6 +114,42 @@ func test_wind_moves_over_time_sweeps_long_frames_and_hits_each_target_once() ->
 	assert_eq(expired.health, 50)
 
 
+func test_needle_moves_hits_first_target_only_and_marks_without_hidden_burst() -> void:
+	var f := _selected_fixture(&"heukyeong_shadow_needle", &"heukyeong")
+	var near := _enemy_in(f.world, Vector2(100, 0))
+	var far := _enemy_in(f.world, Vector2(200, 0))
+	f.controller.tick_auto_cast(1.1)
+	assert_eq(near.health, 50)
+	f.controller.tick_auto_cast(0.75)
+	assert_eq(near.health, 44)
+	assert_eq(far.health, 50)
+	assert_true(f.controller.call("has_selected_mark", near))
+	f.controller.tick_auto_cast(0.35)
+	f.controller.tick_auto_cast(0.75)
+	assert_eq(near.health, 38, "Repeated needle is flat six damage, not a hidden critical or burst.")
+	f.loadout.commit_placed_ninjutsu([], [&"heukyeong"])
+	assert_false(f.controller.call("has_selected_mark", near))
+
+
+func test_dart_prioritizes_mark_but_keeps_launch_aim_and_cannot_exceed_lifetime() -> void:
+	var f := _selected_fixture(&"heukyeong_shadow_needle", &"heukyeong")
+	var marked := _enemy_in(f.world, Vector2(100, 0))
+	f.controller.tick_auto_cast(1.1)
+	f.controller.tick_auto_cast(0.2)
+	marked.position = Vector2(200, 0)
+	var near := _enemy_in(f.world, Vector2(0, 30))
+	f.loadout.commit_placed_ninjutsu([&"heukyeong_shadow_needle", &"heukyeong_pursuit_dart"], [&"heukyeong"])
+	f.controller.tick_auto_cast(2.2)
+	marked.position = Vector2(200, 100)
+	var along := _enemy_in(f.world, Vector2(150, 0))
+	var beyond := _enemy_in(f.world, Vector2(500, 0))
+	f.controller.tick_auto_cast(1.0)
+	assert_eq(near.health, 50, "The marked launch target takes priority over a nearer unmarked target.")
+	assert_eq(marked.health, 44, "Neither projectile follows the target after launch.")
+	assert_eq(along.health, 30, "One six-damage needle and one fourteen-damage dart hit the first crossing.")
+	assert_eq(beyond.health, 50)
+
+
 func test_wind_pause_and_unequip_cancel_future_motion() -> void:
 	var f := _selected_fixture(&"cheonsul_wind_pillar", &"cheonsul")
 	var enemy := _enemy_in(f.world, Vector2(120, 0))
@@ -127,6 +163,55 @@ func test_wind_pause_and_unequip_cancel_future_motion() -> void:
 	f.loadout.commit_placed_ninjutsu([], [&"cheonsul"])
 	f.controller.tick_auto_cast(0.5)
 	assert_eq(enemy.health, 50)
+
+
+func test_selected_mark_expires_during_sword_form_but_freezes_during_pause() -> void:
+	var f := _selected_fixture(&"heukyeong_shadow_needle", &"heukyeong")
+	var enemy := _enemy_in(f.world, Vector2(100, 0))
+	var resolver = load("res://scripts/combat/combat_resolver.gd").new()
+	f.world.add_child(resolver)
+	f.controller.configure(f.player, f.world, resolver, f.loadout)
+	f.controller.tick_auto_cast(1.1)
+	f.controller.tick_auto_cast(0.2)
+	assert_true(f.controller.has_selected_mark(enemy))
+	resolver.sword_only_mode = true
+	get_tree().paused = true
+	f.controller.tick_auto_cast(20.0)
+	get_tree().paused = false
+	assert_true(f.controller.has_selected_mark(enemy))
+	f.controller.tick_auto_cast(7.99)
+	assert_true(f.controller.has_selected_mark(enemy))
+	f.controller.tick_auto_cast(0.01)
+	assert_false(f.controller.has_selected_mark(enemy))
+
+
+func test_single_projectile_chooses_first_intersection_not_spawn_order_and_clamps_travel() -> void:
+	var f := _selected_fixture(&"heukyeong_pursuit_dart", &"heukyeong")
+	var far := _enemy_in(f.world, Vector2(200, 0))
+	var near := _enemy_in(f.world, Vector2(100, 0))
+	f.controller.tick_auto_cast(2.2)
+	f.controller.tick_auto_cast(1.0)
+	assert_eq(near.health, 36)
+	assert_eq(far.health, 50)
+	f.controller.configure(f.player, f.world, null, f.loadout)
+	f.controller.tick_auto_cast(2.2)
+	near.position = Vector2(100, 100)
+	far.position = Vector2(489, 0)
+	f.controller.tick_auto_cast(1.0)
+	assert_eq(far.health, 50, "Travel480 plus radius8 cannot hit a center at489.")
+
+
+func test_projectile_damage_callback_sword_form_blocks_other_pending_projectiles() -> void:
+	var f := _selected_fixture(&"heukyeong_shadow_needle", &"heukyeong")
+	f.loadout.commit_placed_ninjutsu([&"heukyeong_shadow_needle", &"heukyeong_pursuit_dart"], [&"heukyeong"])
+	var enemy := _enemy_in(f.world, Vector2(100, 0))
+	var resolver = load("res://scripts/combat/combat_resolver.gd").new()
+	f.world.add_child(resolver)
+	resolver.damage_finished.connect(func(_id, _damage): resolver.sword_only_mode = true)
+	f.controller.configure(f.player, f.world, resolver, f.loadout)
+	f.controller.tick_auto_cast(2.2)
+	f.controller.tick_auto_cast(0.5)
+	assert_eq(enemy.health, 44, "The first damage callback changed the combat mode; the second projectile cannot hit.")
 
 
 func test_wind_uses_injutsu_damage_and_cannot_reenter_or_hit_foreign_world() -> void:

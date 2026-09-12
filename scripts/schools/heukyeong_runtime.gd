@@ -23,6 +23,11 @@ var execution_charge := 0.0
 var _executing := false
 var _hit_bonus_remaining := 0.0
 var _pending_direct_hits: Dictionary = {}
+var _selected_status_provider: Node
+
+
+func configure_selected_status_provider(provider: Node) -> void:
+	_selected_status_provider = provider
 
 
 func configure_run_systems(resolver: CombatResolver, tracker: CombatContributionTracker) -> void:
@@ -169,6 +174,10 @@ func get_critical_chance(enemy: Node) -> float:
 
 
 func get_mark_count(enemy: Node) -> int:
+	if uses_selected_ninjutsu():
+		if is_instance_valid(_selected_status_provider):
+			return 1 if _selected_status_provider.call("has_selected_mark", enemy) else 0
+		return 0
 	_prune_invalid_marks()
 	if not is_instance_valid(enemy) or enemy.is_queued_for_deletion():
 		return 0

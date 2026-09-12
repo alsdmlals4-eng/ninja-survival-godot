@@ -1,5 +1,16 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — selected needle/dart and mark, 2026-09-13
+
+Selected effect consumers now cover13/24;11remain. Needle/dart use first swept
+circle intersection, fixed launch aim, lifetimes and direct_injutsu damage.
+Needle grants8s priority-only mark, no legacy crit/burst; unequip/stage/death
+clears it. Marks expire during sword form and freeze only during pause.
+GPU real-process needle and dart smoke both PASS; final full count below is
+740tests/9722assertions PASS. Heukyeong origin queries selected mark without
+copying it, enabling existing direct-hit charge bonus and ultimate bonus.
+No new art/cutover/release claim.
+
 ## Latest increment — wind projectile, 2026-09-13
 
 Follow-up: final calamity entry now resets per-book clocks only after successful

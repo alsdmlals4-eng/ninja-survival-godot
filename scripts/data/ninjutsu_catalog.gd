@@ -138,7 +138,8 @@ static func _effect(definitions: Dictionary, id: StringName, kind: String, coold
 
 
 static func _configure_effects(definitions: Dictionary) -> void:
-	# R-NINJUTSU data only. Legacy auto controller is not yet this effect consumer.
+	# R-NINJUTSU definitions. Selected consumers are connected incrementally;
+	# a definition alone does not prove its runtime effect is implemented.
 	_effect(definitions, &"bongma_hundred_demon_familiar", "familiar", 0.7, 8, 0, {"follow_range": 180.0})
 	_effect(definitions, &"bongma_seal_chain", "chain", 4, 12, 0, {"followup_damage": 8.0, "link_range": 140.0, "max_targets": 3, "bind_duration": 0.6})
 	_effect(definitions, &"bongma_guardian_ward", "ward", 8, 0, 2, {"target_range": 240.0, "radius": 120.0, "damage_reduction": 0.2}, [&"survival"])

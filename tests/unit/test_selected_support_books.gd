@@ -177,6 +177,30 @@ func test_barrier_is_fixed_at_dash_destination_and_expires() -> void:
 	assert_eq(f.player.take_damage(20), 20)
 
 
+func test_heukyeong_resource_reads_selected_mark_without_owning_or_bursting_it() -> void:
+	var f := _fixture([&"heukyeong_shadow_needle"], &"heukyeong")
+	var runtime = load("res://scripts/schools/heukyeong_runtime.gd").new()
+	f.world.add_child(runtime)
+	runtime.configure(f.player, f.world)
+	runtime.configure_ninjutsu_loadout(f.loadout)
+	if runtime.has_method("configure_selected_status_provider"):
+		runtime.configure_selected_status_provider(f.controller)
+	var resolver = load("res://scripts/combat/combat_resolver.gd").new()
+	f.world.add_child(resolver)
+	runtime.configure_run_systems(resolver, null)
+	runtime.activate()
+	runtime.set_process(false)
+	f.controller.configure(f.player, f.world, resolver, f.loadout)
+	f.controller.tick_auto_cast(1.1)
+	f.controller.tick_auto_cast(0.2)
+	assert_eq(runtime.get_mark_count(f.enemy), 1)
+	assert_almost_eq(runtime.execution_charge, 0.25, 0.00001)
+	assert_eq(f.enemy.health, 994)
+	f.loadout.commit_placed_ninjutsu([], [&"heukyeong"])
+	assert_eq(runtime.get_mark_count(f.enemy), 0)
+	assert_true(runtime._marks.is_empty(), "Origin runtime must not copy selected mark state.")
+
+
 func test_all_school_runtimes_keep_charge_but_do_not_supply_unowned_attacks() -> void:
 	for school in [&"bongma", &"cheonsul", &"heukyeong"]:
 		var f := _fixture([], school)

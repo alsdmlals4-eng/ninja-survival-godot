@@ -20,6 +20,8 @@ func _run() -> void:
 	var loadout = load("res://scripts/core/ninjutsu_loadout_state.gd").new()
 	world.add_child(loadout)
 	var school: StringName = &"cheonsul" if "--wind" in OS.get_cmdline_user_args() else &"guiin"
+	if "--needle" in OS.get_cmdline_user_args() or "--dart" in OS.get_cmdline_user_args():
+		school = &"heukyeong"
 	loadout.begin_start_draft(school, 12)
 	for index in range(2):
 		loadout.choose_start_draft(loadout.start_draft_snapshot().options[0])
@@ -29,6 +31,29 @@ func _run() -> void:
 	var controller = load("res://scripts/schools/ninjutsu_auto_controller.gd").new()
 	world.add_child(controller)
 	controller.configure(player, world, null, loadout)
+	if school == &"heukyeong":
+		var needle := "--needle" in OS.get_cmdline_user_args()
+		var id: StringName = &"heukyeong_shadow_needle" if needle else &"heukyeong_pursuit_dart"
+		if not loadout.commit_placed_ninjutsu([id], [school]):
+			push_error("PROJECTILE_RUNTIME_FAIL loadout")
+			quit(1)
+			return
+		enemy.position = Vector2(240, 0)
+		await create_timer(1.2 if needle else 2.3).timeout
+		if enemy.health != 1000:
+			push_error("PROJECTILE_RUNTIME_FAIL premature hit")
+			quit(1)
+			return
+		await create_timer(0.5).timeout
+		if enemy.health != (994 if needle else 986) or (needle and not controller.has_selected_mark(enemy)):
+			push_error("PROJECTILE_RUNTIME_FAIL damage or mark")
+			quit(1)
+			return
+		world.queue_free()
+		await process_frame
+		print("PROJECTILE_RUNTIME_PASS " + str(id) + " real process delayed hit; no save writes")
+		quit(0)
+		return
 	if "--wind" in OS.get_cmdline_user_args():
 		loadout.commit_placed_ninjutsu([&"cheonsul_wind_pillar"], [&"cheonsul"])
 		controller.configure(player, world, null, loadout)

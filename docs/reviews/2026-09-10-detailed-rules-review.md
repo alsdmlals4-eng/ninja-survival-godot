@@ -649,6 +649,18 @@ was removed. User experience, final art, runtime, performance, platform and
 balance of the new design: NOT_RUN. Combined PR #147 remains Draft/unmerged.
 # 2026-09-13 풍주 연속 구현 검증
 
+추가 암영침/추영표: 기존 흑영 runtime의 치명타/폭발과 분리된 선택형 표식/단일 투사체 연결.
+최종 연결 점검 RED: 흑영 자원/오의 소비처가 새 표식을 읽지 못해 count0/보너스0이었다.
+Main이 읽기 전용 표식 provider를 주입하여 기존 자원/오의 owner를 유지한 채 count1/보너스0.25로 교정했다.
+전체97scripts/740tests/9722assertions PASS (`%TEMP%/ninja-selected-thirteen-final-gut-20260913.log`).
+RED 명중하지 않아50HP 유지 → 첫 교차 대상에만6/14피해. 표식 우선, 발사 후 고정 조준,
+첫 교차 순서, 수명 범위 밖 불명중, 반복 침에 숨은 폭발 없음, 해제 정리를 검증했다.
+추가 RED: 귀인화 동안 표식이 만료되지 않았다. 표식 시계를 공격 허용 분기 밖으로 이동해 교정.
+피해 callback의 검 전용 전환은 CombatResolver의 기존 경계가 이미 방어하므로 중복 수정하지 않았다.
+실제 GPU process의 암영침/추영표 지연 명중 및 암영침 표식 확인 PASS.
+표식은 선택형 소비처 소유이며 시작 유파 오의/자원 owner를 바꾸지 않는다.
+광범위 상태 엔진은 아직 만들지 않았고 다음 젖음/화상/독/속박 연결 시 공통 수명 추출을 재검토한다.
+
 후속: 최종보스 전장 주기 초기화 누락을 실제 4전장→최종 Main 테스트에서 재현 후 수정.
 최종 준비 commit 성공 이후에만 기존 configure를 호출하며 원자적 확정 경계는 그대로다.
 전체734tests/9693assertions PASS (`%TEMP%/ninja-final-clock-gut-20260913.log`).

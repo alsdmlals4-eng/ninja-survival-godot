@@ -21,6 +21,7 @@ var _selected_casts: Array[Dictionary] = []
 var _ticking := false
 var _support_remaining: Dictionary = {}
 var _support_zones: Dictionary = {}
+var _selected_marks: Dictionary = {}
 const SUPPORT_BOOKS := [&"guiin_iron_blood_guard", &"guiin_demon_step", &"cheonsul_ice_veil", &"heukyeong_smoke_step", &"bongma_guardian_ward", &"bongma_barrier_step"]
 
 
@@ -144,6 +145,7 @@ func _tick_auto_cast(delta: float) -> void:
 	_advance_effects(delta)
 	if _loadout.has_method("get_snapshot") and _loadout.call("get_snapshot").get("selection_contract", "") == "selectable-v2":
 		_tick_support_books(delta)
+		_tick_selected_marks(delta)
 	if _combat_resolver != null and _combat_resolver.sword_only_mode:
 		_selected_casts.clear()
 		for entry in _active_effects:
@@ -172,11 +174,19 @@ func _tick_auto_cast(delta: float) -> void:
 
 # Opt-in consumer: unsupported books never fall through to legacy generic attacks.
 # Cooldowns are retained while unequipped; a fresh controller is a fresh Stage.
+func _tick_selected_marks(delta: float) -> void:
+	for key in _selected_marks.keys():
+		var mark: Dictionary = _selected_marks[key]
+		mark.remaining = float(mark.remaining) - delta
+		if float(mark.remaining) <= 0.000001 or not is_instance_valid(mark.target) or mark.target.is_queued_for_deletion():
+			_selected_marks.erase(key)
+
+
 func _tick_selected_books(delta: float) -> void:
 	_advance_selected_casts(delta)
 	for raw_id in _loadout.call("active_spell_ids"):
 		var id := StringName(raw_id)
-		if not [&"guiin_ghost_blood_wave", &"guiin_afterimage_charge", &"guiin_asura_ring", &"guiin_rakshasa_kicks", &"cheonsul_wind_pillar"].has(id):
+		if not [&"guiin_ghost_blood_wave", &"guiin_afterimage_charge", &"guiin_asura_ring", &"guiin_rakshasa_kicks", &"cheonsul_wind_pillar", &"heukyeong_shadow_needle", &"heukyeong_pursuit_dart"].has(id):
 			continue
 		var definition = NINJUTSU_CATALOG_SCRIPT.definition_for_id(id)
 		var config: Dictionary = definition.effect_config
@@ -186,7 +196,7 @@ func _tick_selected_books(delta: float) -> void:
 		if remaining > 0.000001:
 			continue
 		var origin := _player.global_position
-		var target := _selected_target(origin, float(config.target_range))
+		var target := _selected_target(origin, float(config.target_range), config.kind in ["needle", "dart"])
 		if target == null:
 			_remaining_by_spell[id] = 0.12
 			continue
@@ -202,22 +212,28 @@ func _tick_selected_books(delta: float) -> void:
 			return
 		if float(config.duration) <= 0.0:
 			_selected_casts.erase(cast)
-		if config.kind == "wind_projectile":
+		if config.kind in ["wind_projectile", "needle", "dart"]:
 			cast.visual = _spawn_effect(definition, origin, 0.13, float(config.duration))
 		else:
 			_spawn_effect(definition, origin, 0.13)
 
 
-func _selected_target(origin: Vector2, radius: float) -> Node2D:
+func has_selected_mark(target: Node) -> bool:
+	return is_instance_valid(target) and _selected_marks.has(target.get_instance_id()) and float(_selected_marks[target.get_instance_id()].remaining) > 0.000001
+
+
+func _selected_target(origin: Vector2, radius: float, prefer_mark: bool = false) -> Node2D:
 	var nearest: Node2D = null
 	var distance := radius * radius
 	for enemy in _valid_enemies():
 		if not _world.is_ancestor_of(enemy):
 			continue
 		var candidate_distance := origin.distance_squared_to(enemy.global_position)
-		if candidate_distance > distance:
+		if candidate_distance > radius * radius:
 			continue
-		if nearest == null or candidate_distance < distance or enemy.get_instance_id() < nearest.get_instance_id():
+		var priority := prefer_mark and has_selected_mark(enemy)
+		var current_priority := prefer_mark and has_selected_mark(nearest)
+		if nearest == null or (priority and not current_priority) or (priority == current_priority and (candidate_distance < distance or (candidate_distance == distance and enemy.get_instance_id() < nearest.get_instance_id()))):
 			nearest = enemy
 			distance = candidate_distance
 	return nearest
@@ -228,6 +244,8 @@ func _prune_selected_casts() -> void:
 		_selected_casts.clear()
 		return
 	var active: Array = _loadout.call("active_spell_ids")
+	if not active.has(&"heukyeong_shadow_needle"):
+		_selected_marks.clear()
 	for id in SUPPORT_BOOKS:
 		if not active.has(id):
 			_remove_support(id)
@@ -250,10 +268,10 @@ func _advance_selected_casts(delta: float) -> void:
 		var config: Dictionary = cast.config
 		cast.previous_elapsed = float(cast.elapsed)
 		cast.elapsed = float(cast.elapsed) + delta
-		if config.kind == "wind_projectile":
+		if config.kind in ["wind_projectile", "needle", "dart"]:
 			var visual = cast.get("visual")
 			if is_instance_valid(visual) and not visual.is_queued_for_deletion():
-				visual.global_position = Vector2(cast.origin) + Vector2(cast.direction) * minf(float(cast.elapsed) * float(config.speed), float(config.length))
+				visual.global_position = Vector2(cast.origin) + Vector2(cast.direction) * minf(float(cast.elapsed), float(config.duration)) * float(config.speed)
 			_hit_selected_cast(cast)
 		elif config.kind == "afterimage_line":
 			if float(cast.elapsed) < float(config.duration):
@@ -268,6 +286,9 @@ func _advance_selected_casts(delta: float) -> void:
 
 func _hit_selected_cast(cast: Dictionary) -> void:
 	var config: Dictionary = cast.config
+	if config.kind in ["needle", "dart"]:
+		_hit_single_selected_projectile(cast)
+		return
 	for enemy in _valid_enemies():
 		if not _selected_casts.has(cast) or not is_instance_valid(_player):
 			return
@@ -299,6 +320,52 @@ func _hit_selected_cast(cast: Dictionary) -> void:
 			_combat_resolver.deal_school_damage(enemy, float(config.damage), &"direct_injutsu")
 		else:
 			enemy.call("take_damage", int(config.damage))
+
+
+# Sweep the projectile center against the authored radius; consume the first
+# intersection before emitting damage callbacks. No homing or legacy burst.
+func _hit_single_selected_projectile(cast: Dictionary) -> void:
+	if not _selected_casts.has(cast):
+		return
+	var config: Dictionary = cast.config
+	var start: Vector2 = Vector2(cast.origin) + Vector2(cast.direction) * minf(float(cast.get("previous_elapsed", 0.0)), float(config.duration)) * float(config.speed)
+	var end: Vector2 = Vector2(cast.origin) + Vector2(cast.direction) * minf(float(cast.elapsed), float(config.duration)) * float(config.speed)
+	var segment := end - start
+	var length_squared := segment.length_squared()
+	var first: Node2D = null
+	var first_time := INF
+	for enemy in _valid_enemies():
+		if not _world.is_ancestor_of(enemy):
+			continue
+		var offset := start - enemy.global_position
+		var c := offset.length_squared() - pow(float(config.projectile_radius), 2)
+		var time := 0.0
+		if c > 0.0:
+			if length_squared <= 0.000001:
+				continue
+			var b := offset.dot(segment)
+			var discriminant := b * b - length_squared * c
+			if discriminant < 0.0:
+				continue
+			time = (-b - sqrt(discriminant)) / length_squared
+			if time < 0.0 or time > 1.0:
+				continue
+		if first == null or time < first_time or (time == first_time and enemy.get_instance_id() < first.get_instance_id()):
+			first = enemy
+			first_time = time
+	if first == null:
+		return
+	_selected_casts.erase(cast)
+	var visual = cast.get("visual")
+	if is_instance_valid(visual) and not visual.is_queued_for_deletion():
+		visual.queue_free()
+	# Mark before notification so reentrant cleanup cannot restore a removed mark.
+	if config.kind == "needle":
+		_selected_marks[first.get_instance_id()] = {"target": first, "remaining": float(config.mark_duration)}
+	if _combat_resolver != null:
+		_combat_resolver.deal_school_damage(first, float(config.damage), &"direct_injutsu")
+	else:
+		first.call("take_damage", int(config.damage))
 
 
 func _cast_definition(definition) -> bool:
@@ -475,6 +542,7 @@ func _advance_effects(delta: float) -> void:
 
 
 func clear_runtime_effects() -> void:
+	_selected_marks.clear()
 	for id in SUPPORT_BOOKS:
 		_remove_support(id)
 	_selected_casts.clear()
