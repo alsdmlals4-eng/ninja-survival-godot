@@ -26,6 +26,76 @@ func _fixture(ids: Array, school: StringName = &"guiin") -> Dictionary:
 	return {"player": player, "enemy": enemy, "loadout": loadout, "controller": controller, "world": world}
 
 
+func test_poison_refresh_preserves_tick_clock_and_expires_after_leaving() -> void:
+	var f := _fixture([&"heukyeong_poison_mist"], &"heukyeong")
+	f.controller.tick_auto_cast(5.0)
+	assert_eq(f.enemy.health, 1000)
+	f.controller.tick_auto_cast(0.6)
+	f.controller.tick_auto_cast(0.4)
+	assert_eq(f.enemy.health, 996, "refresh must not postpone the first tick")
+	f.enemy.position.x = 500
+	f.controller.tick_auto_cast(1.0)
+	f.controller.tick_auto_cast(1.0)
+	f.controller.tick_auto_cast(1.0)
+	assert_eq(f.enemy.health, 984, "poison persists three seconds after last exposure")
+	f.controller.tick_auto_cast(1.0)
+	assert_eq(f.enemy.health, 984)
+
+
+func test_poison_pause_sword_suppression_and_unequip_do_not_replay_damage() -> void:
+	var f := _fixture([&"heukyeong_poison_mist"], &"heukyeong")
+	var resolver := CombatResolver.new()
+	f.world.add_child(resolver)
+	f.controller.configure(f.player, f.world, resolver, f.loadout)
+	f.controller.tick_auto_cast(5.0)
+	get_tree().paused = true
+	f.controller.tick_auto_cast(20.0)
+	get_tree().paused = false
+	resolver.sword_only_mode = true
+	f.controller.tick_auto_cast(2.5)
+	resolver.sword_only_mode = false
+	f.controller.tick_auto_cast(0.5)
+	assert_eq(f.enemy.health, 996, "only the unsuppressed third tick may land")
+	f.loadout.commit_placed_ninjutsu([], [&"heukyeong"])
+	f.controller.tick_auto_cast(5.0)
+	assert_eq(f.enemy.health, 996)
+
+
+func test_poison_zone_is_fixed_accepts_late_entry_and_stage_cleanup_cancels_ticks() -> void:
+	var f := _fixture([&"heukyeong_poison_mist"], &"heukyeong")
+	f.controller.tick_auto_cast(5.0)
+	var late = load("res://scripts/enemies/enemy_chaser.gd").new()
+	late.max_health = 1000
+	f.world.add_child(late)
+	late.set_physics_process(false)
+	late.position = Vector2(157, 0)
+	f.controller.tick_auto_cast(0.5)
+	late.position.x = 156
+	f.player.position.x = -500
+	f.controller.tick_auto_cast(0.5)
+	assert_eq(late.health, 1000)
+	f.controller.tick_auto_cast(1.0)
+	assert_eq(late.health, 996, "radius96 around the original target, not the moving player")
+	f.controller.clear_runtime_effects()
+	f.controller.tick_auto_cast(1.0)
+	assert_eq(late.health, 996)
+
+
+func test_poison_damage_is_dot_and_callback_cleanup_cancels_remaining_ticks() -> void:
+	var f := _fixture([&"heukyeong_poison_mist"], &"heukyeong")
+	var resolver := CombatResolver.new()
+	f.world.add_child(resolver)
+	f.controller.configure(f.player, f.world, resolver, f.loadout)
+	var kinds: Array = []
+	resolver.damage_started.connect(func(_id, _target, kind): kinds.append(kind))
+	resolver.damage_finished.connect(func(_id, _amount): f.controller.clear_runtime_effects())
+	f.controller.tick_auto_cast(5.0)
+	f.controller.tick_auto_cast(5.0)
+	assert_eq(kinds, [&"dot"])
+	assert_eq(f.enemy.health, 996)
+	assert_true(f.controller._selected_casts.is_empty())
+
+
 func test_proximity_guard_reduces_damage_only_while_enemy_is_near() -> void:
 	var f := _fixture([&"guiin_iron_blood_guard"])
 	f.controller.tick_auto_cast(0.01)
@@ -242,7 +312,8 @@ func test_selected_familiar_pause_sword_mode_and_no_target_retry() -> void:
 	var familiar = f.world.get_node_or_null("SelectedBookFamiliar")
 	resolver.sword_only_mode = true
 	f.controller.tick_auto_cast(0.7)
-	assert_true(familiar.is_queued_for_deletion())
+	assert_false(familiar.is_queued_for_deletion(), "existing summon retains its identity during sword-only form")
+	assert_same(f.controller._selected_familiar, familiar)
 	assert_eq(f.enemy.health, 992)
 	resolver.sword_only_mode = false
 	f.controller.tick_auto_cast(0.69)

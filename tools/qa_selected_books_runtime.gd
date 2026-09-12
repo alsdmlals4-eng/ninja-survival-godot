@@ -20,7 +20,7 @@ func _run() -> void:
 	var loadout = load("res://scripts/core/ninjutsu_loadout_state.gd").new()
 	world.add_child(loadout)
 	var school: StringName = &"cheonsul" if "--wind" in OS.get_cmdline_user_args() else &"guiin"
-	if "--needle" in OS.get_cmdline_user_args() or "--dart" in OS.get_cmdline_user_args():
+	if "--needle" in OS.get_cmdline_user_args() or "--dart" in OS.get_cmdline_user_args() or "--poison" in OS.get_cmdline_user_args():
 		school = &"heukyeong"
 	if "--familiar" in OS.get_cmdline_user_args():
 		school = &"bongma"
@@ -33,6 +33,33 @@ func _run() -> void:
 	var controller = load("res://scripts/schools/ninjutsu_auto_controller.gd").new()
 	world.add_child(controller)
 	controller.configure(player, world, null, loadout)
+	if "--poison" in OS.get_cmdline_user_args():
+		if not loadout.commit_placed_ninjutsu([&"heukyeong_poison_mist"], [&"heukyeong"]):
+			push_error("POISON_RUNTIME_FAIL loadout")
+			quit(1)
+			return
+		controller.configure(player, world, null, loadout)
+		await create_timer(5.5).timeout
+		if enemy.health != 1000:
+			push_error("POISON_RUNTIME_FAIL premature damage")
+			quit(1)
+			return
+		await create_timer(0.8).timeout
+		if enemy.health != 996:
+			push_error("POISON_RUNTIME_FAIL first tick: " + str(enemy.health))
+			quit(1)
+			return
+		loadout.commit_placed_ninjutsu([], [&"heukyeong"])
+		await create_timer(1.1).timeout
+		if enemy.health != 996:
+			push_error("POISON_RUNTIME_FAIL unequip")
+			quit(1)
+			return
+		world.queue_free()
+		await process_frame
+		print("POISON_RUNTIME_PASS real process delayed DoT and unequip; no save writes or final art claim")
+		quit(0)
+		return
 	if school == &"bongma":
 		loadout.commit_placed_ninjutsu([&"bongma_hundred_demon_familiar"], [school])
 		await create_timer(0.9).timeout

@@ -1,5 +1,36 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-13 poison/summon continuation receipt
+
+Input ed50841, authorized PR147, main b5c2dd6. Read current Decisions/Active,
+R-INJUTSU/R-ULTIMATE, catalog, selected controller, real Enemy/Player/Resolver,
+Heukyeong proc filter and familiar consumer. No unrelated PR or user save writes.
+Research: https://docs.godotengine.org/en/stable/classes/class_timer.html (ADAPT
+existing process clock, avoid per-target Timer reset); https://store.steampowered.com/app/2218750/Halls_of_Torment/
+(REFERENCE_ONLY crowd/build variety, no copied tuning). Alternatives: local transient
+state ADAPT; per-enemy Timer REJECT cleanup duplication; origin-only Cheonsul owner
+REJECT for foreign-school book availability. No new manager/autoload/save schema.
+
+Validated corrections: missing poison reproduced by2RED tests; added duration-only
+refresh, dot damage classification, fixed zone/late entry, expiry, pause, sword-only
+time consumption, unequip/stage and synchronous damage-callback cancellation.
+Familiar deletion during sword form contradicted R-ULTIMATE: failed identity assertions
+then preserved original node and attack cooldown. Projectile cancellation retained.
+GPU QA first failed because its origin was Guiin and unchecked loadout commit rejected
+Heukyeong-only unlocks, retaining kicks. Corrected fixture origin and assert commit;
+rerun POISON_RUNTIME_PASS. This is fixture learning, not evidence of a product DoT bug.
+Hera status belongs to GRIMOIRE, not this checkout; left untouched. Ran exact-project
+standalone Godot4.7.1/OpenGL production actors without Main/save writes.
+
+Evidence: focused25/25; full97scripts/751tests/9779assertions PASS, temp receipt
+`ninja-poison-lifecycle-full-gut-20260913.log`; original poison GPU smoke PASS.
+No parser/error markers in full log; diff whitespace check PASS.
+These targeted corrections do not close five full-approved-scope loops or human gates.
+Remaining8books, selected Main/profile2 integration, ultimate status consumers and
+final visual/runtime human validation stay open. No forced merge or Base contract update.
+Reusable learning stays project-local: runtime QA must validate loadout transaction
+before measuring damage; do not interpret fixture setup failure as product behavior.
+
 ## 2026-09-13 continuous support/lifecycle increments
 
 Baseline6cd8100, task PR147; main b5c2dd6, Base remote d830c0f unchanged.

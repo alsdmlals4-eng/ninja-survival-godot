@@ -1,5 +1,19 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — poison mist and summon suppression, 2026-09-13
+
+Selected effects now16/24;8remain. Poison mist is target-centered radius96,
+zone2s, poison3s/4damage per1s, cooldown5s. Refresh preserves tick phase;
+sword form consumes lifetime without damage/backlog. Unequip/stage clear cancels
+status; damage callbacks cannot restart a cleared generation in the same tick.
+Existing selected familiar now survives sword form with frozen attack cooldown.
+Full97scripts/751tests/9779assertions PASS (ninja-poison-lifecycle-full-gut-20260913.log).
+OpenGL real-process poison delayed tick/unequip PASS; final-art/readability NOT_RUN.
+PR147 continuation only; default Main cutover/profile2/end-to-end selected Run and
+five whole-approved-scope review loops remain incomplete. No merge/release claim.
+Next: remaining status/control books, their ultimate consumers, profile2/UI integration.
+
+
 ## Latest increment — chain execution, 2026-09-13
 
 Selected effects now15/24;9remain. Chain execution selects mark→lowHP ratio→

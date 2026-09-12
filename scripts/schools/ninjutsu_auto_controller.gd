@@ -23,6 +23,8 @@ var _ticking := false
 var _support_remaining: Dictionary = {}
 var _support_zones: Dictionary = {}
 var _selected_marks: Dictionary = {}
+var _selected_poison: Dictionary = {}
+var _effect_generation := 0
 var _selected_familiar: BongmaFamiliar
 const SUPPORT_BOOKS := [&"guiin_iron_blood_guard", &"guiin_demon_step", &"cheonsul_ice_veil", &"heukyeong_smoke_step", &"bongma_guardian_ward", &"bongma_barrier_step"]
 
@@ -151,14 +153,25 @@ func _tick_auto_cast(delta: float) -> void:
 	if _loadout.has_method("get_snapshot") and _loadout.call("get_snapshot").get("selection_contract", "") == "selectable-v2":
 		_tick_support_books(delta)
 		_tick_selected_marks(delta)
+		var generation := _effect_generation
+		_tick_selected_poison(delta)
+		if generation != _effect_generation:
+			return
 	if _combat_resolver != null and _combat_resolver.sword_only_mode:
-		_clear_selected_familiar()
-		_selected_casts.clear()
-		for entry in _active_effects:
+		for cast in _selected_casts.duplicate():
+			if cast.config.kind == "poison_zone":
+				cast.elapsed = float(cast.elapsed) + delta
+				if float(cast.elapsed) >= float(cast.config.duration):
+					_selected_casts.erase(cast)
+			else:
+				_selected_casts.erase(cast)
+		for entry in _active_effects.duplicate():
+			if entry.get("spell_id", &"") == &"heukyeong_poison_mist":
+				continue
 			var effect = entry.get("node")
 			if is_instance_valid(effect) and not effect.is_queued_for_deletion():
 				effect.queue_free()
-		_active_effects.clear()
+			_active_effects.erase(entry)
 		return
 	if _loadout.has_method("get_snapshot") and _loadout.call("get_snapshot").get("selection_contract", "") == "selectable-v2":
 		_tick_selected_books(delta)
@@ -193,7 +206,7 @@ func _tick_selected_books(delta: float) -> void:
 	_advance_selected_casts(delta)
 	for raw_id in _loadout.call("active_spell_ids"):
 		var id := StringName(raw_id)
-		if not [&"guiin_ghost_blood_wave", &"guiin_afterimage_charge", &"guiin_asura_ring", &"guiin_rakshasa_kicks", &"cheonsul_wind_pillar", &"heukyeong_shadow_needle", &"heukyeong_pursuit_dart", &"heukyeong_chain_execution"].has(id):
+		if not [&"guiin_ghost_blood_wave", &"guiin_afterimage_charge", &"guiin_asura_ring", &"guiin_rakshasa_kicks", &"cheonsul_wind_pillar", &"heukyeong_shadow_needle", &"heukyeong_pursuit_dart", &"heukyeong_chain_execution", &"heukyeong_poison_mist"].has(id):
 			continue
 		var definition = NINJUTSU_CATALOG_SCRIPT.definition_for_id(id)
 		var config: Dictionary = definition.effect_config
@@ -210,6 +223,8 @@ func _tick_selected_books(delta: float) -> void:
 			_remaining_by_spell[id] = 0.12
 			continue
 		# Reserve before damage callbacks to prevent reentrant duplicate casts.
+		if config.kind == "poison_zone":
+			origin = target.global_position
 		_remaining_by_spell[id] = cooldown
 		var direction := origin.direction_to(target.global_position)
 		if direction.is_zero_approx():
@@ -222,10 +237,33 @@ func _tick_selected_books(delta: float) -> void:
 			return
 		if float(config.duration) <= 0.0:
 			_selected_casts.erase(cast)
-		if config.kind in ["wind_projectile", "needle", "dart"]:
+		if config.kind in ["wind_projectile", "needle", "dart", "poison_zone"]:
 			cast.visual = _spawn_effect(definition, origin, 0.13, float(config.duration))
 		else:
 			_spawn_effect(definition, origin, 0.13)
+
+
+func _tick_selected_poison(delta: float) -> void:
+	for key in _selected_poison.keys():
+		if not _selected_poison.has(key):
+			continue
+		var state: Dictionary = _selected_poison[key]
+		var target = state.target
+		if not is_instance_valid(target) or target.is_queued_for_deletion() or not _world.is_ancestor_of(target) or (target.has_method("is_dead") and target.is_dead()):
+			_selected_poison.erase(key)
+			continue
+		state.next_tick = float(state.next_tick) - minf(delta, float(state.remaining))
+		state.remaining = maxf(float(state.remaining) - delta, 0.0)
+		while float(state.next_tick) <= 0.000001:
+			state.next_tick = float(state.next_tick) + float(state.config.tick_interval)
+			if not _selected_poison.has(key) or not is_instance_valid(target) or target.is_queued_for_deletion() or (_player.has_method("is_dead") and _player.is_dead()):
+				break
+			if _combat_resolver != null:
+				_combat_resolver.deal_school_damage(target, float(state.config.poison_damage), &"dot")
+			else:
+				target.call("take_damage", int(state.config.poison_damage))
+		if float(state.remaining) <= 0.000001:
+			_selected_poison.erase(key)
 
 
 func _clear_selected_familiar() -> void:
@@ -296,6 +334,8 @@ func _prune_selected_casts() -> void:
 		_clear_selected_familiar()
 	if not active.has(&"heukyeong_shadow_needle"):
 		_selected_marks.clear()
+	if not active.has(&"heukyeong_poison_mist"):
+		_selected_poison.clear()
 	for id in SUPPORT_BOOKS:
 		if not active.has(id):
 			_remove_support(id)
@@ -323,7 +363,7 @@ func _advance_selected_casts(delta: float) -> void:
 			if is_instance_valid(visual) and not visual.is_queued_for_deletion():
 				visual.global_position = Vector2(cast.origin) + Vector2(cast.direction) * minf(float(cast.elapsed), float(config.duration)) * float(config.speed)
 			_hit_selected_cast(cast)
-		elif config.kind == "afterimage_line":
+		elif config.kind in ["afterimage_line", "poison_zone"]:
 			if float(cast.elapsed) < float(config.duration):
 				_hit_selected_cast(cast)
 		else:
@@ -336,6 +376,14 @@ func _advance_selected_casts(delta: float) -> void:
 
 func _hit_selected_cast(cast: Dictionary) -> void:
 	var config: Dictionary = cast.config
+	if config.kind == "poison_zone":
+		for enemy in _valid_enemies():
+			if _world.is_ancestor_of(enemy) and enemy.global_position.distance_squared_to(cast.origin) <= pow(float(config.radius), 2):
+				var key: int = enemy.get_instance_id()
+				if not _selected_poison.has(key):
+					_selected_poison[key] = {"target": enemy, "next_tick": float(config.tick_interval), "remaining": 0.0, "config": config}
+				_selected_poison[key].remaining = float(config.poison_duration)
+		return
 	if config.kind == "execution":
 		_hit_execution(cast)
 		return
@@ -644,8 +692,10 @@ func _advance_effects(delta: float) -> void:
 
 
 func clear_runtime_effects() -> void:
+	_effect_generation += 1
 	_clear_selected_familiar()
 	_selected_marks.clear()
+	_selected_poison.clear()
 	for id in SUPPORT_BOOKS:
 		_remove_support(id)
 	_selected_casts.clear()
