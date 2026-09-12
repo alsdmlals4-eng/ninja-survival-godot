@@ -255,6 +255,40 @@ func test_selected_familiar_pause_sword_mode_and_no_target_retry() -> void:
 			assert_true(child.is_queued_for_deletion())
 
 
+func test_selected_rules_cap_combined_speed_and_add_equipment_and_book_reduction() -> void:
+	var f := _fixture([&"guiin_demon_step", &"guiin_iron_blood_guard"])
+	var modifiers := RunModifierSet.new()
+	modifiers.move_speed_pct = 0.5
+	modifiers.damage_taken_pct = -0.5
+	f.player.apply_run_modifiers(modifiers)
+	f.controller.tick_auto_cast(5.0)
+	f.player.request_dash()
+	f.player._advance_dash_state(0.2)
+	assert_almost_eq(f.player.move_speed, 384.0, 0.001, "Combined speed is capped at1.6x, before dash multiplier.")
+	assert_eq(f.player.take_damage(20), 8, "Equipment50% plus book10% reaches the combined60% cap.")
+	f.player.advance_damage_protection(0.4)
+	modifiers.damage_taken_pct = -0.9
+	f.player.apply_run_modifiers(modifiers)
+	assert_eq(f.player.take_damage(20), 8, "Excess equipment mitigation cannot bypass the combined cap.")
+
+
+func test_selected_caps_apply_without_books_and_do_not_change_legacy_contract() -> void:
+	var f := _fixture([])
+	var modifiers := RunModifierSet.new()
+	modifiers.move_speed_pct = 1.0
+	modifiers.damage_taken_pct = -0.9
+	f.player.apply_run_modifiers(modifiers)
+	assert_almost_eq(f.player.move_speed, 384.0, 0.001)
+	assert_eq(f.player.take_damage(20), 8)
+	var legacy = load("res://scripts/core/ninjutsu_loadout_state.gd").new()
+	f.world.add_child(legacy)
+	legacy.activate_starter(&"guiin")
+	f.controller.configure(f.player, f.world, null, legacy)
+	f.player.advance_damage_protection(0.4)
+	assert_almost_eq(f.player.move_speed, 480.0, 0.001)
+	assert_eq(f.player.take_damage(20), 2, "Legacy saves keep their old calculation until explicit migration.")
+
+
 func test_all_school_runtimes_keep_charge_but_do_not_supply_unowned_attacks() -> void:
 	for school in [&"bongma", &"cheonsul", &"heukyeong"]:
 		var f := _fixture([], school)

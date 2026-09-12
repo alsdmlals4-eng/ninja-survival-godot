@@ -43,6 +43,14 @@ var _dash_saved_mask: int = 0
 var _dash_collision_override: bool = false
 var _damage_protection_remaining: float = 0.0
 var _ninjutsu_boons: Dictionary = {}
+var _selected_combat_rules := false
+
+
+func set_selected_combat_rules(enabled: bool) -> void:
+	if _selected_combat_rules == enabled:
+		return
+	_selected_combat_rules = enabled
+	_refresh_move_speed()
 
 
 # Transient combat effects only. Never added to persistent RunModifierSet/save.
@@ -64,7 +72,10 @@ func _refresh_move_speed() -> void:
 	var bonus := _run_modifiers.move_speed_pct
 	for boon in _ninjutsu_boons.values():
 		bonus += float(boon.speed_bonus)
-	move_speed = maxf(_base_move_speed * maxf(1.0 + bonus, 0.0), 0.0)
+	var multiplier := maxf(1.0 + bonus, 0.0)
+	if _selected_combat_rules:
+		multiplier = minf(multiplier, 1.6)
+	move_speed = maxf(_base_move_speed * multiplier, 0.0)
 
 
 func combat_facing_direction() -> Vector2:
@@ -270,7 +281,10 @@ func take_damage(amount: int) -> int:
 		else:
 			reduction += float(boon.reduction)
 	reduction += strongest_ward
-	var resolved := maxi(roundi(float(requested) * damage_multiplier * (1.0 - minf(reduction, 0.6))), 0)
+	var final_multiplier := damage_multiplier * (1.0 - minf(reduction, 0.6))
+	if _selected_combat_rules:
+		final_multiplier = maxf(1.0 + _run_modifiers.damage_taken_pct - reduction, 0.4)
+	var resolved := maxi(roundi(float(requested) * final_multiplier), 0)
 	# Stable source order makes multi-shield consumption deterministic.
 	var sources := _ninjutsu_boons.keys()
 	sources.sort()

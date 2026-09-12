@@ -1,5 +1,17 @@
 # ACTIVE_CONTEXT
 
+## Latest correction — selected combined caps, 2026-09-13
+
+Selected Loadout rules now cap combined movement at1.6x and add equipment/
+book mitigation before the60% cap. Empty selected loadout retains these rules;
+legacy contracts keep their old calculations until explicit migration.
+Final local full97scripts/744tests/9750assertions PASS, no logged engine errors.
+Selected effect count remains14/24. Remaining10: seal chain/talisman wheel/
+suppression seal/flame mark/water bind/lightning chain/thunder step/poison mist/
+chain execution/shadow clone. Then tag damage, gear/economy/profile2, default
+Main starting draft and complete normal-speed new-mode run remain open.
+New art/Human/device/export and five whole-approved-scope review gate are not complete.
+
 ## Latest increment — selected familiar, 2026-09-13
 
 Selected effects now14/24;10remain. Existing BongmaFamiliar scene supplies

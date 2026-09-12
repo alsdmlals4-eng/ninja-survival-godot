@@ -649,6 +649,15 @@ was removed. User experience, final art, runtime, performance, platform and
 balance of the new design: NOT_RUN. Combined PR #147 remains Draft/unmerged.
 # 2026-09-13 풍주 연속 구현 검증
 
+최신 상한 교정: 장비50%+인법10% 피해감소가9피해(요청20), 장비90%+인법10%가2피해,
+이동50%+귀일보15%가396속도로 재현되어 합산60%/1.6배 규칙과 불일치했다.
+선택형 계약에서는 각각8피해/8피해/384속도로 교정했고 기존 계약의2피해/480속도는 보존했다.
+현재 Main 기본 profile을 묵시 전환하지 않으며 추가 저장 필드 없이 계약 활성 여부만 Player에 전달한다.
+중간 전체 검사에서 동적 Dictionary 비교식의 타입 추론 실패가 연쇄 파싱 실패를 만들었다.
+이를 게임 로직116개 오류로 해석하지 않았고 원인 지역 변수의 bool 타입을 명시한 뒤 재검증했다.
+최종 전체97scripts/744tests/9750assertions PASS, 로그 `%TEMP%/ninja-selected-caps-final-gut-20260913.log`.
+확률 회피/HP 하한/태그별 피해/새 profile 전환은 이 상한 증분에서 구현했다고 주장하지 않는다.
+
 백귀식신 후속: 실제 책을 보유해도 식신이 없고 피해0인 RED를 재현했다.
 기존 BongmaFamiliar 장면/추종/attack_once 재사용, 자체 process 공격은 꺼 중복 주기 방지.
 선택형 시전기가 장착/해제/주기/재장착 잔여시간/귀인화 정리를 소유한다.

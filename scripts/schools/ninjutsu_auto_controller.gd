@@ -36,12 +36,15 @@ func configure(player: Node2D, world: Node, combat_resolver: CombatResolver, loa
 		_loadout.disconnect("loadout_changed", _prune_selected_casts)
 	if is_instance_valid(_player) and _player.has_signal("dash_ended") and _player.is_connected("dash_ended", _on_dash_ended):
 		_player.disconnect("dash_ended", _on_dash_ended)
+	if is_instance_valid(_player) and _player.has_method("set_selected_combat_rules"):
+		_player.call("set_selected_combat_rules", false)
 	clear_runtime_effects()
 	_remaining_by_spell.clear()
 	_player = player
 	_world = world
 	_combat_resolver = combat_resolver
 	_loadout = loadout
+	_sync_selected_player_rules()
 	if _loadout.has_signal("loadout_changed"):
 		_loadout.connect("loadout_changed", _prune_selected_casts)
 	if _player.has_signal("dash_ended"):
@@ -274,7 +277,14 @@ func _selected_target(origin: Vector2, radius: float, prefer_mark: bool = false)
 	return nearest
 
 
+func _sync_selected_player_rules() -> void:
+	if is_instance_valid(_player) and _player.has_method("set_selected_combat_rules"):
+		var selected: bool = is_instance_valid(_loadout) and _loadout.has_method("get_snapshot") and _loadout.call("get_snapshot").get("selection_contract", "") == "selectable-v2"
+		_player.call("set_selected_combat_rules", selected)
+
+
 func _prune_selected_casts() -> void:
+	_sync_selected_player_rules()
 	if not is_instance_valid(_loadout):
 		_selected_casts.clear()
 		return
