@@ -1,5 +1,34 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-13 timed selected-book continuation — WIP
+
+Baseline e5c3957; current task PR147 only, open135/49 remain read-only.
+Base remote d830c0f unchanged; native five-loop contract retained without upgrade.
+Implemented approved line/ring/cone behaviours in the existing auto consumer,
+then Guiin-only intrinsic suppression bound by Main to the real Loadout.
+Research alternatives and official source links are in Implementation Packet.
+
+Validated corrections: missing3effect consumers (4 failing tests before code);
+post-damage cancellation recreated a visual (RED reproduced, fixed);
+book removal left its visual alive (RED reproduced, fixed). A proposed line
+test expected a farther front target over a nearer rear target: rejected that
+test premise and moved the rear fixture farther away, preserving nearest aim.
+Independent timer/global bus alternatives rejected for cancellation ownership
+and unnecessary complexity. No new assets, libraries, save schema or costs.
+
+Evidence: focused29tests/162assertions passed before final visual cleanup;
+full717tests/9608assertions passed at that same intermediate state.
+GPU engine run (Godot4.7.1/NVIDIA RTX3050 OpenGL3.3): real production actors,
+automatic process ticks, three hits and removal passed. No screenshot quality,
+Human/device or actual Main selectable-start evidence claimed.
+Final visual cleanup is separately re-run below. Full five whole-scope review
+loops are still IN_PROGRESS, not inferred from several focused regression checks.
+
+Final candidate evidence: full96scripts/717tests/9609assertions PASS, exit0,
+no SCRIPT ERROR/ERROR/WARNING hits in final log; GPU process smoke repeated PASS
+after cleanup correction. `git diff --check` passed (Windows newline notices only).
+This remains a WIP checkpoint, not main integration or whole-game completion.
+
 ## 2026-09-13 selected pulse consumer — WIP evidence
 
 Official Brotato/Vampire Survivors product descriptions informed the research

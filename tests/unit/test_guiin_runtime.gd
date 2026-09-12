@@ -83,6 +83,26 @@ func test_baseline_pulse_interval_radius_and_damage() -> void:
 	assert_eq(runtime.current_pulse_damage(), 10)
 
 
+func test_selected_books_remove_intrinsic_damage_but_keep_ultimate_charge() -> void:
+	var runtime = _make_runtime()
+	assert_true(runtime.has_method("configure_ninjutsu_loadout"))
+	if not runtime.has_method("configure_ninjutsu_loadout"):
+		return
+	var loadout = load("res://scripts/core/ninjutsu_loadout_state.gd").new()
+	runtime.world.add_child(loadout)
+	loadout.begin_start_draft(&"guiin", 12)
+	for index in range(2):
+		loadout.choose_start_draft(loadout.start_draft_snapshot().options[0])
+	loadout.commit_drafted_start(loadout.start_draft_snapshot().picks)
+	loadout.commit_placed_ninjutsu([], [&"guiin"])
+	runtime.configure_ninjutsu_loadout(loadout)
+	var enemy = _enemy(runtime.world, Vector2(60, 0))
+	runtime._process(0.9)
+	assert_eq(enemy.health, 100, "Empty selected build cannot retain the legacy free pulse.")
+	assert_eq(runtime.perform_melee_pulse(), 0)
+	assert_gt(runtime.gwihyeol, 0.0, "Charge belongs to the school, not an equipped damage book.")
+
+
 func test_low_health_berserker_changes_radius_and_damage_at_half_health() -> void:
 	var runtime = _make_runtime()
 	if runtime == null:

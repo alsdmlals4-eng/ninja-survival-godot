@@ -22,6 +22,11 @@ var ultimate_time_remaining: float = 0.0
 var _pulse_remaining: float = PULSE_INTERVAL
 var _last_ultimate_ready: bool = false
 var basic_weapons: BasicWeaponController
+var _ninjutsu_loadout: Node
+
+
+func configure_ninjutsu_loadout(loadout: Node) -> void:
+	_ninjutsu_loadout = loadout
 
 
 func configure_weapon_controller(controller: BasicWeaponController) -> void:
@@ -88,6 +93,8 @@ func _process(delta: float) -> void:
 
 
 func perform_melee_pulse() -> int:
+	if is_instance_valid(_ninjutsu_loadout) and _ninjutsu_loadout.has_method("get_snapshot") and _ninjutsu_loadout.call("get_snapshot").get("selection_contract", "") == "selectable-v2":
+		return 0
 	if not active or not is_instance_valid(player) or ultimate_time_remaining > 0.0 or get_tree().paused:
 		return 0
 	var hit_count := 0

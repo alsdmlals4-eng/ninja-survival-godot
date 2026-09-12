@@ -55,6 +55,168 @@ class DummyEnemy extends Node2D:
 		return health <= 0
 
 
+func _selected_fixture(id: StringName) -> Dictionary:
+	var world := Node2D.new()
+	add_child_autofree(world)
+	var player := Node2D.new()
+	world.add_child(player)
+	var loadout = LOADOUT_SCRIPT.new()
+	world.add_child(loadout)
+	loadout.begin_start_draft(&"guiin", 12)
+	for index in range(2):
+		loadout.choose_start_draft(loadout.start_draft_snapshot().options[0])
+	loadout.commit_drafted_start(loadout.start_draft_snapshot().picks)
+	assert_true(loadout.commit_placed_ninjutsu([id], [&"guiin"]))
+	var controller = load(AUTO_CONTROLLER_PATH).new()
+	world.add_child(controller)
+	controller.set_process(false)
+	controller.configure(player, world, null, loadout)
+	return {"world": world, "player": player, "loadout": loadout, "controller": controller}
+
+
+func _enemy_in(world: Node, position: Vector2) -> DummyEnemy:
+	var enemy := DummyEnemy.new()
+	if world == self:
+		add_child_autofree(enemy)
+	else:
+		world.add_child(enemy)
+	enemy.position = position
+	enemy.add_to_group("enemies")
+	return enemy
+
+
+func test_selected_ring_ticks_at_fixed_cast_position_and_stops_after_two_hits() -> void:
+	var f := _selected_fixture(&"guiin_asura_ring")
+	var enemy := _enemy_in(f.world, Vector2(110, 0))
+	f.controller.tick_auto_cast(5.0)
+	assert_eq(enemy.health, 42)
+	f.player.position = Vector2(500, 0)
+	f.controller.tick_auto_cast(0.49)
+	assert_eq(enemy.health, 42)
+	f.controller.tick_auto_cast(0.01)
+	assert_eq(enemy.health, 34)
+	f.controller.tick_auto_cast(0.5)
+	assert_eq(enemy.health, 34)
+
+
+func test_selected_kicks_keep_cast_direction_and_exact_three_ticks() -> void:
+	var f := _selected_fixture(&"guiin_rakshasa_kicks")
+	var front := _enemy_in(f.world, Vector2(80, 0))
+	var back := _enemy_in(f.world, Vector2(-90, 0))
+	f.controller.tick_auto_cast(2.5)
+	assert_eq(front.health, 45)
+	assert_eq(back.health, 50)
+	f.player.position = Vector2(400, 400)
+	f.controller.tick_auto_cast(0.12)
+	assert_eq(front.health, 40)
+	f.controller.tick_auto_cast(0.12)
+	assert_eq(front.health, 35)
+	f.controller.tick_auto_cast(0.12)
+	assert_eq(front.health, 35)
+	assert_eq(back.health, 50)
+
+
+func test_selected_line_hits_once_and_accepts_late_entry_without_moving_player() -> void:
+	var f := _selected_fixture(&"guiin_afterimage_charge")
+	var front := _enemy_in(f.world, Vector2(90, 0))
+	var later := _enemy_in(f.world, Vector2(180, 40))
+	var behind := _enemy_in(f.world, Vector2(-140, 0))
+	f.controller.tick_auto_cast(3.0)
+	assert_eq(front.health, 34)
+	assert_eq(later.health, 50)
+	assert_eq(f.player.position, Vector2.ZERO)
+	later.position.y = 20
+	f.controller.tick_auto_cast(0.1)
+	assert_eq(later.health, 34)
+	assert_eq(front.health, 34)
+	assert_eq(behind.health, 50)
+	f.controller.tick_auto_cast(0.25)
+	var expired := _enemy_in(f.world, Vector2(200, 0))
+	f.controller.tick_auto_cast(0.01)
+	assert_eq(expired.health, 50)
+
+
+func test_unequip_cancels_pending_ring_even_when_re_equipped_before_next_tick() -> void:
+	var f := _selected_fixture(&"guiin_asura_ring")
+	var enemy := _enemy_in(f.world, Vector2(50, 0))
+	f.controller.tick_auto_cast(5.0)
+	assert_eq(enemy.health, 42)
+	f.loadout.commit_placed_ninjutsu([], [&"guiin"])
+	var visual_count := 0
+	for child in f.world.get_children():
+		if child is Sprite2D and not child.is_queued_for_deletion():
+			visual_count += 1
+	assert_eq(visual_count, 0, "Book removal cleans presentation as well as damage.")
+	f.loadout.commit_placed_ninjutsu([&"guiin_asura_ring"], [&"guiin"])
+	f.controller.tick_auto_cast(0.5)
+	assert_eq(enemy.health, 42)
+
+
+func test_selected_attacks_pause_and_sword_form_cancels_pending_hits() -> void:
+	var f := _selected_fixture(&"guiin_rakshasa_kicks")
+	var enemy := _enemy_in(f.world, Vector2(50, 0))
+	var resolver = load("res://scripts/combat/combat_resolver.gd").new()
+	f.world.add_child(resolver)
+	f.controller.configure(f.player, f.world, resolver, f.loadout)
+	f.controller.tick_auto_cast(2.5)
+	assert_eq(enemy.health, 45)
+	get_tree().paused = true
+	f.controller.tick_auto_cast(10.0)
+	get_tree().paused = false
+	assert_eq(enemy.health, 45)
+	resolver.sword_only_mode = true
+	f.controller.tick_auto_cast(0.12)
+	resolver.sword_only_mode = false
+	f.controller.tick_auto_cast(0.12)
+	assert_eq(enemy.health, 45)
+
+
+func test_reconfigure_clears_old_casts_and_starts_full_stage_period() -> void:
+	var f := _selected_fixture(&"guiin_asura_ring")
+	var enemy := _enemy_in(f.world, Vector2(50, 0))
+	f.controller.tick_auto_cast(5.0)
+	assert_eq(enemy.health, 42)
+	f.controller.configure(f.player, f.world, null, f.loadout)
+	f.controller.tick_auto_cast(0.5)
+	assert_eq(enemy.health, 42)
+	f.controller.tick_auto_cast(4.5)
+	assert_eq(enemy.health, 34)
+
+
+func test_selected_cast_does_not_damage_other_world_or_reenter_on_damage_callback() -> void:
+	var f := _selected_fixture(&"guiin_asura_ring")
+	var enemy := _enemy_in(f.world, Vector2(50, 0))
+	var foreign := _enemy_in(self, Vector2(40, 0))
+	var resolver = load("res://scripts/combat/combat_resolver.gd").new()
+	f.world.add_child(resolver)
+	resolver.damage_started.connect(func(_id, _target, _kind): f.controller.tick_auto_cast(5.0))
+	f.controller.configure(f.player, f.world, resolver, f.loadout)
+	f.controller.tick_auto_cast(5.0)
+	assert_eq(enemy.health, 42)
+	assert_eq(foreign.health, 50)
+
+
+func test_callback_clear_cancels_remaining_targets_and_later_ticks() -> void:
+	var f := _selected_fixture(&"guiin_asura_ring")
+	var first := _enemy_in(f.world, Vector2(50, 0))
+	var second := _enemy_in(f.world, Vector2(60, 0))
+	var resolver = load("res://scripts/combat/combat_resolver.gd").new()
+	f.world.add_child(resolver)
+	resolver.damage_finished.connect(func(_id, _damage): f.controller.clear_runtime_effects())
+	f.controller.configure(f.player, f.world, resolver, f.loadout)
+	f.controller.tick_auto_cast(5.0)
+	assert_eq(first.health, 42)
+	assert_eq(second.health, 50)
+	var remaining_visuals := 0
+	for child in f.world.get_children():
+		if child is Sprite2D and not child.is_queued_for_deletion():
+			remaining_visuals += 1
+	assert_eq(remaining_visuals, 0, "A cancelled cast must not recreate its visual after the damage callback.")
+	f.controller.tick_auto_cast(0.5)
+	assert_eq(first.health, 42)
+	assert_eq(second.health, 50)
+
+
 func test_starter_is_not_duplicated_but_committed_scroll_auto_casts() -> void:
 	assert_true(ResourceLoader.exists(AUTO_CONTROLLER_PATH), "확정 인법서 자동 시전기가 필요합니다.")
 	if not ResourceLoader.exists(AUTO_CONTROLLER_PATH):

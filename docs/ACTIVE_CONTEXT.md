@@ -1,5 +1,21 @@
 # ACTIVE_CONTEXT
 
+## Latest — four selected offensive books, 2026-09-13 continuation
+
+Current WIP now consumes Guiin pulse/afterimage line/ring/kick cone definitions.
+The remaining new-effect count is20, not23. Fixed origin/direction, per-cast line
+hit dedupe, exact scheduled ring/kick ticks, Loadout signal cancellation,
+reentrant-call guard and configure-time Stage reset are implemented.
+Main binds Guiin to Loadout: selectable mode suppresses its legacy free pulse
+while school-owned charge remains. Default Main start/profile still legacy.
+Actual GPU-backed engine process smoke with production Player/Enemy passed:
+`tools/qa_selected_books_runtime.gd`; no Main/save writes and no art-quality claim.
+First full regression717tests/9608assertions passed; later visual-cancellation
+regression reproduced and corrected, final run receipt follows in review owner.
+Whole-game queue remains open:20effects, tags, other school intrinsic suppression,
+Stage lifecycle consumer wiring, gear/Workbench/profile2, normal-speed full run,
+visual assets/Human/device and full five-loop closeout. Do not mark P03 complete.
+
 ## Latest — selected-book combat consumer WIP, 2026-09-13
 
 User clarified the loop means benchmark → specify → implement → verify/correct,

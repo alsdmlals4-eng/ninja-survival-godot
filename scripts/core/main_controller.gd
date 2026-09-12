@@ -99,6 +99,7 @@ func _ready() -> void:
 	wave_spawner.configure(self, player)
 	basic_weapons.configure(combat_resolver)
 	(school_host.get_node("Guiin") as GuiinRuntime).configure_weapon_controller(basic_weapons)
+	(school_host.get_node("Guiin") as GuiinRuntime).configure_ninjutsu_loadout(ninjutsu_loadout)
 	school_host.configure(player, self)
 	school_host.configure_run_systems(combat_resolver, contribution_tracker)
 	if ninjutsu_auto_controller != null:
