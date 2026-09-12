@@ -55,18 +55,18 @@ class DummyEnemy extends Node2D:
 		return health <= 0
 
 
-func _selected_fixture(id: StringName) -> Dictionary:
+func _selected_fixture(id: StringName, school: StringName = &"guiin") -> Dictionary:
 	var world := Node2D.new()
 	add_child_autofree(world)
 	var player := Node2D.new()
 	world.add_child(player)
 	var loadout = LOADOUT_SCRIPT.new()
 	world.add_child(loadout)
-	loadout.begin_start_draft(&"guiin", 12)
+	loadout.begin_start_draft(school, 12)
 	for index in range(2):
 		loadout.choose_start_draft(loadout.start_draft_snapshot().options[0])
 	loadout.commit_drafted_start(loadout.start_draft_snapshot().picks)
-	assert_true(loadout.commit_placed_ninjutsu([id], [&"guiin"]))
+	assert_true(loadout.commit_placed_ninjutsu([id], [school]))
 	var controller = load(AUTO_CONTROLLER_PATH).new()
 	world.add_child(controller)
 	controller.set_process(false)
@@ -83,6 +83,69 @@ func _enemy_in(world: Node, position: Vector2) -> DummyEnemy:
 	enemy.position = position
 	enemy.add_to_group("enemies")
 	return enemy
+
+
+func test_wind_moves_over_time_sweeps_long_frames_and_hits_each_target_once() -> void:
+	var f := _selected_fixture(&"cheonsul_wind_pillar", &"cheonsul")
+	var near := _enemy_in(f.world, Vector2(120, 0))
+	var far := _enemy_in(f.world, Vector2(360, 24))
+	var outside := _enemy_in(f.world, Vector2(180, 24.01))
+	var beyond := _enemy_in(f.world, Vector2(360.01, 0))
+	f.controller.tick_auto_cast(3.0)
+	assert_eq(near.health, 50, "Wind is not instantaneous damage along the whole line.")
+	f.controller.tick_auto_cast(0.2)
+	assert_eq(near.health, 36)
+	assert_eq(far.health, 50)
+	var moving_visual: Sprite2D
+	for child in f.world.get_children():
+		if child is Sprite2D:
+			moving_visual = child
+	assert_not_null(moving_visual)
+	if moving_visual != null:
+		assert_eq(moving_visual.position, Vector2(120, 0))
+	f.player.position = Vector2(1000, 1000)
+	f.controller.tick_auto_cast(1.0)
+	assert_eq(near.health, 36)
+	assert_eq(far.health, 36, "The final swept segment must resolve even on a long frame.")
+	assert_eq(outside.health, 50)
+	assert_eq(beyond.health, 50)
+	var expired := _enemy_in(f.world, Vector2(200, 0))
+	f.controller.tick_auto_cast(0.1)
+	assert_eq(expired.health, 50)
+
+
+func test_wind_pause_and_unequip_cancel_future_motion() -> void:
+	var f := _selected_fixture(&"cheonsul_wind_pillar", &"cheonsul")
+	var enemy := _enemy_in(f.world, Vector2(120, 0))
+	f.controller.tick_auto_cast(3.0)
+	get_tree().paused = true
+	f.controller.tick_auto_cast(0.6)
+	get_tree().paused = false
+	assert_eq(enemy.health, 50)
+	f.controller.tick_auto_cast(0.1)
+	assert_eq(enemy.health, 50)
+	f.loadout.commit_placed_ninjutsu([], [&"cheonsul"])
+	f.controller.tick_auto_cast(0.5)
+	assert_eq(enemy.health, 50)
+
+
+func test_wind_uses_injutsu_damage_and_cannot_reenter_or_hit_foreign_world() -> void:
+	var f := _selected_fixture(&"cheonsul_wind_pillar", &"cheonsul")
+	var enemy := _enemy_in(f.world, Vector2(120, 0))
+	var foreign := _enemy_in(self, Vector2(100, 0))
+	var resolver = load("res://scripts/combat/combat_resolver.gd").new()
+	f.world.add_child(resolver)
+	var kinds: Array = []
+	resolver.damage_started.connect(func(_id, _target, kind):
+		kinds.append(kind)
+		f.controller.tick_auto_cast(3.0)
+	)
+	f.controller.configure(f.player, f.world, resolver, f.loadout)
+	f.controller.tick_auto_cast(3.0)
+	f.controller.tick_auto_cast(0.6)
+	assert_eq(enemy.health, 36)
+	assert_eq(foreign.health, 50)
+	assert_eq(kinds, [&"direct_injutsu"])
 
 
 func test_selected_ring_ticks_at_fixed_cast_position_and_stops_after_two_hits() -> void:

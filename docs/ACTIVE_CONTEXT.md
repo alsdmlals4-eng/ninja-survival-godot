@@ -1,5 +1,13 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — wind projectile, 2026-09-13
+
+Selected book consumers now cover11/24;13remain. Wind uses swept movement with
+per-target dedupe, full lifetime clamp and direct_injutsu damage. Final local
+GUT97scripts/734tests/9692assertions PASS; GPU real-process wind smoke PASS.
+The detailed Korean wind receipt at the end supersedes the counts below.
+Main default cutover/profile2/remaining effects/full-run/Human gates remain open.
+
 ## Latest — support books and actual lifecycle consumers, 2026-09-13
 
 Continue without routine approval as explicitly requested. This turn completed
@@ -882,3 +890,11 @@ T12~T16 machine scope + Cheonsul first authoring baseline
 ```
 
 DEC-029/030/031/032/033 define the four-school shared-chassis package and its final-package boundary. DEC-036 moves Human/Player observation out of the current implementation gate; it stays `NOT_RUN` and cannot be inferred from automation. The failure rule remains default Run end with one Ninja-Soul-gated school retry.
+# 2026-09-13 연속 구현 추가 — 풍주
+
+선택형 인법 실제 효과 연결은 11/24, 나머지13종은 미완료다.
+풍주: 3초 주기, 고정 시전 방향, 600속도/360거리/48폭/0.6초, 적당14피해1회.
+기존 시전 레코드에 이동 구간 판정과 기존 대체 Sprite 이동을 연결했다. 최종 VFX 승격은 아니다.
+전체 GUT 97scripts/734tests/9692assertions PASS, 실제 엔진 process 지연 명중 smoke PASS.
+Main 기본 시작 모드 전환/profile2/나머지 효과/정상 속도 전체 런/Human 검증은 아직 남는다.
+아래 이전 10/24 기록은 앞선 증분의 영수증이다.

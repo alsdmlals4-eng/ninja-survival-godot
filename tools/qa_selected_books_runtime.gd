@@ -19,14 +19,35 @@ func _run() -> void:
 	enemy.set_process(false)
 	var loadout = load("res://scripts/core/ninjutsu_loadout_state.gd").new()
 	world.add_child(loadout)
-	loadout.begin_start_draft(&"guiin", 12)
+	var school: StringName = &"cheonsul" if "--wind" in OS.get_cmdline_user_args() else &"guiin"
+	loadout.begin_start_draft(school, 12)
 	for index in range(2):
 		loadout.choose_start_draft(loadout.start_draft_snapshot().options[0])
 	loadout.commit_drafted_start(loadout.start_draft_snapshot().picks)
-	loadout.commit_placed_ninjutsu([&"guiin_rakshasa_kicks"], [&"guiin"])
+	if school == &"guiin":
+		loadout.commit_placed_ninjutsu([&"guiin_rakshasa_kicks"], [&"guiin"])
 	var controller = load("res://scripts/schools/ninjutsu_auto_controller.gd").new()
 	world.add_child(controller)
 	controller.configure(player, world, null, loadout)
+	if "--wind" in OS.get_cmdline_user_args():
+		loadout.commit_placed_ninjutsu([&"cheonsul_wind_pillar"], [&"cheonsul"])
+		controller.configure(player, world, null, loadout)
+		enemy.position = Vector2(240, 0)
+		await create_timer(3.2).timeout
+		if enemy.health != 1000:
+			push_error("WIND_RUNTIME_FAIL premature hit")
+			quit(1)
+			return
+		await create_timer(0.55).timeout
+		if enemy.health != 986:
+			push_error("WIND_RUNTIME_FAIL expected one moving hit: " + str(enemy.health))
+			quit(1)
+			return
+		world.queue_free()
+		await process_frame
+		print("WIND_RUNTIME_PASS real process delayed hit; no save writes or final art claim")
+		quit(0)
+		return
 	if "--support" in OS.get_cmdline_user_args():
 		loadout.commit_placed_ninjutsu([&"guiin_demon_step"], [&"guiin"])
 		player.set_physics_process(true)

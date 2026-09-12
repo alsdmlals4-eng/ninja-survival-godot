@@ -647,3 +647,14 @@ Next: detail reaction ownership/migration and representative-slice inputs;
 images and implementation remain paused. No existing asset or historical PDF
 was removed. User experience, final art, runtime, performance, platform and
 balance of the new design: NOT_RUN. Combined PR #147 remains Draft/unmerged.
+# 2026-09-13 풍주 연속 구현 검증
+
+기존 BasicProjectile은 장비 피해 및 첫 명중 소멸 owner여서 신규 풍주에 그대로 쓰지 않았다.
+기존 선택형 시전 레코드에 시간별 이동 구간/폭 판정과 대상별 중복 방지를 연결했다.
+RED: 120/360거리 대상이 계속50HP였다. GREEN: 시간 도달 후36HP, 폭 밖/360초과는50HP 유지.
+pause/해제/다른world/재진입/인술 피해 kind/대체 이미지 이동을 회귀 검사했다.
+전체97scripts/734tests/9692assertions PASS; 로그 `%TEMP%/ninja-wind-final-gut-20260913.log`.
+실제 GPU 엔진 process smoke는 240거리 적에게 도달 전1000, 도달 후986HP를 확인했다.
+첫 smoke는 이미 확정한 draft를 다시 시작하려다 options가 비어 실패했다. 최초 생성 시 유파를 선택하도록 고쳤고 재실행 PASS.
+움직이는 적의 프레임 사이 궤적, 최종 VFX/Human/전체 런은 검증하지 않았다. 전체 범위5회 검토 완료 주장이 아니다.
+재사용 교훈: 투사체의 모습이 비슷해도 피해 소유권과 관통/수명 계약이 다르면 기존 장비 투사체에 억지로 연결하지 않는다.

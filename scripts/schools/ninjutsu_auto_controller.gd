@@ -176,7 +176,7 @@ func _tick_selected_books(delta: float) -> void:
 	_advance_selected_casts(delta)
 	for raw_id in _loadout.call("active_spell_ids"):
 		var id := StringName(raw_id)
-		if not [&"guiin_ghost_blood_wave", &"guiin_afterimage_charge", &"guiin_asura_ring", &"guiin_rakshasa_kicks"].has(id):
+		if not [&"guiin_ghost_blood_wave", &"guiin_afterimage_charge", &"guiin_asura_ring", &"guiin_rakshasa_kicks", &"cheonsul_wind_pillar"].has(id):
 			continue
 		var definition = NINJUTSU_CATALOG_SCRIPT.definition_for_id(id)
 		var config: Dictionary = definition.effect_config
@@ -202,7 +202,10 @@ func _tick_selected_books(delta: float) -> void:
 			return
 		if float(config.duration) <= 0.0:
 			_selected_casts.erase(cast)
-		_spawn_effect(definition, origin, 0.13)
+		if config.kind == "wind_projectile":
+			cast.visual = _spawn_effect(definition, origin, 0.13, float(config.duration))
+		else:
+			_spawn_effect(definition, origin, 0.13)
 
 
 func _selected_target(origin: Vector2, radius: float) -> Node2D:
@@ -245,8 +248,14 @@ func _advance_selected_casts(delta: float) -> void:
 		if not _selected_casts.has(cast):
 			continue
 		var config: Dictionary = cast.config
+		cast.previous_elapsed = float(cast.elapsed)
 		cast.elapsed = float(cast.elapsed) + delta
-		if config.kind == "afterimage_line":
+		if config.kind == "wind_projectile":
+			var visual = cast.get("visual")
+			if is_instance_valid(visual) and not visual.is_queued_for_deletion():
+				visual.global_position = Vector2(cast.origin) + Vector2(cast.direction) * minf(float(cast.elapsed) * float(config.speed), float(config.length))
+			_hit_selected_cast(cast)
+		elif config.kind == "afterimage_line":
 			if float(cast.elapsed) < float(config.duration):
 				_hit_selected_cast(cast)
 		else:
@@ -270,7 +279,13 @@ func _hit_selected_cast(cast: Dictionary) -> void:
 			continue
 		var offset: Vector2 = enemy.global_position - Vector2(cast.origin)
 		var direction: Vector2 = cast.direction
-		if config.kind == "afterimage_line":
+		if config.kind == "wind_projectile":
+			var start_distance := minf(float(cast.get("previous_elapsed", 0.0)), float(config.duration)) * float(config.speed)
+			var end_distance := minf(minf(float(cast.elapsed), float(config.duration)) * float(config.speed), float(config.length))
+			var along := offset.dot(direction)
+			if along < start_distance or along > end_distance or absf(offset.cross(direction)) > float(config.width) * 0.5 or cast.hit_ids.has(enemy.get_instance_id()):
+				continue
+		elif config.kind == "afterimage_line":
 			var along := offset.dot(direction)
 			if along < 0 or along > float(config.length) or absf(offset.cross(direction)) > float(config.width) * 0.5 or cast.hit_ids.has(enemy.get_instance_id()):
 				continue
@@ -409,9 +424,9 @@ func _deal_damage(target: Node, amount: int) -> int:
 	return int(result) if result is int else 0
 
 
-func _spawn_effect(definition, position: Vector2, effect_scale: float) -> void:
+func _spawn_effect(definition, position: Vector2, effect_scale: float, duration: float = EFFECT_LIFETIME) -> Sprite2D:
 	if not is_instance_valid(_world):
-		return
+		return null
 	var effect := Sprite2D.new()
 	effect.name = "NinjutsuEffect"
 	effect.texture = _effect_texture(definition)
@@ -420,7 +435,8 @@ func _spawn_effect(definition, position: Vector2, effect_scale: float) -> void:
 	effect.modulate = _school_color(StringName(definition.school_id))
 	effect.z_index = 2
 	_world.add_child(effect)
-	_active_effects.append({"node": effect, "remaining": EFFECT_LIFETIME, "spell_id": definition.ninjutsu_id})
+	_active_effects.append({"node": effect, "remaining": duration, "spell_id": definition.ninjutsu_id})
+	return effect
 
 
 func _effect_texture(definition) -> Texture2D:
