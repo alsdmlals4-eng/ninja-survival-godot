@@ -368,6 +368,7 @@ func _spawn_scene(path: String) -> Node:
 	if packed == null:
 		return null
 	var instance = packed.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(instance)
 	add_child_autofree(instance)
 	return instance
 

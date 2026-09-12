@@ -140,6 +140,13 @@ text = "보유 G 0G"
 layout_mode = 2
 text = "가방 구매: 가방 없음 · 0G"
 
+[node name="ShopOffers" type="VBoxContainer" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+
+[node name="ShopRerollButton" type="Button" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+text = "상점 새로고침 5G"
+
 [node name="PendingBagButton" type="Button" parent="Panel/Margin/Content/WorkbenchView"]
 visible = false
 layout_mode = 2
@@ -147,7 +154,7 @@ text = "대기 가방 배치"
 
 [node name="BufferTitleLabel" type="Label" parent="Panel/Margin/Content/WorkbenchView"]
 layout_mode = 2
-text = "작업 버퍼 — 하나를 선택해 회전·배치"
+text = "보관함 6칸 — 미배치 아이템은 다음 준비까지 보관 · 배치 전에는 효과 없음"
 
 [node name="BufferItems" type="HBoxContainer" parent="Panel/Margin/Content/WorkbenchView"]
 layout_mode = 2
@@ -155,6 +162,11 @@ layout_mode = 2
 [node name="BufferRotateButton" type="Button" parent="Panel/Margin/Content/WorkbenchView"]
 layout_mode = 2
 text = "선택 아이템 회전 0°"
+
+[node name="BufferSellButton" type="Button" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+disabled = true
+text = "판매할 보관 아이템을 선택하세요"
 
 [node name="BoardTitleLabel" type="Label" parent="Panel/Margin/Content/WorkbenchView"]
 layout_mode = 2

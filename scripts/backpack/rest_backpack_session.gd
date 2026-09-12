@@ -17,6 +17,7 @@ var _state = null
 var _source_committed_state = null
 var _begin_generation: int = 0
 var _buffer: Array = []
+var _preserve_buffer: bool = false
 var _pending_bag = null
 var input_mode: int = InputMode.NORMAL
 
@@ -50,7 +51,11 @@ var combination_transaction_active: bool:
 		return _combination_transaction_active
 
 
-func begin(committed_state, resolver, item_defs: Dictionary, bag_defs: Dictionary, selected_school_id: StringName) -> void:
+func begin(committed_state, resolver, item_defs: Dictionary, bag_defs: Dictionary, selected_school_id: StringName, carried_items: Array = [], preserve_buffer: bool = false) -> bool:
+	if not carried_items.is_empty() and not preserve_buffer:
+		return false
+	if not carried_items.is_empty() and not is_valid_carried_buffer(carried_items, committed_state, item_defs):
+		return false
 	_begin_generation += 1
 	_source_committed_state = committed_state
 	_state = committed_state.copy_value() if committed_state != null else null
@@ -58,13 +63,31 @@ func begin(committed_state, resolver, item_defs: Dictionary, bag_defs: Dictionar
 	_item_defs = item_defs.duplicate()
 	_bag_defs = bag_defs.duplicate()
 	_selected_school_id = selected_school_id
-	_buffer.clear()
+	_buffer = _copy_buffer(carried_items)
+	_preserve_buffer = preserve_buffer
 	_pending_bag = null
 	input_mode = InputMode.NORMAL
 	_undo_stack.clear()
 	_redo_stack.clear()
 	_pending_preview_state = null
 	_combination_transaction_active = false
+	return true
+
+
+static func is_valid_carried_buffer(source, backpack, item_defs: Dictionary) -> bool:
+	if not (source is Array) or source.size() > BUFFER_CAPACITY or not (backpack is BackpackStateScript):
+		return false
+	var seen: Dictionary = {}
+	for item in source:
+		if not (item is ItemInstanceScript):
+			return false
+		var id: int = item.instance_id
+		if id <= 0 or id >= backpack.next_instance_id or seen.has(id) or backpack.items.has(id) or backpack.bags.has(id):
+			return false
+		if not item_defs.has(item.definition_id) or item.rotation_quarters < 0 or item.rotation_quarters > 3:
+			return false
+		seen[id] = true
+	return true
 
 
 func _is_bound_to_committed_state(committed_state) -> bool:
@@ -386,8 +409,10 @@ func commit_failures(chest_count: int, boss_reward_pending: bool, combination_pe
 		failures.append(&"boss_reward_pending")
 	if chest_count > 0:
 		failures.append(&"chest_pending")
-	if not _buffer.is_empty():
+	if not _buffer.is_empty() and not _preserve_buffer:
 		failures.append(&"buffer_not_empty")
+	if _preserve_buffer and not is_valid_carried_buffer(_buffer, _state, _item_defs):
+		failures.append(&"invalid_carried_buffer")
 	if _pending_bag != null:
 		failures.append(&"pending_bag")
 	if _pending_preview_state != null:

@@ -5,6 +5,7 @@ const MAIN_SCENE := preload("res://scenes/main/main_scene.tscn")
 
 func test_run_starts_paused_behind_the_title_before_stage_selection() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 
@@ -37,6 +38,7 @@ func test_each_school_selection_activates_only_matching_runtime_and_combat() -> 
 
 	for school_id in cases.keys():
 		var main = MAIN_SCENE.instantiate()
+		preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 		add_child_autofree(main)
 		await get_tree().process_frame
 		if not main.has_node("SchoolRuntimeHost") or not main.has_node("SchoolSelectionUI") or not main.has_node("TitleScreen"):
@@ -72,6 +74,7 @@ func test_each_school_selection_activates_only_matching_runtime_and_combat() -> 
 
 func test_current_school_help_opens_from_settings_during_combat_without_reselecting() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 	var selector = main.get_node("SchoolSelectionUI") as SchoolSelectionUI
@@ -96,6 +99,7 @@ func test_current_school_help_opens_from_settings_during_combat_without_reselect
 
 func test_paused_settings_help_renders_above_hud_and_closes_from_parsed_escape() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 	var selector := main.get_node_or_null("SchoolSelectionUI") as SchoolSelectionUI
@@ -141,6 +145,7 @@ func test_paused_settings_help_renders_above_hud_and_closes_from_parsed_escape()
 
 func test_second_school_selection_is_rejected() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 	if not main.has_node("SchoolRuntimeHost") or not main.has_node("SchoolSelectionUI"):
@@ -156,6 +161,7 @@ func test_second_school_selection_is_rejected() -> void:
 
 func test_school_kill_keeps_single_mvp1_kill_combo_orb_and_school_gain() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 	if not main.has_node("SchoolRuntimeHost") or not main.has_node("SchoolSelectionUI"):
@@ -180,6 +186,7 @@ func test_school_kill_keeps_single_mvp1_kill_combo_orb_and_school_gain() -> void
 
 func test_repeated_enemy_death_callback_is_idempotent() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 	main.get_node("SchoolSelectionUI")._choose(&"bongma")
@@ -202,6 +209,7 @@ func test_repeated_enemy_death_callback_is_idempotent() -> void:
 
 func test_wave_spawned_enemy_is_wired_after_selection() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 	if not main.has_node("SchoolSelectionUI"):
@@ -221,6 +229,7 @@ func test_wave_spawned_enemy_is_wired_after_selection() -> void:
 
 func test_alive_ui_accept_does_not_trigger_selected_ultimate() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 	if not main.has_node("SchoolRuntimeHost") or not main.has_node("SchoolSelectionUI"):
@@ -240,6 +249,7 @@ func test_alive_ui_accept_does_not_trigger_selected_ultimate() -> void:
 
 func test_automatic_combat_keeps_tradition_runtime_without_manual_ultimate_button() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 	main.get_node("SchoolSelectionUI")._choose(&"bongma")
@@ -250,6 +260,7 @@ func test_automatic_combat_keeps_tradition_runtime_without_manual_ultimate_butto
 
 func test_cheonsul_combat_does_not_expose_manual_test_encounter_buttons() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 	main.get_node("SchoolSelectionUI")._choose(&"cheonsul")
@@ -261,6 +272,7 @@ func test_cheonsul_combat_does_not_expose_manual_test_encounter_buttons() -> voi
 
 func test_restart_button_is_wired_while_player_is_alive() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 	var hud = main.get_node("HUD")
@@ -276,6 +288,7 @@ func test_restart_button_is_wired_while_player_is_alive() -> void:
 
 func test_game_over_deactivates_school_runtime_and_freezes_school_effects() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 	if not main.has_node("SchoolRuntimeHost") or not main.has_node("SchoolSelectionUI"):

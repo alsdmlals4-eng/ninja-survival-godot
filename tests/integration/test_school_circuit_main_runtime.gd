@@ -27,6 +27,86 @@ func after_each() -> void:
 	_remove_retry_wallet_storage()
 
 
+func test_preparation_shop_buttons_buy_sell_and_reroll_through_spatial_owner() -> void:
+	var main: Node = _new_main()
+	main._on_school_selected(&"cheonsul")
+	var circuit = main.school_circuit
+	assert_true(_clear_active_school_to_workbench(main, circuit))
+	main.run_build_state.grant_gold(200)
+	main._render_school_circuit_workbench()
+	var ui = main.get_node("RestFlowUI")
+	var offers = ui.get_node_or_null("Panel/Margin/Content/WorkbenchView/ShopOffers")
+	assert_not_null(offers, "Actual preparation needs spatial shop controls, not the inactive legacy ShopView.")
+	if offers == null:
+		return
+	assert_eq(offers.get_child_count(), 3)
+	var first: Dictionary = circuit.workbench_snapshot().shop_offers[0]
+	var gold: int = main.run_build_state.gold
+	offers.get_child(0).pressed.emit()
+	assert_eq(main.run_build_state.gold, gold - int(first.price))
+	assert_eq(circuit.workbench_snapshot().buffer.size(), 1)
+	var held: Dictionary = circuit.workbench_snapshot().buffer[0]
+	ui.workbench_buffer_items.get_child(0).pressed.emit()
+	assert_false(ui.workbench_buffer_rotate_button.disabled, "Selecting a held item must enable the real rotation button.")
+	ui.workbench_buffer_rotate_button.pressed.emit()
+	assert_eq(ui._selected_buffer_rotation, 1)
+	var sale = ui.get_node("Panel/Margin/Content/WorkbenchView/BufferSellButton")
+	assert_false(sale.disabled)
+	sale.pressed.emit()
+	assert_eq(circuit.workbench_snapshot().buffer.size(), 0)
+	assert_eq(main.run_build_state.gold, gold - int(first.price) + int(held.sell_price))
+	var after_sale: int = main.run_build_state.gold
+	sale.pressed.emit()
+	assert_eq(main.run_build_state.gold, after_sale, "Stale selection must not sell another item or pay twice.")
+	var reroll = ui.get_node("Panel/Margin/Content/WorkbenchView/ShopRerollButton")
+	reroll.pressed.emit()
+	assert_eq(main.run_build_state.gold, after_sale - 5)
+	assert_eq(circuit.workbench_snapshot().shop_reroll_cost, 10)
+	assert_eq(circuit._committed_backpack_state.items.size(), 0)
+	var filled: Array = circuit._backpack_session._acquire_items_to_buffer([&"shuriken", &"shuriken", &"shuriken", &"shuriken", &"shuriken", &"shuriken"])
+	assert_eq(filled.size(), 6)
+	main._render_school_circuit_workbench()
+	assert_true(ui.workbench_shop_offers.get_child(0).disabled)
+	var full_gold: int = main.run_build_state.gold
+	ui.workbench_shop_buy_requested.emit(0)
+	assert_eq(main.run_build_state.gold, full_gold)
+	assert_false(circuit.open_chest())
+	for _index in range(2):
+		ui.workbench_buffer_items.get_child(0).pressed.emit()
+		sale.pressed.emit()
+	assert_true(circuit.open_chest(), "Explicit sale frees capacity without discarding rewards automatically.")
+	assert_eq(circuit.workbench_snapshot().buffer.size(), 6)
+
+
+func test_main_departure_saves_unplaced_rewards_and_next_preparation_keeps_them() -> void:
+	var main: Node = _new_main()
+	main._on_school_selected(&"cheonsul")
+	var circuit = main.school_circuit
+	assert_true(_clear_active_school_to_workbench(main, circuit))
+	assert_true(circuit.choose_boss_reward(0))
+	assert_true(circuit.open_chest())
+	var held: Array = circuit.workbench_snapshot().buffer
+	assert_gt(held.size(), 0)
+	assert_true(circuit.choose_fate(circuit.workbench_snapshot().fate_candidate_ids[0]))
+	assert_true(circuit.choose_next_route(&"bongma"))
+	main._render_school_circuit_workbench()
+	assert_false(main.get_node("RestFlowUI").workbench_commit_button.disabled)
+	main.get_node("RestFlowUI").workbench_commit_requested.emit()
+	assert_eq(circuit.route_state.active_school_id(), &"bongma")
+	assert_eq(circuit._committed_backpack_state.items.size(), 0)
+	var saved: Dictionary = main.run_resume_store.load_checkpoint()
+	assert_true(saved.get("ok", false))
+	if not saved.get("ok", false):
+		return
+	var restored: Array = saved.checkpoint.circuit.carried_buffer
+	assert_eq(restored.size(), held.size())
+	for index in range(held.size()):
+		assert_eq(restored[index].instance_id, held[index].instance_id)
+	assert_true(_clear_active_school_to_workbench(main, circuit))
+	assert_eq(circuit.workbench_snapshot().buffer, held)
+	assert_eq(circuit._backpack_session.state.bags.size(), 1, "No test-only capacity expansion is used here.")
+
+
 func test_each_school_selection_starts_the_same_circuit_runtime_with_its_own_encounter_identity() -> void:
 	for school_id in SCHOOL_IDS:
 		var main: Node = _new_main()
@@ -319,6 +399,7 @@ func _new_main():
 	if fields.has(&"wallet_storage_path"):
 		main.wallet_storage_path = RETRY_WALLET_PATH + ".initial"
 		main.resume_storage_path = RESUME_PATH
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	return main
 

@@ -16,6 +16,21 @@ func after_each() -> void:
 	_remove_wallet_storage()
 
 
+func test_checkpoint_owns_copies_of_buffer_items_and_backpack_on_capture_and_read() -> void:
+	var checkpoint = load(CHECKPOINT_PATH).new()
+	var backpack = load("res://scripts/backpack/backpack_state.gd").new().create_starting_state()
+	var id: int = backpack.add_item(&"shuriken", Vector2i(1, 1))
+	var held = backpack.remove_item(id)
+	assert_true(checkpoint.capture({"gold": 17}, {"active_school_id": &"guiin"}, {"eligible_school_boss_ids": []}, {"committed_backpack_state": backpack, "carried_buffer": [held]}))
+	held.definition_id = &"unknown"
+	backpack.next_instance_id = 999
+	var exposed: Dictionary = checkpoint.get_snapshot()
+	assert_eq(exposed.circuit.carried_buffer[0].definition_id, &"shuriken")
+	assert_eq(exposed.circuit.committed_backpack_state.next_instance_id, id + 1)
+	exposed.circuit.carried_buffer[0].instance_id = 400
+	assert_eq(checkpoint.get_snapshot().circuit.carried_buffer[0].instance_id, id)
+
+
 func test_wallet_is_the_only_persistent_debit_owner_and_reloads_a_successful_retry_spend() -> void:
 	var wallet = load(WALLET_PATH).new()
 	add_child_autofree(wallet)

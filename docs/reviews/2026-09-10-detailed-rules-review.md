@@ -1,5 +1,67 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-12 carried buffer / real preparation shop continuation
+
+Reused current approved detail rules, RestBackpackSession, Circuit, ResumeCodec,
+ShopController and existing preparation UI. ADAPT existing session with an explicit
+carryover mode; preserve legacy strict-empty default. REJECT automatic discard or
+unbounded overflow. ADAPT existing price/transaction owner into actual Workbench;
+REJECT a second inventory/shop economy and a separate modal for this small flow.
+Existing initial board/legacy item meanings are not silently converted to the
+new equipment/24-book contract. Profile2 remains separate pending implementation.
+
+RED evidence: session had no carryover boundary; codec returned empty on held
+RefCounted instances; Circuit rejected departure with held rewards; snapshot
+mutation changed both saved item and next-ID; actual Workbench had no shop controls.
+Corrections preserve six items, IDs/rotation and inactive power across departure,
+retry and persistent resume. Invalid/duplicate/colliding IDs fail before mutation.
+Explicit domain value copies protect capture and readback from caller mutation.
+
+Primary research after alias finding:
+[Godot Dictionary](https://docs.godotengine.org/en/4.6/classes/class_dictionary.html)
+and [engine issue96627](https://github.com/godotengine/godot/issues/96627).
+ADAPT domain-specific value copies; REJECT assuming duplicate(true) copies objects,
+and reject serializing/deserializing the entire checkpoint merely to make copies.
+Local Godot4.7.1 regression reproduced and then removed all three alias failures.
+
+Actual Main shop tests exercise rendered buttons: purchase into buffer, exact
+debit, selected sale/refund, no duplicate payout, reroll5->10, full-buffer refusal
+without debit, explicit sales then chest acquisition. Existing commit-power owner
+is unchanged. Encounter and final-boss regression remains in the full suite.
+
+Review findings: Main's explicit presentation mapping initially omitted shop
+fields (corrected); synchronous button rebuild attempted to free the emitting
+button (corrected by disable/remove/queued deletion); stale deferred focus tried
+to focus detached buttons (guarded); real rotation control stayed disabled after
+selection (RED reproduced, enabled from current selection). Two authoring patch
+boundary mistakes produced parse errors and were corrected before accepted runs.
+These are implementation iterations, NOT five whole-scope completion loops.
+
+GPU evidence: `preparation-shop-buffer-20260912.png` and selected companion are
+actual Main1152x648/OpenGL RTX3050 renders. CLI used unique own save paths,
+accelerated first Elite/trace/Boss, no board expansion. Real pointer press/release
+selected and sold one held item; exact count/refund checked. Layout is functional
+but plain and scroll-heavy; no Human/normal-speed/device/rights/art approval pass.
+QA wallet files are disposable test fixtures, not user profiles.
+
+Reusable learning candidates: domain-object snapshot alias tests; emitted-control
+deferred deletion + still-current focus; verify actual preparation mapping rather
+than an inactive legacy ShopView. Recorded here, no unverified Base promotion.
+
+Final increment regression:94scripts/675tests/7475assertions PASS with explicit
+parse/error scan. Rotation-button disabled state is now covered after selecting
+an item. A targeted test-only helper isolates36 Main entrypoints before ready;
+explicit fixture paths are preserved. Earlier default-path test behavior is not
+retroactively called isolated. The last full run preserved both real default
+profile hashes: wallet039A9A7D9E915B364D966ACC294F5D2AF04DAEC0CC4E65DDEC574D209CD17B26,
+resume9A68F9F643BCE7E661811371BEAE4507209B66AD2F111F93053871E8B32B9B3E.
+Tests retain owned generated files for user deletion review, no actual profile
+removal. Two further CLI wallet fixtures moved to the existing deletion-review
+folder; that folder now has14payloadfiles/19,406bytes plus README.
+Rollback caveat: the optional schema1 buffer field does not change item meanings,
+but an older binary can ignore it. Do not open this candidate's saves with an older
+build; preserve them while moving to the still-pending versioned profile2 owner.
+
 ## 2026-09-12 Guiin charge / activation / rank refinement
 
 Latest full GUT93scripts/666tests/7358assertions PASS. RED checks exposed legacy

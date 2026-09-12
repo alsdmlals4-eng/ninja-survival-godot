@@ -4,6 +4,7 @@ const MAIN_SCENE := preload("res://scenes/main/main_scene.tscn")
 
 func test_selected_stage_spawns_a_catalog_core_actor() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	main._on_school_selected(&"bongma")
 	await get_tree().process_frame

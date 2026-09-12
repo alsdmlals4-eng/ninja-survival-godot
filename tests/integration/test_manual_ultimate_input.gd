@@ -30,6 +30,7 @@ func _main(school: StringName = &"guiin"):
 	var main = MAIN_SCENE.instantiate()
 	main.wallet_storage_path = "user://gut_manual_ultimate_wallet.json"
 	main.resume_storage_path = "user://gut_manual_ultimate_resume.json"
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	main.title_screen.hide()
 	main.school_selection.show_starting_school_selection()

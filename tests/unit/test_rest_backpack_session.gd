@@ -8,6 +8,35 @@ const CATALOG_PATH := "res://scripts/data/mvp4_catalog.gd"
 const BAG_INSTANCE_PATH := "res://scripts/data/bag_instance.gd"
 
 
+func test_carried_buffer_can_depart_without_power_and_keeps_identity() -> void:
+	var committed = _starting_state()
+	var source = _session(committed)
+	var ids: Array = source._acquire_items_to_buffer([&"shuriken"])
+	var next = load(SESSION_PATH).new()
+	assert_true(next.begin(source.state, _resolver(), _item_defs(), _bag_defs(), &"", source.buffer, true))
+	assert_false(next.commit_failures(0, false, false).has(&"buffer_not_empty"))
+	assert_eq(next.buffer[0].instance_id, ids[0])
+	assert_almost_eq(next.current_resolution().modifiers.non_ultimate_school_damage_pct, 0.0, 0.001)
+	var copy: Array = next.buffer
+	copy[0].definition_id = &"unknown"
+	assert_eq(next.buffer[0].definition_id, &"shuriken")
+	assert_true(next.place_buffer_item(0, Vector2i(1, 1)))
+	assert_almost_eq(next.current_resolution().modifiers.non_ultimate_school_damage_pct, 0.05, 0.001)
+
+
+func test_invalid_carried_buffer_does_not_replace_existing_session() -> void:
+	var committed = _starting_state()
+	var session = _session(committed)
+	var ids: Array = session._acquire_items_to_buffer([&"shuriken"])
+	var held: Array = session.buffer
+	var generation: int = session._transaction_generation()
+	assert_false(session.begin(session.state, _resolver(), _item_defs(), _bag_defs(), &"", [held[0], held[0]], true))
+	assert_eq(session._transaction_generation(), generation)
+	assert_eq(session.buffer[0].instance_id, ids[0])
+	assert_false(session.begin(session.state, _resolver(), _item_defs(), _bag_defs(), &"", held, false))
+	assert_eq(session.buffer.size(), 1)
+
+
 func test_t04_resources_exist() -> void:
 	assert_true(ResourceLoader.exists(PREVIEW_PATH), "Missing T04 BuildPreviewSnapshot")
 	assert_true(ResourceLoader.exists(SESSION_PATH), "Missing T04 RestBackpackSession")

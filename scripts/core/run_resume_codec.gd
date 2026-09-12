@@ -11,6 +11,8 @@ const RUN_SETTLEMENT_LEDGER_SCRIPT = preload("res://scripts/core/run_settlement_
 const NINJUTSU_LOADOUT_STATE_SCRIPT = preload("res://scripts/core/ninjutsu_loadout_state.gd")
 const MVP4_CATALOG_SCRIPT = preload("res://scripts/data/mvp4_catalog.gd")
 const MVP3_CATALOG_SCRIPT = preload("res://scripts/data/mvp3_catalog.gd")
+const REST_SESSION_SCRIPT = preload("res://scripts/backpack/rest_backpack_session.gd")
+const ITEM_INSTANCE_SCRIPT = preload("res://scripts/data/item_instance.gd")
 
 
 func encode_checkpoint(checkpoint: Dictionary) -> Dictionary:
@@ -30,6 +32,13 @@ func encode_checkpoint(checkpoint: Dictionary) -> Dictionary:
 	var persistent_circuit: Dictionary = circuit.duplicate(true)
 	persistent_circuit.erase("committed_backpack_state")
 	persistent_circuit["backpack"] = backpack_state.to_persistent_snapshot()
+	var carried = circuit.get("carried_buffer", [])
+	if not REST_SESSION_SCRIPT.is_valid_carried_buffer(carried, backpack_state, MVP4_CATALOG_SCRIPT.build_items()):
+		return {}
+	var serialized_buffer: Array = []
+	for item in carried:
+		serialized_buffer.append({"instance_id": item.instance_id, "definition_id": String(item.definition_id), "rotation_quarters": item.rotation_quarters})
+	persistent_circuit["carried_buffer"] = serialized_buffer
 	var primitive_result := _to_json_primitive({
 		"schema_version": SCHEMA_VERSION,
 		"checkpoint": {
@@ -143,9 +152,24 @@ func _decode_circuit(raw_circuit: Dictionary, restored_route: Dictionary) -> Dic
 	var backpack_state = BACKPACK_STATE_SCRIPT.from_persistent_snapshot(backpack_snapshot)
 	if backpack_state == null:
 		return {}
+	var raw_buffer = raw_circuit.get("carried_buffer", [])
+	if not (raw_buffer is Array) or raw_buffer.size() > REST_SESSION_SCRIPT.BUFFER_CAPACITY:
+		return {}
+	var carried: Array = []
+	for raw_item in raw_buffer:
+		if not (raw_item is Dictionary) or not _is_positive_whole_number(raw_item.get("instance_id")) or not _is_whole_number(raw_item.get("rotation_quarters")) or typeof(raw_item.get("definition_id")) != TYPE_STRING:
+			return {}
+		var item = ITEM_INSTANCE_SCRIPT.new()
+		item.instance_id = int(raw_item.instance_id)
+		item.definition_id = StringName(raw_item.definition_id)
+		item.rotation_quarters = int(raw_item.rotation_quarters)
+		carried.append(item)
+	if not REST_SESSION_SCRIPT.is_valid_carried_buffer(carried, backpack_state, MVP4_CATALOG_SCRIPT.build_items()):
+		return {}
 	return {
 		"active_school_id": active_school_id,
 		"committed_backpack_state": backpack_state,
+		"carried_buffer": carried,
 	}
 
 

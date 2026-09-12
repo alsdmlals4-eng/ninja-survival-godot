@@ -9,6 +9,7 @@ const MAX_DAMAGE_EVENTS_PER_PHYSICS_FRAME := 1
 
 func test_opening_horde_spreads_resolved_damage_across_physics_frames() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	main._on_school_selected(&"bongma")
 	# Isolate incoming pressure: do not kill the entire fixture crowd before entry protection expires.

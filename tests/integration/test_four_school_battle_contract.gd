@@ -30,6 +30,7 @@ const EXPECTED := {
 func test_every_selected_school_commits_its_two_scrolls_and_keeps_three_automatic_patterns() -> void:
 	for school_id in EXPECTED.keys():
 		var main: Node = MAIN_SCENE.instantiate()
+		preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 		add_child_autofree(main)
 		main._on_school_selected(school_id)
 		await get_tree().process_frame

@@ -2,6 +2,33 @@
 
 ## Latest — whole-run continuation, 2026-09-12
 
+Current local increment: persistent six-slot buffer is connected to real Circuit
+departure, retry, JSON save/load and following preparations; held items remain
+outside resolved combat power. Existing stricter legacy RestBackpackSession mode
+is retained by default. Known item IDs/unique instance IDs/next-ID/collision/
+capacity/rotation are validated before replacement. Checkpoint capture/read now
+copy RefCounted backpack/items/modifiers explicitly rather than aliasing objects.
+
+Actual preparation now renders the existing spatial ShopController's three offers,
+purchase, increasing-price reroll, and explicit selected-buffer sale. This is the
+legacy item economy consumer, NOT the new external-equipment/profile2 cutover.
+Full buffer blocks purchase without debit; explicit sale frees room for a chest.
+Live GPU pointer selection/sale and exact refund verified using isolated QA paths,
+without expanding the fixture board. See `reviews/preparation-shop-buffer-selected-20260912.png`.
+UI remains provisional/plain and scroll-heavy; no Human/accessibility pass.
+Latest full run after rotation-button correction and storage isolation:94scripts/
+675tests/7475assertions PASS, including parse/error scan. Added a test-only storage
+helper at36 Main entrypoints; explicit fixture paths remain intact. Actual default
+wallet/resume SHA-256 stayed unchanged across this full run. Generated files in
+`user://gut_main_isolated_20260912` are owned QA disposal candidates, not profiles.
+Exact e9da812 remote checks passed. New increment needs its own CI; no merge;
+whole-scope five-loop closure remains open.
+
+Next: equipment/build/preparation/profile2 atomic binding; remaining school
+charges/ultimates and24books/start choices/trace branch; final settlement and
+normal-speed full-run validation. The entries below are historical increments,
+not overriding current status. Buffer wiring is no longer an unimplemented item.
+
 Latest Guiin refinement:93scripts/666tests/7358assertions PASS. Replaced hit/kill
 charge and decay with4/sec for a living target<=480 plus4/sec for danger<=110;
 modifiers apply once, no gain while paused/dead/form active. Form activation

@@ -208,6 +208,10 @@ func shop_item_options() -> Array[StringName]:
 	return _shop.offer_ids.duplicate()
 
 
+func shop_reroll_cost() -> int:
+	return _shop.get_reroll_cost() if _shop != null else 0
+
+
 func shop_item_lane_ids() -> Array[StringName]:
 	if _shop == null:
 		return []

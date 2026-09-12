@@ -10,6 +10,7 @@ func _run() -> void:
 	root.size = Vector2i(1152, 648)
 	var main = load("res://scenes/main/main_scene.tscn").instantiate()
 	var fixture_id := str(Time.get_ticks_usec())
+	print("QA_FIXTURE_ID ", fixture_id)
 	main.wallet_storage_path = "user://qa_full_route_" + fixture_id + "_wallet.json"
 	main.resume_storage_path = "user://qa_full_route_" + fixture_id + "_resume.json"
 	root.add_child(main)
@@ -44,6 +45,30 @@ func _run() -> void:
 			_fail("school boss")
 			return
 		boss.take_damage(99999)
+		if "--shop" in OS.get_cmdline_user_args():
+			if not circuit.choose_boss_reward(0) or not circuit.open_chest():
+				_fail("shop rewards")
+				return
+			main._render_school_circuit_workbench()
+			await _capture("preparation-shop-buffer-20260912")
+			var ui = main.get_node("RestFlowUI")
+			var held_count: int = circuit.workbench_snapshot().buffer.size()
+			var refund: int = circuit.workbench_snapshot().buffer[0].sell_price
+			var gold_before: int = main.run_build_state.gold
+			await _click(ui.workbench_buffer_items.get_child(0))
+			if ui.workbench_buffer_sell_button.disabled:
+				_fail("pointer buffer selection")
+				return
+			await _capture("preparation-shop-buffer-selected-20260912")
+			await _click(ui.workbench_buffer_sell_button)
+			if circuit.workbench_snapshot().buffer.size() != held_count - 1 or main.run_build_state.gold != gold_before + refund:
+				_fail("pointer sale transaction")
+				return
+			print("SHOP_RENDER_OK: actual preparation, pointer selection/sale, exact refund; no fixture board expansion")
+			main.queue_free()
+			await process_frame
+			quit(0)
+			return
 		if not circuit.choose_boss_reward(0) or not circuit.open_chest() or not _place_rewards(circuit):
 			_fail("reward preparation")
 			return
@@ -89,6 +114,19 @@ func _guiin_capture(main: Node) -> void:
 	quit(0)
 
 
+func _click(button: Control) -> void:
+	var point := button.get_global_rect().get_center()
+	for pressed in [true, false]:
+		var event := InputEventMouseButton.new()
+		event.button_index = MOUSE_BUTTON_LEFT
+		event.pressed = pressed
+		event.position = point
+		event.global_position = point
+		Input.parse_input_event(event)
+		await process_frame
+	await process_frame
+
+
 func _actor(main: Node, role: StringName):
 	for child in main.get_children():
 		if child.get_meta(&"school_circuit_role", &"") == role and not child.is_queued_for_deletion():
@@ -132,6 +170,9 @@ func _capture(label: String) -> void:
 	paused = false
 	await process_frame
 	await process_frame
+	if label.begins_with("preparation-shop-buffer"):
+		main.get_node("RestFlowUI/Panel/Margin").scroll_vertical = 0
+		await process_frame
 	await RenderingServer.frame_post_draw
 	var error := root.get_texture().get_image().save_png("res://docs/reviews/" + label + ".png")
 	if error != OK:

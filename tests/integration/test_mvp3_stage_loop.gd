@@ -184,6 +184,7 @@ func test_game_over_during_circuit_combat_stops_combat_without_opening_rest() ->
 
 func _new_main():
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	return main
 

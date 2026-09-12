@@ -10,6 +10,7 @@ const WORKBENCH_FIXTURE_SEED := 1
 func test_each_school_receives_committed_backpack_fate_and_school_modifiers() -> void:
 	for school_id in SCHOOL_IDS:
 		var main = MAIN_SCENE.instantiate()
+		preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 		add_child_autofree(main)
 		main._on_school_selected(school_id)
 		var state = main.get_node("RunBuildState")
@@ -54,6 +55,7 @@ func test_each_school_receives_committed_backpack_fate_and_school_modifiers() ->
 func test_process_pause_and_resume_preserve_selected_school_identity_and_runtime_resource() -> void:
 	for school_id in SCHOOL_IDS:
 		var main = MAIN_SCENE.instantiate()
+		preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 		add_child_autofree(main)
 		main._on_school_selected(school_id)
 		var host = main.get_node("SchoolRuntimeHost")
@@ -71,6 +73,7 @@ func test_process_pause_and_resume_preserve_selected_school_identity_and_runtime
 
 func test_frozen_result_stays_equal_after_shop_fate_heal_and_reroll_mutations() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	main._on_school_selected(&"bongma")
 	var tracker = main.get_node("ContributionTracker")
@@ -101,6 +104,7 @@ func test_frozen_result_stays_equal_after_shop_fate_heal_and_reroll_mutations() 
 
 func test_reward_orbs_are_paused_during_result_rest_and_resume_next_combat() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	main._on_school_selected(&"bongma")
 	var normal = _first_live_normal_enemy(main)
@@ -137,6 +141,7 @@ func test_reward_orbs_are_paused_during_result_rest_and_resume_next_combat() -> 
 
 func test_game_over_during_combat_is_terminal_and_never_opens_rest() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	main._on_school_selected(&"guiin")
 	var circuit = main.school_circuit

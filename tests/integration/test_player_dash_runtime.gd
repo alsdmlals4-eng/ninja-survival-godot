@@ -192,6 +192,7 @@ func _spawn_scene(path: String):
 	if packed == null:
 		return null
 	var instance = packed.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(instance)
 	add_child_autofree(instance)
 	return instance
 
@@ -206,6 +207,7 @@ func _spawn_main_in_subviewport():
 	if packed == null:
 		return null
 	var main = packed.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	viewport.add_child(main)
 	return main
 

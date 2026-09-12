@@ -197,6 +197,9 @@ func _connect_mvp3_signals() -> void:
 	rest_flow_ui.workbench_boss_reward_selected.connect(_on_workbench_boss_reward_selected)
 	rest_flow_ui.workbench_chest_open_requested.connect(_on_workbench_chest_open_requested)
 	rest_flow_ui.workbench_bag_purchase_requested.connect(_on_workbench_bag_purchase_requested)
+	rest_flow_ui.workbench_shop_buy_requested.connect(_on_workbench_shop_buy_requested)
+	rest_flow_ui.workbench_shop_sell_requested.connect(_on_workbench_shop_sell_requested)
+	rest_flow_ui.workbench_shop_reroll_requested.connect(_on_workbench_shop_reroll_requested)
 	rest_flow_ui.workbench_bag_placement_requested.connect(_on_workbench_bag_placement_requested)
 	rest_flow_ui.workbench_buffer_placement_requested.connect(_on_workbench_buffer_placement_requested)
 	rest_flow_ui.workbench_existing_item_move_requested.connect(_on_workbench_existing_item_move_requested)
@@ -869,6 +872,8 @@ func _render_school_circuit_workbench() -> void:
 			"chest_count": snapshot.get("chest_count", 0),
 			"buffer": snapshot.get("buffer", []),
 			"bag_offer": snapshot.get("bag_offer", {}),
+			"shop_offers": snapshot.get("shop_offers", []),
+			"shop_reroll_cost": snapshot.get("shop_reroll_cost", 0),
 			"pending_bag": snapshot.get("pending_bag", {}),
 			"gold": snapshot.get("gold", 0),
 			"can_undo": snapshot.get("can_undo", false),
@@ -1281,6 +1286,24 @@ func _start_final_calamity() -> void:
 	rest_flow_ui.hide_all()
 	_set_combat_enabled(true)
 	_on_final_theme_changed(boss.theme_school_id())
+
+
+func _on_workbench_shop_buy_requested(index: int) -> void:
+	if not game_over and school_circuit != null:
+		school_circuit.buy_shop_item(index)
+		_render_school_circuit_workbench()
+
+
+func _on_workbench_shop_sell_requested(instance_id: int) -> void:
+	if not game_over and school_circuit != null:
+		school_circuit.sell_buffer_item(instance_id)
+		_render_school_circuit_workbench()
+
+
+func _on_workbench_shop_reroll_requested() -> void:
+	if not game_over and school_circuit != null:
+		school_circuit.reroll_shop()
+		_render_school_circuit_workbench()
 
 
 func _on_final_theme_changed(school_id: StringName) -> void:

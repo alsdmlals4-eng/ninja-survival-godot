@@ -8,6 +8,35 @@ const RUN_ROUTE_STATE_PATH := "res://scripts/core/run_route_state.gd"
 const NINJUTSU_LOADOUT_PATH := "res://scripts/core/ninjutsu_loadout_state.gd"
 
 
+func test_carried_buffer_round_trip_and_invalid_identity_fail_closed() -> void:
+	var checkpoint := _make_committed_checkpoint()
+	var backpack = checkpoint.circuit.committed_backpack_state
+	var held = backpack.remove_item(2)
+	held.rotation_quarters = 1
+	checkpoint.circuit["carried_buffer"] = [held]
+	var codec = load(CODEC_PATH).new()
+	var encoded: Dictionary = codec.encode_checkpoint(checkpoint)
+	assert_false(encoded.is_empty())
+	if encoded.is_empty():
+		return
+	var decoded: Dictionary = codec.decode_checkpoint(JSON.parse_string(JSON.stringify(encoded)))
+	assert_true(decoded.get("ok", false))
+	if not decoded.get("ok", false):
+		return
+	var restored: Array = decoded.checkpoint.circuit.carried_buffer
+	assert_eq(restored.size(), 1)
+	assert_eq(restored[0].instance_id, 2)
+	assert_eq(restored[0].rotation_quarters, 1)
+	assert_null(decoded.checkpoint.circuit.committed_backpack_state.get_item(2))
+	for invalid in [0, 1, 3, 2.5]:
+		var malformed: Dictionary = encoded.duplicate(true)
+		malformed.checkpoint.circuit.carried_buffer[0].instance_id = invalid
+		assert_false(codec.decode_checkpoint(malformed).get("ok", false), str(invalid))
+	var duplicate: Dictionary = encoded.duplicate(true)
+	duplicate.checkpoint.circuit.carried_buffer.append(duplicate.checkpoint.circuit.carried_buffer[0].duplicate())
+	assert_false(codec.decode_checkpoint(duplicate).get("ok", false))
+
+
 func test_codec_round_trips_a_committed_checkpoint_using_json_primitives_only() -> void:
 	assert_true(ResourceLoader.exists(CODEC_PATH), "Committed resume codec is required.")
 	if not ResourceLoader.exists(CODEC_PATH):
