@@ -22,6 +22,8 @@ func encode_checkpoint(checkpoint: Dictionary) -> Dictionary:
 	var loadout = checkpoint.get("loadout", null)
 	if not (build is Dictionary) or not (route is Dictionary) or not (circuit is Dictionary) or not (loadout is Dictionary):
 		return {}
+	if loadout.has("selection_contract"):
+		return {} # Selectable books must never silently become a schema1 starter save.
 	var modifiers = build.get("committed_backpack_modifiers", null)
 	var backpack_state = circuit.get("committed_backpack_state", null)
 	if modifiers == null or not modifiers.has_method("to_persistent_snapshot") or backpack_state == null or not backpack_state.has_method("to_persistent_snapshot"):
@@ -66,6 +68,8 @@ func decode_checkpoint(payload: Dictionary) -> Dictionary:
 	var raw_retry_consumed = raw_checkpoint.get("retry_consumed", false)
 	if not (raw_build is Dictionary) or not (raw_route is Dictionary) or not (raw_circuit is Dictionary) or not (raw_loadout is Dictionary) or typeof(raw_retry_consumed) != TYPE_BOOL:
 		return {"ok": false, "reason": &"invalid_checkpoint"}
+	if raw_loadout.has("selection_contract"):
+		return {"ok": false, "reason": &"unsupported_selection_contract"}
 
 	var restored_build = _decode_build(raw_build)
 	var restored_route = _decode_route(raw_route)

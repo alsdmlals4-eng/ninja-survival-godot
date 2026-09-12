@@ -2,6 +2,21 @@
 
 ## Latest — whole-run continuation, 2026-09-12
 
+Latest P01/P03 preparation: NinjutsuCatalog contains24 known IDs/six per school,
+typed tags and copied effect parameters from current R-NINJUTSU. Original12 IDs
+and legacy lane mapping preserved; nonexistent asset paths stay empty. New12
+records are not exposed as available in the player codex before runtime hookup.
+NinjutsuLoadoutState now owns deterministic3-choice/two-round draft, unique
+picks, zero preview power, explicit placed-ID commit and4active/1unlocked-foreign
+limits. All60 unordered start pairs reached and committed in domain fixtures.
+Schema1 explicitly refuses selectable-v2 data instead of stripping its meaning.
+94scripts/700tests/8611assertions PASS with parse/error scan. Actual Main still
+uses the legacy start/placement path: no24-effect,3x3start, new draft UI, schema2
+or60-combat-pair acceptance claim. Next: bind book definitions/geometry and effect
+consumers, then atomic profile2 and actual start/Workbench UI. Exactdf8b5b5 remote
+checks passed; this increment requires own CI. Player default wallet/resume hashes
+remain identical to the storage-isolation baseline after the700-test suite.
+
 Newest save-safety prerequisite: existing RunResumeStore now readbacks/decodes
 temporary and canonical bytes, rolls back old canonical on failed new readback,
 and preserves failed/unresolved temporary candidates instead of silently

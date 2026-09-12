@@ -92,6 +92,16 @@ func test_codec_round_trips_the_consumed_awakening_retry_without_resetting_it() 
 	assert_true(decoded.get("checkpoint", {}).get("retry_consumed", false), "A consumed Awakening retry must remain consumed after relaunch.")
 
 
+func test_schema1_never_silently_strips_selectable_book_contract() -> void:
+	var codec = load(CODEC_PATH).new()
+	var checkpoint := _make_committed_checkpoint()
+	var encoded: Dictionary = codec.encode_checkpoint(checkpoint)
+	checkpoint.loadout["selection_contract"] = "selectable-v2"
+	assert_true(codec.encode_checkpoint(checkpoint).is_empty())
+	encoded.checkpoint.loadout["selection_contract"] = "selectable-v2"
+	assert_eq(codec.decode_checkpoint(encoded).get("reason"), &"unsupported_selection_contract")
+
+
 func _make_committed_checkpoint() -> Dictionary:
 	var backpack = load(BACKPACK_STATE_PATH).new().create_starting_state()
 	assert_not_null(backpack)

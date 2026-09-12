@@ -1,5 +1,31 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-12 selectable24 data and draft domain preparation
+
+ADAPT existing NinjutsuDefinition/Catalog/Loadout owners, retaining original12 IDs
+and legacy lane APIs as the guarded runtime baseline. New12 IDs and all24 effect
+parameters/tags transcribe the current R-NINJUTSU table; no new product numbers.
+REJECT a second catalog, implicit three extra starter powers, or silently saving
+selectable state as schema1. Definition copies include nested parameters and tag
+arrays; validator catches missing keys, unknown kinds/tags and nonfinite/negative
+effect values. An optional link_range NaN test first failed and was corrected.
+
+Seeded draft owns its options (three distinct entries per round, excludes first
+pick in second round), snapshots are defensive, invalid clicks do not redraw.
+No active power until caller supplies the validated placed book IDs and commits.
+Later placement commit rejects>4 active,>1foreign, locked/unknown/duplicate IDs,
+and preserves the previous state on rejection. Zero later books is allowed and
+does not restore a hidden starter.60unordered pairs are exercised through actual
+draft/commit methods, not merely counted as6C2. This is domain coverage only.
+
+Full94scripts/700tests/8611assertions PASS with parse/error scan. Existing codex
+keeps its12 available legacy entries until new effect/acquisition consumers are
+wired. Main still uses old start: new draft UI,3x3book placement,24unique effects,
+mixed-book runtime, profile2 and60pair combat suite remain pending. No new image
+candidate/asset registration or live new-draft claim. Existing Resource/value-copy
+primary research applies; no material new external product design was introduced.
+Exactdf8b5b5 both remote checks passed. No whole-scope closure/merge/Human pass.
+
 ## 2026-09-12 save readback prerequisite
 
 Before schema2 integration, reused existing RunResumeStore I/O ownership. Three
