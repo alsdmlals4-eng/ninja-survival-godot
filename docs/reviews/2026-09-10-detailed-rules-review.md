@@ -649,6 +649,14 @@ was removed. User experience, final art, runtime, performance, platform and
 balance of the new design: NOT_RUN. Combined PR #147 remains Draft/unmerged.
 # 2026-09-13 풍주 연속 구현 검증
 
+백귀식신 후속: 실제 책을 보유해도 식신이 없고 피해0인 RED를 재현했다.
+기존 BongmaFamiliar 장면/추종/attack_once 재사용, 자체 process 공격은 꺼 중복 주기 방지.
+선택형 시전기가 장착/해제/주기/재장착 잔여시간/귀인화 정리를 소유한다.
+실제 Player/Enemy/식신 노드로 주기0.7·피해8·추종상한180·탐색320·pause·해제·재장착 검사.
+전체742tests/9741assertions PASS (`%TEMP%/ninja-selected-fourteen-final-gut-20260913.log`).
+GPU process smoke는0.9초 후1회 피해/노드 존재, 해제0.8초 후 추가 피해0/노드 제거 PASS.
+남은 상태 인법과 태그/상한/profile2/최종 VFX/전체 정상 런은 미완료다.
+
 추가 암영침/추영표: 기존 흑영 runtime의 치명타/폭발과 분리된 선택형 표식/단일 투사체 연결.
 최종 연결 점검 RED: 흑영 자원/오의 소비처가 새 표식을 읽지 못해 count0/보너스0이었다.
 Main이 읽기 전용 표식 provider를 주입하여 기존 자원/오의 owner를 유지한 채 count1/보너스0.25로 교정했다.

@@ -4,6 +4,7 @@ class_name NinjutsuAutoController
 
 const NINJUTSU_CATALOG_SCRIPT = preload("res://scripts/data/ninjutsu_catalog.gd")
 const SHURIKEN_PROJECTILE_SCENE = preload("res://scenes/projectiles/shuriken_projectile.tscn")
+const SELECTED_FAMILIAR_SCENE = preload("res://scenes/schools/bongma_familiar.tscn")
 const FALLBACK_EFFECT_TEXTURE: Texture2D = preload("res://assets/runtime/visual-core/basic_weapon_effects_v1.png")
 
 const CAST_INTERVAL := 0.9
@@ -22,6 +23,7 @@ var _ticking := false
 var _support_remaining: Dictionary = {}
 var _support_zones: Dictionary = {}
 var _selected_marks: Dictionary = {}
+var _selected_familiar: BongmaFamiliar
 const SUPPORT_BOOKS := [&"guiin_iron_blood_guard", &"guiin_demon_step", &"cheonsul_ice_veil", &"heukyeong_smoke_step", &"bongma_guardian_ward", &"bongma_barrier_step"]
 
 
@@ -147,6 +149,7 @@ func _tick_auto_cast(delta: float) -> void:
 		_tick_support_books(delta)
 		_tick_selected_marks(delta)
 	if _combat_resolver != null and _combat_resolver.sword_only_mode:
+		_clear_selected_familiar()
 		_selected_casts.clear()
 		for entry in _active_effects:
 			var effect = entry.get("node")
@@ -183,6 +186,7 @@ func _tick_selected_marks(delta: float) -> void:
 
 
 func _tick_selected_books(delta: float) -> void:
+	_tick_selected_familiar(delta)
 	_advance_selected_casts(delta)
 	for raw_id in _loadout.call("active_spell_ids"):
 		var id := StringName(raw_id)
@@ -218,6 +222,37 @@ func _tick_selected_books(delta: float) -> void:
 			_spawn_effect(definition, origin, 0.13)
 
 
+func _clear_selected_familiar() -> void:
+	if is_instance_valid(_selected_familiar):
+		_selected_familiar.process_mode = Node.PROCESS_MODE_DISABLED
+		_selected_familiar.queue_free()
+	_selected_familiar = null
+
+
+func _tick_selected_familiar(delta: float) -> void:
+	var id := &"bongma_hundred_demon_familiar"
+	if not _loadout.call("active_spell_ids").has(id) or not _player is PlayerController:
+		_clear_selected_familiar()
+		return
+	var config: Dictionary = NINJUTSU_CATALOG_SCRIPT.definition_for_id(id).effect_config
+	if not is_instance_valid(_selected_familiar):
+		_selected_familiar = SELECTED_FAMILIAR_SCENE.instantiate()
+		_selected_familiar.name = "SelectedBookFamiliar"
+		_world.add_child(_selected_familiar)
+		_selected_familiar.global_position = _player.global_position + Vector2(48, 0)
+		_selected_familiar.configure(_player, float(config.cooldown), int(config.damage), _combat_resolver)
+		_selected_familiar.set_process(false)
+		_selected_familiar.target_radius = float(config.target_range)
+		_selected_familiar.maximum_follow_distance = float(config.follow_range)
+	var remaining := maxf(float(_remaining_by_spell.get(id, config.cooldown)) - delta, 0.0)
+	_remaining_by_spell[id] = remaining
+	if remaining > 0.000001:
+		return
+	_remaining_by_spell[id] = float(config.cooldown)
+	if _selected_familiar.attack_once() == null:
+		_remaining_by_spell[id] = 0.12
+
+
 func has_selected_mark(target: Node) -> bool:
 	return is_instance_valid(target) and _selected_marks.has(target.get_instance_id()) and float(_selected_marks[target.get_instance_id()].remaining) > 0.000001
 
@@ -244,6 +279,8 @@ func _prune_selected_casts() -> void:
 		_selected_casts.clear()
 		return
 	var active: Array = _loadout.call("active_spell_ids")
+	if not active.has(&"bongma_hundred_demon_familiar"):
+		_clear_selected_familiar()
 	if not active.has(&"heukyeong_shadow_needle"):
 		_selected_marks.clear()
 	for id in SUPPORT_BOOKS:
@@ -542,6 +579,7 @@ func _advance_effects(delta: float) -> void:
 
 
 func clear_runtime_effects() -> void:
+	_clear_selected_familiar()
 	_selected_marks.clear()
 	for id in SUPPORT_BOOKS:
 		_remove_support(id)

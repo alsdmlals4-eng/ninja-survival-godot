@@ -22,6 +22,8 @@ func _run() -> void:
 	var school: StringName = &"cheonsul" if "--wind" in OS.get_cmdline_user_args() else &"guiin"
 	if "--needle" in OS.get_cmdline_user_args() or "--dart" in OS.get_cmdline_user_args():
 		school = &"heukyeong"
+	if "--familiar" in OS.get_cmdline_user_args():
+		school = &"bongma"
 	loadout.begin_start_draft(school, 12)
 	for index in range(2):
 		loadout.choose_start_draft(loadout.start_draft_snapshot().options[0])
@@ -31,6 +33,24 @@ func _run() -> void:
 	var controller = load("res://scripts/schools/ninjutsu_auto_controller.gd").new()
 	world.add_child(controller)
 	controller.configure(player, world, null, loadout)
+	if school == &"bongma":
+		loadout.commit_placed_ninjutsu([&"bongma_hundred_demon_familiar"], [school])
+		await create_timer(0.9).timeout
+		if enemy.health != 992 or world.get_node_or_null("SelectedBookFamiliar") == null:
+			push_error("FAMILIAR_RUNTIME_FAIL owned summon cadence")
+			quit(1)
+			return
+		loadout.commit_placed_ninjutsu([], [school])
+		await create_timer(0.8).timeout
+		if enemy.health != 992 or world.get_node_or_null("SelectedBookFamiliar") != null:
+			push_error("FAMILIAR_RUNTIME_FAIL unequip")
+			quit(1)
+			return
+		world.queue_free()
+		await process_frame
+		print("FAMILIAR_RUNTIME_PASS owned summon cadence and unequip; no save writes")
+		quit(0)
+		return
 	if school == &"heukyeong":
 		var needle := "--needle" in OS.get_cmdline_user_args()
 		var id: StringName = &"heukyeong_shadow_needle" if needle else &"heukyeong_pursuit_dart"

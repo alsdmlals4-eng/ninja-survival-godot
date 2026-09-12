@@ -1,5 +1,14 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — selected familiar, 2026-09-13
+
+Selected effects now14/24;10remain. Existing BongmaFamiliar scene supplies
+follow/attack behavior; selected controller owns membership and0.7s cadence.
+Its own process attack clock is disabled; range320/follow maximum180/damage8.
+Unequip/sword-only/stage/death clears the owned summon and re-equip preserves
+the ID cooldown. Full742tests/9741assertions PASS; real process spawn/cadence/
+unequip GPU smoke PASS. Existing sprite is fallback, not new art approval.
+
 ## Latest increment — selected needle/dart and mark, 2026-09-13
 
 Selected effect consumers now cover13/24;11remain. Needle/dart use first swept

@@ -201,6 +201,60 @@ func test_heukyeong_resource_reads_selected_mark_without_owning_or_bursting_it()
 	assert_true(runtime._marks.is_empty(), "Origin runtime must not copy selected mark state.")
 
 
+func test_selected_familiar_requires_book_uses_full_period_and_cleans_on_unequip() -> void:
+	var f := _fixture([&"bongma_hundred_demon_familiar"], &"bongma")
+	f.controller.tick_auto_cast(0.69)
+	assert_eq(f.enemy.health, 1000)
+	f.controller.tick_auto_cast(0.01)
+	assert_eq(f.enemy.health, 992)
+	var familiar = f.world.get_node_or_null("SelectedBookFamiliar")
+	assert_not_null(familiar)
+	if familiar != null:
+		assert_false(familiar.is_processing(), "Only the book controller owns attack cadence.")
+		f.player.position = Vector2(1000, 0)
+		familiar._physics_process(0.016)
+		assert_lte(familiar.global_position.distance_to(f.player.global_position), 180.001)
+	f.loadout.commit_placed_ninjutsu([], [&"bongma"])
+	assert_true(familiar == null or familiar.is_queued_for_deletion())
+	f.player.position = Vector2.ZERO
+	f.loadout.commit_placed_ninjutsu([&"bongma_hundred_demon_familiar"], [&"bongma"])
+	f.controller.tick_auto_cast(0.69)
+	assert_eq(f.enemy.health, 992)
+	f.controller.tick_auto_cast(0.01)
+	assert_eq(f.enemy.health, 984)
+
+
+func test_selected_familiar_pause_sword_mode_and_no_target_retry() -> void:
+	var f := _fixture([&"bongma_hundred_demon_familiar"], &"bongma")
+	var resolver = load("res://scripts/combat/combat_resolver.gd").new()
+	f.world.add_child(resolver)
+	f.controller.configure(f.player, f.world, resolver, f.loadout)
+	f.enemy.position = Vector2(1000, 0)
+	f.controller.tick_auto_cast(0.7)
+	assert_eq(f.enemy.health, 1000)
+	f.enemy.position = Vector2(60, 0)
+	get_tree().paused = true
+	f.controller.tick_auto_cast(1.0)
+	get_tree().paused = false
+	assert_eq(f.enemy.health, 1000)
+	f.controller.tick_auto_cast(0.12)
+	assert_eq(f.enemy.health, 992)
+	var familiar = f.world.get_node_or_null("SelectedBookFamiliar")
+	resolver.sword_only_mode = true
+	f.controller.tick_auto_cast(0.7)
+	assert_true(familiar.is_queued_for_deletion())
+	assert_eq(f.enemy.health, 992)
+	resolver.sword_only_mode = false
+	f.controller.tick_auto_cast(0.69)
+	assert_eq(f.enemy.health, 992)
+	f.controller.tick_auto_cast(0.01)
+	assert_eq(f.enemy.health, 984)
+	f.controller.clear_runtime_effects()
+	for child in f.world.get_children():
+		if child is BongmaFamiliar:
+			assert_true(child.is_queued_for_deletion())
+
+
 func test_all_school_runtimes_keep_charge_but_do_not_supply_unowned_attacks() -> void:
 	for school in [&"bongma", &"cheonsul", &"heukyeong"]:
 		var f := _fixture([], school)
