@@ -68,7 +68,8 @@ func _write_payload(payload: Dictionary) -> bool:
 	if serialized.is_empty():
 		return false
 	var temporary_path := _temporary_storage_path()
-	if FileAccess.file_exists(temporary_path) and DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary_path)) != OK:
+	if FileAccess.file_exists(temporary_path):
+		_last_save_warning = &"temporary_recovery_required"
 		return false
 	if FileAccess.file_exists(_previous_storage_path()):
 		return false
@@ -81,7 +82,10 @@ func _write_payload(payload: Dictionary) -> bool:
 	var write_succeeded := temporary_file.get_error() == OK
 	temporary_file = null
 	if not write_succeeded:
-		_remove_if_present(temporary_path)
+		_last_save_warning = &"temporary_write_failed"
+		return false
+	if not _readback_matches(temporary_path, serialized):
+		_last_save_warning = &"temporary_readback_failed"
 		return false
 
 	var target_path := ProjectSettings.globalize_path(_storage_path)
@@ -99,9 +103,28 @@ func _write_payload(payload: Dictionary) -> bool:
 			DirAccess.rename_absolute(previous_absolute_path, target_path)
 		_remove_if_present(temporary_path)
 		return false
+	if not _readback_matches(_storage_path, serialized):
+		_last_save_warning = &"canonical_readback_failed"
+		# Keep the failed new candidate for explicit recovery; restore old bytes.
+		if DirAccess.rename_absolute(target_path, temporary_absolute_path) != OK:
+			_last_save_warning = &"recovery_required"
+		elif moved_previous and DirAccess.rename_absolute(previous_absolute_path, target_path) != OK:
+			_last_save_warning = &"recovery_required"
+		return false
 	if moved_previous and _remove_previous_record() != OK:
 		_last_save_warning = &"previous_cleanup_pending"
 	return true
+
+
+func _readback_matches(path: String, expected_text: String) -> bool:
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return false
+	var text := file.get_as_text()
+	if text != expected_text:
+		return false
+	var parsed = JSON.parse_string(text)
+	return parsed is Dictionary and bool(_codec.decode_checkpoint(parsed).get("ok", false))
 
 
 func last_save_warning() -> StringName:

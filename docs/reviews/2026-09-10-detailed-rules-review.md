@@ -1,5 +1,27 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-12 save readback prerequisite
+
+Before schema2 integration, reused existing RunResumeStore I/O ownership. Three
+RED failures showed temporary/canonical readback had no effect on commit and an
+unresolved temporary was erased. ADAPT readback+decode before/after rename;
+REJECT assuming flush success proves a valid saved checkpoint, and reject adding
+a second disk writer. Failed canonical candidate moves to temporary and prior
+canonical is restored; unresolved temporary blocks implicit next overwrite.
+Normal previous cleanup failure still reports committed success with warning.
+
+Primary source: [Godot FileAccess](https://docs.godotengine.org/en/stable/classes/class_fileaccess.html).
+Flush and explicit reopen are supported; byte comparison plus current codec
+validation give stronger evidence than write-error alone.94scripts/694tests/
+7637assertions PASS with parse/error scan. Tests inject temporary/canonical
+readback failure; this is NOT sudden power-loss/crash-proof verification.
+
+No schema1 semantic migration or real profile mutation. Profile2 transaction
+IDs, wallet facade, active-run codec, recovery UI and Main's currently ignored
+checkpoint-save error remain pending. The P03 book/equipment/canon cutover is a
+prerequisite for P04 validation; do not publish a permissive partial schema2
+decoder to bypass that dependency. Exactced53fc remote checks both passed.
+
 ## 2026-09-12 Heukyeong independent execution continuation
 
 BEFORE: three live marks required, all marked targets hit, marks consumed, status

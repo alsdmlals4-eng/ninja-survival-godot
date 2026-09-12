@@ -12,6 +12,14 @@ class CleanupFailureStore:
 	func _remove_previous_record() -> Error:
 		return ERR_FILE_NO_PERMISSION
 
+class ReadbackFailureStore:
+	extends "res://scripts/core/run_resume_store.gd"
+	var fail_suffix := "disabled"
+	func _readback_matches(path: String, expected_text: String) -> bool:
+		if (fail_suffix == "canonical" and path == storage_path()) or path.ends_with(fail_suffix):
+			return false
+		return FileAccess.get_file_as_string(path) == expected_text
+
 var _storage_path := "user://gut_run_resume_store.json"
 
 
@@ -97,6 +105,43 @@ func test_cleanup_failure_does_not_report_a_committed_save_as_failure() -> void:
 	assert_true(store.has_method("last_save_warning"))
 	if store.has_method("last_save_warning"):
 		assert_eq(store.last_save_warning(), &"previous_cleanup_pending")
+
+
+func test_temporary_readback_failure_keeps_previous_canonical_bytes() -> void:
+	var store := ReadbackFailureStore.new()
+	assert_true(store.configure(_storage_path))
+	var checkpoint := _make_committed_checkpoint()
+	assert_true(store.save_checkpoint(checkpoint))
+	var before := FileAccess.get_file_as_string(_storage_path)
+	checkpoint.build.gold = 99
+	store.fail_suffix = ".tmp"
+	assert_false(store.save_checkpoint(checkpoint))
+	assert_eq(FileAccess.get_file_as_string(_storage_path), before)
+
+
+func test_canonical_readback_failure_rolls_back_and_preserves_failed_candidate() -> void:
+	var store := ReadbackFailureStore.new()
+	assert_true(store.configure(_storage_path))
+	var checkpoint := _make_committed_checkpoint()
+	assert_true(store.save_checkpoint(checkpoint))
+	var before := FileAccess.get_file_as_string(_storage_path)
+	checkpoint.build.gold = 99
+	store.fail_suffix = "canonical"
+	assert_false(store.save_checkpoint(checkpoint))
+	assert_eq(FileAccess.get_file_as_string(_storage_path), before)
+	assert_true(FileAccess.file_exists(_storage_path + ".tmp"))
+	assert_false(FileAccess.file_exists(_storage_path + ".previous"))
+
+
+func test_unresolved_temporary_file_is_preserved_and_blocks_implicit_overwrite() -> void:
+	var store = load(STORE_PATH).new()
+	assert_true(store.configure(_storage_path))
+	var temporary := FileAccess.open(_storage_path + ".tmp", FileAccess.WRITE)
+	temporary.store_string("unresolved candidate")
+	temporary.close()
+	assert_false(store.save_checkpoint(_make_committed_checkpoint()))
+	assert_eq(FileAccess.get_file_as_string(_storage_path + ".tmp"), "unresolved candidate")
+	assert_false(FileAccess.file_exists(_storage_path))
 
 
 func _make_committed_checkpoint() -> Dictionary:

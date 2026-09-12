@@ -2,6 +2,17 @@
 
 ## Latest — whole-run continuation, 2026-09-12
 
+Newest save-safety prerequisite: existing RunResumeStore now readbacks/decodes
+temporary and canonical bytes, rolls back old canonical on failed new readback,
+and preserves failed/unresolved temporary candidates instead of silently
+overwriting them.94scripts/694tests/7637assertions PASS; injected readback failures
+and previous-cleanup warning covered. This is shared I/O preparation only, NOT
+profile2 wallet/checkpoint atomic cutover, recovery UI or filesystem crash-proof
+evidence. Exactced53fc both remote checks passed. Main's currently ignored
+checkpoint-save failure and two-file retry remain explicit profile2 integration
+gaps; do not claim whole-run durable settlement. P03 data/book preparation still
+precedes the complete P04 schema2 cutover per implementation packet.
+
 Newest Heukyeong increment: execution_charge is separate from live marks;
 0.125/sec nearby charge, marked owned direct weapon/injutsu damage+0.25/max1sec.
 Paired resolver event IDs capture pre-impact marks and actual damage, including
