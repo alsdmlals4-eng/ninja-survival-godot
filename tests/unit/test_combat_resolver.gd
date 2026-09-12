@@ -26,6 +26,10 @@ class ContextTarget:
 
 func test_owned_damage_context_is_target_specific_and_restored_after_nested_damage() -> void:
 	var fixture := _new_fixture()
+	var starts: Array[int] = []
+	var finishes: Array[int] = []
+	fixture.resolver.damage_started.connect(func(id, _target, _kind): starts.append(id))
+	fixture.resolver.damage_finished.connect(func(id, _actual): finishes.append(id))
 	var outer := ContextTarget.new()
 	var inner := ContextTarget.new()
 	add_child_autofree(outer)
@@ -43,6 +47,8 @@ func test_owned_damage_context_is_target_specific_and_restored_after_nested_dama
 	assert_eq(fixture.resolver.current_damage_kind_for(outer), &"")
 	assert_eq(fixture.resolver.current_damage_kind_for(inner), &"")
 	assert_eq(fixture.tracker.damage, 18)
+	assert_eq(starts, [1, 2])
+	assert_eq(finishes, [2, 1], "Nested damage pairs each resolution with its own event ID.")
 
 
 func test_combat_resolver_resource_exists() -> void:

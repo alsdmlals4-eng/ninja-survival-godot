@@ -1,11 +1,15 @@
 extends Node
 class_name CombatResolver
 
+signal damage_started(event_id: int, target: Node, kind: StringName)
+signal damage_finished(event_id: int, actual_damage: int)
+
 var contribution_tracker: CombatContributionTracker
 var run_modifiers := RunModifierSet.new()
 var sword_only_mode: bool = false
 var _resolving_target_id: int = 0
 var _resolving_damage_kind: StringName = &""
+var _damage_event_serial := 0
 
 
 func configure(tracker: CombatContributionTracker) -> void:
@@ -93,7 +97,11 @@ func _apply_owned_damage(target: Node, amount: int, kind: StringName):
 	var previous_kind := _resolving_damage_kind
 	_resolving_target_id = target.get_instance_id()
 	_resolving_damage_kind = kind
-	var result = target.call("take_damage", amount)
+	_damage_event_serial += 1
+	var event_id := _damage_event_serial
+	damage_started.emit(event_id, target, kind)
+	var result = target.call("take_damage", amount) if is_instance_valid(target) and not target.is_queued_for_deletion() else 0
+	damage_finished.emit(event_id, maxi(result, 0) if result is int else 0)
 	_resolving_target_id = previous_target
 	_resolving_damage_kind = previous_kind
 	return result

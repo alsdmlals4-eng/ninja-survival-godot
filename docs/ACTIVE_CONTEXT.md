@@ -2,6 +2,21 @@
 
 ## Latest — whole-run continuation, 2026-09-12
 
+Newest Heukyeong increment: execution_charge is separate from live marks;
+0.125/sec nearby charge, marked owned direct weapon/injutsu damage+0.25/max1sec.
+Paired resolver event IDs capture pre-impact marks and actual damage, including
+lethal cleanup, excluding normal DoT/summons/reactions/bursts/ultimate. Needle
+explicitly labels direct_injutsu; other new books still need source classification.
+Ultimate costs3 before effects, visible320 targets sorted boss/final->elite->normal,
+distance then stable instanceID, at most3, damage26/18/18 plus fixed marked4.
+Marks remain; no status multiplier and no implicit instant kill. Full94scripts/
+691tests/7608assertions PASS; actual Main/button/noncombat and GPU role-fixture
+damage checks passed. `reviews/heukyeong-execution-runtime-20260912.png` inspected:
+existing hit feedback only, final execution VFX/production role art NOT verified.
+Exact874d576 CI both passed. New increment needs own CI, no merge. Next focus:
+profile2 transaction boundary, equipment/build/Workbench wiring,24books/start
+selection and trace choices, settlement, then full normal-speed acceptance.
+
 Newest Cheonsul increment:94scripts/686tests/7570assertions PASS including error
 scan. Nearby live same-world targets gate0.125/sec base charge; wet->shock adds
 0.25/max1persec, modifiers once, no paused/dead/active-breath charge. Preparation

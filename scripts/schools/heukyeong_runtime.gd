@@ -11,7 +11,6 @@ const CRITICAL_MULTIPLIER := 2.0
 const BASE_MARK_DURATION := 8.0
 const BURST_THRESHOLD := 3
 const BURST_DAMAGE := 16
-const ULTIMATE_MARK_THRESHOLD := 3
 
 @export var badge_scene: PackedScene
 
@@ -20,6 +19,22 @@ var _marks: Dictionary = {}
 var _attack_remaining: float = ATTACK_INTERVAL
 var _last_ultimate_ready: bool = false
 var _mark_gain_credit: float = 0.0
+var execution_charge := 0.0
+var _executing := false
+var _hit_bonus_remaining := 0.0
+var _pending_direct_hits: Dictionary = {}
+
+
+func configure_run_systems(resolver: CombatResolver, tracker: CombatContributionTracker) -> void:
+	_pending_direct_hits.clear()
+	if is_instance_valid(combat_resolver):
+		if combat_resolver.damage_started.is_connected(_on_damage_started):
+			combat_resolver.damage_started.disconnect(_on_damage_started)
+			combat_resolver.damage_finished.disconnect(_on_damage_finished)
+	super.configure_run_systems(resolver, tracker)
+	if is_instance_valid(resolver):
+		resolver.damage_started.connect(_on_damage_started)
+		resolver.damage_finished.connect(_on_damage_finished)
 
 
 func activate() -> void:
@@ -29,12 +44,16 @@ func activate() -> void:
 	_clear_all_marks()
 	_mark_gain_credit = 0.0
 	_attack_remaining = ATTACK_INTERVAL
+	execution_charge = 0.0
+	_hit_bonus_remaining = 0.0
+	_pending_direct_hits.clear()
 	_rng.randomize()
 	_emit_resource()
 	_emit_ultimate_ready_if_changed(true)
 
 
 func deactivate() -> void:
+	_pending_direct_hits.clear()
 	_clear_all_marks()
 	_mark_gain_credit = 0.0
 	super.deactivate()
@@ -54,8 +73,13 @@ func apply_run_modifiers(modifiers: RunModifierSet) -> void:
 
 
 func _process(delta: float) -> void:
-	if not active or delta <= 0.0:
+	if not _can_act() or delta <= 0.0 or not is_finite(delta):
 		return
+	_hit_bonus_remaining = maxf(_hit_bonus_remaining - delta, 0.0)
+	for enemy in _valid_enemies():
+		if player.global_position.distance_squared_to(enemy.global_position) <= 480.0 * 480.0:
+			_add_execution_charge(0.125 * delta)
+			break
 
 	_tick_marks(delta)
 	_attack_remaining -= delta
@@ -71,6 +95,8 @@ func set_rng_seed(seed_value: int) -> void:
 
 
 func attack_once() -> Array[Node]:
+	if not _can_act():
+		return []
 	var candidates := _valid_enemies()
 	if candidates.is_empty():
 		return []
@@ -92,13 +118,13 @@ func attack_once() -> Array[Node]:
 
 
 func apply_needle_hit(enemy: Node2D, force_critical: Variant = null) -> bool:
-	if not active or not _is_valid_enemy(enemy):
+	if not _can_act() or not _is_valid_enemy(enemy):
 		return false
 
 	var critical_chance := get_critical_chance(enemy)
 	var is_critical := bool(force_critical) if force_critical != null else _rng.randf() < critical_chance
 	var multiplier := CRITICAL_MULTIPLIER if is_critical else 1.0
-	var actual_damage := _deal_damage(enemy, float(BASE_DAMAGE), &"normal", multiplier)
+	var actual_damage := _deal_damage(enemy, float(BASE_DAMAGE), &"direct_injutsu", multiplier)
 	if actual_damage <= 0:
 		return is_critical
 	emit_player_action_resolved()
@@ -167,35 +193,92 @@ func on_enemy_died(enemy: Node) -> void:
 
 
 func is_ultimate_ready() -> bool:
-	return active and get_total_active_marks() >= ULTIMATE_MARK_THRESHOLD
+	return active and not _executing and execution_charge >= 3.0
 
 
 func try_use_ultimate() -> bool:
-	if not is_ultimate_ready():
+	if ultimate_block_reason() != &"":
 		return false
-
-	_prune_invalid_marks()
-	var targets: Array[Dictionary] = []
-	for instance_id in _marks.keys():
-		var state: Dictionary = _marks[instance_id]
-		var enemy = state["enemy"]
-		if _is_valid_enemy(enemy) and int(state["marks"]) > 0:
-			targets.append({"enemy": enemy, "marks": int(state["marks"])})
-
-	if targets.is_empty():
-		return false
-
-	for target in targets:
-		var enemy = target["enemy"]
+	var targets := _execution_targets()
+	execution_charge = 0.0
+	_executing = true
+	for index in range(mini(3, targets.size())):
+		if not active or not is_instance_valid(player) or player.is_dead() or get_tree().paused or not can_process():
+			break
+		var enemy = targets[index]
 		if not _is_valid_enemy(enemy):
 			continue
-		var base_damage := 14 + 4 * int(target["marks"])
-		_deal_damage(enemy, float(base_damage), &"ultimate", _status_effect_multiplier())
-
-	_clear_all_marks()
+		var damage := (26 if index == 0 else 18) + (4 if get_mark_count(enemy) > 0 else 0)
+		_deal_damage(enemy, float(damage), &"ultimate")
+	_executing = false
 	_emit_resource_and_ready(true)
 	school_feedback.emit("암영처형")
 	return true
+
+
+func ultimate_block_reason() -> StringName:
+	var reason := super.ultimate_block_reason()
+	if reason != &"":
+		return reason
+	if not _can_act():
+		return &"inactive"
+	return &"no_target" if _execution_targets().is_empty() else &""
+
+
+func _can_act() -> bool:
+	return active and not _executing and is_instance_valid(player) and not player.is_dead() and not get_tree().paused and can_process()
+
+
+func _execution_targets() -> Array[Node2D]:
+	var candidates: Array[Node2D] = []
+	for enemy in _valid_enemies():
+		if player.global_position.distance_squared_to(enemy.global_position) > 320.0 * 320.0:
+			continue
+		if not enemy.is_visible_in_tree() or not enemy.get_viewport_rect().has_point(enemy.get_global_transform_with_canvas().origin):
+			continue
+		candidates.append(enemy)
+	candidates.sort_custom(func(first: Node2D, second: Node2D) -> bool:
+		var first_rank := _threat_rank(first)
+		var second_rank := _threat_rank(second)
+		if first_rank != second_rank:
+			return first_rank < second_rank
+		var first_distance := player.global_position.distance_squared_to(first.global_position)
+		var second_distance := player.global_position.distance_squared_to(second.global_position)
+		if first_distance != second_distance:
+			return first_distance < second_distance
+		return first.get_instance_id() < second.get_instance_id()
+	)
+	return candidates
+
+
+func _threat_rank(enemy: Node) -> int:
+	var role: StringName = enemy.get_meta(&"school_circuit_role", &"")
+	if role in [&"boss", &"final_boss"] or enemy.is_in_group("boss"):
+		return 0
+	return 1 if role == &"elite" else 2
+
+
+func _on_damage_started(event_id: int, target: Node, kind: StringName) -> void:
+	if not _can_act() or not kind in [&"weapon", &"direct_injutsu"] or not _is_valid_enemy(target):
+		return
+	if get_mark_count(target) > 0 and player.global_position.distance_squared_to(target.global_position) <= 480.0 * 480.0:
+		_pending_direct_hits[event_id] = true
+
+
+func _on_damage_finished(event_id: int, actual_damage: int) -> void:
+	var eligible := _pending_direct_hits.has(event_id)
+	_pending_direct_hits.erase(event_id)
+	if not eligible or actual_damage <= 0 or not _can_act() or _hit_bonus_remaining > 0.0:
+		return
+	_hit_bonus_remaining = 1.0
+	_add_execution_charge(0.25)
+
+
+func _add_execution_charge(amount: float) -> void:
+	var multiplier := maxf(1.0 + run_modifiers.school_resource_gain_pct, 0.0)
+	multiplier *= maxf(1.0 + run_modifiers.ultimate_charge_gain_pct, 0.0)
+	execution_charge = clampf(execution_charge + amount * multiplier, 0.0, 3.0)
+	_emit_resource_and_ready()
 
 
 func _ensure_mark_state(enemy: Node2D) -> Dictionary:
@@ -325,6 +408,8 @@ func _is_valid_enemy(candidate) -> bool:
 		return false
 	if candidate.is_queued_for_deletion():
 		return false
+	if is_instance_valid(world) and not world.is_ancestor_of(candidate):
+		return false
 	if candidate.has_method("is_dead") and candidate.is_dead():
 		return false
 	return candidate.has_method("take_damage")
@@ -341,7 +426,7 @@ func _valid_enemies() -> Array[Node2D]:
 
 
 func _emit_resource() -> void:
-	resource_changed.emit("MARKS", float(get_total_active_marks()), float(ULTIMATE_MARK_THRESHOLD))
+	resource_changed.emit("EXECUTION", execution_charge, 3.0)
 
 
 func _emit_resource_and_ready(force_ready: bool = false) -> void:

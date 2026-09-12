@@ -15,6 +15,10 @@ func _run() -> void:
 	main.resume_storage_path = "user://qa_full_route_" + fixture_id + "_resume.json"
 	root.add_child(main)
 	main._on_title_new_game_requested()
+	if "--heukyeong" in OS.get_cmdline_user_args():
+		main.school_selection._choose(&"heukyeong")
+		await _heukyeong_capture(main)
+		return
 	if "--bongma" in OS.get_cmdline_user_args():
 		main.school_selection._choose(&"bongma")
 		await _bongma_capture(main)
@@ -97,6 +101,28 @@ func _run() -> void:
 	final_boss.take_damage(99999)
 	await _capture("full-route-complete-20260912")
 	print("FULL_ROUTE_RENDER_OK: accelerated four-school route, final actor, complete screen; isolated storage")
+	main.queue_free()
+	await process_frame
+	quit(0)
+
+
+func _heukyeong_capture(main: Node) -> void:
+	main.player.get_node("Camera2D").force_update_scroll()
+	var targets: Array = []
+	for index in range(4):
+		var enemy = load("res://scenes/enemies/enemy_basic.tscn").instantiate()
+		enemy.max_health = 1000
+		main.add_child(enemy)
+		enemy.global_position = main.player.global_position + Vector2(80 + index * 60, 30)
+		enemy.set_meta(&"school_circuit_role", [&"", &"", &"elite", &"boss"][index])
+		targets.append(enemy)
+	main.school_host.active_runtime.execution_charge = 3.0
+	main.hud.ultimate_button.pressed.emit()
+	if targets[3].health != 974 or targets[2].health != 982 or targets[0].health != 982 or targets[1].health != 1000:
+		_fail("heukyeong priority damage")
+		return
+	await _capture("heukyeong-execution-runtime-20260912")
+	print("HEUKYEONG_RUNTIME_OK: real Main input, role-priority bounded damage, no marks required; role fixture actors, not production boss art or final VFX")
 	main.queue_free()
 	await process_frame
 	quit(0)

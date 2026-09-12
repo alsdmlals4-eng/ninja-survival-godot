@@ -225,6 +225,26 @@ func test_feedback_returns_to_latest_readiness_after_expiry() -> void:
 	assert_string_contains(main.hud.ultimate_button.text, "충전 중")
 
 
+func test_heukyeong_main_button_executes_without_marks_and_blocks_preparation() -> void:
+	var main = _main(&"heukyeong")
+	var enemy = load("res://scripts/enemies/enemy_chaser.gd").new()
+	enemy.max_health = 1000
+	main.add_child(enemy)
+	enemy.global_position = main.player.global_position + Vector2(100, 0)
+	var runtime = main.school_host.active_runtime
+	runtime.execution_charge = 3.0
+	main._set_combat_enabled(false)
+	main.hud.ultimate_button.pressed.emit()
+	assert_eq(enemy.health, 1000)
+	assert_eq(runtime.execution_charge, 3.0)
+	main._set_combat_enabled(true)
+	main.hud.ultimate_button.pressed.emit()
+	assert_eq(enemy.health, 974)
+	assert_eq(runtime.execution_charge, 0.0)
+	main._unhandled_input(_key())
+	assert_eq(enemy.health, 974)
+
+
 func test_cheonsul_preparation_cancels_breath_without_resuming_pending_hits() -> void:
 	var main = _main(&"cheonsul")
 	var enemy = load("res://scripts/enemies/enemy_chaser.gd").new()

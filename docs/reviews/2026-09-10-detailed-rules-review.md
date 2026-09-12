@@ -1,5 +1,36 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-12 Heukyeong independent execution continuation
+
+BEFORE: three live marks required, all marked targets hit, marks consumed, status
+multiplier scaled execution. AFTER: approved independent0.125/sec charge with
+bounded marked direct-hit bonus, visible320/three-target threat priority and
+26/18/18 +marked4 without consuming marks. ADAPT same runtime/resolver/Host;
+REJECT a new autoload or per-hit deferred credit queue. Direct-injutsu is explicit
+source metadata, not a claim that the24-book damage-tag cutover is complete.
+
+Primary source: [Godot Object connection flags](https://docs.godotengine.org/en/4.6/classes/class_object.html#enum-object-connectflags).
+Ordinary callbacks are immediate, deferred callbacks change ordering. ADAPT
+paired per-resolver IDs to capture marked eligibility before damage and award
+only positive resolved damage; consume pending eligibility once. This preserves
+lethal-hit credit despite synchronous death cleanup and excludes bursts/DoT/
+summons/ultimate, including nested event completion order2->1. Unowned hits and
+zero actual damage cannot produce credit. No cost or new persistent owner.
+
+RED tests initially showed no independent charge/priority; corrected current
+runtime and legacy expectations. One later failure was an invalid test death
+setup (health=0 bypassed PlayerController death state); replaced with real lethal
+damage, not a production workaround. Explicit test viewport prevents tiny headless
+viewport from being mistaken for a priority bug. Stable distance/ID ties, radius,
+hidden/dead/pause, noncombat, no-mark cast, mark preservation and modifier channels
+covered. Full94scripts/691tests/7608assertions PASS with error scan. GPU actual Main
+input and ordered damage verified on role-tagged fixture enemies, not production
+boss rendering; final execution VFX remains pending. Screenshot inspected.
+
+Exact874d576 remote GUT and Windows checks passed before this increment. New CI
+required; no main merge, no Human/normal-speed/device or five-loop whole-scope
+closure claim. Continue profile2/equipment/24-book/trace/settlement integration.
+
 ## 2026-09-12 Cheonsul charge and cancellation continuation
 
 BEFORE: reactions were the sole readiness path, each gave1 without an event
