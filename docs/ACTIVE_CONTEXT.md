@@ -2,6 +2,18 @@
 
 ## Latest — whole-run continuation, 2026-09-12
 
+Delivery readback: code/data headca44becd1366c97a771b2275e44fdc74adb57051 equals
+its remote task branch and passed remote GUT + Windows internal build in run
+34672556291. Protected main remainsb5c2dd61cd589ebd218d1b4da3f016fb94a02126;
+PR147 is still Draft/unmerged, other PRs unchanged. Base remote remainsd830c0f,
+not silently replacing the adopted project-native contract.700-test local run
+and this CI are not a final whole-scope acceptance gate.
+Finished isolated Main fixtures952files/38720bytes moved, not deleted, to
+`C:/Users/user/Documents/GitHub/Ninza/DELETE_REVIEW/ninja-survival-godot/2026-09-12/gut-main-isolated-20260912`.
+Three owned ultimate-render wallet fixtures also moved into existing
+`full-route-runtime-fixtures` (now17payloads/19445bytes). READMEs explain disposal.
+Default player wallet/resume, untracked Godot imports and other worktrees remain.
+
 Latest P01/P03 preparation: NinjutsuCatalog contains24 known IDs/six per school,
 typed tags and copied effect parameters from current R-NINJUTSU. Original12 IDs
 and legacy lane mapping preserved; nonexistent asset paths stay empty. New12
