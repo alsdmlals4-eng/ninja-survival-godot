@@ -14,6 +14,7 @@ signal healing_resolved(actual: int)
 signal damage_resolved(requested: int, resolved: int, prevented: int, evaded: bool)
 signal dash_state_changed(charges: int, maximum_charges: int)
 signal dash_started(direction: Vector2)
+signal dash_ended
 signal died
 
 @export var max_health: int = 100
@@ -41,6 +42,29 @@ var _dash_saved_layer: int = 0
 var _dash_saved_mask: int = 0
 var _dash_collision_override: bool = false
 var _damage_protection_remaining: float = 0.0
+var _ninjutsu_boons: Dictionary = {}
+
+
+# Transient combat effects only. Never added to persistent RunModifierSet/save.
+func set_ninjutsu_boon(source: StringName, reduction: float, speed_bonus: float, shield: int = 0) -> bool:
+	if source == &"" or not is_finite(reduction) or not is_finite(speed_bonus) or reduction < 0 or reduction > 1 or speed_bonus < 0 or shield < 0 or _dead:
+		return false
+	var previous: Dictionary = _ninjutsu_boons.get(source, {})
+	_ninjutsu_boons[source] = {"reduction": reduction, "speed_bonus": speed_bonus, "shield": maxi(shield, int(previous.get("shield", 0)))}
+	_refresh_move_speed()
+	return true
+
+
+func remove_ninjutsu_boon(source: StringName) -> void:
+	_ninjutsu_boons.erase(source)
+	_refresh_move_speed()
+
+
+func _refresh_move_speed() -> void:
+	var bonus := _run_modifiers.move_speed_pct
+	for boon in _ninjutsu_boons.values():
+		bonus += float(boon.speed_bonus)
+	move_speed = maxf(_base_move_speed * maxf(1.0 + bonus, 0.0), 0.0)
 
 
 func combat_facing_direction() -> Vector2:
@@ -146,11 +170,14 @@ func _update_resolved_direction() -> void:
 
 
 func _advance_dash_state(delta: float) -> void:
-	if _dead or delta <= 0.0:
+	if _dead or delta <= 0.0 or not is_finite(delta) or get_tree().paused:
 		return
+	var was_dashing := _dash_remaining > 0.0
 	_dash_remaining = maxf(_dash_remaining - delta, 0.0)
 	if _dash_remaining <= 0.0:
 		_restore_dash_collision()
+		if was_dashing:
+			dash_ended.emit()
 	if _dash_charges >= MAX_DASH_CHARGES:
 		_dash_recharge_elapsed = 0.0
 		return
@@ -167,7 +194,7 @@ func apply_run_modifiers(modifiers: RunModifierSet) -> void:
 	_run_modifiers = modifiers.copy_values() if modifiers != null else RunModifierSet.new()
 	var hp_multiplier := maxf(1.0 + _run_modifiers.max_health_pct, 0.0)
 	max_health = maxi(roundi((float(_base_max_health) + _run_modifiers.max_health_flat) * hp_multiplier), 1)
-	move_speed = maxf(_base_move_speed * maxf(1.0 + _run_modifiers.move_speed_pct, 0.0), 0.0)
+	_refresh_move_speed()
 	if health > max_health:
 		health = max_health
 	health_changed.emit(health, max_health)
@@ -191,6 +218,8 @@ func heal(amount: int) -> int:
 
 func restore_after_retry() -> void:
 	_restore_dash_collision()
+	_ninjutsu_boons.clear()
+	_refresh_move_speed()
 	_dead = false
 	velocity = Vector2.ZERO
 	health = max_health
@@ -232,7 +261,24 @@ func take_damage(amount: int) -> int:
 		return 0
 
 	var damage_multiplier := maxf(1.0 + _run_modifiers.damage_taken_pct, 0.0)
-	var resolved := maxi(roundi(float(requested) * damage_multiplier), 0)
+	var reduction := 0.0
+	var strongest_ward := 0.0
+	for source in _ninjutsu_boons:
+		var boon: Dictionary = _ninjutsu_boons[source]
+		if source in [&"bongma_guardian_ward", &"bongma_barrier_step"]:
+			strongest_ward = maxf(strongest_ward, float(boon.reduction))
+		else:
+			reduction += float(boon.reduction)
+	reduction += strongest_ward
+	var resolved := maxi(roundi(float(requested) * damage_multiplier * (1.0 - minf(reduction, 0.6))), 0)
+	# Stable source order makes multi-shield consumption deterministic.
+	var sources := _ninjutsu_boons.keys()
+	sources.sort()
+	for source in sources:
+		var boon: Dictionary = _ninjutsu_boons[source]
+		var absorbed := mini(resolved, int(boon.shield))
+		boon.shield = int(boon.shield) - absorbed
+		resolved -= absorbed
 	var prevented := maxi(requested - resolved, 0)
 	if resolved <= 0:
 		damage_resolved.emit(requested, 0, prevented, false)
@@ -248,6 +294,8 @@ func take_damage(amount: int) -> int:
 
 	if health == 0:
 		_dead = true
+		_ninjutsu_boons.clear()
+		_refresh_move_speed()
 		died.emit()
 	return actual
 

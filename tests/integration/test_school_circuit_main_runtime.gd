@@ -27,6 +27,30 @@ func after_each() -> void:
 	_remove_retry_wallet_storage()
 
 
+func test_main_leaving_combat_cleans_selected_support() -> void:
+	var main = _new_main()
+	var loadout = main.ninjutsu_loadout
+	assert_true(loadout.begin_start_draft(&"guiin", 12))
+	for index in range(2):
+		loadout.choose_start_draft(loadout.start_draft_snapshot().options[0])
+	loadout.commit_drafted_start(loadout.start_draft_snapshot().picks)
+	loadout.commit_placed_ninjutsu([&"guiin_demon_step"], [&"guiin"])
+	assert_true(main.school_host.select_school(&"guiin"))
+	main.ninjutsu_auto_controller.tick_auto_cast(5.0)
+	assert_true(main._start_school_circuit(&"guiin"))
+	main._set_combat_enabled(true)
+	main.player.request_dash()
+	main.player._advance_dash_state(0.2)
+	assert_almost_eq(main.player.move_speed, 240.0, 0.001, "New Stage starts with the full book cooldown.")
+	main.ninjutsu_auto_controller.tick_auto_cast(5.0)
+	main.player.request_dash()
+	main.player._advance_dash_state(0.2)
+	assert_almost_eq(main.player.move_speed, 276.0, 0.001)
+	main._set_combat_enabled(false)
+	assert_almost_eq(main.player.move_speed, 240.0, 0.001, "Preparation must not retain a combat movement boon.")
+	await get_tree().process_frame
+
+
 func test_preparation_shop_buttons_buy_sell_and_reroll_through_spatial_owner() -> void:
 	var main: Node = _new_main()
 	main._on_school_selected(&"cheonsul")

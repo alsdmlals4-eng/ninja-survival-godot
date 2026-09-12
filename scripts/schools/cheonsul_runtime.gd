@@ -97,6 +97,8 @@ func _process(delta: float) -> void:
 
 
 func apply_flame_cast(center: Vector2) -> int:
+	if uses_selected_ninjutsu():
+		return 0
 	if not active or not is_instance_valid(player) or player.is_dead() or get_tree().paused:
 		return 0
 

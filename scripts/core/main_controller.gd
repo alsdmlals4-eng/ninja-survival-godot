@@ -99,7 +99,7 @@ func _ready() -> void:
 	wave_spawner.configure(self, player)
 	basic_weapons.configure(combat_resolver)
 	(school_host.get_node("Guiin") as GuiinRuntime).configure_weapon_controller(basic_weapons)
-	(school_host.get_node("Guiin") as GuiinRuntime).configure_ninjutsu_loadout(ninjutsu_loadout)
+	school_host.configure_ninjutsu_loadout(ninjutsu_loadout)
 	school_host.configure(player, self)
 	school_host.configure_run_systems(combat_resolver, contribution_tracker)
 	if ninjutsu_auto_controller != null:
@@ -335,6 +335,8 @@ func _start_school_circuit(school_id: StringName) -> bool:
 		return false
 	if not school_circuit.begin_school(school_id):
 		return false
+	if ninjutsu_auto_controller != null:
+		ninjutsu_auto_controller.call("configure", player, self, combat_resolver, ninjutsu_loadout)
 	for child in get_children():
 		if child.is_in_group("enemies") and not child.has_meta(SCHOOL_CIRCUIT_ROLE_META):
 			_wire_enemy(child)
@@ -713,6 +715,8 @@ func _set_combat_enabled(enabled: bool) -> void:
 	_combat_enabled = enabled
 	if not enabled:
 		player.clear_pointer_target()
+		if ninjutsu_auto_controller != null:
+			ninjutsu_auto_controller.call("clear_runtime_effects")
 		if school_host.active_runtime is GuiinRuntime:
 			(school_host.active_runtime as GuiinRuntime).cancel_ultimate()
 		elif school_host.active_runtime is BongmaRuntime:

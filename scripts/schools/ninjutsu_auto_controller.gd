@@ -19,6 +19,9 @@ var _remaining_by_spell: Dictionary = {}
 var _active_effects: Array[Dictionary] = []
 var _selected_casts: Array[Dictionary] = []
 var _ticking := false
+var _support_remaining: Dictionary = {}
+var _support_zones: Dictionary = {}
+const SUPPORT_BOOKS := [&"guiin_iron_blood_guard", &"guiin_demon_step", &"cheonsul_ice_veil", &"heukyeong_smoke_step", &"bongma_guardian_ward", &"bongma_barrier_step"]
 
 
 func configure(player: Node2D, world: Node, combat_resolver: CombatResolver, loadout: Node) -> bool:
@@ -28,6 +31,8 @@ func configure(player: Node2D, world: Node, combat_resolver: CombatResolver, loa
 		return false
 	if is_instance_valid(_loadout) and _loadout.has_signal("loadout_changed") and _loadout.is_connected("loadout_changed", _prune_selected_casts):
 		_loadout.disconnect("loadout_changed", _prune_selected_casts)
+	if is_instance_valid(_player) and _player.has_signal("dash_ended") and _player.is_connected("dash_ended", _on_dash_ended):
+		_player.disconnect("dash_ended", _on_dash_ended)
 	clear_runtime_effects()
 	_remaining_by_spell.clear()
 	_player = player
@@ -36,11 +41,84 @@ func configure(player: Node2D, world: Node, combat_resolver: CombatResolver, loa
 	_loadout = loadout
 	if _loadout.has_signal("loadout_changed"):
 		_loadout.connect("loadout_changed", _prune_selected_casts)
+	if _player.has_signal("dash_ended"):
+		_player.connect("dash_ended", _on_dash_ended)
 	return true
 
 
 func _process(delta: float) -> void:
 	tick_auto_cast(delta)
+
+
+func _remove_support(id: StringName) -> void:
+	_support_remaining.erase(id)
+	_support_zones.erase(id)
+	if is_instance_valid(_player) and _player.has_method("remove_ninjutsu_boon"):
+		_player.call("remove_ninjutsu_boon", id)
+
+
+func _apply_support(id: StringName, config: Dictionary) -> void:
+	if not is_instance_valid(_player) or not _player.has_method("set_ninjutsu_boon"):
+		return
+	_player.call("set_ninjutsu_boon", id, float(config.get("damage_reduction", 0.0)), float(config.get("move_speed_bonus", 0.0)), int(config.get("shield", 0)))
+	_support_remaining[id] = maxf(float(_support_remaining.get(id, 0.0)), float(config.duration))
+	if config.kind in ["ward", "dash_ward"]:
+		_support_zones[id] = {"origin": _player.global_position, "config": config}
+
+
+func _tick_support_books(delta: float) -> void:
+	if not _player.has_method("set_ninjutsu_boon"):
+		return
+	for id in _support_remaining.keys():
+		_support_remaining[id] = maxf(float(_support_remaining[id]) - delta, 0.0)
+		if float(_support_remaining[id]) <= 0.000001:
+			_remove_support(id)
+	for id in _support_zones.keys():
+		var zone: Dictionary = _support_zones[id]
+		var config: Dictionary = zone.config
+		if _player.global_position.distance_squared_to(zone.origin) <= pow(float(config.radius), 2):
+			_player.call("set_ninjutsu_boon", id, float(config.damage_reduction), 0.0, 0)
+		else:
+			_player.call("remove_ninjutsu_boon", id)
+	for raw_id in _loadout.call("active_spell_ids"):
+		var id := StringName(raw_id)
+		if not SUPPORT_BOOKS.has(id):
+			continue
+		var definition = NINJUTSU_CATALOG_SCRIPT.definition_for_id(id)
+		var config: Dictionary = definition.effect_config
+		if config.kind == "proximity_guard":
+			if _selected_target(_player.global_position, float(config.target_range)) != null:
+				_apply_support(id, config)
+			else:
+				_remove_support(id)
+			continue
+		var remaining := maxf(float(_remaining_by_spell.get(id, config.cooldown)) - delta, 0.0)
+		_remaining_by_spell[id] = remaining
+		if config.kind not in ["shield", "ward"] or remaining > 0.000001:
+			continue
+		if _selected_target(_player.global_position, float(config.target_range)) == null:
+			_remaining_by_spell[id] = 0.12
+			continue
+		_remaining_by_spell[id] = float(config.cooldown)
+		_apply_support(id, config)
+
+
+func _on_dash_ended() -> void:
+	if not is_instance_valid(_loadout) or not is_instance_valid(_player) or get_tree().paused or not can_process():
+		return
+	if _player.has_method("is_dead") and _player.call("is_dead"):
+		return
+	if not _loadout.has_method("get_snapshot") or _loadout.call("get_snapshot").get("selection_contract", "") != "selectable-v2":
+		return
+	for raw_id in _loadout.call("active_spell_ids"):
+		var id := StringName(raw_id)
+		if not [&"guiin_demon_step", &"heukyeong_smoke_step", &"bongma_barrier_step"].has(id):
+			continue
+		var config: Dictionary = NINJUTSU_CATALOG_SCRIPT.definition_for_id(id).effect_config
+		if float(_remaining_by_spell.get(id, config.cooldown)) > 0.000001:
+			continue
+		_remaining_by_spell[id] = float(config.cooldown)
+		_apply_support(id, config)
 
 
 func _exit_tree() -> void:
@@ -64,8 +142,15 @@ func _tick_auto_cast(delta: float) -> void:
 		clear_runtime_effects()
 		return
 	_advance_effects(delta)
+	if _loadout.has_method("get_snapshot") and _loadout.call("get_snapshot").get("selection_contract", "") == "selectable-v2":
+		_tick_support_books(delta)
 	if _combat_resolver != null and _combat_resolver.sword_only_mode:
-		clear_runtime_effects()
+		_selected_casts.clear()
+		for entry in _active_effects:
+			var effect = entry.get("node")
+			if is_instance_valid(effect) and not effect.is_queued_for_deletion():
+				effect.queue_free()
+		_active_effects.clear()
 		return
 	if _loadout.has_method("get_snapshot") and _loadout.call("get_snapshot").get("selection_contract", "") == "selectable-v2":
 		_tick_selected_books(delta)
@@ -140,6 +225,9 @@ func _prune_selected_casts() -> void:
 		_selected_casts.clear()
 		return
 	var active: Array = _loadout.call("active_spell_ids")
+	for id in SUPPORT_BOOKS:
+		if not active.has(id):
+			_remove_support(id)
 	for cast in _selected_casts.duplicate():
 		if not active.has(cast.id):
 			_selected_casts.erase(cast)
@@ -371,6 +459,8 @@ func _advance_effects(delta: float) -> void:
 
 
 func clear_runtime_effects() -> void:
+	for id in SUPPORT_BOOKS:
+		_remove_support(id)
 	_selected_casts.clear()
 	for entry in _active_effects:
 		var effect = entry.get("node")

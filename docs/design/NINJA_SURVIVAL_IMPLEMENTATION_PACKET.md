@@ -4,6 +4,31 @@
 
 ## 준비 범위와 실행 경계
 
+### 2026-09-13 연속 개선: 보호·이동 소비처 및 전투 전환
+
+승인 범위: R-NINJUTSU의 철혈호체/빙막/귀일보/연막보법을 먼저 연결하고,
+그 결과를 재사용해 수호결계/결계보법과 기존 유파 무료 공격 분리를 이어서 구현한다.
+실제 소비처는 PlayerController, NinjutsuAutoController, SchoolRuntimeBase/Host, Main이다.
+새 전역 시스템/의존성/저장 필드/기획 의미/이미지 승격은 추가하지 않는다.
+
+- [x] 실패 테스트 후 피해감소→보호막, 무적 중 보호막 보존, 실제 대시 종료 신호를 연결.
+- [x] 귀일보 이동+15%/1.2초, 연막보법 감소15%/1초, 철혈호체 근접110/10%, 빙막12/3초.
+- [x] 발밑 수호결계120/2초/20%, 대시 도착점 결계보법90/1.5초/10%; 둘은 큰 값만 적용.
+- [x] 시전기 소유 시간/조건과 플레이어 최종 효과 계산 분리; 장비 갱신은 임시 효과를 보존.
+- [x] 해제/사망/준비 진입 정리 및 새 Stage 주기 초기화의 실제 Main 호출을 연결.
+- [x] 모든 유파가 선택형 Loadout을 참조하여 무료 기본 공격을 차단하되 자원 충전을 유지.
+- [x] 전체97scripts/731tests/9673assertions 및 실제 물리 대시 종료/process 지속시간 검증.
+- [ ] 나머지14종 인법, 태그 피해, 시작 준비 Main 전환, 장비/경제/profile2 연결.
+- [ ] 새 보호 VFX·표시 검수, 정상 속도 전체 런, 전체 범위5회 검토 및 Human/device 검증.
+
+ADAPT Halls of Torment의 능력/장비 조합, Brotato의 자동 공격+특성 빌드.
+우리 해석: 공격 이외의 선택도 거리·대시 타이밍을 통해 생존 결과를 바꿔야 한다.
+Sources: https://store.steampowered.com/app/2218750/Halls_of_Torment/ ; https://store.steampowered.com/app/1942280/Brotato/
+기술 근거: https://docs.godotengine.org/en/stable/tutorials/misc/pausing_games.html
+신호는 pause 중에도 호출될 수 있어 dash-end handler에 pause/처리 가능 상태를 별도 검사한다.
+대안 비교: Player에 제한된 transient source map(채택), RunModifierSet 저장 필드에 혼합(수명/저장 권한 혼동으로 기각),
+별도 전역 buff manager(현 소비처에 불필요한 복잡성으로 기각). 비용 추가0, 기존 저장 유지.
+
 ### 2026-09-13 선택형 인법 전투 연결 — 진행 중
 
 후속 실행 범위: 귀혈파 경로를 잔영 쇄도/수라진/나찰연각까지 확장하고,

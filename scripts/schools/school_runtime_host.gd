@@ -39,6 +39,12 @@ func configure(new_player: PlayerController, new_world: Node2D) -> void:
 			(child as SchoolRuntimeBase).configure(player, world)
 
 
+func configure_ninjutsu_loadout(loadout: Node) -> void:
+	for child in get_children():
+		if child is SchoolRuntimeBase:
+			child.configure_ninjutsu_loadout(loadout)
+
+
 func configure_run_systems(
 	resolver: CombatResolver,
 	tracker: CombatContributionTracker

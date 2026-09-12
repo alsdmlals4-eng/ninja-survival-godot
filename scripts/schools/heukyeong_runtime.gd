@@ -95,6 +95,8 @@ func set_rng_seed(seed_value: int) -> void:
 
 
 func attack_once() -> Array[Node]:
+	if uses_selected_ninjutsu():
+		return []
 	if not _can_act():
 		return []
 	var candidates := _valid_enemies()

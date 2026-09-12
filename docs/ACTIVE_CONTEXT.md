@@ -1,5 +1,26 @@
 # ACTIVE_CONTEXT
 
+## Latest — support books and actual lifecycle consumers, 2026-09-13
+
+Continue without routine approval as explicitly requested. This turn completed
+successive logic increments:4support books →2fixed ward books → Main cleanup/
+Stage reset → common school Loadout binding/intrinsic suppression.
+Selected effect consumers now cover10/24 books (4offense,6support);14remain.
+Player owns transient damage reduction/shield/speed resolution, controller owns
+conditions/durations; no save schema fields or new autoload. Ward family takes
+maximum rather than sum; total transient reduction capped60%. Reduction precedes
+shield; dash invulnerability does not spend shield; real dash-end emits once.
+Main now clears transient effects when combat stops and reconfigures the cast
+consumer on successful school entry. All school runtimes suppress intrinsic
+attacks when bound to selected mode; their charge/ultimate ownership remains.
+Default starting UI/profile path still legacy; do not claim selected full-run.
+Final local full GUT97scripts/731tests/9673assertions PASS; GPU physics/process
+support smoke PASS using `tools/qa_selected_books_runtime.gd -- --support`.
+No new art, visual approval, normal-speed Human test or main merge. Full five
+whole-scope review loops still open, not inferred from targeted correction passes.
+Next ready work:14effect implementations and shared status/projectile consumers;
+then start/Main/gear/economy/profile2 integration and full-run acceptance.
+
 ## Latest — four selected offensive books, 2026-09-13 continuation
 
 Current WIP now consumes Guiin pulse/afterimage line/ring/kick cone definitions.

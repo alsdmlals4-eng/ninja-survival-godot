@@ -27,6 +27,29 @@ func _run() -> void:
 	var controller = load("res://scripts/schools/ninjutsu_auto_controller.gd").new()
 	world.add_child(controller)
 	controller.configure(player, world, null, loadout)
+	if "--support" in OS.get_cmdline_user_args():
+		loadout.commit_placed_ninjutsu([&"guiin_demon_step"], [&"guiin"])
+		player.set_physics_process(true)
+		await create_timer(5.15).timeout
+		if not player.request_dash():
+			push_error("SUPPORT_RUNTIME_FAIL dash request")
+			quit(1)
+			return
+		await create_timer(0.35).timeout
+		if not is_equal_approx(player.move_speed, 276.0):
+			push_error("SUPPORT_RUNTIME_FAIL actual dash-end speed")
+			quit(1)
+			return
+		await create_timer(1.2).timeout
+		if not is_equal_approx(player.move_speed, 240.0):
+			push_error("SUPPORT_RUNTIME_FAIL expired speed")
+			quit(1)
+			return
+		world.queue_free()
+		await process_frame
+		print("SUPPORT_BOOKS_RUNTIME_PASS real physics dash-end and process duration; no save writes")
+		quit(0)
+		return
 	await create_timer(2.9).timeout
 	if enemy.health != 985:
 		push_error("SELECTED_BOOKS_RUNTIME_FAIL expected three real-process hits: " + str(enemy.health))

@@ -1,5 +1,33 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-13 continuous support/lifecycle increments
+
+Baseline6cd8100, task PR147; main b5c2dd6, Base remote d830c0f unchanged.
+No other open PR mutation or full Base adapter replacement. Existing rules and
+implementation packet remain owners; research links/dispositions are in packet.
+
+Reproduced before fixes:4support effects missing;2fixed wards missing; Main
+preparation retained movement bonus; new Stage retained prior cooldown; three
+other school classes lacked selectable Loadout binding. Implemented minimal
+consumers and repeated targeted checks. One test edit initially misplaced its
+tail (parse error); fixed test structure and reran to obtain actual RED evidence.
+An incorrect GUT -gselect invocation ran no tests; not counted as verification.
+
+Final:97scripts/731tests/9673assertions PASS, full log no SCRIPT ERROR/ERROR/
+WARNING/Failing Tests matches. GPU Godot4.7.1/OpenGL3.3 RTX3050 real physics
+dash end at0.2sec triggered speed276, returned240 after duration; smoke repeated
+on final logic PASS. No player-save writes in that standalone runtime probe.
+Main integration uses existing test storage isolation; no production schema edits.
+Live Hera status pointed to another project; it was not mutated.
+
+State: WIP, not whole-game completion. Remaining14book effects, tag modifiers,
+selected start/Main/profile2/economy binding, production support VFX, normal-speed
+full run, five full-scope review closeout, Human/device. Targeted correction
+iterations above are not misreported as five completed whole-scope reviews.
+Learning: engine signals still run while nodes are paused; explicit handler
+guards plus actual physics/process evidence are needed for dash-triggered skills.
+Keep this regression in project; Base promotion remains a candidate, not done.
+
 ## 2026-09-13 timed selected-book continuation — WIP
 
 Baseline e5c3957; current task PR147 only, open135/49 remain read-only.

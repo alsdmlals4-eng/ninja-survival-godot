@@ -184,6 +184,8 @@ func _has_target_in_range(radius: float, visible_only: bool = false) -> bool:
 
 
 func _spawn_base_familiar() -> void:
+	if uses_selected_ninjutsu():
+		return
 	if is_instance_valid(_base_familiar):
 		return
 	_base_familiar = _spawn_familiar("Familiar")
@@ -225,6 +227,8 @@ func _clear_familiar(familiar: BongmaFamiliar) -> void:
 
 
 func _place_ward() -> void:
+	if uses_selected_ninjutsu():
+		return
 	if not is_instance_valid(player):
 		return
 	ward_center = player.global_position
