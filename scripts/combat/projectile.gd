@@ -16,6 +16,7 @@ var _blast_remaining: float = 0.0
 
 
 func _ready() -> void:
+	add_to_group("friendly_weapon_projectiles")
 	_remaining_lifetime = max(lifetime, 0.01)
 	_blast_remaining = maxf(blast_delay, 0.01)
 

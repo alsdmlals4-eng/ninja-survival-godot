@@ -1,5 +1,31 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-12 Guiin sword-only integration — continuation
+
+Full local GUT93scripts/662tests/7210assertions PASS, explicit error scan.
+Main input now activates6sec temporary sword20damage/0.325sec/168range/150degrees,
+immediate first strike. CombatResolver rejects non-sword channels while active;
+auto-book damaging casts freeze. BasicWeapon stores original profile separately
+without changing equipment ownership or advancing old weapon clocks. Exit is
+idempotent on6sec expiration, preparation, death/deactivation and scene removal.
+
+RED evidence: input previously left normal projectile and old pulse attacks
+active; paused runtime direct tick expired the effect. New actual-Main test
+verifies switch,20damage, non-sword rejection, pause freeze and preparation
+restoration of0.27/0.42sec original weapon clocks. A second RED showed a precast
+projectile could resume damage after early exit. Owned projectiles now queue-free
+at activation, scoped by world and resolver identity; deferred-delete guard stops
+damage immediately. Legacy form-pulse tests were replaced by sword-consumer
+assertions; obsolete form-pulse constants were removed.
+
+ADAPT existing BasicWeapon temporary profile and resolver gate; REJECT mutating
+owned equipment or using the normal selected sword as the ultimate's identity;
+DEFER a separate sword actor because current cone/automatic targeting suffices.
+This does NOT finish new charge rates, damage tags,24books/defensive effects,
+profile2 transactions, new weapon visuals or normal-speed/Human verification.
+The old normal Guiin gain/decay behavior remains explicitly pending. Previous
+e3c2c49 exact head CI passed; this changed head still needs its own CI.
+
 ## 2026-09-12 combat protection / weapon consumer / save correction — continuation
 
 Approved full-run scope remains open. Latest local full GUT:93scripts,

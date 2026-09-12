@@ -248,3 +248,48 @@ func test_powder_bomb_locks_target_position_then_damages_only_current_blast_occu
 	assert_eq(second.health, 82)
 	bomb._physics_process(1.0)
 	assert_eq(second.health, 82)
+
+
+func test_guiin_sword_mode_blocks_other_damage_and_restores_original_weapon_clocks() -> void:
+	var fixture := _new_fixture()
+	assert_true(fixture.controller.has_method("begin_guiin_form"))
+	if not fixture.controller.has_method("begin_guiin_form"):
+		return
+	var target := DamageTarget.new()
+	fixture.world.add_child(target)
+	target.position = Vector2(40, 0)
+	target.add_to_group("enemies")
+	fixture.controller._katana_remaining = 0.27
+	fixture.controller._shuriken_remaining = 0.42
+	fixture.controller.katana_damage = 37.0
+	assert_true(fixture.controller.begin_guiin_form())
+	assert_eq(target.health, 80, "Guiin form immediately uses its own20damage sword, not old equipment damage.")
+	assert_eq(fixture.resolver.deal_basic_weapon_damage(target, 999), 0)
+	assert_eq(fixture.resolver.deal_school_damage(target, 999), 0)
+	assert_eq(fixture.resolver.deal_school_damage(target, 999, &"ultimate"), 0)
+	assert_null(fixture.controller.fire_shuriken_once())
+	assert_false(fixture.controller.begin_guiin_form())
+	fixture.controller._process(0.325)
+	assert_eq(target.health, 60)
+	fixture.controller.end_guiin_form()
+	fixture.controller.end_guiin_form()
+	assert_eq(fixture.controller.katana_damage, 37.0)
+	assert_eq(fixture.controller._katana_remaining, 0.27)
+	assert_eq(fixture.controller._shuriken_remaining, 0.42)
+	assert_eq(fixture.resolver.deal_basic_weapon_damage(target, 9), 9)
+
+
+func test_guiin_clears_precast_projectiles_so_early_exit_cannot_revive_their_damage() -> void:
+	var fixture := _new_fixture()
+	var target := DamageTarget.new()
+	fixture.world.add_child(target)
+	target.position = Vector2(200, 0)
+	target.add_to_group("enemies")
+	fixture.controller.shuriken_projectile_scene = SHURIKEN_SCENE
+	var projectile: BasicProjectile = fixture.controller.fire_shuriken_once()
+	assert_not_null(projectile)
+	assert_true(fixture.controller.begin_guiin_form())
+	assert_true(projectile.is_queued_for_deletion())
+	fixture.controller.end_guiin_form()
+	assert_false(projectile.hit_body(target))
+	assert_eq(target.health, 100)

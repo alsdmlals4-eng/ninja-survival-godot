@@ -204,3 +204,28 @@ func test_feedback_returns_to_latest_readiness_after_expiry() -> void:
 	main._unhandled_input(_key())
 	main.hud._process(2.0)
 	assert_string_contains(main.hud.ultimate_button.text, "충전 중")
+
+
+func test_guiin_input_switches_to_sword_only_then_restores_on_preparation_entry() -> void:
+	var main = _main()
+	var enemy = load("res://scripts/enemies/enemy_chaser.gd").new()
+	enemy.max_health = 1000
+	main.add_child(enemy)
+	enemy.global_position = main.player.global_position + Vector2(40, 0)
+	_charge_guiin(main)
+	main.basic_weapons._katana_remaining = 0.27
+	main.basic_weapons._shuriken_remaining = 0.42
+	main._unhandled_input(_key())
+	assert_true(main.combat_resolver.sword_only_mode)
+	assert_eq(enemy.health, 980)
+	assert_eq(main.school_host.active_runtime.perform_melee_pulse(), 0)
+	assert_null(main.basic_weapons.fire_shuriken_once())
+	get_tree().paused = true
+	main.school_host.active_runtime._process(10.0)
+	get_tree().paused = false
+	assert_eq(main.school_host.active_runtime.ultimate_time_remaining, 6.0)
+	main._set_combat_enabled(false)
+	assert_false(main.combat_resolver.sword_only_mode)
+	assert_eq(main.basic_weapons.katana_damage, 10.0)
+	assert_eq(main.basic_weapons._katana_remaining, 0.27)
+	assert_eq(main.basic_weapons._shuriken_remaining, 0.42)

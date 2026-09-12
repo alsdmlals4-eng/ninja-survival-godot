@@ -14,9 +14,6 @@ const GWIHYEOL_MAX := 100.0
 const DECAY_DELAY := 1.0
 const DECAY_PER_SECOND := 6.0
 const ULTIMATE_DURATION := 6.0
-const ULTIMATE_INTERVAL := 0.45
-const ULTIMATE_RADIUS := 130.0
-const ULTIMATE_DAMAGE_MULTIPLIER := 1.25
 const TIMER_EPSILON := 0.000001
 
 var gwihyeol: float = 0.0
@@ -24,6 +21,11 @@ var time_since_gain: float = 0.0
 var ultimate_time_remaining: float = 0.0
 var _pulse_remaining: float = PULSE_INTERVAL
 var _last_ultimate_ready: bool = false
+var basic_weapons: BasicWeaponController
+
+
+func configure_weapon_controller(controller: BasicWeaponController) -> void:
+	basic_weapons = controller
 
 
 func activate() -> void:
@@ -39,15 +41,33 @@ func activate() -> void:
 
 
 func deactivate() -> void:
+	cancel_ultimate()
 	super.deactivate()
 
 
+func cancel_ultimate() -> void:
+	ultimate_time_remaining = 0.0
+	if is_instance_valid(basic_weapons):
+		basic_weapons.end_guiin_form()
+
+
+func _exit_tree() -> void:
+	cancel_ultimate()
+
+
 func _process(delta: float) -> void:
-	if not active or delta <= 0.0:
+	if not active or delta <= 0.0 or get_tree().paused:
+		return
+	if not is_instance_valid(player) or player.is_dead():
+		cancel_ultimate()
 		return
 
 	if ultimate_time_remaining > 0.0:
 		ultimate_time_remaining = maxf(ultimate_time_remaining - delta, 0.0)
+		if ultimate_time_remaining <= 0.0:
+			cancel_ultimate()
+			_emit_ultimate_ready_if_changed()
+		return
 
 	var previous_time_since_gain := time_since_gain
 	time_since_gain += delta
@@ -66,16 +86,15 @@ func _process(delta: float) -> void:
 
 
 func perform_melee_pulse() -> int:
-	if not active or not is_instance_valid(player):
+	if not active or not is_instance_valid(player) or ultimate_time_remaining > 0.0 or get_tree().paused:
 		return 0
 	var hit_count := 0
 	var radius := current_pulse_radius()
 	var base_damage := float(current_pulse_damage())
-	var damage_kind: StringName = &"ultimate" if ultimate_time_remaining > 0.0 else &"normal"
 	for enemy in _valid_enemies():
 		if enemy.global_position.distance_squared_to(player.global_position) > radius * radius:
 			continue
-		var actual_damage := _deal_damage(enemy, base_damage, damage_kind)
+		var actual_damage := _deal_damage(enemy, base_damage, &"normal")
 		if actual_damage <= 0:
 			continue
 		hit_count += 1
@@ -86,13 +105,11 @@ func perform_melee_pulse() -> int:
 
 
 func current_pulse_interval() -> float:
-	return ULTIMATE_INTERVAL if ultimate_time_remaining > 0.0 else PULSE_INTERVAL
+	return PULSE_INTERVAL
 
 
 func current_pulse_radius() -> float:
 	var radius := BERSERKER_RADIUS if _is_berserker_active() else PULSE_RADIUS
-	if ultimate_time_remaining > 0.0:
-		radius = maxf(radius, ULTIMATE_RADIUS)
 	return radius * maxf(1.0 + run_modifiers.guiin_melee_radius_pct, 0.0)
 
 
@@ -100,13 +117,11 @@ func current_pulse_damage() -> int:
 	var value := BERSERKER_DAMAGE if _is_berserker_active() else PULSE_DAMAGE
 	if gwihyeol >= HIGH_GWIHYEOL_THRESHOLD:
 		value *= HIGH_GWIHYEOL_MULTIPLIER
-	if ultimate_time_remaining > 0.0:
-		value *= ULTIMATE_DAMAGE_MULTIPLIER
 	return maxi(roundi(value), 1)
 
 
 func on_enemy_died(_enemy: Node) -> void:
-	if not active:
+	if not active or ultimate_time_remaining > 0.0:
 		return
 	_gain_gwihyeol(KILL_GWIHYEOL)
 
@@ -116,11 +131,14 @@ func is_ultimate_ready() -> bool:
 
 
 func try_use_ultimate() -> bool:
-	if not is_ultimate_ready():
+	if not is_ultimate_ready() or not is_instance_valid(basic_weapons) or not is_instance_valid(player) or player.is_dead() or get_tree().paused:
 		return false
 	_set_gwihyeol(0.0, true)
 	ultimate_time_remaining = ULTIMATE_DURATION
-	_pulse_remaining = minf(_pulse_remaining, ULTIMATE_INTERVAL)
+	if not basic_weapons.begin_guiin_form():
+		ultimate_time_remaining = 0.0
+		_set_gwihyeol(GWIHYEOL_MAX, true)
+		return false
 	_emit_ultimate_ready_if_changed(true)
 	school_feedback.emit("귀인화")
 	return true

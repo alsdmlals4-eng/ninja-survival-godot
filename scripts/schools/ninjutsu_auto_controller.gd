@@ -43,6 +43,8 @@ func tick_auto_cast(delta: float) -> void:
 	if delta <= 0.0 or not is_instance_valid(_player) or not is_instance_valid(_world) or _loadout == null:
 		return
 	_advance_effects(delta)
+	if _combat_resolver != null and _combat_resolver.sword_only_mode:
+		return
 	for raw_spell_id in _loadout.call("active_spell_ids"):
 		var spell_id := StringName(raw_spell_id)
 		var definition = NINJUTSU_CATALOG_SCRIPT.definition_for_id(spell_id)

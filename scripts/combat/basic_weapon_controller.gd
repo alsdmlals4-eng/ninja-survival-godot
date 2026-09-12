@@ -27,6 +27,8 @@ var _active_katana_effects: Array[Dictionary] = []
 var _melee_shape: String = "cone"
 var _melee_width: float = 0.0
 var _projectile_profile: Dictionary = {}
+var _guiin_original: Dictionary = {}
+var _guiin_sword_remaining: float = 0.0
 
 
 func configure(new_combat_resolver: CombatResolver) -> void:
@@ -34,6 +36,8 @@ func configure(new_combat_resolver: CombatResolver) -> void:
 
 
 func apply_equipment_snapshot(snapshot: Dictionary) -> bool:
+	if not _guiin_original.is_empty():
+		return false
 	var equipment = EQUIPMENT_STATE_SCRIPT.new()
 	if not equipment.restore_snapshot(snapshot):
 		return false
@@ -53,6 +57,48 @@ func apply_equipment_snapshot(snapshot: Dictionary) -> bool:
 	return true
 
 
+func begin_guiin_form() -> bool:
+	var source := get_parent() as Node2D
+	if not _guiin_original.is_empty() or source == null or not is_inside_tree() or get_tree().paused:
+		return false
+	if source.has_method("is_dead") and bool(source.call("is_dead")):
+		return false
+	_guiin_original = {"damage": katana_damage, "radius": katana_radius, "angle": katana_half_angle_degrees,
+		"interval": katana_interval, "shape": _melee_shape, "width": _melee_width}
+	katana_damage = 20.0
+	katana_radius = 168.0
+	katana_half_angle_degrees = 75.0
+	katana_interval = 0.325
+	_melee_shape = "cone"
+	_melee_width = 0.0
+	if combat_resolver != null:
+		combat_resolver.sword_only_mode = true
+	for projectile in get_tree().get_nodes_in_group("friendly_weapon_projectiles"):
+		if projectile is BasicProjectile and projectile.get_parent() == source.get_parent() and projectile.combat_resolver == combat_resolver:
+			projectile.queue_free()
+	_guiin_sword_remaining = 0.325 if swing_katana_once() > 0 else 0.1
+	return true
+
+
+func end_guiin_form() -> void:
+	if _guiin_original.is_empty():
+		return
+	katana_damage = float(_guiin_original["damage"])
+	katana_radius = float(_guiin_original["radius"])
+	katana_half_angle_degrees = float(_guiin_original["angle"])
+	katana_interval = float(_guiin_original["interval"])
+	_melee_shape = str(_guiin_original["shape"])
+	_melee_width = float(_guiin_original["width"])
+	_guiin_original.clear()
+	_guiin_sword_remaining = 0.0
+	if is_instance_valid(combat_resolver):
+		combat_resolver.sword_only_mode = false
+
+
+func _exit_tree() -> void:
+	end_guiin_form()
+
+
 func _process(delta: float) -> void:
 	if delta <= 0.0 or get_tree().paused:
 		return
@@ -63,6 +109,11 @@ func _process(delta: float) -> void:
 		return
 
 	_advance_katana_effects(delta)
+	if not _guiin_original.is_empty():
+		_guiin_sword_remaining = maxf(_guiin_sword_remaining - delta, 0.0)
+		if _guiin_sword_remaining <= 0.0:
+			_guiin_sword_remaining = katana_interval if swing_katana_once() > 0 else 0.1
+		return
 	_katana_remaining = maxf(_katana_remaining - delta, 0.0)
 	_shuriken_remaining = maxf(_shuriken_remaining - delta, 0.0)
 	if _katana_remaining <= 0.0:
@@ -134,6 +185,8 @@ func swing_katana_once() -> int:
 
 
 func fire_shuriken_once() -> Node2D:
+	if not _guiin_original.is_empty():
+		return null
 	if shuriken_projectile_scene == null:
 		return null
 	var source := get_parent() as Node2D
@@ -222,6 +275,8 @@ func _closest_targets_in_radius(
 
 func _resolve_basic_damage(target: Node, base_damage: float) -> int:
 	if combat_resolver != null:
+		if not _guiin_original.is_empty():
+			return combat_resolver.deal_guiin_sword_damage(target, base_damage)
 		return combat_resolver.deal_basic_weapon_damage(target, base_damage)
 	if target == null or not is_instance_valid(target) or not target.has_method("take_damage") or base_damage <= 0.0:
 		return 0

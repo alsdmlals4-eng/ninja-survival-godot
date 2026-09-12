@@ -29,9 +29,12 @@ func _make_runtime():
 	add_child_autofree(world)
 	var player = load(PLAYER_PATH).new()
 	world.add_child(player)
+	var weapons = load("res://scripts/combat/basic_weapon_controller.gd").new()
+	player.add_child(weapons)
 	var runtime = load(RUNTIME_PATH).new()
 	world.add_child(runtime)
 	runtime.configure(player, world)
+	runtime.configure_weapon_controller(weapons)
 	runtime.activate()
 	return runtime
 
@@ -52,6 +55,7 @@ func _configure_run_systems(runtime, modifiers = null) -> Dictionary:
 	runtime.world.add_child(resolver)
 	resolver.configure(tracker)
 	runtime.configure_run_systems(resolver, tracker)
+	runtime.basic_weapons.configure(resolver)
 	if modifiers == null:
 		modifiers = load(MODIFIER_PATH).new()
 	resolver.set_modifiers(modifiers)
@@ -92,7 +96,8 @@ func test_school_emblem_multiplies_final_melee_radius() -> void:
 	assert_almost_eq(runtime.current_pulse_radius(), 126.5, 0.001)
 	runtime.gwihyeol = 100.0
 	assert_true(runtime.try_use_ultimate())
-	assert_almost_eq(runtime.current_pulse_radius(), 149.5, 0.001)
+	assert_almost_eq(runtime.basic_weapons.katana_radius, 168.0, 0.001)
+	assert_eq(runtime.perform_melee_pulse(), 0)
 
 
 func test_melee_pulse_hits_only_enemies_inside_current_radius_and_gains_four_each() -> void:
@@ -158,7 +163,7 @@ func test_school_damage_modifier_is_applied_once_after_local_guiin_math() -> voi
 	assert_eq(systems.tracker.damage, 15)
 
 
-func test_seal_path_reduces_normal_pulse_but_strengthens_guiin_form_pulse() -> void:
+func test_seal_path_reduces_normal_pulse_but_strengthens_only_the_guiin_sword() -> void:
 	var runtime = _make_runtime()
 	if runtime == null:
 		return
@@ -172,9 +177,9 @@ func test_seal_path_reduces_normal_pulse_but_strengthens_guiin_form_pulse() -> v
 	assert_eq(enemy.health, 192)
 	runtime.gwihyeol = 100.0
 	assert_true(runtime.try_use_ultimate())
-	assert_eq(runtime.current_pulse_damage(), 19)
-	assert_eq(runtime.perform_melee_pulse(), 1)
-	assert_eq(enemy.health, 163)
+	assert_eq(runtime.basic_weapons.katana_damage, 20.0)
+	assert_eq(runtime.perform_melee_pulse(), 0)
+	assert_eq(enemy.health, 162)
 
 
 func test_enemy_kill_adds_twelve_and_resource_clamps_at_one_hundred() -> void:
@@ -242,16 +247,16 @@ func test_guiin_form_cost_duration_interval_radius_and_rounding() -> void:
 	assert_true(runtime.try_use_ultimate())
 	assert_almost_eq(runtime.gwihyeol, 0.0, 0.001)
 	assert_almost_eq(runtime.ultimate_time_remaining, 6.0, 0.001)
-	assert_almost_eq(runtime.current_pulse_interval(), 0.45, 0.001)
-	assert_almost_eq(runtime.current_pulse_radius(), 130.0, 0.001)
-	assert_eq(runtime.current_pulse_damage(), 19)
+	assert_almost_eq(runtime.basic_weapons.katana_interval, 0.325, 0.001)
+	assert_almost_eq(runtime.basic_weapons.katana_radius, 168.0, 0.001)
+	assert_eq(runtime.basic_weapons.katana_damage, 20.0)
 
 	runtime.gwihyeol = 75.0
-	assert_eq(runtime.current_pulse_damage(), 23)
+	assert_eq(runtime.basic_weapons.katana_damage, 20.0)
 	assert_false(runtime.try_use_ultimate())
 
 
-func test_ultimate_ends_after_six_seconds_and_resource_gain_still_works() -> void:
+func test_ultimate_ends_after_six_seconds_and_blocks_resource_gain_while_active() -> void:
 	var runtime = _make_runtime()
 	if runtime == null:
 		return
@@ -261,9 +266,9 @@ func test_ultimate_ends_after_six_seconds_and_resource_gain_still_works() -> voi
 	var enemy := Node.new()
 	runtime.on_enemy_died(enemy)
 	enemy.free()
-	assert_almost_eq(runtime.gwihyeol, 12.0, 0.001)
+	assert_almost_eq(runtime.gwihyeol, 0.0, 0.001)
 	runtime._process(0.5)
-	assert_almost_eq(runtime.gwihyeol, 12.0, 0.001)
+	assert_almost_eq(runtime.gwihyeol, 0.0, 0.001)
 	assert_almost_eq(runtime.ultimate_time_remaining, 5.5, 0.001)
 	runtime._process(5.5)
 	assert_almost_eq(runtime.ultimate_time_remaining, 0.0, 0.001)

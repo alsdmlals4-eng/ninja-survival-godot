@@ -2,6 +2,18 @@
 
 ## Latest — whole-run continuation, 2026-09-12
 
+Newest local continuation:93scripts/662tests/7210assertions PASS. Guiin manual
+input now starts a6second temporary sword profile (20damage,0.325sec,168range,
+150degree cone), immediate strike, frozen original weapon clocks, no projectile
+or school-damage channels. Already-fired owned projectiles are cleared so early
+mode exit cannot revive them. Damaging auto-book casts pause; original profile
+restores on expiration, preparation, death/deactivation and scene exit. Actual
+Main input/preparation integration tested. Normal legacy Guiin resource gain/
+decay and book behavior are still pending replacement, as are new charge rules,
+damage tags, defensive books and exact new art. No Guiin render/Human pass.
+Previous e3c2c49 exact head passed remote GUT/Windows artifact checks. Work remains
+on current task branch; full implementation and five-loop completion stay open.
+
 Continuation checkpoint: whole-run increment `efbf249` was pushed and its exact
 head passed both remote checks (GUT and Windows internal build). No merge.
 Latest local continuation:93scripts/659tests/7182assertions PASS, including error

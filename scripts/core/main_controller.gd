@@ -98,6 +98,7 @@ func _ready() -> void:
 
 	wave_spawner.configure(self, player)
 	basic_weapons.configure(combat_resolver)
+	(school_host.get_node("Guiin") as GuiinRuntime).configure_weapon_controller(basic_weapons)
 	school_host.configure(player, self)
 	school_host.configure_run_systems(combat_resolver, contribution_tracker)
 	if ninjutsu_auto_controller != null:
@@ -708,6 +709,8 @@ func _set_combat_enabled(enabled: bool) -> void:
 	_combat_enabled = enabled
 	if not enabled:
 		player.clear_pointer_target()
+		if school_host.active_runtime is GuiinRuntime:
+			(school_host.active_runtime as GuiinRuntime).cancel_ultimate()
 	var gameplay_mode := Node.PROCESS_MODE_INHERIT if enabled else Node.PROCESS_MODE_DISABLED
 	player.process_mode = gameplay_mode
 	basic_weapons.process_mode = gameplay_mode
