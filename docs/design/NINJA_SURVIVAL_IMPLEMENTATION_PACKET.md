@@ -8,6 +8,13 @@
 
 ## 준비 범위와 실행 경계
 
+### 현재 실행 지도
+
+2026-09-14 요청은 **남은 작업과 구현·설계 명세 준비**다. 이번 문서 작업은
+게임 기능 추가·이미지 생성·기존 저장 전환을 실행하지 않는다.
+최신 잔여 작업의 진입점은 [J. 잔여 구현 실행 명세](#j-잔여-구현-실행-명세--2026-09-14)다.
+아래 2026-09-13 계획들은 구현 이력이며 J의 상태표로 재작업 여부를 판정한다.
+
 ### 2026-09-13 저장 선행 계획: 구형 잔액의 무손실 입력 검사
 
 Goal: profile2 이관 입력인 v1 잔액을 손상/미래형 데이터와 구별한다.
@@ -584,8 +591,445 @@ schema1의 진행 중 런은 아이템 의미가 달라져 자동 변환을 **RE
 
 ## I. 완료 수준·롤백·잔여 위험
 
-설계 검토와 PDF 생성은 문서 증거다. 승인 전 게임 변경은 하지 않는다. 자산은 GENERATED_CANDIDATE / REWORK / REVIEWED를 구분한다. 실제 runtime, 사람의 재미·가독성, Android/패드 실기기, 라이선스·출시 최종 심사는 별도 gate다.
+설계 검토와 PDF 생성은 문서 증거다. 과거 승인 전 구현 금지는 최신 승인 범위 밖 변경에 적용하며, 현재 실행 범위는 최신 사용자 요청을 따른다. 자산은 GENERATED_CANDIDATE / REWORK / REVIEWED를 구분한다. 실제 runtime, 사람의 재미·가독성, Android/패드 실기기, 라이선스·출시 최종 심사는 별도 gate다.
 
 롤백은 패키지별 변경과 데이터 계약 버전을 함께 되돌리며 이미 생성된 profile2를 구형 codec으로 억지 해석하지 않는다. 구형 파일 보존, 새 테스트 경로, feature/package 단위 통합으로 복구 범위를 작게 만든다. main 직접 push·강제 push·기존 Draft 임의 merge는 하지 않는다.
 
 전체 구현 입력의 최종 판정은 자산 검사·문서 교차검사·5회 전체 검토 결과와 함께 보고한다. 이미지 준비가 실패한 경우 승인만 받으면 모든 아트를 바로 적용할 수 있다고 주장하지 않는다. 대신 논리 P01~P05 착수 가능성과 아트 P06의 실제 blocker를 분리한다.
+
+## J. 잔여 구현 실행 명세 — 2026-09-14
+
+### J0. 범위·근거·완료의 의미
+
+**Goal:** 기존 신규 도메인을 재사용하여 기본 새 게임에서 네 전장·최종전·정산·이어하기까지
+최신 규칙으로 연결하고, 실제 조작·화면·저장·성능의 검증 증거를 만든다.
+**Architecture:** 기존 Main은 조립/진입, 각 도메인은 합법성, UI는 표시/의도,
+RunResumeStore는 디스크, RunResumeCodec은 직렬화/교차 검증을 소유한다.
+새 전역 manager, 두 번째 전투/가방/경제 시스템은 만들지 않는다.
+**Tech Stack:** Godot4.x/GDScript/GUT, JSON, 기존 PNG/Resource/Scene; 추가 유료 의존성0.
+**Spec:** 본 문서 A~I 및 `NINJA_SURVIVAL_DETAILED_RULES.md` R-*.
+**Execution:** 후속 구현은 이 문서의 패키지 순서와 TDD로 수행한다. 한 번에 전체를 갈아엎지 않는다.
+
+검토 기준 코드: 작업 브랜치 `c3604867a09a8eb0b03280a50d81b7db9d1b8854`.
+관찰한 completed main: `b5c2dd61cd589ebd218d1b4da3f016fb94a02126`.
+이는 2026-09-14 관찰값이며 다음 실행에서는 다시 fetch/readback한다.
+PR147은 해당 작업의 Draft, PR135/49는 read-only. main에 새 규칙이 병합됐다고 말하지 않는다.
+위 코드 head의 GitHub GUT/Windows internal artifact SUCCESS를 조회했다.
+이전 로컬 전체792tests/10524assertions, isolated MATERIAL_RUNTIME_PASS는 기존 증거이며
+이번 명세 작업에서 게임 테스트/전체 런/사람 검증을 새로 실행한 것은 아니다.
+
+| 영역 | 현재 구현 현실 | 남은 종류 |
+|---|---|---|
+| 4유파·2회 시작 선택·3×3·시작 책2권 | StartLoadoutSession과 UI/배치/교차 검사 존재 | 기본 Main 연결·선택 지원품·저장 |
+| 8무기·닌자복·24인법 | 카탈로그/장비 상태/개별 효과와 테스트 존재 | 전체 획득 흐름·태그 계산·런타임 조합 행렬 |
+| 보조19·조합3 | selected catalog/실제 명중 조합/닌자복 소비 존재 | 상점·도감의 legacy 필터 교체 |
+| 흔적 흡수/강화 | 선택형 access/gear 후보와 복원 검증 존재 | 준비 UI·영구 거래·출전 거래 구분 |
+| 저장 | v1 재개 저장/지갑과 손상 입력 보호 존재 | 단일 profile2 및 경제/복구 거래 |
+| 전장·최종 보스 | circuit·actors·final_calamity 존재 | 새 규칙 적합성 및 기본 전체 런 검증 |
+| 신규 그림체 | 브레스 외형 승인·일부 runtime 증거 | 플레이어/적/무기/인법/UI 상태군 LOCK와 통합 |
+
+**재구현 금지:** 24인법·8무기·3조합을 모두 미구현으로 세지 않는다.
+기능 존재, 선택형 기본 경로 적용, 자동 검증, 실제 화면 검증을 별도 상태로 기록한다.
+
+### J1. 패키지 지도와 순서
+
+| ID | 플레이어 결과 | 선행/BLOCKS | 현재 판정 | 기존 P단계 |
+|---|---|---|---|---|
+| R01 | 재화와 진행을 함께 안전하게 저장/복구 | 없음, R02/R03/R05를 차단 | 설계 지정·구현 필요 | P04 |
+| R02 | 흔적·장비·가방·인법·운명·다음 전장을 준비 화면에서 확정 | R01 | 부분 구현 연결 | P03/P04 |
+| R03 | 새 게임부터 새로운 규칙으로 실제 전투 시작 | R01/R02 | 기본 진입 경로 전환 필요 | P01/P05 |
+| R04 | 상점·상자·보상·조합에서 실제 빌드 성장 | R02, R03으로 전투 확인 | 기존 거래에 새 목록/장비 연결 | P03 |
+| R05 | 종료 정산·각성·재도전·도감·설정 완결 | R01/R03/R04 | 기존 화면/ledger 확장 | P04/P06 |
+| R06 | 네 유파 전장과 최종 보스의 공정한 패턴 | R03, R04/R05로 전체 런 확인 | 기존 배우/패턴 재검토 | P05/P07 |
+| R07 | 무기·인법·오의·조합 수치/사건 일관성 | R03/R04 | 소비자 교차 검증·검증된 결함만 수정 | P02/P05 |
+| R08 | 일관된 플레이어·적·VFX·UI/음향 | 상태 명세는 즉시, 적용은 R03/R06/R07+LOCK | 자산 준비/승인/연결 필요 | P06 |
+| R09 | 마우스·키보드·패드·터치 완주/군중 성능 | R03~R08 | 자동·실기기 검증 필요 | P08 |
+| R10 | 테스트 가능한 배포 후보·정본/PDF/정리 | R01~R09의 필요 증거 | 통합 검수·배포 후보 준비 | P08 |
+
+권장 기본 순서: R01 → R02 → R03 → R04 → R05 → R06 → R07 → R08 → R09 → R10.
+R06/R07의 독립 fixture와 R08의 상태 브리프는 저장 구현 중에도 조사할 수 있지만,
+같은 Main/codec/scene를 동시에 수정하는 작업은 순차 처리한다. 아트 LOCK 대기는
+저장/경제/전투 논리 검증 전체를 막지 않는다. 일정·완료율은 실측 없이 숫자로 만들지 않는다.
+
+### R01. 단일 프로필·저장 복구
+
+**문제/가치:** 현재 wallet_v1과 resume_v1은 별도 파일이다. 개별 파일 보호가 있어도
+소울 차감과 체크포인트 이동 전체의 원자성은 보장하지 못한다.
+**수정 파일:** `scripts/core/run_resume_codec.gd`, `scripts/core/run_resume_store.gd`,
+`scripts/core/ninja_soul_wallet.gd`, `scripts/core/run_checkpoint.gd`.
+**시험:** 기존 `tests/unit/test_run_resume_codec.gd`, `test_run_resume_store.gd`,
+`test_ninja_soul_retry.gd` 확장; 교차 거래는 신규 `tests/unit/test_profile_v2_transaction.gd`.
+
+다음 API는 **신규 제안**, 현재 존재한다고 호출하지 않는다:
+
+```gdscript
+# RunResumeCodec: 실패는 {ok:false, reason:StringName}, 성공은 정규화 profile 복사본.
+func decode_profile_v2(payload: Dictionary) -> Dictionary
+# RunResumeStore: configure_profile() 이후만 허용, v1 경로와 구분.
+func configure_profile(path: String) -> bool
+func load_profile() -> Dictionary
+func transact_profile(candidate: Dictionary, expected_revision: int, transaction_id: String) -> Dictionary
+```
+
+E의 root/meta/active_run을 유지한다. active_run의 `checkpoint`는 **마지막 출전 확정**
+빌드다. 별도 파일 없이 같은 active_run 안에 `preparation`을 선택 필드로 둔다:
+
+```text
+preparation = null | {
+  prepare_session_id, phase: 'preparing', revision,
+  access, equipment, backpack, buffer, gold, reward_state,
+  pending_fate, provisional_school, healing_applied
+}
+```
+
+이 필드는 준비 거래를 저장하기 위한 기술 명세다. 수치/아이템 정의는 저장에 복제하지 않는다.
+access/equipment는 확인된 흔적·구매 소유 상태, backpack/buffer는 그 준비의 기준 상태다.
+드래그 중 임시 좌표/미확정 운명은 메모리 후보이며 확정된 준비 기준과 구분한다.
+checkpoint와 preparation의 서로 다른 시점 데이터를 임의 합성해 전투하지 않는다.
+보스 후 준비 생성 자체를 저장해 이어하기가 직전 보스를 다시 처치해 보상을 복제하지 않게 한다.
+
+checkpoint의 저장 owner 매핑은 다음과 같다. UI bundle은 검사용 투영이며 동일 사실을
+여러 JSON 필드의 권위자로 중복 저장하지 않는다.
+
+| 키 | 책임/검사 |
+|---|---|
+| build | RunBuildState의 gold/소유/선택운명/확정 장비. equipment의 출전 정본은 이 안에만 둔다 |
+| route | RunRouteState 완료 순서/현재/다음 경로. 완료 중복·5번째 전장 거부 |
+| circuit | phase/전장/상자·보상 진행. route와 단계 일치 |
+| backpack, buffer | persistent instance records, 전체 ID유일/다음ID, buffer≤6 |
+| loadout | origin/draft_picks/active/pending, 실제 책과 access로 검증 |
+| access | starting/stabilized/trace_decisions/unlocked, route 완료와 교차 검사 |
+| prepare_session_id, rules_version | 안정적 준비 ID와 알려진 content/rules 계약 |
+| ultimate_charge | 시작 유파의 충전만. 활성 모드 없음 |
+
+E의 active_ninjutsu_ids/selected_fates는 각각 loadout.active_spell_ids/build 선택운명의
+**의미명**으로 해석한다. 독립적인 두 번째 권위 배열을 추가하지 않는다. codec의
+검사용 bundle.equipment는 checkpoint.build에서 투영한다. preparation 장비는 아직
+출전하지 않은 별도 시점의 소유/편집 기준이며 checkpoint 장비와 값이 달라도 합법이다.
+준비 중 구매·흔적 거래는 드래그 중인 좌표를 몰래 확정하지 않는다. 현재 confirmed
+preparation을 clone하고 해당 거래 필드만 변경한 뒤 저장한다.
+
+검증 순서: root/형/버전 → ID/정수/유한수 → route/circuit 상태 → 가방/버퍼 →
+gear/access → 배치에서 active 인법 재산출 → 수정치 재산출 → 자원/경제 거래 일관성.
+`RestCommitCoordinator.validate_selected_build_bundle()`를 재사용하되 이것만으로
+route/gold/buffer/정산까지 검증됐다고 보지 않는다. 슬롯3·무기8+복1·인법4/타유파1,
+인스턴스 중복(가방/버퍼 전체), starting_school 일치, 알려지지 않은 필수 버전 거부.
+오의 자원 상한은 봉마120/천술3/귀인100/흑영3, 유한수0..상한. 활성 오의·투사체·
+피해영역이 남은 경계 저장은 거부한다. 모드 토큰/Node ID는 직렬화하지 않는다.
+
+거래 결과: `{ok, reason, revision, already_applied, warning}`. expected_revision이
+다르면 파일/메모리0변경. 같은 transaction_id+동일 요청은 재적용 없이 기존 결과,
+같은 ID+다른 payload는 `transaction_conflict`. transaction ID만 저장하지 말고
+정규화 요청 digest/결과 revision을 receipt에 보존한다. 소울은 JSON 정확 정수 범위 내.
+
+준비 거래 ID 제안: `prepare:<run>:<stage>`, `trace:<run>:<school>`,
+`purchase:<prepare>:<offer>:<request>`, `depart:<prepare>`. 요청 ID는 클릭 프레임마다
+새로 만들지 않고 동일 요청 재시도에 유지한다. 성공한 출전 뒤 새로운 출전은 새로운
+prepare_session_id에서만 가능하다. heal 적용은 prepare 생성 receipt와 원자적으로 기록한다.
+
+```text
+validate candidate → write tmp → flush/close → decode tmp
+→ main→previous → tmp→main → decode exact main
+→ adopt memory → publish signals
+```
+
+실패 주입 지점: tmp open/write/flush/readback, old rename, promote rename, final
+readback, rollback rename, previous cleanup. 성공 전 메모리/전투는 변경하지 않는다.
+정본 readback 성공 뒤 cleanup 실패는 성공+warning; 실패로 재시도해서 이중 지급 금지.
+main/previous/tmp가 남으면 유효성/revision/receipt를 비교하며 손상 원본 보존.
+tmp만 더 새롭다는 이유로 미확정 거래를 자동 확정하지 않는다. 모호하면 복구 화면에서
+정본 후보·잃을 진행을 보여주고 플레이는 닫는다. 파일시스템 crash-proof는 주장하지 않는다.
+
+v1 런 자동 변환 REJECT. 유효 v1 잔액만 첫 profile 생성 시 source SHA256과
+`migrate:wallet-v1:<sha>` receipt로1회 이관. 이미 profile이 있으면 v1 재수입 금지.
+손상 wallet은0초기화 금지, 미래 버전 거부, 원본 삭제/덮어쓰기 금지.
+
+인수 예: 초기 소울2 → retry 거래 → 소울1/소비flag/checkpoint 예약이 함께 저장;
+동일 ID 재시도는 소울1. rename 실패면 기존 소울2/이전 체크포인트 유지.
+테스트는 주입된 gut 전용 경로만 사용. 정상 사용자 경로로 실패 주입 금지.
+**완료:** JSON 왕복+모든 실패 지점+재시작 readback이 통과한 뒤에만 R02가 소비한다.
+
+### R02. 준비 단계와 두 확정 거래
+
+**수정:** `scripts/core/rest_commit_coordinator.gd`, `school_circuit_controller.gd`,
+`tradition_access_state.gd`, `equipment_loadout_state.gd`, `run_build_state.gd`,
+`scripts/backpack/rest_backpack_session.gd`, `scripts/ui/rest_flow_ui.gd`,
+`scenes/ui/rest_flow_ui.tscn`. 테스트: 기존 rest coordinator/session/circuit 및
+`tests/integration/test_mvp3_rest_flow_ui.gd`에 selected 경로 추가.
+
+한 준비 화면 안에 보상/상점/가방/캐릭터장비/흔적/다음 전장/운명 패널을 둔다.
+확정 전후 수치와 저장 상태를 표시한다. UI는 domain 반환 사유를 표시할 뿐
+장비 강화·가격·해금·geometry를 직접 계산하지 않는다.
+
+| 행동 | 디스크/소유 상태 | 전투 상태 | 취소/실패 |
+|---|---|---|---|
+| 흔적 대상 미리보기 | 변경0 | 변경0 | 이전 선택 화면 |
+| 흔적 최종 확인 | access+장비 단계를 준비 거래로 함께 저장 | 기존 출전 빌드 유지 | 저장 실패시 둘 다0변경 |
+| 배치/장착/운명/경로 편집 | 메모리 후보 | 변경0 | 마지막 준비 확정 기준으로 복귀 |
+| 출전 확정 | 최종 배치+gear+인법+Fate+route+checkpoint 함께 저장 | readback 후1회 반영 | 전체 후보 보존, 전투 진입 금지 |
+
+신규 제안 `prepare_selected_departure(request: Dictionary)->Dictionary`는 live owner를
+변경하지 않고 clone의 합법성/복원 가능성을 검증하여 profile candidate를 만든다.
+`commit_selected_departure(request: Dictionary)->Dictionary`는 R01 거래 성공 이후에만
+검증된 복사본을 채택한다. 채택 중 외부 signal 재진입은 막고 모든 owner 채택 후
+UI/전투 signal을 한 번 공개한다. v1 `commit_pending()`를 selected 모드에 억지 사용 금지.
+in-progress guard, session_id/revision 검사, 연타 idempotence가 필수다.
+
+흔적 시작유파는 강화만/인법 유지, 타유파 흡수는 후보 해금만/자동 지급0.
+어느 선택도 전장 완료/최종전 조건은 동일. 강화 후 출전 편집 취소로 흔적을 복원하지 않는다.
+장비 변경/판매 뒤 trace record의 과거 instance를 현재 장착품으로 대체 해석하지 않는다.
+준비 회복은 prepare_session_id당1회; 재입장/로드로 반복되지 않는다.
+최종 준비에는 다섯 번째 전장 선택을 요구하지 않는다. 운명 후보가 부족하면
+남은 후보만 노출하며 이미 가진 것을 복제하거나 진행을 막지 않는다.
+
+**검증 예:** 강화 확인→장비 미리보기 취소→재개: 강화 소유 기록 유지, 미확정 장착 원복.
+출전 중 I/O실패→route/Fate/장비/HP 그대로; 다시 같은 요청→한 번만 출전.
+버퍼6개 보존/미배치 효과0/슬롯 미장착/조합 미완료/네 전장 완료/잘못된 revision을 시험한다.
+
+### R03. 기본 새 게임·이어하기 연결
+
+**수정:** `scripts/core/main_controller.gd`, `start_loadout_session.gd`,
+`scripts/ui/title_screen.gd`, `scenes/ui/title_screen.tscn`, 기존 시작 선택 UI.
+**시험:** `tests/integration/test_title_start_gate.gd`, `test_start_loadout_ui.gd`,
+`test_main_title_resume_flow.gd`, `test_school_circuit_main_runtime.gd`.
+
+기존 Main의 `activate_starter` 경로를 새 게임 selected 경로에서 제거하고
+StartLoadoutSession의 검증된 bundle을 소비한다. legacy fixture/codec은 별도 호환 경로.
+화면: 새 게임 확인 → 시작 유파 →3택1 두 번→시작 가방/장비 확인→첫 전장 선택→출전.
+시작 유파와 첫 전장은 독립. 최초 일반 공격은 무기2+선택 인법2, 총4패턴이다.
+이전 문서의 ‘3자동 공격’ 표현은 예전 starter1 기준이며 새 구현을 지시하지 않는다.
+일반 공격은 자동, 직접 입력은 이동/무적대시/수동 오의/메뉴다. 하단 인법 버튼 없음.
+
+새 런 생성은 profile 거래로 기존 미정산 포기 정산+new run_id를 묶는다. 확인 취소는
+기존 런0변경. 이어하기는 preparation이 있으면 준비 화면, 아니면 마지막 출전 경계로
+복귀하며 임시 효과 정리→장비/가방/경로→학교 runtime 활성화→오의 자원→입력 해제 순서.
+전투 입력은 전체 복원과 readback 후 연다. 키를 누른 채 복귀해 대시/오의가 즉시
+발동하지 않도록 released-input 경계를 둔다. 시간만 경과한 전투를 자동 복원하지 않는다.
+
+**완료:** 4시작 유파×4첫 전장=16경로, 유파별15시작쌍=60구성의 기계 검사;
+기본 제목 화면에서 실제 입력으로 최소1개 완전 전장→준비→다음 전장 증거.
+도메인60쌍 통과를 기본 Main60쌍 완료로 승격하지 않는다.
+
+### R04. 보상·상점·장비·조합의 획득 연결
+
+**수정:** `scripts/core/rest_reward_controller.gd`, `shop_controller.gd`,
+`school_circuit_controller.gd`, `scripts/data/selected_backpack_catalog.gd`,
+`equipment_catalog.gd`, `ninjutsu_book_catalog.gd`, 준비 UI.
+**시험:** 기존 reward adversarial/session/selected catalog 테스트 및 준비 UI 통합.
+
+현재 `_eligible_lanes/_filtered_pool`은 MVP4 base ID로 거른다. selected 경로는
+보조19/해금 인법24/장비9/가방을 명시적 종류로 구분하고 그 종류의 owner로 전달한다.
+`offer={offer_id, kind, definition_id, acquisition_price, lane_id, revision}` 제안.
+kind는 support/book/equipment/bag; string prefix 추측으로 거래 종류를 정하지 않는다.
+기존 lane-first/seed/dedupe 재사용, UI 전용 복제 카탈로그 금지.
+
+인법은 보유 가방+버퍼의 canonical spell ID 전체에서 중복 제외; start/일반 book
+외형 ID가 달라도 같은 인법이다. 장비는 보유9종 범위에서 중복 제외. 신규 장비는
+외부 목록, 책/재료는6칸 버퍼→실제 배치. 결과를 못 받을 때 골드/토큰 소비0.
+상점 첫 준비 확장 가방 후보 보장, 잔액 부족은 비용을 표시하며 구매 없이 출전 가능.
+이미 선택한 흔적 결과에 맞춰 인법 pool 갱신; 보스 처치만으로 인법 자동 해금 금지.
+조합은 기존3레시피와 원자 배치, 실패하면 재료2개 보존. 아이템0~2개만 남는 후보군도
+중복으로3장을 채우지 않는다. 최초 지급품 판매0, 구매품50%내림, 마지막 장비 판매 금지.
+
+**완료 예:** 타유파 강화 후 그 유파 책0개/공통 재료 허용; 흡수 후 책이 후보에
+등장하되 무조건 지급 아님. 버퍼 가득참·중복 클릭·낡은 상점revision·장비 판매/재구매
+·조합 취소·4번째 준비에서 돈/품목/효과가 일치한다.
+
+### R05. 정산·각성·재도전·도감·설정
+
+**수정:** `scripts/core/run_settlement_ledger.gd`, `ninja_soul_wallet.gd`,
+`run_checkpoint.gd`, `main_controller.gd`, `scripts/ui/title_screen.gd`,
+`codex_presentation.gd` 및 기존 설정/결과 화면 consumer.
+**시험:** `test_ninja_soul_retry.gd`, `test_title_actions.gd`,
+`test_codex_presentation.gd`, R01 transaction test.
+
+정산 초기 규칙: distinct 유파 보스수+최종승리2, 보스0이고 elite qualified면 위로1.
+기록용 STYLE/구슬/생존 시간으로 추가 소울을 만들지 않는다. 한 run_id 정산1회.
+retry1소울·런당1회·종료 정산 아님; checkpoint 과거 자격과 현재 자격의 합집합으로
+중복 보스 지급을 막는다. settle/retry/unlock은 R01 동일 파일 거래에만 쓴다.
+각성3소울로 시작 지원 선택 해금, 체술/호신/인법단련 중1개 실제 가방 점유/판매0.
+2권과 지원품을 실제3×3에 배치할 수 없는 조합은 confirm에서 설명하고 출전을 막으며
+미리보기 자동배치는 geometry를 재사용한다. 무료 기본조작 잠금/무한 스탯트리 금지.
+
+도감 현재 selectable 제외 필터를 selected 카탈로그 경로로 교체한다. 적/24인법/
+장비9/보조19/가방/조합3을 분리한다. 물의 재료와 수맥 기술은 서로 다른 설명이다.
+장비에 ‘가방 배치’를 표시하지 않는다. ID·가격·크기·효과는 실제 카탈로그에서 읽고
+UI문자열에 수치를 중복 정의하지 않는다. 조합 부가타의 재귀 금지/보스 제어 예외 명시.
+설정은 음량/효과강도/흔들림/전체화면/입력 안내의 실제 consumer와 저장 실패 안내.
+효과 최소에서도 적 피해 경계는 유지한다. 기존 버튼 존재를 consumer 구현 완료로 보지 않는다.
+
+**완료:** 재시작 후 정산/각성 이중 지급·이중 차감0, 손상 저장 이어하기 비활성 사유,
+새 게임 취소 보존, 여섯 메인 버튼의 실제 이동/뒤로/초점 반환 증거.
+
+### R06. 전장·군중·엘리트·보스·최종전 적합성
+
+**수정:** `scripts/data/encounter_catalog.gd`, `stage_encounter_profile.gd`,
+`scripts/core/stage_encounter_state.gd`, 기존 WaveSpawner,
+`scripts/enemies/school_encounter_actor.gd`, `encounter_pattern_controller.gd`,
+`final_calamity.gd`, `scenes/enemies/school_encounter_actor.tscn`, `final_calamity.tscn`.
+**시험:** 기존 encounter actor/catalog/stage/wave/final tests; 신규
+`tests/integration/test_full_route_matrix.gd`는 전체 연결 증거 담당.
+
+일반3역할은 접촉 추격만; 초반부터 부적/피해 장판 금지. 4유파×(일반3+엘리트1+보스1)
+20개 역할의 existing ID를 유지하고 R-ENCOUNTER의 행동표와 비교해 필요한 차이만 수정.
+엘리트2패턴 순차, 보스 첫2패턴을 보여준 뒤3번째. 기존 ID의 role 변경으로 저장 의미
+바꾸지 않는다. 봉마 보스는 이동진술사+식신, 엘리트는 별도 요괴 수호자 외형.
+
+스폰 floor는 살아있는 일반+예약=10 이상 목표,0.8초 예고,화면밖/최소거리,
+매프레임 중복 예약0. 강적 단계에서 예약 취소/일반 스폰 권한 중지, 기존 군중 유지.
+일반 적 최대수 하드캡/노후 자동삭제 금지. 100/300/600/1000은 성능 표본일 뿐 상한 아님.
+
+패턴은 WINDUP→LOCKED→ACTIVE→RECOVERY→CHASE. 전조와 피해는 같은 geometry.
+Stage1/2 슬롯1,3/4/최종2; 전조~최후 hazard/소환체 종료까지 점유. pause는 전부
+동결이지 hazard 삭제가 아니다. 사망/씬전환은 슬롯/자식 projectile/소환체 정리.
+보행 탈출 가능 경로를 반경 여유를 더한 hazard 합집합에서 찾고 실패시 대기.
+방사16×거리4 후보/선분 sweep은 보수적 초기 검사이며 안전 증명으로 과장하지 않는다.
+고정구간=max(0.65, 경로길이/현재속도+0.15), 총전조≥고정+0.2를 시작 전에 결정.
+
+최종 재앙은 이미 존재한다. 새로 만들기보다 네 완료순서/HP4구간/패턴 종료 후 전환,
+큰 피해로 구간 건너뛰기, 첫테마 기회+0.2가 **런당 테마1회**인지 검사한다.
+현재 controller는 첫 패턴 사용 후 `_opening_telegraph_bonus=0`으로 소비한다.
+따라서 반복 가산 버그로 추정해 수정하지 말고 테마 전환/저장 복원에도 런당1회가
+유지되는지 회귀 검사한다. 최종 승리가 정산 거래로 이어지는 것까지 포함.
+**완료:** 24전장 방문 순열과4시작 유파의96경로 기계 행렬+대표 실제 완주.
+HP/시간을 조작한 fixture는 정상속도 플레이와 구분하며 재미 검증 대신 쓰지 않는다.
+
+### R07. 전투 수식·사건·오의 호환성
+
+**수정:** `scripts/combat/basic_weapon_controller.gd`, `projectile.gd`, 기존
+`scripts/combat/combat_resolver.gd`, `scripts/core/ninjutsu_loadout_state.gd`, 각 school runtime/host.
+기존 combat/weapon/
+selected support/ultimate 테스트를 확장하고 같은 효과의 두 번째 실행기를 만들지 않는다.
+
+R-WEAPON-CONTENT의 `base × (1+태그합+0.15×rank+무기보조합)`을 원타당 한 번,
+최종 반올림도 한 번. 무기8×rank0..4×보조없음/있음 경계. 인술/오의/조합 부가타에
+무기 강화가 섞이지 않도록 피해 문맥을 유지한다. 현 구현이 단계별로 반올림하는지
+소수 결과 fixture로 검증하고 실제 차이가 있으면 수정한다.
+젖음→번개만 반응, 역순0, 동일 시전 target hit-set, 독/화상 갱신은 틱시계 유지.
+분신/지속/조합/반응/오의의 추가 발동·자원 통지 자격을 R-ULTIMATE대로 분리.
+이동/생존 인법만 고른 시작도 기본 충전으로 오의 사용 가능해야 한다.
+브레스 방향 고정/6틱/대시 취소, 귀인화 임시검만/원래8무기 복원, death/pause/
+remove/reapply/save boundary 뒤 잔류 보정0을 actual process로 확인한다.
+
+**완료:** 60시작쌍, 타유파1개 허용/2개거부,4개상한,책 제거/재배치,
+변신 중 장착변경 차단, 투사체 비행 중 소유자 교체/사망, 재진입 콜백이 기존 공격에
+새 효과를 소급 적용하지 않는 시험. 개별효과 PASS와 완주 빌드 PASS 분리.
+
+### R08. 자산·모션·VFX·음향·화면
+
+**Owner:** `docs/CURRENT_VISUAL_HANDOFF.md`, 기존 visual manifest/candidate README,
+PlayerVisualController와 실제 actor/weapon/ninjutsu/UI consumer. 필요 상태 먼저 명세,
+image model 후보→Aseprite 적합 작업→검수→LOCK→manifest→Godot 연결 순서.
+새 그림체/프레임을 코드 도형으로 대신하지 않는다. 설명용 그림만으로 인게임 완료 금지.
+
+| 상태군 | 제작/재사용 입력 | 연결 인수 조건 |
+|---|---|---|
+| 플레이어 | 대기·이동·대시·피격·사망, 멋진 애니 닌자 | 발pivot·48~64px초기크기·이동중 공격모션 없음 |
+| 일반12역할 | 이동·생성예고·피격·사망 | 동일 카메라/접지, 색만 아닌 실루엣 |
+| 엘리트4/보스4/최종 | 준비·고정·발동·회복+이동/피격/사망 | 패턴 event가 재생 구동, 보스는 일반 확대 금지 |
+| 무기8/인법24/조합3/오의4 | 발동·이동/유지·명중·종료 필요한 가족 | 피해 geometry/수명과 표현 일치, 과밀해도 적 전조 우선 |
+| 바닥/소품 | 반복 바닥, 나무/등잔 개별 | 바닥 이음새/카메라 이동, 랜드마크 고정 구움 없음 |
+| UI/로고/메달/아이콘 | 정상·선택·비활성·오류, 작은4조각메달 | 제목 ‘닌’높이, 하단 인법바/삭제 문구 재도입 금지 |
+| 음향 | 피격·경고·대시·오의·구매·확정/실패 | 실제 사건1회, 동시 발음 예산, 권리/출처 기록 |
+
+24인법마다 무조건 별도 대형 시트를 만들지 않고 실제 공유 가능한 primitive family를
+구분하되 상태를 생략하지 않는다. 메타데이터: source/hash/approval/consumer/state/
+frame rect/pivot/duration/facing/import/filter/scale. 실제 alpha·halo·셀간 오염·좌우
+반전·cancel/end 정리 검사. 승인된 브레스 외형은 재승인 요청 없이 재사용 가능하지만
+player/적 새 후보의 최종 LOCK를 대신하지 않는다. 미승인 가족은 logic-ready와 별도.
+**완료:** 단독 투명 이미지가 아니라 동일 바닥/플레이어/적/전조가 있는 화면에서
+대표4유파/최종전 캡처 검수. 음향/라이선스/사람 가독성 증거도 개별 표기.
+
+### R09. 입력·성능·실기기
+
+**수정:** 실제 Control/입력 owner, 기존 wave/actor/spatial query와 테스트 helper.
+기본 조작 경로: 마우스 drag/rotate, 키보드·패드 pick→move→rotate→place→cancel,
+터치 pick→cell→rotate→place. 장비비교/흔적선택/상점/출전/뒤로도 모두 접근 가능.
+확인창 닫을 때 초점 복귀; 게임 입력과 ui_accept 공유로 오의/구매 이중발동 금지.
+1280×720, 긴 한글,125/150%배율,효과 최소,흔들림 끔,패드 연결 해제 시험.
+
+성능: 100/300/600/1000 누적 적과 완주 세션에서 CPU/GPU frame time p50/p95/p99,
+메모리/Node/Collision/잔류 Timer/발사체 수를 측정한다. 목표기기·해상도·engine·build
+함께 기록. 목표기기 확정 전 특정 FPS PASS를 선언하지 않는다. 병목 측정→공간 조회
+→갱신 분산→pool/render batching 순서; MultiMesh로 AI/충돌까지 해결됐다고 주장 금지.
+**완료:** 자동 input event는 패드/터치 실기기 PASS가 아니다. 연결 장치 없으면
+`DEVICE_NOT_RUN`을 남기고 가능한 desktop 경로는 계속 검증한다.
+
+### R10. 통합·정본·블루프린트·정리·전달
+
+**수정:** 기존 tests/tools/CI, `docs/ACTIVE_CONTEXT.md`, 본 명세, Human Blueprint,
+`tools/export_replanned_blueprint_pdf.py` 및 실제 승인 asset manifest.
+새 추적 대시보드/외부 Notion 정본 생성 금지. 구현 결과와 Human PDF는 서로 다른 owner.
+기존 Human 내용을 삭제한 와이어프레임 축약본 대신 현재 규칙+전체 플로우+데이터표+
+SWOT 강화/완화계획+승인 이미지+wireframe+atlas/상태군을 통합한다. PDF는 render 후
+페이지 잘림/이미지 누락/목차/참조/실제 다운로드 경로를 확인한다. PDF 요청은 후속
+산출물 단계이며 이번 명세 준비가 PDF 재생성 완료를 뜻하지 않는다.
+
+검증 순서: focused RED/GREEN → full GUT → parse/import → actual runtime/input
+→ 96경로 기계 matrix → 대표 정상속도 완주 → 전체5회 적대검토 → exact-head CI
+→ 허용된 protected PR merge → new-main readback → 동일 build 사용자 전달.
+각 전체 검토는 기능/흐름/저장/입력/아트/성능/문서/보호범위를 모두 재공격한다.
+5개 관점 검토를5회 전체 검토라고 쓰지 않는다. Human/출시 승인 자동 추정 금지.
+
+삭제 후보는 실제 consumer0·고유자료0·Git복구·용량을 확인한 것만
+`C:/Users/user/Documents/GitHub/Ninza/DELETE_REVIEW/ninja-survival-godot/<date>/`
+아래 manifest와 함께 모은다. 사용자 직접 삭제. 승인근거/사용중소스/dirty worktree/
+미확인 산출물은 이동하지 않는다. Base 승격은 반복 공용 문제의 후보만 기록하고
+프로젝트 고유 규칙을 공용 규칙으로 즉시 편입하지 않는다.
+
+### J2. 실행·인수 템플릿과 공통 fixture
+
+각 R패키지는 아래1~6을 따르고 기존 테스트 책임 파일을 확장한다.
+1. 해당 R-*·현재 owner·정확 main/PR/head를 재읽고 구현 범위를 기록한다.
+2. 아래 같은 상태 비교를 실제 GUT fixture로 작성하고 예상 실패를 확인한다.
+3. owner에 최소 구현, UI에서 규칙 계산/별도 저장 쓰기 금지.
+4. focused→전체→해당 runtime 증거, 실패 원인 교정 후 다시검사.
+5. 관련 현재상태/정본/검증근거 갱신, 새 이미지 LOCK은 별도.
+6. exact-head 검토/CI/readback 후 다음 의존 패키지에 넘긴다.
+
+```gdscript
+# 후속 시험의 의사코드. API는 R01/R02에서 구현한 뒤 실제 fixture에 바인딩한다.
+var before = owners_snapshot()
+inject_failure("promote_rename")
+var result = commit_selected_departure(request)
+assert_false(result.ok)
+assert_eq(owners_snapshot(), before)
+assert_false(combat_input_enabled())
+# 같은 transaction_id를 복구 후 재시도해도 비용/흔적/보상 적용 횟수는1.
+```
+
+순수 fixture→고정 seed 전장→기본 Main 사용자 경로 순으로 확대한다.
+공유 저장소의 기본 user:// 파일, 다른 프로젝트 Editor/PID, 다른 PR은 시험 대상이 아니다.
+기준 금액/HP/규칙 수치는 Detailed Rules/definition에서 가져오고 문서와 테스트에
+서로 다른 매직넘버를 만들지 않는다. 밸런스 값은 초기값/측정값/승인값을 구분한다.
+
+### J3. 조사·대안·현실성 및 명세 검토 기록
+
+2026-09-14 프로젝트 current/native Base 계약과 Base remote d830c0f를 확인했다.
+Base MASTER_IMPLEMENTATION_PLAN의 패키지/의존/롤백/증거 구조만 ADAPT.
+템플릿의 ci-gate/자동merge/리뷰 역할 제한은 이 프로젝트 계약으로 교체하지 않는다.
+Base2회 대비 프로젝트5회 검토 드리프트는 기존 명시 채택을 유지한다.
+
+| 대안 | 판정 | 이유/비용/재검토 |
+|---|---|---|
+| 기존 코드 전면 재작성 | REJECT | domain/test/ID와 save 증거 상실, 현재 공백은 연결 중심 |
+| 구형 Main에 UI만 덧씌우기 | REJECT | 숨은 starter/legacy reward/두파일 경제가 남음 |
+| 기존 owner에 selected 계약 추가→검증→Main 전환 | ADAPT | 복구 범위 작음, dual mode는 전환 완료 후 소비자0 확인하여 정리 |
+| 매 프레임 실시간 저장 | REJECT | 투사체/오의 중간 상태 재현 부담, 승인된 경계 저장과 다름 |
+| 단일 profile의 검증된 준비/출전 거래 | ADAPT | 신규 SaaS/DB 없이 FileAccess/기존 store 재사용; 장애 주입 필요 |
+
+1차 자료: [Godot Saving games](https://docs.godotengine.org/en/stable/tutorials/io/saving_games.html),
+[FileAccess](https://docs.godotengine.org/en/stable/classes/class_fileaccess.html),
+[UI focus](https://docs.godotengine.org/en/stable/tutorials/ui/gui_navigation.html),
+[Backpack Battles 공식 판매 페이지](https://store.steampowered.com/app/2427700/Backpack_Battles/).
+JSON 저장/명시적 UI초점 ADAPT; 인벤토리 배치가 전투 결과를 만드는 사례 REFERENCE_ONLY.
+PvP구조·세부레시피·가격·그림체는 복사하지 않는다. 이번 조사는 기존 방향의 연결
+판단을 위한 targeted refresh이며 새로운10게임 전체 벤치마킹 완료가 아니다.
+
+**발견·교정:** legacy상점필터→R04, selectable제외도감→R05,
+기본activate_starter→R03, 흔적/출전 두확정의 저장 공백→R01/R02,
+기존 최종보스 재작성 중복→R06 검증/수정으로 축소, 시작3공격 표현→4패턴으로 정정.
+소스의 잠재 수식 문제는 재현 전 버그 확정이 아닌 검증 항목이다. 최종패턴 가산은
+실제 owner의1회 소비를 확인해 신규 수정 대신 회귀 항목으로 교정했다.
+**한계:** 이 문서는 남은 작업의 설계·실행 입력이다. 자산 최종 LOCK·전체 게임 완성·
+96경로 통과·실기기·전체5회 구현 검토·출시를 PASS로 선언하지 않는다.

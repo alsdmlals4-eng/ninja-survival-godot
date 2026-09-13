@@ -1,5 +1,20 @@
 # ACTIVE_CONTEXT
 
+## Current request — remaining-work specifications, 2026-09-14
+
+User asks for remaining work and implementation/design input, not another code increment.
+Read `docs/design/NINJA_SURVIVAL_IMPLEMENTATION_PACKET.md` section J first: R01~R10 map
+single profile2, preparation transactions, Main entry, reward pools, meta/menus, encounters,
+combat contract regressions, art/audio, device/performance and final delivery.
+Source baseline c360486; fetched main b5c2dd6; PR147 Draft head c360486 GitHub GUT and
+Windows internal build both SUCCESS on readback. PR135/49 untouched/read-only.
+No game code, image, player save or deletion is part of this document change.
+Verified source gaps: legacy Main starter, legacy reward filters, codex excludes selectable,
+no profile2. Existing final boss/24effects/8weapons are reuse+integration, not blank rewrites.
+Base observed d830c0f; native contract/five-loop requirement retained, no adapter upgrade.
+Next implementation priority after this planning task: R01 profile2 codec/store transactions.
+
+
 ## Latest increment — legacy wallet validation before profile2 migration, 2026-09-13
 
 Reproduced numeric coercion accepting1.5/string/bool/future schema and null causing an

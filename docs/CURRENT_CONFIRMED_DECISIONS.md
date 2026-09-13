@@ -1,5 +1,14 @@
 # CURRENT_CONFIRMED_DECISIONS
 
+## Latest 2026-09-14 — remaining implementation/design specification request
+
+User requests remaining work and its implementation/design specifications after
+interrupting the previous continuation. Current turn is documentation preparation,
+not further game-code/art implementation. Preserve prior approved product scope;
+map current source evidence to remaining packages in Implementation Packet section J.
+Do not treat this planning request as a new product mechanic or final visual approval.
+
+
 ## Latest 2026-09-13 — plan before implementation
 
 User requests a concrete implementation/modification plan before each work
