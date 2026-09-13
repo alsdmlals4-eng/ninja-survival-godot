@@ -189,6 +189,58 @@ func get_snapshot() -> Dictionary:
 	return snapshot
 
 
+func can_restore_selected_snapshot(snapshot: Dictionary, placed_book_ids: Array, unlocked_school_ids: Array) -> bool:
+	var contract = snapshot.get("selection_contract")
+	if not (contract is String or contract is StringName) or str(contract) != "selectable-v2":
+		return false
+	var raw_origin = snapshot.get("origin_school_id")
+	var raw_picks = snapshot.get("draft_picks")
+	var raw_active = snapshot.get("active_spell_ids")
+	var raw_pending = snapshot.get("pending_spell_ids")
+	if not (raw_origin is String or raw_origin is StringName) or not (raw_picks is Array) or raw_picks.size() != 2 or not (raw_active is Array) or not (raw_pending is Array) or not raw_pending.is_empty():
+		return false
+	var origin := StringName(raw_origin)
+	if not NINJUTSU_CATALOG_SCRIPT.SCHOOL_IDS.has(origin):
+		return false
+	var picks: Array[StringName] = []
+	for raw in raw_picks:
+		if not (raw is String or raw is StringName):
+			return false
+		var definition = NINJUTSU_CATALOG_SCRIPT.definition_for_id(StringName(raw))
+		if definition == null or definition.school_id != origin or picks.has(StringName(raw)):
+			return false
+		picks.append(StringName(raw))
+	var candidate := NinjutsuLoadoutState.new()
+	candidate._selectable_mode = true
+	candidate._origin_school_id = origin
+	var valid := candidate.commit_placed_ninjutsu(raw_active, unlocked_school_ids)
+	var ids := candidate.active_spell_ids()
+	valid = valid and candidate.commit_placed_ninjutsu(placed_book_ids, unlocked_school_ids)
+	var placed := candidate.active_spell_ids()
+	candidate.free()
+	ids.sort()
+	placed.sort()
+	return valid and ids == placed
+
+
+func restore_selected_snapshot(snapshot: Dictionary, placed_book_ids: Array, unlocked_school_ids: Array) -> bool:
+	if not can_restore_selected_snapshot(snapshot, placed_book_ids, unlocked_school_ids):
+		return false
+	_origin_school_id = StringName(snapshot.origin_school_id)
+	_selectable_mode = true
+	_draft_school = &""
+	_draft_options.clear()
+	_pending_spell_ids.clear()
+	_draft_picks.clear()
+	for raw in snapshot.draft_picks:
+		_draft_picks.append(StringName(raw))
+	_active_spell_ids.clear()
+	for raw in snapshot.active_spell_ids:
+		_active_spell_ids.append(StringName(raw))
+	loadout_changed.emit()
+	return true
+
+
 func can_restore_from_snapshot(snapshot: Dictionary) -> bool:
 	if snapshot.has("selection_contract") or _selectable_mode or _draft_school != &"":
 		return false

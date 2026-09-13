@@ -1,5 +1,18 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — selected restore boundary, 2026-09-13
+
+Explicit selectable-v2 restore validates original two picks, active/placement equality,
+unlocks and four/one limits before mutation. Legacy restore still rejects this contract.
+Malformed scalar/object contract tests found an engine Variant comparison error; a type
+guard fixes rejection without mutation or signals. Empty placed books restore no hidden starter.
+Full98scripts/772tests/10230assertions PASS (`ninja-selected-restore-hardened-full-gut-20260913.log`).
+This is an in-memory restore API, NOT profile2 file persistence or Main cutover.
+Confirmed follow-up: selected bag catalog currently excludes support materials; apply
+R-COMBINATION remapping before selected preparation integration, never legacy weapon IDs.
+Single wallet/checkpoint profile2, complete selected Run and whole-scope reviews remain open.
+
+
 ## Latest increment — all24 effect routes and60pair smoke, 2026-09-13
 
 All24 selected books now have mechanical consumers, NOT final-art/game-complete.

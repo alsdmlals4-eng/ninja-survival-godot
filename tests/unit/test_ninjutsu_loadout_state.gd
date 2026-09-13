@@ -4,6 +4,48 @@ extends GutTest
 const LOADOUT_PATH := "res://scripts/core/ninjutsu_loadout_state.gd"
 
 
+func test_selected_restore_requires_placement_unlocks_and_preserves_legacy_boundary() -> void:
+	var loadout = load(LOADOUT_PATH).new()
+	add_child_autofree(loadout)
+	assert_true(loadout.has_method("restore_selected_snapshot"))
+	if not loadout.has_method("restore_selected_snapshot"):
+		return
+	var snapshot := {"selection_contract": "selectable-v2", "origin_school_id": "bongma", "draft_picks": ["bongma_seal_chain", "bongma_guardian_ward"], "active_spell_ids": ["bongma_seal_chain", "cheonsul_ice_veil"], "pending_spell_ids": []}
+	assert_false(loadout.restore_from_snapshot(snapshot))
+	assert_true(loadout.call("restore_selected_snapshot", snapshot, ["cheonsul_ice_veil", "bongma_seal_chain"], ["bongma", "cheonsul"]))
+	assert_eq(loadout.active_spell_ids(), [&"bongma_seal_chain", &"cheonsul_ice_veil"])
+	var before: Dictionary = loadout.get_snapshot()
+	assert_false(loadout.call("restore_selected_snapshot", snapshot, ["bongma_seal_chain"], ["bongma", "cheonsul"]))
+	assert_false(loadout.call("restore_selected_snapshot", snapshot, snapshot.active_spell_ids, ["bongma"]))
+	var malformed := snapshot.duplicate(true)
+	malformed.active_spell_ids.append("cheonsul_flame_mark")
+	assert_false(loadout.call("restore_selected_snapshot", malformed, malformed.active_spell_ids, ["bongma", "cheonsul"]))
+	malformed = snapshot.duplicate(true)
+	malformed.draft_picks[1] = malformed.draft_picks[0]
+	assert_false(loadout.call("restore_selected_snapshot", malformed, malformed.active_spell_ids, ["bongma", "cheonsul"]))
+	assert_eq(loadout.get_snapshot(), before)
+
+
+func test_selected_restore_rejects_malformed_fields_without_emitting_or_mutating() -> void:
+	var loadout = load(LOADOUT_PATH).new()
+	add_child_autofree(loadout)
+	var snapshot := {"selection_contract": "selectable-v2", "origin_school_id": "guiin", "draft_picks": ["guiin_iron_blood_guard", "guiin_demon_step"], "active_spell_ids": [], "pending_spell_ids": []}
+	assert_true(loadout.restore_selected_snapshot(snapshot, [], ["guiin"]))
+	watch_signals(loadout)
+	var before: Dictionary = loadout.get_snapshot()
+	for field in snapshot.keys():
+		for malformed_value in [null, 12, {}, true]:
+			var malformed := snapshot.duplicate(true)
+			malformed[field] = malformed_value
+			assert_false(loadout.restore_selected_snapshot(malformed, [], ["guiin"]), str(field))
+			assert_eq(loadout.get_snapshot(), before)
+	assert_false(loadout.restore_selected_snapshot(snapshot, [], ["guiin", "guiin"]))
+	assert_false(loadout.restore_selected_snapshot(snapshot, [], ["unknown"]))
+	assert_signal_not_emitted(loadout, "loadout_changed")
+	assert_true(loadout.active_spell_ids().is_empty(), "A valid empty bag never resurrects the original two books.")
+	assert_false(loadout.activate_starter(&"guiin"))
+
+
 func test_two_round_draft_has_three_unique_options_and_no_free_combat_effect() -> void:
 	var loadout = load(LOADOUT_PATH).new()
 	add_child_autofree(loadout)
