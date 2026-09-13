@@ -653,6 +653,11 @@ R06/R07의 독립 fixture와 R08의 상태 브리프는 저장 구현 중에도 
 
 ### R01. 단일 프로필·저장 복구
 
+2026-09-14 구현 증거: envelope/명시적 profile store/거래 digest와 재시도/기본 I/O
+실패 보호를 구현했다. GUT101scripts/798tests/10592assertions PASS. active_run이
+null인 프로필만 허용하며 비어 있지 않은 런은 도메인 교차 검증 연결 전 명시적으로
+거부한다. 아래 R01 전체, 기존 저장 이관, Main 적용, 모든 장애 주입은 아직 미완료다.
+
 **문제/가치:** 현재 wallet_v1과 resume_v1은 별도 파일이다. 개별 파일 보호가 있어도
 소울 차감과 체크포인트 이동 전체의 원자성은 보장하지 못한다.
 **수정 파일:** `scripts/core/run_resume_codec.gd`, `scripts/core/run_resume_store.gd`,

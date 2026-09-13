@@ -1,5 +1,26 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — R01 profile envelope and durable transaction foundation, 2026-09-14
+
+User approved R01~R10 execution. RunResumeCodec now validates schema2 empty-run profiles:
+strict numeric fields, content contract, unique transaction/settlement IDs, receipt digest/
+revision and unlock/settlement receipt linkage. Pending transaction validation is internal
+to store candidate preparation; disk decode/readback always use strict receipt validation.
+RunResumeStore reuses existing tmp/previous/write/readback machinery in explicit profile
+mode; v1 write/clear/reconfigure APIs cannot mutate a profile. Request digest distinguishes
+same-ID replay from conflict; stale revision and caller receipt mutation fail closed.
+Tested disk roundtrip, replay, conflict, missing-directory write failure, canonical readback
+rollback and cleanup-warning success using dedicated gut paths. Full101scripts/798tests/
+10592assertions PASS, exit0, `ninja-profile-transaction-full-gut-20260914.log`.
+
+R01 is NOT complete: non-null active_run intentionally returns active_run_validation_pending.
+Next: checkpoint/preparation domain cross-validation, all rename/rollback failure injection,
+recovery selection, legacy-wallet migration, then business transaction facades and Main.
+The store does not enforce purchase/settlement pricing; those remain their domain owners.
+Cross-process writer exclusion/crash-proof durability NOT_VERIFIED. No actual player save
+or main entry switched; no new autoload, artwork, paid dependency or project deletion.
+
+
 ## Current request — remaining-work specifications, 2026-09-14
 
 User asks for remaining work and implementation/design input, not another code increment.

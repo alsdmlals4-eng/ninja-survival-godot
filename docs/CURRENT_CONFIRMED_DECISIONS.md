@@ -1,5 +1,13 @@
 # CURRENT_CONFIRMED_DECISIONS
 
+## Latest 2026-09-14 — approved remaining-work execution
+
+User approves the recommended R01~R10 plan and requests implementation. Resume
+R01 first, then its dependent preparation/Main packages. The preceding planning-only
+turn boundary no longer pauses this approved work. Preserve existing save files,
+art LOCK, evidence ceilings, isolated work and protected PR requirements.
+
+
 ## Latest 2026-09-14 — remaining implementation/design specification request
 
 User requests remaining work and its implementation/design specifications after

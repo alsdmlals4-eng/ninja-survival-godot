@@ -3,6 +3,68 @@ extends RefCounted
 class_name RunResumeCodec
 
 const SCHEMA_VERSION := 1
+const PROFILE_CONTRACT := "ns-replan-20260911"
+
+
+# Profile envelope validation. Active-run decoding is fail-closed until its
+# route/circuit/preparation cross-owner validator is connected.
+func decode_profile_v2(payload: Dictionary, pending_transaction_id: String = "") -> Dictionary:
+	if not _profile_integer(payload.get("schema_version")) or payload.schema_version != 2:
+		return {"ok": false, "reason": &"unsupported_schema"}
+	if not (payload.get("content_contract") is String) or payload.content_contract != PROFILE_CONTRACT:
+		return {"ok": false, "reason": &"unsupported_content"}
+	if not _profile_integer(payload.get("revision")) or not payload.has("active_run"):
+		return {"ok": false, "reason": &"invalid_profile"}
+	var meta = payload.get("meta")
+	if not (meta is Dictionary) or not _profile_integer(meta.get("soul_balance")) or not (meta.get("unlocked_support_choice") is bool):
+		return {"ok": false, "reason": &"invalid_meta"}
+	if not _profile_unique_ids(meta.get("settled_run_ids")) or not _profile_unique_ids(meta.get("applied_transaction_ids")):
+		return {"ok": false, "reason": &"invalid_ledger"}
+	var receipts = meta.get("transaction_receipts")
+	if not (receipts is Dictionary) or receipts.size() != meta.applied_transaction_ids.size():
+		return {"ok": false, "reason": &"invalid_receipts"}
+	for id in meta.applied_transaction_ids:
+		var receipt = receipts.get(id)
+		if not (receipt is Dictionary) or receipt.size() != 2 or not _profile_integer(receipt.get("revision")):
+			return {"ok": false, "reason": &"invalid_receipts"}
+		if receipt.revision < 1 or receipt.revision > payload.revision or not (receipt.get("request_digest") is String):
+			return {"ok": false, "reason": &"invalid_receipts"}
+		var digest: String = receipt.request_digest
+		if digest.length() != 64:
+			return {"ok": false, "reason": &"invalid_receipts"}
+		for character in digest:
+			if not character in "0123456789abcdef":
+				return {"ok": false, "reason": &"invalid_receipts"}
+	for run_id in meta.settled_run_ids:
+		if not receipts.has("settle:" + run_id) and pending_transaction_id != "settle:" + run_id:
+			return {"ok": false, "reason": &"invalid_settlement"}
+	if meta.unlocked_support_choice and not receipts.has("unlock:support-choice-v1") and pending_transaction_id != "unlock:support-choice-v1":
+		return {"ok": false, "reason": &"invalid_unlock"}
+	if payload.active_run != null:
+		return {"ok": false, "reason": &"active_run_validation_pending"}
+	# Only primitive known fields leave this codec; unknown object fields are rejected.
+	if payload.size() != 5 or meta.size() != 5:
+		return {"ok": false, "reason": &"unknown_profile_fields"}
+	var result: Dictionary = payload.duplicate(true)
+	result.revision = int(payload.revision)
+	result.schema_version = 2
+	result.meta.soul_balance = int(meta.soul_balance)
+	return {"ok": true, "profile": result}
+
+
+static func _profile_integer(value) -> bool:
+	return (value is int or value is float) and is_finite(float(value)) and value >= 0 and value <= 9007199254740991 and float(value) == floor(float(value))
+
+
+static func _profile_unique_ids(value) -> bool:
+	if not (value is Array):
+		return false
+	var seen := {}
+	for id in value:
+		if not (id is String) or id.is_empty() or id.length() > 256 or seen.has(id):
+			return false
+		seen[id] = true
+	return true
 
 const RUN_MODIFIER_SET_SCRIPT = preload("res://scripts/data/run_modifier_set.gd")
 const BACKPACK_STATE_SCRIPT = preload("res://scripts/backpack/backpack_state.gd")
