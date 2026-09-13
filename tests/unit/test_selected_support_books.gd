@@ -96,6 +96,61 @@ func test_poison_damage_is_dot_and_callback_cleanup_cancels_remaining_ticks() ->
 	assert_true(f.controller._selected_casts.is_empty())
 
 
+func test_flame_mark_has_direct_damage_and_refreshes_burn_without_hidden_tokens() -> void:
+	var f := _fixture([&"cheonsul_flame_mark"], &"cheonsul")
+	f.controller.tick_auto_cast(1.8)
+	assert_eq(f.enemy.health, 994)
+	f.controller.tick_auto_cast(1.0)
+	assert_eq(f.enemy.health, 992)
+	f.controller.tick_auto_cast(0.8)
+	assert_eq(f.enemy.health, 986)
+	f.controller.tick_auto_cast(0.2)
+	assert_eq(f.enemy.health, 984, "second cast must not postpone original burn tick")
+
+
+func test_flame_and_poison_coexist_and_unequip_clears_each_source() -> void:
+	var f := _fixture([&"cheonsul_flame_mark", &"heukyeong_poison_mist"], &"cheonsul")
+	f.controller.tick_auto_cast(5.0)
+	f.enemy.position.x = 500
+	f.controller.tick_auto_cast(1.0)
+	assert_eq(f.enemy.health, 988, "6 direct +2burn +4poison")
+	f.loadout.commit_placed_ninjutsu([&"heukyeong_poison_mist"], [&"cheonsul", &"heukyeong"])
+	f.controller.tick_auto_cast(1.0)
+	assert_eq(f.enemy.health, 984, "poison survives removing the separate flame source")
+
+
+func test_selected_burn_is_read_by_breath_without_copying_or_hidden_tokens() -> void:
+	var f := _fixture([&"cheonsul_flame_mark"], &"cheonsul")
+	var viewport := SubViewport.new()
+	viewport.size = Vector2i(1152, 648)
+	add_child_autofree(viewport)
+	f.world.reparent(viewport)
+	f.player.position = Vector2(100, 100)
+	f.enemy.position = Vector2(160, 100)
+	var runtime := CheonsulRuntime.new()
+	f.world.add_child(runtime)
+	runtime.set_process(false)
+	runtime.configure(f.player, f.world)
+	runtime.configure_ninjutsu_loadout(f.loadout)
+	assert_true(runtime.has_method("configure_selected_status_provider"))
+	if not runtime.has_method("configure_selected_status_provider"):
+		return
+	runtime.call("configure_selected_status_provider", f.controller)
+	runtime.activate()
+	f.controller.tick_auto_cast(1.8)
+	assert_true(runtime.has_status(f.enemy, &"burn"))
+	assert_false(runtime.has_status(f.enemy, &"wet"))
+	assert_false(runtime.has_status(f.enemy, &"shock"))
+	assert_true(runtime._states.is_empty(), "no second status timer owner")
+	runtime.reaction_count = 3.0
+	assert_true(runtime.try_use_ultimate())
+	assert_eq(f.enemy.health, 984, "6 flame then 8+2 first breath tick")
+	f.loadout.commit_placed_ninjutsu([], [&"cheonsul"])
+	assert_false(runtime.has_status(f.enemy, &"burn"))
+	runtime._process(0.25)
+	assert_eq(f.enemy.health, 976, "next breath tick loses removed status bonus")
+
+
 func test_proximity_guard_reduces_damage_only_while_enemy_is_near() -> void:
 	var f := _fixture([&"guiin_iron_blood_guard"])
 	f.controller.tick_auto_cast(0.01)

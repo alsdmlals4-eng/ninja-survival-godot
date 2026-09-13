@@ -101,6 +101,7 @@ func _ready() -> void:
 	(school_host.get_node("Guiin") as GuiinRuntime).configure_weapon_controller(basic_weapons)
 	school_host.configure_ninjutsu_loadout(ninjutsu_loadout)
 	(school_host.get_node("Heukyeong") as HeukyeongRuntime).configure_selected_status_provider(ninjutsu_auto_controller)
+	(school_host.get_node("Cheonsul") as CheonsulRuntime).configure_selected_status_provider(ninjutsu_auto_controller)
 	school_host.configure(player, self)
 	school_host.configure_run_systems(combat_resolver, contribution_tracker)
 	if ninjutsu_auto_controller != null:

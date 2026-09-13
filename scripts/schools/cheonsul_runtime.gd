@@ -38,6 +38,11 @@ var _breath_direction := Vector2.RIGHT
 var _breath_visual: Sprite2D
 var _reaction_bonus_remaining := 0.0
 var _breath_generation := 0
+var _selected_status_provider: Node
+
+
+func configure_selected_status_provider(provider: Node) -> void:
+	_selected_status_provider = provider
 
 
 func activate() -> void:
@@ -176,6 +181,8 @@ func apply_token(enemy: Node2D, token: StringName) -> bool:
 
 
 func has_status(enemy: Node, token: StringName) -> bool:
+	if uses_selected_ninjutsu():
+		return is_instance_valid(_selected_status_provider) and _selected_status_provider.has_method("has_selected_status") and bool(_selected_status_provider.call("has_selected_status", enemy, token))
 	_prune_invalid_states()
 	if not is_instance_valid(enemy):
 		return false

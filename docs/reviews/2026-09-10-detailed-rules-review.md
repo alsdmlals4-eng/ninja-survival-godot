@@ -1,5 +1,19 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-13 flame and breath consumer receipt
+
+Input91661b3. Read selected effect table and old Cheonsul application; table explicitly
+removes hidden alternating tokens, old descriptive paragraph remains legacy behavior.
+ADAPT shared transient damage clock and existing Heukyeong-style read-only provider;
+REJECT duplicate ticking in Cheonsul or new global status owner. Two flame RED tests
+proved absent immediate/burn damage; provider RED test proved missing breath connection.
+28focused tests PASS, full97/754/9797 PASS; OpenGL FLAME_RUNTIME_PASS (real process).
+Provider test uses explicit1152x648 SubViewport, like existing breath tests, because
+headless runner viewport is not valid visible-target geometry. No product viewport bypass.
+Source removal immediately removes breath bonus; no hidden wet/shock or duplicate state.
+Still not whole-Run/Human/asset-complete. Status timing across long multi-owner catch-up
+frames needs integration review alongside wet/lightning; no precision beyond tests claimed.
+
 ## 2026-09-13 poison/summon continuation receipt
 
 Input ed50841, authorized PR147, main b5c2dd6. Read current Decisions/Active,

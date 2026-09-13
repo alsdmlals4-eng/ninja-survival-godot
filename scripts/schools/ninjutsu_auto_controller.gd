@@ -24,6 +24,7 @@ var _support_remaining: Dictionary = {}
 var _support_zones: Dictionary = {}
 var _selected_marks: Dictionary = {}
 var _selected_poison: Dictionary = {}
+var _selected_burn: Dictionary = {}
 var _effect_generation := 0
 var _selected_familiar: BongmaFamiliar
 const SUPPORT_BOOKS := [&"guiin_iron_blood_guard", &"guiin_demon_step", &"cheonsul_ice_veil", &"heukyeong_smoke_step", &"bongma_guardian_ward", &"bongma_barrier_step"]
@@ -154,7 +155,10 @@ func _tick_auto_cast(delta: float) -> void:
 		_tick_support_books(delta)
 		_tick_selected_marks(delta)
 		var generation := _effect_generation
-		_tick_selected_poison(delta)
+		_tick_selected_damage_status(_selected_poison, delta, "poison_damage")
+		if generation != _effect_generation:
+			return
+		_tick_selected_damage_status(_selected_burn, delta, "burn_damage")
 		if generation != _effect_generation:
 			return
 	if _combat_resolver != null and _combat_resolver.sword_only_mode:
@@ -206,7 +210,7 @@ func _tick_selected_books(delta: float) -> void:
 	_advance_selected_casts(delta)
 	for raw_id in _loadout.call("active_spell_ids"):
 		var id := StringName(raw_id)
-		if not [&"guiin_ghost_blood_wave", &"guiin_afterimage_charge", &"guiin_asura_ring", &"guiin_rakshasa_kicks", &"cheonsul_wind_pillar", &"heukyeong_shadow_needle", &"heukyeong_pursuit_dart", &"heukyeong_chain_execution", &"heukyeong_poison_mist"].has(id):
+		if not [&"guiin_ghost_blood_wave", &"guiin_afterimage_charge", &"guiin_asura_ring", &"guiin_rakshasa_kicks", &"cheonsul_wind_pillar", &"cheonsul_flame_mark", &"heukyeong_shadow_needle", &"heukyeong_pursuit_dart", &"heukyeong_chain_execution", &"heukyeong_poison_mist"].has(id):
 			continue
 		var definition = NINJUTSU_CATALOG_SCRIPT.definition_for_id(id)
 		var config: Dictionary = definition.effect_config
@@ -223,7 +227,7 @@ func _tick_selected_books(delta: float) -> void:
 			_remaining_by_spell[id] = 0.12
 			continue
 		# Reserve before damage callbacks to prevent reentrant duplicate casts.
-		if config.kind == "poison_zone":
+		if config.kind in ["poison_zone", "flame_zone"]:
 			origin = target.global_position
 		_remaining_by_spell[id] = cooldown
 		var direction := origin.direction_to(target.global_position)
@@ -235,7 +239,7 @@ func _tick_selected_books(delta: float) -> void:
 		_hit_selected_cast(cast)
 		if not _selected_casts.has(cast):
 			return
-		if float(config.duration) <= 0.0:
+		if float(config.duration) <= 0.0 or config.kind == "flame_zone":
 			_selected_casts.erase(cast)
 		if config.kind in ["wind_projectile", "needle", "dart", "poison_zone"]:
 			cast.visual = _spawn_effect(definition, origin, 0.13, float(config.duration))
@@ -243,27 +247,31 @@ func _tick_selected_books(delta: float) -> void:
 			_spawn_effect(definition, origin, 0.13)
 
 
-func _tick_selected_poison(delta: float) -> void:
-	for key in _selected_poison.keys():
-		if not _selected_poison.has(key):
+func has_selected_status(target: Node, token: StringName) -> bool:
+	return token == &"burn" and is_instance_valid(target) and not target.is_queued_for_deletion() and _selected_burn.has(target.get_instance_id()) and float(_selected_burn[target.get_instance_id()].remaining) > 0.000001
+
+
+func _tick_selected_damage_status(states: Dictionary, delta: float, damage_key: String) -> void:
+	for key in states.keys():
+		if not states.has(key):
 			continue
-		var state: Dictionary = _selected_poison[key]
+		var state: Dictionary = states[key]
 		var target = state.target
 		if not is_instance_valid(target) or target.is_queued_for_deletion() or not _world.is_ancestor_of(target) or (target.has_method("is_dead") and target.is_dead()):
-			_selected_poison.erase(key)
+			states.erase(key)
 			continue
 		state.next_tick = float(state.next_tick) - minf(delta, float(state.remaining))
 		state.remaining = maxf(float(state.remaining) - delta, 0.0)
 		while float(state.next_tick) <= 0.000001:
 			state.next_tick = float(state.next_tick) + float(state.config.tick_interval)
-			if not _selected_poison.has(key) or not is_instance_valid(target) or target.is_queued_for_deletion() or (_player.has_method("is_dead") and _player.is_dead()):
+			if not states.has(key) or not is_instance_valid(target) or target.is_queued_for_deletion() or (_player.has_method("is_dead") and _player.is_dead()):
 				break
 			if _combat_resolver != null:
-				_combat_resolver.deal_school_damage(target, float(state.config.poison_damage), &"dot")
+				_combat_resolver.deal_school_damage(target, float(state.config[damage_key]), &"dot")
 			else:
-				target.call("take_damage", int(state.config.poison_damage))
+				target.call("take_damage", int(state.config[damage_key]))
 		if float(state.remaining) <= 0.000001:
-			_selected_poison.erase(key)
+			states.erase(key)
 
 
 func _clear_selected_familiar() -> void:
@@ -336,6 +344,8 @@ func _prune_selected_casts() -> void:
 		_selected_marks.clear()
 	if not active.has(&"heukyeong_poison_mist"):
 		_selected_poison.clear()
+	if not active.has(&"cheonsul_flame_mark"):
+		_selected_burn.clear()
 	for id in SUPPORT_BOOKS:
 		if not active.has(id):
 			_remove_support(id)
@@ -421,6 +431,11 @@ func _hit_selected_cast(cast: Dictionary) -> void:
 			_combat_resolver.deal_school_damage(enemy, float(config.damage), &"direct_injutsu")
 		else:
 			enemy.call("take_damage", int(config.damage))
+		if config.kind == "flame_zone" and _selected_casts.has(cast) and is_instance_valid(enemy) and not enemy.is_queued_for_deletion() and not (enemy.has_method("is_dead") and enemy.is_dead()):
+			var key: int = enemy.get_instance_id()
+			if not _selected_burn.has(key):
+				_selected_burn[key] = {"target": enemy, "next_tick": float(config.tick_interval), "remaining": 0.0, "config": config}
+			_selected_burn[key].remaining = float(config.duration)
 
 
 # Sweep the projectile center against the authored radius; consume the first
@@ -696,6 +711,7 @@ func clear_runtime_effects() -> void:
 	_clear_selected_familiar()
 	_selected_marks.clear()
 	_selected_poison.clear()
+	_selected_burn.clear()
 	for id in SUPPORT_BOOKS:
 		_remove_support(id)
 	_selected_casts.clear()

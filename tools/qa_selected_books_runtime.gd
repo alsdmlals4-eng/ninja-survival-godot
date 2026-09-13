@@ -20,6 +20,8 @@ func _run() -> void:
 	var loadout = load("res://scripts/core/ninjutsu_loadout_state.gd").new()
 	world.add_child(loadout)
 	var school: StringName = &"cheonsul" if "--wind" in OS.get_cmdline_user_args() else &"guiin"
+	if "--flame" in OS.get_cmdline_user_args():
+		school = &"cheonsul"
 	if "--needle" in OS.get_cmdline_user_args() or "--dart" in OS.get_cmdline_user_args() or "--poison" in OS.get_cmdline_user_args():
 		school = &"heukyeong"
 	if "--familiar" in OS.get_cmdline_user_args():
@@ -33,6 +35,33 @@ func _run() -> void:
 	var controller = load("res://scripts/schools/ninjutsu_auto_controller.gd").new()
 	world.add_child(controller)
 	controller.configure(player, world, null, loadout)
+	if "--flame" in OS.get_cmdline_user_args():
+		if not loadout.commit_placed_ninjutsu([&"cheonsul_flame_mark"], [school]):
+			push_error("FLAME_RUNTIME_FAIL loadout")
+			quit(1)
+			return
+		controller.configure(player, world, null, loadout)
+		await create_timer(2.0).timeout
+		if enemy.health != 994 or not controller.has_selected_status(enemy, &"burn"):
+			push_error("FLAME_RUNTIME_FAIL direct hit or burn")
+			quit(1)
+			return
+		await create_timer(1.0).timeout
+		if enemy.health != 992:
+			push_error("FLAME_RUNTIME_FAIL first burn tick")
+			quit(1)
+			return
+		loadout.commit_placed_ninjutsu([], [school])
+		await create_timer(1.1).timeout
+		if enemy.health != 992 or controller.has_selected_status(enemy, &"burn"):
+			push_error("FLAME_RUNTIME_FAIL unequip")
+			quit(1)
+			return
+		world.queue_free()
+		await process_frame
+		print("FLAME_RUNTIME_PASS real process direct damage, burn, removal; no save writes")
+		quit(0)
+		return
 	if "--poison" in OS.get_cmdline_user_args():
 		if not loadout.commit_placed_ninjutsu([&"heukyeong_poison_mist"], [&"heukyeong"]):
 			push_error("POISON_RUNTIME_FAIL loadout")

@@ -1,5 +1,17 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — flame mark and breath status readback, 2026-09-13
+
+Selected effects now17/24;7remain. Flame direct6/radius90 every1.8s plus burn3s/2per1s;
+burn/poison share the clock algorithm but keep independent source maps and expiry.
+Cheonsul reads selected burn for breath+2 without copying status/hidden elemental alternation.
+Main wires the provider but does not enable selectable-v2 for ordinary new-game yet.
+Full97scripts/754tests/9797assertions PASS (`ninja-flame-full-gut-20260913.log`),
+OpenGL FLAME_RUNTIME_PASS direct/burn/unequip; human/final art/complete new Run NOT_RUN.
+Remaining:3Bongma controls/orbit,3Cheonsul water/lightning/dash token,1Heukyeong clone.
+Then selected start/profile2/UI and complete Run integration; all approved work remains active.
+
+
 ## Latest increment — poison mist and summon suppression, 2026-09-13
 
 Selected effects now16/24;8remain. Poison mist is target-centered radius96,
