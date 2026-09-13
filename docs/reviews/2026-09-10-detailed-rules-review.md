@@ -1,5 +1,20 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-13 clone and movement-control receipt
+
+Input43d34d2. Fresh catalog/rules/EnemyChaser/SchoolEncounterActor/StageBoss/final
+calamity and pattern controller inspected. Clone2RED then targeted pass; control3RED;
+chain/seal2RED then pass. Configured elite test initially used core shikigami_handler;
+catalog proved role=core, corrected to mobile_array_caster and asserted role. No product
+role alteration. Final full98scripts/762tests/9841assertions PASS.
+https://docs.godotengine.org/en/stable/tutorials/scripting/idle_and_physics_processing.html
+confirms idle and physics clocks differ. ADAPT idle status expiry independent of actor
+pattern early-return, retain actual movement in physics. Idle disabled with no status.
+REJECT overwriting base speed and freezing pattern controller. Pattern remaining-time
+assertion confirms progress during elite slow; source cleanup and pause tests retained.
+Clone representation remains temporary effect, not final character art. These new effects
+have machine evidence, not full game/UI/Human or dedicated GPU evidence yet.
+
 ## 2026-09-13 flame and breath consumer receipt
 
 Input91661b3. Read selected effect table and old Cheonsul application; table explicitly

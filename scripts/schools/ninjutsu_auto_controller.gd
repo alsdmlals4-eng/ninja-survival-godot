@@ -25,6 +25,7 @@ var _support_zones: Dictionary = {}
 var _selected_marks: Dictionary = {}
 var _selected_poison: Dictionary = {}
 var _selected_burn: Dictionary = {}
+var _selected_control_targets: Dictionary = {}
 var _effect_generation := 0
 var _selected_familiar: BongmaFamiliar
 const SUPPORT_BOOKS := [&"guiin_iron_blood_guard", &"guiin_demon_step", &"cheonsul_ice_veil", &"heukyeong_smoke_step", &"bongma_guardian_ward", &"bongma_barrier_step"]
@@ -163,14 +164,17 @@ func _tick_auto_cast(delta: float) -> void:
 			return
 	if _combat_resolver != null and _combat_resolver.sword_only_mode:
 		for cast in _selected_casts.duplicate():
-			if cast.config.kind == "poison_zone":
+			if cast.config.kind in ["poison_zone", "clone"]:
 				cast.elapsed = float(cast.elapsed) + delta
+				if cast.config.kind == "clone":
+					while int(cast.next_tick) < int(cast.config.ticks) and float(cast.elapsed) + 0.000001 >= int(cast.next_tick) * float(cast.config.tick_interval):
+						cast.next_tick = int(cast.next_tick) + 1
 				if float(cast.elapsed) >= float(cast.config.duration):
 					_selected_casts.erase(cast)
 			else:
 				_selected_casts.erase(cast)
 		for entry in _active_effects.duplicate():
-			if entry.get("spell_id", &"") == &"heukyeong_poison_mist":
+			if entry.get("spell_id", &"") in [&"heukyeong_poison_mist", &"heukyeong_shadow_clone"]:
 				continue
 			var effect = entry.get("node")
 			if is_instance_valid(effect) and not effect.is_queued_for_deletion():
@@ -210,11 +214,13 @@ func _tick_selected_books(delta: float) -> void:
 	_advance_selected_casts(delta)
 	for raw_id in _loadout.call("active_spell_ids"):
 		var id := StringName(raw_id)
-		if not [&"guiin_ghost_blood_wave", &"guiin_afterimage_charge", &"guiin_asura_ring", &"guiin_rakshasa_kicks", &"cheonsul_wind_pillar", &"cheonsul_flame_mark", &"heukyeong_shadow_needle", &"heukyeong_pursuit_dart", &"heukyeong_chain_execution", &"heukyeong_poison_mist"].has(id):
+		if not [&"guiin_ghost_blood_wave", &"guiin_afterimage_charge", &"guiin_asura_ring", &"guiin_rakshasa_kicks", &"cheonsul_wind_pillar", &"cheonsul_flame_mark", &"heukyeong_shadow_needle", &"heukyeong_pursuit_dart", &"heukyeong_chain_execution", &"heukyeong_poison_mist", &"heukyeong_shadow_clone", &"bongma_seal_chain", &"bongma_suppression_seal"].has(id):
 			continue
 		var definition = NINJUTSU_CATALOG_SCRIPT.definition_for_id(id)
-		var config: Dictionary = definition.effect_config
+		var config: Dictionary = definition.effect_config.duplicate(true)
 		var cooldown := float(config.cooldown)
+		if config.kind == "seal_zone":
+			config.duration = float(config.delay)
 		var remaining := maxf(float(_remaining_by_spell.get(id, cooldown)) - delta, 0.0)
 		_remaining_by_spell[id] = remaining
 		if remaining > 0.000001:
@@ -227,7 +233,7 @@ func _tick_selected_books(delta: float) -> void:
 			_remaining_by_spell[id] = 0.12
 			continue
 		# Reserve before damage callbacks to prevent reentrant duplicate casts.
-		if config.kind in ["poison_zone", "flame_zone"]:
+		if config.kind in ["poison_zone", "flame_zone", "seal_zone"]:
 			origin = target.global_position
 		_remaining_by_spell[id] = cooldown
 		var direction := origin.direction_to(target.global_position)
@@ -236,12 +242,13 @@ func _tick_selected_books(delta: float) -> void:
 		var cast: Dictionary = {"id": id, "config": config, "origin": origin, "direction": direction, "elapsed": 0.0, "next_tick": 1, "hit_ids": {}}
 		cast.target = target
 		_selected_casts.append(cast)
-		_hit_selected_cast(cast)
+		if config.kind != "seal_zone":
+			_hit_selected_cast(cast)
 		if not _selected_casts.has(cast):
 			return
 		if float(config.duration) <= 0.0 or config.kind == "flame_zone":
 			_selected_casts.erase(cast)
-		if config.kind in ["wind_projectile", "needle", "dart", "poison_zone"]:
+		if config.kind in ["wind_projectile", "needle", "dart", "poison_zone", "clone", "seal_zone"]:
 			cast.visual = _spawn_effect(definition, origin, 0.13, float(config.duration))
 		else:
 			_spawn_effect(definition, origin, 0.13)
@@ -309,11 +316,11 @@ func has_selected_mark(target: Node) -> bool:
 	return is_instance_valid(target) and _selected_marks.has(target.get_instance_id()) and float(_selected_marks[target.get_instance_id()].remaining) > 0.000001
 
 
-func _selected_target(origin: Vector2, radius: float, prefer_mark: bool = false) -> Node2D:
+func _selected_target(origin: Vector2, radius: float, prefer_mark: bool = false, excluded: Dictionary = {}) -> Node2D:
 	var nearest: Node2D = null
 	var distance := radius * radius
 	for enemy in _valid_enemies():
-		if not _world.is_ancestor_of(enemy):
+		if not _world.is_ancestor_of(enemy) or excluded.has(enemy.get_instance_id()):
 			continue
 		var candidate_distance := origin.distance_squared_to(enemy.global_position)
 		if candidate_distance > radius * radius:
@@ -338,6 +345,13 @@ func _prune_selected_casts() -> void:
 		_selected_casts.clear()
 		return
 	var active: Array = _loadout.call("active_spell_ids")
+	for source in _selected_control_targets.keys():
+		if not active.has(source):
+			_clear_selected_control(source)
+		else:
+			for key in _selected_control_targets[source].keys():
+				if not is_instance_valid(_selected_control_targets[source][key]):
+					_selected_control_targets[source].erase(key)
 	if not active.has(&"bongma_hundred_demon_familiar"):
 		_clear_selected_familiar()
 	if not active.has(&"heukyeong_shadow_needle"):
@@ -373,6 +387,9 @@ func _advance_selected_casts(delta: float) -> void:
 			if is_instance_valid(visual) and not visual.is_queued_for_deletion():
 				visual.global_position = Vector2(cast.origin) + Vector2(cast.direction) * minf(float(cast.elapsed), float(config.duration)) * float(config.speed)
 			_hit_selected_cast(cast)
+		elif config.kind == "seal_zone":
+			if float(cast.elapsed) + 0.000001 >= float(config.delay):
+				_hit_selected_cast(cast)
 		elif config.kind in ["afterimage_line", "poison_zone"]:
 			if float(cast.elapsed) < float(config.duration):
 				_hit_selected_cast(cast)
@@ -384,8 +401,52 @@ func _advance_selected_casts(delta: float) -> void:
 			_selected_casts.erase(cast)
 
 
+func _apply_selected_control(enemy: Node, source: StringName, duration: float, slow: float = 0.0, bind: bool = true) -> void:
+	if not is_instance_valid(enemy) or enemy.is_queued_for_deletion() or not enemy.has_method("apply_book_control"):
+		return
+	if enemy.call("apply_book_control", source, duration, slow, bind):
+		if not _selected_control_targets.has(source):
+			_selected_control_targets[source] = {}
+		_selected_control_targets[source][enemy.get_instance_id()] = enemy
+
+
+func _clear_selected_control(source: StringName) -> void:
+	for enemy in _selected_control_targets.get(source, {}).values():
+		if is_instance_valid(enemy):
+			enemy.call("remove_book_control", source)
+	_selected_control_targets.erase(source)
+
+
 func _hit_selected_cast(cast: Dictionary) -> void:
 	var config: Dictionary = cast.config
+	if config.kind == "chain":
+		var target: Node2D = cast.target
+		var visited: Dictionary = {}
+		for index in range(int(config.max_targets)):
+			if not _selected_casts.has(cast) or not is_instance_valid(target) or target.is_queued_for_deletion() or (_combat_resolver != null and _combat_resolver.sword_only_mode):
+				break
+			var origin := target.global_position
+			visited[target.get_instance_id()] = true
+			var damage := float(config.damage) if index == 0 else float(config.followup_damage)
+			if _combat_resolver != null:
+				_combat_resolver.deal_school_damage(target, damage, &"direct_injutsu")
+			else:
+				target.call("take_damage", int(damage))
+			if not _selected_casts.has(cast):
+				break
+			_apply_selected_control(target, cast.id, float(config.bind_duration))
+			target = _selected_target(origin, float(config.link_range), false, visited)
+		return
+	if config.kind == "clone":
+		if not _selected_casts.has(cast) or (_combat_resolver != null and _combat_resolver.sword_only_mode):
+			return
+		var target := _selected_target(cast.origin, float(config.target_range))
+		if target != null:
+			if _combat_resolver != null:
+				_combat_resolver.deal_school_damage(target, float(config.damage), &"clone")
+			else:
+				target.call("take_damage", int(config.damage))
+		return
 	if config.kind == "poison_zone":
 		for enemy in _valid_enemies():
 			if _world.is_ancestor_of(enemy) and enemy.global_position.distance_squared_to(cast.origin) <= pow(float(config.radius), 2):
@@ -431,6 +492,8 @@ func _hit_selected_cast(cast: Dictionary) -> void:
 			_combat_resolver.deal_school_damage(enemy, float(config.damage), &"direct_injutsu")
 		else:
 			enemy.call("take_damage", int(config.damage))
+		if config.kind == "seal_zone" and _selected_casts.has(cast):
+			_apply_selected_control(enemy, cast.id, float(config.bind_duration))
 		if config.kind == "flame_zone" and _selected_casts.has(cast) and is_instance_valid(enemy) and not enemy.is_queued_for_deletion() and not (enemy.has_method("is_dead") and enemy.is_dead()):
 			var key: int = enemy.get_instance_id()
 			if not _selected_burn.has(key):
@@ -708,6 +771,8 @@ func _advance_effects(delta: float) -> void:
 
 func clear_runtime_effects() -> void:
 	_effect_generation += 1
+	for source in _selected_control_targets.keys():
+		_clear_selected_control(source)
 	_clear_selected_familiar()
 	_selected_marks.clear()
 	_selected_poison.clear()

@@ -1,5 +1,19 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — clone, seal chain and suppression, 2026-09-13
+
+Selected effects now20/24;4remain (talisman wheel, water bind, lightning chain, thunder step).
+Clone uses fixed-origin bounded3ticks with clone damage kind and sword-only skip consumption.
+Seal chain connects at most3targets within140, first12/followups8, bind0.6;
+suppression waits0.2 then fixed-radius100 hit16/bind0.4. Source removal cancels controls.
+EnemyChaser owns transient movement multiplier without changing base speed; elite/boss
+bind becomes20%/10% slow; core rebind protection2s; strongest slow capped40%.
+Pattern clocks remain independent; idle control processing enabled only while needed.
+Full98scripts/762tests/9841assertions PASS (`ninja-control-corrected-full-gut-20260913.log`).
+These3effects GPU-specific final render/input NOT_RUN; generic existing visual only.
+Whole approved game queue remains active; selected Main/profile2/complete Run still pending.
+
+
 ## Latest increment — flame mark and breath status readback, 2026-09-13
 
 Selected effects now17/24;7remain. Flame direct6/radius90 every1.8s plus burn3s/2per1s;

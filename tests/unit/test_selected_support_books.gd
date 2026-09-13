@@ -151,6 +151,75 @@ func test_selected_burn_is_read_by_breath_without_copying_or_hidden_tokens() -> 
 	assert_eq(f.enemy.health, 976, "next breath tick loses removed status bonus")
 
 
+func test_clone_stays_at_cast_origin_and_attacks_exactly_three_times() -> void:
+	var f := _fixture([&"heukyeong_shadow_clone"], &"heukyeong")
+	f.controller.tick_auto_cast(7.0)
+	assert_eq(f.enemy.health, 994)
+	f.player.position.x = 1000
+	f.controller.tick_auto_cast(0.7)
+	f.controller.tick_auto_cast(0.7)
+	assert_eq(f.enemy.health, 982)
+	f.controller.tick_auto_cast(0.6)
+	assert_eq(f.enemy.health, 982)
+	assert_true(f.controller._selected_casts.is_empty())
+
+
+func test_clone_sword_form_consumes_skipped_ticks_without_replaying_them() -> void:
+	var f := _fixture([&"heukyeong_shadow_clone"], &"heukyeong")
+	var resolver := CombatResolver.new()
+	f.world.add_child(resolver)
+	f.controller.configure(f.player, f.world, resolver, f.loadout)
+	var kinds: Array = []
+	resolver.damage_started.connect(func(_id, _target, kind): kinds.append(kind))
+	f.controller.tick_auto_cast(7.0)
+	resolver.sword_only_mode = true
+	f.controller.tick_auto_cast(0.8)
+	resolver.sword_only_mode = false
+	f.controller.tick_auto_cast(0.6)
+	assert_eq(f.enemy.health, 988)
+	assert_eq(kinds, [&"clone", &"clone"])
+	f.loadout.commit_placed_ninjutsu([], [&"heukyeong"])
+	f.controller.tick_auto_cast(10.0)
+	assert_eq(f.enemy.health, 988)
+
+
+func test_seal_chain_is_local_bounded_and_clears_control_on_unequip() -> void:
+	var f := _fixture([&"bongma_seal_chain"], &"bongma")
+	var others: Array = []
+	for x in [190, 320, 450]:
+		var enemy := EnemyChaser.new()
+		enemy.max_health = 1000
+		f.world.add_child(enemy)
+		enemy.position = Vector2(x, 0)
+		enemy.set_process(false)
+		enemy.set_physics_process(false)
+		others.append(enemy)
+	f.controller.tick_auto_cast(4.0)
+	assert_eq(f.enemy.health, 988)
+	assert_eq(others[0].health, 992)
+	assert_eq(others[1].health, 992)
+	assert_eq(others[2].health, 1000)
+	assert_eq(f.enemy.book_movement_multiplier(), 0.0)
+	f.loadout.commit_placed_ninjutsu([], [&"bongma"])
+	assert_eq(f.enemy.book_movement_multiplier(), 1.0)
+
+
+func test_suppression_seal_waits_for_telegraph_at_fixed_target_position() -> void:
+	var f := _fixture([&"bongma_suppression_seal"], &"bongma")
+	f.controller.tick_auto_cast(5.0)
+	assert_eq(f.enemy.health, 1000)
+	f.controller.tick_auto_cast(0.19)
+	assert_eq(f.enemy.health, 1000)
+	f.player.position.x = 500
+	f.controller.tick_auto_cast(0.01)
+	assert_eq(f.enemy.health, 984)
+	assert_eq(f.enemy.book_movement_multiplier(), 0.0)
+	f.controller.tick_auto_cast(1.0)
+	assert_eq(f.enemy.health, 984)
+	f.controller.clear_runtime_effects()
+	assert_eq(f.enemy.book_movement_multiplier(), 1.0)
+
+
 func test_proximity_guard_reduces_damage_only_while_enemy_is_near() -> void:
 	var f := _fixture([&"guiin_iron_blood_guard"])
 	f.controller.tick_auto_cast(0.01)

@@ -30,6 +30,10 @@ var _mark_visual: Sprite2D
 var _proxy_hazards: Array[Dictionary] = []
 
 
+func book_control_role() -> StringName:
+	return StringName(definition.role) if definition != null else super.book_control_role()
+
+
 func _ready() -> void:
 	super._ready()
 
