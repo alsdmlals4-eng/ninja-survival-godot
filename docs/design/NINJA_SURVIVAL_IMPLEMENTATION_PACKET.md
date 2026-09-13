@@ -4,6 +4,16 @@
 
 ## 준비 범위와 실행 경계
 
+### 2026-09-13 실행 계획: 확정 장비 런 소유권
+
+기존 RunBuildState가 EquipmentLoadoutState의 검증된 복사본만 보유하도록 연결한다.
+`commit_equipment_snapshot`은 불법 슬롯/강화/타입이면0변경, `equipment_snapshot`은
+외부 변경 불가 복사본. 닌자복 감소만 기존 RunModifierSet에 합산하고 무기 피해는
+BasicWeaponController가 소비한다. 미장착 강화·편집 중 상태는0효과.
+기존 schema1 소유수치/저장 키는 유지하고 Main은 profile2까지 계속 opt-in 경계.
+검사:5%→강화8%→재적용8%(중복없음),외부복사편집/불법입력 보존,
+실제 Player100피해95/92,무기 인술 보정0,기존 경제/운명 회귀.
+
 ### 2026-09-13 실행 계획: 조합 조건부 효과
 
 R-COMBINATION 소비처를 BasicWeaponController/BasicProjectile의 실제 유효 명중으로

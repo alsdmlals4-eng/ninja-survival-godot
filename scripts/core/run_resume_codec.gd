@@ -22,7 +22,7 @@ func encode_checkpoint(checkpoint: Dictionary) -> Dictionary:
 	var loadout = checkpoint.get("loadout", null)
 	if not (build is Dictionary) or not (route is Dictionary) or not (circuit is Dictionary) or not (loadout is Dictionary):
 		return {}
-	if loadout.has("selection_contract"):
+	if loadout.has("selection_contract") or build.has("equipment"):
 		return {} # Selectable books must never silently become a schema1 starter save.
 	var modifiers = build.get("committed_backpack_modifiers", null)
 	var backpack_state = circuit.get("committed_backpack_state", null)
@@ -94,6 +94,8 @@ func decode_checkpoint(payload: Dictionary) -> Dictionary:
 
 
 func _decode_build(raw_build: Dictionary) -> Dictionary:
+	if raw_build.has("equipment"):
+		return {} # Selected equipment requires the single profile2 transaction.
 	var raw_modifiers = raw_build.get("committed_backpack_modifiers", null)
 	if not (raw_modifiers is Dictionary):
 		return {}

@@ -18,6 +18,16 @@ func test_schema_one_refuses_selectable_backpack_even_without_books_or_new_loado
 	assert_false(codec.decode_checkpoint(old_payload).get("ok", false))
 
 
+func test_schema_one_refuses_selected_equipment_instead_of_dropping_it() -> void:
+	var codec = load(CODEC_PATH).new()
+	var checkpoint := _make_committed_checkpoint()
+	var old_payload: Dictionary = codec.encode_checkpoint(checkpoint)
+	checkpoint.build["equipment"] = load("res://scripts/core/equipment_loadout_state.gd").new().get_snapshot()
+	assert_true(codec.encode_checkpoint(checkpoint).is_empty())
+	old_payload.checkpoint.build["equipment"] = checkpoint.build.equipment
+	assert_false(codec.decode_checkpoint(old_payload).get("ok", false))
+
+
 func test_carried_buffer_round_trip_and_invalid_identity_fail_closed() -> void:
 	var checkpoint := _make_committed_checkpoint()
 	var backpack = checkpoint.circuit.committed_backpack_state

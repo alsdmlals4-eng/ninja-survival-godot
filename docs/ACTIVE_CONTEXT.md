@@ -1,5 +1,19 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — RunBuildState equipment owner, 2026-09-13
+
+RunBuildState validates/copies the committed equipment snapshot and derives outfit
+reduction once alongside bag/Fate modifiers. Preview mutations and malformed slots do
+not affect combat. Actual Player100damage resolves92 with outfit rank1; repeated apply
+does not stack reduction. Checkpoint preserves equipment; legacy restore/codec cannot
+silently drop or interpret it. This is in-memory ownership, NOT profile2 persistence.
+Full99scripts/784tests/10374assertions PASS (`ninja-equipment-owner-full-gut-20260913.log`).
+Previous combination head649682b has both GitHub GUT and Windows artifact checksSUCCESS.
+Current full-game next dependency: selected preparation equipment/books/route transaction,
+single profile2 wallet/checkpoint durability, then default Main cutover and complete Run.
+Unseen-art/Human/device gates and five whole-scope reviews remain open. No deletion.
+
+
 ## Latest increment — conditional combination consumers, 2026-09-13
 
 Thunder first melee hit damages at most2other targets/120/6 with1s cooldown. Explosive
