@@ -1,5 +1,21 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — selected trace access and validated restore, 2026-09-13
+
+TraditionAccessState separates stabilized material packages from absorbed book access.
+Starting-school trace enhances one equipped candidate item; foreign traces absorb OR
+enhance once. Stale equipment revision, invalid choice and repeated consumption leave
+both candidates unchanged. Selected material IDs follow the independent catalog.
+JSON restore derives unlocks from decisions, validates school sets/equipment record/rank,
+and rejects malformed or forged unlocks before any mutation. Legacy initialization stays.
+Full100scripts/789tests/10445assertions PASS, exit0:
+`ninja-selected-trace-restore-full-gut-20260913.log` (temporary local evidence).
+Head888ac5d GitHub GUT and Windows artifact checks both passed. This increment is domain
+and machine evidence, NOT profile2 disk durability, Main cutover, Human or release evidence.
+Next: selected preparation cross-owner validation and single-profile atomic persistence.
+Five whole-game review loops, runtime full-run and user-facing default wiring remain open.
+
+
 ## Latest increment — RunBuildState equipment owner, 2026-09-13
 
 RunBuildState validates/copies the committed equipment snapshot and derives outfit
