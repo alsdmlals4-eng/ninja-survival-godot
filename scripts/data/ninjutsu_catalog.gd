@@ -143,7 +143,7 @@ static func _configure_effects(definitions: Dictionary) -> void:
 	_effect(definitions, &"bongma_hundred_demon_familiar", "familiar", 0.7, 8, 0, {"follow_range": 180.0})
 	_effect(definitions, &"bongma_seal_chain", "chain", 4, 12, 0, {"followup_damage": 8.0, "link_range": 140.0, "max_targets": 3, "bind_duration": 0.6})
 	_effect(definitions, &"bongma_guardian_ward", "ward", 8, 0, 2, {"target_range": 240.0, "radius": 120.0, "damage_reduction": 0.2}, [&"survival"])
-	_effect(definitions, &"bongma_talisman_wheel", "orbit", 3, 5, 2, {"radius": 90.0, "orbiter_count": 3, "max_hits_per_target": 2, "hit_interval": 0.5}, [&"projectile"])
+	_effect(definitions, &"bongma_talisman_wheel", "orbit", 3, 5, 2, {"radius": 90.0, "orbiter_count": 3, "max_hits_per_target": 2, "hit_interval": 0.5, "angular_speed": PI, "contact_radius": 24.0}, [&"projectile"])
 	_effect(definitions, &"bongma_barrier_step", "dash_ward", 6, 0, 1.5, {"radius": 90.0, "damage_reduction": 0.1}, [&"movement", &"survival"])
 	_effect(definitions, &"bongma_suppression_seal", "seal_zone", 5, 16, 0, {"radius": 100.0, "delay": 0.2, "bind_duration": 0.4})
 	_effect(definitions, &"cheonsul_flame_mark", "flame_zone", 1.8, 6, 3, {"radius": 90.0, "burn_damage": 2.0, "tick_interval": 1.0})

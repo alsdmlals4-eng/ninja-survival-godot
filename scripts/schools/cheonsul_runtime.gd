@@ -42,7 +42,20 @@ var _selected_status_provider: Node
 
 
 func configure_selected_status_provider(provider: Node) -> void:
+	if is_instance_valid(_selected_status_provider) and _selected_status_provider.has_signal("selected_reaction_resolved") and _selected_status_provider.is_connected("selected_reaction_resolved", _on_selected_reaction):
+		_selected_status_provider.disconnect("selected_reaction_resolved", _on_selected_reaction)
 	_selected_status_provider = provider
+	if is_instance_valid(provider) and provider.has_signal("selected_reaction_resolved"):
+		provider.connect("selected_reaction_resolved", _on_selected_reaction)
+
+
+func _on_selected_reaction(center: Vector2) -> void:
+	if not active or not uses_selected_ninjutsu() or _ninjutsu_loadout.call("origin_school_id") != &"cheonsul" or not is_instance_valid(player) or player.is_dead() or get_tree().paused:
+		return
+	if _breath_remaining > 0.0 or _reaction_bonus_remaining > 0.0 or center.distance_squared_to(player.global_position) > 480.0 * 480.0:
+		return
+	_reaction_bonus_remaining = 1.0
+	_add_reaction_progress(0.25)
 
 
 func activate() -> void:

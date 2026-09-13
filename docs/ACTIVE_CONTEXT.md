@@ -1,5 +1,20 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — all24 effect routes and60pair smoke, 2026-09-13
+
+All24 selected books now have mechanical consumers, NOT final-art/game-complete.
+Water first-entry damage/inside slow/wet lifetime; ordered wet→shock bounded reaction;
+Cheonsul read-only status/quarter-charge notification; thunder dash arms one direct hit;
+talisman wheel3orbiters/radius90/max2hits with0.5gap. Technical orbit test values PI/s,
+contact24, sample0.025; visual/balance lock not claimed. No hidden full-disc damage.
+60start pairs each advance10s real actors and cleanup; focused40tests/495assertions PASS.
+Definition cache reduced same focused suite31.685s→1.914s (local observation, not FPS claim).
+Full98scripts/770tests/10175assertions PASS (`ninja-all-books-sixty-pairs-full-gut-20260913.log`).
+Next approved work: selected loadout restore + single profile2 transaction, equipment/build
+commit and Main start/preparation/route integration. Ordinary Main still legacy until these
+boundaries pass. Ultimate60pair/fullRun/render/Human/5whole-scope reviews remain pending.
+
+
 ## Latest increment — clone, seal chain and suppression, 2026-09-13
 
 Selected effects now20/24;4remain (talisman wheel, water bind, lightning chain, thunder step).

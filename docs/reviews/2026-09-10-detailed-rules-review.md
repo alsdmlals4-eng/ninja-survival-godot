@@ -1,5 +1,22 @@
 # Detailed rules planning review — 2026-09-10
 
+## 2026-09-13 remaining effect routes and60pair receipt
+
+Inputa9efc68. Water/ordered reaction/charge/thunder/orbit each failed focused expectations
+before implementation, then40focused tests/495assertions pass including60pairs.
+Shared transient source owners retain wet/burn/poison separation; source removal/pruning;
+reaction consumes tokens before callbacks, bounded2secondary targets, damage kind reaction.
+Only starting Cheonsul receives0.25 reaction credit, at most1/s and not during breath;
+thunder reactions deliberately skip extra resource notification. Direct-hit helper reserves
+thunder once and excludes weapon/DoT/clone/reaction. Reentrant combat clear generation guard.
+Orbit rejects full-disc alternative, samples rotation with24contact/PI-per-second technical
+test values; user still needs actual art/readability/balance evidence, not a final art claim.
+Measured repeated catalog construction: same60pair focused suite31.685s before/1.914s
+after per-controller immutable-definition reuse, same40tests/495assertions. No global shared
+mutable Resource cache. This proves local test duration improvement, not game/device FPS.
+Final full98/770/10175 PASS; gameplay-schema1 still rejects selectable snapshots by design.
+Remaining full product work stays active. No PR merge or five-full-scope-loop completion.
+
 ## 2026-09-13 clone and movement-control receipt
 
 Input43d34d2. Fresh catalog/rules/EnemyChaser/SchoolEncounterActor/StageBoss/final

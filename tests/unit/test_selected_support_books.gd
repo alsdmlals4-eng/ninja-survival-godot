@@ -220,6 +220,133 @@ func test_suppression_seal_waits_for_telegraph_at_fixed_target_position() -> voi
 	assert_eq(f.enemy.book_movement_multiplier(), 1.0)
 
 
+func test_water_zone_first_entry_only_slow_inside_and_wet_after_exit() -> void:
+	var f := _fixture([&"cheonsul_water_vein_bind"], &"cheonsul")
+	f.controller.tick_auto_cast(4.0)
+	assert_eq(f.enemy.health, 992)
+	assert_almost_eq(f.enemy.book_movement_multiplier(), 0.75, 0.001)
+	assert_true(f.controller.has_selected_status(f.enemy, &"wet"))
+	f.enemy.position.x = 500
+	f.controller.tick_auto_cast(0.5)
+	assert_eq(f.enemy.book_movement_multiplier(), 1.0)
+	assert_true(f.controller.has_selected_status(f.enemy, &"wet"))
+	f.enemy.position.x = 60
+	f.controller.tick_auto_cast(0.5)
+	assert_eq(f.enemy.health, 992, "same cast reentry cannot repeat damage")
+	f.controller.tick_auto_cast(1.0)
+	assert_eq(f.enemy.book_movement_multiplier(), 1.0, "zone expired")
+	f.controller.tick_auto_cast(1.0)
+	assert_false(f.controller.has_selected_status(f.enemy, &"wet"))
+
+
+func test_selected_wet_then_shock_consumes_tokens_and_never_replays_reaction() -> void:
+	var f := _fixture([&"cheonsul_water_vein_bind", &"cheonsul_lightning_chain_shift"], &"cheonsul")
+	f.controller._apply_selected_token(f.enemy, &"shock", &"cheonsul_lightning_chain_shift", 4.0)
+	f.controller._apply_selected_token(f.enemy, &"wet", &"cheonsul_water_vein_bind", 3.0)
+	assert_eq(f.enemy.health, 1000, "reverse order is not a reaction")
+	f.controller._apply_selected_token(f.enemy, &"shock", &"cheonsul_lightning_chain_shift", 4.0)
+	assert_eq(f.enemy.health, 990)
+	assert_false(f.controller.has_selected_status(f.enemy, &"wet"))
+	assert_false(f.controller.has_selected_status(f.enemy, &"shock"))
+	f.controller._apply_selected_token(f.enemy, &"shock", &"cheonsul_lightning_chain_shift", 4.0)
+	assert_eq(f.enemy.health, 990)
+
+
+func test_lightning_prefers_wet_and_does_not_jump_beyond_link_range() -> void:
+	var f := _fixture([&"cheonsul_water_vein_bind", &"cheonsul_lightning_chain_shift"], &"cheonsul")
+	var wet := EnemyChaser.new()
+	wet.max_health = 1000
+	f.world.add_child(wet)
+	wet.position = Vector2(260, 0)
+	wet.set_process(false)
+	wet.set_physics_process(false)
+	f.controller._apply_selected_token(wet, &"wet", &"cheonsul_water_vein_bind", 4.0)
+	f.controller.tick_auto_cast(3.0)
+	assert_eq(wet.health, 978, "12direct +10reaction")
+	assert_eq(f.enemy.health, 1000, "near dry enemy outside140 of wet target is not chained")
+
+
+func test_selected_reaction_notifies_only_starting_cheonsul_once_per_second() -> void:
+	var f := _fixture([&"cheonsul_water_vein_bind", &"cheonsul_lightning_chain_shift"], &"cheonsul")
+	var runtime := CheonsulRuntime.new()
+	f.world.add_child(runtime)
+	runtime.set_process(false)
+	runtime.configure(f.player, f.world)
+	runtime.configure_ninjutsu_loadout(f.loadout)
+	runtime.configure_selected_status_provider(f.controller)
+	runtime.activate()
+	for index in range(2):
+		f.controller._apply_selected_token(f.enemy, &"wet", &"cheonsul_water_vein_bind", 3.0)
+		f.controller._apply_selected_token(f.enemy, &"shock", &"cheonsul_lightning_chain_shift", 4.0)
+	assert_almost_eq(runtime.reaction_count, 0.25, 0.001)
+	assert_true(runtime._states.is_empty())
+
+
+func test_thunder_step_arms_on_dash_end_and_consumes_on_only_first_direct_target() -> void:
+	var f := _fixture([&"cheonsul_thunder_step", &"cheonsul_flame_mark"], &"cheonsul")
+	f.controller.tick_auto_cast(6.0)
+	f.player.request_dash()
+	f.player._advance_dash_state(0.2)
+	f.controller.tick_auto_cast(1.0)
+	assert_false(f.controller.has_selected_status(f.enemy, &"shock"), "burn cannot consume thunder")
+	f.controller.tick_auto_cast(0.8)
+	assert_true(f.controller.has_selected_status(f.enemy, &"shock"))
+	f.loadout.commit_placed_ninjutsu([&"cheonsul_flame_mark"], [&"cheonsul"])
+	assert_false(f.controller.has_selected_status(f.enemy, &"shock"), "source removal clears token")
+
+
+func test_talisman_wheel_uses_orbit_contact_and_cast_wide_two_hit_limit() -> void:
+	var f := _fixture([&"bongma_talisman_wheel"], &"bongma")
+	f.enemy.position = Vector2(90, 0)
+	f.controller.tick_auto_cast(3.0)
+	assert_eq(f.enemy.health, 995)
+	f.controller.tick_auto_cast(0.4)
+	assert_eq(f.enemy.health, 995)
+	f.controller.tick_auto_cast(0.3)
+	assert_eq(f.enemy.health, 990)
+	f.controller.tick_auto_cast(1.3)
+	assert_eq(f.enemy.health, 990)
+	assert_true(f.controller._selected_casts.is_empty())
+
+
+func test_talisman_wheel_does_not_hit_center_of_orbit() -> void:
+	var f := _fixture([&"bongma_talisman_wheel"], &"bongma")
+	f.enemy.position = Vector2.ZERO
+	f.controller.tick_auto_cast(3.0)
+	f.controller.tick_auto_cast(2.0)
+	assert_eq(f.enemy.health, 1000, "orbit is not an invisible full-disc attack")
+
+
+func test_all_sixty_start_pairs_advance_real_book_combat_and_cleanup() -> void:
+	var definitions: Dictionary = NinjutsuCatalog.build_definitions()
+	var cases := 0
+	for school in NinjutsuCatalog.SCHOOL_IDS:
+		var ids: Array = []
+		for definition in definitions.values():
+			if definition.school_id == school:
+				ids.append(definition.ninjutsu_id)
+		for first in range(ids.size()):
+			for second in range(first + 1, ids.size()):
+				var f := _fixture([ids[first], ids[second]], school)
+				f.enemy.position = Vector2(90, 0)
+				for step in range(100):
+					f.controller.tick_auto_cast(0.1)
+					if step == 65:
+						f.player.request_dash()
+						f.player._advance_dash_state(0.2)
+				assert_gt(f.enemy.health, 0, "bounded10s fixture survives " + str([ids[first], ids[second]]))
+				f.loadout.commit_placed_ninjutsu([], [school])
+				assert_true(f.controller._selected_casts.is_empty())
+				assert_true(f.controller._selected_elements.is_empty())
+				var remaining: int = f.enemy.health
+				f.controller.tick_auto_cast(10.0)
+				assert_eq(f.enemy.health, remaining, "unowned effects cannot continue")
+				cases += 1
+				f.world.queue_free()
+				await get_tree().process_frame
+	assert_eq(cases, 60)
+
+
 func test_proximity_guard_reduces_damage_only_while_enemy_is_near() -> void:
 	var f := _fixture([&"guiin_iron_blood_guard"])
 	f.controller.tick_auto_cast(0.01)
