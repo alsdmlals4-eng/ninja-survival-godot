@@ -653,6 +653,13 @@ R06/R07의 독립 fixture와 R08의 상태 브리프는 저장 구현 중에도 
 
 ### R01. 단일 프로필·저장 복구
 
+추가 장애 검증: old→previous / tmp→main / 실패 후 rollback / readback 실패 뒤
+새 파일 격리·원본 복원 실패를 주입했다. promote와 rollback이 동시에 실패하면
+원본.previous와 새 후보.tmp를 모두 보존한다. 전체102scripts/805tests/11529assertions
+PASS(exit0), `ninja-profile-rename-full-gut-20260914.log`. OS 전원차단·실제 디스크
+고장·다중 프로세스 writer까지 검증했다는 뜻은 아니다. tmp open/write/flush 전체
+실패 조합과 복구 선택 UI는 남아 있다.
+
 2026-09-14 후속 구현: `decode_selected_checkpoint()`와 실제 profile store를 연결해
 출전 경계의 non-null active_run을 저장/재읽기한다. 경로 파생 배열 불일치, 미해결
 흔적, 가방/보관함 ID 중복, 잠긴 유파 책, 선택하지 않은 무료 시작 책, 허위 배치
@@ -674,11 +681,12 @@ null인 프로필만 허용하며 비어 있지 않은 런은 도메인 교차 �
 **시험:** 기존 `tests/unit/test_run_resume_codec.gd`, `test_run_resume_store.gd`,
 `test_ninja_soul_retry.gd` 확장; 교차 거래는 신규 `tests/unit/test_profile_v2_transaction.gd`.
 
-다음 API는 **신규 제안**, 현재 존재한다고 호출하지 않는다:
+다음 API는 R01의 현재 구현이다. 준비 저장/복구/이관까지 완료됐다는 뜻은 아니다:
 
 ```gdscript
 # RunResumeCodec: 실패는 {ok:false, reason:StringName}, 성공은 정규화 profile 복사본.
 func decode_profile_v2(payload: Dictionary) -> Dictionary
+func decode_selected_checkpoint(payload: Dictionary) -> Dictionary
 # RunResumeStore: configure_profile() 이후만 허용, v1 경로와 구분.
 func configure_profile(path: String) -> bool
 func load_profile() -> Dictionary

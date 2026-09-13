@@ -2,6 +2,16 @@
 
 ## Latest increment — selected departure profile persistence, 2026-09-14
 
+Follow-up failure-injection readback: previous rename, candidate promote, promote rollback,
+failed-canonical quarantine and canonical rollback failures are exercised via the existing
+store I/O boundary. Failed promote + failed rollback previously removed the candidate;
+now both `.previous` and `.tmp` remain with recovery_required. No automatic recovery choice.
+Final full102scripts/805tests/11529assertions PASS, exit0,
+`ninja-profile-rename-full-gut-20260914.log`. Earlier failed test-fixture typed-array assignment
+was corrected before rerun; the failed receipt is not promoted to PASS. Previous checkpoint
+commit587a0dc GitHub GUT and Windows internal artifact both SUCCESS. Latest source receipt
+must be read from current PR head; neither this test count nor CI is whole-game approval.
+
 R01 now accepts a validated non-null active run at a departure boundary. Codec checks
 origin versus battlefield (different is legal), route mirrors, phase, resolved traces,
 equipment, placed/active books, carried-buffer identity, Fate IDs, economy receipt shape,
@@ -44,9 +54,10 @@ Cross-process writer exclusion/crash-proof durability NOT_VERIFIED. No actual pl
 or main entry switched; no new autoload, artwork, paid dependency or project deletion.
 
 
-## Current request — remaining-work specifications, 2026-09-14
+## Earlier planning request — remaining-work specifications, 2026-09-14
 
-User asks for remaining work and implementation/design input, not another code increment.
+The preceding planning turn requested remaining work and implementation/design input.
+The later execution approval at the top of this file supersedes that turn-only boundary.
 Read `docs/design/NINJA_SURVIVAL_IMPLEMENTATION_PACKET.md` section J first: R01~R10 map
 single profile2, preparation transactions, Main entry, reward pools, meta/menus, encounters,
 combat contract regressions, art/audio, device/performance and final delivery.

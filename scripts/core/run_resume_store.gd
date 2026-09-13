@@ -185,21 +185,24 @@ func _write_payload(payload: Dictionary) -> bool:
 	var previous_absolute_path := ProjectSettings.globalize_path(previous_path)
 	var moved_previous := false
 	if FileAccess.file_exists(_storage_path):
-		if DirAccess.rename_absolute(target_path, previous_absolute_path) != OK:
+		if _rename_record(target_path, previous_absolute_path) != OK:
+			_last_save_warning = &"previous_rename_failed"
 			_remove_if_present(temporary_path)
 			return false
 		moved_previous = true
-	if DirAccess.rename_absolute(temporary_absolute_path, target_path) != OK:
-		if moved_previous:
-			DirAccess.rename_absolute(previous_absolute_path, target_path)
+	if _rename_record(temporary_absolute_path, target_path) != OK:
+		_last_save_warning = &"promote_rename_failed"
+		if moved_previous and _rename_record(previous_absolute_path, target_path) != OK:
+			_last_save_warning = &"recovery_required"
+			return false # Preserve both original and candidate if rollback also fails.
 		_remove_if_present(temporary_path)
 		return false
 	if not _readback_matches(_storage_path, serialized):
 		_last_save_warning = &"canonical_readback_failed"
 		# Keep the failed new candidate for explicit recovery; restore old bytes.
-		if DirAccess.rename_absolute(target_path, temporary_absolute_path) != OK:
+		if _rename_record(target_path, temporary_absolute_path) != OK:
 			_last_save_warning = &"recovery_required"
-		elif moved_previous and DirAccess.rename_absolute(previous_absolute_path, target_path) != OK:
+		elif moved_previous and _rename_record(previous_absolute_path, target_path) != OK:
 			_last_save_warning = &"recovery_required"
 		return false
 	if moved_previous and _remove_previous_record() != OK:
@@ -223,6 +226,10 @@ func _readback_matches(path: String, expected_text: String) -> bool:
 
 func last_save_warning() -> StringName:
 	return _last_save_warning
+
+
+func _rename_record(from: String, to: String) -> Error:
+	return DirAccess.rename_absolute(from, to)
 
 
 func _remove_previous_record() -> Error:

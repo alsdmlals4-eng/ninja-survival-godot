@@ -18,6 +18,73 @@ class CleanupFailure:
 		return ERR_CANT_CREATE
 
 
+class RenameFailure:
+	extends "res://scripts/core/run_resume_store.gd"
+	var failed_calls: Array[int] = []
+	var rename_calls := 0
+	func _rename_record(from: String, to: String) -> Error:
+		rename_calls += 1
+		if failed_calls.has(rename_calls):
+			return ERR_CANT_CREATE
+		return DirAccess.rename_absolute(from, to)
+
+
+class ReadbackAndRenameFailure:
+	extends RenameFailure
+	var fail_canonical := false
+	func _readback_matches(path: String, expected_text: String) -> bool:
+		if fail_canonical and path == storage_path():
+			return false
+		return super._readback_matches(path, expected_text)
+
+
+func test_readback_rollback_rename_failures_preserve_both_recovery_versions() -> void:
+	for failed_rename in [3, 4]:
+		_clean_test_files()
+		var store = ReadbackAndRenameFailure.new()
+		assert_true(store.configure_profile(TEST_PATH))
+		assert_true(store.transact_profile(_empty_profile(), 0, "init:test").ok)
+		var original := FileAccess.get_file_as_string(TEST_PATH)
+		var candidate: Dictionary = store.load_profile().profile
+		candidate.meta.soul_balance = 3
+		store.rename_calls = 0
+		store.failed_calls.assign([failed_rename])
+		store.fail_canonical = true
+		var result: Dictionary = store.transact_profile(candidate, 1, "grant:test")
+		assert_false(result.ok)
+		assert_eq(result.warning, &"recovery_required")
+		assert_eq(FileAccess.get_file_as_string(TEST_PATH + ".previous"), original)
+		var new_path: String = TEST_PATH if failed_rename == 3 else TEST_PATH + ".tmp"
+		var parsed = JSON.parse_string(FileAccess.get_file_as_string(new_path))
+		assert_true(parsed is Dictionary)
+		if parsed is Dictionary:
+			assert_eq(parsed.meta.soul_balance, 3.0)
+			assert_true(parsed.meta.transaction_receipts.has("grant:test"))
+
+
+func test_profile_rename_failures_keep_original_and_preserve_failed_rollback_candidates() -> void:
+	for failures in [[1], [2], [2, 3]]:
+		_clean_test_files()
+		var store = RenameFailure.new()
+		assert_true(store.configure_profile(TEST_PATH))
+		assert_true(store.transact_profile(_empty_profile(), 0, "init:test").ok)
+		var original := FileAccess.get_file_as_string(TEST_PATH)
+		var candidate: Dictionary = store.load_profile().profile
+		candidate.meta.soul_balance = 3
+		store.rename_calls = 0
+		store.failed_calls.assign(failures)
+		var result: Dictionary = store.transact_profile(candidate, 1, "grant:test")
+		assert_false(result.ok, "Injected file replacement failure must not report success")
+		if failures.size() == 2:
+			assert_false(FileAccess.file_exists(TEST_PATH))
+			assert_eq(FileAccess.get_file_as_string(TEST_PATH + ".previous"), original)
+			assert_true(FileAccess.file_exists(TEST_PATH + ".tmp"), "Failed rollback keeps both versions for recovery")
+			assert_eq(store.load_profile().get("reason", &""), &"recovery_required")
+		else:
+			assert_eq(FileAccess.get_file_as_string(TEST_PATH), original)
+			assert_eq(store.load_profile().profile.meta.soul_balance, 0)
+
+
 func test_profile_readback_failure_restores_old_bytes_and_cleanup_warning_is_success() -> void:
 	var store = ReadbackFailure.new()
 	if not store.has_method("configure_profile"):
