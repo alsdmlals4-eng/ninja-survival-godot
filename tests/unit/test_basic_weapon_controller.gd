@@ -18,6 +18,57 @@ class DamageTarget:
 		return health <= 0
 
 
+func test_committed_manual_affects_only_weapon_hits_and_removal_restores_damage() -> void:
+	var fixture := _new_fixture()
+	var controller = fixture.controller
+	assert_true(controller.has_method("apply_committed_backpack"))
+	if not controller.has_method("apply_committed_backpack"):
+		return
+	var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	var manual: int = bag.add_item(&"melee_manual", Vector2i(1, 1))
+	var target := DamageTarget.new()
+	fixture.world.add_child(target)
+	target.position = Vector2(20, 0)
+	target.add_to_group("enemies")
+	assert_true(controller.apply_committed_backpack(bag))
+	assert_eq(controller.swing_katana_once(), 1)
+	assert_eq(target.health, 88, "10 * 1.18 rounded once gives12 weapon damage.")
+	assert_eq(fixture.resolver.deal_school_damage(target, 10, &"direct_injutsu"), 10)
+	assert_not_null(bag.remove_item(manual))
+	assert_eq(controller.swing_katana_once(), 1)
+	assert_eq(target.health, 66, "Editing the source does not mutate the committed weapon bonus.")
+	assert_true(controller.apply_committed_backpack(bag))
+	assert_eq(controller.swing_katana_once(), 1)
+	assert_eq(target.health, 56)
+
+
+func test_projectile_manual_stack_caps_and_does_not_strengthen_guiin_ultimate() -> void:
+	var fixture := _new_fixture()
+	var controller = fixture.controller
+	var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	for y in range(1, 4):
+		for x in range(1, 4):
+			assert_gt(bag.add_item(&"projectile_manual", Vector2i(x, y)), 0)
+	assert_true(controller.apply_committed_backpack(bag))
+	controller.shuriken_projectile_scene = SHURIKEN_SCENE
+	var target := DamageTarget.new()
+	fixture.world.add_child(target)
+	target.position = Vector2(20, 0)
+	target.add_to_group("enemies")
+	var projectile = controller.fire_shuriken_once()
+	assert_not_null(projectile)
+	assert_eq(projectile.damage, 14, "9 * 1.60 rounded =14; nine manuals cannot give+90%.")
+	var melee_bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	assert_gt(melee_bag.add_item(&"melee_manual", Vector2i(1, 1)), 0)
+	assert_true(controller.apply_committed_backpack(melee_bag))
+	assert_true(controller.begin_guiin_form())
+	assert_eq(target.health, 80, "Manual weapon bonus does not multiply the temporary ultimate sword.")
+	assert_false(controller.apply_committed_backpack(bag), "Cannot change committed loadout during the temporary mode.")
+	controller.end_guiin_form()
+	assert_eq(controller.swing_katana_once(), 1)
+	assert_eq(target.health, 68, "Original weapon/manual bonus resumes after sword form.")
+
+
 func test_katana_hits_entire_forward_crowd_without_three_target_cap() -> void:
 	var fixture := _new_fixture()
 	var controller := fixture.get("controller") as BasicWeaponController

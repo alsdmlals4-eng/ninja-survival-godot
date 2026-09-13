@@ -5,6 +5,37 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 
+func _check_materials(world: Node2D, player: Node2D, enemy: Node2D) -> void:
+	var catalog = load("res://scripts/data/selected_backpack_catalog.gd")
+	var legacy = load("res://scripts/data/mvp4_catalog.gd")
+	var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	var manual: int = bag.add_item(&"melee_manual", Vector2i(1, 1))
+	var lightning: int = bag.add_item(&"lightning_style", Vector2i(2, 1))
+	var weapon = load("res://scripts/combat/basic_weapon_controller.gd").new()
+	weapon.katana_damage = 100.0
+	player.add_child(weapon)
+	var session = load("res://scripts/backpack/rest_backpack_session.gd").new()
+	var resolver = load("res://scripts/backpack/backpack_resolver.gd").new()
+	var combo = load("res://scripts/backpack/combination_resolver.gd").new()
+	var ok: bool = weapon.apply_committed_backpack(bag)
+	await create_timer(0.25).timeout
+	ok = ok and enemy.health == 882
+	ok = session.begin(bag, resolver, catalog.build_items(), legacy.build_bags(), &"bongma") and ok
+	ok = combo.begin_result_preview(session, &"thunder_blade", manual, lightning) and ok
+	ok = combo.commit_result(session, Vector2i(1, 1)) and ok
+	ok = weapon.apply_committed_backpack(session.state) and ok
+	await create_timer(0.70).timeout
+	ok = ok and enemy.health == 762
+	var empty = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	ok = weapon.apply_committed_backpack(empty) and ok
+	await create_timer(0.70).timeout
+	ok = ok and enemy.health == 662
+	print("MATERIAL_RUNTIME_PASS" if ok else "MATERIAL_RUNTIME_FAIL health=" + str(enemy.health))
+	world.queue_free()
+	await process_frame
+	quit(0 if ok else 1)
+
+
 func _run() -> void:
 	var world := Node2D.new()
 	root.add_child(world)
@@ -17,6 +48,9 @@ func _run() -> void:
 	enemy.position = Vector2(60, 0)
 	enemy.set_physics_process(false)
 	enemy.set_process(false)
+	if "--materials" in OS.get_cmdline_user_args():
+		await _check_materials(world, player, enemy)
+		return
 	var loadout = load("res://scripts/core/ninjutsu_loadout_state.gd").new()
 	world.add_child(loadout)
 	var school: StringName = &"cheonsul" if "--wind" in OS.get_cmdline_user_args() else &"guiin"

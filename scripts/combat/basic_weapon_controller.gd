@@ -3,6 +3,10 @@ class_name BasicWeaponController
 
 const EQUIPMENT_STATE_SCRIPT = preload("res://scripts/core/equipment_loadout_state.gd")
 const EQUIPMENT_CATALOG_SCRIPT = preload("res://scripts/data/equipment_catalog.gd")
+const BACKPACK_SCRIPT = preload("res://scripts/backpack/backpack_state.gd")
+const BACKPACK_RESOLVER = preload("res://scripts/backpack/backpack_resolver.gd")
+const SELECTED_CATALOG = preload("res://scripts/data/selected_backpack_catalog.gd")
+const SPATIAL_CATALOG = preload("res://scripts/data/mvp4_catalog.gd")
 
 signal katana_resolved(target_count: int)
 signal shuriken_fired(projectile: Node2D)
@@ -30,6 +34,30 @@ var _projectile_profile: Dictionary = {}
 var _melee_equipment_bonus: float = 0.0
 var _guiin_original: Dictionary = {}
 var _guiin_sword_remaining: float = 0.0
+var _melee_manual_bonus: float = 0.0
+var _projectile_manual_bonus: float = 0.0
+
+
+# The preparation coordinator calls this only after committing its whole build.
+# Derive from canonical definitions, never from UI-supplied modifier numbers.
+func apply_committed_backpack(backpack) -> bool:
+	if not _guiin_original.is_empty() or not (backpack is BACKPACK_SCRIPT) or not backpack.uses_selectable_books():
+		return false
+	var definitions: Dictionary = SELECTED_CATALOG.build_items()
+	var resolution = BACKPACK_RESOLVER.new().resolve(backpack, definitions, SPATIAL_CATALOG.build_bags(), &"")
+	if not resolution.valid:
+		return false
+	var melee := 0.0
+	var projectile := 0.0
+	for item in backpack.items.values():
+		var payload: Dictionary = definitions[item.definition_id].school_payload
+		if payload.get("weapon_slot", "") == "melee":
+			melee += float(payload.get("weapon_damage_bonus", 0.0))
+		elif payload.get("weapon_slot", "") == "projectile":
+			projectile += float(payload.get("weapon_damage_bonus", 0.0))
+	_melee_manual_bonus = clampf(melee, 0.0, 0.60)
+	_projectile_manual_bonus = clampf(projectile, 0.0, 0.60)
+	return true
 
 
 func configure(new_combat_resolver: CombatResolver) -> void:
@@ -180,7 +208,7 @@ func swing_katana_once() -> int:
 	if source is PlayerController:
 		source.record_auto_weapon_direction(aim)
 	for target in cone_targets:
-		_resolve_basic_damage(target, katana_damage)
+		_resolve_basic_damage(target, katana_damage * (1.0 + _melee_manual_bonus if _guiin_original.is_empty() else 1.0))
 	_spawn_katana_effect(source, targets[0])
 	katana_resolved.emit(cone_targets.size())
 	return cone_targets.size()
@@ -248,7 +276,7 @@ func _spawn_projectile(source: Node2D, aim: Vector2) -> Node2D:
 	var projectile := projectile_node as Node2D
 	projectile.global_position = source.global_position
 	if projectile.has_method("configure"):
-		projectile.call("configure", aim, shuriken_speed, shuriken_damage, combat_resolver)
+		projectile.call("configure", aim, shuriken_speed, roundi(shuriken_damage * (1.0 + _projectile_manual_bonus)), combat_resolver)
 	shuriken_fired.emit(projectile)
 	return projectile
 

@@ -1,5 +1,20 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — selected support geometry and weapon passives, 2026-09-13
+
+Selected catalog includes19remapped supports/3results/48book definitions. Legacy catalogs
+remain unchanged; selected bag rejects physical weapon IDs. Actual preparation combination
+uses new recipe owner; illegal output placement consumes nothing; results are unique.
+BasicWeaponController derives committed melee/projectile manual bonuses from validated
+canonical bag definitions, caps60%, isolates source edits and excludes ninjutsu/ultimate.
+Full99scripts/778tests/10314assertions PASS (`ninja-selected-materials-full-gut-20260913.log`).
+OpenGL exact-project process MATERIAL_RUNTIME_PASS checks118→120→100 damage across manual,
+combination and unequip. This is isolated runtime evidence, not full Main/user visual QA.
+Next: conditional combo lightning/explosion/mist effects, preparation/profile2/Main binding.
+Hera currently targets GRIMOIRE PID11900; untouched. Unknown generated files preserved.
+Whole-game queue and five whole-scope reviews remain open; no release/main merge claim.
+
+
 ## Latest increment — owned nonultimate kill resource, 2026-09-13
 
 Bongma now accepts owned dot/clone/reaction death contexts alongside normal/weapon/direct

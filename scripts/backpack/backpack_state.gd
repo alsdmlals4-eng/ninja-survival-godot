@@ -5,6 +5,7 @@ const MVP4CatalogScript = preload("res://scripts/data/mvp4_catalog.gd")
 const ItemInstanceScript = preload("res://scripts/data/item_instance.gd")
 const BagInstanceScript = preload("res://scripts/data/bag_instance.gd")
 const BOOK_CATALOG = preload("res://scripts/data/ninjutsu_book_catalog.gd")
+const SELECTED_CATALOG = preload("res://scripts/data/selected_backpack_catalog.gd")
 
 const BOARD_SIZE := Vector2i(6, 6)
 const STARTING_BAG_ORIGIN := Vector2i(1, 1)
@@ -43,7 +44,7 @@ func uses_selectable_books() -> bool:
 
 
 func _item_definitions() -> Dictionary:
-	return BOOK_CATALOG.build_items() if _selectable_books else MVP4CatalogScript.build_items()
+	return SELECTED_CATALOG.build_items() if _selectable_books else MVP4CatalogScript.build_items()
 
 
 func add_item(definition_id: StringName, origin: Vector2i, rotation_quarters: int = 0) -> int:
@@ -345,6 +346,10 @@ static func _is_whole_number(value) -> bool:
 
 
 func _can_place_item(definition_id: StringName, origin: Vector2i, rotation_quarters: int, ignored_instance_id: int) -> bool:
+	if _selectable_books and MVP4CatalogScript.COMBINATION_RESULT_IDS.has(definition_id):
+		for existing in _items.values():
+			if existing.instance_id != ignored_instance_id and existing.definition_id == definition_id:
+				return false
 	var definitions: Dictionary = _item_definitions()
 	var definition = definitions.get(definition_id)
 	if definition == null:

@@ -4,6 +4,24 @@
 
 ## 준비 범위와 실행 경계
 
+### 2026-09-13 실행 계획: 선택형 공간 카탈로그와 무기 비전
+
+- 범위: R-BAG/R-COMBINATION의19보조+3조합+24책(시작형 포함48정의).
+  `selected_backpack_catalog.gd`가 기존 정의를 새로 구성하며 legacy 목록은 불변.
+  BackpackState 선택형 경로와 CombinationResolver가 이 목록을 소비한다.
+- 비교: 구형 목록 직접 변경 REJECT(저장 의미 변경), UI ID 치환 REJECT(검증 우회),
+  명시적 선택형 카탈로그 ADAPT(기존 Resource/geometry/transaction 재사용).
+- 공식 Resources 문서의 공유 데이터 특성 ADAPT: 매 구성별 독립 정의를 사용.
+  https://docs.godotengine.org/en/stable/tutorials/scripting/resources.html
+  Backpack Battles의 배치/조합 중심 성장 REFERENCE_ONLY; 레시피·아트 복제 없음.
+  https://store.steampowered.com/app/2427700/Backpack_Battles/
+- 먼저 실제 배치·JSON왕복·구형 무기 거부·새 레시피 atomic commit을 실패 테스트로
+  고정하고 구현한다. 이후 비전 보정은 기존 RunModifierSet 저장 키를 바꾸지 않는
+  별도 파생값으로 실제 무기 소비처에 연결. 미리보기/버퍼는 전투 효과0.
+- 조합 결과의 조건부 부가타/물안개 피격 효과는 별도 다음 동작 시험이 필요하며,
+  목록/조합 성공만으로 이 효과나 Main/profile2/전체 Run 완료를 주장하지 않는다.
+- 비용0/새 autoload 없음. rollback은 해당 선택형 연결만 복귀, v1파일은 미수정.
+
 ### 2026-09-13 다음 실행: 봉마 비오의 처치 자원
 
 R-ULTIMATE의 비오의 처치는 지속 피해/식신을 포함한다. 실제 BongmaRuntime은
