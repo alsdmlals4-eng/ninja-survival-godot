@@ -1,8 +1,22 @@
 # 닌자의 신 — 구현 입력 명세
 
-문서 ID: NS-IMPLEMENTATION-PACKET · 2026-09-11 · 최종 설계 승인 대기
+문서 ID: NS-IMPLEMENTATION-PACKET · 2026-09-11 원안 · 승인 범위 연속 구현 중
+
+실행 상태는 최신 사용자 지시와 CURRENT_CONFIRMED_DECISIONS/ACTIVE_CONTEXT를 따른다.
+과거 원안의 승인 대기 표시는 현재 구현을 다시 중단시키는 게이트가 아니다.
+미승인 이미지의 최종 확정 및 Human/출시 검증은 별도 상태로 유지한다.
 
 ## 준비 범위와 실행 경계
+
+### 2026-09-13 실행 계획: 선택형 빌드 묶음 교차 검사
+
+기존 RestCommitCoordinator에 부작용 없는 선택형 묶음 검사를 둔다. 별도 상태
+소유자 대신 BackpackState/EquipmentLoadoutState/TraditionAccessState/Loadout의
+기존 복원 검사를 재사용한다. 가방 실제 배치→책 ID→해금 유파→활성 인법을
+대조하고 시작 유파 불일치를 거부한다. StartLoadoutSession의 확정 결과에
+접근 상태를 포함하고 이 검사에 통과한 결과만 제공한다. 문서상의 active ID나
+UI 선택값만 신뢰하는 대안은 REJECT. 기본 Main/디스크 저장은 아직 변경하지 않는다.
+검사:4유파 시작 묶음 JSON 왕복,없는 책 활성화/위조 해금/구형가방/불법 장비 거부.
 
 ### 2026-09-13 실행 계획: 흔적 선택의 인법 접근 분리
 

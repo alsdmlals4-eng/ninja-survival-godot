@@ -6,6 +6,8 @@ const BOOKS = preload("res://scripts/data/ninjutsu_book_catalog.gd")
 const EQUIPMENT = preload("res://scripts/core/equipment_loadout_state.gd")
 const RESOLVER = preload("res://scripts/backpack/backpack_resolver.gd")
 const LEGACY = preload("res://scripts/data/mvp4_catalog.gd")
+const ACCESS = preload("res://scripts/core/tradition_access_state.gd")
+const COORDINATOR = preload("res://scripts/core/rest_commit_coordinator.gd")
 
 var _loadout: Node
 var _backpack
@@ -87,7 +89,12 @@ func confirm() -> bool:
 		placed.append(spell)
 	if not _loadout.commit_drafted_start(placed):
 		return false
-	_committed = {"backpack": _backpack.to_persistent_snapshot(), "loadout": _loadout.get_snapshot(), "equipment": _equipment.get_snapshot()}
+	var access = ACCESS.new()
+	access.initialize_selected(_school)
+	var bundle := {"backpack": _backpack.to_persistent_snapshot(), "loadout": _loadout.get_snapshot(), "equipment": _equipment.get_snapshot(), "access": access.get_snapshot()}
+	if not COORDINATOR.validate_selected_build_bundle(bundle):
+		return false
+	_committed = bundle
 	return true
 
 

@@ -1,5 +1,18 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — start bundle cross-owner gate, 2026-09-13
+
+RestCommitCoordinator validates selected bag geometry, actual placed spell IDs, restored
+trace access, equipment and loadout origin as one side-effect-free build bundle. Existing
+domain validators remain owners. StartLoadoutSession includes initial access and returns
+only a validated bundle. Four-school JSON roundtrips, absent-book power, forged access,
+wrong origin, invalid gear and legacy/malformed catalog boundary are covered; existing
+60start-pair regression remains. Full100scripts/790tests/10494assertions PASS, exit0,
+`ninja-selected-bundle-full-gut-20260913.log` (local temporary evidence).
+This is NOT the persistent transaction: wallet/checkpoint profile2, preparation UI commit,
+default Main cutover and whole Run remain required. No human/render/release claim.
+
+
 ## Latest increment — selected trace access and validated restore, 2026-09-13
 
 TraditionAccessState separates stabilized material packages from absorbed book access.

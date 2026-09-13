@@ -2,6 +2,47 @@
 extends RefCounted
 class_name RestCommitCoordinator
 
+const SELECTED_BACKPACK = preload("res://scripts/backpack/backpack_state.gd")
+const SELECTED_CATALOG = preload("res://scripts/data/selected_backpack_catalog.gd")
+const SELECTED_BOOKS = preload("res://scripts/data/ninjutsu_book_catalog.gd")
+const SELECTED_ACCESS = preload("res://scripts/core/tradition_access_state.gd")
+const SELECTED_EQUIPMENT = preload("res://scripts/core/equipment_loadout_state.gd")
+const SELECTED_LOADOUT = preload("res://scripts/core/ninjutsu_loadout_state.gd")
+const BAG_RESOLVER = preload("res://scripts/backpack/backpack_resolver.gd")
+const BAG_CATALOG = preload("res://scripts/data/mvp4_catalog.gd")
+
+
+# Pure cross-owner gate, not a disk transaction or a mutation of live owners.
+static func validate_selected_build_bundle(bundle: Dictionary) -> bool:
+	for key in ["backpack", "loadout", "equipment", "access"]:
+		if not (bundle.get(key) is Dictionary):
+			return false
+	var contract = bundle.backpack.get("catalog_contract")
+	if not (contract is String or contract is StringName) or str(contract) != SELECTED_BOOKS.CONTRACT:
+		return false
+	var bag = SELECTED_BACKPACK.from_persistent_snapshot(bundle.backpack)
+	if bag == null or not bag.uses_selectable_books():
+		return false
+	var access = SELECTED_ACCESS.new()
+	var equipment = SELECTED_EQUIPMENT.new()
+	if not access.restore_selected_snapshot(bundle.access) or not equipment.restore_snapshot(bundle.equipment):
+		return false
+	var origin = bundle.loadout.get("origin_school_id")
+	if not (origin is String or origin is StringName) or StringName(origin) != access.starting_school_id():
+		return false
+	var resolution = BAG_RESOLVER.new().resolve(bag, SELECTED_CATALOG.build_items(), BAG_CATALOG.build_bags(), access.starting_school_id())
+	if not resolution.valid:
+		return false
+	var placed: Array = []
+	for item in bag.items.values():
+		var spell := SELECTED_BOOKS.spell_id(item.definition_id)
+		if spell != &"":
+			placed.append(spell)
+	var loadout = SELECTED_LOADOUT.new()
+	var valid: bool = loadout.can_restore_selected_snapshot(bundle.loadout, placed, access.unlocked_ninjutsu_school_ids())
+	loadout.free()
+	return valid
+
 var _committed_backpack_state = null
 var _source_backpack_state = null
 var _build_state: RunBuildState

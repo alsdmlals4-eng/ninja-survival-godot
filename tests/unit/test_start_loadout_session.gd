@@ -1,5 +1,46 @@
 extends GutTest
 
+const SESSION = preload("res://scripts/core/start_loadout_session.gd")
+const COORDINATOR = preload("res://scripts/core/rest_commit_coordinator.gd")
+
+
+func _confirmed(school: StringName):
+	var session = add_child_autofree(SESSION.new())
+	assert_true(session.begin(school, 42))
+	for index in range(2):
+		assert_true(session.choose(session.snapshot().draft.options[0]))
+	assert_true(session.confirm())
+	return session.committed_snapshot()
+
+
+func test_all_start_schools_produce_cross_validated_build_bundles() -> void:
+	var coordinator = COORDINATOR.new()
+	assert_true(coordinator.has_method("validate_selected_build_bundle"))
+	if not coordinator.has_method("validate_selected_build_bundle"):
+		return
+	for school in [&"bongma", &"cheonsul", &"guiin", &"heukyeong"]:
+		var bundle: Dictionary = _confirmed(school)
+		assert_true(bundle.has("access"))
+		assert_true(coordinator.validate_selected_build_bundle(JSON.parse_string(JSON.stringify(bundle))))
+		var broken: Dictionary = bundle.duplicate(true)
+		broken.backpack.items.clear()
+		assert_false(coordinator.validate_selected_build_bundle(broken), "Active books require actual placement")
+		broken = bundle.duplicate(true)
+		broken.equipment.equipped_slots.melee = "gear_missing"
+		assert_false(coordinator.validate_selected_build_bundle(broken))
+		broken = bundle.duplicate(true)
+		broken.backpack.erase("catalog_contract")
+		assert_false(coordinator.validate_selected_build_bundle(broken))
+		broken = bundle.duplicate(true)
+		broken.access.unlocked_ninjutsu_school_ids.append("invalid_school")
+		assert_false(coordinator.validate_selected_build_bundle(broken))
+		broken = bundle.duplicate(true)
+		broken.loadout.origin_school_id = "guiin" if school != &"guiin" else "bongma"
+		assert_false(coordinator.validate_selected_build_bundle(broken), "Access and loadout share one starting school")
+		broken = bundle.duplicate(true)
+		broken.backpack.catalog_contract = {}
+		assert_false(coordinator.validate_selected_build_bundle(broken))
+
 const BACKPACK = preload("res://scripts/backpack/backpack_state.gd")
 const RESOLVER = preload("res://scripts/backpack/backpack_resolver.gd")
 const LEGACY = preload("res://scripts/data/mvp4_catalog.gd")
