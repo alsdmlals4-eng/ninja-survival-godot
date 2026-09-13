@@ -1,5 +1,19 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — legacy wallet validation before profile2 migration, 2026-09-13
+
+Reproduced numeric coercion accepting1.5/string/bool/future schema and null causing an
+engine error. Strict decode now rejects malformed/nonfinite/lossy values before integer
+conversion; malformed JSON uses parser error return without an engine exception. Original
+bytes remain untouched. Reconfigure failure formerly changed balance/path before I/O;
+now adopts only a successful candidate and keeps the previous usable binding on failure.
+Full100scripts/792tests/10524assertions PASS, exit0:
+`ninja-wallet-input-full-gut-20260913.log`. Tests use dedicated gut paths, not player saves.
+Prior b3bb667 exact-head GitHub GUT/Windows artifact both SUCCESS. Current save work is
+input safety only; one-file profile2 atomic durability and Main adoption still NOT_IMPLEMENTED.
+Do not describe this v1 write path as atomic or crash-proof. Existing owners remain singular.
+
+
 ## Latest increment — start bundle cross-owner gate, 2026-09-13
 
 RestCommitCoordinator validates selected bag geometry, actual placed spell IDs, restored

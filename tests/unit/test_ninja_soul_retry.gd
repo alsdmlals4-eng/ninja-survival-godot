@@ -46,6 +46,28 @@ func test_wallet_is_the_only_persistent_debit_owner_and_reloads_a_successful_ret
 	assert_eq(reloaded.balance(), 1)
 
 
+func test_wallet_rejects_corrupt_legacy_balance_without_rewriting_source() -> void:
+	for payload in ['{"balance":1.5}', '{"balance":"7"}', '{"balance":true}', '{"balance":null}', '{"balance":-1}', '{"balance":1e100}', '{"schema_version":99,"balance":3}', '{bad json']:
+		var file := FileAccess.open(_wallet_storage_path, FileAccess.WRITE)
+		file.store_string(payload)
+		file.close()
+		var wallet = add_child_autofree(load(WALLET_PATH).new())
+		assert_false(wallet.configure(_wallet_storage_path), payload)
+		assert_false(wallet.can_spend(1))
+		assert_eq(FileAccess.get_file_as_string(_wallet_storage_path), payload)
+
+
+func test_failed_wallet_reconfigure_preserves_previous_binding_and_balance() -> void:
+	var wallet = add_child_autofree(load(WALLET_PATH).new())
+	assert_true(wallet.configure(_wallet_storage_path, 2))
+	var before: Dictionary = wallet.get_snapshot()
+	assert_false(wallet.configure("user://gut_wallet_missing_parent_20260913/wallet.json", 9))
+	assert_eq(wallet.get_snapshot(), before)
+	assert_true(wallet.spend_for_retry())
+	assert_eq(wallet.balance(), 1)
+	assert_eq(JSON.parse_string(FileAccess.get_file_as_string(_wallet_storage_path)).balance, 1.0)
+
+
 func test_boss_ledger_is_idempotent_and_checkpoint_allows_only_one_retry_for_its_active_school() -> void:
 	var ledger = load(LEDGER_PATH).new()
 	assert_true(ledger.record_school_boss(&"cheonsul"))

@@ -8,6 +8,25 @@
 
 ## 준비 범위와 실행 경계
 
+### 2026-09-13 저장 선행 계획: 구형 잔액의 무손실 입력 검사
+
+Goal: profile2 이관 입력인 v1 잔액을 손상/미래형 데이터와 구별한다.
+Architecture: NinjaSoulWallet의 기존 읽기 책임에 순수 decode_legacy_balance를
+추가하며 새 autoload/파일은 만들지 않는다. 기존 유효 파일은 그대로 읽는다.
+Spec: 본 문서 E의 '유효한 정수 잔액만 이관, 손상 wallet 0초기화 금지'.
+Files: scripts/core/ninja_soul_wallet.gd, tests/unit/test_ninja_soul_retry.gd.
+Interfaces: decode_legacy_balance(parsed)->int, 실패=-1; configure 실패는 기존
+storage_path/balance/configured를 보존한다. 파일이 없을 때만 초기 파일을 쓴다.
+- [x] RED: `{balance:1.5}`, 문자열/불리언/미래schema/손상JSON을 거부하고 원본 보존.
+- [x] 구현: 타입→유한성→정수성→JSON 안전 정밀도→범위를 확인한 뒤 int 변환.
+- [x] GREEN: 유효 잔액과 기존 재도전 읽기, 재설정 실패 후 기존 경로로만 차감.
+- [x] 전체 GUT100scripts/792tests/10524assertions, source diff 검사.
+- [ ] 이 변경 head의 원격 readback/CI. profile2 원자 거래 완료로 보고하지 않는다.
+공식 FileAccess flush/DirAccess rename 계약 ADAPT. 직접 덮어쓰기 REJECT,
+두 파일 교차 정산 REJECT. 원자성은 별도 실패 주입 증거가 있어야 주장한다.
+Sources: https://docs.godotengine.org/en/4.6/classes/class_fileaccess.html
+and https://github.com/godotengine/godot/blob/master/core/io/dir_access.cpp .
+
 ### 2026-09-13 실행 계획: 선택형 빌드 묶음 교차 검사
 
 기존 RestCommitCoordinator에 부작용 없는 선택형 묶음 검사를 둔다. 별도 상태
