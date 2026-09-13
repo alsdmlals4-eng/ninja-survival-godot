@@ -1,5 +1,16 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — owned nonultimate kill resource, 2026-09-13
+
+Bongma now accepts owned dot/clone/reaction death contexts alongside normal/weapon/direct
+injutsu, matching R-ULTIMATE. Unknown/ultimate/stale context remains excluded; one-second
+limit and enemy death claim preserve deduplication. Focused RED confirmed three omitted
+routes before correction. Full98scripts/773tests/10255assertions PASS
+(`ninja-bongma-owned-kills-full-gut-20260913.log`). No Main/profile2/art promotion.
+Continue selected support catalog/equipment/preparation/profile2 integration, then complete
+Run acceptance and five whole-scope reviews. Whole-game completion remains unclaimed.
+
+
 ## Latest increment — selected restore boundary, 2026-09-13
 
 Explicit selectable-v2 restore validates original two picks, active/placement equality,

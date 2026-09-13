@@ -4,6 +4,15 @@
 
 ## 준비 범위와 실행 경계
 
+### 2026-09-13 다음 실행: 봉마 비오의 처치 자원
+
+R-ULTIMATE의 비오의 처치는 지속 피해/식신을 포함한다. 실제 BongmaRuntime은
+normal/weapon/direct_injutsu만 허용해 선택한 독안개·화인 처치를 누락한다.
+기존 CombatResolver의 소유 피해 문맥만 재사용하고 dot/clone/reaction 경로를
+허용한다. unknown/빈 문맥/ultimate는 거부하고 사망 ID 중복·초당1회는 유지한다.
+test_bongma_runtime에서 각 경로의 실제 사망 사건 RED→수정→전체 회귀 순서.
+새 자원 관리자/적 직접 피해 감시는 만들지 않는다. 전체 Run 완료와는 별개다.
+
 ### 2026-09-13 다음 실행: 선택형 복원 경계
 
 profile2 준비의 첫 단계로 인법 복원에 별도 명시 경로를 만든다. 원본 시작2선택,

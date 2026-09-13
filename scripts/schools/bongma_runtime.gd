@@ -110,7 +110,7 @@ func on_enemy_died(enemy: Node) -> void:
 		return
 	if not enemy is Node2D or enemy.has_meta(KILL_BONUS_META) or combat_resolver == null:
 		return
-	if not combat_resolver.current_damage_kind_for(enemy) in [&"normal", &"weapon", &"direct_injutsu"]:
+	if not combat_resolver.current_damage_kind_for(enemy) in [&"normal", &"weapon", &"direct_injutsu", &"dot", &"clone", &"reaction"]:
 		return
 	if not enemy.has_method("is_dead") or not enemy.is_dead() or enemy.global_position.distance_squared_to(player.global_position) > 480.0 * 480.0:
 		return
