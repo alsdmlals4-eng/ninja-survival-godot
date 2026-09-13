@@ -6,6 +6,12 @@ func _initialize() -> void:
 
 
 func _check_materials(world: Node2D, player: Node2D, enemy: Node2D) -> void:
+	var neighbor = load("res://scripts/enemies/enemy_chaser.gd").new()
+	neighbor.max_health = 1000
+	world.add_child(neighbor)
+	neighbor.position = Vector2(60, 120)
+	neighbor.set_physics_process(false)
+	neighbor.set_process(false)
 	var catalog = load("res://scripts/data/selected_backpack_catalog.gd")
 	var legacy = load("res://scripts/data/mvp4_catalog.gd")
 	var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
@@ -25,11 +31,11 @@ func _check_materials(world: Node2D, player: Node2D, enemy: Node2D) -> void:
 	ok = combo.commit_result(session, Vector2i(1, 1)) and ok
 	ok = weapon.apply_committed_backpack(session.state) and ok
 	await create_timer(0.70).timeout
-	ok = ok and enemy.health == 762
+	ok = ok and enemy.health == 762 and neighbor.health == 994
 	var empty = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
 	ok = weapon.apply_committed_backpack(empty) and ok
 	await create_timer(0.70).timeout
-	ok = ok and enemy.health == 662
+	ok = ok and enemy.health == 662 and neighbor.health == 994
 	print("MATERIAL_RUNTIME_PASS" if ok else "MATERIAL_RUNTIME_FAIL health=" + str(enemy.health))
 	world.queue_free()
 	await process_frame

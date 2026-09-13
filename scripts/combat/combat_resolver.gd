@@ -70,6 +70,16 @@ func deal_basic_weapon_damage(target: Node, base_damage: float) -> int:
 	return actual
 
 
+func deal_combination_damage(target: Node, base_damage: float) -> int:
+	if sword_only_mode or not is_instance_valid(target) or not target.has_method("take_damage") or not is_finite(base_damage) or base_damage <= 0.0:
+		return 0
+	var result = _apply_owned_damage(target, maxi(roundi(base_damage), 1), &"combination")
+	var actual := maxi(int(result), 0) if result is int else 0
+	if contribution_tracker != null:
+		contribution_tracker.record_damage(actual)
+	return actual
+
+
 func deal_guiin_sword_damage(target: Node, base_damage: float) -> int:
 	if not sword_only_mode or not is_instance_valid(target) or not target.has_method("take_damage") or base_damage <= 0.0:
 		return 0

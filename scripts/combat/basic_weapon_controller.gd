@@ -36,6 +36,13 @@ var _guiin_original: Dictionary = {}
 var _guiin_sword_remaining: float = 0.0
 var _melee_manual_bonus: float = 0.0
 var _projectile_manual_bonus: float = 0.0
+var _combination_effects: Array[StringName] = []
+var _thunder_remaining: float = 0.0
+var _explosive_remaining: float = 0.0
+var _combination_generation: int = 0
+var _mist_remaining: float = 0.0
+var _mist_cooldown: float = 0.0
+const MIST_BOON: StringName = &"combination_water_mist"
 
 
 # The preparation coordinator calls this only after committing its whole build.
@@ -49,14 +56,26 @@ func apply_committed_backpack(backpack) -> bool:
 		return false
 	var melee := 0.0
 	var projectile := 0.0
+	var effects: Array[StringName] = []
 	for item in backpack.items.values():
 		var payload: Dictionary = definitions[item.definition_id].school_payload
+		if payload.has("combination_effect"):
+			effects.append(StringName(payload.combination_effect))
 		if payload.get("weapon_slot", "") == "melee":
 			melee += float(payload.get("weapon_damage_bonus", 0.0))
 		elif payload.get("weapon_slot", "") == "projectile":
 			projectile += float(payload.get("weapon_damage_bonus", 0.0))
 	_melee_manual_bonus = clampf(melee, 0.0, 0.60)
 	_projectile_manual_bonus = clampf(projectile, 0.0, 0.60)
+	_combination_effects = effects
+	_combination_generation += 1
+	var player := get_parent() as PlayerController
+	if player != null:
+		if not player.damage_resolved.is_connected(_on_player_damage):
+			player.damage_resolved.connect(_on_player_damage)
+		if not effects.has(&"water_mist"):
+			_mist_remaining = 0.0
+			player.remove_ninjutsu_boon(MIST_BOON)
 	return true
 
 
@@ -127,10 +146,15 @@ func end_guiin_form() -> void:
 
 func _exit_tree() -> void:
 	end_guiin_form()
+	var player := get_parent() as PlayerController
+	if is_instance_valid(player):
+		player.remove_ninjutsu_boon(MIST_BOON)
+		if player.damage_resolved.is_connected(_on_player_damage):
+			player.damage_resolved.disconnect(_on_player_damage)
 
 
 func _process(delta: float) -> void:
-	if delta <= 0.0 or get_tree().paused:
+	if delta <= 0.0 or not is_finite(delta) or get_tree().paused:
 		return
 	var source := get_parent() as Node2D
 	if source == null:
@@ -139,6 +163,13 @@ func _process(delta: float) -> void:
 		return
 
 	_advance_katana_effects(delta)
+	_thunder_remaining = maxf(_thunder_remaining - delta, 0.0)
+	_explosive_remaining = maxf(_explosive_remaining - delta, 0.0)
+	_mist_cooldown = maxf(_mist_cooldown - delta, 0.0)
+	if _mist_remaining > 0.0:
+		_mist_remaining = maxf(_mist_remaining - delta, 0.0)
+		if _mist_remaining <= 0.0 and source is PlayerController:
+			source.remove_ninjutsu_boon(MIST_BOON)
 	if not _guiin_original.is_empty():
 		_guiin_sword_remaining = maxf(_guiin_sword_remaining - delta, 0.0)
 		if _guiin_sword_remaining <= 0.0:
@@ -207,8 +238,17 @@ func swing_katana_once() -> int:
 
 	if source is PlayerController:
 		source.record_auto_weapon_direction(aim)
+	var first_hit := false
+	var generation := _combination_generation
 	for target in cone_targets:
-		_resolve_basic_damage(target, katana_damage * (1.0 + _melee_manual_bonus if _guiin_original.is_empty() else 1.0))
+		if generation != _combination_generation:
+			break
+		var actual := _resolve_basic_damage(target, katana_damage * (1.0 + _melee_manual_bonus if _guiin_original.is_empty() else 1.0))
+		if actual > 0 and not first_hit and generation == _combination_generation:
+			first_hit = true
+			if _guiin_original.is_empty() and _combination_effects.has(&"thunder_blade") and _thunder_remaining <= 0.0 and is_instance_valid(target):
+				_thunder_remaining = 1.0
+				_trigger_combination(target.global_position, 120.0, 6.0, target, 2)
 	_spawn_katana_effect(source, targets[0])
 	katana_resolved.emit(cone_targets.size())
 	return cone_targets.size()
@@ -231,8 +271,9 @@ func fire_shuriken_once() -> Node2D:
 	var aim := target.global_position - source.global_position
 	if aim.is_zero_approx():
 		return null
+	var cast_claim := {"used": false, "generation": _combination_generation}
 	if _projectile_profile.get("shape", "") == "delayed_blast":
-		var bomb := _spawn_projectile(source, Vector2.ZERO)
+		var bomb := _spawn_projectile(source, Vector2.ZERO, cast_claim)
 		if bomb != null:
 			bomb.global_position = target.global_position
 		return bomb
@@ -241,7 +282,7 @@ func fire_shuriken_once() -> Node2D:
 	var count := int(_projectile_profile.get("count", 1))
 	for index in range(count):
 		var offset_degrees := float(_projectile_profile.get("spread", 0.0)) * (-1.0 if index == 0 else 1.0) if count > 1 else 0.0
-		var projectile := _spawn_projectile(source, aim.rotated(deg_to_rad(offset_degrees)))
+		var projectile := _spawn_projectile(source, aim.rotated(deg_to_rad(offset_degrees)), cast_claim)
 		if first == null:
 			first = projectile
 	if first != null and source is PlayerController:
@@ -249,7 +290,7 @@ func fire_shuriken_once() -> Node2D:
 	return first
 
 
-func _spawn_projectile(source: Node2D, aim: Vector2) -> Node2D:
+func _spawn_projectile(source: Node2D, aim: Vector2, cast_claim: Dictionary = {}) -> Node2D:
 	var projectile_node := shuriken_projectile_scene.instantiate()
 	if not projectile_node is Node2D:
 		projectile_node.free()
@@ -277,8 +318,51 @@ func _spawn_projectile(source: Node2D, aim: Vector2) -> Node2D:
 	projectile.global_position = source.global_position
 	if projectile.has_method("configure"):
 		projectile.call("configure", aim, shuriken_speed, roundi(shuriken_damage * (1.0 + _projectile_manual_bonus)), combat_resolver)
+	if projectile is BasicProjectile:
+		projectile.damage_applied.connect(_on_projectile_damage.bind(cast_claim))
 	shuriken_fired.emit(projectile)
 	return projectile
+
+
+func _on_player_damage(_requested: int, resolved: int, _prevented: int, evaded: bool) -> void:
+	var player := get_parent() as PlayerController
+	if player == null or player.health <= 0 or player.is_dead() or get_tree().paused or evaded or resolved <= 0:
+		return
+	if _combination_effects.has(&"water_mist") and _mist_cooldown <= 0.0:
+		_mist_cooldown = 3.0
+		_mist_remaining = 1.0
+		player.set_ninjutsu_boon(MIST_BOON, 0.0, 0.20)
+
+
+func _on_projectile_damage(target: Node, actual: int, claim: Dictionary) -> void:
+	if actual <= 0 or bool(claim.get("used", true)) or claim.get("generation", -1) != _combination_generation:
+		return
+	claim["used"] = true
+	var source := get_parent()
+	if not is_instance_valid(source) or (source.has_method("is_dead") and source.is_dead()) or get_tree().paused or not _guiin_original.is_empty():
+		return
+	if _combination_effects.has(&"explosive_bomb") and _explosive_remaining <= 0.0 and is_instance_valid(target) and target is Node2D:
+		_explosive_remaining = 4.0
+		_trigger_combination(target.global_position, 96.0, 12.0, null, 0)
+
+
+func _trigger_combination(center: Vector2, radius: float, damage: float, excluded: Node, limit: int) -> void:
+	var generation := _combination_generation
+	var count := 0
+	for target in _closest_targets_in_radius(get_tree().get_nodes_in_group("enemies"), center, radius):
+		if target == excluded:
+			continue
+		if generation != _combination_generation or not _guiin_original.is_empty():
+			return
+		if not _is_valid_target(target):
+			continue
+		if combat_resolver != null:
+			combat_resolver.deal_combination_damage(target, damage)
+		else:
+			target.take_damage(roundi(damage))
+		count += 1
+		if limit > 0 and count >= limit:
+			return
 
 
 func _closest_targets_in_radius(

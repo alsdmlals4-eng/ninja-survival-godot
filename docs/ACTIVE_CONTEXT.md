@@ -1,5 +1,20 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — conditional combination consumers, 2026-09-13
+
+Thunder first melee hit damages at most2other targets/120/6 with1s cooldown. Explosive
+shares one claim per projectile volley,96/12 with4s cooldown; pierce/bomb damage uses
+the same actual-hit signal. Combination damage bypasses weapon/manual/school multipliers
+and ultimate/direct-ninjutsu feedback, while owned nonultimate Bongma kill credit remains.
+Water mist requires actual surviving HP loss,1s+20%/3s cooldown through existing Player boon;
+static8% remains resolver-owned. Pause/source removal and ultimate exclusions are separate.
+RED found a death callback attaching a new combo retroactively; generation check rejects it.
+Full99scripts/782tests/10350assertions PASS (`ninja-combination-reentrant-full-gut-20260913.log`).
+OpenGL MATERIAL_RUNTIME_PASS includes real timed thunder secondary6 and unequip cessation.
+New proc art/fullMain/profile2/Human and five whole-scope review completion NOT_RUN.
+Next: RunBuildState equipment ownership/selected preparation and single profile2 transaction.
+
+
 ## Latest increment — selected support geometry and weapon passives, 2026-09-13
 
 Selected catalog includes19remapped supports/3results/48book definitions. Legacy catalogs

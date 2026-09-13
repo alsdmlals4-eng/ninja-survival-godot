@@ -1,6 +1,8 @@
 extends Area2D
 class_name BasicProjectile
 
+signal damage_applied(target: Node, actual: int)
+
 var direction: Vector2 = Vector2.ZERO
 @export var speed: float = 500.0
 @export var damage: int = 10
@@ -63,10 +65,14 @@ func hit_body(body: Node) -> bool:
 
 
 func _apply_damage(body: Node) -> void:
+	var actual := 0
 	if combat_resolver != null:
-		combat_resolver.deal_basic_weapon_damage(body, float(damage))
+		actual = combat_resolver.deal_basic_weapon_damage(body, float(damage))
 	else:
-		body.take_damage(damage)
+		var result = body.take_damage(damage)
+		actual = int(result) if result is int else 0
+	if actual > 0:
+		damage_applied.emit(body, actual)
 
 
 func _resolve_blast() -> void:

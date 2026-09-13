@@ -69,6 +69,109 @@ func test_projectile_manual_stack_caps_and_does_not_strengthen_guiin_ultimate() 
 	assert_eq(target.health, 68, "Original weapon/manual bonus resumes after sword form.")
 
 
+func test_thunder_combo_hits_only_two_other_targets_once_without_school_scaling() -> void:
+	var fixture := _new_fixture()
+	var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	assert_gt(bag.add_item(&"thunder_blade", Vector2i(1, 1)), 0)
+	assert_true(fixture.controller.apply_committed_backpack(bag))
+	var modifiers := RunModifierSet.new()
+	modifiers.school_damage_pct = 10.0
+	fixture.resolver.set_modifiers(modifiers)
+	var targets: Array = []
+	for point in [Vector2(20, 0), Vector2(20, 40), Vector2(20, -50), Vector2(20, 70)]:
+		var target := DamageTarget.new()
+		fixture.world.add_child(target)
+		target.position = point
+		target.add_to_group("enemies")
+		targets.append(target)
+	assert_eq(fixture.controller.swing_katana_once(), 1)
+	assert_eq(targets[0].health, 88)
+	assert_eq(targets[1].health, 94)
+	assert_eq(targets[2].health, 94)
+	assert_eq(targets[3].health, 100)
+	fixture.controller.swing_katana_once()
+	assert_eq(targets[1].health, 94, "Immediate repeated swing cannot bypass1s internal cooldown.")
+
+
+func test_explosive_combo_claim_is_shared_by_all_projectiles_in_one_volley() -> void:
+	var fixture := _new_fixture()
+	var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	assert_gt(bag.add_item(&"explosive_bomb", Vector2i(1, 1)), 0)
+	assert_true(fixture.controller.apply_committed_backpack(bag))
+	var gear = load("res://scripts/core/equipment_loadout_state.gd").new()
+	assert_true(gear.acquire(&"kunai"))
+	assert_true(gear.equip(&"projectile", &"kunai"))
+	assert_true(fixture.controller.apply_equipment_snapshot(gear.get_snapshot()))
+	fixture.controller.shuriken_projectile_scene = SHURIKEN_SCENE
+	var target := DamageTarget.new()
+	fixture.world.add_child(target)
+	target.position = Vector2(20, 0)
+	target.add_to_group("enemies")
+	assert_not_null(fixture.controller.fire_shuriken_once())
+	var volley: Array = []
+	for child in fixture.world.get_children():
+		if child is BasicProjectile:
+			volley.append(child)
+	assert_eq(volley.size(), 2)
+	assert_true(volley[0].hit_body(target))
+	assert_eq(target.health, 81, "7direct+12explosion.")
+	assert_true(volley[1].hit_body(target))
+	assert_eq(target.health, 74, "Second kunai gets only7direct, no recursive/second blast.")
+
+
+func test_death_callback_cannot_attach_a_new_combo_to_an_already_started_swing() -> void:
+	var fixture := _new_fixture()
+	var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	bag.add_item(&"thunder_blade", Vector2i(1, 1))
+	var first = load("res://scripts/enemies/enemy_chaser.gd").new()
+	first.max_health = 10
+	fixture.world.add_child(first)
+	first.set_physics_process(false)
+	first.position = Vector2(20, 0)
+	first.died.connect(func(_enemy): fixture.controller.apply_committed_backpack(bag))
+	var other := DamageTarget.new()
+	fixture.world.add_child(other)
+	other.position = Vector2(20, 50)
+	other.add_to_group("enemies")
+	fixture.controller.swing_katana_once()
+	assert_eq(other.health, 100, "Newly committed combo cannot retroactively proc from the killing swing.")
+
+
+func test_water_mist_requires_hp_loss_and_expires_without_resetting_base_bonus() -> void:
+	var world := Node2D.new()
+	add_child_autofree(world)
+	var player = load("res://scripts/player/player_controller.gd").new()
+	world.add_child(player)
+	player.set_physics_process(false)
+	player.set_selected_combat_rules(true)
+	var weapon = BASIC_WEAPON_SCRIPT.new()
+	player.add_child(weapon)
+	weapon.set_process(false)
+	var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	assert_gt(bag.add_item(&"water_mist", Vector2i(1, 1)), 0)
+	var catalog = load("res://scripts/data/selected_backpack_catalog.gd")
+	var legacy = load("res://scripts/data/mvp4_catalog.gd")
+	var resolver = load("res://scripts/backpack/backpack_resolver.gd").new()
+	player.apply_run_modifiers(resolver.resolve(bag, catalog.build_items(), legacy.build_bags(), &"bongma").modifiers)
+	assert_true(weapon.apply_committed_backpack(bag))
+	assert_almost_eq(player.move_speed, 259.2, 0.01)
+	player.set_ninjutsu_boon(&"test_shield", 0.0, 0.0, 2)
+	assert_eq(player.take_damage(1), 0)
+	assert_almost_eq(player.move_speed, 259.2, 0.01)
+	player.remove_ninjutsu_boon(&"test_shield")
+	assert_eq(player.take_damage(1), 1)
+	assert_almost_eq(player.move_speed, 307.2, 0.01)
+	get_tree().paused = true
+	weapon._process(2.0)
+	assert_almost_eq(player.move_speed, 307.2, 0.01)
+	get_tree().paused = false
+	weapon._process(1.0)
+	assert_almost_eq(player.move_speed, 259.2, 0.01)
+	player.advance_damage_protection(2.0)
+	assert_eq(player.take_damage(1), 1)
+	assert_almost_eq(player.move_speed, 259.2, 0.01, "3s cooldown prevents immediate reactivation.")
+
+
 func test_katana_hits_entire_forward_crowd_without_three_target_cap() -> void:
 	var fixture := _new_fixture()
 	var controller := fixture.get("controller") as BasicWeaponController
