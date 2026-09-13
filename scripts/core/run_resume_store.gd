@@ -64,7 +64,7 @@ func transact_profile(candidate: Dictionary, expected_revision: int, transaction
 	request.erase("revision")
 	request.meta.erase("applied_transaction_ids")
 	request.meta.erase("transaction_receipts")
-	var digest := JSON.stringify(request, "", true).sha256_text()
+	var digest := JSON.stringify(_canonical_request_numbers(request), "", true, true).sha256_text()
 	if receipts.has(transaction_id):
 		if receipts[transaction_id].request_digest != digest:
 			return {"ok": false, "reason": &"transaction_conflict"}
@@ -84,6 +84,24 @@ func transact_profile(candidate: Dictionary, expected_revision: int, transaction
 	if not saved:
 		return {"ok": false, "reason": &"write_failed", "warning": _last_save_warning}
 	return {"ok": true, "revision": next.revision, "already_applied": false, "warning": _last_save_warning}
+
+
+# JSON reload turns integer fields into floats. Request identity must follow the
+# validated numeric value, not whether it came from a live owner or a JSON parser.
+func _canonical_request_numbers(value):
+	if value is float and is_finite(value) and absf(value) <= 9007199254740991 and value == floor(value):
+		return int(value)
+	if value is Array:
+		var values: Array = []
+		for child in value:
+			values.append(_canonical_request_numbers(child))
+		return values
+	if value is Dictionary:
+		var values: Dictionary = {}
+		for key in value:
+			values[key] = _canonical_request_numbers(value[key])
+		return values
+	return value
 
 
 func configure(storage_path: String = DEFAULT_STORAGE_PATH) -> bool:
@@ -137,7 +155,7 @@ func storage_path() -> String:
 
 func _write_payload(payload: Dictionary) -> bool:
 	_last_save_warning = &""
-	var serialized := JSON.stringify(payload)
+	var serialized := JSON.stringify(payload, "", true, _profile_mode)
 	if serialized.is_empty():
 		return false
 	var temporary_path := _temporary_storage_path()

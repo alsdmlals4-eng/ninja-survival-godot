@@ -10,6 +10,8 @@ const SELECTED_EQUIPMENT = preload("res://scripts/core/equipment_loadout_state.g
 const SELECTED_LOADOUT = preload("res://scripts/core/ninjutsu_loadout_state.gd")
 const BAG_RESOLVER = preload("res://scripts/backpack/backpack_resolver.gd")
 const BAG_CATALOG = preload("res://scripts/data/mvp4_catalog.gd")
+const CARRIED_ITEM = preload("res://scripts/data/item_instance.gd")
+const REST_BUFFER = preload("res://scripts/backpack/rest_backpack_session.gd")
 
 
 # Pure cross-owner gate, not a disk transaction or a mutation of live owners.
@@ -33,15 +35,54 @@ static func validate_selected_build_bundle(bundle: Dictionary) -> bool:
 	var resolution = BAG_RESOLVER.new().resolve(bag, SELECTED_CATALOG.build_items(), BAG_CATALOG.build_bags(), access.starting_school_id())
 	if not resolution.valid:
 		return false
+	if not (bundle.loadout.get("draft_picks") is Array):
+		return false
 	var placed: Array = []
 	for item in bag.items.values():
 		var spell := SELECTED_BOOKS.spell_id(item.definition_id)
 		if spell != &"":
+			if not _selected_book_owned(item.definition_id, access.unlocked_ninjutsu_school_ids(), bundle.loadout.draft_picks):
+				return false
 			placed.append(spell)
+	if not _validate_selected_buffer(bundle.get("buffer", []), bag, placed, access.unlocked_ninjutsu_school_ids(), bundle.loadout.draft_picks):
+		return false
 	var loadout = SELECTED_LOADOUT.new()
 	var valid: bool = loadout.can_restore_selected_snapshot(bundle.loadout, placed, access.unlocked_ninjutsu_school_ids())
 	loadout.free()
 	return valid
+
+
+static func _selected_book_owned(definition_id: StringName, unlocked: Array, draft_picks: Array) -> bool:
+	var spell := SELECTED_BOOKS.spell_id(definition_id)
+	var definition = SELECTED_BOOKS.NINJUTSU.definition_for_id(spell)
+	if definition == null or not unlocked.has(definition.school_id):
+		return false
+	return not str(definition_id).begins_with("start_book:") or draft_picks.has(spell)
+
+
+static func _validate_selected_buffer(raw_buffer, bag, placed: Array, unlocked: Array, draft_picks: Array) -> bool:
+	if not (raw_buffer is Array) or raw_buffer.size() > REST_BUFFER.BUFFER_CAPACITY:
+		return false
+	var carried: Array = []
+	var owned_spells: Array = placed.duplicate()
+	for raw in raw_buffer:
+		if not (raw is Dictionary) or raw.size() != 3 or not (raw.get("definition_id") is String or raw.get("definition_id") is StringName):
+			return false
+		for field in ["instance_id", "rotation_quarters"]:
+			var value = raw.get(field)
+			if not (value is int or value is float) or not is_finite(float(value)) or value < 0 or value > 9007199254740991 or float(value) != floor(float(value)):
+				return false
+		var item = CARRIED_ITEM.new()
+		item.instance_id = int(raw.instance_id)
+		item.definition_id = StringName(raw.definition_id)
+		item.rotation_quarters = int(raw.rotation_quarters)
+		var spell := SELECTED_BOOKS.spell_id(item.definition_id)
+		if spell != &"":
+			if owned_spells.has(spell) or not _selected_book_owned(item.definition_id, unlocked, draft_picks):
+				return false
+			owned_spells.append(spell)
+		carried.append(item)
+	return REST_BUFFER.is_valid_carried_buffer(carried, bag, SELECTED_CATALOG.build_items())
 
 var _committed_backpack_state = null
 var _source_backpack_state = null

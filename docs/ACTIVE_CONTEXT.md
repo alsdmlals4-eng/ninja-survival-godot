@@ -1,6 +1,29 @@
 # ACTIVE_CONTEXT
 
-## Latest increment — R01 profile envelope and durable transaction foundation, 2026-09-14
+## Latest increment — selected departure profile persistence, 2026-09-14
+
+R01 now accepts a validated non-null active run at a departure boundary. Codec checks
+origin versus battlefield (different is legal), route mirrors, phase, resolved traces,
+equipment, placed/active books, carried-buffer identity, Fate IDs, economy receipt shape,
+resource caps and recomputed spatial modifiers. Twenty-four clear orders reach a valid
+final departure in domain tests; this is NOT twenty-four played runs.
+Buffer inspection reproduced ignored malformed/duplicate/unabsorbed/unchosen-free books;
+the existing cross-owner gate now rejects them without mutating the candidate.
+Disk replay reproduced int/float request-digest drift after JSON reload; store canonicalizes
+numeric request identity and uses full precision for profile writes. Fractional charge,
+replay, invalid-origin rejection and settled-run exclusion are tested on dedicated gut paths.
+Full102scripts/803tests/11496assertions PASS, exit0:
+`ninja-selected-checkpoint-full-gut-20260914.log` in local temporary evidence.
+
+R01 still open: preparation/reward-state persistence, retry qualification union across a
+rollback, all I/O failure injections, recovery and non-destructive legacy migration.
+Non-null preparation explicitly returns preparation_validation_pending. Main still uses
+the legacy entry/resume path; default-game cutover, live full-run and Human/device gates
+remain NOT_RUN. No player save touched. PR147 continues; no main merge claim.
+Next read RestRewardController/ShopController persistence owners before finalizing the
+preparation reward_state schema; do not hide unresolved reward ownership in a generic dict.
+
+## Earlier increment — R01 profile envelope and durable transaction foundation, 2026-09-14
 
 User approved R01~R10 execution. RunResumeCodec now validates schema2 empty-run profiles:
 strict numeric fields, content contract, unique transaction/settlement IDs, receipt digest/

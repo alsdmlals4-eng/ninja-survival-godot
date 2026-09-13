@@ -653,7 +653,16 @@ R06/R07의 독립 fixture와 R08의 상태 브리프는 저장 구현 중에도 
 
 ### R01. 단일 프로필·저장 복구
 
-2026-09-14 구현 증거: envelope/명시적 profile store/거래 digest와 재시도/기본 I/O
+2026-09-14 후속 구현: `decode_selected_checkpoint()`와 실제 profile store를 연결해
+출전 경계의 non-null active_run을 저장/재읽기한다. 경로 파생 배열 불일치, 미해결
+흔적, 가방/보관함 ID 중복, 잠긴 유파 책, 선택하지 않은 무료 시작 책, 허위 배치
+수정치, 출전 유파/자원 불일치를 거부한다. 네 전장24순서의 출전/최종 경계 검사와
+디스크 재시도 검사를 포함해102scripts/803tests/11496assertions PASS(exit0).
+JSON 정수/실수 표현 차이가 동일 거래를 충돌로 오인하는 실패를 재현·교정했다.
+실제 Main 적용, preparation 저장, 재도전 이전/이후 자격 합집합, 전체 장애/복구/이관,
+정상속도 완주와 전체5회 적대검토는 아직 미완료다.
+
+앞선 2026-09-14 구현 증거: envelope/명시적 profile store/거래 digest와 재시도/기본 I/O
 실패 보호를 구현했다. GUT101scripts/798tests/10592assertions PASS. active_run이
 null인 프로필만 허용하며 비어 있지 않은 런은 도메인 교차 검증 연결 전 명시적으로
 거부한다. 아래 R01 전체, 기존 저장 이관, Main 적용, 모든 장애 주입은 아직 미완료다.
@@ -706,6 +715,14 @@ checkpoint의 저장 owner 매핑은 다음과 같다. UI bundle은 검사용 �
 | access | starting/stabilized/trace_decisions/unlocked, route 완료와 교차 검사 |
 | prepare_session_id, rules_version | 안정적 준비 ID와 알려진 content/rules 계약 |
 | ultimate_charge | 시작 유파의 충전만. 활성 모드 없음 |
+
+현재 출전 codec의 circuit은 `{phase: "core" | "final_boss", active_school_id}`만
+저장한다. 일반 출전은 route.active_school_id와 같고, 최종 출전은 네 전장 완료 후
+빈 학교 ID를 쓴다. 진행 중 전투 장면을 복원하는 구조가 아니다. build는 기존7필드
+snapshot을 유지하되 legacy owned_items는 비어 있어야 하며 공간 수정치는 현재
+배치로 재계산해 일치 검사한다. 활성 런의 eligible_boss_ids는 이 단계에서 완료
+전장 집합과 일치해야 한다. 재도전 롤백에서 더 넓은 자격을 보존하는 거래는 후속
+R01/R05 시험을 연결하기 전 허용했다고 주장하지 않는다.
 
 E의 active_ninjutsu_ids/selected_fates는 각각 loadout.active_spell_ids/build 선택운명의
 **의미명**으로 해석한다. 독립적인 두 번째 권위 배열을 추가하지 않는다. codec의
@@ -1009,6 +1026,16 @@ assert_false(combat_input_enabled())
 서로 다른 매직넘버를 만들지 않는다. 밸런스 값은 초기값/측정값/승인값을 구분한다.
 
 ### J3. 조사·대안·현실성 및 명세 검토 기록
+
+2026-09-14 출전 저장 후속 조사: Godot 공식 Saving games의 명시적 지속 데이터와
+JSON/복잡한 객체 복원의 한계를 재확인했다. 전체 Scene/Node 그래프 저장은 REJECT,
+기존 wallet/resume 두 파일에 새 필드만 추가하는 방식은 REJECT, 기존 codec/store와
+도메인 검증기를 조합하는 단일 프로필은 ADAPT. 새 DB/SaaS/유료 도구는 필요 없다.
+[Brotato 공식 설명](https://store.steampowered.com/app/1942280/Brotato/)의 자동 공격과
+전투 사이 상점은 전투/정비 분리의 REFERENCE_ONLY, Backpack Battles의 구매/배치
+의존 빌드는 ADAPT한다. 두 게임의 내부 저장 구현을 조사했다고 주장하지 않으며
+우리 거래 구조가 보편적 최적해라는 성능 주장도 하지 않는다. 현재 판단 근거는
+기존 owner 재사용·실패 복구·재현 테스트·추가 운영비0이며 메모리/디스크 실측은 별도다.
 
 2026-09-14 프로젝트 current/native Base 계약과 Base remote d830c0f를 확인했다.
 Base MASTER_IMPLEMENTATION_PLAN의 패키지/의존/롤백/증거 구조만 ADAPT.

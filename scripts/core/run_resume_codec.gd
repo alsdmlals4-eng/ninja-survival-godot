@@ -6,8 +6,8 @@ const SCHEMA_VERSION := 1
 const PROFILE_CONTRACT := "ns-replan-20260911"
 
 
-# Profile envelope validation. Active-run decoding is fail-closed until its
-# route/circuit/preparation cross-owner validator is connected.
+# Departure profiles are supported; preparation remains fail-closed until its
+# reward/economy transaction validator is connected.
 func decode_profile_v2(payload: Dictionary, pending_transaction_id: String = "") -> Dictionary:
 	if not _profile_integer(payload.get("schema_version")) or payload.schema_version != 2:
 		return {"ok": false, "reason": &"unsupported_schema"}
@@ -41,7 +41,9 @@ func decode_profile_v2(payload: Dictionary, pending_transaction_id: String = "")
 	if meta.unlocked_support_choice and not receipts.has("unlock:support-choice-v1") and pending_transaction_id != "unlock:support-choice-v1":
 		return {"ok": false, "reason": &"invalid_unlock"}
 	if payload.active_run != null:
-		return {"ok": false, "reason": &"active_run_validation_pending"}
+		var active_result := _decode_active_departure(payload.active_run, meta.settled_run_ids)
+		if not active_result.ok:
+			return active_result
 	# Only primitive known fields leave this codec; unknown object fields are rejected.
 	if payload.size() != 5 or meta.size() != 5:
 		return {"ok": false, "reason": &"unknown_profile_fields"}
@@ -49,7 +51,37 @@ func decode_profile_v2(payload: Dictionary, pending_transaction_id: String = "")
 	result.revision = int(payload.revision)
 	result.schema_version = 2
 	result.meta.soul_balance = int(meta.soul_balance)
+	if payload.active_run != null:
+		result.active_run = _to_json_primitive(payload.active_run).value
 	return {"ok": true, "profile": result}
+
+
+func _decode_active_departure(raw, settled_run_ids: Array) -> Dictionary:
+	var invalid := {"ok": false, "reason": &"invalid_active_run"}
+	if not (raw is Dictionary) or raw.size() != 7 or not _profile_unique_ids([raw.get("run_id")]):
+		return invalid
+	if settled_run_ids.has(raw.run_id) or not (raw.get("starting_school") is String):
+		return invalid
+	if not (raw.get("elite_qualified") is bool) or not (raw.get("retry_consumed") is bool):
+		return invalid
+	if not raw.has("preparation") or not (raw.get("checkpoint") is Dictionary):
+		return invalid
+	if raw.preparation != null:
+		return {"ok": false, "reason": &"preparation_validation_pending"}
+	if not _profile_unique_ids(raw.get("eligible_boss_ids")):
+		return invalid
+	var decoded := decode_selected_checkpoint(raw.checkpoint)
+	if not decoded.ok:
+		return decoded
+	if raw.starting_school != decoded.checkpoint.loadout.origin_school_id:
+		return invalid
+	var clears: Array = decoded.checkpoint.route.cleared_school_ids
+	if raw.eligible_boss_ids.size() != clears.size():
+		return invalid
+	for school in raw.eligible_boss_ids:
+		if not clears.has(school):
+			return invalid
+	return {"ok": true}
 
 
 static func _profile_integer(value) -> bool:
@@ -75,6 +107,92 @@ const MVP4_CATALOG_SCRIPT = preload("res://scripts/data/mvp4_catalog.gd")
 const MVP3_CATALOG_SCRIPT = preload("res://scripts/data/mvp3_catalog.gd")
 const REST_SESSION_SCRIPT = preload("res://scripts/backpack/rest_backpack_session.gd")
 const ITEM_INSTANCE_SCRIPT = preload("res://scripts/data/item_instance.gd")
+const SELECTED_COORDINATOR = preload("res://scripts/core/rest_commit_coordinator.gd")
+
+
+# Validates a departure snapshot without restoring or signalling any live owner.
+# Profile preparation and retry eligibility are validated separately by their owners.
+func decode_selected_checkpoint(raw: Dictionary) -> Dictionary:
+	var invalid := {"ok": false, "reason": &"invalid_selected_checkpoint"}
+	if raw.size() != 10 or raw.get("rules_version") != PROFILE_CONTRACT:
+		return invalid
+	if not _profile_unique_ids([raw.get("prepare_session_id")]):
+		return invalid
+	for key in ["build", "route", "circuit", "backpack", "loadout", "access", "ultimate_charge"]:
+		if not (raw.get(key) is Dictionary):
+			return invalid
+	var primitive := _to_json_primitive(raw)
+	if not primitive.ok:
+		return invalid
+	var candidate: Dictionary = primitive.value
+	invalid.reason = &"invalid_selected_route"
+	var route: Dictionary = candidate.route
+	if route.size() != 8 or not _profile_integer(route.get("stage_index")) or not (route.get("final_binding_eligible") is bool):
+		return invalid
+	for key in ["active_school_id", "provisional_school_id"]:
+		if not (route.get(key) is String):
+			return invalid
+	for key in ["cleared_school_ids", "clear_order", "school_ids", "unvisited_school_ids"]:
+		if not _profile_unique_ids(route.get(key)):
+			return invalid
+	var route_owner = RUN_ROUTE_STATE_SCRIPT.new()
+	if not route_owner.restore_from_checkpoint(route):
+		return invalid
+	var derived_route: Dictionary = _to_json_primitive(route_owner.get_route_snapshot()).value
+	var compared_route: Dictionary = route.duplicate(true)
+	compared_route.stage_index = int(route.stage_index)
+	if compared_route != derived_route or route.provisional_school_id != "":
+		return invalid
+	var circuit: Dictionary = candidate.circuit
+	invalid.reason = &"invalid_departure_circuit"
+	if circuit.size() != 2 or circuit.get("active_school_id") != route.active_school_id:
+		return invalid
+	var expected_phase := "final_boss" if route.final_binding_eligible else "core"
+	if circuit.get("phase") != expected_phase or (not route.final_binding_eligible and route.active_school_id == ""):
+		return invalid
+	var build: Dictionary = candidate.build
+	invalid.reason = &"invalid_selected_build"
+	if build.size() != 7 or not _profile_integer(build.get("gold")) or not (build.get("owned_items") is Dictionary) or not build.owned_items.is_empty():
+		return invalid # Selected spatial items must not also enter the legacy inventory.
+	if not _profile_unique_ids(build.get("selected_fates")) or not _validate_fates(build.selected_fates):
+		return invalid
+	if not (build.get("economy_receipts") is Array):
+		return invalid
+	for receipt in build.economy_receipts:
+		if not (receipt is Dictionary) or receipt.size() != 3 or not _profile_integer(receipt.get("amount")):
+			return invalid
+		if receipt.get("source") not in ["normal", "elite", "school_boss"] or receipt.get("school_id") not in RUN_ROUTE_STATE_SCRIPT.SCHOOL_IDS:
+			return invalid
+	var bundle := {"backpack": candidate.backpack, "buffer": candidate.get("buffer"),
+		"loadout": candidate.loadout, "access": candidate.access, "equipment": build.get("equipment")}
+	invalid.reason = &"invalid_selected_bundle"
+	if not SELECTED_COORDINATOR.validate_selected_build_bundle(bundle):
+		return invalid
+	var origin: String = candidate.loadout.origin_school_id
+	invalid.reason = &"selected_origin_or_trace_mismatch"
+	if build.get("selected_school_id") != origin:
+		return invalid
+	var stabilized: Array = candidate.access.stabilized_school_ids
+	if stabilized.size() != route.cleared_school_ids.size():
+		return invalid
+	for school in stabilized:
+		if not route.cleared_school_ids.has(school) or not candidate.access.trace_decisions.has(school):
+			return invalid # Trace decisions must be resolved before another departure.
+	var charge: Dictionary = candidate.ultimate_charge
+	invalid.reason = &"invalid_ultimate_charge"
+	var amount = charge.get("resource_amount")
+	if charge.size() != 2 or charge.get("school_id") != origin or not (amount is int or amount is float):
+		return invalid
+	var charge_caps := {"bongma": 120, "cheonsul": 3, "guiin": 100, "heukyeong": 3}
+	if not is_finite(float(amount)) or amount < 0 or amount > charge_caps[origin]:
+		return invalid
+	var bag = BACKPACK_STATE_SCRIPT.from_persistent_snapshot(candidate.backpack)
+	invalid.reason = &"selected_modifier_mismatch"
+	var resolution = SELECTED_COORDINATOR.BAG_RESOLVER.new().resolve(bag,
+		SELECTED_COORDINATOR.SELECTED_CATALOG.build_items(), MVP4_CATALOG_SCRIPT.build_bags(), StringName(origin))
+	if build.get("committed_backpack_modifiers") != resolution.modifiers.to_persistent_snapshot():
+		return invalid
+	return {"ok": true, "checkpoint": candidate}
 
 
 func encode_checkpoint(checkpoint: Dictionary) -> Dictionary:

@@ -48,6 +48,40 @@ const BOOK_PATH := "res://scripts/data/ninjutsu_book_catalog.gd"
 const SESSION_PATH := "res://scripts/core/start_loadout_session.gd"
 
 
+func test_selected_bundle_validates_buffer_identity_and_book_ownership() -> void:
+	var bundle: Dictionary = JSON.parse_string(JSON.stringify(_confirmed(&"bongma")))
+	var next_id: int = int(bundle.backpack.next_instance_id)
+	bundle.backpack.next_instance_id = next_id + 1
+	bundle.buffer = [{"instance_id": next_id, "definition_id": "melee_manual", "rotation_quarters": 0}]
+	assert_true(COORDINATOR.validate_selected_build_bundle(bundle), "Unplaced support can be carried without combat power")
+	var before: Dictionary = bundle.duplicate(true)
+	for field in ["instance_id", "definition_id", "rotation_quarters"]:
+		var broken: Dictionary = bundle.duplicate(true)
+		broken.buffer[0][field] = null
+		assert_false(COORDINATOR.validate_selected_build_bundle(broken), "Malformed buffer field: " + field)
+	var collision: Dictionary = bundle.duplicate(true)
+	collision.buffer[0].instance_id = collision.backpack.items[0].instance_id
+	assert_false(COORDINATOR.validate_selected_build_bundle(collision), "Placed and carried instances cannot share an ID")
+	var duplicate: Dictionary = bundle.duplicate(true)
+	duplicate.buffer[0].definition_id = "book:" + str(duplicate.loadout.active_spell_ids[0])
+	assert_false(COORDINATOR.validate_selected_build_bundle(duplicate), "Start and purchased variants are the same owned spell")
+	var locked: Dictionary = bundle.duplicate(true)
+	locked.buffer[0].definition_id = "book:cheonsul_ice_veil"
+	assert_false(COORDINATOR.validate_selected_build_bundle(locked), "Unabsorbed school cannot supply owned books")
+	var unchosen: Dictionary = bundle.duplicate(true)
+	for spell in load(BOOK_PATH).NINJUTSU.build_definitions().values():
+		if spell.school_id == &"bongma" and not bundle.loadout.draft_picks.has(str(spell.ninjutsu_id)):
+			unchosen.buffer[0].definition_id = "start_book:" + str(spell.ninjutsu_id)
+			break
+	assert_false(COORDINATOR.validate_selected_build_bundle(unchosen), "Free starter book must be one of the actual draft picks")
+	unchosen.buffer[0].definition_id = str(unchosen.buffer[0].definition_id).replace("start_book:", "book:")
+	assert_true(COORDINATOR.validate_selected_build_bundle(unchosen), "A different acquired origin book may be carried but remains inactive")
+	var oversized: Dictionary = bundle.duplicate(true)
+	oversized.buffer.resize(7)
+	assert_false(COORDINATOR.validate_selected_build_bundle(oversized))
+	assert_eq(bundle, before, "Cross-owner validation must not alter the caller snapshot")
+
+
 func test_book_geometry_is_opt_in_and_survives_copy_and_json() -> void:
 	var factory = BACKPACK.new()
 	assert_true(factory.has_method("create_selectable_starting_state"), "New books must use an explicit geometry catalog, not leak into legacy rewards.")
