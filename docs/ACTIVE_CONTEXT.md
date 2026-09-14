@@ -1,5 +1,22 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — read-only recovery inventory and stage coherence, 2026-09-14
+
+RunResumeStore.inspect_profile_recovery reports canonical/previous/temporary existence,
+strict profile validity, revision and SHA256 of the bytes inspected. It never promotes,
+rewrites or deletes candidates. Missing storage, corrupt JSON, invalid envelopes and
+valid newer uncommitted temporary files remain distinct. Recovery selection/UI is still
+open; Main has not adopted this API. Gut-only filesystem fixtures verify non-mutation.
+Cross-owner inspection found a preparation from another reward segment was admitted;
+RED focused4/5 reproduced it, then codec validates reward segment against departure stage.
+Final full102scripts/814tests/11862assertions PASS exit0,
+`ninja-recovery-stage-full-20260914.log`. Prior head0abb15e GitHub GUT and Windows SUCCESS.
+This increment's CI must be read at its exact head. No live save or art changed.
+Remaining sequence: explicit recovery choice with stale-hash rejection and preservation,
+retry eligibility union, nondestructive legacy wallet migration, R02 transaction/Fate,
+then Main adoption. Five whole-scope loops, runtime/Human/device/release remain NOT_RUN.
+Monthly evidence PDF v0.3 remains historical partial coverage, not this increment's receipt.
+
 ## Latest increment — preparation values admitted to profile2, 2026-09-14
 
 RestBackpackSession serializes confirmed backpack/buffer/pending_bag/preserve_buffer,

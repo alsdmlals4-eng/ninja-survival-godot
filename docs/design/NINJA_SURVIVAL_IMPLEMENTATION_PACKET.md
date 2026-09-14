@@ -786,6 +786,16 @@ main/previous/tmp가 남으면 유효성/revision/receipt를 비교하며 손상
 tmp만 더 새롭다는 이유로 미확정 거래를 자동 확정하지 않는다. 모호하면 복구 화면에서
 정본 후보·잃을 진행을 보여주고 플레이는 닫는다. 파일시스템 crash-proof는 주장하지 않는다.
 
+2026-09-14 구현: `inspect_profile_recovery()`는 정본/이전본/임시본 각각의 존재,
+유효성, revision, 읽은 바이트의 SHA256을 반환하는 읽기 전용 점검이다. 자동 승격이나
+삭제는 하지 않는다. 복구 후보 선택·동시 변경 해시 비교·Main 복구 화면은 남아 있다.
+기존 store 확장 ADAPT, 최신 tmp 자동 채택 REJECT(미확정 거래), 별도 저장 관리자
+추가 REJECT(책임 중복). 준비 reward.segment와 마지막 출발 stage_index도 교차 검증한다.
+근거: Godot FileAccess/get_buffer/get_error 및 HashingContext 공식 계약;
+https://docs.godotengine.org/en/stable/classes/class_hashingcontext.html
+실제 시험용 파일의 손상·누락·유효 후보 보존과 교차 스테이지 거부를 검사하며,
+실제 정전 내구성이나 플레이어 복구 화면 검증으로 확대하지 않는다.
+
 v1 런 자동 변환 REJECT. 유효 v1 잔액만 첫 profile 생성 시 source SHA256과
 `migrate:wallet-v1:<sha>` receipt로1회 이관. 이미 profile이 있으면 v1 재수입 금지.
 손상 wallet은0초기화 금지, 미래 버전 거부, 원본 삭제/덮어쓰기 금지.

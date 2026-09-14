@@ -140,6 +140,8 @@ func _decode_selected_preparation(raw, checkpoint: Dictionary) -> Dictionary:
 	if not session.restore_preparation_snapshot(spatial):
 		return invalid
 	var reward: Dictionary = raw.reward_state
+	if not _profile_integer(reward.get("segment")) or int(reward.segment) != int(checkpoint.route.stage_index):
+		return invalid
 	if reward.get("school") != String(access.starting_school_id()) or reward.get("new_school") != checkpoint.route.active_school_id:
 		return invalid
 	var controller = load("res://scripts/core/rest_reward_controller.gd").new()

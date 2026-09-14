@@ -39,6 +39,44 @@ func load_profile() -> Dictionary:
 	return _codec.decode_profile_v2(parser.data)
 
 
+# Read-only recovery inventory. A newer temporary file is not a committed save.
+# Selection/promotion needs a separate compare-by-hash recovery transaction.
+func inspect_profile_recovery() -> Dictionary:
+	if not _configured or not _profile_mode or _profile_transaction_busy:
+		return {"ok": false, "reason": &"not_ready"}
+	var candidates: Array = []
+	var roles := ["canonical", "previous", "temporary"]
+	var paths := [_storage_path, _previous_storage_path(), _temporary_storage_path()]
+	var requires_review := false
+	for index in range(paths.size()):
+		var path: String = paths[index]
+		var item := {"role": roles[index], "path": path, "exists": FileAccess.file_exists(path),
+			"valid": false, "reason": &"missing", "sha256": "", "revision": -1}
+		if item.exists:
+			var file := FileAccess.open(path, FileAccess.READ)
+			if file == null:
+				item.reason = &"unreadable"
+			else:
+				var bytes := file.get_buffer(file.get_length())
+				var read_error := file.get_error()
+				file.close()
+				var hash := HashingContext.new()
+				hash.start(HashingContext.HASH_SHA256)
+				hash.update(bytes)
+				item.sha256 = hash.finish().hex_encode()
+				var parser := JSON.new()
+				item.reason = &"unreadable" if read_error != OK else &"invalid_json"
+				if read_error == OK and parser.parse(bytes.get_string_from_utf8()) == OK and parser.data is Dictionary:
+					var decoded: Dictionary = _codec.decode_profile_v2(parser.data)
+					item.valid = decoded.ok
+					item.reason = decoded.get("reason", &"")
+					if decoded.ok:
+						item.revision = decoded.profile.revision
+			requires_review = requires_review or index != 0 or not item.valid
+		candidates.append(item)
+	return {"ok": true, "requires_review": requires_review, "candidates": candidates}
+
+
 # The caller owns business legality; this owner validates the complete envelope,
 # request identity and durable compare-and-write. No live combat owner is mutated.
 func transact_profile(candidate: Dictionary, expected_revision: int, transaction_id: String) -> Dictionary:

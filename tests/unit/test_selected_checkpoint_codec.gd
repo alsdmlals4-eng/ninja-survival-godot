@@ -68,6 +68,9 @@ func test_profile_accepts_post_boss_preparation_without_replaying_boss() -> void
 	broken.active_run.preparation.reward_state.chests = -1
 	assert_false(CODEC.new().decode_profile_v2(broken).ok)
 	broken = raw.duplicate(true)
+	broken.active_run.preparation.reward_state.segment = 2
+	assert_false(CODEC.new().decode_profile_v2(broken).ok, "Preparation must belong to the completed departure stage")
+	broken = raw.duplicate(true)
 	broken.active_run.preparation.prepare_session_id = checkpoint.prepare_session_id
 	assert_false(CODEC.new().decode_profile_v2(broken).ok)
 	broken = raw.duplicate(true)

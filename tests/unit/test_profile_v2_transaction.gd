@@ -203,6 +203,68 @@ func test_profile_store_persists_once_and_rejects_conflicting_or_stale_requests(
 	assert_eq(FileAccess.get_file_as_string(TEST_PATH), bytes)
 
 
+func test_recovery_inspection_reports_candidates_without_promoting_or_deleting() -> void:
+	var store = ReadbackFailure.new()
+	assert_true(store.configure_profile(TEST_PATH))
+	assert_true(store.transact_profile(_empty_profile(), 0, "init:test").ok)
+	var next: Dictionary = store.load_profile().profile
+	next.meta.soul_balance = 3
+	store.fail_canonical = true
+	assert_false(store.transact_profile(next, 1, "grant:test").ok)
+	var canonical := FileAccess.get_file_as_string(TEST_PATH)
+	var temporary := FileAccess.get_file_as_string(TEST_PATH + ".tmp")
+	assert_true(store.has_method("inspect_profile_recovery"))
+	if not store.has_method("inspect_profile_recovery"):
+		return
+	var inspected: Dictionary = store.inspect_profile_recovery()
+	assert_true(inspected.ok)
+	assert_eq(inspected.candidates.size(), 3)
+	assert_eq(inspected.candidates[0].revision, 1)
+	assert_true(inspected.candidates[0].valid)
+	assert_eq(inspected.candidates[0].sha256, canonical.sha256_text())
+	assert_false(inspected.candidates[1].exists)
+	assert_true(inspected.candidates[2].valid)
+	assert_eq(inspected.candidates[2].revision, 2)
+	assert_eq(inspected.candidates[2].sha256, temporary.sha256_text())
+	assert_true(inspected.requires_review)
+	assert_eq(FileAccess.get_file_as_string(TEST_PATH), canonical)
+	assert_eq(FileAccess.get_file_as_string(TEST_PATH + ".tmp"), temporary)
+
+
+func test_recovery_inspection_keeps_missing_and_corrupt_candidates_distinct() -> void:
+	var store = STORE.new()
+	assert_false(store.inspect_profile_recovery().ok)
+	assert_true(store.configure_profile(TEST_PATH))
+	var empty: Dictionary = store.inspect_profile_recovery()
+	assert_false(empty.requires_review)
+	for candidate in empty.candidates:
+		assert_false(candidate.exists)
+		assert_eq(candidate.reason, &"missing")
+	var file := FileAccess.open(TEST_PATH + ".tmp", FileAccess.WRITE)
+	assert_not_null(file)
+	file.store_string("{broken")
+	file.close()
+	var inspected: Dictionary = store.inspect_profile_recovery()
+	assert_true(inspected.requires_review)
+	assert_false(inspected.candidates[0].exists)
+	assert_false(inspected.candidates[2].valid)
+	assert_eq(inspected.candidates[2].reason, &"invalid_json")
+	assert_eq(inspected.candidates[2].sha256, "{broken".sha256_text())
+	assert_eq(store.load_profile().reason, &"recovery_required")
+	assert_false(FileAccess.file_exists(TEST_PATH))
+	assert_eq(FileAccess.get_file_as_string(TEST_PATH + ".tmp"), "{broken")
+	file = FileAccess.open(TEST_PATH, FileAccess.WRITE)
+	file.store_string("{}")
+	file.close()
+	inspected = store.inspect_profile_recovery()
+	assert_true(inspected.requires_review)
+	assert_true(inspected.candidates[0].exists)
+	assert_false(inspected.candidates[0].valid)
+	assert_ne(inspected.candidates[0].reason, &"invalid_json")
+	assert_eq(FileAccess.get_file_as_string(TEST_PATH), "{}")
+	assert_eq(FileAccess.get_file_as_string(TEST_PATH + ".tmp"), "{broken")
+
+
 func test_profile_store_invalid_candidate_and_write_failure_do_not_publish() -> void:
 	var store = STORE.new()
 	if not store.has_method("configure_profile"):
