@@ -653,12 +653,17 @@ R06/R07의 독립 fixture와 R08의 상태 브리프는 저장 구현 중에도 
 
 ### R01. 단일 프로필·저장 복구
 
+현재 범위: departure/preparation 값 저장, 임시 I/O 실패 보호, 읽기 전용 복구 후보
+조회·선택 재검증, 구형 잔액 비파괴 이관 API, receipt가 있는 재도전 자격 보존까지
+구현했다. Main은 아직 기존 진입이며 복구 확정/원본 보관 UI, 재도전 업무 거래와
+R02 연동은 남아 있다. 아래 숫자는 당시 검증 이력으로 현재 완료 범위를 대체하지 않는다.
+
 추가 장애 검증: old→previous / tmp→main / 실패 후 rollback / readback 실패 뒤
 새 파일 격리·원본 복원 실패를 주입했다. promote와 rollback이 동시에 실패하면
 원본.previous와 새 후보.tmp를 모두 보존한다. 전체102scripts/805tests/11529assertions
 PASS(exit0), `ninja-profile-rename-full-gut-20260914.log`. OS 전원차단·실제 디스크
 고장·다중 프로세스 writer까지 검증했다는 뜻은 아니다. tmp open/write/flush 전체
-실패 조합과 복구 선택 UI는 남아 있다.
+실패 조합과 복구 선택 UI는 당시 잔여였다. 임시 I/O 후속 증거는 아래 보강 절 참조.
 
 2026-09-14 후속 구현: `decode_selected_checkpoint()`와 실제 profile store를 연결해
 출전 경계의 non-null active_run을 저장/재읽기한다. 경로 파생 배열 불일치, 미해결
@@ -666,13 +671,13 @@ PASS(exit0), `ninja-profile-rename-full-gut-20260914.log`. OS 전원차단·실�
 수정치, 출전 유파/자원 불일치를 거부한다. 네 전장24순서의 출전/최종 경계 검사와
 디스크 재시도 검사를 포함해102scripts/803tests/11496assertions PASS(exit0).
 JSON 정수/실수 표현 차이가 동일 거래를 충돌로 오인하는 실패를 재현·교정했다.
-실제 Main 적용, preparation 저장, 재도전 이전/이후 자격 합집합, 전체 장애/복구/이관,
-정상속도 완주와 전체5회 적대검토는 아직 미완료다.
+이 증거 당시 Main/preparation/재도전/복구/이관이 잔여였다. 현재 구현 범위는 이 절
+첫 요약과 Active Context를 따른다. 정상속도 완주와 전체5회 적대검토는 여전히 미완료다.
 
 앞선 2026-09-14 구현 증거: envelope/명시적 profile store/거래 digest와 재시도/기본 I/O
 실패 보호를 구현했다. GUT101scripts/798tests/10592assertions PASS. active_run이
-null인 프로필만 허용하며 비어 있지 않은 런은 도메인 교차 검증 연결 전 명시적으로
-거부한다. 아래 R01 전체, 기존 저장 이관, Main 적용, 모든 장애 주입은 아직 미완료다.
+null인 프로필만 허용했던 초기 단계이며, 이후 위 departure/preparation 구현으로
+확장했다. 초기 제한을 현재 동작으로 해석하지 않는다.
 
 **문제/가치:** 현재 wallet_v1과 resume_v1은 별도 파일이다. 개별 파일 보호가 있어도
 소울 차감과 체크포인트 이동 전체의 원자성은 보장하지 못한다.
@@ -681,7 +686,7 @@ null인 프로필만 허용하며 비어 있지 않은 런은 도메인 교차 �
 **시험:** 기존 `tests/unit/test_run_resume_codec.gd`, `test_run_resume_store.gd`,
 `test_ninja_soul_retry.gd` 확장; 교차 거래는 신규 `tests/unit/test_profile_v2_transaction.gd`.
 
-다음 API는 R01의 현재 구현이다. 준비 저장/복구/이관까지 완료됐다는 뜻은 아니다:
+다음은 R01의 기본 API다. 복구 조회/선택과 이관 API는 아래 관련 절에 명시한다:
 
 ```gdscript
 # RunResumeCodec: 실패는 {ok:false, reason:StringName}, 성공은 정규화 profile 복사본.
@@ -744,9 +749,10 @@ checkpoint의 저장 owner 매핑은 다음과 같다. UI bundle은 검사용 �
 저장한다. 일반 출전은 route.active_school_id와 같고, 최종 출전은 네 전장 완료 후
 빈 학교 ID를 쓴다. 진행 중 전투 장면을 복원하는 구조가 아니다. build는 기존7필드
 snapshot을 유지하되 legacy owned_items는 비어 있어야 하며 공간 수정치는 현재
-배치로 재계산해 일치 검사한다. 활성 런의 eligible_boss_ids는 이 단계에서 완료
-전장 집합과 일치해야 한다. 재도전 롤백에서 더 넓은 자격을 보존하는 거래는 후속
-R01/R05 시험을 연결하기 전 허용했다고 주장하지 않는다.
+배치로 재계산해 일치 검사한다. 일반 출전의 eligible_boss_ids는 완료 전장 집합과
+일치한다. 재도전은 retry:run_id receipt(또는 저장 중인 동일 거래 ID)가 있어야 하며,
+기존 완료 전장을 모두 보존하고 현재 전장의 기존 보스 자격만 추가로 보존할 수 있다.
+무관한 미방문 전장 자격은 거부한다. 실제 비용/실패 화면 업무 진입은 R05 후속 연결이다.
 
 E의 active_ninjutsu_ids/selected_fates는 각각 loadout.active_spell_ids/build 선택운명의
 **의미명**으로 해석한다. 독립적인 두 번째 권위 배열을 추가하지 않는다. codec의
@@ -894,7 +900,9 @@ StartLoadoutSession의 검증된 bundle을 소비한다. legacy fixture/codec은
 `equipment_catalog.gd`, `ninjutsu_book_catalog.gd`, 준비 UI.
 **시험:** 기존 reward adversarial/session/selected catalog 테스트 및 준비 UI 통합.
 
-현재 `_eligible_lanes/_filtered_pool`은 MVP4 base ID로 거른다. selected 경로는
+현재 `_eligible_lanes/_filtered_pool`은 실제 가방 계약에 따라 legacy/selected 지원품
+목록을 고른다. selected 대체 교본 누락은 교정했다. 혼합 종류 획득 연결은 남아 있으며,
+selected 경로는
 보조19/해금 인법24/장비9/가방을 명시적 종류로 구분하고 그 종류의 owner로 전달한다.
 `offer={offer_id, kind, definition_id, acquisition_price, lane_id, revision}` 제안.
 kind는 support/book/equipment/bag; string prefix 추측으로 거래 종류를 정하지 않는다.

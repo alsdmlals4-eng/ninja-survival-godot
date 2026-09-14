@@ -234,6 +234,38 @@ func test_recovery_inspection_reports_candidates_without_promoting_or_deleting()
 	assert_eq(FileAccess.get_file_as_string(TEST_PATH + ".tmp"), temporary)
 
 
+func test_recovery_selection_rejects_stale_inventory_and_reads_only_chosen_profile() -> void:
+	var store = ReadbackFailure.new()
+	assert_true(store.configure_profile(TEST_PATH))
+	assert_true(store.transact_profile(_empty_profile(), 0, "init:test").ok)
+	var next: Dictionary = store.load_profile().profile
+	next.meta.soul_balance = 4
+	store.fail_canonical = true
+	assert_false(store.transact_profile(next, 1, "grant:test").ok)
+	var observed: Dictionary = store.inspect_profile_recovery()
+	assert_true(store.has_method("read_recovery_candidate"))
+	if not store.has_method("read_recovery_candidate"):
+		return
+	var canonical := FileAccess.get_file_as_string(TEST_PATH)
+	var temporary := FileAccess.get_file_as_string(TEST_PATH + ".tmp")
+	var chosen: Dictionary = store.read_recovery_candidate("temporary", observed)
+	assert_true(chosen.ok)
+	assert_eq(chosen.profile.meta.soul_balance, 4)
+	assert_eq(chosen.source_sha256, temporary.sha256_text())
+	assert_eq(store.read_recovery_candidate("canonical", observed).profile.meta.soul_balance, 0)
+	assert_false(store.read_recovery_candidate("previous", observed).ok)
+	assert_false(store.read_recovery_candidate("../external", observed).ok)
+	assert_eq(FileAccess.get_file_as_string(TEST_PATH), canonical)
+	assert_eq(FileAccess.get_file_as_string(TEST_PATH + ".tmp"), temporary)
+	var file := FileAccess.open(TEST_PATH + ".tmp", FileAccess.WRITE)
+	file.store_string(temporary + "\n")
+	file.close()
+	assert_false(store.read_recovery_candidate("canonical", observed).ok, "Even an unselected candidate change invalidates the review")
+	assert_false(store.read_recovery_candidate("temporary", observed).ok)
+	assert_eq(FileAccess.get_file_as_string(TEST_PATH), canonical)
+	assert_eq(FileAccess.get_file_as_string(TEST_PATH + ".tmp"), temporary + "\n")
+
+
 func test_recovery_inspection_keeps_missing_and_corrupt_candidates_distinct() -> void:
 	var store = STORE.new()
 	assert_false(store.inspect_profile_recovery().ok)

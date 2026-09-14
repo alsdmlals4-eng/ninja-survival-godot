@@ -35,7 +35,7 @@ func test_profile_accepts_post_boss_preparation_without_replaying_boss() -> void
 		"gold": 150, "reward_state": rewards.persistent_snapshot(), "pending_fate": "",
 		"provisional_school": "", "healing_applied": true}
 	var raw := {"schema_version": 2, "revision": 0, "content_contract": CODEC.PROFILE_CONTRACT,
-		"meta": {"soul_balance": 0, "unlocked_support_choice": false, "settled_run_ids": [],
+		"meta": {"soul_balance": 2, "unlocked_support_choice": false, "settled_run_ids": [],
 			"applied_transaction_ids": [], "transaction_receipts": {}},
 		"active_run": {"run_id": "run:prep", "starting_school": "bongma", "elite_qualified": true,
 			"retry_consumed": false, "eligible_boss_ids": ["cheonsul"], "checkpoint": checkpoint,
@@ -61,6 +61,19 @@ func test_profile_accepts_post_boss_preparation_without_replaying_boss() -> void
 		assert_eq(restored.profile.active_run.preparation.gold, 150.0)
 		assert_eq(restored.profile.active_run.eligible_boss_ids, ["cheonsul"])
 		assert_true(reopened.transact_profile(raw, 0, "prepare:after:1").already_applied)
+		var retry_request: Dictionary = restored.profile.duplicate(true)
+		retry_request.meta.soul_balance -= 1
+		retry_request.active_run.preparation = null
+		retry_request.active_run.retry_consumed = true
+		assert_true(reopened.transact_profile(retry_request, 1, "retry:run:prep").ok)
+		var after_retry: Dictionary = reopened.load_profile().profile
+		assert_eq(after_retry.meta.soul_balance, 1)
+		assert_eq(after_retry.active_run.eligible_boss_ids, ["cheonsul"])
+		assert_eq(after_retry.active_run.checkpoint, checkpoint)
+		assert_true(after_retry.active_run.retry_consumed)
+		assert_null(after_retry.active_run.preparation)
+		assert_true(reopened.transact_profile(retry_request, 1, "retry:run:prep").already_applied)
+		assert_eq(reopened.load_profile().profile.meta.soul_balance, 1)
 	for suffix in ["", ".tmp", ".previous"]:
 		if FileAccess.file_exists(path + suffix):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(path + suffix))
@@ -76,6 +89,20 @@ func test_profile_accepts_post_boss_preparation_without_replaying_boss() -> void
 	broken = raw.duplicate(true)
 	broken.active_run.eligible_boss_ids = []
 	assert_false(CODEC.new().decode_profile_v2(broken).ok)
+	# A retry rolls back the departure, never the already-earned boss eligibility.
+	var retry := raw.duplicate(true)
+	retry.active_run.preparation = null
+	retry.active_run.retry_consumed = true
+	assert_false(CODEC.new().decode_profile_v2(retry).ok, "A retry requires its durable transaction receipt")
+	assert_true(CODEC.new().decode_profile_v2(retry, "retry:run:prep").ok, "Pending retry preserves this battlefield's already-earned eligibility")
+	retry.active_run.eligible_boss_ids.append("guiin")
+	assert_false(CODEC.new().decode_profile_v2(retry, "retry:run:prep").ok, "An unvisited unrelated battlefield cannot gain eligibility")
+	retry.active_run.eligible_boss_ids = []
+	assert_false(CODEC.new().decode_profile_v2(retry).ok, "Even an empty eligibility retry needs a receipt")
+	assert_true(CODEC.new().decode_profile_v2(retry, "retry:run:prep").ok, "Retry before boss death has no new boss eligibility")
+	retry.active_run.retry_consumed = false
+	retry.active_run.eligible_boss_ids = ["cheonsul"]
+	assert_false(CODEC.new().decode_profile_v2(retry).ok, "Ordinary departure cannot invent an extra clear")
 
 
 func _checkpoint(school: StringName) -> Dictionary:

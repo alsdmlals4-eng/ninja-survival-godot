@@ -44,6 +44,9 @@ func decode_profile_v2(payload: Dictionary, pending_transaction_id: String = "")
 		var active_result := _decode_active_departure(payload.active_run, meta.settled_run_ids)
 		if not active_result.ok:
 			return active_result
+		var retry_id: String = "retry:" + payload.active_run.run_id
+		if payload.active_run.retry_consumed and not receipts.has(retry_id) and pending_transaction_id != retry_id:
+			return {"ok": false, "reason": &"invalid_retry_receipt"}
 	# Only primitive known fields leave this codec; unknown object fields are rejected.
 	if payload.size() != 5 or meta.size() != 5:
 		return {"ok": false, "reason": &"unknown_profile_fields"}
@@ -79,10 +82,17 @@ func _decode_active_departure(raw, settled_run_ids: Array) -> Dictionary:
 		if not prepared.ok:
 			return prepared
 		clears = prepared.clears
-	if raw.eligible_boss_ids.size() != clears.size():
-		return invalid
+	for school in clears:
+		if not raw.eligible_boss_ids.has(school):
+			return invalid
+	# Rollback may retain the current battlefield's earned eligibility, but cannot
+	# invent progress in any unrelated unvisited school or discard previous clears.
+	var allowed: Array = clears.duplicate()
+	var active_school: String = decoded.checkpoint.route.active_school_id
+	if raw.retry_consumed and active_school != "" and not allowed.has(active_school):
+		allowed.append(active_school)
 	for school in raw.eligible_boss_ids:
-		if not clears.has(school):
+		if not allowed.has(school):
 			return invalid
 	return {"ok": true}
 

@@ -1,5 +1,25 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — reviewed recovery read / retry eligibility envelope, 2026-09-14
+
+read_recovery_candidate accepts a known role plus the observed inventory, never a user
+path. All three candidates are rechecked before/after reading; even an unselected file
+change rejects stale review. Returns a decoded value/source SHA only, no promotion or
+write. Original preservation and explicit recovery publication/UI remain open.
+Selected profile retry requires retry:run_id receipt (or that pending store transaction).
+Completed-school eligibility cannot disappear; only the rollback checkpoint's active
+battlefield may contribute an extra previously-earned qualification. Unrelated unvisited
+schools are rejected. Actual gut file write/reload keeps that eligibility/checkpoint,
+retry flag, cleared preparation and caller-provided one-soul debit together; duplicate
+transaction leaves balance1, not0. Business eligibility/cost authority/Main still pending.
+RED missing selection API and retry validation gaps; GREEN focused15/15 and5/5.
+Final full102scripts/818tests/11946assertions PASS exit0,
+`ninja-retry-union-full-20260914.log`; preceding read-only scope818/11932 also PASS.
+Prior4ae3cd9 exact-head GUT/Windows SUCCESS. Current head needs fresh CI readback.
+Implementation Packet stale initial-only/profile/reward descriptions corrected in place.
+Continue recovery publication/preservation, then R02 business transactions and Main.
+No Human/runtime/full five-loop/release completion; no user-save or image mutation.
+
 ## Latest increment — nondestructive legacy wallet import, 2026-09-14
 
 RunResumeStore.import_legacy_wallet reads the old wallet without writes and reuses

@@ -116,6 +116,43 @@ func inspect_profile_recovery() -> Dictionary:
 	return {"ok": true, "requires_review": requires_review, "candidates": candidates}
 
 
+# Resolve a reviewed role, never a caller-supplied path. This returns values only;
+# recovery publication must preserve originals and recheck the inventory again.
+func read_recovery_candidate(role: String, observed: Dictionary) -> Dictionary:
+	if not role in ["canonical", "previous", "temporary"]:
+		return {"ok": false, "reason": &"invalid_recovery_role"}
+	var current := inspect_profile_recovery()
+	if not current.ok:
+		return current
+	if current != observed:
+		return {"ok": false, "reason": &"stale_recovery_inventory"}
+	var selected: Dictionary = {}
+	for candidate in current.candidates:
+		if candidate.role == role:
+			selected = candidate
+	if not selected.get("valid", false):
+		return {"ok": false, "reason": &"invalid_recovery_candidate"}
+	var file := FileAccess.open(selected.path, FileAccess.READ)
+	if file == null:
+		return {"ok": false, "reason": &"recovery_unreadable"}
+	var bytes := file.get_buffer(file.get_length())
+	var read_error := file.get_error()
+	file.close()
+	var hash := HashingContext.new()
+	hash.start(HashingContext.HASH_SHA256)
+	hash.update(bytes)
+	var digest := hash.finish().hex_encode()
+	if read_error != OK or digest != selected.sha256 or inspect_profile_recovery() != current:
+		return {"ok": false, "reason": &"stale_recovery_inventory"}
+	var parser := JSON.new()
+	if parser.parse(bytes.get_string_from_utf8()) != OK or not (parser.data is Dictionary):
+		return {"ok": false, "reason": &"invalid_recovery_candidate"}
+	var decoded: Dictionary = _codec.decode_profile_v2(parser.data)
+	if not decoded.ok:
+		return decoded
+	return {"ok": true, "profile": decoded.profile, "source_sha256": digest, "role": role}
+
+
 # The caller owns business legality; this owner validates the complete envelope,
 # request identity and durable compare-and-write. No live combat owner is mutated.
 func transact_profile(candidate: Dictionary, expected_revision: int, transaction_id: String) -> Dictionary:
