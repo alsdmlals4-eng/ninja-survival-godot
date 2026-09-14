@@ -4,6 +4,53 @@ const CODEC = preload("res://scripts/core/run_resume_codec.gd")
 const STORE = preload("res://scripts/core/run_resume_store.gd")
 const TEST_PATH := "user://gut_profile_v2_20260914.json"
 
+class TemporaryFailure:
+	extends "res://scripts/core/run_resume_store.gd"
+	var failure := ""
+	func _open_temporary_file(path: String) -> FileAccess:
+		if failure == "open":
+			return null
+		return FileAccess.open(path, FileAccess.WRITE)
+	func _store_temporary_text(file: FileAccess, text: String) -> bool:
+		if failure == "write":
+			file.store_string(text.left(8))
+			return false
+		return file.store_string(text)
+	func _flush_temporary_file(file: FileAccess) -> Error:
+		file.flush()
+		return ERR_FILE_CANT_WRITE if failure == "flush" else file.get_error()
+	func _readback_matches(path: String, text: String) -> bool:
+		if failure == "readback" and path.ends_with(".tmp"):
+			return false
+		return super._readback_matches(path, text)
+
+
+func test_temporary_failures_preserve_committed_bytes_and_request_for_recovery() -> void:
+	for failure in ["open", "write", "flush", "readback"]:
+		_clean_test_files()
+		var store = TemporaryFailure.new()
+		assert_true(store.configure_profile(TEST_PATH))
+		assert_true(store.transact_profile(_empty_profile(), 0, "init:test").ok)
+		var original := FileAccess.get_file_as_string(TEST_PATH)
+		var candidate: Dictionary = store.load_profile().profile
+		candidate.meta.soul_balance = 3
+		var request := candidate.duplicate(true)
+		store.failure = failure
+		var result: Dictionary = store.transact_profile(candidate, 1, "grant:test")
+		assert_false(result.ok, failure)
+		assert_eq(FileAccess.get_file_as_string(TEST_PATH), original, failure)
+		assert_eq(candidate, request, "Failure must not mutate caller receipt/revision")
+		assert_false(FileAccess.file_exists(TEST_PATH + ".previous"))
+		var reopened = STORE.new()
+		assert_true(reopened.configure_profile(TEST_PATH))
+		assert_eq(reopened.load_profile().profile.meta.soul_balance, 0)
+		assert_eq(FileAccess.file_exists(TEST_PATH + ".tmp"), failure != "open")
+		if failure != "open":
+			store.failure = ""
+			assert_false(store.transact_profile(candidate, 1, "grant:test").ok,
+				"Existing incomplete candidate must not be overwritten by retry")
+			assert_eq(FileAccess.get_file_as_string(TEST_PATH), original)
+
 class ReadbackFailure:
 	extends "res://scripts/core/run_resume_store.gd"
 	var fail_canonical := false

@@ -165,15 +165,18 @@ func _write_payload(payload: Dictionary) -> bool:
 	if FileAccess.file_exists(_previous_storage_path()):
 		return false
 
-	var temporary_file := FileAccess.open(temporary_path, FileAccess.WRITE)
+	var temporary_file := _open_temporary_file(temporary_path)
 	if temporary_file == null:
+		_last_save_warning = &"temporary_open_failed"
 		return false
-	temporary_file.store_string(serialized)
-	temporary_file.flush()
-	var write_succeeded := temporary_file.get_error() == OK
-	temporary_file = null
-	if not write_succeeded:
+	if not _store_temporary_text(temporary_file, serialized):
+		temporary_file.close()
 		_last_save_warning = &"temporary_write_failed"
+		return false
+	var flush_error := _flush_temporary_file(temporary_file)
+	temporary_file.close()
+	if flush_error != OK:
+		_last_save_warning = &"temporary_flush_failed"
 		return false
 	if not _readback_matches(temporary_path, serialized):
 		_last_save_warning = &"temporary_readback_failed"
@@ -230,6 +233,20 @@ func last_save_warning() -> StringName:
 
 func _rename_record(from: String, to: String) -> Error:
 	return DirAccess.rename_absolute(from, to)
+
+
+# Keep real file ownership here; tests inject only the failing I/O operation.
+func _open_temporary_file(path: String) -> FileAccess:
+	return FileAccess.open(path, FileAccess.WRITE)
+
+
+func _store_temporary_text(file: FileAccess, text: String) -> bool:
+	return file.store_string(text) and file.get_error() == OK
+
+
+func _flush_temporary_file(file: FileAccess) -> Error:
+	file.flush()
+	return file.get_error()
 
 
 func _remove_previous_record() -> Error:

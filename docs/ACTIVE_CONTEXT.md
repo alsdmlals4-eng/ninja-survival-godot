@@ -1,5 +1,25 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — temporary profile I/O failure coverage, 2026-09-14
+
+Approved R01 continuation: RunResumeStore now owns narrow open/store/flush operations.
+It checks store_string's result before flush, closes the handle explicitly and distinguishes
+temporary_open_failed / temporary_write_failed / temporary_flush_failed. Tests inject
+open, partial-write, flush and temporary-readback failures using a real gut-only file.
+Old bytes, balance, caller request and receipt remain unchanged; candidate remnants are
+preserved and block overwrite on retry. RED 1/9 failed before implementation; GREEN9/9,
+143assertions. Full102scripts/806tests/11571assertions PASS, exit0, log
+`ninja-profile-temporary-full-20260914.log`. This is failure simulation, not power-loss proof.
+Fresh prior head d556637 CI GUT and Windows SUCCESS; current increment needs exact-head CI.
+Base remote still d830c0f; project five-loop/full-scope gate remains in force and unfinished.
+
+Reward owner readback: RestRewardController owns chest count, boss offer IDs/lanes and
+pending choice; ShopController owns offers/lanes/bag limit/reroll tier; both share an RNG.
+Existing begin_rest rerolls and resets state, so cannot be used as preparation restore.
+Selected acquisition catalog mapping, explicit RNG persistence and pending-bag ownership
+must be resolved in R01 preparation serialization before Main uses profile2. No new
+generic dictionary escape hatch or second save system. R01 and whole-game remain open.
+
 ## Latest increment — monthly evidence supplement / chroma pipeline, 2026-09-14
 
 User requested future chroma-background generation followed by removal and a separate

@@ -779,6 +779,20 @@ v1 런 자동 변환 REJECT. 유효 v1 잔액만 첫 profile 생성 시 source S
 테스트는 주입된 gut 전용 경로만 사용. 정상 사용자 경로로 실패 주입 금지.
 **완료:** JSON 왕복+모든 실패 지점+재시작 readback이 통과한 뒤에만 R02가 소비한다.
 
+R01 2026-09-14 보강: 임시 파일 open/store/flush/readback 실패를 실제 시험 전용
+파일과 최소 I/O 경계로 주입한다. store_string 반환값을 먼저 검사하며 핸들을 명시적으로
+닫고 실패 원인을 분리한다. 원본·호출자 요청·잔액은 유지하고 남은 후보는 자동 덮어쓰지
+않는다. 집중9/9, 전체806/806 자동검사 통과. 전원 차단·실기기 증거는 아니다.
+대안: 기존 최종 get_error만 확인 REJECT(쓰기 실패 단계 분리/검증 부족),
+별도 저장 프레임워크 REJECT(책임 중복), 기존 store의 좁은 I/O 경계 ADAPT.
+공식 근거: https://docs.godotengine.org/en/stable/classes/class_fileaccess.html
+(store_string 성공값, flush/get_error, close 수명). JSON/Resource 저장 형식 교체는 하지 않는다.
+
+준비 보상 상태의 실제 owner 조사: RestRewardController의 chest/boss pending/options,
+ShopController의 offer/lane/bag-purchased/reroll과 공유 RNG를 보존해야 한다.
+begin_rest 재호출은 후보 재추첨·구매 제한 초기화를 일으키므로 복원 경로로 쓰지 않는다.
+이 조사만으로 preparation codec 또는 selected reward runtime이 구현됐다고 보지 않는다.
+
 ### R02. 준비 단계와 두 확정 거래
 
 **수정:** `scripts/core/rest_commit_coordinator.gd`, `school_circuit_controller.gd`,
