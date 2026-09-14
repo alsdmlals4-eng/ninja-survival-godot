@@ -1,5 +1,22 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — reward/shop serialization and selected acquisition, 2026-09-14
+
+RestRewardController/ShopController now export and validate/restore value snapshots:
+fixed boss offers, consumed flag, chest count, shop offers/lanes/bag purchase limit,
+reroll index, text history and shared RNG seed/state as exact decimal strings.
+Restore performs no draw, acquire, spend or notification. Prepared access is required;
+fresh configured selected owners restore without calling begin_rest. Gold/inventory,
+pending bag and profile2 preparation transactions are NOT included by this sub-owner API.
+RED missing API2tests, then selected acquisition test reproduced dropped replacement
+manuals, then fresh-owner restore test reproduced missing lane setup. Corrections verified:
+focused14tests/303assertions; full102scripts/809tests/11770assertions PASS exit0,
+`ninja-reward-persistence-full-20260914.log`. Existing main entry not migrated.
+Shop/reward filter now chooses legacy versus selected canonical acquisition from the
+actual backpack contract. Old katana/shuriken/bomb do not leak into new selectable runs.
+No new image or player-save mutation. Whole-scope review, profile2 preparation, Main,
+Human/device and release remain open; continue session pending-bag persistence next.
+
 ## Latest increment — temporary profile I/O failure coverage, 2026-09-14
 
 Approved R01 continuation: RunResumeStore now owns narrow open/store/flush operations.

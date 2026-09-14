@@ -57,6 +57,8 @@ func configure(
 	_shop = ShopControllerScript.new()
 	add_child(_shop)
 	_shop.configure_spatial(_build_state, _session, _item_defs, _bag_defs, _rng)
+	if _access_state != null:
+		_shop.set_spatial_offer_lanes(_eligible_lanes())
 	_shop.transaction_failed.connect(_on_shop_transaction_failed)
 
 
@@ -230,6 +232,76 @@ func access_snapshot() -> Dictionary:
 	return _access_state.get_snapshot()
 
 
+func persistent_snapshot() -> Dictionary:
+	if _shop == null or _rng == null or _boss_reward_ids.size() != 3:
+		return {}
+	return {"version": 1, "segment": _segment_index, "school": String(_selected_school_id),
+		"new_school": String(_newly_stabilized_school_id), "chests": _chest_tokens,
+		"boss_ids": _boss_reward_ids.duplicate(), "boss_pending": _boss_reward_pending,
+		"last_chest_lanes": _last_chest_lane_ids.duplicate(), "shop": _shop.persistent_snapshot(),
+		"rng_seed": str(_rng.seed), "rng_state": str(_rng.state)}
+
+
+# Configured access/inventory/build are caller-owned prerequisites. Never call
+# begin_rest here: that would reroll offers and reset consumed reward limits.
+func restore_persistent_snapshot(raw: Dictionary) -> bool:
+	if _shop == null or _rng == null or _access_state == null or raw.size() != 11:
+		return false
+	if not ShopControllerScript._saved_count(raw.get("version")) or raw.version != 1:
+		return false
+	if not ShopControllerScript._saved_count(raw.get("segment")) or not ShopControllerScript._saved_count(raw.get("chests")):
+		return false
+	if not (raw.get("boss_pending") is bool) or not (raw.get("shop") is Dictionary):
+		return false
+	for key in ["school", "new_school"]:
+		if not (raw.get(key) is String or raw.get(key) is StringName):
+			return false
+		if not _access_state.is_school_package_open(StringName(raw[key])):
+			return false
+	for key in ["rng_seed", "rng_state"]:
+		# JSON numbers cannot preserve all 64-bit RNG values. Canonical decimal
+		# strings reject overflow and lossy conversions; seed must be set first.
+		if not (raw.get(key) is String) or not raw[key].is_valid_int() or str(raw[key].to_int()) != raw[key]:
+			return false
+	if not (raw.get("boss_ids") is Array) or raw.boss_ids.size() != 3 or not (raw.get("last_chest_lanes") is Array):
+		return false
+	var pools: Array = [_filtered_pool(_access_state.school_package_item_ids(StringName(raw.school))),
+		_filtered_pool(_access_state.school_package_item_ids(StringName(raw.new_school))),
+		_filtered_pool(_access_state.universal_item_ids())]
+	var seen := {}
+	for i in range(3):
+		var value = raw.boss_ids[i]
+		if not (value is String or value is StringName):
+			return false
+		var id := StringName(value)
+		if seen.has(id) or not pools[i].has(id):
+			return false
+		seen[id] = true
+	if raw.last_chest_lanes.size() not in [0, 2]:
+		return false
+	var allowed_lanes: Array = []
+	for lane in _eligible_lanes():
+		allowed_lanes.append(String(lane.lane_id))
+	for value in raw.last_chest_lanes:
+		if not (value is String or value is StringName) or not allowed_lanes.has(String(value)):
+			return false
+	if not _shop.can_restore_persistent_snapshot(raw.shop):
+		return false
+	# All checks precede mutations. No acquisition, spend, RNG draw or signal.
+	_shop.restore_persistent_snapshot(raw.shop)
+	_segment_index = int(raw.segment)
+	_selected_school_id = StringName(raw.school)
+	_newly_stabilized_school_id = StringName(raw.new_school)
+	_chest_tokens = int(raw.chests)
+	_boss_reward_ids = _string_name_array(raw.boss_ids)
+	_boss_reward_lane_ids.assign(BOSS_REWARD_LANES)
+	_boss_reward_pending = raw.boss_pending
+	_last_chest_lane_ids = _string_name_array(raw.last_chest_lanes)
+	_rng.seed = raw.rng_seed.to_int()
+	_rng.state = raw.rng_state.to_int()
+	return true
+
+
 func _ensure_access_state(selected_school_id: StringName) -> void:
 	if _access_state == null:
 		_access_state = TraditionAccessStateScript.new()
@@ -279,7 +351,7 @@ func _eligible_lanes() -> Array[Dictionary]:
 	if _access_state == null:
 		return []
 	var result: Array[Dictionary] = []
-	var canonical: Array[StringName] = MVP4CatalogScript.base_acquisition_item_ids()
+	var canonical: Array[StringName] = _shop.acquisition_item_ids()
 	for lane in _access_state.eligible_lane_pools():
 		var lane_id := StringName(lane.get("lane_id", &""))
 		var item_ids: Array[StringName] = []
@@ -316,7 +388,7 @@ func _draw_lane_first(lanes: Array[Dictionary], count: int) -> Dictionary:
 
 
 func _filtered_pool(raw_pool) -> Array[StringName]:
-	var canonical: Array[StringName] = MVP4CatalogScript.base_acquisition_item_ids()
+	var canonical: Array[StringName] = _shop.acquisition_item_ids()
 	var result: Array[StringName] = []
 	var seen := {}
 	for raw_id in raw_pool:
