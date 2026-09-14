@@ -3,6 +3,7 @@ extends GutTest
 const CODEC = preload("res://scripts/core/run_resume_codec.gd")
 const STORE = preload("res://scripts/core/run_resume_store.gd")
 const TEST_PATH := "user://gut_profile_v2_20260914.json"
+const LEGACY_PATH := "user://gut_legacy_wallet_migration_20260914.json"
 
 class TemporaryFailure:
 	extends "res://scripts/core/run_resume_store.gd"
@@ -170,6 +171,8 @@ func after_each() -> void:
 
 
 func _clean_test_files() -> void:
+	if FileAccess.file_exists(LEGACY_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(LEGACY_PATH))
 	for suffix in ["", ".tmp", ".previous"]:
 		if FileAccess.file_exists(TEST_PATH + suffix):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_PATH + suffix))
@@ -294,6 +297,79 @@ func test_profile_transaction_adds_its_own_unlock_receipt_without_caller_forgery
 	assert_true(store.transact_profile(next, 1, "unlock:support-choice-v1").ok)
 	assert_true(store.load_profile().profile.meta.unlocked_support_choice)
 	assert_eq(store.load_profile().profile.meta.soul_balance, 0)
+
+
+func test_legacy_wallet_import_is_one_time_and_preserves_source_bytes() -> void:
+	var store = STORE.new()
+	assert_true(store.configure_profile(TEST_PATH))
+	assert_true(store.has_method("import_legacy_wallet"))
+	if not store.has_method("import_legacy_wallet"):
+		return
+	var source := "{\n  \"balance\": 7\n}"
+	var file := FileAccess.open(LEGACY_PATH, FileAccess.WRITE)
+	file.store_string(source)
+	file.close()
+	assert_true(store.import_legacy_wallet(LEGACY_PATH).ok)
+	var profile: Dictionary = store.load_profile().profile
+	assert_eq(profile.meta.soul_balance, 7)
+	assert_eq(profile.revision, 1)
+	assert_null(profile.active_run)
+	assert_true(profile.meta.transaction_receipts.has("migrate:wallet-v1:" + source.sha256_text()))
+	assert_eq(FileAccess.get_file_as_string(LEGACY_PATH), source)
+	var committed := FileAccess.get_file_as_string(TEST_PATH)
+	var reopened = STORE.new()
+	assert_true(reopened.configure_profile(TEST_PATH))
+	assert_false(reopened.import_legacy_wallet(LEGACY_PATH).ok)
+	assert_eq(FileAccess.get_file_as_string(TEST_PATH), committed)
+	assert_eq(FileAccess.get_file_as_string(LEGACY_PATH), source)
+
+
+func test_legacy_import_refuses_missing_corrupt_future_and_pending_recovery() -> void:
+	var store = STORE.new()
+	assert_true(store.configure_profile(TEST_PATH))
+	assert_true(store.has_method("import_legacy_wallet"))
+	if not store.has_method("import_legacy_wallet"):
+		return
+	assert_false(store.import_legacy_wallet(LEGACY_PATH).ok)
+	for source in ["broken", "{\"balance\": -1}", "{\"balance\": 1.5}", "{\"balance\": 8, \"schema_version\": 3}"]:
+		var file := FileAccess.open(LEGACY_PATH, FileAccess.WRITE)
+		file.store_string(source)
+		file.close()
+		assert_false(store.import_legacy_wallet(LEGACY_PATH).ok)
+		assert_false(FileAccess.file_exists(TEST_PATH))
+		assert_eq(FileAccess.get_file_as_string(LEGACY_PATH), source)
+	var file := FileAccess.open(LEGACY_PATH, FileAccess.WRITE)
+	file.store_string("{\"balance\": 8}")
+	file.close()
+	file = FileAccess.open(TEST_PATH + ".tmp", FileAccess.WRITE)
+	file.store_string("unresolved")
+	file.close()
+	assert_false(store.import_legacy_wallet(LEGACY_PATH).ok)
+	assert_false(FileAccess.file_exists(TEST_PATH))
+	assert_eq(FileAccess.get_file_as_string(TEST_PATH + ".tmp"), "unresolved")
+
+
+func test_legacy_import_write_failure_keeps_wallet_and_never_reimports_candidate() -> void:
+	for failure in ["open", "write", "flush", "readback"]:
+		_clean_test_files()
+		var source := "{\"balance\": 9}"
+		var file := FileAccess.open(LEGACY_PATH, FileAccess.WRITE)
+		file.store_string(source)
+		file.close()
+		var store = TemporaryFailure.new()
+		assert_true(store.configure_profile(TEST_PATH))
+		store.failure = failure
+		assert_false(store.import_legacy_wallet(LEGACY_PATH).ok, failure)
+		assert_eq(FileAccess.get_file_as_string(LEGACY_PATH), source, failure)
+		assert_false(FileAccess.file_exists(TEST_PATH), failure)
+		store.failure = ""
+		if failure == "open":
+			assert_true(store.import_legacy_wallet(LEGACY_PATH).ok)
+			assert_eq(store.load_profile().profile.meta.soul_balance, 9)
+		else:
+			var candidate := FileAccess.get_file_as_string(TEST_PATH + ".tmp")
+			assert_false(store.import_legacy_wallet(LEGACY_PATH).ok)
+			assert_eq(FileAccess.get_file_as_string(TEST_PATH + ".tmp"), candidate)
 
 
 func _empty_profile() -> Dictionary:

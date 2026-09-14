@@ -1,5 +1,21 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — nondestructive legacy wallet import, 2026-09-14
+
+RunResumeStore.import_legacy_wallet reads the old wallet without writes and reuses
+NinjaSoulWallet.decode_legacy_balance plus the existing profile transaction. Only an
+absent profile with no canonical/previous/temporary candidate can import. The receipt
+is migrate:wallet-v1:<SHA256 of exact source bytes>; active_run stays null. Existing
+profiles refuse reimport, including after reopening. Missing/corrupt/future/fractional
+wallets are rejected rather than reset. Legacy runs are not translated or deleted.
+RED focused11/13 missing API, GREEN13/13, then actual gut-only open/write/flush/readback
+failure fixtures added. Final full102scripts/817tests/11916assertions PASS exit0,
+`ninja-wallet-migration-full-20260914.log`. Source bytes preserved in every fixture;
+failed temporary candidates block a second import. No real player save accessed.
+Prior source2ecb98f exact-head remote GUT/Windows SUCCESS. Main migration prompt/entry,
+explicit recovery selection, retry union and R02 remain open. This is an approved R01
+independent sub-owner increment, not completion of recovery/Main/whole-game gates.
+
 ## Latest increment — read-only recovery inventory and stage coherence, 2026-09-14
 
 RunResumeStore.inspect_profile_recovery reports canonical/previous/temporary existence,

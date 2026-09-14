@@ -24,6 +24,45 @@ func configure_profile(path: String) -> bool:
 	return true
 
 
+# Initial import only. Legacy run state is deliberately not translated.
+# The source is opened READ-only; this store's existing transaction owns publication.
+func import_legacy_wallet(source_path: String) -> Dictionary:
+	if not _configured or not _profile_mode or _profile_transaction_busy:
+		return {"ok": false, "reason": &"not_ready"}
+	if source_path.is_empty():
+		return {"ok": false, "reason": &"invalid_source"}
+	var inventory := inspect_profile_recovery()
+	for candidate in inventory.candidates:
+		if candidate.exists:
+			return {"ok": false, "reason": &"profile_or_recovery_exists"}
+	if not FileAccess.file_exists(source_path):
+		return {"ok": false, "reason": &"legacy_missing"}
+	var file := FileAccess.open(source_path, FileAccess.READ)
+	if file == null:
+		return {"ok": false, "reason": &"legacy_unreadable"}
+	var bytes := file.get_buffer(file.get_length())
+	var read_error := file.get_error()
+	file.close()
+	if read_error != OK:
+		return {"ok": false, "reason": &"legacy_unreadable"}
+	var parser := JSON.new()
+	if parser.parse(bytes.get_string_from_utf8()) != OK:
+		return {"ok": false, "reason": &"invalid_legacy_wallet"}
+	var balance: int = preload("res://scripts/core/ninja_soul_wallet.gd").decode_legacy_balance(parser.data)
+	if balance < 0:
+		return {"ok": false, "reason": &"invalid_legacy_wallet"}
+	var hash := HashingContext.new()
+	hash.start(HashingContext.HASH_SHA256)
+	hash.update(bytes)
+	var source_hash := hash.finish().hex_encode()
+	var profile := {"schema_version": 2, "revision": 0,
+		"content_contract": RUN_RESUME_CODEC_SCRIPT.PROFILE_CONTRACT,
+		"meta": {"soul_balance": balance, "unlocked_support_choice": false,
+			"settled_run_ids": [], "applied_transaction_ids": [], "transaction_receipts": {}},
+		"active_run": null}
+	return transact_profile(profile, 0, "migrate:wallet-v1:" + source_hash)
+
+
 func load_profile() -> Dictionary:
 	if not _configured or not _profile_mode:
 		return {"ok": false, "reason": &"not_configured"}

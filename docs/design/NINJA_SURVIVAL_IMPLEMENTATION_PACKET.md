@@ -800,6 +800,13 @@ v1 런 자동 변환 REJECT. 유효 v1 잔액만 첫 profile 생성 시 source S
 `migrate:wallet-v1:<sha>` receipt로1회 이관. 이미 profile이 있으면 v1 재수입 금지.
 손상 wallet은0초기화 금지, 미래 버전 거부, 원본 삭제/덮어쓰기 금지.
 
+2026-09-14 구현: `RunResumeStore.import_legacy_wallet(source_path)`가 기존 잔액
+검증기와 profile 거래를 재사용한다. 읽은 원본 바이트 SHA256을 이관 receipt에 기록하고
+첫 profile만 생성한다. 정본이나 복구 후보가 하나라도 있으면 재수입을 거부한다.
+실패 주입은 gut 전용 파일로만 수행한다. Main 진입 연결은 후속 R03이며 기존 런의
+자동 변환은 여전히 제외한다. 원본 직접 수정 REJECT, 별도 이관 저장소 REJECT,
+기존 엄격한 검증기+단일 거래 재사용 ADAPT. 사용자 파일은 이번 시험에 사용하지 않았다.
+
 인수 예: 초기 소울2 → retry 거래 → 소울1/소비flag/checkpoint 예약이 함께 저장;
 동일 ID 재시도는 소울1. rename 실패면 기존 소울2/이전 체크포인트 유지.
 테스트는 주입된 gut 전용 경로만 사용. 정상 사용자 경로로 실패 주입 금지.
