@@ -56,6 +56,10 @@ func show_starting_school_selection() -> void:
 	(get_node("Panel/Margin/Choices/BongmaButton") as Button).grab_focus.call_deferred()
 
 
+func blocks_combat_input() -> bool:
+	return visible and (_selection_panel.visible or _help_open)
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if _help_open:
 		if event.is_action_pressed(&"ui_cancel"):

@@ -58,6 +58,9 @@ func _build_ninjutsu_entries() -> Array:
 	var definitions: Dictionary = NINJUTSU_CATALOG_SCRIPT.build_definitions()
 	for ninjutsu_id in _sorted_ids(definitions):
 		var definition = definitions.get(ninjutsu_id)
+		# New selectable records are preparation data until their runtime cutover.
+		if definition.acquisition_lane == &"selectable":
+			continue
 		entries.append({
 			"entry_id": definition.ninjutsu_id,
 			"title": definition.display_name,

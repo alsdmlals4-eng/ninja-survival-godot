@@ -12,6 +12,15 @@ var active: bool = false
 var combat_resolver: CombatResolver
 var contribution_tracker: CombatContributionTracker
 var run_modifiers := RunModifierSet.new()
+var _ninjutsu_loadout: Node
+
+
+func configure_ninjutsu_loadout(loadout: Node) -> void:
+	_ninjutsu_loadout = loadout
+
+
+func uses_selected_ninjutsu() -> bool:
+	return is_instance_valid(_ninjutsu_loadout) and _ninjutsu_loadout.has_method("get_snapshot") and _ninjutsu_loadout.call("get_snapshot").get("selection_contract", "") == "selectable-v2"
 
 
 func configure(new_player: PlayerController, new_world: Node2D) -> void:
@@ -51,6 +60,12 @@ func try_use_ultimate() -> bool:
 
 func is_ultimate_ready() -> bool:
 	return false
+
+
+func ultimate_block_reason() -> StringName:
+	if not active:
+		return &"inactive"
+	return &"" if is_ultimate_ready() else &"charging"
 
 
 func emit_player_action_resolved() -> void:

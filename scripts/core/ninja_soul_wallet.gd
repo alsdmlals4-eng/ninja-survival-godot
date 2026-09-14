@@ -14,14 +14,17 @@ var _configured := false
 func configure(storage_path: String = DEFAULT_STORAGE_PATH, initial_balance_if_missing: int = 0) -> bool:
 	if storage_path.is_empty():
 		return false
-	_storage_path = storage_path
-	if FileAccess.file_exists(_storage_path):
-		if not _load_from_disk():
+	var candidate_balance: int
+	if FileAccess.file_exists(storage_path):
+		candidate_balance = _read_balance_from_disk(storage_path)
+		if candidate_balance < 0:
 			return false
 	else:
-		_balance = maxi(initial_balance_if_missing, 0)
-		if not _write_to_disk(_balance):
+		candidate_balance = maxi(initial_balance_if_missing, 0)
+		if decode_legacy_balance({"balance": candidate_balance}) < 0 or not _write_to_disk(candidate_balance, storage_path):
 			return false
+	_storage_path = storage_path
+	_balance = candidate_balance
 	_configured = true
 	balance_changed.emit(_balance)
 	return true
@@ -58,24 +61,32 @@ func get_snapshot() -> Dictionary:
 	}
 
 
-func _load_from_disk() -> bool:
-	var file := FileAccess.open(_storage_path, FileAccess.READ)
+func _read_balance_from_disk(path: String) -> int:
+	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
-		return false
-	var parsed = JSON.parse_string(file.get_as_text())
-	if not (parsed is Dictionary):
-		return false
-	var raw_balance := int(parsed.get("balance", -1))
-	if raw_balance < 0:
-		return false
-	_balance = raw_balance
-	return true
+		return -1
+	var parser := JSON.new()
+	if parser.parse(file.get_as_text()) != OK:
+		return -1
+	return decode_legacy_balance(parser.data)
 
 
-func _write_to_disk(balance_to_write: int) -> bool:
+# JSON numbers are doubles. Reject lossy/future data before conversion or migration.
+static func decode_legacy_balance(parsed) -> int:
+	if not (parsed is Dictionary) or parsed.has("schema_version"):
+		return -1
+	var raw = parsed.get("balance")
+	if not (raw is int or raw is float):
+		return -1
+	if not is_finite(float(raw)) or raw < 0 or raw > 9007199254740991 or float(raw) != floor(float(raw)):
+		return -1
+	return int(raw)
+
+
+func _write_to_disk(balance_to_write: int, path: String = _storage_path) -> bool:
 	if balance_to_write < 0:
 		return false
-	var file := FileAccess.open(_storage_path, FileAccess.WRITE)
+	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
 		return false
 	file.store_string(JSON.stringify({"balance": balance_to_write}))

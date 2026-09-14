@@ -4,6 +4,18 @@ This guide applies to GPT/ChatGPT, Codex and delegated agents working on `alsdml
 
 ## 1. Project identity
 
+### 2026-09-10 user-directed planning restart
+
+For new work, first read the 2026-09-10 restart entry in
+`docs/CURRENT_CONFIRMED_DECISIONS.md`, then `docs/ACTIVE_CONTEXT.md` and
+`docs/CURRENT_VISUAL_HANDOFF.md`. Existing product designs are re-evaluation
+inputs; existing images are REFERENCE_ONLY for the new production cycle.
+Historical approvals and current runtime bindings remain evidence of the
+existing build, not approval of the replacement design or assets.
+The restart does not authorize destructive runtime removal. Current Base
+Aseprite routing is selectively applied through the project work contract;
+it neither installs a full Base adapter nor selects pixel art automatically.
+
 This repository is the Godot 4.x / GDScript rebuild of `닌자 서바이벌 (닌자의 신)`.
 
 The Unity archive is reference material only. Do not line-by-line port Unity C#/MonoBehaviour/Prefab structures into the Godot product.
@@ -160,10 +172,10 @@ The protected atomic Workbench boundary remains:
 
 Do not regress these approved MVP-4 decisions:
 
-- fixed 6x6 technical outer board / centered 4x3 active area is the protected
-  current machine baseline; DEC-037 supersedes its player-facing and next
-  runtime-migration start with **exactly 3×3** after final Human Blueprint PDF
-  review. Do not present 4×3 as the public starting-bag promise.
+- Existing-build starting area is **3×3** inside the 6×6 outer board:
+  DEC-037 migration is merged through PR #139. The older 4×3 area is
+  historical implementation lineage, not the current machine baseline.
+  The 2026-09-10 planning restart must evaluate future rules explicitly.
 - bag purchase expands usable area
 - item and bag 90-degree rotation
 - rectangular regular items; selected L/T bag shapes

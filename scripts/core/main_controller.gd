@@ -19,6 +19,7 @@ const CONTRIBUTION_TRACKER_SCRIPT = preload("res://scripts/combat/combat_contrib
 const COMBAT_RESOLVER_SCRIPT = preload("res://scripts/combat/combat_resolver.gd")
 const ENCOUNTER_CATALOG_SCRIPT = preload("res://scripts/data/encounter_catalog.gd")
 const STAGE_BOSS_SCENE = preload("res://scenes/enemies/stage_boss.tscn")
+const FINAL_CALAMITY_SCENE = preload("res://scenes/enemies/final_calamity.tscn")
 const STAGE_BOSS_SCRIPT = preload("res://scripts/enemies/stage_boss.gd")
 const ENEMY_BASIC_SCENE = preload("res://scenes/enemies/enemy_basic.tscn")
 const SCHOOL_ENCOUNTER_ACTOR_SCENE = preload("res://scenes/enemies/school_encounter_actor.tscn")
@@ -44,6 +45,8 @@ const SCHOOL_CIRCUIT_TEST_ELITE_ROLE := &"test_elite"
 const SCHOOL_CIRCUIT_TEST_BOSS_ROLE := &"test_boss"
 
 @export var reward_orb_scene: PackedScene
+@export var wallet_storage_path: String = NINJA_SOUL_WALLET_SCRIPT.DEFAULT_STORAGE_PATH
+@export var resume_storage_path: String = RUN_RESUME_STORE_SCRIPT.DEFAULT_STORAGE_PATH
 
 var game_over: bool = false
 var run_build_state: RunBuildState
@@ -74,6 +77,7 @@ var _cheonsul_elapsed_seconds: float = 0.0
 var _school_circuit_elapsed_seconds: float = 0.0
 var _run_play_elapsed_seconds: float = 0.0
 var _combat_enabled: bool = false
+var _final_battle_started: bool = false
 
 @onready var game_state: GameState = $GameState
 @onready var combat_ddd: CombatDDDTracker = $CombatDDD
@@ -94,6 +98,10 @@ func _ready() -> void:
 
 	wave_spawner.configure(self, player)
 	basic_weapons.configure(combat_resolver)
+	(school_host.get_node("Guiin") as GuiinRuntime).configure_weapon_controller(basic_weapons)
+	school_host.configure_ninjutsu_loadout(ninjutsu_loadout)
+	(school_host.get_node("Heukyeong") as HeukyeongRuntime).configure_selected_status_provider(ninjutsu_auto_controller)
+	(school_host.get_node("Cheonsul") as CheonsulRuntime).configure_selected_status_provider(ninjutsu_auto_controller)
 	school_host.configure(player, self)
 	school_host.configure_run_systems(combat_resolver, contribution_tracker)
 	if ninjutsu_auto_controller != null:
@@ -141,8 +149,8 @@ func _setup_mvp3_nodes() -> void:
 	var economy_rng := RandomNumberGenerator.new()
 	economy_rng.randomize()
 	run_build_state.configure(_item_defs, _fate_defs, RUN_ECONOMY_POLICY, economy_rng)
-	ninja_soul_wallet.configure()
-	run_resume_store.configure()
+	ninja_soul_wallet.configure(wallet_storage_path)
+	run_resume_store.configure(resume_storage_path)
 	shop_controller.configure(run_build_state, _item_defs)
 	fate_controller.configure(run_build_state, _fate_defs)
 	combat_resolver.configure(contribution_tracker)
@@ -172,6 +180,8 @@ func _connect_existing_signals() -> void:
 	hud.current_tradition_help_requested.connect(_on_current_tradition_help_requested)
 	hud.restart_requested.connect(_restart_run)
 	hud.retry_requested.connect(_on_retry_requested)
+	hud.ultimate_requested.connect(_on_ultimate_requested)
+	school_host.ultimate_ready_changed.connect(_on_ultimate_ready_changed)
 
 
 func _connect_mvp3_signals() -> void:
@@ -190,6 +200,9 @@ func _connect_mvp3_signals() -> void:
 	rest_flow_ui.workbench_boss_reward_selected.connect(_on_workbench_boss_reward_selected)
 	rest_flow_ui.workbench_chest_open_requested.connect(_on_workbench_chest_open_requested)
 	rest_flow_ui.workbench_bag_purchase_requested.connect(_on_workbench_bag_purchase_requested)
+	rest_flow_ui.workbench_shop_buy_requested.connect(_on_workbench_shop_buy_requested)
+	rest_flow_ui.workbench_shop_sell_requested.connect(_on_workbench_shop_sell_requested)
+	rest_flow_ui.workbench_shop_reroll_requested.connect(_on_workbench_shop_reroll_requested)
 	rest_flow_ui.workbench_bag_placement_requested.connect(_on_workbench_bag_placement_requested)
 	rest_flow_ui.workbench_buffer_placement_requested.connect(_on_workbench_buffer_placement_requested)
 	rest_flow_ui.workbench_existing_item_move_requested.connect(_on_workbench_existing_item_move_requested)
@@ -203,6 +216,10 @@ func _connect_mvp3_signals() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed(&"ultimate") and not event.is_echo():
+		_on_ultimate_requested()
+		get_viewport().set_input_as_handled()
+		return
 	if _handle_gameplay_pointer_input(event):
 		get_viewport().set_input_as_handled()
 		return
@@ -210,6 +227,22 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if game_over:
 		_restart_run()
+
+
+func _on_ultimate_ready_changed(ready: bool) -> void:
+	hud.set_ultimate_ready(ready)
+
+
+func _on_ultimate_requested() -> void:
+	if game_over or not _combat_enabled or get_tree().paused or player.health <= 0:
+		return
+	if hud.settings_panel.visible or school_selection.blocks_combat_input() or title_screen.visible:
+		return
+	var reason := school_host.ultimate_block_reason()
+	if reason == &"":
+		reason = &"activated" if school_host.try_use_ultimate() else &"unavailable"
+	hud.set_ultimate_ready(school_host.is_ultimate_ready())
+	hud.show_ultimate_feedback(reason)
 
 
 func _handle_gameplay_pointer_input(event: InputEvent) -> bool:
@@ -304,6 +337,8 @@ func _start_school_circuit(school_id: StringName) -> bool:
 		return false
 	if not school_circuit.begin_school(school_id):
 		return false
+	if ninjutsu_auto_controller != null:
+		ninjutsu_auto_controller.call("configure", player, self, combat_resolver, ninjutsu_loadout)
 	for child in get_children():
 		if child.is_in_group("enemies") and not child.has_meta(SCHOOL_CIRCUIT_ROLE_META):
 			_wire_enemy(child)
@@ -466,7 +501,8 @@ func _process(delta: float) -> void:
 func _on_school_circuit_phase_changed(phase: StringName) -> void:
 	if school_circuit == null:
 		return
-	var view: Dictionary = STAGE_PHASE_PRESENTATION_SCRIPT.describe(school_host.selected_school_id, phase)
+	var battlefield_id := StringName(school_circuit.get_snapshot().get("encounter", {}).get("school_id", &""))
+	var view: Dictionary = STAGE_PHASE_PRESENTATION_SCRIPT.describe(battlefield_id, phase)
 	hud.set_stage_phase(
 		str(view.get("stage", "")),
 		str(view.get("phase", "")),
@@ -676,15 +712,25 @@ func _sync_run_modifiers() -> void:
 
 
 func _set_combat_enabled(enabled: bool) -> void:
+	if enabled and not _combat_enabled:
+		player.grant_entry_protection()
 	_combat_enabled = enabled
 	if not enabled:
 		player.clear_pointer_target()
+		if ninjutsu_auto_controller != null:
+			ninjutsu_auto_controller.call("clear_runtime_effects")
+		if school_host.active_runtime is GuiinRuntime:
+			(school_host.active_runtime as GuiinRuntime).cancel_ultimate()
+		elif school_host.active_runtime is BongmaRuntime:
+			(school_host.active_runtime as BongmaRuntime).cancel_ultimate()
+		elif school_host.active_runtime is CheonsulRuntime:
+			(school_host.active_runtime as CheonsulRuntime).cancel_ultimate()
 	var gameplay_mode := Node.PROCESS_MODE_INHERIT if enabled else Node.PROCESS_MODE_DISABLED
 	player.process_mode = gameplay_mode
 	basic_weapons.process_mode = gameplay_mode
 	if ninjutsu_auto_controller != null:
 		ninjutsu_auto_controller.process_mode = gameplay_mode
-	wave_spawner.set_spawning_enabled(enabled)
+	wave_spawner.set_spawning_enabled(enabled and not _final_battle_started)
 	wave_spawner.process_mode = gameplay_mode
 	combat_ddd.process_mode = gameplay_mode
 	school_host.process_mode = gameplay_mode
@@ -697,8 +743,10 @@ func _set_combat_enabled(enabled: bool) -> void:
 
 	var combat_hud_enabled := enabled and not game_over and school_host.selected_school_id != &""
 	hud.show_combat_hud(combat_hud_enabled)
+	hud.set_ultimate_ready(school_host.is_ultimate_ready())
 	if combat_hud_enabled:
-		wave_spawner.ensure_minimum_active()
+		if not _final_battle_started:
+			wave_spawner.ensure_minimum_active()
 		hud.set_dash_state(player.current_dash_charges(), PlayerController.MAX_DASH_CHARGES)
 		hud.set_play_time(_run_play_elapsed_seconds)
 	else:
@@ -772,7 +820,9 @@ func _on_enemy_died(enemy: Node) -> void:
 	contribution_tracker.record_kill(combat_ddd.combo_count)
 	_spawn_reward_orb(death_position)
 
-	if circuit_role == SCHOOL_CIRCUIT_ELITE_ROLE and school_circuit != null:
+	if circuit_role == &"final_boss":
+		_settle_final_calamity_death(enemy)
+	elif circuit_role == SCHOOL_CIRCUIT_ELITE_ROLE and school_circuit != null:
 		_pending_trace_spawn_position = death_position
 		school_circuit.mark_elite_defeated()
 	elif circuit_role == SCHOOL_CIRCUIT_BOSS_ROLE and school_circuit != null:
@@ -833,6 +883,8 @@ func _render_school_circuit_workbench() -> void:
 			"chest_count": snapshot.get("chest_count", 0),
 			"buffer": snapshot.get("buffer", []),
 			"bag_offer": snapshot.get("bag_offer", {}),
+			"shop_offers": snapshot.get("shop_offers", []),
+			"shop_reroll_cost": snapshot.get("shop_reroll_cost", 0),
 			"pending_bag": snapshot.get("pending_bag", {}),
 			"gold": snapshot.get("gold", 0),
 			"can_undo": snapshot.get("can_undo", false),
@@ -1202,6 +1254,9 @@ func _on_workbench_route_selected_requested_legacy(school_id: StringName) -> voi
 
 func _on_workbench_commit_requested() -> void:
 	if school_circuit != null:
+		if school_circuit.route_state.is_final_binding_eligible():
+			_start_final_calamity()
+			return
 		if not school_circuit.commit_workbench():
 			_render_school_circuit_workbench()
 			return
@@ -1217,6 +1272,69 @@ func _on_workbench_commit_requested() -> void:
 	if cheonsul_slice == null:
 		return
 	_render_cheonsul_workbench()
+
+
+func _start_final_calamity() -> void:
+	if game_over or _final_battle_started or school_circuit == null:
+		return
+	# Validate the actual consumer before publishing the final build transaction.
+	var boss = FINAL_CALAMITY_SCENE.instantiate()
+	if not boss.configure_clear_order(school_circuit.route_state.clear_order()):
+		boss.free()
+		return
+	if not school_circuit.commit_workbench():
+		boss.free()
+		_render_school_circuit_workbench()
+		return
+	_final_battle_started = true
+	_sync_run_modifiers()
+	if ninjutsu_auto_controller != null:
+		ninjutsu_auto_controller.call("configure", player, self, combat_resolver, ninjutsu_loadout)
+	add_child(boss)
+	current_stage_boss = boss
+	boss.global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
+	boss.set_meta(SCHOOL_CIRCUIT_ROLE_META, &"final_boss")
+	_wire_enemy(boss)
+	boss.theme_changed.connect(_on_final_theme_changed)
+	rest_flow_ui.hide_all()
+	_set_combat_enabled(true)
+	_on_final_theme_changed(boss.theme_school_id())
+
+
+func _on_workbench_shop_buy_requested(index: int) -> void:
+	if not game_over and school_circuit != null:
+		school_circuit.buy_shop_item(index)
+		_render_school_circuit_workbench()
+
+
+func _on_workbench_shop_sell_requested(instance_id: int) -> void:
+	if not game_over and school_circuit != null:
+		school_circuit.sell_buffer_item(instance_id)
+		_render_school_circuit_workbench()
+
+
+func _on_workbench_shop_reroll_requested() -> void:
+	if not game_over and school_circuit != null:
+		school_circuit.reroll_shop()
+		_render_school_circuit_workbench()
+
+
+func _on_final_theme_changed(school_id: StringName) -> void:
+	var details: Dictionary = RestFlowUI.WORKBENCH_SCHOOL_DETAILS.get(school_id, {})
+	hud.set_stage_phase("최종 재앙", "%s의 전승" % str(details.get("name", school_id)), true)
+
+
+func _settle_final_calamity_death(enemy: Node) -> void:
+	if game_over or not _final_battle_started or enemy != current_stage_boss:
+		return
+	current_stage_boss = null
+	game_over = true
+	_cleanup_remaining_normal_enemies()
+	_set_combat_enabled(false)
+	rest_flow_ui.show_complete({
+		"headline": "최종 재앙 격파 · 네 전장 여정 완료",
+		"gold": run_build_state.gold,
+	})
 
 
 func _build_preview_summary(new_fate_id: StringName) -> Dictionary:

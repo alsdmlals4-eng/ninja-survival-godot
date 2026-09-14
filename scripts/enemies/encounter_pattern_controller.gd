@@ -16,9 +16,10 @@ var _pattern_index := 0
 var _state: StringName = State.chase
 var _remaining := 0.65
 var _active_pattern: Dictionary = {}
+var _opening_telegraph_bonus := 0.0
 
 
-func configure(patterns: Array[Dictionary]) -> bool:
+func configure(patterns: Array[Dictionary], opening_telegraph_bonus: float = 0.0) -> bool:
 	if patterns.is_empty():
 		return false
 	var copied: Array[Dictionary] = []
@@ -31,6 +32,7 @@ func configure(patterns: Array[Dictionary]) -> bool:
 	_state = State.chase
 	_remaining = 0.65
 	_active_pattern = {}
+	_opening_telegraph_bonus = maxf(opening_telegraph_bonus, 0.0)
 	return true
 
 
@@ -93,6 +95,8 @@ func has_recovery(pattern_id: StringName) -> bool:
 
 func _enter_telegraph() -> void:
 	_active_pattern = _patterns[_pattern_index].duplicate(true)
+	_active_pattern["telegraph_duration"] = float(_active_pattern["telegraph_duration"]) + _opening_telegraph_bonus
+	_opening_telegraph_bonus = 0.0
 	_state = State.telegraph
 	_remaining = float(_active_pattern.get("telegraph_duration", 0.0))
 	state_changed.emit(_state, active_pattern())

@@ -12,14 +12,14 @@ func after_each() -> void:
 	_release_movement_actions()
 
 
-func test_dash_uses_character_body_collision_path_without_teleport_or_mask_change() -> void:
+func test_dash_uses_character_body_terrain_collision_and_restores_masks() -> void:
 	var player = _spawn_scene(PLAYER_SCENE)
 	player.global_position = Vector2.ZERO
 	var original_layer: int = player.collision_layer
 	var original_mask: int = player.collision_mask
 
 	var wall := StaticBody2D.new()
-	wall.collision_layer = 2
+	wall.collision_layer = 16 # Terrain, distinct from enemy bodies (2).
 	wall.collision_mask = 1
 	wall.global_position = Vector2(60.0, 0.0)
 	var wall_shape := CollisionShape2D.new()
@@ -192,6 +192,7 @@ func _spawn_scene(path: String):
 	if packed == null:
 		return null
 	var instance = packed.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(instance)
 	add_child_autofree(instance)
 	return instance
 
@@ -206,6 +207,7 @@ func _spawn_main_in_subviewport():
 	if packed == null:
 		return null
 	var main = packed.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	viewport.add_child(main)
 	return main
 

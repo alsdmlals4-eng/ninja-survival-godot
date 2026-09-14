@@ -1,5 +1,214 @@
 # CURRENT_CONFIRMED_DECISIONS
 
+## Latest 2026-09-14 — chroma-key pipeline and monthly evidence supplement
+
+User resumes implementation and requests future generated cutout assets on a chroma-key
+background, followed by background removal. Choose a flat key absent from the subject;
+preserve the generated original and alpha output, inspect spill/edges/translucent VFX,
+and retain the existing candidate/LOCK/runtime gates. This does not authorize replacing
+current assets or removing the intended background of a floor/background asset.
+
+Create a project-named monthly AI work-log/evidence PDF in the user-designated September
+evidence directory. This is a derived report, separate from the Blueprint and game canon.
+Distinguish source-recorded work time, retrospective writing, capture time and publication.
+Record actual prompt/result provenance, exact changes, verification ceilings and missing
+account/payment/screenshot evidence. Do not infer executed agreement, eligible costs or
+submission acceptance from the user's pasted agreement summary; originals were not read.
+No email, signature, submission or personal/payment-data publication is authorized here.
+
+## Latest 2026-09-14 — approved remaining-work execution
+
+User approves the recommended R01~R10 plan and requests implementation. Resume
+R01 first, then its dependent preparation/Main packages. The preceding planning-only
+turn boundary no longer pauses this approved work. Preserve existing save files,
+art LOCK, evidence ceilings, isolated work and protected PR requirements.
+
+
+## Latest 2026-09-14 — remaining implementation/design specification request
+
+User requests remaining work and its implementation/design specifications after
+interrupting the previous continuation. Current turn is documentation preparation,
+not further game-code/art implementation. Preserve prior approved product scope;
+map current source evidence to remaining packages in Implementation Packet section J.
+Do not treat this planning request as a new product mechanic or final visual approval.
+
+
+## Latest 2026-09-13 — plan before implementation
+
+User requests a concrete implementation/modification plan before each work
+package, then approves the recommended sequence and first start-loadout slice.
+Present scope, reasons, affected owners and acceptance checks before edits;
+continue previously approved technical work without repeated routine approval.
+Start selection, book geometry and external gear preparation are first;
+default Main cutover follows actual effects and safe profile2 integration.
+This is not a final art approval, destructive save migration or main bypass.
+
+## Latest 2026-09-12 — continuous whole-game implementation
+
+User explicitly requests Base fresh-read and continued implementation/improvement
+without routine approval pauses, including four-school selection/battle,
+preparation, shop, backpack and final boss. Continue the approved detailed rules
+and implementation packet. Do not treat partial integration as whole-game done.
+Preserve unseen-art approval, user-managed deletion and protected-main boundaries.
+
+## Latest 2026-09-12 — breath appearance approval and continuation
+
+User accepted the displayed blue-white/gold breath direction and requested continued
+implementation, then resumed work again. This approves that displayed state family,
+not all other candidate assets or whole-game visual/Human quality. Mechanical pivot
+registration and runtime binding are within scope; current asset provenance is in
+the existing Runtime Visual Core Manifest. Do not request the same approval again.
+
+## Latest 2026-09-12 — implementation through integration validation
+
+User: “좋아 권장안대로 진행해. 통합 검증까지 남은 작업 다 진행해줘”.
+Execute the previously enumerated remaining implementation packages and their
+integration checks. This supersedes historical planning-only restrictions for
+those packages. Preserve atomic build/save ownership and user-managed deletion.
+No blanket approval of unseen art, Human playtest result, destructive migration,
+other PR takeover or protected-main bypass is inferred. Current implementation
+and remaining work are owned by Active Context and Implementation Packet.
+
+## Latest — forward elemental breath / sword-only Guiin transformation
+
+User explicitly changed Cheonsul's 오행폭주 to forward elemental breath and
+Guiin transformation to sword-only offense in exchange for stronger effects.
+These supersede the prior target-centered blast and independent radial pulse.
+Detailed Rules R-ULTIMATE owns the proposed timing/geometry/suppression contract.
+On 2026-09-12 the user approved continuation of the recommended temporary Guiin
+sword policy for every melee loadout, restoring original equipment behavior after
+transformation. Do not repeat the resolved question. Numerical balance remains a
+delegated test proposal, not proven tuning.
+No runtime mutation, asset LOCK, final Blueprint approval or merge is implied.
+
+## Latest 2026-09-11 — character equipment / ninja outfit / trace upgrade
+
+Latest user overrides the previous equipment-in-backpack rule. Katana, shuriken
+and ninja outfit occupy character equipment slots and zero backpack cells.
+Starting ninjutsu books still occupy the bag. Trace strengthening now forfeits
+that school's ninjutsu access for this run to upgrade exactly one equipment item,
+not general school stats. Owner: Detailed Rules R-EQUIPMENT/R-LOADOUT/R-TRACE.
+User then approved the recommended exception: starting-school access and acquired
+books remain intact; its trace offers equipment enhancement only. Forfeiting access
+applies only to a still-locked other school. No starter revocation or redundant
+absorb option. Numbers are test proposals; no art LOCK, runtime or PR merge.
+
+## Historical, equipment occupancy superseded — starting contents occupy backpack
+
+Latest user: “좋아 그렇게하자. 시작인법,장비도 가방 잠식할거야.”
+The preceding recommended direction is approved for planning: five tags including
+투사, two three-choice starting-ninjutsu picks, 24-ninjutsu/8-weapon expansion,
+melee1/projectile1 weapon replacement, and the proposed absorb/strengthen flow.
+The explicit correction supersedes bag-free intrinsic starter slots: starting
+weapons, starting ninjutsu books and other starting equipment all occupy real
+backpack cells. No hidden free katana/shuriken or free starter spell remains in
+the new design. Planned placement dimensions/guards are recorded in the change
+analysis owner below and remain engineering/tuning choices, not tested gameplay.
+This is not a final clean-cutout asset LOCK, complete Blueprint approval,
+runtime implementation authorization or combined PR merge authorization.
+Owner: `research/2026-09-11-tags-draft-and-trace-review.md`.
+Older pending/direction notes below are historical where this entry supersedes them.
+
+## 2026-09-11 — requested Blueprint revisions; recommendations pending
+
+User requests [근접]/[이동]/[생존]/[인술]/a ranged-family tag, two rounds
+of three-option starting-school ninjutsu selection, expanded weapons/ninjutsu,
+and an anime player closer to the newly supplied reference. The label [투사],
+24 ninjutsu/8 weapons, replacement weapon slots and trace branch safeguards are
+recommendations, not user-approved details. Absorb-versus-strengthen is explicitly
+tentative. Change analysis owner:
+`research/2026-09-11-tags-draft-and-trace-review.md`.
+This reopens affected Blueprint readiness; do not implement the old starter1/
+pre-Boss trace gate unchanged or describe the existing PDF as this revised design.
+No game changes, historical PDF deletion or combined PR merge is authorized.
+
+## 2026-09-11 — Human Blueprint and implementation-input preparation
+
+The user requests a complete reader-facing Blueprint using the supplied Ten Paces
+92-page PDF as structure-only reference, adapted to this game. Required coverage:
+screen atlas, detailed SWOT with concrete strengthening/mitigation, systems,
+visuals, data tables, and implementation-ready detail selected by research-backed
+judgement. The user authorizes necessary image production now and will give final
+approval after reading the Blueprint. This supersedes the September 10 image pause
+and per-candidate stop for this bounded batch, not the final asset approval gate.
+Produce project-bound game-use candidate textures/atlases and motion contracts;
+do not substitute explanatory posters for engine inputs. Keep candidates separate
+from current runtime assets. No gameplay implementation, live save migration,
+historical asset/PDF deletion, paid service or combined-PR merge in this package.
+Design/detail owner remains NS-DESIGN-RULES; human publication composes it with
+the current screen/visual and implementation-input owners. Final user approval,
+asset technical readiness and actual game verification are separate states.
+
+## 2026-09-10 — delegated detailed planning; production paused
+
+Latest user instruction: “상세 규칙 및 기획사항은 네가 인터넷 조사,벤치마킹 및 권장안대로 판단해서 정리해줘”. The user delegates evidence-based detail selection and documentation within the approved A+B direction. Do not repeatedly ask for tuning decisions already delegated.
+
+Detailed design owner: `design/NINJA_SURVIVAL_DETAILED_RULES.md` (NS-DESIGN-RULES).
+State: DELEGATED_DESIGN / SPECIFIED_FOR_REVIEW, not individual USER_APPROVED
+rules, implemented gameplay, balanced values, or production-wide BUILD_READY.
+Selected mixed-school loadout, meaningful ninjutsu effects, basic-weapon upgrade
+separation and growth details are scoped new-design choices. They do not rewrite
+historical canon/runtime facts. The prior research's proposals are resolved only
+where this detailed owner explicitly selects a rule; other ideas remain proposals.
+
+The immediately preceding user instruction to review planning before images
+still governs. **No new image generation, runtime edits, save migration, asset
+deletion, or merge of the combined implementation PR is authorized by this
+documentation step.** Existing runtime and approved historical artifacts remain.
+The previous Active Context floor-fix next action is deferred until implementation
+resumes. Review and delivery evidence: `reviews/2026-09-10-detailed-rules-review.md`.
+
+## 2026-09-10 — user-directed replanning and new visual production
+
+The user explicitly restarts planning and requests newly produced images,
+with motion and game behavior designed together. All existing images are
+REFERENCE_ONLY for this new cycle. Prior LOCK entries below remain historical
+approval/provenance records for the existing build, not replacement-asset approval.
+Existing game rules are inputs for re-evaluation; the A+B control boundary is
+approved below, while final art direction and production dimensions remain open. No old phase, PDF,
+PR number or approval silently authorizes replacement gameplay implementation.
+
+The work begins with current project authority and consumers, then applicable
+current Base owners. The existing project-native Base adaptation stays in place.
+New art is authored using the image model; suitable frame/layer/export work uses
+the discovered candidate-only Aseprite transport. Aseprite selection does not
+choose a pixel-art aesthetic. Motion states and game events must be specified
+before expanding a visual family. Existing runtime assets remain bound until
+replacement candidates and their integration are ready and approved.
+
+The user's follow-up authorizes full reassessment, including genre and core
+mechanics. Existing elements may be reused, changed, supplemented or removed
+from a future design based on Internet benchmarks, professional evidence,
+SWOT, improvement potential and originality. This is not a blanket deletion
+instruction. The research recommendations outside the approved control boundary
+below remain PROPOSED:
+`docs/research/2026-09-10-full-product-reassessment.md`.
+
+### Approved follow-up — A+B player control boundary
+
+The user explicitly selected automatic attacks with directly controlled movement,
+invulnerable dash, pattern counterplay and ultimate activation timing, then
+approved proceeding with that recommendation. A+B does not mean manual ordinary
+attacks or a second aiming/combo-input mode.
+
+- Automatic: katana, shuriken and acquired school ninjutsu attack execution.
+- Direct: movement/positioning, invulnerable dash, reading/responding to patterns,
+  and choosing when to request the active school's ultimate.
+- Preparation: backpack placement/rotation/combination remains the build input.
+- Ordinary skill trays stay excluded. The manual ultimate needs explicit
+  readiness and an available input; the proposed top-bar presentation is owned
+  by the dated section of `visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md`.
+- Existing school runtimes already own ultimate readiness, cost and effects.
+  Preserve those owners; a new global charge system is not approved.
+- Exact ultimate tuning, new movement-triggered item effects, Trace/Fate/route
+  removal, final art lock and production-wide migration are NOT approved by
+  this control decision. Remaining research dispositions stay proposals.
+
+Bounded follow-up implementation is now on the current task branch: dedicated
+E / pad Y input and a top-bar ultimate button use the existing runtime owner.
+This does not approve new effects, tuning, art, or the full redesign. Exact
+implementation and evidence status: `reviews/2026-09-10-manual-ultimate-review.md`.
+
 ```yaml
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER
 updated_at: 2026-09-02 KST

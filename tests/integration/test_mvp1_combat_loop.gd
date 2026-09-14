@@ -5,6 +5,7 @@ const MAIN_SCENE := preload("res://scenes/main/main_scene.tscn")
 
 func test_main_scene_has_mvp1_system_nodes_and_reward_binding() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	assert_true(main.has_node("CombatDDD"))
 	assert_true(main.has_node("WaveSpawner"))
@@ -13,6 +14,7 @@ func test_main_scene_has_mvp1_system_nodes_and_reward_binding() -> void:
 
 func test_enemy_death_updates_combo_and_spawns_one_reward_orb() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 	if not _has_mvp1_main_contract(main):
@@ -42,6 +44,7 @@ func test_enemy_death_updates_combo_and_spawns_one_reward_orb() -> void:
 
 func test_reward_collection_updates_tracker_without_adding_persistent_combat_metrics() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 	if not _has_mvp1_main_contract(main):
@@ -76,6 +79,7 @@ func test_reward_collection_updates_tracker_without_adding_persistent_combat_met
 
 func test_wave_spawned_enemies_are_wired_to_player() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 	if not _has_mvp1_main_contract(main):
@@ -95,6 +99,7 @@ func test_wave_spawned_enemies_are_wired_to_player() -> void:
 
 func test_game_over_disables_wave_spawner_and_live_reward_orbs() -> void:
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 	if not _has_mvp1_main_contract(main):
@@ -110,6 +115,7 @@ func test_game_over_disables_wave_spawner_and_live_reward_orbs() -> void:
 	await get_tree().process_frame
 	var orbs = _living_reward_orbs(main)
 	assert_eq(orbs.size(), 1)
+	main.get_node("Player").advance_damage_protection(1.01)
 	main.get_node("Player").take_damage(100000)
 	assert_true(main.game_over)
 	assert_eq(main.get_node("WaveSpawner").process_mode, Node.PROCESS_MODE_DISABLED)

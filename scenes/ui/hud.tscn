@@ -52,6 +52,12 @@ custom_minimum_size = Vector2(76, 0)
 layout_mode = 2
 text = "설정"
 
+[node name="UltimateButton" type="Button" parent="CombatTopBar/Row" index="3"]
+custom_minimum_size = Vector2(184, 40)
+layout_mode = 2
+focus_mode = 0
+text = "오의 · 충전 중 [E/Y]"
+
 [node name="SettingsPanel" type="Control" parent="."]
 visible = false
 process_mode = 2

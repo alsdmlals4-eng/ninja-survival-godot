@@ -26,6 +26,7 @@ var encounter_state := StageEncounterState.new()
 var _build_state: RunBuildState
 var _fate_controller: FateController
 var _committed_backpack_state = null
+var _carried_buffer: Array = []
 var _backpack_session: RestBackpackSession
 var _combination_resolver: CombinationResolver
 var _reward_controller: RestRewardController
@@ -104,7 +105,7 @@ func begin_school(school_id: StringName) -> bool:
 		if not _access_state.initialize(school_id):
 			return false
 	_reset_school_progress(school_id)
-	if _build_state != null:
+	if _build_state != null and _build_state.selected_school_id == &"":
 		_build_state.set_selected_school(school_id)
 	phase_changed.emit(encounter_state.state_name())
 	return true
@@ -125,11 +126,12 @@ func record_normal_enemy_defeated() -> int:
 func mark_elite_defeated() -> bool:
 	if not _school_started:
 		return false
-	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("can_stage_scroll", _active_school_id, &"elite_scroll")):
+	var grants_origin_scroll := _is_origin_school_battlefield()
+	if grants_origin_scroll and not bool(_ninjutsu_loadout.call("can_stage_scroll", _active_school_id, &"elite_scroll")):
 		return false
 	if not encounter_state.mark_elite_cleared():
 		return false
-	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("stage_scroll", _active_school_id, &"elite_scroll")):
+	if grants_origin_scroll and not bool(_ninjutsu_loadout.call("stage_scroll", _active_school_id, &"elite_scroll")):
 		return false
 	if _build_state != null:
 		_build_state.grant_elite_clear_gold()
@@ -173,6 +175,8 @@ func workbench_snapshot() -> Dictionary:
 		"chest_count": _reward_controller.chest_count(),
 		"buffer": _buffer_snapshot(),
 		"bag_offer": _bag_offer_snapshot(),
+		"shop_offers": _shop_offer_snapshot(),
+		"shop_reroll_cost": _reward_controller.shop_reroll_cost(),
 		"pending_bag": _pending_bag_snapshot(),
 		"gold": int(_build_state.gold) if _build_state != null else 0,
 		"can_undo": not _backpack_session._undo_stack.is_empty(),
@@ -193,13 +197,21 @@ func workbench_snapshot() -> Dictionary:
 func choose_boss_reward(index: int) -> bool:
 	if not _workbench_started or _reward_controller == null:
 		return false
-	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("can_stage_scroll", _active_school_id, &"boss_scroll")):
+	var grants_origin_scroll := _is_origin_school_battlefield()
+	if grants_origin_scroll and not bool(_ninjutsu_loadout.call("can_stage_scroll", _active_school_id, &"boss_scroll")):
 		return false
 	if not _reward_controller.choose_boss_reward(index):
 		return false
-	if _ninjutsu_loadout != null and not bool(_ninjutsu_loadout.call("stage_scroll", _active_school_id, &"boss_scroll")):
+	if grants_origin_scroll and not bool(_ninjutsu_loadout.call("stage_scroll", _active_school_id, &"boss_scroll")):
 		return false
 	return true
+
+
+func _is_origin_school_battlefield() -> bool:
+	# Legacy origin scroll rewards must not gate another battlefield's lifecycle.
+	return _ninjutsu_loadout != null and StringName(
+		_ninjutsu_loadout.call("get_snapshot").get("origin_school_id", &"")
+	) == _active_school_id
 
 
 func place_buffer_item(buffer_index: int, origin: Vector2i, rotation_quarters: int = 0) -> bool:
@@ -218,6 +230,23 @@ func buy_shop_bag() -> bool:
 	if not _workbench_started or _reward_controller == null:
 		return false
 	return _reward_controller.buy_shop_bag()
+
+
+func buy_shop_item(index: int) -> bool:
+	return _workbench_started and _reward_controller != null and _reward_controller.buy_shop_item(index)
+
+
+func sell_buffer_item(instance_id: int) -> bool:
+	if not _workbench_started or _reward_controller == null:
+		return false
+	for item in _backpack_session.buffer:
+		if item.instance_id == instance_id:
+			return _reward_controller.sell_item(instance_id)
+	return false
+
+
+func reroll_shop() -> bool:
+	return _workbench_started and _reward_controller != null and _reward_controller.reroll_shop()
 
 
 func place_pending_bag(origin: Vector2i, rotation_quarters: int = 0) -> bool:
@@ -291,6 +320,7 @@ func commit_workbench() -> bool:
 	):
 		return false
 	_committed_backpack_state = _commit_coordinator.committed_backpack_state()
+	_carried_buffer = _backpack_session.buffer
 	_workbench_started = false
 	return true
 
@@ -301,6 +331,7 @@ func get_checkpoint_snapshot() -> Dictionary:
 	return {
 		"active_school_id": _active_school_id,
 		"committed_backpack_state": _committed_backpack_state.copy_value(),
+		"carried_buffer": _backpack_session._copy_buffer(_carried_buffer),
 	}
 
 
@@ -314,6 +345,7 @@ func can_restore_after_retry(checkpoint_snapshot: Dictionary) -> bool:
 		and checkpoint_school_id == route_state.active_school_id()
 		and checkpoint_backpack_state != null
 		and checkpoint_backpack_state.has_method("copy_value")
+		and REST_BACKPACK_SESSION_SCRIPT.is_valid_carried_buffer(checkpoint_snapshot.get("carried_buffer", []), checkpoint_backpack_state, _item_defs)
 	)
 
 
@@ -322,6 +354,7 @@ func restore_after_retry(checkpoint_snapshot: Dictionary) -> bool:
 		return false
 	var checkpoint_backpack_state = checkpoint_snapshot.get("committed_backpack_state", null)
 	_committed_backpack_state = checkpoint_backpack_state.copy_value()
+	_carried_buffer = _backpack_session._copy_buffer(checkpoint_snapshot.get("carried_buffer", []))
 	encounter_state = StageEncounterState.new()
 	_connect_encounter_signals()
 	_chest_token_count = 0
@@ -345,7 +378,8 @@ func can_restore_from_persistent_checkpoint(route_snapshot: Dictionary, checkpoi
 	var checkpoint_backpack_state = checkpoint_snapshot.get("committed_backpack_state", null)
 	if checkpoint_school_id != candidate_route.active_school_id() or checkpoint_backpack_state == null or not checkpoint_backpack_state.has_method("copy_value"):
 		return false
-	return _access_state_for_cleared_schools(cleared_school_ids) != null
+	return _access_state_for_cleared_schools(cleared_school_ids) != null \
+		and REST_BACKPACK_SESSION_SCRIPT.is_valid_carried_buffer(checkpoint_snapshot.get("carried_buffer", []), checkpoint_backpack_state, _item_defs)
 
 
 func restore_from_persistent_checkpoint(route_snapshot: Dictionary, checkpoint_snapshot: Dictionary) -> bool:
@@ -355,6 +389,7 @@ func restore_from_persistent_checkpoint(route_snapshot: Dictionary, checkpoint_s
 	if restored_access == null or not route_state.restore_from_checkpoint(route_snapshot):
 		return false
 	_committed_backpack_state = checkpoint_snapshot.get("committed_backpack_state").copy_value()
+	_carried_buffer = _backpack_session._copy_buffer(checkpoint_snapshot.get("carried_buffer", []))
 	_access_state = restored_access
 	return begin_school(route_state.active_school_id())
 
@@ -413,13 +448,16 @@ func _access_state_for_cleared_schools(cleared_school_ids: Array) -> TraditionAc
 func _begin_workbench_for_cleared_school() -> bool:
 	if _backpack_session == null or _reward_controller == null or _fate_controller == null or _access_state == null:
 		return false
-	_backpack_session.begin(
+	if not _backpack_session.begin(
 		_committed_backpack_state,
 		BACKPACK_RESOLVER_SCRIPT.new(),
 		_item_defs,
 		_bag_defs,
-		_active_school_id
-	)
+		_active_school_id,
+		_carried_buffer,
+		true
+	):
+		return false
 	_reward_controller.configure(
 		_build_state,
 		_backpack_session,
@@ -434,7 +472,8 @@ func _begin_workbench_for_cleared_school() -> bool:
 		_build_state,
 		route_state,
 		_fate_controller,
-		_ninjutsu_loadout
+		_ninjutsu_loadout,
+		route_state.is_final_binding_eligible()
 	):
 		return false
 	_reward_controller.begin_rest(
@@ -483,6 +522,7 @@ func _buffer_snapshot() -> Array[Dictionary]:
 			"definition_id": raw_item.definition_id,
 			"display_name": str(raw_item.definition_id) if definition == null else str(definition.display_name),
 			"rotation_quarters": raw_item.rotation_quarters,
+			"sell_price": int(definition.sell_price()) if definition != null else 0,
 		})
 	return result
 
@@ -499,6 +539,20 @@ func _bag_offer_snapshot() -> Dictionary:
 		"display_name": str(definition.display_name),
 		"price": int(definition.base_price),
 	}
+
+
+func _shop_offer_snapshot() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	if _reward_controller == null:
+		return result
+	for item_id in _reward_controller.shop_item_options():
+		var definition = _item_defs.get(item_id)
+		result.append({
+			"definition_id": item_id,
+			"display_name": str(definition.display_name) if definition != null else str(item_id),
+			"price": int(definition.base_price) if definition != null else 0,
+		})
+	return result
 
 
 func _pending_bag_snapshot() -> Dictionary:

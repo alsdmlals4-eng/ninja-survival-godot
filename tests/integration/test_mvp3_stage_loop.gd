@@ -174,6 +174,7 @@ func test_game_over_during_circuit_combat_stops_combat_without_opening_rest() ->
 	if main == null:
 		return
 	main._on_school_selected(&"bongma")
+	main.get_node("Player").advance_damage_protection(1.01)
 	main.get_node("Player").take_damage(99999)
 	assert_true(main.game_over)
 	assert_true(main.get_node("HUD/GameOverPanel").visible)
@@ -183,6 +184,7 @@ func test_game_over_during_circuit_combat_stops_combat_without_opening_rest() ->
 
 func _new_main():
 	var main = MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	return main
 

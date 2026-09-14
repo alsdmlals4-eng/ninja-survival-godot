@@ -39,6 +39,12 @@ func configure(new_player: PlayerController, new_world: Node2D) -> void:
 			(child as SchoolRuntimeBase).configure(player, world)
 
 
+func configure_ninjutsu_loadout(loadout: Node) -> void:
+	for child in get_children():
+		if child is SchoolRuntimeBase:
+			child.configure_ninjutsu_loadout(loadout)
+
+
 func configure_run_systems(
 	resolver: CombatResolver,
 	tracker: CombatContributionTracker
@@ -93,6 +99,16 @@ func try_use_ultimate() -> bool:
 	if active_runtime == null or not active_runtime.active:
 		return false
 	return active_runtime.try_use_ultimate()
+
+
+func ultimate_block_reason() -> StringName:
+	if active_runtime == null:
+		return &"inactive"
+	return active_runtime.ultimate_block_reason()
+
+
+func is_ultimate_ready() -> bool:
+	return active_runtime != null and active_runtime.is_ultimate_ready()
 
 
 func deactivate() -> void:

@@ -1,0 +1,4072 @@
+{
+  "scope": "NEW_CANDIDATES_NOT_CANON",
+  "user_approval": "PENDING",
+  "runtime": "NOT_RUN",
+  "assets": {
+    "player": {
+      "file": "player.png",
+      "sha256": "2f5c61d1d9fa48ed2fdaa8eb32725c5d9f1a880059acc3bdc6c642da27cd83c3",
+      "width": 1448,
+      "height": 1086,
+      "mode": "RGBA",
+      "alpha_required": true,
+      "alpha_channel_check": "PASS",
+      "alpha_nonzero_fraction": 0.284598430043853,
+      "alpha_corners": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "grid_boundary_occupancy": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "grid": [
+        4,
+        3
+      ],
+      "regions": [
+        {
+          "index": 0,
+          "rect": [
+            0,
+            0,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 1,
+          "rect": [
+            362,
+            0,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 2,
+          "rect": [
+            724,
+            0,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 3,
+          "rect": [
+            1086,
+            0,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 4,
+          "rect": [
+            0,
+            362,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 5,
+          "rect": [
+            362,
+            362,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 6,
+          "rect": [
+            724,
+            362,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 7,
+          "rect": [
+            1086,
+            362,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 8,
+          "rect": [
+            0,
+            724,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 9,
+          "rect": [
+            362,
+            724,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 10,
+          "rect": [
+            724,
+            724,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 11,
+          "rect": [
+            1086,
+            724,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        }
+      ],
+      "state": "GENERATED_CANDIDATE",
+      "inspection_note": "실제 알파 확인; 셀/발 접점·연속 재생은 별도 검수",
+      "consumer": "scenes/player/player.tscn",
+      "consumer_binding": "PROPOSED_NOT_IMPLEMENTED",
+      "animation_continuity": "NOT_RUN",
+      "approval": "PENDING",
+      "provenance": {
+        "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-bd49146d-a2e4-44f0-a02e-e972dd2f87f5.png",
+        "prompt": "A game sprite sheet, transparent background. Exactly 4 columns and 3 rows with generous equal-sized empty gutters. 12 full body sprites of SAME young male ninja, black ponytail, dark navy clothes, red sash, sword sheathed at hip, compact painterly anime game sprite, elevated 3/4 right-facing view. First row 4 visibly different run cycle contact-passing-contact-passing poses. Second row idle, fast dash lean, damaged recoil, recovered ready. Third row 4 sequential death fall poses, ending lying down. Every sprite isolated on transparent background; all visible feet consistent anchors per equal cell, scale consistent, full weapons and cloth inside cell. No text, no backdrop, no patterned areas, no floor, no cast shadows.",
+        "generator": "image_gen",
+        "created": "2026-09-11",
+        "reference_images": [],
+        "approval": "PENDING",
+        "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+      },
+      "measured_cut_occupied_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "bongma": {
+      "file": "bongma.png",
+      "sha256": "da5ecdd45a12f62c8829a3568e24336500311d6525e9db7be5a5d29ab30be1c3",
+      "width": 1374,
+      "height": 1145,
+      "mode": "RGBA",
+      "alpha_required": true,
+      "alpha_channel_check": "PASS",
+      "alpha_nonzero_fraction": 0.2971084965326113,
+      "alpha_corners": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "grid_boundary_occupancy": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0109
+      ],
+      "grid": [
+        6,
+        5
+      ],
+      "regions": [
+        {
+          "index": 0,
+          "rect": [
+            0,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "idle",
+          "logical_id": "seal_chaser"
+        },
+        {
+          "index": 1,
+          "rect": [
+            229,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "walk_contact_a",
+          "logical_id": "seal_chaser"
+        },
+        {
+          "index": 2,
+          "rect": [
+            458,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "walk_contact_b",
+          "logical_id": "seal_chaser"
+        },
+        {
+          "index": 3,
+          "rect": [
+            687,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "prepare",
+          "logical_id": "seal_chaser"
+        },
+        {
+          "index": 4,
+          "rect": [
+            916,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "release",
+          "logical_id": "seal_chaser"
+        },
+        {
+          "index": 5,
+          "rect": [
+            1145,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "death",
+          "logical_id": "seal_chaser"
+        },
+        {
+          "index": 6,
+          "rect": [
+            0,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "idle",
+          "logical_id": "shikigami_handler"
+        },
+        {
+          "index": 7,
+          "rect": [
+            229,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "walk_contact_a",
+          "logical_id": "shikigami_handler"
+        },
+        {
+          "index": 8,
+          "rect": [
+            458,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "walk_contact_b",
+          "logical_id": "shikigami_handler"
+        },
+        {
+          "index": 9,
+          "rect": [
+            687,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "prepare",
+          "logical_id": "shikigami_handler"
+        },
+        {
+          "index": 10,
+          "rect": [
+            916,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "release",
+          "logical_id": "shikigami_handler"
+        },
+        {
+          "index": 11,
+          "rect": [
+            1145,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "death",
+          "logical_id": "shikigami_handler"
+        },
+        {
+          "index": 12,
+          "rect": [
+            0,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "idle",
+          "logical_id": "barrier_carrier"
+        },
+        {
+          "index": 13,
+          "rect": [
+            229,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "walk_contact_a",
+          "logical_id": "barrier_carrier"
+        },
+        {
+          "index": 14,
+          "rect": [
+            458,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "walk_contact_b",
+          "logical_id": "barrier_carrier"
+        },
+        {
+          "index": 15,
+          "rect": [
+            687,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "prepare",
+          "logical_id": "barrier_carrier"
+        },
+        {
+          "index": 16,
+          "rect": [
+            916,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "release",
+          "logical_id": "barrier_carrier"
+        },
+        {
+          "index": 17,
+          "rect": [
+            1145,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "death",
+          "logical_id": "barrier_carrier"
+        },
+        {
+          "index": 18,
+          "rect": [
+            0,
+            687,
+            229,
+            222
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "idle",
+          "logical_id": "mobile_array_caster"
+        },
+        {
+          "index": 19,
+          "rect": [
+            229,
+            687,
+            229,
+            222
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "walk_contact_a",
+          "logical_id": "mobile_array_caster"
+        },
+        {
+          "index": 20,
+          "rect": [
+            458,
+            687,
+            229,
+            222
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "walk_contact_b",
+          "logical_id": "mobile_array_caster"
+        },
+        {
+          "index": 21,
+          "rect": [
+            687,
+            687,
+            229,
+            222
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "prepare",
+          "logical_id": "mobile_array_caster"
+        },
+        {
+          "index": 22,
+          "rect": [
+            916,
+            687,
+            229,
+            222
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "release",
+          "logical_id": "mobile_array_caster"
+        },
+        {
+          "index": 23,
+          "rect": [
+            1145,
+            687,
+            229,
+            222
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "death",
+          "logical_id": "mobile_array_caster"
+        },
+        {
+          "index": 24,
+          "rect": [
+            0,
+            909,
+            229,
+            236
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "idle",
+          "logical_id": "hundred_demon_array_master"
+        },
+        {
+          "index": 25,
+          "rect": [
+            229,
+            909,
+            229,
+            236
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "walk_contact_a",
+          "logical_id": "hundred_demon_array_master"
+        },
+        {
+          "index": 26,
+          "rect": [
+            458,
+            909,
+            229,
+            236
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "walk_contact_b",
+          "logical_id": "hundred_demon_array_master"
+        },
+        {
+          "index": 27,
+          "rect": [
+            687,
+            909,
+            229,
+            236
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "prepare",
+          "logical_id": "hundred_demon_array_master"
+        },
+        {
+          "index": 28,
+          "rect": [
+            916,
+            909,
+            229,
+            236
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "release",
+          "logical_id": "hundred_demon_array_master"
+        },
+        {
+          "index": 29,
+          "rect": [
+            1145,
+            909,
+            229,
+            236
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "death",
+          "logical_id": "hundred_demon_array_master"
+        }
+      ],
+      "state": "GENERATED_CANDIDATE",
+      "inspection_note": "실제 알파 확인; 셀/발 접점·연속 재생은 별도 검수",
+      "consumer": "scenes/enemies/school_encounter_actor.tscn",
+      "consumer_binding": "PROPOSED_NOT_IMPLEMENTED",
+      "animation_continuity": "NOT_RUN",
+      "approval": "PENDING",
+      "provenance": {
+        "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-3f523154-80df-4b47-99e4-6140787b8544.png",
+        "prompt": "Generate a production texture atlas on transparent background, REAL alpha channel. IMPORTANT: very widely spaced SMALL assets, each one occupies ONLY the central 50% width and 50% height of its equal cell. A full half-cell of empty transparent separation between neighboring assets, including rows. Do not enlarge objects to fill space. No labels, grid lines, presentation backdrop, aura or lighting outside object. 6 columns 5 rows of tiny dark painterly anime game characters. Rows: masked seal ninja; paper fox yokai; stone lion yokai; tall horned guardian elite with club; fox-masked onmyoji boss in navy ritual robes with staff and talismans. Each row same character six poses: idle, left walking contact, right walking contact, preparing, releasing, dead. All face right at elevated 3/4 view. Navy ivory gold with subdued blue, mature proportions. Full silhouette completely contained in its small central area. Transparent empty pixels everywhere else. No frame borders.",
+        "generator": "image_gen",
+        "created": "2026-09-11",
+        "reference_images": [],
+        "approval": "PENDING",
+        "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+      },
+      "measured_cut_occupied_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "cheonsul": {
+      "file": "cheonsul.png",
+      "sha256": "ceaf4a9bd5b5ceaf551b6605e1fb8858fef4df679d670497a73b78f6b2a94710",
+      "width": 1374,
+      "height": 1145,
+      "mode": "RGBA",
+      "alpha_required": true,
+      "alpha_channel_check": "PASS",
+      "alpha_nonzero_fraction": 0.33854554006725013,
+      "alpha_corners": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "grid_boundary_occupancy": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0255
+      ],
+      "grid": [
+        6,
+        5
+      ],
+      "regions": [
+        {
+          "index": 0,
+          "rect": [
+            0,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "idle",
+          "logical_id": "fire_mark_caster"
+        },
+        {
+          "index": 1,
+          "rect": [
+            229,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "walk_contact_a",
+          "logical_id": "fire_mark_caster"
+        },
+        {
+          "index": 2,
+          "rect": [
+            458,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "walk_contact_b",
+          "logical_id": "fire_mark_caster"
+        },
+        {
+          "index": 3,
+          "rect": [
+            687,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "prepare",
+          "logical_id": "fire_mark_caster"
+        },
+        {
+          "index": 4,
+          "rect": [
+            916,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "release",
+          "logical_id": "fire_mark_caster"
+        },
+        {
+          "index": 5,
+          "rect": [
+            1145,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "death",
+          "logical_id": "fire_mark_caster"
+        },
+        {
+          "index": 6,
+          "rect": [
+            0,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "idle",
+          "logical_id": "water_vein_caster"
+        },
+        {
+          "index": 7,
+          "rect": [
+            229,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "walk_contact_a",
+          "logical_id": "water_vein_caster"
+        },
+        {
+          "index": 8,
+          "rect": [
+            458,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "walk_contact_b",
+          "logical_id": "water_vein_caster"
+        },
+        {
+          "index": 9,
+          "rect": [
+            687,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "prepare",
+          "logical_id": "water_vein_caster"
+        },
+        {
+          "index": 10,
+          "rect": [
+            916,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "release",
+          "logical_id": "water_vein_caster"
+        },
+        {
+          "index": 11,
+          "rect": [
+            1145,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "death",
+          "logical_id": "water_vein_caster"
+        },
+        {
+          "index": 12,
+          "rect": [
+            0,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "idle",
+          "logical_id": "lightning_chain_caster"
+        },
+        {
+          "index": 13,
+          "rect": [
+            229,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "walk_contact_a",
+          "logical_id": "lightning_chain_caster"
+        },
+        {
+          "index": 14,
+          "rect": [
+            458,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "walk_contact_b",
+          "logical_id": "lightning_chain_caster"
+        },
+        {
+          "index": 15,
+          "rect": [
+            687,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "prepare",
+          "logical_id": "lightning_chain_caster"
+        },
+        {
+          "index": 16,
+          "rect": [
+            916,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "release",
+          "logical_id": "lightning_chain_caster"
+        },
+        {
+          "index": 17,
+          "rect": [
+            1145,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "death",
+          "logical_id": "lightning_chain_caster"
+        },
+        {
+          "index": 18,
+          "rect": [
+            0,
+            687,
+            229,
+            216
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "idle",
+          "logical_id": "five_element_tuner"
+        },
+        {
+          "index": 19,
+          "rect": [
+            229,
+            687,
+            229,
+            216
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "walk_contact_a",
+          "logical_id": "five_element_tuner"
+        },
+        {
+          "index": 20,
+          "rect": [
+            458,
+            687,
+            229,
+            216
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "walk_contact_b",
+          "logical_id": "five_element_tuner"
+        },
+        {
+          "index": 21,
+          "rect": [
+            687,
+            687,
+            229,
+            216
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "prepare",
+          "logical_id": "five_element_tuner"
+        },
+        {
+          "index": 22,
+          "rect": [
+            916,
+            687,
+            229,
+            216
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "release",
+          "logical_id": "five_element_tuner"
+        },
+        {
+          "index": 23,
+          "rect": [
+            1145,
+            687,
+            229,
+            216
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "death",
+          "logical_id": "five_element_tuner"
+        },
+        {
+          "index": 24,
+          "rect": [
+            0,
+            903,
+            229,
+            242
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "idle",
+          "logical_id": "heavenly_change_taoist"
+        },
+        {
+          "index": 25,
+          "rect": [
+            229,
+            903,
+            229,
+            242
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "walk_contact_a",
+          "logical_id": "heavenly_change_taoist"
+        },
+        {
+          "index": 26,
+          "rect": [
+            458,
+            903,
+            229,
+            242
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "walk_contact_b",
+          "logical_id": "heavenly_change_taoist"
+        },
+        {
+          "index": 27,
+          "rect": [
+            687,
+            903,
+            229,
+            242
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "prepare",
+          "logical_id": "heavenly_change_taoist"
+        },
+        {
+          "index": 28,
+          "rect": [
+            916,
+            903,
+            229,
+            242
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "release",
+          "logical_id": "heavenly_change_taoist"
+        },
+        {
+          "index": 29,
+          "rect": [
+            1145,
+            903,
+            229,
+            242
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "death",
+          "logical_id": "heavenly_change_taoist"
+        }
+      ],
+      "state": "GENERATED_CANDIDATE",
+      "inspection_note": "실제 알파 확인; 셀/발 접점·연속 재생은 별도 검수",
+      "consumer": "scenes/enemies/school_encounter_actor.tscn",
+      "consumer_binding": "PROPOSED_NOT_IMPLEMENTED",
+      "animation_continuity": "NOT_RUN",
+      "approval": "PENDING",
+      "provenance": {
+        "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-c13b30bf-f19a-45c4-9b89-a7cba7911eea.png",
+        "prompt": "Generate a production texture atlas on transparent background, REAL alpha channel. IMPORTANT: very widely spaced SMALL assets, each one occupies ONLY the central 50% width and 50% height of its equal cell. A full half-cell of empty transparent separation between neighboring assets, including rows. Do not enlarge objects to fill space. No labels, grid lines, presentation backdrop, aura or lighting outside object. 6 columns 5 rows of tiny dark painterly anime game characters. Rows: masked talisman ninja; fast lizard yokai; bulky armored corrupted ninja; multiarmed ritual yokai elite clutching orb; porcelain-masked elemental sorcerer boss with forked staff. Each row same character six poses: idle, left walking contact, right walking contact, preparing, releasing, dead. All face right elevated 3/4 view. Navy ivory with subdued blue orange accents, mature proportions. Full silhouette completely contained in its small central area. Transparent empty pixels everywhere else. No frame borders.",
+        "generator": "image_gen",
+        "created": "2026-09-11",
+        "reference_images": [],
+        "approval": "PENDING",
+        "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+      },
+      "measured_cut_occupied_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "guiin": {
+      "file": "guiin.png",
+      "sha256": "7aa8369b84a965d9223b0b685978d18d81f37885bc62ee5a5783c4fb80bfdccc",
+      "width": 1374,
+      "height": 1145,
+      "mode": "RGBA",
+      "alpha_required": true,
+      "alpha_channel_check": "PASS",
+      "alpha_nonzero_fraction": 0.1883170292964157,
+      "alpha_corners": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "grid_boundary_occupancy": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "grid": [
+        6,
+        5
+      ],
+      "regions": [
+        {
+          "index": 0,
+          "rect": [
+            0,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "idle",
+          "logical_id": "surge_fighter"
+        },
+        {
+          "index": 1,
+          "rect": [
+            229,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "walk_contact_a",
+          "logical_id": "surge_fighter"
+        },
+        {
+          "index": 2,
+          "rect": [
+            458,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "walk_contact_b",
+          "logical_id": "surge_fighter"
+        },
+        {
+          "index": 3,
+          "rect": [
+            687,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "prepare",
+          "logical_id": "surge_fighter"
+        },
+        {
+          "index": 4,
+          "rect": [
+            916,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "release",
+          "logical_id": "surge_fighter"
+        },
+        {
+          "index": 5,
+          "rect": [
+            1145,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "death",
+          "logical_id": "surge_fighter"
+        },
+        {
+          "index": 6,
+          "rect": [
+            0,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "idle",
+          "logical_id": "pressure_monk"
+        },
+        {
+          "index": 7,
+          "rect": [
+            229,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "walk_contact_a",
+          "logical_id": "pressure_monk"
+        },
+        {
+          "index": 8,
+          "rect": [
+            458,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "walk_contact_b",
+          "logical_id": "pressure_monk"
+        },
+        {
+          "index": 9,
+          "rect": [
+            687,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "prepare",
+          "logical_id": "pressure_monk"
+        },
+        {
+          "index": 10,
+          "rect": [
+            916,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "release",
+          "logical_id": "pressure_monk"
+        },
+        {
+          "index": 11,
+          "rect": [
+            1145,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "death",
+          "logical_id": "pressure_monk"
+        },
+        {
+          "index": 12,
+          "rect": [
+            0,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "idle",
+          "logical_id": "ghost_blood_chaser"
+        },
+        {
+          "index": 13,
+          "rect": [
+            229,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "walk_contact_a",
+          "logical_id": "ghost_blood_chaser"
+        },
+        {
+          "index": 14,
+          "rect": [
+            458,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "walk_contact_b",
+          "logical_id": "ghost_blood_chaser"
+        },
+        {
+          "index": 15,
+          "rect": [
+            687,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "prepare",
+          "logical_id": "ghost_blood_chaser"
+        },
+        {
+          "index": 16,
+          "rect": [
+            916,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "release",
+          "logical_id": "ghost_blood_chaser"
+        },
+        {
+          "index": 17,
+          "rect": [
+            1145,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "death",
+          "logical_id": "ghost_blood_chaser"
+        },
+        {
+          "index": 18,
+          "rect": [
+            0,
+            687,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "idle",
+          "logical_id": "melee_chaos_captain"
+        },
+        {
+          "index": 19,
+          "rect": [
+            229,
+            687,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "walk_contact_a",
+          "logical_id": "melee_chaos_captain"
+        },
+        {
+          "index": 20,
+          "rect": [
+            458,
+            687,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "walk_contact_b",
+          "logical_id": "melee_chaos_captain"
+        },
+        {
+          "index": 21,
+          "rect": [
+            687,
+            687,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "prepare",
+          "logical_id": "melee_chaos_captain"
+        },
+        {
+          "index": 22,
+          "rect": [
+            916,
+            687,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "release",
+          "logical_id": "melee_chaos_captain"
+        },
+        {
+          "index": 23,
+          "rect": [
+            1145,
+            687,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "death",
+          "logical_id": "melee_chaos_captain"
+        },
+        {
+          "index": 24,
+          "rect": [
+            0,
+            916,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "idle",
+          "logical_id": "ghost_general"
+        },
+        {
+          "index": 25,
+          "rect": [
+            229,
+            916,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "walk_contact_a",
+          "logical_id": "ghost_general"
+        },
+        {
+          "index": 26,
+          "rect": [
+            458,
+            916,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "walk_contact_b",
+          "logical_id": "ghost_general"
+        },
+        {
+          "index": 27,
+          "rect": [
+            687,
+            916,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "prepare",
+          "logical_id": "ghost_general"
+        },
+        {
+          "index": 28,
+          "rect": [
+            916,
+            916,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "release",
+          "logical_id": "ghost_general"
+        },
+        {
+          "index": 29,
+          "rect": [
+            1145,
+            916,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "death",
+          "logical_id": "ghost_general"
+        }
+      ],
+      "state": "GENERATED_CANDIDATE",
+      "inspection_note": "실제 알파 확인; 셀/발 접점·연속 재생은 별도 검수",
+      "consumer": "scenes/enemies/school_encounter_actor.tscn",
+      "consumer_binding": "PROPOSED_NOT_IMPLEMENTED",
+      "animation_continuity": "NOT_RUN",
+      "approval": "PENDING",
+      "provenance": {
+        "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-c16d8a34-f95b-42ec-8eee-993a9613ff12.png",
+        "prompt": "Create a real transparent PNG game sprite atlas, six columns five rows. VERY SMALL characters with huge completely empty transparent gutters, each figure only 40 percent cell width including all equipment, keep death poses compact curled up. No effects. Dark painterly anime elevated three-quarter right-facing mature corrupted ninja and Japanese yokai. Five rows: lean oni-masked ninja; gaunt single-horn yokai; stocky muscular oni; unique armored twin-horn axe oni elite; crowned demonic samurai boss with katana. Six same-character poses across each row: idle, walk left contact, walk right contact, preparation, release, compact curled dead. Palette navy, gray, muted red. Do not fill cells, no background, no checkerboard, no frames, actual alpha zero between figures.",
+        "generator": "image_gen",
+        "created": "2026-09-11",
+        "reference_images": [],
+        "approval": "PENDING",
+        "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+      },
+      "measured_cut_occupied_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "heukyeong": {
+      "file": "heukyeong.png",
+      "sha256": "6f34ba8353ddae2f4178a2cefe36e998ad69e0befd83a5d4b32cb8713886e7d7",
+      "width": 1374,
+      "height": 1145,
+      "mode": "RGBA",
+      "alpha_required": true,
+      "alpha_channel_check": "PASS",
+      "alpha_nonzero_fraction": 0.28785492267500623,
+      "alpha_corners": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "grid_boundary_occupancy": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0236,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "grid": [
+        6,
+        5
+      ],
+      "regions": [
+        {
+          "index": 0,
+          "rect": [
+            0,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "idle",
+          "logical_id": "shuriken_scout"
+        },
+        {
+          "index": 1,
+          "rect": [
+            229,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "walk_contact_a",
+          "logical_id": "shuriken_scout"
+        },
+        {
+          "index": 2,
+          "rect": [
+            458,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "walk_contact_b",
+          "logical_id": "shuriken_scout"
+        },
+        {
+          "index": 3,
+          "rect": [
+            687,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "prepare",
+          "logical_id": "shuriken_scout"
+        },
+        {
+          "index": 4,
+          "rect": [
+            916,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "release",
+          "logical_id": "shuriken_scout"
+        },
+        {
+          "index": 5,
+          "rect": [
+            1145,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_chaser",
+          "pose": "death",
+          "logical_id": "shuriken_scout"
+        },
+        {
+          "index": 6,
+          "rect": [
+            0,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "idle",
+          "logical_id": "poison_shadow_assassin"
+        },
+        {
+          "index": 7,
+          "rect": [
+            229,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "walk_contact_a",
+          "logical_id": "poison_shadow_assassin"
+        },
+        {
+          "index": 8,
+          "rect": [
+            458,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "walk_contact_b",
+          "logical_id": "poison_shadow_assassin"
+        },
+        {
+          "index": 9,
+          "rect": [
+            687,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "prepare",
+          "logical_id": "poison_shadow_assassin"
+        },
+        {
+          "index": 10,
+          "rect": [
+            916,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "release",
+          "logical_id": "poison_shadow_assassin"
+        },
+        {
+          "index": 11,
+          "rect": [
+            1145,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_fast",
+          "pose": "death",
+          "logical_id": "poison_shadow_assassin"
+        },
+        {
+          "index": 12,
+          "rect": [
+            0,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "idle",
+          "logical_id": "dark_mark_pursuer"
+        },
+        {
+          "index": 13,
+          "rect": [
+            229,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "walk_contact_a",
+          "logical_id": "dark_mark_pursuer"
+        },
+        {
+          "index": 14,
+          "rect": [
+            458,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "walk_contact_b",
+          "logical_id": "dark_mark_pursuer"
+        },
+        {
+          "index": 15,
+          "rect": [
+            687,
+            458,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "prepare",
+          "logical_id": "dark_mark_pursuer"
+        },
+        {
+          "index": 16,
+          "rect": [
+            916,
+            458,
+            231,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "release",
+          "logical_id": "dark_mark_pursuer"
+        },
+        {
+          "index": 17,
+          "rect": [
+            1147,
+            458,
+            227,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "core_heavy",
+          "pose": "death",
+          "logical_id": "dark_mark_pursuer"
+        },
+        {
+          "index": 18,
+          "rect": [
+            0,
+            687,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "idle",
+          "logical_id": "shadow_chief"
+        },
+        {
+          "index": 19,
+          "rect": [
+            229,
+            687,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "walk_contact_a",
+          "logical_id": "shadow_chief"
+        },
+        {
+          "index": 20,
+          "rect": [
+            458,
+            687,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "walk_contact_b",
+          "logical_id": "shadow_chief"
+        },
+        {
+          "index": 21,
+          "rect": [
+            687,
+            687,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "prepare",
+          "logical_id": "shadow_chief"
+        },
+        {
+          "index": 22,
+          "rect": [
+            916,
+            687,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "release",
+          "logical_id": "shadow_chief"
+        },
+        {
+          "index": 23,
+          "rect": [
+            1145,
+            687,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "elite",
+          "pose": "death",
+          "logical_id": "shadow_chief"
+        },
+        {
+          "index": 24,
+          "rect": [
+            0,
+            916,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "idle",
+          "logical_id": "night_executioner"
+        },
+        {
+          "index": 25,
+          "rect": [
+            229,
+            916,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "walk_contact_a",
+          "logical_id": "night_executioner"
+        },
+        {
+          "index": 26,
+          "rect": [
+            458,
+            916,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "walk_contact_b",
+          "logical_id": "night_executioner"
+        },
+        {
+          "index": 27,
+          "rect": [
+            687,
+            916,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "prepare",
+          "logical_id": "night_executioner"
+        },
+        {
+          "index": 28,
+          "rect": [
+            916,
+            916,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "release",
+          "logical_id": "night_executioner"
+        },
+        {
+          "index": 29,
+          "rect": [
+            1145,
+            916,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "role": "boss",
+          "pose": "death",
+          "logical_id": "night_executioner"
+        }
+      ],
+      "state": "GENERATED_CANDIDATE",
+      "inspection_note": "실제 알파 확인; 셀/발 접점·연속 재생은 별도 검수",
+      "consumer": "scenes/enemies/school_encounter_actor.tscn",
+      "consumer_binding": "PROPOSED_NOT_IMPLEMENTED",
+      "animation_continuity": "NOT_RUN",
+      "approval": "PENDING",
+      "provenance": {
+        "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-78257633-17a3-449e-8eeb-e4530b33302d.png",
+        "prompt": "Generate a production texture atlas on transparent background, REAL alpha channel. IMPORTANT: very widely spaced SMALL assets, each one occupies ONLY the central 50% width and 50% height of its equal cell. A full half-cell of empty transparent separation between neighboring assets, including rows. Do not enlarge objects to fill space. No labels, grid lines, presentation backdrop, aura or lighting outside object. 6 columns 5 rows of tiny dark painterly anime game characters. Rows: masked dagger ninja; four-legged long-eared shadow yokai; bulky chained-sickle corrupted ninja; three-eyed crow yokai elite with claws; crowned shadow assassin boss with twin curved blades. Each row same character six poses: idle, left walking contact, right walking contact, preparing, releasing, dead. All face right elevated 3/4 view. Navy charcoal purple accents, mature proportions. Full silhouette completely contained in its small central area. Transparent empty pixels everywhere else. No frame borders.",
+        "generator": "image_gen",
+        "created": "2026-09-11",
+        "reference_images": [],
+        "approval": "PENDING",
+        "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+      },
+      "measured_cut_occupied_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "final": {
+      "file": "final.png",
+      "sha256": "7f9db9c581ebdba8227a34d5317edf0518c3c6b9d9d48fc6cc1beb568ed63700",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "alpha_required": true,
+      "alpha_channel_check": "PASS",
+      "alpha_nonzero_fraction": 0.09838040669759118,
+      "alpha_corners": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "grid_boundary_occupancy": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "grid": [
+        3,
+        2
+      ],
+      "regions": [
+        {
+          "index": 0,
+          "rect": [
+            0,
+            0,
+            512,
+            512
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 1,
+          "rect": [
+            512,
+            0,
+            512,
+            512
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 2,
+          "rect": [
+            1024,
+            0,
+            512,
+            512
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 3,
+          "rect": [
+            0,
+            512,
+            512,
+            512
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 4,
+          "rect": [
+            512,
+            512,
+            512,
+            512
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 5,
+          "rect": [
+            1024,
+            512,
+            512,
+            512
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        }
+      ],
+      "state": "GENERATED_CANDIDATE",
+      "inspection_note": "실제 알파 확인; 셀/발 접점·연속 재생은 별도 검수",
+      "consumer": "scenes/enemies/school_encounter_actor.tscn",
+      "consumer_binding": "PROPOSED_NOT_IMPLEMENTED",
+      "animation_continuity": "NOT_RUN",
+      "approval": "PENDING",
+      "provenance": {
+        "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-0310878f-86a9-46db-b898-a5f7d73c9b02.png",
+        "prompt": "Generate a production texture atlas on transparent background, REAL alpha channel. IMPORTANT: very widely spaced SMALL assets, each one occupies ONLY the central 50% width and 50% height of its equal cell. A full half-cell of empty transparent separation between neighboring assets, including rows. Do not enlarge objects to fill space. No labels, grid lines, presentation backdrop, aura or lighting outside object. 3 columns 2 rows of tiny dark painterly anime game sprites of SAME final calamity yokai ninja lord. Dark navy armored robes, pale cracked horned mask, small four-part gold chest medallion, red sash. Six poses in reading order: idle, left walking contact, right walking contact, ritual preparation, forward claw strike, dead collapse. Right facing elevated view, mature proportions. Full silhouette completely contained in its small central area. Transparent empty pixels everywhere else. No frame borders.",
+        "generator": "image_gen",
+        "created": "2026-09-11",
+        "reference_images": [],
+        "approval": "PENDING",
+        "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+      },
+      "measured_cut_occupied_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "icons": {
+      "file": "icons.png",
+      "sha256": "93b9ddc5f38dc440c80847e8e8bc209115a48ba6b64a62b7a1e7dec47f1ec280",
+      "width": 1086,
+      "height": 1448,
+      "mode": "RGBA",
+      "alpha_required": true,
+      "alpha_channel_check": "PASS",
+      "alpha_nonzero_fraction": 0.34906405482128144,
+      "alpha_corners": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "grid_boundary_occupancy": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "grid": [
+        3,
+        4
+      ],
+      "regions": [
+        {
+          "index": 0,
+          "rect": [
+            0,
+            0,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "bongma_hundred_demon_familiar"
+        },
+        {
+          "index": 1,
+          "rect": [
+            362,
+            0,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "bongma_seal_chain"
+        },
+        {
+          "index": 2,
+          "rect": [
+            724,
+            0,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "bongma_guardian_ward"
+        },
+        {
+          "index": 3,
+          "rect": [
+            0,
+            362,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "cheonsul_flame_mark"
+        },
+        {
+          "index": 4,
+          "rect": [
+            362,
+            362,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "cheonsul_water_vein_bind"
+        },
+        {
+          "index": 5,
+          "rect": [
+            724,
+            362,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "cheonsul_lightning_chain_shift"
+        },
+        {
+          "index": 6,
+          "rect": [
+            0,
+            724,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "guiin_ghost_blood_wave"
+        },
+        {
+          "index": 7,
+          "rect": [
+            362,
+            724,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "guiin_afterimage_charge"
+        },
+        {
+          "index": 8,
+          "rect": [
+            724,
+            724,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "guiin_asura_ring"
+        },
+        {
+          "index": 9,
+          "rect": [
+            0,
+            1086,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "heukyeong_shadow_needle"
+        },
+        {
+          "index": 10,
+          "rect": [
+            362,
+            1086,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "heukyeong_poison_mist"
+        },
+        {
+          "index": 11,
+          "rect": [
+            724,
+            1086,
+            362,
+            362
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "heukyeong_chain_execution"
+        }
+      ],
+      "state": "GENERATED_CANDIDATE",
+      "inspection_note": "실제 알파 확인; 셀/발 접점·연속 재생은 별도 검수",
+      "consumer": "scenes/ui/rest_flow_ui.tscn",
+      "consumer_binding": "PROPOSED_NOT_IMPLEMENTED",
+      "animation_continuity": "NOT_RUN",
+      "approval": "PENDING",
+      "provenance": {
+        "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-9b79312a-0700-4f5a-9501-7a3b213cac6a.png",
+        "prompt": "Generate a production texture atlas on transparent background, REAL alpha channel. IMPORTANT: very widely spaced SMALL assets, each one occupies ONLY the central 50% width and 50% height of its equal cell. A full half-cell of empty transparent separation between neighboring assets, including rows. Do not enlarge objects to fill space. No labels, grid lines, presentation backdrop, aura or lighting outside object. 3 columns 4 rows of small game skill icons. Row1 gold familiar fox, gold seal chain, protective blue ward; Row2 orange flame mark, blue water bind, violet lightning chain; Row3 crimson blood crescent, red ninja afterimage, asura ring; Row4 purple shadow needle, green poison mist, purple execution blade. Dark Japanese ninja fantasy painterly icon silhouettes, no lettering. Full silhouette completely contained in its small central area. Transparent empty pixels everywhere else. No frame borders.",
+        "generator": "image_gen",
+        "created": "2026-09-11",
+        "reference_images": [],
+        "approval": "PENDING",
+        "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+      },
+      "measured_cut_occupied_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "vfx": {
+      "file": "vfx.png",
+      "sha256": "7f322a04ea39eb05eb0996b13f62078da13231fd89a0467990e5c98b90bdb286",
+      "width": 1269,
+      "height": 1240,
+      "mode": "RGBA",
+      "alpha_required": true,
+      "alpha_channel_check": "PASS",
+      "alpha_nonzero_fraction": 0.2499383563384936,
+      "alpha_corners": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "grid_boundary_occupancy": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "grid": [
+        4,
+        4
+      ],
+      "regions": [
+        {
+          "index": 0,
+          "rect": [
+            0,
+            0,
+            317,
+            310
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 1,
+          "rect": [
+            317,
+            0,
+            317,
+            310
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 2,
+          "rect": [
+            634,
+            0,
+            318,
+            310
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 3,
+          "rect": [
+            952,
+            0,
+            317,
+            310
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 4,
+          "rect": [
+            0,
+            310,
+            317,
+            310
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 5,
+          "rect": [
+            317,
+            310,
+            317,
+            310
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 6,
+          "rect": [
+            634,
+            310,
+            318,
+            310
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 7,
+          "rect": [
+            952,
+            310,
+            317,
+            310
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 8,
+          "rect": [
+            0,
+            620,
+            317,
+            310
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 9,
+          "rect": [
+            317,
+            620,
+            317,
+            310
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 10,
+          "rect": [
+            634,
+            620,
+            318,
+            310
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 11,
+          "rect": [
+            952,
+            620,
+            317,
+            310
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 12,
+          "rect": [
+            0,
+            930,
+            317,
+            310
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 13,
+          "rect": [
+            317,
+            930,
+            317,
+            310
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 14,
+          "rect": [
+            634,
+            930,
+            318,
+            310
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 15,
+          "rect": [
+            952,
+            930,
+            317,
+            310
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        }
+      ],
+      "state": "GENERATED_CANDIDATE",
+      "inspection_note": "실제 알파 확인; 셀/발 접점·연속 재생은 별도 검수",
+      "consumer": "scripts/combat/basic_weapon_controller.gd",
+      "consumer_binding": "PROPOSED_NOT_IMPLEMENTED",
+      "animation_continuity": "NOT_RUN",
+      "approval": "PENDING",
+      "provenance": {
+        "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-c4eb4595-47bb-4204-a88f-1b0dcc814477.png",
+        "prompt": "Generate a production texture atlas on transparent background, REAL alpha channel. IMPORTANT: very widely spaced SMALL assets, each one occupies ONLY the central 50% width and 50% height of its equal cell. A full half-cell of empty transparent separation between neighboring assets, including rows. Do not enlarge objects to fill space. No labels, grid lines, presentation backdrop, aura or lighting outside object. 4 columns 4 rows of small game effect textures. Row1 white katana crescent, silver shuriken trail, navy dash puff, white hit sparks. Row2 gold seal ring, gold chain, small blue fox spirit, blue protective dome. Row3 orange fireball, blue water mist, violet lightning, red blade crescent. Row4 purple needle, green poison puff, red enemy talisman projectile, amber warning arc. Restrained painterly 2D textures. Full silhouette completely contained in its small central area. Transparent empty pixels everywhere else. No frame borders.",
+        "generator": "image_gen",
+        "created": "2026-09-11",
+        "reference_images": [],
+        "approval": "PENDING",
+        "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+      },
+      "measured_cut_occupied_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "floor": {
+      "file": "floor.png",
+      "sha256": "5fe06f65f23464fcde1694bf5006b4e5938613b0117e04dc742c879d21ad26c7",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGB",
+      "alpha_required": false,
+      "alpha_channel_check": "NOT_REQUIRED",
+      "alpha_nonzero_fraction": null,
+      "alpha_corners": null,
+      "grid_boundary_occupancy": [],
+      "grid": [
+        1,
+        1
+      ],
+      "regions": [
+        {
+          "index": 0,
+          "rect": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        }
+      ],
+      "state": "GENERATED_CANDIDATE",
+      "inspection_note": "단일 바닥 후보; 반복 경계 검수 전 seamless 보장 없음",
+      "consumer": "scenes/main/main_scene.tscn",
+      "consumer_binding": "PROPOSED_NOT_IMPLEMENTED",
+      "animation_continuity": "NOT_RUN",
+      "approval": "PENDING",
+      "provenance": {
+        "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-6714dccf-1dfd-449c-91da-cc243639adee.png",
+        "prompt": "Use case: stylized-concept. Actual game asset: square seamlessly repeating ground texture only, for a top-down dark moonlit ninja survivor. Entire image same orthographic top-down scale. Low-contrast hand-painted charcoal/deep navy irregular cracked slate slabs. Fine muted brush texture, quiet broad value masses, no pixel art, not photographic. Uniform illumination, no vignette, no directional gradient. Tileable on ALL four edges with continuous stone shapes. No trees, lights, buildings, debris piles, borders, creatures, text, UI or glow. Only an infinite floor surface. Design at 1024x1024 or square, compact repeating features not giant central feature. Keep player silhouettes and orange warnings readable on it.",
+        "generator": "image_gen",
+        "created": "2026-09-11",
+        "reference_images": [],
+        "approval": "PENDING",
+        "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+      },
+      "measured_cut_occupied_pixels": []
+    },
+    "props": {
+      "file": "props.png",
+      "sha256": "78ecafd11e6919db80589507bd98d4f9af61de1425816b21b19e85a9be512b77",
+      "width": 2129,
+      "height": 739,
+      "mode": "RGBA",
+      "alpha_required": true,
+      "alpha_channel_check": "PASS",
+      "alpha_nonzero_fraction": 0.24868575016954475,
+      "alpha_corners": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "grid_boundary_occupancy": [
+        0.0338,
+        0.0325
+      ],
+      "grid": [
+        3,
+        1
+      ],
+      "regions": [
+        {
+          "index": 0,
+          "rect": [
+            0,
+            0,
+            622,
+            739
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 1,
+          "rect": [
+            622,
+            0,
+            831,
+            739
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        },
+        {
+          "index": 2,
+          "rect": [
+            1453,
+            0,
+            676,
+            739
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        }
+      ],
+      "state": "GENERATED_CANDIDATE",
+      "inspection_note": "실제 알파 확인; 셀/발 접점·연속 재생은 별도 검수",
+      "consumer": "scenes/main/main_scene.tscn",
+      "consumer_binding": "PROPOSED_NOT_IMPLEMENTED",
+      "animation_continuity": "NOT_RUN",
+      "approval": "PENDING",
+      "provenance": {
+        "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-5595e425-9be2-440b-92c6-f16c923a3da4.png",
+        "prompt": "Create a production game sprite atlas on a TRANSPARENT background with real alpha. 3 columns one row: isolated stone lantern, twisted dead tree, small rubble pile. Dark painterly anime elevated topdown view. Opaque crisp objects only with no surrounding glow, mist, floor, shadow, gradients or backdrop of any kind. Lantern has amber glass but no light spilling outside its silhouette. Tree full branches and roots inside its spacious cell. At least 20 percent transparent empty padding around each object. Every pixel outside objects fully transparent, game engine will draw shadows separately.",
+        "generator": "image_gen",
+        "created": "2026-09-11",
+        "reference_images": [],
+        "approval": "PENDING",
+        "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+      },
+      "measured_cut_occupied_pixels": [
+        0,
+        0
+      ]
+    },
+    "title": {
+      "file": "title.png",
+      "sha256": "53a8919a13093da8797de711f765ef3dd387e574ff2f8177591dd52205f36b8d",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alpha_required": false,
+      "alpha_channel_check": "NOT_REQUIRED",
+      "alpha_nonzero_fraction": null,
+      "alpha_corners": null,
+      "grid_boundary_occupancy": [],
+      "grid": [
+        1,
+        1
+      ],
+      "regions": [
+        {
+          "index": 0,
+          "rect": [
+            0,
+            0,
+            1672,
+            941
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        }
+      ],
+      "state": "GENERATED_CANDIDATE",
+      "inspection_note": "불투명 배경 용도; 반복/화면 검수 별도",
+      "consumer": "scenes/ui/title_screen.tscn",
+      "consumer_binding": "PROPOSED_NOT_IMPLEMENTED",
+      "animation_continuity": "NOT_RUN",
+      "approval": "PENDING",
+      "provenance": {
+        "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-db85bdb5-f820-47c3-a579-0f9b63f9cae1.png",
+        "prompt": "Create a 16:9 finished in-game main menu BACKGROUND illustration for Korean game 닌자의 신, but do NOT put text, title or UI on image. Dark moonlit ninja fantasy painterly anime. A small black-haired ponytail ninja in navy and black robes with red sash stands on the far RIGHT third overlooking subdued ancient rooftops; faint moon and ink mist behind him. LEFT sixty percent very dark low-detail negative space for separate title and six menu buttons. A few weathered shrine silhouettes distant, no large colorful magic. Navy charcoal warm ivory moon subdued gold and red, premium ink-painted texture, strong composition readable behind UI, not photorealistic, not chunky pixel art. Full-bleed rectangular background.",
+        "generator": "image_gen",
+        "created": "2026-09-11",
+        "reference_images": [],
+        "approval": "PENDING",
+        "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+      },
+      "measured_cut_occupied_pixels": []
+    },
+    "logo": {
+      "file": "logo.png",
+      "sha256": "d17a49c473a5c1d660a8143f01c8e7fd9aeeb3636b676e4d5d33b7aac718f059",
+      "width": 2172,
+      "height": 724,
+      "mode": "RGBA",
+      "alpha_required": true,
+      "alpha_channel_check": "PASS",
+      "alpha_nonzero_fraction": 0.34703928960247443,
+      "alpha_corners": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "grid_boundary_occupancy": [],
+      "grid": [
+        1,
+        1
+      ],
+      "regions": [
+        {
+          "index": 0,
+          "rect": [
+            0,
+            0,
+            2172,
+            724
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        }
+      ],
+      "state": "GENERATED_CANDIDATE",
+      "inspection_note": "투명 워드로고+메달; 각각 AtlasTexture 영역으로 배치 예정",
+      "consumer": "scenes/ui/title_screen.tscn",
+      "consumer_binding": "PROPOSED_NOT_IMPLEMENTED",
+      "animation_continuity": "NOT_RUN",
+      "approval": "PENDING",
+      "provenance": {
+        "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-007da419-ba14-4be9-9cb5-9412f5ac0c68.png",
+        "prompt": "Transparent-background game UI branding asset for Korean dark ninja fantasy game. Only two completely separated components with ample transparent space: LEFT elegant strong Korean brush-calligraphy wordmark reading exactly '닌자의 신' in warm ivory ink with subtle worn gold; RIGHT a single small round antique gold medallion made from four joined puzzle quadrants, each distinct seal/familiar, elemental sigil, oni mask, shadow-eye motif. Medallion diameter same height as one Korean character of the title, not larger than title. Dark navy accents, premium painterly ink texture, legible title at menu scale. No English, no slogan, no background, no parchment, no extra icons. Real transparent background.",
+        "generator": "image_gen",
+        "created": "2026-09-11",
+        "reference_images": [],
+        "approval": "PENDING",
+        "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+      },
+      "component_regions": {
+        "wordmark": [
+          0,
+          0,
+          1540,
+          724
+        ],
+        "medal": [
+          1540,
+          0,
+          632,
+          724
+        ],
+        "note": "original candidate 2172x724; adjust only if source changes"
+      },
+      "measured_cut_occupied_pixels": []
+    },
+    "equipment": {
+      "file": "equipment.png",
+      "sha256": "50fe720fbd987bb50e6e92a04b2a24a2080c81d129d4a3a5f4ab6eed05375d8f",
+      "width": 1374,
+      "height": 1145,
+      "mode": "RGBA",
+      "alpha_required": true,
+      "alpha_channel_check": "PASS",
+      "alpha_nonzero_fraction": 0.3832548324148408,
+      "alpha_corners": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "grid_boundary_occupancy": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0648,
+        0.0648
+      ],
+      "grid": [
+        6,
+        5
+      ],
+      "regions": [
+        {
+          "index": 0,
+          "rect": [
+            0,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "taijutsu_training"
+        },
+        {
+          "index": 1,
+          "rect": [
+            229,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "protection_talisman"
+        },
+        {
+          "index": 2,
+          "rect": [
+            458,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "fortune_talisman"
+        },
+        {
+          "index": 3,
+          "rect": [
+            687,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "ninjutsu_training"
+        },
+        {
+          "index": 4,
+          "rect": [
+            916,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "enlightenment"
+        },
+        {
+          "index": 5,
+          "rect": [
+            1145,
+            0,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "regeneration_scroll"
+        },
+        {
+          "index": 6,
+          "rect": [
+            0,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "ultimate_treatise"
+        },
+        {
+          "index": 7,
+          "rect": [
+            229,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "school_emblem"
+        },
+        {
+          "index": 8,
+          "rect": [
+            458,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "katana"
+        },
+        {
+          "index": 9,
+          "rect": [
+            687,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "shuriken"
+        },
+        {
+          "index": 10,
+          "rect": [
+            916,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "bomb"
+        },
+        {
+          "index": 11,
+          "rect": [
+            1145,
+            229,
+            229,
+            229
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "water_style"
+        },
+        {
+          "index": 12,
+          "rect": [
+            0,
+            458,
+            229,
+            223
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "lightning_style"
+        },
+        {
+          "index": 13,
+          "rect": [
+            229,
+            458,
+            229,
+            223
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "fire_style"
+        },
+        {
+          "index": 14,
+          "rect": [
+            458,
+            458,
+            229,
+            223
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "stealth_art"
+        },
+        {
+          "index": 15,
+          "rect": [
+            687,
+            458,
+            229,
+            223
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "poison_needles"
+        },
+        {
+          "index": 16,
+          "rect": [
+            916,
+            458,
+            229,
+            223
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "barrier_art"
+        },
+        {
+          "index": 17,
+          "rect": [
+            1145,
+            458,
+            229,
+            223
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "greater_summoning_circle"
+        },
+        {
+          "index": 18,
+          "rect": [
+            0,
+            681,
+            229,
+            222
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "forbidden_talisman"
+        },
+        {
+          "index": 19,
+          "rect": [
+            229,
+            681,
+            229,
+            222
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "water_mist"
+        },
+        {
+          "index": 20,
+          "rect": [
+            458,
+            681,
+            229,
+            222
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "thunder_blade"
+        },
+        {
+          "index": 21,
+          "rect": [
+            687,
+            681,
+            229,
+            222
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "explosive_bomb"
+        },
+        {
+          "index": 22,
+          "rect": [
+            916,
+            681,
+            229,
+            222
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "small_pouch"
+        },
+        {
+          "index": 23,
+          "rect": [
+            1145,
+            681,
+            229,
+            222
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "long_pouch"
+        },
+        {
+          "index": 24,
+          "rect": [
+            0,
+            903,
+            229,
+            242
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "square_pouch"
+        },
+        {
+          "index": 25,
+          "rect": [
+            229,
+            903,
+            229,
+            242
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "tactical_t_pouch"
+        },
+        {
+          "index": 26,
+          "rect": [
+            458,
+            903,
+            229,
+            242
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "ninjutsu_l_pouch"
+        },
+        {
+          "index": 27,
+          "rect": [
+            687,
+            903,
+            229,
+            242
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "locked_book_ui"
+        },
+        {
+          "index": 28,
+          "rect": [
+            916,
+            903,
+            229,
+            242
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "chest_token_ui"
+        },
+        {
+          "index": 29,
+          "rect": [
+            1145,
+            903,
+            229,
+            242
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED",
+          "logical_id": "UNUSED"
+        }
+      ],
+      "state": "GENERATED_CANDIDATE",
+      "inspection_note": "실제 알파 확인; 셀/발 접점·연속 재생은 별도 검수",
+      "consumer": "scenes/ui/rest_flow_ui.tscn",
+      "consumer_binding": "PROPOSED_NOT_IMPLEMENTED",
+      "animation_continuity": "NOT_RUN",
+      "approval": "PENDING",
+      "provenance": {
+        "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-4d550c7a-cbea-409d-b21e-2437a9a4cbaa.png",
+        "prompt": "Create a production game icon atlas on a TRANSPARENT background with real alpha. Exactly 6 columns 5 rows, 30 generous equal cells. Painterly Japanese ninja fantasy dark navy, ivory paper, warm gold, simple small legible objects with clean silhouettes. SOLID OPAQUE OBJECTS ONLY; surrounding empty pixels fully transparent; NO glow, aura, smoke, gradients, lighting outside object, background shading or drop shadows. Row1 bandaged fist charm; protective paper charm; lucky coin charm; ninjutsu training book; enlightenment prayer beads; regeneration herbal scroll. Row2 ultimate treatise scroll; school medallion; sheathed black katana; silver shuriken; plain iron bomb; blue water scroll. Row3 lightning scroll; fire scroll; stealth scroll; poison needle; barrier talisman; large summoning scroll. Row4 forbidden red talisman; water mist charm; lightning sword; reinforced explosive bomb; small two-part pouch; long three-part pouch. Row5 square pouch; T-shaped tactical pouch; L-shaped ritual pouch; locked book; chest token; empty transparent cell. Equal cells with 20 percent transparent gutters. No text, no outlines of cells, no UI or backdrop.",
+        "generator": "image_gen",
+        "created": "2026-09-11",
+        "reference_images": [],
+        "approval": "PENDING",
+        "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+      },
+      "measured_cut_occupied_pixels": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "combat": {
+      "file": "combat.png",
+      "sha256": "fb3e6292bcd9d386bfb206f92f57da821bf341911456eaecb6a0b0e434aeaf92",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alpha_required": false,
+      "alpha_channel_check": "NOT_REQUIRED",
+      "alpha_nonzero_fraction": null,
+      "alpha_corners": null,
+      "grid_boundary_occupancy": [],
+      "grid": [
+        1,
+        1
+      ],
+      "regions": [
+        {
+          "index": 0,
+          "rect": [
+            0,
+            0,
+            1672,
+            941
+          ],
+          "pivot_normalized": [
+            0.5,
+            0.9
+          ],
+          "pivot_state": "PROPOSED_NOT_MOTION_VERIFIED"
+        }
+      ],
+      "state": "GENERATED_CANDIDATE",
+      "inspection_note": "생성 목표 화면; 분리 게임 자산 또는 실제 캡처 아님",
+      "consumer": "docs/design/NINJA_SURVIVAL_HUMAN_BLUEPRINT.md",
+      "consumer_binding": "PROPOSED_NOT_IMPLEMENTED",
+      "animation_continuity": "NOT_RUN",
+      "approval": "PENDING",
+      "provenance": {
+        "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-0fdbddf6-6c63-4f7a-8c49-073a76a9a193.png",
+        "prompt": "A realistic proposed 16:9 in-game screenshot of a 2D top-down action survivor ninja game, no text or HUD. Dark seamless low-contrast slate stone floor fills entire screen, no rooms, no walls. All units quite small relative to arena: player central lower-right just 6 percent screen height, black ponytail navy ninja red scarf running east, separate short pale katana crescent and two silver shuriken going east without attack pose. Thirty corrupted ninja and grotesque small yokai pursuing from scattered angles, most on left; no evenly spaced parade, feet touching floor with subtle contact shadows and same light/camera perspective. Upper-right a distinct masked mobile onmyoji boss staff talismans, 11 percent screen height, amber outlined cone telegraph on floor points toward player but leaves open escape space. Clear actual game camera, subdued painterly anime sprites unified with background, sparse VFX, visible player and danger, no key art, no oversized characters, no labels.",
+        "generator": "image_gen",
+        "created": "2026-09-11",
+        "reference_images": [],
+        "approval": "PENDING",
+        "source_role": "TARGET_COMPOSITION_ONLY"
+      },
+      "measured_cut_occupied_pixels": []
+    }
+  }
+}

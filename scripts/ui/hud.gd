@@ -8,12 +8,14 @@ signal resume_requested
 signal current_tradition_help_requested
 signal restart_requested
 signal retry_requested
+signal ultimate_requested
 
 @onready var combat_top_bar: MarginContainer = $CombatTopBar
 @onready var dash_label: Label = $CombatTopBar/Row/DashLabel
 @onready var stage_phase_label: Label = $CombatTopBar/Row/StagePhaseLabel
 @onready var play_label: Label = $CombatTopBar/Row/PlayLabel
 @onready var settings_button: Button = $CombatTopBar/Row/SettingsButton
+@onready var ultimate_button: Button = $CombatTopBar/Row/UltimateButton
 @onready var settings_panel: Control = $SettingsPanel
 @onready var resume_button: Button = $SettingsPanel/Dialog/Margin/Actions/ResumeButton
 @onready var tradition_help_button: Button = $SettingsPanel/Dialog/Margin/Actions/TraditionHelpButton
@@ -31,6 +33,8 @@ signal retry_requested
 var _combat_hud_visible: bool = false
 var _touch_available: bool = false
 var _stage_phase_requested_visible: bool = false
+var _ultimate_ready: bool = false
+var _ultimate_feedback_remaining: float = 0.0
 
 
 func _ready() -> void:
@@ -46,6 +50,8 @@ func _ready() -> void:
 	tradition_help_button.pressed.connect(_on_tradition_help_pressed)
 	restart_button.pressed.connect(_on_restart_pressed)
 	retry_button.pressed.connect(_on_retry_pressed)
+	ultimate_button.pressed.connect(_on_ultimate_pressed)
+	set_ultimate_ready(false)
 	_connect_touch_button(move_up_button, &"move_up")
 	_connect_touch_button(move_down_button, &"move_down")
 	_connect_touch_button(move_left_button, &"move_left")
@@ -79,7 +85,43 @@ func show_combat_hud(enabled: bool) -> void:
 
 
 func combat_persistent_control_names() -> Array[String]:
-	return ["DashLabel", "PlayLabel", "SettingsButton"]
+	return ["DashLabel", "PlayLabel", "UltimateButton", "SettingsButton"]
+
+
+func _process(delta: float) -> void:
+	if _ultimate_feedback_remaining <= 0.0:
+		return
+	_ultimate_feedback_remaining = maxf(_ultimate_feedback_remaining - delta, 0.0)
+	if _ultimate_feedback_remaining <= 0.0:
+		_render_ultimate_ready()
+
+
+func set_ultimate_ready(ready: bool) -> void:
+	_ultimate_ready = ready
+	if _ultimate_feedback_remaining <= 0.0:
+		_render_ultimate_ready()
+
+
+func show_ultimate_feedback(result: StringName) -> void:
+	var messages := {
+		&"activated": "오의 · 발동",
+		&"charging": "오의 · 충전 부족",
+		&"no_target": "오의 · 대상 없음",
+		&"inactive": "오의 · 사용 불가",
+		&"unavailable": "오의 · 지금 사용 불가",
+	}
+	ultimate_button.text = messages.get(result, "오의 · 지금 사용 불가")
+	_ultimate_feedback_remaining = 1.4
+
+
+func _render_ultimate_ready() -> void:
+	ultimate_button.text = "오의 · 준비 [E/Y]" if _ultimate_ready else "오의 · 충전 중 [E/Y]"
+	ultimate_button.tooltip_text = "E / 패드 Y / 클릭·터치로 오의 발동. 일반 공격은 자동입니다."
+
+
+func _on_ultimate_pressed() -> void:
+	if _combat_hud_visible and not settings_panel.visible and not game_over_panel.visible and not get_tree().paused:
+		ultimate_requested.emit()
 
 
 func dash_text() -> String:

@@ -14,6 +14,15 @@ func test_rest_flow_scene_exists() -> void:
 	assert_true(ResourceLoader.exists(REST_SCENE_PATH), "Missing MVP-3 RestFlowUI scene")
 
 
+func test_preparation_scroll_preserves_paths_and_follows_keyboard_focus() -> void:
+	var ui = _new_ui()
+	var scroll = ui.get_node("Panel/Margin")
+	assert_true(scroll is ScrollContainer, "Long preparation must scroll, not push the commit button off screen.")
+	if scroll is ScrollContainer:
+		assert_true(scroll.follow_focus)
+		assert_eq(scroll.vertical_scroll_mode, ScrollContainer.SCROLL_MODE_AUTO)
+
+
 func test_rest_flow_has_all_state_views_methods_and_intent_signals() -> void:
 	var ui = _new_ui()
 	if ui == null:
@@ -533,6 +542,10 @@ func test_workbench_standard_pointer_touch_and_focus_input_emit_intents() -> voi
 	assert_gt(route_gui_events.size(), 0, "Viewport pointer input must reach the route Button GUI boundary")
 	assert_eq(emitted, [["route", &"bongma"]], "Pointer click must use the route Button intent")
 
+	# Scroll to the target before sending physical touch coordinates.
+	ui.get_node("Panel/Margin").ensure_control_visible(fate_button)
+	await get_tree().process_frame
+	fate_center = fate_button.get_global_rect().get_center()
 	var touch_down := InputEventScreenTouch.new()
 	touch_down.position = fate_center
 	touch_down.pressed = true
@@ -600,7 +613,7 @@ func test_preview_and_complete_are_distinct_terminal_states() -> void:
 	ui.show_complete(summary)
 	assert_true(ui.get_node("Panel/Margin/Content/CompleteView").visible)
 	assert_false(ui.get_node("Panel/Margin/Content/PreviewView").visible)
-	assert_true(ui.get_node("Panel/Margin/Content/CompleteView/TitleLabel").text.contains("MVP-3 LOOP COMPLETE"))
+	assert_eq(ui.get_node("Panel/Margin/Content/CompleteView/TitleLabel").text, "여정 완료")
 	assert_false(ui.get_node("Panel/Margin/Content/CompleteView").has_node("StartButton"))
 	ui.get_node("Panel/Margin/Content/CompleteView/RestartButton").emit_signal("pressed")
 	assert_eq(emitted, [["start"], ["restart"]])

@@ -2,6 +2,7 @@ extends RefCounted
 class_name CombinationResolver
 
 const MVP4CatalogScript = preload("res://scripts/data/mvp4_catalog.gd")
+const SELECTED_CATALOG = preload("res://scripts/data/selected_backpack_catalog.gd")
 
 enum HintStage {
 	UNDISCOVERED,
@@ -85,12 +86,12 @@ func begin_result_preview(session, combo_id: StringName, source_a_instance: int,
 	if source_a_instance <= 0 or source_b_instance <= 0 or source_a_instance == source_b_instance:
 		return false
 
-	var combos: Dictionary = MVP4CatalogScript.build_combinations()
-	var combo = combos.get(combo_id)
-	if combo == null:
-		return false
 	var session_state = session.state
 	if session_state == null:
+		return false
+	var combos: Dictionary = SELECTED_CATALOG.build_combinations() if session_state.uses_selectable_books() else MVP4CatalogScript.build_combinations()
+	var combo = combos.get(combo_id)
+	if combo == null:
 		return false
 	var first = session_state.get_item(source_a_instance)
 	var second = session_state.get_item(source_b_instance)

@@ -1,6 +1,57 @@
 # DOCUMENTATION_MAP
 
+## Latest equipment revision — publication pending
+
+Current rules: Detailed Rules R-EQUIPMENT/R-LOADOUT/R-TRACE and Implementation Packet.
+Three gear slots, zero gear bag cells, two initial books use four cells. Screen
+Blueprint now describes gear/bag separation. Research page retains superseded
+8/9-cell history only. Existing 73-page PDF/manifest are preserved prior publication;
+live source comparison is STALE until the complete revised book is exported/reviewed.
+
 ## 목적
+
+### Latest follow-up — 2026-09-11 tag/draft/trace revision
+
+`research/2026-09-11-tags-draft-and-trace-review.md` owns proposed changes requested
+after the 73-page publication. The PDF below is the prior review snapshot and
+does not yet include those proposals. Rules/packet/PDF need reconciliation after
+product review; implementation readiness is reopened. Player appearance attempt:
+`visual/candidates/player-refinement-20260911/README.md` (technical rework required).
+
+### 2026-09-11 human Blueprint preparation overlay
+
+Latest reader-facing source: `design/NINJA_SURVIVAL_HUMAN_BLUEPRINT.md`.
+Downloadable derived view: `../exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_20260911.pdf`.
+Publication source/hash binding: `publication/NINJA_SURVIVAL_HUMAN_BLUEPRINT_20260911_MANIFEST.json`.
+Current inspection/delivery: `reviews/2026-09-11-human-blueprint-review.md`.
+It includes the detailed-rule owner and `design/NINJA_SURVIVAL_IMPLEMENTATION_PACKET.md`
+as derived publication sections, not new competing rules. Images in
+`visual/candidates/blueprint-20260911/` are candidates, not approved runtime assets.
+The latest user permits needed image production; the pause in the historical
+2026-09-10 entry below no longer applies. Historical exported PDFs remain preserved.
+
+### 2026-09-10 active-cycle routing override
+
+NS-DESIGN-RULES: `design/NINJA_SURVIVAL_DETAILED_RULES.md` is the single new-cycle
+detailed-rule owner, authored under delegated planning judgement. Publication:
+repository-native review source now; milestone PDF after design/visual review,
+not an automatic replacement of the historical integrated Human Blueprint.
+Its rules are DELEGATED_DESIGN, tuning values are initial tests, and implementation
+readiness is separate. Current review evidence:
+`reviews/2026-09-10-detailed-rules-review.md`. Latest task is planning-only;
+image generation and runtime implementation remain paused.
+
+Bounded input implementation/evidence: `reviews/2026-09-10-manual-ultimate-review.md`.
+Execution checklist: `superpowers/plans/2026-09-10-manual-ultimate-input.md`.
+
+Read the dated replanning entries in Decisions, Active Context and Visual Handoff
+first. The A+B automatic-attack/manual-movement-dash-ultimate boundary is approved.
+The dated first section of `visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` now owns its
+representative screen flow, motion contracts and implementation handoff. Its one
+new image is candidate-only, not an approved replacement or actual runtime capture.
+The prior Human GDD and PDF remain unchanged historical reader artifacts for this
+replanning cycle. They do not yet include the new A+B supplement. Historical
+current-main/T16 labels below are not the latest implementation frontier.
 
 현재 작업자가 **어떤 정보를 어디서 읽고 수정해야 하는지** 빠르게 판단하고, 역사 문서·AI 작업 로그·사람용 기획면·실제 구현 증거가 서로 정본을 침범하지 않도록 라우팅한다.
 

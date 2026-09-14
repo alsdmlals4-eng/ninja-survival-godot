@@ -91,3 +91,36 @@ func test_projectile_expires_after_lifetime() -> void:
 	projectile._physics_process(0.2)
 
 	assert_true(projectile.is_queued_for_deletion())
+
+
+func test_consumed_projectile_cannot_hit_again_before_deferred_deletion() -> void:
+	var projectile = ProjectileScript.new()
+	add_child_autofree(projectile)
+	var receiver := DamageReceiver.new()
+	add_child_autofree(receiver)
+	projectile.configure(Vector2.RIGHT, 100.0, 13)
+	assert_true(projectile.hit_body(receiver))
+	assert_false(projectile.hit_body(receiver))
+	assert_eq(receiver.damage_taken, 13)
+
+
+func test_one_pierce_hits_two_distinct_targets_without_repeat_contact_damage() -> void:
+	var projectile = ProjectileScript.new()
+	assert_true("pierce_count" in projectile)
+	if not "pierce_count" in projectile:
+		projectile.free()
+		return
+	projectile.pierce_count = 1
+	add_child_autofree(projectile)
+	projectile.configure(Vector2.RIGHT, 100.0, 16)
+	var first := DamageReceiver.new()
+	var second := DamageReceiver.new()
+	add_child_autofree(first)
+	add_child_autofree(second)
+	assert_true(projectile.hit_body(first))
+	assert_false(projectile.is_queued_for_deletion())
+	assert_false(projectile.hit_body(first))
+	assert_true(projectile.hit_body(second))
+	assert_true(projectile.is_queued_for_deletion())
+	assert_eq(first.damage_taken, 16)
+	assert_eq(second.damage_taken, 16)

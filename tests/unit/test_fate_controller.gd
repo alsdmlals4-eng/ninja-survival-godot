@@ -109,6 +109,64 @@ func test_already_selected_fate_cannot_be_selected_again_even_if_requested() -> 
 	assert_false(fate.can_continue())
 
 
+func test_fourth_preparation_offers_two_remaining_fates_without_duplicates() -> void:
+	var fixture := _new_fixture(49)
+	for fate_id in [&"slaughter_path", &"guardian_path", &"shadow_path"]:
+		assert_true(fixture.state.select_fate(fate_id))
+	fixture.fate.begin_rest()
+	assert_eq(fixture.fate.candidate_ids.size(), 2)
+	assert_eq(_unique_count(fixture.fate.candidate_ids), 2)
+	for fate_id in fixture.fate.candidate_ids:
+		assert_false(fixture.state.has_fate(fate_id))
+
+
+func test_preparation_snapshot_restores_pending_fate_without_applying_power_or_reroll() -> void:
+	var source := _new_fixture(69)
+	assert_true(source.fate.persistent_preparation_snapshot().is_empty(), "No preparation exists before the initial offer draw")
+	source.fate.begin_rest()
+	var chosen: StringName = source.fate.candidate_ids[0]
+	assert_true(source.fate.choose_pending(chosen))
+	assert_true(source.fate.has_method("persistent_preparation_snapshot"))
+	if not source.fate.has_method("persistent_preparation_snapshot"):
+		return
+	var raw = JSON.parse_string(JSON.stringify(source.fate.persistent_preparation_snapshot()))
+	var target := _new_fixture(80)
+	watch_signals(target.fate)
+	assert_true(target.fate.restore_preparation_snapshot(raw))
+	assert_eq(target.fate.candidate_ids, source.fate.candidate_ids)
+	assert_eq(target.fate.pending_fate_id(), chosen)
+	assert_false(target.state.has_fate(chosen))
+	assert_signal_not_emitted(target.fate, "fate_selected")
+	assert_signal_not_emitted(target.fate, "candidates_changed")
+	assert_true(target.fate._commit_pending())
+	assert_true(source.fate._commit_pending())
+	assert_true(target.fate.persistent_preparation_snapshot().is_empty(), "Committed choice is not an uncommitted preparation")
+	source.fate.begin_rest()
+	target.fate.begin_rest()
+	assert_eq(target.fate.candidate_ids, source.fate.candidate_ids, "Next draw keeps the saved RNG state")
+
+
+func test_preparation_snapshot_rejects_invalid_fate_without_partial_mutation() -> void:
+	var fixture := _new_fixture(71)
+	fixture.fate.begin_rest()
+	assert_true(fixture.fate.has_method("persistent_preparation_snapshot"))
+	if not fixture.fate.has_method("persistent_preparation_snapshot"):
+		return
+	var original: Dictionary = fixture.fate.persistent_preparation_snapshot()
+	for key in original:
+		var broken := original.duplicate(true)
+		broken[key] = null
+		assert_false(fixture.fate.restore_preparation_snapshot(broken), str(key))
+		assert_eq(fixture.fate.persistent_preparation_snapshot(), original)
+	var broken := original.duplicate(true)
+	broken.pending_fate = "unknown"
+	assert_false(fixture.fate.restore_preparation_snapshot(broken))
+	broken = original.duplicate(true)
+	broken.candidate_ids[1] = broken.candidate_ids[0]
+	assert_false(fixture.fate.restore_preparation_snapshot(broken))
+	assert_eq(fixture.fate.persistent_preparation_snapshot(), original)
+
+
 func _new_fixture(seed_value: int) -> Dictionary:
 	if not ResourceLoader.exists(FATE_CONTROLLER_PATH):
 		return {}

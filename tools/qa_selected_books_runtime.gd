@@ -1,0 +1,229 @@
+extends SceneTree
+## Actual engine-process smoke using production actors; no Main or save writes.
+
+func _initialize() -> void:
+	call_deferred("_run")
+
+
+func _check_materials(world: Node2D, player: Node2D, enemy: Node2D) -> void:
+	var neighbor = load("res://scripts/enemies/enemy_chaser.gd").new()
+	neighbor.max_health = 1000
+	world.add_child(neighbor)
+	neighbor.position = Vector2(60, 120)
+	neighbor.set_physics_process(false)
+	neighbor.set_process(false)
+	var catalog = load("res://scripts/data/selected_backpack_catalog.gd")
+	var legacy = load("res://scripts/data/mvp4_catalog.gd")
+	var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	var manual: int = bag.add_item(&"melee_manual", Vector2i(1, 1))
+	var lightning: int = bag.add_item(&"lightning_style", Vector2i(2, 1))
+	var weapon = load("res://scripts/combat/basic_weapon_controller.gd").new()
+	weapon.katana_damage = 100.0
+	player.add_child(weapon)
+	var session = load("res://scripts/backpack/rest_backpack_session.gd").new()
+	var resolver = load("res://scripts/backpack/backpack_resolver.gd").new()
+	var combo = load("res://scripts/backpack/combination_resolver.gd").new()
+	var ok: bool = weapon.apply_committed_backpack(bag)
+	await create_timer(0.25).timeout
+	ok = ok and enemy.health == 882
+	ok = session.begin(bag, resolver, catalog.build_items(), legacy.build_bags(), &"bongma") and ok
+	ok = combo.begin_result_preview(session, &"thunder_blade", manual, lightning) and ok
+	ok = combo.commit_result(session, Vector2i(1, 1)) and ok
+	ok = weapon.apply_committed_backpack(session.state) and ok
+	await create_timer(0.70).timeout
+	ok = ok and enemy.health == 762 and neighbor.health == 994
+	var empty = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	ok = weapon.apply_committed_backpack(empty) and ok
+	await create_timer(0.70).timeout
+	ok = ok and enemy.health == 662 and neighbor.health == 994
+	print("MATERIAL_RUNTIME_PASS" if ok else "MATERIAL_RUNTIME_FAIL health=" + str(enemy.health))
+	world.queue_free()
+	await process_frame
+	quit(0 if ok else 1)
+
+
+func _run() -> void:
+	var world := Node2D.new()
+	root.add_child(world)
+	var player = load("res://scripts/player/player_controller.gd").new()
+	world.add_child(player)
+	player.set_physics_process(false)
+	var enemy = load("res://scripts/enemies/enemy_chaser.gd").new()
+	enemy.max_health = 1000
+	world.add_child(enemy)
+	enemy.position = Vector2(60, 0)
+	enemy.set_physics_process(false)
+	enemy.set_process(false)
+	if "--materials" in OS.get_cmdline_user_args():
+		await _check_materials(world, player, enemy)
+		return
+	var loadout = load("res://scripts/core/ninjutsu_loadout_state.gd").new()
+	world.add_child(loadout)
+	var school: StringName = &"cheonsul" if "--wind" in OS.get_cmdline_user_args() else &"guiin"
+	if "--flame" in OS.get_cmdline_user_args():
+		school = &"cheonsul"
+	if "--needle" in OS.get_cmdline_user_args() or "--dart" in OS.get_cmdline_user_args() or "--poison" in OS.get_cmdline_user_args():
+		school = &"heukyeong"
+	if "--familiar" in OS.get_cmdline_user_args():
+		school = &"bongma"
+	loadout.begin_start_draft(school, 12)
+	for index in range(2):
+		loadout.choose_start_draft(loadout.start_draft_snapshot().options[0])
+	loadout.commit_drafted_start(loadout.start_draft_snapshot().picks)
+	if school == &"guiin":
+		loadout.commit_placed_ninjutsu([&"guiin_rakshasa_kicks"], [&"guiin"])
+	var controller = load("res://scripts/schools/ninjutsu_auto_controller.gd").new()
+	world.add_child(controller)
+	controller.configure(player, world, null, loadout)
+	if "--flame" in OS.get_cmdline_user_args():
+		if not loadout.commit_placed_ninjutsu([&"cheonsul_flame_mark"], [school]):
+			push_error("FLAME_RUNTIME_FAIL loadout")
+			quit(1)
+			return
+		controller.configure(player, world, null, loadout)
+		await create_timer(2.0).timeout
+		if enemy.health != 994 or not controller.has_selected_status(enemy, &"burn"):
+			push_error("FLAME_RUNTIME_FAIL direct hit or burn")
+			quit(1)
+			return
+		await create_timer(1.0).timeout
+		if enemy.health != 992:
+			push_error("FLAME_RUNTIME_FAIL first burn tick")
+			quit(1)
+			return
+		loadout.commit_placed_ninjutsu([], [school])
+		await create_timer(1.1).timeout
+		if enemy.health != 992 or controller.has_selected_status(enemy, &"burn"):
+			push_error("FLAME_RUNTIME_FAIL unequip")
+			quit(1)
+			return
+		world.queue_free()
+		await process_frame
+		print("FLAME_RUNTIME_PASS real process direct damage, burn, removal; no save writes")
+		quit(0)
+		return
+	if "--poison" in OS.get_cmdline_user_args():
+		if not loadout.commit_placed_ninjutsu([&"heukyeong_poison_mist"], [&"heukyeong"]):
+			push_error("POISON_RUNTIME_FAIL loadout")
+			quit(1)
+			return
+		controller.configure(player, world, null, loadout)
+		await create_timer(5.5).timeout
+		if enemy.health != 1000:
+			push_error("POISON_RUNTIME_FAIL premature damage")
+			quit(1)
+			return
+		await create_timer(0.8).timeout
+		if enemy.health != 996:
+			push_error("POISON_RUNTIME_FAIL first tick: " + str(enemy.health))
+			quit(1)
+			return
+		loadout.commit_placed_ninjutsu([], [&"heukyeong"])
+		await create_timer(1.1).timeout
+		if enemy.health != 996:
+			push_error("POISON_RUNTIME_FAIL unequip")
+			quit(1)
+			return
+		world.queue_free()
+		await process_frame
+		print("POISON_RUNTIME_PASS real process delayed DoT and unequip; no save writes or final art claim")
+		quit(0)
+		return
+	if school == &"bongma":
+		loadout.commit_placed_ninjutsu([&"bongma_hundred_demon_familiar"], [school])
+		await create_timer(0.9).timeout
+		if enemy.health != 992 or world.get_node_or_null("SelectedBookFamiliar") == null:
+			push_error("FAMILIAR_RUNTIME_FAIL owned summon cadence")
+			quit(1)
+			return
+		loadout.commit_placed_ninjutsu([], [school])
+		await create_timer(0.8).timeout
+		if enemy.health != 992 or world.get_node_or_null("SelectedBookFamiliar") != null:
+			push_error("FAMILIAR_RUNTIME_FAIL unequip")
+			quit(1)
+			return
+		world.queue_free()
+		await process_frame
+		print("FAMILIAR_RUNTIME_PASS owned summon cadence and unequip; no save writes")
+		quit(0)
+		return
+	if school == &"heukyeong":
+		var needle := "--needle" in OS.get_cmdline_user_args()
+		var id: StringName = &"heukyeong_shadow_needle" if needle else &"heukyeong_pursuit_dart"
+		if not loadout.commit_placed_ninjutsu([id], [school]):
+			push_error("PROJECTILE_RUNTIME_FAIL loadout")
+			quit(1)
+			return
+		enemy.position = Vector2(240, 0)
+		await create_timer(1.2 if needle else 2.3).timeout
+		if enemy.health != 1000:
+			push_error("PROJECTILE_RUNTIME_FAIL premature hit")
+			quit(1)
+			return
+		await create_timer(0.5).timeout
+		if enemy.health != (994 if needle else 986) or (needle and not controller.has_selected_mark(enemy)):
+			push_error("PROJECTILE_RUNTIME_FAIL damage or mark")
+			quit(1)
+			return
+		world.queue_free()
+		await process_frame
+		print("PROJECTILE_RUNTIME_PASS " + str(id) + " real process delayed hit; no save writes")
+		quit(0)
+		return
+	if "--wind" in OS.get_cmdline_user_args():
+		loadout.commit_placed_ninjutsu([&"cheonsul_wind_pillar"], [&"cheonsul"])
+		controller.configure(player, world, null, loadout)
+		enemy.position = Vector2(240, 0)
+		await create_timer(3.2).timeout
+		if enemy.health != 1000:
+			push_error("WIND_RUNTIME_FAIL premature hit")
+			quit(1)
+			return
+		await create_timer(0.55).timeout
+		if enemy.health != 986:
+			push_error("WIND_RUNTIME_FAIL expected one moving hit: " + str(enemy.health))
+			quit(1)
+			return
+		world.queue_free()
+		await process_frame
+		print("WIND_RUNTIME_PASS real process delayed hit; no save writes or final art claim")
+		quit(0)
+		return
+	if "--support" in OS.get_cmdline_user_args():
+		loadout.commit_placed_ninjutsu([&"guiin_demon_step"], [&"guiin"])
+		player.set_physics_process(true)
+		await create_timer(5.15).timeout
+		if not player.request_dash():
+			push_error("SUPPORT_RUNTIME_FAIL dash request")
+			quit(1)
+			return
+		await create_timer(0.35).timeout
+		if not is_equal_approx(player.move_speed, 276.0):
+			push_error("SUPPORT_RUNTIME_FAIL actual dash-end speed")
+			quit(1)
+			return
+		await create_timer(1.2).timeout
+		if not is_equal_approx(player.move_speed, 240.0):
+			push_error("SUPPORT_RUNTIME_FAIL expired speed")
+			quit(1)
+			return
+		world.queue_free()
+		await process_frame
+		print("SUPPORT_BOOKS_RUNTIME_PASS real physics dash-end and process duration; no save writes")
+		quit(0)
+		return
+	await create_timer(2.9).timeout
+	if enemy.health != 985:
+		push_error("SELECTED_BOOKS_RUNTIME_FAIL expected three real-process hits: " + str(enemy.health))
+		quit(1)
+		return
+	loadout.commit_placed_ninjutsu([], [&"guiin"])
+	await create_timer(0.4).timeout
+	if enemy.health != 985:
+		push_error("SELECTED_BOOKS_RUNTIME_FAIL unequipped attack")
+		quit(1)
+		return
+	world.queue_free()
+	await process_frame
+	print("SELECTED_BOOKS_RUNTIME_PASS real actors and process ticks; no final art or Main cutover claim")
+	quit(0)

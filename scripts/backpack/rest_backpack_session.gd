@@ -5,6 +5,7 @@ const BackpackStateScript = preload("res://scripts/backpack/backpack_state.gd")
 const BackpackResolutionScript = preload("res://scripts/backpack/backpack_resolution.gd")
 const BuildPreviewSnapshotScript = preload("res://scripts/backpack/build_preview_snapshot.gd")
 const ItemInstanceScript = preload("res://scripts/data/item_instance.gd")
+const BagInstanceScript = preload("res://scripts/data/bag_instance.gd")
 
 const BUFFER_CAPACITY := 6
 
@@ -17,6 +18,7 @@ var _state = null
 var _source_committed_state = null
 var _begin_generation: int = 0
 var _buffer: Array = []
+var _preserve_buffer: bool = false
 var _pending_bag = null
 var input_mode: int = InputMode.NORMAL
 
@@ -50,7 +52,11 @@ var combination_transaction_active: bool:
 		return _combination_transaction_active
 
 
-func begin(committed_state, resolver, item_defs: Dictionary, bag_defs: Dictionary, selected_school_id: StringName) -> void:
+func begin(committed_state, resolver, item_defs: Dictionary, bag_defs: Dictionary, selected_school_id: StringName, carried_items: Array = [], preserve_buffer: bool = false) -> bool:
+	if not carried_items.is_empty() and not preserve_buffer:
+		return false
+	if not carried_items.is_empty() and not is_valid_carried_buffer(carried_items, committed_state, item_defs):
+		return false
 	_begin_generation += 1
 	_source_committed_state = committed_state
 	_state = committed_state.copy_value() if committed_state != null else null
@@ -58,17 +64,109 @@ func begin(committed_state, resolver, item_defs: Dictionary, bag_defs: Dictionar
 	_item_defs = item_defs.duplicate()
 	_bag_defs = bag_defs.duplicate()
 	_selected_school_id = selected_school_id
-	_buffer.clear()
+	_buffer = _copy_buffer(carried_items)
+	_preserve_buffer = preserve_buffer
 	_pending_bag = null
 	input_mode = InputMode.NORMAL
 	_undo_stack.clear()
 	_redo_stack.clear()
 	_pending_preview_state = null
 	_combination_transaction_active = false
+	return true
+
+
+static func is_valid_carried_buffer(source, backpack, item_defs: Dictionary) -> bool:
+	if not (source is Array) or source.size() > BUFFER_CAPACITY or not (backpack is BackpackStateScript):
+		return false
+	var seen: Dictionary = {}
+	for item in source:
+		if not (item is ItemInstanceScript):
+			return false
+		var id: int = item.instance_id
+		if id <= 0 or id >= backpack.next_instance_id or seen.has(id) or backpack.items.has(id) or backpack.bags.has(id):
+			return false
+		if not item_defs.has(item.definition_id) or item.rotation_quarters < 0 or item.rotation_quarters > 3:
+			return false
+		seen[id] = true
+	return true
 
 
 func _is_bound_to_committed_state(committed_state) -> bool:
 	return _source_committed_state != null and _source_committed_state == committed_state
+
+
+func persistent_preparation_snapshot() -> Dictionary:
+	if _state == null or _combination_transaction_active or _pending_preview_state != null or input_mode != InputMode.NORMAL:
+		return {} # Never persist a drag preview or half-combination as confirmed state.
+	var records: Array = []
+	for item in _buffer:
+		records.append({"instance_id": item.instance_id, "definition_id": String(item.definition_id), "rotation_quarters": item.rotation_quarters})
+	var pending = null
+	if _pending_bag != null:
+		pending = {"instance_id": _pending_bag.instance_id, "definition_id": String(_pending_bag.definition_id), "rotation_quarters": _pending_bag.rotation_quarters}
+	return {"backpack": _state.to_persistent_snapshot(), "buffer": records,
+		"pending_bag": pending, "preserve_buffer": _preserve_buffer}
+
+
+# This restores a confirmed preparation baseline, not combat power or economy.
+# The outer profile transaction supplies the matching access/equipment/reward state.
+func restore_preparation_snapshot(raw: Dictionary) -> bool:
+	if _state == null or _resolver == null or _combination_transaction_active or _pending_preview_state != null or input_mode != InputMode.NORMAL:
+		return false
+	if raw.size() != 4 or not (raw.get("backpack") is Dictionary) or not (raw.get("buffer") is Array) or not raw.has("pending_bag") or not (raw.get("preserve_buffer") is bool):
+		return false
+	var candidate = BackpackStateScript.from_persistent_snapshot(raw.backpack)
+	if candidate == null or candidate.uses_selectable_books() != _state.uses_selectable_books():
+		return false
+	if not _resolver.resolve(candidate, _item_defs, _bag_defs, _selected_school_id).valid:
+		return false
+	var carried: Array = []
+	for record in raw.buffer:
+		if not _valid_preparation_record(record):
+			return false
+		var item = ItemInstanceScript.new()
+		item.instance_id = int(record.instance_id)
+		item.definition_id = StringName(record.definition_id)
+		item.rotation_quarters = int(record.rotation_quarters)
+		carried.append(item)
+	if not is_valid_carried_buffer(carried, candidate, _item_defs):
+		return false
+	var pending = null
+	if raw.pending_bag != null:
+		if not _valid_preparation_record(raw.pending_bag):
+			return false
+		var record: Dictionary = raw.pending_bag
+		if not _bag_defs.has(StringName(record.definition_id)):
+			return false
+		var id := int(record.instance_id)
+		if id > 0:
+			if id >= candidate.next_instance_id or candidate.items.has(id) or candidate.bags.has(id):
+				return false
+			for item in carried:
+				if item.instance_id == id:
+					return false
+		pending = BagInstanceScript.new()
+		pending.instance_id = id
+		pending.definition_id = StringName(record.definition_id)
+		pending.rotation_quarters = int(record.rotation_quarters)
+	_state = candidate
+	_buffer = carried
+	_pending_bag = pending
+	_preserve_buffer = raw.preserve_buffer
+	_begin_generation += 1 # Previously configured commit coordinators must rebind.
+	_undo_stack.clear()
+	_redo_stack.clear()
+	return true
+
+
+static func _valid_preparation_record(record) -> bool:
+	if not (record is Dictionary) or record.size() != 3 or not (record.get("definition_id") is String or record.get("definition_id") is StringName):
+		return false
+	for key in ["instance_id", "rotation_quarters"]:
+		var value = record.get(key)
+		if not (value is int or value is float) or not is_finite(float(value)) or value < 0 or value > 9007199254740991 or float(value) != floor(float(value)):
+			return false
+	return record.rotation_quarters <= 3
 
 
 func _transaction_generation() -> int:
@@ -386,8 +484,10 @@ func commit_failures(chest_count: int, boss_reward_pending: bool, combination_pe
 		failures.append(&"boss_reward_pending")
 	if chest_count > 0:
 		failures.append(&"chest_pending")
-	if not _buffer.is_empty():
+	if not _buffer.is_empty() and not _preserve_buffer:
 		failures.append(&"buffer_not_empty")
+	if _preserve_buffer and not is_valid_carried_buffer(_buffer, _state, _item_defs):
+		failures.append(&"invalid_carried_buffer")
 	if _pending_bag != null:
 		failures.append(&"pending_bag")
 	if _pending_preview_state != null:

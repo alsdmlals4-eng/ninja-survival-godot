@@ -4,7 +4,7 @@ const HUD_SCENE := preload("res://scenes/ui/hud.tscn")
 const MAIN_CONTROLLER_SOURCE_PATH := "res://scripts/core/main_controller.gd"
 
 
-func test_combat_top_bar_shows_dash_play_and_settings_only() -> void:
+func test_combat_top_bar_shows_dash_play_manual_ultimate_and_settings() -> void:
 	var hud = _spawn_hud()
 	if hud == null or not hud.has_method("show_combat_hud"):
 		fail_test("DEC-037 combat HUD presentation API is missing")
@@ -14,6 +14,7 @@ func test_combat_top_bar_shows_dash_play_and_settings_only() -> void:
 	for node_path in [
 		"CombatTopBar/Row/DashLabel",
 		"CombatTopBar/Row/PlayLabel",
+		"CombatTopBar/Row/UltimateButton",
 		"CombatTopBar/Row/SettingsButton",
 	]:
 		var control := hud.get_node_or_null(node_path) as Control
@@ -21,7 +22,7 @@ func test_combat_top_bar_shows_dash_play_and_settings_only() -> void:
 		if control != null:
 			assert_true(control.visible, "Combat control must be visible: %s" % node_path)
 
-	assert_eq(hud.combat_persistent_control_names(), ["DashLabel", "PlayLabel", "SettingsButton"])
+	assert_eq(hud.combat_persistent_control_names(), ["DashLabel", "PlayLabel", "UltimateButton", "SettingsButton"])
 
 
 func test_normal_combat_tree_excludes_legacy_status_skill_and_test_controls() -> void:
@@ -53,7 +54,7 @@ func test_dash_and_play_are_render_only() -> void:
 	hud.set_play_time(134.9)
 	assert_eq(hud.dash_text(), "DASH 1 / 2")
 	assert_eq(hud.play_text(), "PLAY 02:14")
-	assert_eq(hud.combat_persistent_control_names(), ["DashLabel", "PlayLabel", "SettingsButton"])
+	assert_eq(hud.combat_persistent_control_names(), ["DashLabel", "PlayLabel", "UltimateButton", "SettingsButton"])
 
 
 func test_stage_phase_is_contextual_and_can_be_hidden() -> void:

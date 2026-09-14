@@ -14,6 +14,78 @@ func test_t07_resource_exists() -> void:
 	assert_true(ResourceLoader.exists(CONTROLLER_PATH), "Missing T07 RestRewardController")
 
 
+func test_reward_restore_keeps_consumed_reward_and_next_random_results() -> void:
+	var source = _bundle(902)
+	source.controller.begin_rest(1, &"bongma", 2)
+	source.build_state.grant_gold(200)
+	assert_true(source.controller.choose_boss_reward(0))
+	assert_true(source.controller.reroll_shop())
+	assert_true(source.controller.buy_shop_bag())
+	assert_true(source.controller.has_method("persistent_snapshot"), "Reward persistence missing")
+	if not source.controller.has_method("persistent_snapshot"):
+		return
+	var saved: Dictionary = JSON.parse_string(JSON.stringify(source.controller.persistent_snapshot()))
+	var target = _bundle(991)
+	target.controller.begin_rest(1, &"bongma", 0)
+	target.build_state.grant_gold(200)
+	assert_true(target.controller.restore_persistent_snapshot(saved))
+	assert_eq(target.controller.shop_item_options(), source.controller.shop_item_options())
+	assert_eq(target.controller.shop_bag_option(), source.controller.shop_bag_option())
+	assert_eq(target.controller.chest_count(), 2)
+	assert_false(target.controller.choose_boss_reward(0), "Consumed reward cannot be claimed again")
+	assert_false(target.controller.buy_shop_bag(), "Purchase limit survives even with an empty target pending slot")
+	assert_eq(target.controller.shop_reroll_cost(), 10)
+	assert_true(source.controller.reroll_shop())
+	assert_true(target.controller.reroll_shop())
+	assert_eq(target.controller.shop_item_options(), source.controller.shop_item_options())
+	assert_eq(target.controller.shop_bag_option(), source.controller.shop_bag_option())
+	assert_true(source.controller.open_chest())
+	assert_true(target.controller.open_chest())
+	assert_eq(target.controller.last_chest_lane_ids(), source.controller.last_chest_lane_ids())
+	assert_eq(target.session.buffer[0].definition_id, source.session.buffer[1].definition_id)
+	assert_eq(target.session.buffer[1].definition_id, source.session.buffer[2].definition_id)
+
+
+func test_invalid_reward_snapshot_does_not_mutate_live_state() -> void:
+	var bundle = _bundle(910)
+	bundle.controller.begin_rest(1, &"cheonsul", 1)
+	assert_true(bundle.controller.has_method("persistent_snapshot"))
+	if not bundle.controller.has_method("persistent_snapshot"):
+		return
+	var before: Dictionary = bundle.controller.persistent_snapshot()
+	for key in before:
+		var invalid := before.duplicate(true)
+		invalid[key] = null
+		assert_false(bundle.controller.restore_persistent_snapshot(invalid), str(key))
+		assert_eq(bundle.controller.persistent_snapshot(), before)
+	var invalid := before.duplicate(true)
+	invalid.shop.offer_ids[0] = "unknown_item"
+	assert_false(bundle.controller.restore_persistent_snapshot(invalid))
+	assert_eq(bundle.controller.persistent_snapshot(), before)
+
+
+func test_preparation_parts_restore_purchase_and_inventory_together() -> void:
+	var source = _bundle(941, true, &"guiin")
+	source.controller.begin_rest(1, &"guiin", 1)
+	source.build_state.grant_gold(500)
+	assert_true(source.controller.choose_boss_reward(0))
+	assert_true(source.controller.buy_shop_bag())
+	var saved: Dictionary = JSON.parse_string(JSON.stringify({"gold": source.build_state.gold,
+		"session": source.session.persistent_preparation_snapshot(),
+		"reward": source.controller.persistent_snapshot()}))
+	var target = _bundle(999, true, &"guiin")
+	target.build_state.gold = int(saved.gold)
+	assert_true(target.session.restore_preparation_snapshot(saved.session))
+	assert_true(target.controller.restore_persistent_snapshot(saved.reward))
+	assert_eq(target.session.buffer[0].definition_id, source.session.buffer[0].definition_id)
+	assert_eq(target.session.pending_bag.definition_id, source.session.pending_bag.definition_id)
+	var gold_before: int = target.build_state.gold
+	assert_false(target.controller.buy_shop_bag())
+	assert_eq(target.build_state.gold, gold_before)
+	assert_false(target.controller.choose_boss_reward(0))
+	assert_eq(target.session.buffer.size(), 1)
+
+
 func test_boss_reward_has_three_distinct_options_with_school_related_candidate() -> void:
 	var bundle = _bundle(101)
 	if bundle.is_empty():
@@ -201,22 +273,54 @@ func test_new_rest_resets_one_bag_purchase_and_reroll_cost_but_preserves_chest_i
 	assert_false(bundle.controller.buy_shop_bag())
 
 
-func _bundle(seed: int) -> Dictionary:
+func _bundle(seed: int, selected: bool = false, school: StringName = &"cheonsul") -> Dictionary:
 	if not ResourceLoader.exists(CONTROLLER_PATH):
 		assert_true(false, "T07 controller must exist before behavior tests")
 		return {}
-	var catalog = load(CATALOG_PATH)
+	var catalog = load("res://scripts/data/selected_backpack_catalog.gd") if selected else load(CATALOG_PATH)
 	var build_state = load(BUILD_STATE_PATH).new()
 	add_child_autofree(build_state)
 	build_state.configure(catalog.build_items(), load(MVP3_CATALOG_PATH).build_fates())
 	var session = load(SESSION_PATH).new()
-	session.begin(load(STATE_PATH).new().create_starting_state(), load(RESOLVER_PATH).new(), catalog.build_items(), catalog.build_bags(), &"cheonsul")
+	var state = load(STATE_PATH).new().create_starting_state()
+	if selected:
+		state = load(STATE_PATH).new().create_selectable_starting_state()
+	session.begin(state, load(RESOLVER_PATH).new(), catalog.build_items(), _bag_defs(), school)
 	var controller = load(CONTROLLER_PATH).new()
 	add_child_autofree(controller)
 	var rng = RandomNumberGenerator.new()
 	rng.seed = seed
-	controller.configure(build_state, session, catalog.build_items(), catalog.build_bags(), rng)
+	var access = null
+	if selected:
+		access = load("res://scripts/core/tradition_access_state.gd").new()
+		assert_true(access.initialize_selected(school))
+	controller.configure(build_state, session, catalog.build_items(), _bag_defs(), rng, access)
 	return {"controller": controller, "build_state": build_state, "session": session}
+
+
+func test_selected_rewards_keep_replacement_manuals_and_roundtrip_for_all_schools() -> void:
+	for school in [&"bongma", &"cheonsul", &"guiin", &"heukyeong"]:
+		var bundle = _bundle(971, true, school)
+		bundle.controller.begin_rest(1, school, 1)
+		assert_eq(bundle.controller.boss_reward_options().size(), 3)
+		var saved: Dictionary = bundle.controller.persistent_snapshot()
+		assert_false(saved.is_empty())
+		assert_true(bundle.controller.restore_persistent_snapshot(JSON.parse_string(JSON.stringify(saved))))
+		var fresh = _bundle(992, true, school)
+		assert_true(fresh.controller.restore_persistent_snapshot(JSON.parse_string(JSON.stringify(saved))),
+			"Fresh configured owner restores without begin_rest reroll")
+		var seen := {}
+		bundle.build_state.grant_gold(10000)
+		for i in range(30):
+			assert_true(bundle.controller.reroll_shop())
+			for id in bundle.controller.shop_item_options():
+				seen[id] = true
+		assert_false(seen.has(&"katana") or seen.has(&"shuriken") or seen.has(&"bomb"))
+		assert_true(seen.has(&"blast_powder"), "Selected universal replacement must remain acquirable")
+		if school == &"guiin":
+			assert_true(seen.has(&"melee_manual"))
+		if school == &"heukyeong":
+			assert_true(seen.has(&"projectile_manual"))
 
 
 func _fill_buffer(session, count: int) -> void:

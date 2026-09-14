@@ -66,6 +66,7 @@ func test_main_scene_repeats_the_locked_battlefield_floor_behind_gameplay() -> v
 	if floor_tile == null:
 		return
 	assert_not_null(floor_tile.texture, "Floor tile must consume the locked local texture")
+	assert_eq(floor_tile.position, Vector2.ZERO, "Infinite repeat tile must cover the positive repeat canvas.")
 	assert_eq(floor_tile.texture.resource_path, BATTLEFIELD_FLOOR_TILE)
 	assert_lt(backdrop.z_index, player.z_index, "Backdrop must remain behind gameplay")
 
@@ -152,7 +153,7 @@ func test_player_scene_has_collision_visual_camera_and_basic_weapon_config() -> 
 		assert_not_null(basic_weapons.shuriken_projectile_scene)
 		assert_not_null(basic_weapons.weapon_effect_texture)
 	assert_eq(player.collision_layer, 1)
-	assert_eq(player.collision_mask, 2)
+	assert_eq(player.collision_mask, 18, "Enemy bodies and terrain have distinct collision layers.")
 
 
 func test_enemy_scene_has_collision_and_visual() -> void:
@@ -285,9 +286,11 @@ func test_main_keeps_enemy_and_game_over_owners_without_persistent_score_or_heal
 	assert_null(recent_hit_presenter.visible_enemy(), "사망한 적의 HP bar는 즉시 정리해야 합니다.")
 	assert_eq(state.kill_count, 2)
 
+	player.advance_damage_protection(1.01)
 	player.take_damage(25)
 	assert_eq(player.health, 75)
 
+	player.advance_damage_protection(0.36)
 	player.take_damage(1000)
 	assert_true(main.game_over)
 	assert_true(game_over_panel.visible)
@@ -365,6 +368,7 @@ func _spawn_scene(path: String) -> Node:
 	if packed == null:
 		return null
 	var instance = packed.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(instance)
 	add_child_autofree(instance)
 	return instance
 
