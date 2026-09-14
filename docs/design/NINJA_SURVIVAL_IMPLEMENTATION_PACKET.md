@@ -705,7 +705,8 @@ E의 root/meta/active_run을 유지한다. active_run의 `checkpoint`는 **마�
 preparation = null | {
   prepare_session_id, phase: 'preparing', revision,
   access, equipment, spatial_session, loadout, gold, reward_state,
-  pending_fate, provisional_school, healing_applied
+  pending_fate, provisional_school, healing_applied,
+  fate_state? // candidate_ids, pending_fate, rng_seed, rng_state
 }
 ```
 
@@ -715,8 +716,13 @@ pending_bag/preserve_buffer의 한 묶음이다. 구매 후 미배치 가방을 
 드래그 미리보기·조합 진행 상태는 저장하지 않는다. loadout은 준비 시점의 인법
 배치 검증에 사용한다. 별도 준비 route를 중복 저장하지 않고 마지막 checkpoint
 경로에서 해당 전장 하나를 완료한 결과와 provisional_school로 계산한다.
-현재 pending_fate는 빈 값만 허용한다. 미확정 선택·Fate 후보 보존은 해당 owner의
-후속 연결 전까지 fail-closed이며 출전 확정과 혼동하지 않는다.
+2026-09-14 FateController의 준비 값 보존 연결: 선택 후보·예약 ID·해당 owner의 RNG
+seed/state를 fate_state에 저장한다. 후보는 아직 획득하지 않은 운명으로 중복 없이
+현재 남은 수와 일치해야 하며, pending_fate는 owner 예약과 일치해야 한다. 복원은
+시그널/전투 효과/재추첨을 발생시키지 않는다. 이미 적용한 운명은 준비 snapshot으로
+내보내지 않는다. 이전12필드 준비본은 pending_fate가 빈 경우에만 호환 허용한다.
+Fate RNG는 현재 Main에서 보상 RNG와 독립이므로 각 owner 값을 따로 보존한다.
+동일 데이터의 두 정본을 새로 만들지 않으며 출전 거래/Main 적용은 후속 연결이다.
 
 reward_state는 RestRewardController의 version1 값(snapshot)이다. 보스 후보·수령
 여부·상자·상점 후보/레인·가방 구매 제한·재추첨 단계 및 공용 RNG seed/state를

@@ -101,7 +101,9 @@ func _decode_active_departure(raw, settled_run_ids: Array) -> Dictionary:
 # school clear. It never overwrites the rollback checkpoint or invents a route.
 func _decode_selected_preparation(raw, checkpoint: Dictionary) -> Dictionary:
 	var invalid := {"ok": false, "reason": &"invalid_preparation"}
-	if not (raw is Dictionary) or raw.size() != 12 or not _to_json_primitive(raw).ok:
+	if not (raw is Dictionary) or not _to_json_primitive(raw).ok:
+		return invalid
+	if raw.size() != 12 + int(raw.has("fate_state")):
 		return invalid
 	if not _profile_unique_ids([raw.get("prepare_session_id")]) or raw.prepare_session_id == checkpoint.prepare_session_id:
 		return invalid
@@ -109,9 +111,12 @@ func _decode_selected_preparation(raw, checkpoint: Dictionary) -> Dictionary:
 		return invalid
 	if not (raw.get("healing_applied") is bool) or not raw.healing_applied:
 		return invalid
-	# Fate offer reservation must be persisted by its own owner before nonempty
-	# selections are admitted; silently treating a choice as committed is unsafe.
-	if raw.get("pending_fate") != "" or not (raw.get("provisional_school") is String):
+	if not (raw.get("pending_fate") is String) or not (raw.get("provisional_school") is String):
+		return invalid
+	# Older preparation records had no Fate reservation and only an empty choice.
+	if not raw.has("fate_state") and raw.pending_fate != "":
+		return invalid
+	if raw.has("fate_state") and not (raw.fate_state is Dictionary):
 		return invalid
 	for key in ["access", "equipment", "spatial_session", "loadout", "reward_state"]:
 		if not (raw.get(key) is Dictionary):
@@ -160,6 +165,20 @@ func _decode_selected_preparation(raw, checkpoint: Dictionary) -> Dictionary:
 	controller.free()
 	if not valid:
 		return invalid
+	if raw.has("fate_state"):
+		var fate_defs: Dictionary = load("res://scripts/data/mvp3_catalog.gd").build_fates()
+		var build = load("res://scripts/core/run_build_state.gd").new()
+		build.configure(items, fate_defs)
+		for id in checkpoint.build.selected_fates:
+			build.select_fate(StringName(id))
+		var fate_owner = load("res://scripts/core/fate_controller.gd").new()
+		fate_owner.configure(build, fate_defs, RandomNumberGenerator.new())
+		var fate_valid: bool = fate_owner.restore_preparation_snapshot(raw.fate_state)
+		fate_valid = fate_valid and String(fate_owner.pending_fate_id()) == raw.pending_fate
+		fate_owner.free()
+		build.free()
+		if not fate_valid:
+			return invalid
 	return {"ok": true, "clears": clears}
 
 

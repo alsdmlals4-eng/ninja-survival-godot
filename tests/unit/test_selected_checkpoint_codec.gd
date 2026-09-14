@@ -44,6 +44,19 @@ func test_profile_accepts_post_boss_preparation_without_replaying_boss() -> void
 	assert_true(result.ok, str(result))
 	if not result.ok:
 		return
+	var fate = add_child_autofree(load("res://scripts/core/fate_controller.gd").new())
+	fate.configure(build, load("res://scripts/data/mvp3_catalog.gd").build_fates(), RandomNumberGenerator.new())
+	fate.begin_rest()
+	assert_true(fate.choose_pending(fate.candidate_ids[0]))
+	var with_fate := raw.duplicate(true)
+	with_fate.active_run.preparation.fate_state = fate.persistent_preparation_snapshot()
+	with_fate.active_run.preparation.pending_fate = str(fate.pending_fate_id())
+	assert_true(CODEC.new().decode_profile_v2(with_fate).ok, "Prepared Fate candidates and pending choice must roundtrip")
+	assert_false(build.has_fate(fate.pending_fate_id()))
+	var invalid_fate := with_fate.duplicate(true)
+	invalid_fate.active_run.preparation.pending_fate = ""
+	assert_false(CODEC.new().decode_profile_v2(invalid_fate).ok, "Mirrored pending ID cannot contradict its owner")
+	raw = JSON.parse_string(JSON.stringify(with_fate))
 	var path := "user://gut_selected_preparation_20260914.json"
 	for suffix in ["", ".tmp", ".previous"]:
 		if FileAccess.file_exists(path + suffix):
@@ -59,6 +72,8 @@ func test_profile_accepts_post_boss_preparation_without_replaying_boss() -> void
 		assert_eq(restored.profile.active_run.checkpoint, checkpoint)
 		assert_eq(restored.profile.active_run.preparation.reward_state.chests, 1.0)
 		assert_eq(restored.profile.active_run.preparation.gold, 150.0)
+		assert_eq(restored.profile.active_run.preparation.pending_fate, str(fate.pending_fate_id()))
+		assert_eq(restored.profile.active_run.preparation.fate_state, raw.active_run.preparation.fate_state)
 		assert_eq(restored.profile.active_run.eligible_boss_ids, ["cheonsul"])
 		assert_true(reopened.transact_profile(raw, 0, "prepare:after:1").already_applied)
 		var retry_request: Dictionary = restored.profile.duplicate(true)

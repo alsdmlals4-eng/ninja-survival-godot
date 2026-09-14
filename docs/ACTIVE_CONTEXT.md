@@ -1,5 +1,24 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — prepared Fate reservation persistence, 2026-09-14
+
+FateController exports uncommitted candidates/pending choice and its independent RNG
+seed/state; restore validates all fields, exact remaining offer count, IDs and ownership
+before mutation. No build power, redraw or signals on restore. Before initial offers and
+after an applied choice, export returns empty. A pending choice commits once normally;
+the following draw matches the uninterrupted source. Current Main configures this RNG
+separately from reward RNG, so no incorrect shared-RNG assumption was introduced.
+Profile preparation accepts optional fate_state as a thirteenth field and cross-checks
+pending_fate against that owner using checkpoint-selected Fates. Older twelve-field
+records still require empty pending_fate. Actual gut file save/reopen now covers the
+reservation together with post-boss preparation and retry rollback. No Main adoption yet.
+RED missing owner/codec and pre-offer export; final full102scripts/820tests/11977assertions
+PASS exit0, `ninja-fate-preparation-disk-full-20260914.log`. Earlier820/11974 was pre-disk
+extension. Prior4a7ec67 GUT/Windows SUCCESS; latest increment requires exact-head CI.
+Base fetched unchanged d830c0f. Remaining recovery publication/preservation and R02
+save-first business transaction/atomic departure/Main integration continue to apply.
+No whole-game/full five-loop/Human/device/release claim; PDFv0.3 not rebundled here.
+
 ## Latest increment — reviewed recovery read / retry eligibility envelope, 2026-09-14
 
 read_recovery_candidate accepts a known role plus the observed inventory, never a user
