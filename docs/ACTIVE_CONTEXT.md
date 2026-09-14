@@ -1,5 +1,19 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — monthly evidence supplement / chroma pipeline, 2026-09-14
+
+User requested future chroma-background generation followed by removal and a separate
+project-named monthly AI work evidence PDF. Owners: CURRENT_VISUAL_HANDOFF and
+operations/AI_WORK_EVIDENCE.md; no new raster generated or existing asset replaced.
+The September issue covers four verified September14 commits through 8e2558c only,
+with exact-head GitHub run34786019166 logs, source hashes and explicit missing prompt
+screenshots/account/receipts. It is retrospective, partial, unsubmitted, not date certification.
+Generator refuses overwrite; v0.1/v0.2 draft formatting corrections are superseded by v0.3.
+Nine-page layout was rendered/read; text-log evidence is never described as screenshots.
+No agreement/email originals were read, no external submission or payment action occurred.
+Game implementation remains at the following R01 frontier; this increment changes evidence
+operations and image policy, not Main/runtime. Continue preparation/reward owner inspection.
+
 ## Latest increment — selected departure profile persistence, 2026-09-14
 
 Follow-up failure-injection readback: previous rename, candidate promote, promote rollback,

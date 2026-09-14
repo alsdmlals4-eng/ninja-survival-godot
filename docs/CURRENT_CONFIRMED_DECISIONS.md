@@ -1,5 +1,21 @@
 # CURRENT_CONFIRMED_DECISIONS
 
+## Latest 2026-09-14 — chroma-key pipeline and monthly evidence supplement
+
+User resumes implementation and requests future generated cutout assets on a chroma-key
+background, followed by background removal. Choose a flat key absent from the subject;
+preserve the generated original and alpha output, inspect spill/edges/translucent VFX,
+and retain the existing candidate/LOCK/runtime gates. This does not authorize replacing
+current assets or removing the intended background of a floor/background asset.
+
+Create a project-named monthly AI work-log/evidence PDF in the user-designated September
+evidence directory. This is a derived report, separate from the Blueprint and game canon.
+Distinguish source-recorded work time, retrospective writing, capture time and publication.
+Record actual prompt/result provenance, exact changes, verification ceilings and missing
+account/payment/screenshot evidence. Do not infer executed agreement, eligible costs or
+submission acceptance from the user's pasted agreement summary; originals were not read.
+No email, signature, submission or personal/payment-data publication is authorized here.
+
 ## Latest 2026-09-14 — approved remaining-work execution
 
 User approves the recommended R01~R10 plan and requests implementation. Resume
