@@ -9,6 +9,72 @@ const ACCESS = preload("res://scripts/core/tradition_access_state.gd")
 const GEAR = preload("res://scripts/core/equipment_loadout_state.gd")
 
 
+func test_profile_accepts_post_boss_preparation_without_replaying_boss() -> void:
+	var checkpoint := _checkpoint(&"bongma")
+	var access = ACCESS.new()
+	assert_true(access.restore_selected_snapshot(checkpoint.access))
+	assert_true(access.stabilize_school(&"cheonsul"))
+	var spatial = load("res://scripts/backpack/rest_backpack_session.gd").new()
+	var catalog = load("res://scripts/data/selected_backpack_catalog.gd")
+	var bags: Dictionary = load("res://scripts/data/mvp4_catalog.gd").build_bags()
+	assert_true(spatial.begin(load("res://scripts/backpack/backpack_state.gd").from_persistent_snapshot(checkpoint.backpack),
+		load("res://scripts/backpack/backpack_resolver.gd").new(), catalog.build_items(), bags, &"bongma", [], true))
+	var rewards = load("res://scripts/core/rest_reward_controller.gd").new()
+	add_child_autofree(rewards)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 75
+	rewards.configure(null, spatial, catalog.build_items(), bags, rng, access)
+	# Shop requires a build owner even before any spending.
+	var build = add_child_autofree(load("res://scripts/core/run_build_state.gd").new())
+	build.configure(catalog.build_items(), load("res://scripts/data/mvp3_catalog.gd").build_fates())
+	rewards.configure(build, spatial, catalog.build_items(), bags, rng, access)
+	rewards.begin_rest(1, &"bongma", 1, &"cheonsul")
+	var preparation := {"prepare_session_id": "prepare:after:1", "phase": "preparing", "revision": 0,
+		"access": access.get_snapshot(), "equipment": checkpoint.build.equipment,
+		"spatial_session": spatial.persistent_preparation_snapshot(), "loadout": checkpoint.loadout,
+		"gold": 150, "reward_state": rewards.persistent_snapshot(), "pending_fate": "",
+		"provisional_school": "", "healing_applied": true}
+	var raw := {"schema_version": 2, "revision": 0, "content_contract": CODEC.PROFILE_CONTRACT,
+		"meta": {"soul_balance": 0, "unlocked_support_choice": false, "settled_run_ids": [],
+			"applied_transaction_ids": [], "transaction_receipts": {}},
+		"active_run": {"run_id": "run:prep", "starting_school": "bongma", "elite_qualified": true,
+			"retry_consumed": false, "eligible_boss_ids": ["cheonsul"], "checkpoint": checkpoint,
+			"preparation": JSON.parse_string(JSON.stringify(preparation))}}
+	var result: Dictionary = CODEC.new().decode_profile_v2(raw)
+	assert_true(result.ok, str(result))
+	if not result.ok:
+		return
+	var path := "user://gut_selected_preparation_20260914.json"
+	for suffix in ["", ".tmp", ".previous"]:
+		if FileAccess.file_exists(path + suffix):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(path + suffix))
+	var store = STORE.new()
+	assert_true(store.configure_profile(path))
+	assert_true(store.transact_profile(raw, 0, "prepare:after:1").ok)
+	var reopened = STORE.new()
+	assert_true(reopened.configure_profile(path))
+	var restored: Dictionary = reopened.load_profile()
+	assert_true(restored.ok)
+	if restored.ok:
+		assert_eq(restored.profile.active_run.checkpoint, checkpoint)
+		assert_eq(restored.profile.active_run.preparation.reward_state.chests, 1.0)
+		assert_eq(restored.profile.active_run.preparation.gold, 150.0)
+		assert_eq(restored.profile.active_run.eligible_boss_ids, ["cheonsul"])
+		assert_true(reopened.transact_profile(raw, 0, "prepare:after:1").already_applied)
+	for suffix in ["", ".tmp", ".previous"]:
+		if FileAccess.file_exists(path + suffix):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(path + suffix))
+	var broken := raw.duplicate(true)
+	broken.active_run.preparation.reward_state.chests = -1
+	assert_false(CODEC.new().decode_profile_v2(broken).ok)
+	broken = raw.duplicate(true)
+	broken.active_run.preparation.prepare_session_id = checkpoint.prepare_session_id
+	assert_false(CODEC.new().decode_profile_v2(broken).ok)
+	broken = raw.duplicate(true)
+	broken.active_run.eligible_boss_ids = []
+	assert_false(CODEC.new().decode_profile_v2(broken).ok)
+
+
 func _checkpoint(school: StringName) -> Dictionary:
 	var session = add_child_autofree(START.new())
 	assert_true(session.begin(school, 42))

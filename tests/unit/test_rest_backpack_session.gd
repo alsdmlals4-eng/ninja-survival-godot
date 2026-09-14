@@ -8,6 +8,36 @@ const CATALOG_PATH := "res://scripts/data/mvp4_catalog.gd"
 const BAG_INSTANCE_PATH := "res://scripts/data/bag_instance.gd"
 
 
+func test_preparation_snapshot_preserves_buffer_and_unplaced_purchase() -> void:
+	var source = _session(_starting_state())
+	var acquired: Array = source._acquire_items_to_buffer([&"shuriken"])
+	var bag = load(BAG_INSTANCE_PATH).new()
+	bag.definition_id = load(CATALOG_PATH).purchasable_bag_ids()[0]
+	bag.rotation_quarters = 1
+	assert_true(source.set_pending_bag(bag))
+	assert_true(source.has_method("persistent_preparation_snapshot"))
+	if not source.has_method("persistent_preparation_snapshot"):
+		return
+	var saved: Dictionary = JSON.parse_string(JSON.stringify(source.persistent_preparation_snapshot()))
+	var target = _session(_starting_state())
+	assert_true(target.restore_preparation_snapshot(saved))
+	assert_eq(target.buffer[0].instance_id, acquired[0])
+	assert_eq(target.buffer[0].definition_id, &"shuriken")
+	assert_eq(target.pending_bag.definition_id, bag.definition_id)
+	assert_eq(target.pending_bag.rotation_quarters, 1)
+	assert_false(target.undo(), "Restoring does not recreate historical purchase undo")
+	assert_true(target.commit_failures(0, false, false).has(&"pending_bag"))
+	var before: Dictionary = target.persistent_preparation_snapshot()
+	saved.buffer.append(saved.buffer[0].duplicate())
+	assert_false(target.restore_preparation_snapshot(saved))
+	assert_eq(target.persistent_preparation_snapshot(), before)
+	for key in ["backpack", "buffer", "preserve_buffer"]:
+		var invalid := before.duplicate(true)
+		invalid[key] = null
+		assert_false(target.restore_preparation_snapshot(invalid))
+		assert_eq(target.persistent_preparation_snapshot(), before)
+
+
 func test_carried_buffer_can_depart_without_power_and_keeps_identity() -> void:
 	var committed = _starting_state()
 	var source = _session(committed)

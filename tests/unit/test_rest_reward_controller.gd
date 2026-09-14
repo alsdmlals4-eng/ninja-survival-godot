@@ -64,6 +64,28 @@ func test_invalid_reward_snapshot_does_not_mutate_live_state() -> void:
 	assert_eq(bundle.controller.persistent_snapshot(), before)
 
 
+func test_preparation_parts_restore_purchase_and_inventory_together() -> void:
+	var source = _bundle(941, true, &"guiin")
+	source.controller.begin_rest(1, &"guiin", 1)
+	source.build_state.grant_gold(500)
+	assert_true(source.controller.choose_boss_reward(0))
+	assert_true(source.controller.buy_shop_bag())
+	var saved: Dictionary = JSON.parse_string(JSON.stringify({"gold": source.build_state.gold,
+		"session": source.session.persistent_preparation_snapshot(),
+		"reward": source.controller.persistent_snapshot()}))
+	var target = _bundle(999, true, &"guiin")
+	target.build_state.gold = int(saved.gold)
+	assert_true(target.session.restore_preparation_snapshot(saved.session))
+	assert_true(target.controller.restore_persistent_snapshot(saved.reward))
+	assert_eq(target.session.buffer[0].definition_id, source.session.buffer[0].definition_id)
+	assert_eq(target.session.pending_bag.definition_id, source.session.pending_bag.definition_id)
+	var gold_before: int = target.build_state.gold
+	assert_false(target.controller.buy_shop_bag())
+	assert_eq(target.build_state.gold, gold_before)
+	assert_false(target.controller.choose_boss_reward(0))
+	assert_eq(target.session.buffer.size(), 1)
+
+
 func test_boss_reward_has_three_distinct_options_with_school_related_candidate() -> void:
 	var bundle = _bundle(101)
 	if bundle.is_empty():

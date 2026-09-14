@@ -6,8 +6,8 @@ const SCHEMA_VERSION := 1
 const PROFILE_CONTRACT := "ns-replan-20260911"
 
 
-# Departure profiles are supported; preparation remains fail-closed until its
-# reward/economy transaction validator is connected.
+# Departure and post-school preparation values are validated here. Business
+# transactions and default Main adoption remain separate callers.
 func decode_profile_v2(payload: Dictionary, pending_transaction_id: String = "") -> Dictionary:
 	if not _profile_integer(payload.get("schema_version")) or payload.schema_version != 2:
 		return {"ok": false, "reason": &"unsupported_schema"}
@@ -66,8 +66,6 @@ func _decode_active_departure(raw, settled_run_ids: Array) -> Dictionary:
 		return invalid
 	if not raw.has("preparation") or not (raw.get("checkpoint") is Dictionary):
 		return invalid
-	if raw.preparation != null:
-		return {"ok": false, "reason": &"preparation_validation_pending"}
 	if not _profile_unique_ids(raw.get("eligible_boss_ids")):
 		return invalid
 	var decoded := decode_selected_checkpoint(raw.checkpoint)
@@ -76,12 +74,81 @@ func _decode_active_departure(raw, settled_run_ids: Array) -> Dictionary:
 	if raw.starting_school != decoded.checkpoint.loadout.origin_school_id:
 		return invalid
 	var clears: Array = decoded.checkpoint.route.cleared_school_ids
+	if raw.preparation != null:
+		var prepared := _decode_selected_preparation(raw.preparation, decoded.checkpoint)
+		if not prepared.ok:
+			return prepared
+		clears = prepared.clears
 	if raw.eligible_boss_ids.size() != clears.size():
 		return invalid
 	for school in raw.eligible_boss_ids:
 		if not clears.has(school):
 			return invalid
 	return {"ok": true}
+
+
+# Post-school preparation derives its route from the last departure + that one
+# school clear. It never overwrites the rollback checkpoint or invents a route.
+func _decode_selected_preparation(raw, checkpoint: Dictionary) -> Dictionary:
+	var invalid := {"ok": false, "reason": &"invalid_preparation"}
+	if not (raw is Dictionary) or raw.size() != 12 or not _to_json_primitive(raw).ok:
+		return invalid
+	if not _profile_unique_ids([raw.get("prepare_session_id")]) or raw.prepare_session_id == checkpoint.prepare_session_id:
+		return invalid
+	if raw.get("phase") != "preparing" or not _profile_integer(raw.get("revision")) or not _profile_integer(raw.get("gold")):
+		return invalid
+	if not (raw.get("healing_applied") is bool) or not raw.healing_applied:
+		return invalid
+	# Fate offer reservation must be persisted by its own owner before nonempty
+	# selections are admitted; silently treating a choice as committed is unsafe.
+	if raw.get("pending_fate") != "" or not (raw.get("provisional_school") is String):
+		return invalid
+	for key in ["access", "equipment", "spatial_session", "loadout", "reward_state"]:
+		if not (raw.get(key) is Dictionary):
+			return invalid
+	var route = RUN_ROUTE_STATE_SCRIPT.new()
+	if not route.restore_from_checkpoint(checkpoint.route) or not route.mark_active_school_cleared():
+		return invalid
+	if raw.provisional_school != "" and not route.set_provisional_next_school(StringName(raw.provisional_school)):
+		return invalid
+	var access = SELECTED_COORDINATOR.SELECTED_ACCESS.new()
+	if not access.restore_selected_snapshot(raw.access):
+		return invalid
+	var clears: Array = route.cleared_school_ids()
+	if raw.access.stabilized_school_ids.size() != clears.size():
+		return invalid
+	for school in raw.access.stabilized_school_ids:
+		if not clears.has(StringName(school)):
+			return invalid
+	for school in checkpoint.access.trace_decisions:
+		if raw.access.trace_decisions.get(school) != checkpoint.access.trace_decisions[school]:
+			return invalid
+	if raw.loadout.get("draft_picks") != checkpoint.loadout.draft_picks:
+		return invalid
+	var spatial: Dictionary = raw.spatial_session
+	var bundle := {"backpack": spatial.get("backpack"), "buffer": spatial.get("buffer"),
+		"loadout": raw.loadout, "equipment": raw.equipment, "access": raw.access}
+	if not SELECTED_COORDINATOR.validate_selected_build_bundle(bundle):
+		return invalid
+	if raw.loadout.origin_school_id != checkpoint.loadout.origin_school_id:
+		return invalid
+	var session = REST_SESSION_SCRIPT.new()
+	var items: Dictionary = SELECTED_COORDINATOR.SELECTED_CATALOG.build_items()
+	var bags: Dictionary = MVP4_CATALOG_SCRIPT.build_bags()
+	session.begin(BACKPACK_STATE_SCRIPT.from_persistent_snapshot(checkpoint.backpack),
+		SELECTED_COORDINATOR.BAG_RESOLVER.new(), items, bags, access.starting_school_id())
+	if not session.restore_preparation_snapshot(spatial):
+		return invalid
+	var reward: Dictionary = raw.reward_state
+	if reward.get("school") != String(access.starting_school_id()) or reward.get("new_school") != checkpoint.route.active_school_id:
+		return invalid
+	var controller = load("res://scripts/core/rest_reward_controller.gd").new()
+	controller.configure(null, session, items, bags, RandomNumberGenerator.new(), access)
+	var valid: bool = controller.restore_persistent_snapshot(reward)
+	controller.free()
+	if not valid:
+		return invalid
+	return {"ok": true, "clears": clears}
 
 
 static func _profile_integer(value) -> bool:

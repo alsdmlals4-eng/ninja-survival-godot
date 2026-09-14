@@ -1,5 +1,26 @@
 # ACTIVE_CONTEXT
 
+## Latest increment — preparation values admitted to profile2, 2026-09-14
+
+RestBackpackSession serializes confirmed backpack/buffer/pending_bag/preserve_buffer,
+rejects transient preview/whole-layout/combination states and validates before restore.
+Instance IDs remain unique; restored baseline clears edit history and invalidates old
+commit-coordinator generation. This sub-owner does not adopt combat/economy.
+RunResumeCodec now admits a 12-field post-school preparation with matching selected
+bundle/access/reward state. Route is derived from the last departure plus its one school
+clear, not duplicated or merged into the retry checkpoint. Prior trace decisions and
+starting draft are preserved. Only empty pending_fate is admitted until Fate owner wiring.
+Actual profile2 file write/reopen/idempotent replay is covered on gut-only storage.
+Combined reward/spatial restore test preserves a purchased unplaced bag and forbids
+another purchase/reward claim. RED missing session/codec paths, GREEN focused checks;
+full102scripts/812tests/11821assertions PASS exit0,
+`ninja-preparation-profile-full-20260914.log`. Earlier full811tests was the sub-owner scope.
+Source commit27cefdb exact-head GitHub GUT/Windows SUCCESS; newer change needs current CI.
+Main still uses the legacy entry. Remaining R01: recovery selection, retry eligibility
+union and nondestructive legacy migration; R02 needs business transaction/Fate wiring.
+Full five-loop project closure, runtime full-run, Human/device/release remain NOT_RUN.
+Evidence supplement source records updated here; monthly PDF still v0.3 pending rebundle.
+
 ## Latest increment — reward/shop serialization and selected acquisition, 2026-09-14
 
 RestRewardController/ShopController now export and validate/restore value snapshots:

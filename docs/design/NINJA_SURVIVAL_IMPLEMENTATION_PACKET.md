@@ -699,12 +699,28 @@ E의 root/meta/active_run을 유지한다. active_run의 `checkpoint`는 **마�
 ```text
 preparation = null | {
   prepare_session_id, phase: 'preparing', revision,
-  access, equipment, backpack, buffer, gold, reward_state,
+  access, equipment, spatial_session, loadout, gold, reward_state,
   pending_fate, provisional_school, healing_applied
 }
 ```
 
 이 필드는 준비 거래를 저장하기 위한 기술 명세다. 수치/아이템 정의는 저장에 복제하지 않는다.
+2026-09-14 실제 owner 연결에 따른 기술 보강: spatial_session은 backpack/buffer/
+pending_bag/preserve_buffer의 한 묶음이다. 구매 후 미배치 가방을 누락하지 않고,
+드래그 미리보기·조합 진행 상태는 저장하지 않는다. loadout은 준비 시점의 인법
+배치 검증에 사용한다. 별도 준비 route를 중복 저장하지 않고 마지막 checkpoint
+경로에서 해당 전장 하나를 완료한 결과와 provisional_school로 계산한다.
+현재 pending_fate는 빈 값만 허용한다. 미확정 선택·Fate 후보 보존은 해당 owner의
+후속 연결 전까지 fail-closed이며 출전 확정과 혼동하지 않는다.
+
+reward_state는 RestRewardController의 version1 값(snapshot)이다. 보스 후보·수령
+여부·상자·상점 후보/레인·가방 구매 제한·재추첨 단계 및 공용 RNG seed/state를
+보존한다. RNG는 JSON 정밀도 손실을 피하기 위해 정규 64비트 정수 문자열이며
+복원 순서는 seed 다음 state다. 엔진 변경 간 동일 추첨 결과까지 보장하지 않는다.
+근거: https://docs.godotengine.org/en/stable/classes/class_randomnumbergenerator.html
+재추첨으로 복원 REJECT, RNG 없는 선택지 보존만 REJECT(다음 추첨 변화), 기존
+owner 값+공유 RNG 보존 ADAPT. 기존/선택형 카탈로그는 실제 가방 계약으로 분리한다.
+
 access/equipment는 확인된 흔적·구매 소유 상태, backpack/buffer는 그 준비의 기준 상태다.
 드래그 중 임시 좌표/미확정 운명은 메모리 후보이며 확정된 준비 기준과 구분한다.
 checkpoint와 preparation의 서로 다른 시점 데이터를 임의 합성해 전투하지 않는다.
