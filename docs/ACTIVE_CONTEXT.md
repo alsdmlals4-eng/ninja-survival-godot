@@ -1,5 +1,23 @@
 # ACTIVE_CONTEXT
 
+## Latest closeout — cumulative monthly journal, 2026-09-16
+
+User requests dated additions to the existing journal and current-work GitHub sync.
+operations/AI_WORK_EVIDENCE.md now owns dated September14 implementation summary and
+September16 retrospective/closeout. Existing unsubmitted v0.3 PDF updated in place from
+9 to11pages: original nine pages retained, dated supplement re-rendered without duplicate
+append. --update-daily uses manifest hash guard, stages before replacement, verifies base
+page text and dated entries, and returns DAILY_ALREADY_CURRENT on unchanged repeat.
+Both new pages rendered and visually inspected. No new numbered PDF or new game asset.
+PDF SHA256: 61575baa298c4a9cecfdbf812b9164d2908844cbf026c7b4431e74342a98fcbd.
+Latest game head d2b4c87 exact-head GitHub run34855733167 GUT/Windows SUCCESS read back.
+No game code changed in this closeout; no new full-run/Human/device/release evidence.
+PR147 remains Draft; original checkout/other worktrees/main preserved. Current task branch
+sync is the scope, not main integration or R01~R10 completion. Remaining implementation
+is unchanged: recovery publication/preservation, save-first business transactions,
+atomic departure and Main integration. Local submission PDF stays outside Git; its
+maintainable source and updater are versioned. No external submission occurred.
+
 ## Latest increment — prepared Fate reservation persistence, 2026-09-14
 
 FateController exports uncommitted candidates/pending choice and its independent RNG

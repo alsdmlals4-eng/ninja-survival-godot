@@ -1,5 +1,14 @@
 # CURRENT_CONFIRMED_DECISIONS
 
+## Latest 2026-09-16 — cumulative work log and bounded closeout
+
+User requests dated summaries appended to the existing work log, not newly numbered
+PDFs for every increment. Update the existing unsubmitted monthly working PDF in place;
+retain earlier history and do not silently overwrite any externally submitted copy.
+Owner: operations/AI_WORK_EVIDENCE.md. Finish current record/verification closeout and
+synchronize the current task branch to GitHub; this is not whole-game completion or
+permission to bypass Draft/product readiness gates. No new feature scope in this closeout.
+
 ## Latest 2026-09-14 — chroma-key pipeline and monthly evidence supplement
 
 User resumes implementation and requests future generated cutout assets on a chroma-key

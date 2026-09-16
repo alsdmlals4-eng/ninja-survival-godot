@@ -6,6 +6,7 @@ import hashlib
 import html
 import json
 import re
+import io
 import subprocess
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -14,7 +15,7 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle
-from pypdf import PdfReader
+from pypdf import PdfReader, PdfWriter
 from export_human_gdd_pdf import register_fonts
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -44,13 +45,85 @@ def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def update_daily(output: Path) -> None:
+    """Update the one unsubmitted working copy; preserve original pages verbatim."""
+    source = ROOT / "docs/operations/AI_WORK_EVIDENCE.md"
+    daily = source.read_text(encoding="utf-8").split("## Cumulative dated summaries\n", 1)[1]
+    daily_hash = hashlib.sha256(daily.encode()).hexdigest()
+    evidence = output.parent / (output.stem + "_원본근거")
+    manifest_path = evidence / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    original = output.read_bytes()
+    original_hash = hashlib.sha256(original).hexdigest()
+    if original_hash != manifest["pdf_sha256"]:
+        raise ValueError("Working PDF changed outside its evidence manifest; refusing replacement")
+    if manifest.get("daily_source_sha256") == daily_hash:
+        print("DAILY_ALREADY_CURRENT " + original_hash)
+        return
+    reader = PdfReader(io.BytesIO(original))
+    base_count = int((reader.metadata or {}).get("/NinjaDailyBasePages", 9))
+    if base_count != 9 or len(reader.pages) < base_count:
+        raise ValueError("Unexpected original evidence book")
+    regular, bold = register_fonts()
+    body = ParagraphStyle("daily", fontName=regular, fontSize=10, leading=16,
+                          spaceAfter=12, wordWrap="CJK")
+    heading = ParagraphStyle("daily-heading", parent=body, fontName=bold, fontSize=19, leading=27)
+    story = []
+    dates = []
+    for section in daily.split("### "):
+        if not section.strip():
+            continue
+        date, text = section.split("\n", 1)
+        datetime.strptime(date.strip(), "%Y-%m-%d")
+        dates.append(date.strip())
+        if story:
+            story.append(PageBreak())
+        story.append(Paragraph("날짜별 누적 작업 요약 | " + date.strip(), heading))
+        for paragraph in text.strip().split("\n\n"):
+            story.append(Paragraph(html.escape(paragraph).replace("\n", "<br/>"), body))
+    if not dates or dates != sorted(set(dates)):
+        raise ValueError("Daily entries must have unique ascending dates")
+    buffer = io.BytesIO()
+    def footer(canvas, doc):
+        canvas.setFont(regular, 8)
+        canvas.drawString(45, 24, "닌자의 신 | 기존 월간 작업일지 누적 보강 | 외부 미제출")
+        canvas.drawRightString(A4[0]-45, 24, str(base_count + doc.page))
+    SimpleDocTemplate(buffer, pagesize=A4, leftMargin=45, rightMargin=45,
+                      topMargin=42, bottomMargin=43).build(story, onFirstPage=footer, onLaterPages=footer)
+    writer = PdfWriter()
+    for page in reader.pages[:base_count]:
+        writer.add_page(page)
+    for page in PdfReader(buffer).pages:
+        writer.add_page(page)
+    writer.add_metadata({"/Title": "닌자의 신 - AI 활용 작업일지·증빙집", "/NinjaDailyBasePages": str(base_count)})
+    staged = output.with_suffix(".updating.pdf")
+    if staged.exists():
+        raise FileExistsError(staged)
+    with staged.open("xb") as stream:
+        writer.write(stream)
+    verified = PdfReader(staged)
+    assert all(verified.pages[i].extract_text() == reader.pages[i].extract_text() for i in range(base_count))
+    assert all(date in "".join(p.extract_text() for p in verified.pages[base_count:]) for date in dates)
+    manifest.setdefault("update_history", []).append({"previous_pdf_sha256": original_hash,
+        "updated_at": datetime.now(KST).isoformat(), "daily_dates": dates})
+    manifest.update(pdf_sha256=digest(staged), pages=len(verified.pages), daily_source_sha256=daily_hash,
+                    daily_source="docs/operations/AI_WORK_EVIDENCE.md", mode="cumulative-unsubmitted-working-copy")
+    staged.replace(output)
+    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(json.dumps({"pages": len(verified.pages), "sha256": manifest["pdf_sha256"], "dates": dates}))
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--output", required=True, type=Path)
     ap.add_argument("--session", type=Path)
     ap.add_argument("--version", default="v0.2")
+    ap.add_argument("--update-daily", action="store_true")
     args = ap.parse_args()
     output = args.output.resolve()
+    if args.update_daily:
+        update_daily(output)
+        return
     if output.exists():
         raise FileExistsError("Published issue cannot be overwritten: " + str(output))
     evidence = output.parent / (output.stem + "_원본근거")
