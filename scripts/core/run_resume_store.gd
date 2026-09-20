@@ -32,6 +32,8 @@ func import_legacy_wallet(source_path: String) -> Dictionary:
 	if source_path.is_empty():
 		return {"ok": false, "reason": &"invalid_source"}
 	var inventory := inspect_profile_recovery()
+	if inventory.requires_review:
+		return {"ok": false, "reason": &"profile_or_recovery_exists"}
 	for candidate in inventory.candidates:
 		if candidate.exists:
 			return {"ok": false, "reason": &"profile_or_recovery_exists"}
@@ -66,6 +68,8 @@ func import_legacy_wallet(source_path: String) -> Dictionary:
 func load_profile() -> Dictionary:
 	if not _configured or not _profile_mode:
 		return {"ok": false, "reason": &"not_configured"}
+	if _recovery_marker_exists():
+		return {"ok": false, "reason": &"recovery_required"}
 	if not FileAccess.file_exists(_storage_path):
 		var recovery := FileAccess.file_exists(_previous_storage_path()) or FileAccess.file_exists(_temporary_storage_path())
 		return {"ok": false, "reason": &"recovery_required" if recovery else &"missing"}
@@ -90,7 +94,8 @@ func _profile_recovery_inventory() -> Dictionary:
 	var candidates: Array = []
 	var roles := ["canonical", "previous", "temporary"]
 	var paths := [_storage_path, _previous_storage_path(), _temporary_storage_path()]
-	var requires_review := false
+	var incomplete := _recovery_marker_exists()
+	var requires_review := incomplete
 	for index in range(paths.size()):
 		var path: String = paths[index]
 		var item := {"role": roles[index], "path": path, "exists": FileAccess.file_exists(path),
@@ -117,7 +122,8 @@ func _profile_recovery_inventory() -> Dictionary:
 						item.revision = decoded.profile.revision
 			requires_review = requires_review or index != 0 or not item.valid
 		candidates.append(item)
-	return {"ok": true, "requires_review": requires_review, "candidates": candidates}
+	return {"ok": true, "requires_review": requires_review, "publication_incomplete": incomplete,
+		"recovery_archive_root": _storage_path + ".recovery", "candidates": candidates}
 
 
 # Resolve a reviewed role, never a caller-supplied path. This returns values only;
@@ -198,6 +204,10 @@ func _publish_reviewed_recovery(role: String, observed: Dictionary, selected: Di
 		return {"ok": false, "reason": &"recovery_staging_failed", "archive_path": archive}
 	if _profile_recovery_inventory() != observed:
 		return {"ok": false, "reason": &"stale_recovery_inventory", "archive_path": archive}
+	# Durable discovery precedes the first move. Even when every rollback fails,
+	# a later process must not mistake archive-only progress for a new profile.
+	if not _begin_recovery_publication():
+		return {"ok": false, "reason": &"recovery_marker_failed", "archive_path": archive}
 	var displaced: Array = []
 	for item in observed.candidates:
 		if not item.exists:
@@ -217,6 +227,9 @@ func _publish_reviewed_recovery(role: String, observed: Dictionary, selected: Di
 		if _rename_record(ProjectSettings.globalize_path(_storage_path), ProjectSettings.globalize_path(quarantine)) != OK:
 			return {"ok": false, "reason": &"recovery_required", "archive_path": archive}
 		return _rollback_recovery(displaced, archive, &"recovery_readback_failed")
+	if _finish_recovery_publication() != OK:
+		return {"ok": false, "reason": &"recovery_required", "publication_applied": true,
+			"archive_path": archive}
 	return {"ok": true, "profile": selected.profile, "source_sha256": selected.source_sha256,
 		"archive_path": archive, "role": role}
 
@@ -229,6 +242,26 @@ func _rollback_recovery(displaced: Array, archive: String, reason: StringName) -
 		if FileAccess.file_exists(item.source) or _rename_record(ProjectSettings.globalize_path(item.backup), ProjectSettings.globalize_path(item.source)) != OK:
 			restored = false
 	return {"ok": false, "reason": reason if restored else &"recovery_required", "archive_path": archive}
+
+
+# An empty sentinel directory is metadata, not another profile owner. Leave it
+# after any started-but-failed attempt, including successful rollback; explicit
+# review can retry a remaining live candidate. Archive-only recovery stays gated.
+func _recovery_marker_exists() -> bool:
+	var marker := _storage_path + ".recovery-required"
+	return DirAccess.dir_exists_absolute(marker) or FileAccess.file_exists(marker)
+
+
+func _begin_recovery_publication() -> bool:
+	var marker := _storage_path + ".recovery-required"
+	if FileAccess.file_exists(marker):
+		return false # Do not overwrite an unexpected file at the metadata path.
+	return DirAccess.dir_exists_absolute(marker) or DirAccess.make_dir_absolute(marker) == OK
+
+
+func _finish_recovery_publication() -> Error:
+	# Non-recursive: never delete unexpected contents or preservation archives.
+	return DirAccess.remove_absolute(_storage_path + ".recovery-required")
 
 
 func _read_recovery_bytes(path: String) -> Dictionary:

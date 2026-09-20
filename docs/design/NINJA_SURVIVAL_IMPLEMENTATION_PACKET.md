@@ -653,7 +653,7 @@ R06/R07의 독립 fixture와 R08의 상태 브리프는 저장 구현 중에도 
 
 ### R01. 단일 프로필·저장 복구
 
-2026-09-20 후속: `publish_recovery_candidate(role, observed)`를 기존 store에 추가한다.
+2026-09-20 후속: `publish_recovery_candidate(role, observed)`를 기존 store에 추가했다.
 현재 조회한 canonical/previous/temporary 전체와 SHA256이 일치해야 한다. 모든 원본
 (손상본 포함)을 같은 프로필 경로의 `.recovery/<고유 기록>/`에 바이트 그대로 보관하고
 선택·해시·목록을 inventory.json에 남긴 뒤 선택본을 stage/readback한다. 다시 목록을
@@ -663,8 +663,20 @@ R06/R07의 독립 fixture와 R08의 상태 브리프는 저장 구현 중에도 
 보존본과 displaced 원본의 중복은 실패 복구를 위한 의도된 보존이며 자동 정리하지 않는다.
 호출 중 재진입 거래는 거부한다. 다중 프로세스 writer/OS 전원 차단 내구성은 미검증이다.
 복구 화면과 사용자 확인 입력은 R03 Main 전환에서 이 API를 소비한다.
+첫 파일 이동 전에 `.recovery-required` 표식 디렉터리를 만들고 정본 readback과
+표식 제거가 모두 성공해야 복구 완료로 반환한다. 시작 후 실패는 rollback 성공 여부와
+무관하게 표식을 남기므로 재시작 후에도 load/신규 거래/구형 지갑 이관이 차단된다.
+현재 후보를 다시 조회해 명시 선택하면 재시도할 수 있다. 원본이 archive에만 남은
+경우 `publication_incomplete`와 `recovery_archive_root`를 제공하며 자동 새 프로필 생성은
+금지한다. archive-only 원본 수동 복귀/안내는 R03 복구 UX의 미완료 경로다.
+표식 제거 실패는 `ok=false, recovery_required, publication_applied=true`로 구분한다.
+예상치 못한 표식 파일/내용은 덮어쓰거나 재귀 삭제하지 않는다. 이 표식은 저장 포맷이나
+두 번째 저장 관리자가 아니라 같은 store의 미완료 복구 상태다.
 검증: 전용 gut 임시 디렉터리에서 3역할 선택, 손상본 보존, 낡은 목록,
 보관/임시 쓰기 실패, 보관 중 원본 변경, 이동/되돌림/최종 readback 실패를 검사한다.
+독립 검토 1회차에서 previous만 있던 상태의 게시+rollback 동시 실패가 재시작 뒤
+missing으로 오인되는 P1을 확인했다. 전용 회귀 RED1개 → 교정 후 집중12/12,
+319단언 PASS. 재시작 차단, 명시 재시도, 표식 제거 실패와 예상치 못한 파일 보존 포함.
 공식 API 확인: [FileAccess](https://docs.godotengine.org/en/stable/classes/class_fileaccess.html),
 [DirAccess](https://docs.godotengine.org/en/stable/classes/class_diraccess.html).
 기존 store 확장 ADAPT, 최신 후보 자동 승격 및 두 번째 저장 관리자 REJECT.

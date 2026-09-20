@@ -16,7 +16,12 @@ Protected: real player saves, game tuning/art/engine pins, unrelated untracked i
 and addons. Tests use explicit gut-only files. Recovery UI/Main cutover is R03.
 Progress: main reconciled at d802b643 (prior product increments preserved); baseline
 820/820 GUT and navigation2/2 PASS. Recovery publication tests RED8/8 missing API
-→ GREEN8/8,251 assertions. Full regression and independent review pending.
+→ GREEN8/8,251 assertions; first full regression828/828 and Python21/21 PASS.
+Review1 found P1: previous-only publication+rollback failure left archive-only data,
+but reopening treated it as a missing/new profile. RED reproduced; durable incomplete
+marker now blocks load/new transactions/import until explicit successful recovery.
+Focused12/12,319 assertions PASS including retry and marker-cleanup failure.
+Corrected full regression and review2 pending. No extra full-review budget is started.
 Ruling: recovery picker/Main is R03 as explicitly sequenced in the existing packet;
 this R01 increment exposes the reviewed persistence API, not a prematurely switched
 title flow. No real player-save recovery or Human/FUN pass is claimed.

@@ -10,6 +10,7 @@ class FailingStore:
 	var fail_renames: Array[int] = []
 	var rename_count := 0
 	var fail_final_read := false
+	var fail_marker_cleanup := false
 	var mutate_after_backup := false
 	var observed_reentry: Dictionary = {}
 	func _write_recovery_file(destination: String, bytes: PackedByteArray) -> bool:
@@ -40,6 +41,8 @@ class FailingStore:
 		if fail_final_read and candidate_path == storage_path():
 			return false
 		return super._readback_matches(candidate_path, text)
+	func _finish_recovery_publication() -> Error:
+		return ERR_CANT_CREATE if fail_marker_cleanup else super._finish_recovery_publication()
 
 func before_each() -> void:
 	root = "user://gut_recovery_publication_%s_%s" % [OS.get_process_id(), Time.get_ticks_usec()]
@@ -213,3 +216,62 @@ func test_final_readback_failure_restores_old_files_and_preserves_failed_candida
 	_assert_sources(originals)
 	_assert_archive(result, originals)
 	assert_eq(FileAccess.get_file_as_string(result.archive_path.path_join("failed-publication")), originals.temporary)
+
+func test_failed_publication_and_rollback_remains_discoverable_after_reopen() -> void:
+	var original := JSON.stringify(_profile(7))
+	_write(path + ".previous", original)
+	var store = FailingStore.new()
+	store.configure_profile(path)
+	store.fail_renames.assign([2, 3])
+	var result: Dictionary = store.publish_recovery_candidate("previous", store.inspect_profile_recovery())
+	assert_false(result.ok)
+	assert_eq(result.reason, &"recovery_required")
+	_assert_archive(result, {"previous": original})
+	var reopened = STORE.new()
+	reopened.configure_profile(path)
+	assert_eq(reopened.load_profile().get("reason"), &"recovery_required")
+	assert_true(reopened.inspect_profile_recovery().requires_review)
+	assert_false(reopened.transact_profile(_profile(0), 0, "init:replacement").ok)
+	assert_eq(reopened.import_legacy_wallet(root.path_join("legacy.json")).get("reason"), &"profile_or_recovery_exists")
+	assert_false(FileAccess.file_exists(path))
+
+func test_explicit_retry_clears_incomplete_marker_after_success() -> void:
+	_seed()
+	var store = FailingStore.new()
+	store.configure_profile(path)
+	store.fail_renames.assign([4])
+	assert_false(store.publish_recovery_candidate("previous", store.inspect_profile_recovery()).ok)
+	var reopened = STORE.new()
+	reopened.configure_profile(path)
+	assert_eq(reopened.load_profile().get("reason"), &"recovery_required")
+	assert_true(reopened.inspect_profile_recovery().publication_incomplete)
+	assert_true(reopened.publish_recovery_candidate("previous", reopened.inspect_profile_recovery()).ok)
+	assert_false(reopened.inspect_profile_recovery().requires_review)
+	assert_eq(reopened.load_profile().profile.meta.soul_balance, 1)
+
+func test_failed_marker_cleanup_keeps_published_candidate_gated_until_review() -> void:
+	var originals := _seed()
+	var store = FailingStore.new()
+	store.configure_profile(path)
+	store.fail_marker_cleanup = true
+	var result: Dictionary = store.publish_recovery_candidate("temporary", store.inspect_profile_recovery())
+	assert_false(result.ok)
+	assert_true(result.get("publication_applied", false))
+	_assert_archive(result, originals)
+	assert_eq(FileAccess.get_file_as_string(path), originals.temporary)
+	var reopened = STORE.new()
+	reopened.configure_profile(path)
+	assert_eq(reopened.load_profile().get("reason"), &"recovery_required")
+	assert_true(reopened.publish_recovery_candidate("canonical", reopened.inspect_profile_recovery()).ok)
+	assert_eq(reopened.load_profile().profile.meta.soul_balance, 3)
+
+func test_occupied_marker_path_is_preserved_without_moving_sources() -> void:
+	var originals := _seed()
+	_write(path + ".recovery-required", "unexpected metadata")
+	var store = STORE.new()
+	store.configure_profile(path)
+	var result: Dictionary = store.publish_recovery_candidate("previous", store.inspect_profile_recovery())
+	assert_false(result.ok)
+	assert_eq(result.reason, &"recovery_marker_failed")
+	_assert_sources(originals)
+	assert_eq(FileAccess.get_file_as_string(path + ".recovery-required"), "unexpected metadata")
