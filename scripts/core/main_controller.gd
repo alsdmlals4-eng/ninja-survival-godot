@@ -81,6 +81,7 @@ var _school_circuit_elapsed_seconds: float = 0.0
 var _run_play_elapsed_seconds: float = 0.0
 var _combat_enabled: bool = false
 var _final_battle_started: bool = false
+var _encounter_danger_budget = preload("res://scripts/enemies/encounter_danger_budget.gd").new()
 
 @onready var game_state: GameState = $GameState
 @onready var combat_ddd: CombatDDDTracker = $CombatDDD
@@ -1048,6 +1049,12 @@ func _wire_enemy(enemy: Node) -> void:
 		var death_callback := Callable(self, "_on_enemy_died")
 		if not enemy.is_connected("died", death_callback):
 			enemy.connect("died", death_callback)
+	if selected_rules_enabled and school_circuit != null and enemy.has_method("configure_pattern_budget"):
+		var profiles: Dictionary = ENCOUNTER_CATALOG_SCRIPT.build_stage_profiles()
+		var profile = profiles.get(school_circuit.route_state.stage_index())
+		if profile != null:
+			_encounter_danger_budget.set_capacity(profile.max_concurrent_advanced_gimmicks)
+			enemy.configure_pattern_budget(_encounter_danger_budget)
 
 
 func _instantiate_school_encounter_actor(encounter_id: StringName, expected_role: StringName):

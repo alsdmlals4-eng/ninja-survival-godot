@@ -28,13 +28,27 @@ Source/import alpha readback for player/Bongma Boss matches exactly; isolated
 render shows the approved player is intact. Small dark silhouettes on the busy
 floor remain a visual readability issue, not a proven corrupt-import defect.
 
-Next core: R06 shared danger-slot lifetime, WINDUP/LOCKED fairness/escape and spawn
+R06 subsequent shared budget now connects existing StageProfile1/1/2/2 to one
+Main-local owner. Admission happens before telegraph; rejection consumes neither
+pattern order nor opening bonus. Slots survive recovery while projectile/proxy
+children remain and freeze during pause. Fired enemy bullets no longer inherit
+caster movement. A death-timing counterexample caused19 damage after caster death
+before deferred disposal; immediate child retirement before slot return fixes it.
+Focused6/6,41 assertions and actual Main wiring1/1,3 assertions PASS; static
+independent impact review no additional P0/P1/P2. Full changed-state gate pending.
+
+Next core: R06 WINDUP/LOCKED fairness/escape and spawn
 reservation; then natural-speed full run, R07 integrated builds, R08 actual final
 art/motion/audio/readability, R09 input/performance/device and R10 delivery gates.
 Current PR147 remains Draft; do not merge unfinished whole packet or claim core0.
 Final changed-state full GUT935/935,117 scripts,15,806 assertions,284.037s,exit0
 (diagnostics/actor-warning-final-full-20260921.log). Independent focused re-review
-found no additional P0/P1/P2 after the proxy fix. Build/journal publication follows.
+found no additional P0/P1/P2 after the proxy fix. Code commit7cba5cb is pushed.
+Playable checkpoint: build/windows-playtest-20260921-settings/README.md; exact
+7cba5cb export, PCK8B515E4D9168BB4A3DF8217EEC477E1F259BEEA320F9FFEE3E41ED9EE44C1BD9,
+EXE headless main smoke exit0/no engine error. Full packaged interactive play NOT_RUN.
+Superseded own build moved intact to DELETE_REVIEW/ninja-survival-godot/20260921,
+161,263,296bytes/2files, restore guidance included; not deleted.
 
 ## Selected Main adoption and recovery — 2026-09-20–21
 

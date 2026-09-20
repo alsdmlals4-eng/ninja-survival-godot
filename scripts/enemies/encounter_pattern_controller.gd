@@ -17,6 +17,7 @@ var _state: StringName = State.chase
 var _remaining := 0.65
 var _active_pattern: Dictionary = {}
 var _opening_telegraph_bonus := 0.0
+var start_permission: Callable
 
 
 func configure(patterns: Array[Dictionary], opening_telegraph_bonus: float = 0.0) -> bool:
@@ -59,8 +60,7 @@ func advance(delta: float) -> void:
 func force_start_for_test() -> bool:
 	if _patterns.is_empty():
 		return false
-	_enter_telegraph()
-	return true
+	return _enter_telegraph()
 
 
 func state_name() -> StringName:
@@ -93,13 +93,16 @@ func has_recovery(pattern_id: StringName) -> bool:
 	return false
 
 
-func _enter_telegraph() -> void:
+func _enter_telegraph() -> bool:
+	if start_permission.is_valid() and not bool(start_permission.call()):
+		return false
 	_active_pattern = _patterns[_pattern_index].duplicate(true)
 	_active_pattern["telegraph_duration"] = float(_active_pattern["telegraph_duration"]) + _opening_telegraph_bonus
 	_opening_telegraph_bonus = 0.0
 	_state = State.telegraph
 	_remaining = float(_active_pattern.get("telegraph_duration", 0.0))
 	state_changed.emit(_state, active_pattern())
+	return true
 
 
 func _enter_execute() -> void:

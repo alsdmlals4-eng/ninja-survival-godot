@@ -38,6 +38,8 @@ var _marked_target: Node2D
 var _mark_remaining := 0.0
 var _mark_visual: Sprite2D
 var _proxy_hazards: Array[Dictionary] = []
+var _pattern_budget
+var _pattern_slot_held := false
 
 
 func book_control_role() -> StringName:
@@ -46,14 +48,27 @@ func book_control_role() -> StringName:
 
 func _ready() -> void:
 	super._ready()
+	died.connect(_retire_dead_actor_attacks)
+
+
+func _retire_dead_actor_attacks(_actor: Node) -> void:
+	_clear_telegraph()
+	_clear_runtime_effects()
+	for child in get_children():
+		if child.has_meta(PATTERN_PROJECTILE_META) and not child.is_queued_for_deletion():
+			child.queue_free()
+	_release_pattern_slot()
 
 
 func _physics_process(delta: float) -> void:
+	if get_tree() != null and get_tree().paused:
+		return
 	if _dead:
 		velocity = Vector2.ZERO
 		_clear_runtime_effects()
 		return
 	_advance_runtime_effects(delta)
+	_release_finished_pattern_slot()
 	if pattern_controller != null:
 		pattern_controller.advance(delta)
 		if pattern_controller.state_name() != &"chase":
@@ -110,8 +125,44 @@ func active_proxy_count() -> int:
 
 
 func _exit_tree() -> void:
+	_release_pattern_slot()
 	_clear_telegraph()
 	_clear_runtime_effects()
+
+
+func configure_pattern_budget(budget) -> void:
+	if _pattern_budget == budget:
+		return
+	_release_pattern_slot()
+	_pattern_budget = budget
+	if pattern_controller != null:
+		pattern_controller.start_permission = _reserve_pattern_slot
+
+
+func _reserve_pattern_slot() -> bool:
+	if _dead or is_queued_for_deletion() or (get_tree() != null and get_tree().paused):
+		return false
+	if _pattern_budget == null:
+		return true
+	if _pattern_slot_held:
+		return false
+	_pattern_slot_held = _pattern_budget.try_reserve(self)
+	return _pattern_slot_held
+
+
+func _release_pattern_slot() -> void:
+	if _pattern_budget != null and _pattern_slot_held:
+		_pattern_budget.release(self)
+	_pattern_slot_held = false
+
+
+func _release_finished_pattern_slot() -> void:
+	if not _pattern_slot_held or pattern_state() != &"chase" or not _proxy_hazards.is_empty():
+		return
+	for child in get_children():
+		if child.has_meta(PATTERN_PROJECTILE_META) and not child.is_queued_for_deletion():
+			return
+	_release_pattern_slot()
 
 
 func is_stage_boss() -> bool:
@@ -144,12 +195,15 @@ func _ensure_pattern_controller() -> void:
 		return
 	pattern_controller = PATTERN_CONTROLLER_SCRIPT.new()
 	pattern_controller.name = "EncounterPatternController"
+	if _pattern_budget != null:
+		pattern_controller.start_permission = _reserve_pattern_slot
 	add_child(pattern_controller)
 	pattern_controller.execute_requested.connect(_on_pattern_execute_requested)
 	pattern_controller.state_changed.connect(_on_pattern_state_changed)
 
 
 func _clear_pattern_controller() -> void:
+	_release_pattern_slot()
 	if pattern_controller == null:
 		return
 	pattern_controller.queue_free()
@@ -183,6 +237,7 @@ func _on_pattern_state_changed(state: StringName, pattern: Dictionary) -> void:
 		_show_telegraph(pattern)
 	elif state == &"recovery" or state == &"chase":
 		_clear_telegraph()
+		_release_finished_pattern_slot()
 
 
 func _resolve_pattern_damage(target_node: Node, multiplier: float = 1.0) -> int:
@@ -374,6 +429,7 @@ func _spawn_fan_projectiles() -> void:
 				projectile_node.free()
 			continue
 		var projectile := projectile_node as Area2D
+		projectile.top_level = true
 		add_child(projectile)
 		projectile.global_position = global_position
 		projectile.collision_layer = 8

@@ -3,6 +3,27 @@ extends GutTest
 const MAIN = preload("res://scenes/main/main_scene.tscn")
 const ISOLATION = preload("res://tests/helpers/main_storage_isolation.gd")
 
+func test_selected_main_connects_one_shared_stage_one_pattern_budget() -> void:
+	var main = MAIN.instantiate()
+	ISOLATION.prepare(main)
+	main.selected_rules_enabled = true
+	add_child_autofree(main)
+	main.selected_run.begin_new_game()
+	main.selected_run.start_ui.option_buttons[0].pressed.emit()
+	main.selected_run.start_ui.option_buttons[0].pressed.emit()
+	main.selected_run.start_ui.confirm_button.pressed.emit()
+	main.school_selection.school_selected.emit(&"bongma")
+	main.school_circuit.sync_elapsed(180.0)
+	var elite = _enemy(main, &"elite")
+	assert_not_null(elite)
+	if elite == null: return
+	var second = main._instantiate_school_encounter_actor(&"five_element_tuner", &"elite")
+	main.add_child(second)
+	second.set_meta(&"school_circuit_role", &"elite")
+	main._wire_enemy(second)
+	assert_true(elite.pattern_controller.force_start_for_test())
+	assert_false(second.pattern_controller.force_start_for_test(), "Main must connect both actors to one Stage1 budget.")
+
 func test_title_awakening_unlock_then_start_support_and_selected_codex() -> void:
 	var main = MAIN.instantiate()
 	ISOLATION.prepare(main)
