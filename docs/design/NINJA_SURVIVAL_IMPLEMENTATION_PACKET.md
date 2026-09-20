@@ -871,6 +871,50 @@ begin_rest 재호출은 후보 재추첨·구매 제한 초기화를 일으키�
 
 ### R02. 준비 단계와 두 확정 거래
 
+2026-09-20 출전 거래 증분: `RestCommitCoordinator.prepare_selected_departure()`와
+`commit_selected_departure()`가 `SelectedDepartureBuilder`의 복제 후보를 기존
+profile store로 확정·재읽기한다. builder는 저장 담당자가 아니라 출전 후보 조합의
+작은 책임 모듈이다. live owner 일괄 채택·UI 신호·Main 진입은 아직 후속 연결이며
+이 API 성공만으로 화면 전환하거나 전체 R02가 완료됐다고 표시하지 않는다.
+
+요청 필드는 아래 10개다. 대상이 다르거나 revision이 오래되면 저장하지 않는다.
+
+| 요청 값 | 허용 범위 / 실제 책임 |
+|---|---|
+| run_id / prepare_session_id | 저장된 현재 런·준비 세션과 일치 |
+| expected_revision / expected_prepare_revision / expected_equipment_revision | 프로필·준비·장비 기준 revision과 일치 |
+| spatial_session | 세션이 내보낸 배치 후보. 가방+보관함 전체의 instance/definition·next_instance_id와 보관 정책 보존; 획득/판매/조합은 별도 준비 거래 |
+| equipped_slots | 저장된 소유 장비 중 슬롯에 맞는 instance ID. 강화/소유 목록을 UI가 교체하지 못함 |
+| next_school_id | 미방문 전장만. 최종 준비는 빈 값이며 다섯 번째 전장 거부 |
+| fate_id | 저장된 Fate 후보 중 미소유 선택. 최종 준비에서는 빈 값으로 건너뛰기 가능 |
+| ultimate_charge | 시작 유파의 실제 경계 자원 snapshot. 유파·유한수·상한 검증. R03이 정지된 runtime에서 제공할 값이며 UI 임의 충전 권한이 아님 |
+
+gold/access/reward/meta는 요청에서 교체하지 않고 저장값을 사용한다. 미처리 흔적,
+보스 보상, 상자, pending bag은 출전을 막는다. 구매 가방의 배치/소유 확정은 준비
+거래에서 먼저 해결한다. 활성 인법은 실제 가방 배치에서 다시 산출하고 버퍼의 책은
+전투 효과에 포함하지 않는다. 최종 배치 수정치도 기존 resolver로 계산한다.
+이전 출전의 clear 순서를 이어받아 현재 전장 하나만 완료하고 새 전장 또는 최종전으로
+진행한다. 누적 Fate는 유지하며 새 선택은 최대 하나다.
+
+같은 요청은 JSON 정수/실수·키 순서 차이를 정규화한 같은 영수증으로 재확인한다.
+저장 후 재읽기 실패는 흔적 API와 같은 `committed_reload_required/persisted=true`다.
+이후 다른 거래가 진행됐으면 재요청은 최신 profile을 반환하며 이전 런을 부활시키지
+않는다. 소비자는 현재 run/phase를 읽고 **현재 상태**를 채택해야 한다.
+
+재사용 판단: 기존 domain/codec/store와 복제 후보 ADAPT, UI가 전체 profile 또는
+소유 목록을 교체 REJECT, live 상태를 먼저 바꾸고 저장 실패 시 보상 원복 REJECT.
+추가 엔진·서비스·스키마·자산 변경 없음. 관련 공식 계약:
+https://docs.godotengine.org/en/stable/classes/class_dictionary.html
+https://docs.godotengine.org/en/stable/classes/class_json.html
+현재 경험 가설은 ‘검토한 빌드와 경로가 함께 출발하며 중단으로 갈라지지 않음’이다.
+자동 검사로 거래 불변성을 확인하되 화면 이해/조작/재미는 R03 이후 별도 검증한다.
+기계 증거: 출전 API 미구현 RED7/7 → GREEN7/7 → 확장13/13.
+최종 전체 GUT859/859(출전15개 포함),105스크립트·13,824단언 및 Python21/21 통과.
+24가지 완료 순서·여섯 칸 보관함·미배치 효과0·소유 장비 교체·누적 Fate·저장 실패와
+중복/재진입/재시작/후속 거래 보존을 검사했다. 독립 변경 집중 검토는 제품 코드와
+초기7개 시험을 대조했고 P0/P1/P2 지적이 없었다. 이후8개는 범위를 늘리지 않는
+coverage 보강이며 전체 회귀검사로 확인했다. UI/Human/실기기/출시는 NOT_RUN이다.
+
 2026-09-20 구현 증분: `RestCommitCoordinator.configure_selected_profile(store)`로
 기존 R01 store를 연결한다. `prepare_selected_trace(request)`는 저장된 준비 값을
 복제해 검증하는 무변경 미리보기, `commit_selected_trace(request)`는 흔적 선택과

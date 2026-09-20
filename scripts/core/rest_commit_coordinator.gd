@@ -12,6 +12,7 @@ const BAG_RESOLVER = preload("res://scripts/backpack/backpack_resolver.gd")
 const BAG_CATALOG = preload("res://scripts/data/mvp4_catalog.gd")
 const CARRIED_ITEM = preload("res://scripts/data/item_instance.gd")
 const REST_BUFFER = preload("res://scripts/backpack/rest_backpack_session.gd")
+const SELECTED_DEPARTURE = preload("res://scripts/core/selected_departure_builder.gd")
 
 
 # Pure cross-owner gate, not a disk transaction or a mutation of live owners.
@@ -115,6 +116,34 @@ func prepare_selected_trace(request: Dictionary) -> Dictionary:
 	if _selected_profile_store == null or _commit_in_progress:
 		return {"ok": false, "reason": &"not_ready"}
 	return _prepare_selected_trace_request(request)
+
+
+func prepare_selected_departure(request: Dictionary) -> Dictionary:
+	if _selected_profile_store == null or _commit_in_progress:
+		return {"ok": false, "reason": &"not_ready"}
+	return SELECTED_DEPARTURE.new().prepare(request, _selected_profile_store)
+
+
+func commit_selected_departure(request: Dictionary) -> Dictionary:
+	if _selected_profile_store == null or _commit_in_progress:
+		return {"ok": false, "reason": &"not_ready"}
+	_commit_in_progress = true
+	var prepared: Dictionary = SELECTED_DEPARTURE.new().prepare(request, _selected_profile_store)
+	var result := prepared
+	if prepared.ok and not prepared.get("already_applied", false):
+		result = _selected_profile_store.transact_profile(prepared.profile,
+			int(request.expected_revision), prepared.transaction_id)
+		if result.ok:
+			var readback: Dictionary = _selected_profile_store.load_profile()
+			if not readback.ok or readback.profile.revision != result.revision \
+				or not readback.profile.meta.transaction_receipts.has(prepared.transaction_id):
+				result = {"ok": false, "reason": &"committed_reload_required", "persisted": true}
+			else:
+				result = {"ok": true, "already_applied": result.already_applied,
+					"profile": readback.profile, "transaction_id": prepared.transaction_id,
+					"warning": result.get("warning", &"")}
+	_commit_in_progress = false
+	return result
 
 
 func commit_selected_trace(request: Dictionary) -> Dictionary:

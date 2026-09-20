@@ -1,5 +1,36 @@
 # ACTIVE_CONTEXT
 
+## R02 departure continuation — 2026-09-20
+
+User approves continuing from876a8a4. Fresh main ebbabdd5 and Base23ecad5a unchanged.
+Plan: selected departure intent + revision checks → clone preparation owners →
+validate ownership-preserving layout/equipment/Fate/unvisited route → single profile
+transaction/readback → focused/full regression and change-focused review → PR147 sync.
+Reuse existing isolated worktree, codec/store/domains. Existing packet R02 is the
+approved plan; do not create another plan/ledger or restart R01's whole-audit budget.
+SelectedDepartureBuilder is a pure candidate-composition helper, not a new save owner.
+Request carries run/session/revisions, spatial snapshot, equipped slot IDs, next-school,
+Fate selection and boundary ultimate charge. It cannot replace access/gold/rewards or
+mint/delete owned items. Purchase/sale/combination remain separate preparation transactions.
+Unresolved reward/trace/pending bag blocks departure. Nonfinal Fate requires a reserved
+candidate; final preparation permits skip and never asks for a fifth school.
+Experience hypothesis: the reviewed build and route depart together, interruption
+cannot split them; live Main adoption and Human comprehension remain subsequent gates.
+REUSED_EVIDENCE: existing detached-value/store pattern; current official Dictionary/JSON
+docs checked for reference semantics and numeric JSON roundtrip. No engine/schema/art,
+real-save/global/plugin mutation. No UI/Human/full-R02 completion inferred from domain tests.
+Verification: missing APIs RED7/7 → GREEN7/7,251 assertions; expanded focused13/13,
+1,174 assertions. Final full suite includes15 departure tests:859/859 total,
+105 scripts/13,824 assertions,202.378s,exit0; Python21/21 PASS. No SCRIPT ERROR,
+ERROR or WARNING in full GUT log. The24-order check composes domain candidates,
+not24 played runs. Change-focused independent code review found no P0/P1/P2;
+it covered production+initial7 tests, not the8 later coverage-only additions.
+Review set-aside ruling: live adoption/Main/UI/Human are still future packets,
+not waived acceptance. Current delivery is persisted command foundation only.
+Next: prepare-entry persistence and live owner adoption/input connection without
+partial signals, then R03 new-game/continue/recovery flow. Keep PR147 Draft.
+Diagnostics: C:/Users/user/Tools/NinjaSurvival-Local/diagnostics/r02-depart-{red,green,extended,full}-20260920.log.
+
 ## R02 continuation — 2026-09-20
 
 Latest user approves continuing the recorded R02→R03 order. Start from PR147
