@@ -21,7 +21,24 @@ Review1 found P1: previous-only publication+rollback failure left archive-only d
 but reopening treated it as a missing/new profile. RED reproduced; durable incomplete
 marker now blocks load/new transactions/import until explicit successful recovery.
 Focused12/12,319 assertions PASS including retry and marker-cleanup failure.
-Corrected full regression and review2 pending. No extra full-review budget is started.
+Corrected full regression832/832,103 scripts/12,296 assertions (94.719s, exit0),
+Python21/21 PASS. No SCRIPT ERROR/ERROR/WARNING in local full GUT log.
+Review2: no code P0/P1/P2; P2 stale planning pause/five-review wording in
+Documentation Map/Implementation Packet corrected with targeted navigation readback.
+Shared whole-scope review2/2 consumed; no third whole review. R01 publication
+implementation bb713a5d77ec9ebd6ade2e1ebf46fd3f43b4bcf2 remote CI PASS:
+https://github.com/alsdmlals4-eng/ninja-survival-godot/actions/runs/35505637357
+Includes navigation/Base manifest, import/main-scene smoke,832 GUT, Windows artifact.
+Remote artifact upload emitted Node deprecation warnings, not game-test failures.
+Final documentation receipt is checked again at its own PR HEAD; earlier CI is not
+substituted for that check. Next: R02 preparation business transactions, then R03
+Main/recovery UI (including gated archive-only failure guidance). PR147 stays Draft.
+Diagnostics: C:/Users/user/Tools/NinjaSurvival-Local/diagnostics/r01-review-{red,green,full}-20260920.log.
+Local/remote branch bb713a5 matched and main remained ebbabdd5 at implementation readback.
+Existing monthly evidence v0.3 updated in place:12 pages (historical1~9 retained),
+Sep14/16/20 cumulative entries, SHA256 a667139cd3a3ca01355574dfbf0aa25dfc04cb127dffa21b101f88af6a612bc4.
+Page12 rendered/read back; repeated export DAILY_ALREADY_CURRENT. No new issue/version,
+external submission, account/payment evidence or fabricated screenshot was created.
 Ruling: recovery picker/Main is R03 as explicitly sequenced in the existing packet;
 this R01 increment exposes the reviewed persistence API, not a prematurely switched
 title flow. No real player-save recovery or Human/FUN pass is claimed.

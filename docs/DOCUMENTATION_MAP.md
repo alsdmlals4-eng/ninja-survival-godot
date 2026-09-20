@@ -1,5 +1,13 @@
 # DOCUMENTATION_MAP
 
+## Current continuation — 2026-09-20
+
+PR147 implementation is resumed under the approved September14/20 continuation.
+Read [Active Context](ACTIVE_CONTEXT.md) for the current bounded R01 scope and
+[Implementation Packet](design/NINJA_SURVIVAL_IMPLEMENTATION_PACKET.md) section J
+for R01→R02→R03 dependencies. Dated planning pauses below are historical, not a
+current implementation stop. Candidate art still requires its separate approval gate.
+
 ## Latest equipment revision — publication pending
 
 Current rules: Detailed Rules R-EQUIPMENT/R-LOADOUT/R-TRACE and Implementation Packet.
@@ -30,7 +38,7 @@ as derived publication sections, not new competing rules. Images in
 The latest user permits needed image production; the pause in the historical
 2026-09-10 entry below no longer applies. Historical exported PDFs remain preserved.
 
-### 2026-09-10 active-cycle routing override
+### Historical 2026-09-10 cycle routing (planning pause superseded)
 
 NS-DESIGN-RULES: `design/NINJA_SURVIVAL_DETAILED_RULES.md` is the single new-cycle
 detailed-rule owner, authored under delegated planning judgement. Publication:
@@ -38,8 +46,8 @@ repository-native review source now; milestone PDF after design/visual review,
 not an automatic replacement of the historical integrated Human Blueprint.
 Its rules are DELEGATED_DESIGN, tuning values are initial tests, and implementation
 readiness is separate. Current review evidence:
-`reviews/2026-09-10-detailed-rules-review.md`. Latest task is planning-only;
-image generation and runtime implementation remain paused.
+`reviews/2026-09-10-detailed-rules-review.md`. That task was planning-only;
+its image/implementation pause was superseded by the later approved continuation.
 
 Bounded input implementation/evidence: `reviews/2026-09-10-manual-ultimate-review.md`.
 Execution checklist: `superpowers/plans/2026-09-10-manual-ultimate-input.md`.
