@@ -7,6 +7,14 @@ floor decal. It points to the reserved offscreen location for at least0.8s and i
 cancelled/restarted with that reservation. Actual source render730017 inspected;
 no new raster asset or final-art approval implied. Human crowd readability NOT_RUN.
 
+Fan projectile notices now draw open direction arrows from the actor's same locked
+origin/rays; these are NOT filled instantaneous damage areas. Source render740431
+inspected. Selected WINDUP starts at65% opacity, LOCKED at100%; geometry is fixed
+already at WINDUP, never tracks the player afterwards. Source final phase captures
+743686/warning-windup.png and warning-locked.png inspected; pointer probe PASS.
+Native gameplay drawing, not newly generated/LOCKed artwork. Deliberately paused
+fixtures are not natural fight/human readability approval.
+
 SchoolEncounterActor preserves the2 existing dedicated actor textures. The other18
 catalog paths have no file; they now render previously approved runtime art rather
 than invisible damaging units. Boss fallback: visual-core/cheonsul_stage_boss_v1;

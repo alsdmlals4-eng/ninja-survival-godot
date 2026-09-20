@@ -4,6 +4,8 @@ class_name SchoolEncounterActor
 const PATTERN_CONTROLLER_SCRIPT = preload("res://scripts/enemies/encounter_pattern_controller.gd")
 const DANGER_GEOMETRY = preload("res://scripts/enemies/encounter_danger_geometry.gd")
 const WARNING_VISUAL = preload("res://scripts/enemies/encounter_warning_visual.gd")
+const PROJECTILE_AIM = preload("res://scripts/enemies/encounter_projectile_aim.gd")
+const ESCAPE_SOLVER = preload("res://scripts/enemies/encounter_escape_solver.gd")
 const ENEMY_PATTERN_PROJECTILE_SCENE = preload("res://scenes/projectiles/shuriken_projectile.tscn")
 const TALISMAN_PROJECTILE_TEXTURE = preload("res://assets/runtime/visual-core/talisman_projectile_v1.png")
 const FALLBACK_TELEGRAPH_TEXTURE = preload("res://assets/runtime/visual-core/cheonsul_flame_field_v1.png")
@@ -32,6 +34,7 @@ var definition = null
 var pattern_controller = null
 var _telegraph_visual: Node2D
 var _pattern_geometry
+var _projectile_directions := PackedVector2Array()
 var _telegraphed_position := Vector2.ZERO
 var _telegraph_origin := Vector2.ZERO
 var _marked_target: Node2D
@@ -40,6 +43,7 @@ var _mark_visual: Sprite2D
 var _proxy_hazards: Array[Dictionary] = []
 var _pattern_budget
 var _pattern_slot_held := false
+var _fair_warning := false
 
 
 func book_control_role() -> StringName:
@@ -142,12 +146,74 @@ func configure_pattern_budget(budget) -> void:
 func _reserve_pattern_slot() -> bool:
 	if _dead or is_queued_for_deletion() or (get_tree() != null and get_tree().paused):
 		return false
-	if _pattern_budget == null:
-		return true
 	if _pattern_slot_held:
 		return false
+	if _fair_warning and not _prepare_walk_escape():
+		return false
+	if _pattern_budget == null:
+		return true
 	_pattern_slot_held = _pattern_budget.try_reserve(self)
 	return _pattern_slot_held
+
+
+func enable_fair_warning() -> void:
+	_fair_warning = true
+	if pattern_controller != null:
+		pattern_controller.fair_warning = true
+		pattern_controller.start_permission = _reserve_pattern_slot
+
+
+func _prepare_walk_escape() -> bool:
+	if not is_instance_valid(target) or not target is PhysicsBody2D or not target.can_process():
+		return false
+	_capture_telegraph_position(pattern_controller.next_pattern())
+	var hazards := _planned_dangers()
+	if _pattern_budget != null: hazards.append_array(_pattern_budget.other_dangers(self))
+	var collision := target.get_node_or_null("CollisionShape2D") as CollisionShape2D
+	if collision == null or not collision.shape is CircleShape2D:
+		return false
+	var clearance: float = collision.shape.radius * maxf(absf(collision.global_scale.x), absf(collision.global_scale.y)) + 6.0
+	var shape := CircleShape2D.new()
+	shape.radius = clearance
+	var query := PhysicsShapeQueryParameters2D.new()
+	query.shape = shape
+	query.transform = Transform2D(0.0, collision.global_position)
+	query.exclude = [target.get_rid()]
+	query.collision_mask = target.walking_collision_mask() if target.has_method("walking_collision_mask") else target.collision_mask
+	var result: Dictionary = ESCAPE_SOLVER.find_escape(collision.global_position, float(target.get("move_speed")), clearance, hazards, _walk_path_clear.bind(query))
+	if not result.ok: return false
+	pattern_controller.locked_duration = result.locked_duration
+	return true
+
+
+func _walk_path_clear(destination: Vector2, query: PhysicsShapeQueryParameters2D) -> bool:
+	var space := target.get_world_2d().direct_space_state
+	# cast_motion ignores initial overlap, so reject that separately.
+	query.motion = Vector2.ZERO
+	if not space.intersect_shape(query, 1).is_empty(): return false
+	query.motion = destination - query.transform.origin
+	var fractions := space.cast_motion(query)
+	return fractions.size() == 2 and fractions[0] >= 1.0
+
+
+func _planned_dangers() -> Array:
+	var hazards: Array = []
+	if _pattern_geometry != null: hazards.append(_pattern_geometry)
+	for direction in _projectile_directions:
+		hazards.append(DANGER_GEOMETRY.new(_telegraph_origin, _telegraph_origin + direction * (720.0 if is_stage_boss() else 640.0), 5.0))
+	return hazards
+
+
+func danger_geometries() -> Array:
+	var hazards: Array = []
+	if pattern_state() in [&"telegraph", &"windup", &"locked", &"execute"]:
+		hazards.append_array(_planned_dangers())
+	for hazard in _proxy_hazards:
+		if not hazard.resolved and hazard.geometry != null: hazards.append(hazard.geometry)
+	for child in get_children():
+		if child.has_meta(PATTERN_PROJECTILE_META) and not child.is_queued_for_deletion():
+			hazards.append(DANGER_GEOMETRY.new(child.global_position, child.global_position + child.direction * child.speed * maxf(child._remaining_lifetime, 0.0), 5.0))
+	return hazards
 
 
 func _release_pattern_slot() -> void:
@@ -195,7 +261,8 @@ func _ensure_pattern_controller() -> void:
 		return
 	pattern_controller = PATTERN_CONTROLLER_SCRIPT.new()
 	pattern_controller.name = "EncounterPatternController"
-	if _pattern_budget != null:
+	pattern_controller.fair_warning = _fair_warning
+	if _pattern_budget != null or _fair_warning:
 		pattern_controller.start_permission = _reserve_pattern_slot
 	add_child(pattern_controller)
 	pattern_controller.execute_requested.connect(_on_pattern_execute_requested)
@@ -232,9 +299,13 @@ func _on_pattern_execute_requested(pattern: Dictionary) -> void:
 
 
 func _on_pattern_state_changed(state: StringName, pattern: Dictionary) -> void:
-	if state == &"telegraph":
+	if state == &"telegraph" or state == &"windup":
 		_capture_telegraph_position(pattern)
 		_show_telegraph(pattern)
+		if state == &"windup" and is_instance_valid(_telegraph_visual):
+			_telegraph_visual.modulate.a = 0.65
+	elif state == &"locked" and is_instance_valid(_telegraph_visual):
+		_telegraph_visual.modulate.a = 1.0
 	elif state == &"recovery" or state == &"chase":
 		_clear_telegraph()
 		_release_finished_pattern_slot()
@@ -259,6 +330,13 @@ func _resolve_telegraphed_zone_damage() -> int:
 func _capture_telegraph_position(pattern: Dictionary) -> void:
 	var primitive_id := StringName(pattern.get("primitive_id", &""))
 	_telegraph_origin = global_position
+	_projectile_directions.clear()
+	if primitive_id == &"fan_or_arc_projectile" and is_instance_valid(target):
+		var aim := target.global_position - _telegraph_origin
+		if not aim.is_zero_approx():
+			var count := 3 if is_stage_boss() else 1
+			for index in range(count):
+				_projectile_directions.append(aim.normalized().rotated((float(index) - float(count - 1) * 0.5) * 0.22))
 	if primitive_id in [&"telegraphed_zone", &"line_dash", &"mark_or_link", &"summon_or_proxy", &"barrier_or_lane"] \
 		and target != null and is_instance_valid(target):
 		_telegraphed_position = target.global_position
@@ -415,14 +493,7 @@ func _clear_mark_visual() -> void:
 
 
 func _spawn_fan_projectiles() -> void:
-	if target == null or not is_instance_valid(target):
-		return
-	var base_direction := target.global_position - global_position
-	if base_direction.is_zero_approx():
-		return
-	var projectile_count := 3 if is_stage_boss() else 1
-	var spread_radians := 0.22 if projectile_count > 1 else 0.0
-	for index in range(projectile_count):
+	for direction in _projectile_directions:
 		var projectile_node = ENEMY_PATTERN_PROJECTILE_SCENE.instantiate()
 		if not projectile_node is Area2D:
 			if projectile_node != null:
@@ -431,7 +502,7 @@ func _spawn_fan_projectiles() -> void:
 		var projectile := projectile_node as Area2D
 		projectile.top_level = true
 		add_child(projectile)
-		projectile.global_position = global_position
+		projectile.global_position = _telegraph_origin
 		projectile.collision_layer = 8
 		projectile.collision_mask = 1
 		projectile.set_meta(PATTERN_PROJECTILE_META, true)
@@ -440,8 +511,6 @@ func _spawn_fan_projectiles() -> void:
 			visual.texture = TALISMAN_PROJECTILE_TEXTURE
 			visual.region_enabled = false
 			visual.modulate = _school_projectile_color()
-		var spread_offset := (float(index) - float(projectile_count - 1) * 0.5) * spread_radians
-		var direction := base_direction.normalized().rotated(spread_offset)
 		if projectile.has_method("configure"):
 			projectile.call("configure", direction, 360.0 if is_stage_boss() else 320.0, maxi(contact_damage, 1))
 
@@ -475,6 +544,12 @@ func _show_telegraph(pattern: Dictionary) -> void:
 	_telegraph_visual.z_index = 1
 	add_child(_telegraph_visual)
 	_telegraph_visual.configure(_pattern_geometry, _school_projectile_color())
+	if primitive_id == &"fan_or_arc_projectile":
+		var aim := PROJECTILE_AIM.new()
+		aim.name = "ProjectileAim"
+		_telegraph_visual.add_child(aim)
+		aim.configure(_projectile_directions, _school_projectile_color())
+		return
 	var ornament := Sprite2D.new()
 	ornament.name = "SchoolOrnament"
 	ornament.texture = texture

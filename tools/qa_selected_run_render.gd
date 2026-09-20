@@ -142,6 +142,7 @@ func _capture_warning_fixtures() -> void:
 	for fixture in [
 		[&"five_element_tuner", &"telegraphed_zone", "warning-zone"],
 		[&"ghost_general", &"line_dash", "warning-lane"],
+		[&"heavenly_change_taoist", &"fan_or_arc_projectile", "warning-fan"],
 	]:
 		var actor = load("res://scenes/enemies/school_encounter_actor.tscn").instantiate()
 		main.add_child(actor)
@@ -154,6 +155,22 @@ func _capture_warning_fixtures() -> void:
 		await _capture(fixture[2])
 		actor.queue_free()
 		await process_frame
+	var staged = load("res://scenes/enemies/school_encounter_actor.tscn").instantiate()
+	staged.position = main.player.position + Vector2(-190, -90)
+	main.add_child(staged)
+	staged.configure_definition(load("res://scripts/data/encounter_catalog.gd").actor_definition_for(&"five_element_tuner"))
+	staged.configure_target(main.player)
+	staged.enable_fair_warning()
+	paused = false
+	var admitted: bool = staged.pattern_controller.force_start_for_test()
+	paused = true
+	if not admitted: _fail("fair warning fixture denied"); return
+	await _capture("warning-windup")
+	staged.pattern_controller.advance(staged.current_telegraph_duration() - staged.pattern_controller.locked_duration + 0.001)
+	if staged.pattern_state() != &"locked": _fail("locked warning fixture"); return
+	await _capture("warning-locked")
+	staged.queue_free()
+	await process_frame
 	paused = false
 
 func _click(button: Control) -> void:

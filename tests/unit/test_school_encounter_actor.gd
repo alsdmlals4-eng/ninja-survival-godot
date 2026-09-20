@@ -32,6 +32,37 @@ func test_core_actor_configures_without_a_pattern_controller_or_projectile_attac
 	assert_eq(_pattern_projectile_count(actor), 0)
 
 
+func test_fan_projectiles_keep_announced_origin_and_direction_after_target_moves() -> void:
+	var actor = ACTOR_SCENE.instantiate()
+	add_child_autofree(actor)
+	actor.set_physics_process(false)
+	actor.global_position = Vector2(100, 50)
+	assert_true(actor.configure_definition(ENCOUNTER_CATALOG_SCRIPT.actor_definition_for(&"heavenly_change_taoist")))
+	var target := DamageTarget.new()
+	add_child_autofree(target)
+	target.global_position = Vector2(300, 50)
+	actor.configure_target(target)
+	var fan := _pattern_with_primitive(actor.definition.pattern_definitions, &"fan_or_arc_projectile")
+	actor._on_pattern_state_changed(&"telegraph", fan)
+	target.global_position = Vector2(100, 300)
+	actor.global_position = Vector2(140, 70)
+	actor._on_pattern_execute_requested(fan)
+	var bullets: Array = []
+	for child in actor.get_children():
+		if child.has_meta(PATTERN_PROJECTILE_META): bullets.append(child)
+	assert_eq(bullets.size(), 3)
+	if bullets.size() != 3: return
+	assert_eq(bullets[1].global_position, Vector2(100, 50), "Shot origin must remain at the announced position.")
+	assert_almost_eq(bullets[1].direction, Vector2.RIGHT, Vector2.ONE * 0.001, "Moving sideways during warning must not be countered by last-frame retargeting.")
+	assert_almost_eq(bullets[0].direction.angle(), -0.22, 0.001)
+	assert_almost_eq(bullets[2].direction.angle(), 0.22, 0.001)
+	var aim = actor._telegraph_visual.get_node_or_null("ProjectileAim")
+	assert_not_null(aim, "Projectile warning must show the announced directions, not a generic damage circle.")
+	if aim != null:
+		assert_eq(aim.rays.size(), 3)
+		assert_almost_eq(aim.rays[1], Vector2.RIGHT, Vector2.ONE * 0.001)
+
+
 func test_reconfiguring_an_elite_as_a_core_clears_its_special_runtime_effects() -> void:
 	var actor = ACTOR_SCENE.instantiate()
 	add_child_autofree(actor)

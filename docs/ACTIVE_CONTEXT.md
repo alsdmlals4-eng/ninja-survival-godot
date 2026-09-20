@@ -46,8 +46,28 @@ Main1/1,5 assertions; full949/949,119 scripts,15,910 assertions,265.442s PASS.
 Windows pointer/render PASS (diagnostics/selected-run-730017), spawn chevrons viewed.
 Independent static impact review found no new confirmed P0/P1/P2; not Human play.
 
-Next core: R06 WINDUP/LOCKED fairness/escape and projectile aim;
-then natural-speed full run, R07 integrated builds, R08 actual final
+R06 subsequent selected-only WINDUP/LOCKED and walk escape are implemented,
+final full gate PASS958/958,120 scripts,15,956 assertions,269.741s,exit0
+(diagnostics/escape-final-full-20260921.log); Python21/21 PASS13.998s.
+Fan shots now consume the same origin/directions as their
+visible arrow notice (RED→GREEN actor11/11,104 assertions). 16×4 candidate search
+inflates circle/capsule hazards by the real body radius+6, includes other reserved
+warnings/proxies/projectile paths, and checks normal-walk collision mask even
+during dash. Direct query rejects initial overlap before cast_motion (which by
+itself ignores overlap). No future crowd-motion safety proof is implied.
+Fixed time=max(.65,distance/current speed+.15), total>=fixed+.2. Geometry is already
+fixed from WINDUP (early lock, no retarget), becomes fully opaque at LOCKED;
+blocked admission preserves slot/order/first-theme bonus and retries after.1s.
+Disabled player is rejected before a query. Focused escape7/7,31 assertions before
+the additional opacity assertions. Main wiring focused8/8,97 before query upgrade.
+Live regression also found actor registration at origin then teleport displaced
+the idle player:~30px horde/~420px Elite. Normal/selectedElite/Boss/Final now enter
+physics at their destination; horde/Elite/Boss RED→GREEN. Actual Main after final
+normal-mask query wiring1/1 PASS. Source Windows pointer/render743686 PASS and
+WINDUP/LOCKED screenshots inspected. Independent final query-delta review found
+no additional P0/P1/P2. Existing saves/art/engine/global settings untouched.
+
+Next core: R06 natural-speed fairness and complete run, R07 integrated builds, R08 actual final
 art/motion/audio/readability, R09 input/performance/device and R10 delivery gates.
 Current PR147 remains Draft; do not merge unfinished whole packet or claim core0.
 Final changed-state full GUT935/935,117 scripts,15,806 assertions,284.037s,exit0

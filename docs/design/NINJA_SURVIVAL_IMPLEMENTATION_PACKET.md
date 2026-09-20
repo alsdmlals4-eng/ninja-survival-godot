@@ -1298,6 +1298,29 @@ ADAPT: 패턴마다 이미지 크기 수동조절/별도물리영역 복제 대�
 콜백 뒤 추가 생성. 집중6+Main1 및 전체949/949 통과; 캡처730017에서 가장자리
 예고 확인. 정상 속도 군중 압박·예고 혼잡의 사람 검수는 아직 NOT_RUN.
 
+후속 공정성 연결: selected 배우만 WINDUP→LOCKED→execute(ACTIVE)→RECOVERY를
+사용한다. 위험은 WINDUP 시작에 이미 고정해 더 이른 회피를 허용하며 LOCKED 때
+완전 불투명 경계로 강조한다. 중간 재조준은 없다. 부적은 전조의 고정 출발점과
+1/3개 방향 배열을 발사에도 사용한다. 화살표는 방향 안내이며 즉시 피해 장판이 아니다.
+보행 후보는 거리64/128/192/256×16방향, 실제 원형 몸체 반경+6 여유를 사용한다.
+동시 점유자의 전조/미해결 소환/남은 투사체 직선 경로까지 포함한다. 플레이어 대시
+중에도 정상 보행 충돌마스크를 읽고 물리 query로 시작 겹침+전체 이동을 검사한다.
+실패는 공격 대기이며 0.1초 뒤 다시 검사한다. 장애물을 통과하는 대시를 보행 탈출로
+잘못 세던 반례를 실제 Player+적 레이어 벽으로 재현·교정했다.
+
+대안 판단: 고정 전조 시간만 사용(REJECT:느린 빌드/막힌 길 누락), 동적 군중 전체의
+미래 경로 예측(REFERENCE_ONLY:현재 단계의 유지·계산 비용 과다), 한정 후보+실제
+충돌 query(ADAPT:기존 도형/물리 owner 재사용). 공식
+[PhysicsDirectSpaceState2D](https://docs.godotengine.org/en/stable/classes/class_physicsdirectspacestate2d.html)
+의 cast_motion은 시작 겹침을 무시하므로 intersect_shape를 먼저 적용한다. 플레이어의
+실제 위치/대시/마스크를 검사 때문에 임시 변경하지 않는다. 이는 현재 순간에 대한
+보수적 초기 판정이며 이후 군중 이동/속도 버프 만료까지 안전하다는 보장은 아니다.
+R06 자연속도 완주·체감 공정성·군중 성능은 잔여로 유지한다.
+
+물리 반례 교정: add_child 후 먼 곳으로 옮기는 등록 순서가 정지 플레이어를 밀었다.
+기존 WaveSpawner 및 selected Elite/Boss/Final은 부모 로컬 위치를 먼저 정하고
+물리에 등록한다. 일반~30px/Elite~420px 이동 반례와 Boss 생산 경로를 시험했다.
+
 ### R07. 전투 수식·사건·오의 호환성
 
 **수정:** `scripts/combat/basic_weapon_controller.gd`, `projectile.gd`, 기존

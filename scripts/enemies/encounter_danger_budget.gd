@@ -19,6 +19,15 @@ func try_reserve(owner: Node) -> bool:
 func release(owner: Node) -> void:
 	if is_instance_valid(owner): _owners.erase(owner.get_instance_id())
 
+func other_dangers(excluded: Node) -> Array:
+	active_count()
+	var hazards: Array = []
+	for ref in _owners.values():
+		var owner = ref.get_ref()
+		if owner != excluded and owner.has_method("danger_geometries"):
+			hazards.append_array(owner.danger_geometries())
+	return hazards
+
 func active_count() -> int:
 	for id in _owners.keys():
 		var owner = _owners[id].get_ref()

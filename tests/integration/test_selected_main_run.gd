@@ -3,6 +3,27 @@ extends GutTest
 const MAIN = preload("res://scenes/main/main_scene.tscn")
 const ISOLATION = preload("res://tests/helpers/main_storage_isolation.gd")
 
+func test_selected_boss_enters_physics_at_destination_without_moving_idle_player() -> void:
+	var main = MAIN.instantiate()
+	ISOLATION.prepare(main)
+	main.selected_rules_enabled = true
+	add_child_autofree(main)
+	main.selected_run.begin_new_game()
+	main.selected_run.start_ui.option_buttons[0].pressed.emit()
+	main.selected_run.start_ui.option_buttons[0].pressed.emit()
+	main.selected_run.start_ui.confirm_button.pressed.emit()
+	main.school_selection.school_selected.emit(&"bongma")
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().physics_frame
+	var origin: Vector2 = main.player.global_position
+	# Isolate the production spawn consumer, not the progression gate.
+	main._on_school_circuit_boss_spawn_requested()
+	assert_not_null(main.current_stage_boss)
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	assert_almost_eq(main.player.global_position, origin, Vector2.ONE)
+
 func test_selected_main_reserves_opening_horde_before_materializing() -> void:
 	var main = MAIN.instantiate()
 	ISOLATION.prepare(main)
@@ -19,9 +40,13 @@ func test_selected_main_reserves_opening_horde_before_materializing() -> void:
 	main.wave_spawner.set_process(false)
 	assert_eq(main.wave_spawner._active_normal_enemy_count(), 0)
 	assert_eq(main.wave_spawner.pending_spawn_count(), 10)
+	var opening_position: Vector2 = main.player.global_position
 	main.wave_spawner._process(0.81)
 	assert_eq(main.wave_spawner._active_normal_enemy_count(), 10)
 	assert_eq(main.wave_spawner.pending_spawn_count(), 0)
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	assert_almost_eq(main.player.global_position, opening_position, Vector2.ONE, "Offscreen crowd materialization must not displace an idle player.")
 
 func test_selected_main_connects_one_shared_stage_one_pattern_budget() -> void:
 	var main = MAIN.instantiate()
@@ -33,15 +58,23 @@ func test_selected_main_connects_one_shared_stage_one_pattern_budget() -> void:
 	main.selected_run.start_ui.option_buttons[0].pressed.emit()
 	main.selected_run.start_ui.confirm_button.pressed.emit()
 	main.school_selection.school_selected.emit(&"bongma")
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().physics_frame
 	main.school_circuit.sync_elapsed(180.0)
 	var elite = _enemy(main, &"elite")
 	assert_not_null(elite)
 	if elite == null: return
 	var second = main._instantiate_school_encounter_actor(&"five_element_tuner", &"elite")
+	second.position = Vector2(-420, 0)
 	main.add_child(second)
 	second.set_meta(&"school_circuit_role", &"elite")
 	main._wire_enemy(second)
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	assert_almost_eq(main.player.global_position, Vector2.ZERO, Vector2.ONE, "Spawning a distant Elite must not carry the idle player to its position.")
 	assert_true(elite.pattern_controller.force_start_for_test())
+	assert_eq(elite.pattern_state(), &"windup", "Selected Main must connect the walk-escape and locked-warning contract.")
 	assert_false(second.pattern_controller.force_start_for_test(), "Main must connect both actors to one Stage1 budget.")
 
 func test_title_awakening_unlock_then_start_support_and_selected_codex() -> void:

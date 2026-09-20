@@ -144,6 +144,10 @@ func current_dash_charges() -> int:
 	return _dash_charges
 
 
+func walking_collision_mask() -> int:
+	return _dash_saved_mask if _dash_collision_override else collision_mask
+
+
 func request_dash() -> bool:
 	if _dead or _dash_charges <= 0 or _dash_remaining > 0.0 or get_tree().paused:
 		return false

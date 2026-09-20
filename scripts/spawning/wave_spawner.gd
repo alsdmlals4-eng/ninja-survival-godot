@@ -137,8 +137,9 @@ func _spawn_at(position: Vector2) -> bool:
 	var enemy := enemy_node as Node2D
 	enemy.set_meta(NORMAL_ENEMY_META, true)
 	enemy.set_meta(OPENING_CONTACT_STAGGER_META, _next_opening_contact_stagger_seconds())
+	# Enter physics at the destination, never briefly overlapping the player.
+	enemy.position = spawn_parent.to_local(position) if spawn_parent is Node2D else position
 	spawn_parent.add_child(enemy)
-	enemy.global_position = position
 	enemy_spawned.emit(enemy)
 	return true
 

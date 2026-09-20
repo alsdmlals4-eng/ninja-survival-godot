@@ -585,9 +585,9 @@ func _spawn_school_circuit_elite() -> void:
 	var elite: Node = _instantiate_school_encounter_actor(encounter_id, &"elite")
 	if elite == null:
 		return
-	add_child(elite)
 	if elite is Node2D:
-		(elite as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
+		(elite as Node2D).position = to_local(player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance)
+	add_child(elite)
 	elite.set_meta(SCHOOL_CIRCUIT_ROLE_META, SCHOOL_CIRCUIT_ELITE_ROLE)
 	elite.set_meta(SCHOOL_CIRCUIT_ENCOUNTER_ID_META, _school_circuit_encounter_id("elite_id"))
 	_wire_enemy(elite)
@@ -603,10 +603,10 @@ func _on_school_circuit_boss_spawn_requested() -> void:
 	var boss_node: Node = _instantiate_school_encounter_actor(encounter_id, &"boss")
 	if boss_node == null:
 		return
+	if boss_node is Node2D:
+		(boss_node as Node2D).position = to_local(player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance)
 	add_child(boss_node)
 	current_stage_boss = boss_node
-	if boss_node is Node2D:
-		(boss_node as Node2D).global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
 	boss_node.set_meta(SCHOOL_CIRCUIT_ROLE_META, SCHOOL_CIRCUIT_BOSS_ROLE)
 	boss_node.set_meta(SCHOOL_CIRCUIT_ENCOUNTER_ID_META, _school_circuit_encounter_id("boss_id"))
 	_wire_enemy(boss_node)
@@ -1057,6 +1057,7 @@ func _wire_enemy(enemy: Node) -> void:
 		if profile != null:
 			_encounter_danger_budget.set_capacity(profile.max_concurrent_advanced_gimmicks)
 			enemy.configure_pattern_budget(_encounter_danger_budget)
+			enemy.enable_fair_warning()
 
 
 func _instantiate_school_encounter_actor(encounter_id: StringName, expected_role: StringName):
@@ -1348,9 +1349,9 @@ func _start_final_calamity() -> void:
 	_sync_run_modifiers()
 	if ninjutsu_auto_controller != null:
 		ninjutsu_auto_controller.call("configure", player, self, combat_resolver, ninjutsu_loadout)
+	boss.position = to_local(player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance)
 	add_child(boss)
 	current_stage_boss = boss
-	boss.global_position = player.global_position + Vector2.RIGHT * wave_spawner.minimum_spawn_distance
 	boss.set_meta(SCHOOL_CIRCUIT_ROLE_META, &"final_boss")
 	_wire_enemy(boss)
 	boss.theme_changed.connect(_on_final_theme_changed)
