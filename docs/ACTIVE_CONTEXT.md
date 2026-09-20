@@ -31,6 +31,14 @@ run/phase, never replay an old departure. Runtime owner adoption remains unconne
 Next: R02 departure composition, persisted readback and one-time owner adoption,
 then R03 Main/UI. PR147 stays Draft; no whole-R02/main/game-completion claim.
 Diagnostics: C:/Users/user/Tools/NinjaSurvival-Local/diagnostics/r02-trace-{red,green,full}-20260920.log.
+Trace implementation c14412da32d6d9839d4f45a550e7a8026e78a635: exact-head remote CI
+https://github.com/alsdmlals4-eng/ninja-survival-godot/actions/runs/35506832482 PASS
+(navigation/Base manifest, import/main smoke, GUT, Windows internal build).
+Local/remote implementation hashes matched; main remained ebbabdd5. Final record-only
+HEAD needs its own remote check, not substitution of this implementation result.
+Same September v0.3 evidence PDF updated in place,12 pages (original1~9 retained),
+Sep20 entry extended rather than duplicated. Page12 rendered/read back; repeat export
+DAILY_ALREADY_CURRENT. SHA256 4ad3d7d26b6e014698cbe0fbe6cad79033926a91f092b9fb296d8d947cfb91b4.
 
 ## Current implementation continuation — 2026-09-20
 
