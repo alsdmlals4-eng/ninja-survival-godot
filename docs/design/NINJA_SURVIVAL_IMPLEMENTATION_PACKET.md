@@ -871,6 +871,31 @@ begin_rest 재호출은 후보 재추첨·구매 제한 초기화를 일으키�
 
 ### R02. 준비 단계와 두 확정 거래
 
+2026-09-20 구현 증분: `RestCommitCoordinator.configure_selected_profile(store)`로
+기존 R01 store를 연결한다. `prepare_selected_trace(request)`는 저장된 준비 값을
+복제해 검증하는 무변경 미리보기, `commit_selected_trace(request)`는 흔적 선택과
+선택 장비 강화 단계를 한 profile 거래로 저장·재읽기하는 API다. 기존 v1 조정자와
+동시 구성하지 않는다. 현재 Main/UI 호출은 아직 없으며 R02 전체 완료가 아니다.
+
+요청은 `run_id`, `prepare_session_id`, `school_id`, `choice`(absorb/enhance),
+`slot`(강화 대상; 흡수 시 빈 문자열), `expected_revision`,
+`expected_prepare_revision`, `expected_equipment_revision`의 8필드다.
+임의 교체 profile을 입력받지 않는다. 동일 의도와 revision은 동일 거래 영수증을
+생성하여 재시작 후 재요청도 중복 강화하지 않는다. 새로운 revision/다른 대상의
+요청은 현재 저장 상태와 다시 대조한다. 미리보기·실패는 전투 checkpoint를 바꾸지 않는다.
+
+저장은 성공했지만 재읽기가 실패하면 `persisted: true`,
+`reason: committed_reload_required`로 반환한다. 이때 UI가 미저장으로 간주해
+환불/새 거래를 만들면 안 된다. 동일 요청으로 재확인한다. 이미 처리된 요청의 반환
+profile은 이후 상점/다른 거래까지 포함한 **현재** 상태이므로 오래된 화면/런을
+강제로 재실행하지 않는다. 라이브 owner 일괄 채택·signal 공개는 후속 출전/R03 연결이다.
+
+기계 증거: `tests/unit/test_selected_trace_transaction.gd` 12/12,310단언;
+전체 GUT844/844 및 Python21/21 통과. 쓰기 실패, 저장 후 읽기 실패, 중복/재진입,
+stale preview, 세 장비 슬롯, 시작 유파 예외와 타 유파 흡수를 검증했다.
+변경 집중 독립 검토에서 근거 있는 P0/P1/P2는 없었다. R01 전체 검토를 재실행하지
+않았으며 출전 거래·실제 UI·사람 재미·기기·출시는 이 증거에 포함되지 않는다.
+
 **수정:** `scripts/core/rest_commit_coordinator.gd`, `school_circuit_controller.gd`,
 `tradition_access_state.gd`, `equipment_loadout_state.gd`, `run_build_state.gd`,
 `scripts/backpack/rest_backpack_session.gd`, `scripts/ui/rest_flow_ui.gd`,

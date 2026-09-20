@@ -1,5 +1,37 @@
 # ACTIVE_CONTEXT
 
+## R02 continuation — 2026-09-20
+
+Latest user approves continuing the recorded R02→R03 order. Start from PR147
+bddab96d904b4ed0a64ed03319a3c210629779ed; fresh main remains ebbabdd5, Base remains
+23ecad5a. Existing isolated worktree retained; no plugin/global/engine/art/save changes.
+Plan: durable trace intent→access/equipment clones→profile transaction/readback;
+then departure composition and runtime/UI adoption as separate dependent increments.
+R02 trace command uses current store values, not arbitrary UI replacement profiles.
+Run/session/profile/preparation/equipment revisions guard stale requests. Same intent
+derives a stable receipt; a reopened duplicate returns the current profile without
+reapplying upgrades. Failed writes leave last departure/combat untouched. Main/UI
+still unconnected; storage commands do not prove Human/FUN or R02 whole completion.
+Baseline selected-codec5/5 PASS; trace8/8 RED missing API→12/12 GREEN,310 assertions.
+Corrected numeric assertion warnings; full GUT844/844,104 scripts,12,606 assertions,
+114.16s/exit0 and Python21/21 PASS. No SCRIPT ERROR/ERROR/WARNING in full GUT log.
+Change-focused independent review found no evidenced P0/P1/P2 in this trace delta;
+it did not repeat the R01 whole audit or judge departure/Main/Human readiness.
+Existing spec R-TRACE and packet R02 are the plan;
+no duplicate design/ledger. Scope ruling: R01's completed review is reused for store,
+not reset; R02 integration receives change-focused review without repeating R01 audit.
+Primary evidence refreshed: Godot Saving games and Dictionary docs; reuse detached
+primitive snapshots ADAPT, mutate live then compensate / new save manager REJECT.
+Experience hypothesis: confirmed trace choice survives interruption; preview/cancel
+must not spend it or change combat. UI comprehension/Human tests remain for R03.
+Post-write readback failure returns persisted=true / committed_reload_required;
+do not treat it as an unsaved failure or locally refund. Identical retry returns
+the newest saved profile even after a later transaction; UI must adopt its current
+run/phase, never replay an old departure. Runtime owner adoption remains unconnected.
+Next: R02 departure composition, persisted readback and one-time owner adoption,
+then R03 Main/UI. PR147 stays Draft; no whole-R02/main/game-completion claim.
+Diagnostics: C:/Users/user/Tools/NinjaSurvival-Local/diagnostics/r02-trace-{red,green,full}-20260920.log.
+
 ## Current implementation continuation — 2026-09-20
 
 User approved the next bundle: resume PR147 against current main and complete R01
