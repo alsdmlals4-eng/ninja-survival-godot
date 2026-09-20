@@ -39,6 +39,7 @@ func _run() -> void:
 	await _capture("start")
 	await _click(ui.confirm_button)
 	await _click(main.school_selection.get_node("Panel/Margin/Choices/BongmaButton"))
+	await _capture("spawn-warning")
 	await create_timer(2.0).timeout
 	if not main._combat_enabled: _fail("battlefield input"); return
 	await _capture("battle")

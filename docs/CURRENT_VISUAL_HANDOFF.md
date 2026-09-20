@@ -2,6 +2,11 @@
 
 ## 2026-09-21 runtime visibility and truthful danger boundaries
 
+Selected spawn reservation uses a small native beige edge chevron, not a damaging
+floor decal. It points to the reserved offscreen location for at least0.8s and is
+cancelled/restarted with that reservation. Actual source render730017 inspected;
+no new raster asset or final-art approval implied. Human crowd readability NOT_RUN.
+
 SchoolEncounterActor preserves the2 existing dedicated actor textures. The other18
 catalog paths have no file; they now render previously approved runtime art rather
 than invisible damaging units. Boss fallback: visual-core/cheonsul_stage_boss_v1;

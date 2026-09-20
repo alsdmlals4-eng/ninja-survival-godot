@@ -105,6 +105,8 @@ func _ready() -> void:
 	_connect_mvp3_signals()
 
 	wave_spawner.configure(self, player)
+	if selected_rules_enabled:
+		wave_spawner.enable_fair_spawning()
 	basic_weapons.configure(combat_resolver)
 	(school_host.get_node("Guiin") as GuiinRuntime).configure_weapon_controller(basic_weapons)
 	school_host.configure_ninjutsu_loadout(ninjutsu_loadout)

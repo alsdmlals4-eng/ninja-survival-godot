@@ -35,10 +35,19 @@ children remain and freeze during pause. Fired enemy bullets no longer inherit
 caster movement. A death-timing counterexample caused19 damage after caster death
 before deferred disposal; immediate child retirement before slot return fixes it.
 Focused6/6,41 assertions and actual Main wiring1/1,3 assertions PASS; static
-independent impact review no additional P0/P1/P2. Full changed-state gate pending.
+independent impact review no additional P0/P1/P2. Exact18122f8 remote checks PASS,
+GUT942/942,15,850 assertions (run35524550021).
 
-Next core: R06 WINDUP/LOCKED fairness/escape and spawn
-reservation; then natural-speed full run, R07 integrated builds, R08 actual final
+R06 fair spawning now reserves offscreen/min420 positions for0.8s in the existing
+WaveSpawner. Floor counts live+pending, unsafe reservations restart elsewhere,
+phase stop cancels reservations without deleting living mobs, and no cap is added.
+Cancellation from enemy_spawned is epoch-guarded. Focused6/6,52 assertions; actual
+Main1/1,5 assertions; full949/949,119 scripts,15,910 assertions,265.442s PASS.
+Windows pointer/render PASS (diagnostics/selected-run-730017), spawn chevrons viewed.
+Independent static impact review found no new confirmed P0/P1/P2; not Human play.
+
+Next core: R06 WINDUP/LOCKED fairness/escape and projectile aim;
+then natural-speed full run, R07 integrated builds, R08 actual final
 art/motion/audio/readability, R09 input/performance/device and R10 delivery gates.
 Current PR147 remains Draft; do not merge unfinished whole packet or claim core0.
 Final changed-state full GUT935/935,117 scripts,15,806 assertions,284.037s,exit0

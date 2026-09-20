@@ -3,6 +3,26 @@ extends GutTest
 const MAIN = preload("res://scenes/main/main_scene.tscn")
 const ISOLATION = preload("res://tests/helpers/main_storage_isolation.gd")
 
+func test_selected_main_reserves_opening_horde_before_materializing() -> void:
+	var main = MAIN.instantiate()
+	ISOLATION.prepare(main)
+	main.selected_rules_enabled = true
+	add_child_autofree(main)
+	main.selected_run.begin_new_game()
+	main.selected_run.start_ui.option_buttons[0].pressed.emit()
+	main.selected_run.start_ui.option_buttons[0].pressed.emit()
+	main.selected_run.start_ui.confirm_button.pressed.emit()
+	main.school_selection.school_selected.emit(&"bongma")
+	await get_tree().process_frame
+	await get_tree().process_frame
+	assert_true(main._combat_enabled)
+	main.wave_spawner.set_process(false)
+	assert_eq(main.wave_spawner._active_normal_enemy_count(), 0)
+	assert_eq(main.wave_spawner.pending_spawn_count(), 10)
+	main.wave_spawner._process(0.81)
+	assert_eq(main.wave_spawner._active_normal_enemy_count(), 10)
+	assert_eq(main.wave_spawner.pending_spawn_count(), 0)
+
 func test_selected_main_connects_one_shared_stage_one_pattern_budget() -> void:
 	var main = MAIN.instantiate()
 	ISOLATION.prepare(main)

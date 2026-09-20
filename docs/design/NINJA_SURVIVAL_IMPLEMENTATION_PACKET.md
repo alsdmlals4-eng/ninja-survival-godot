@@ -1288,6 +1288,16 @@ ADAPT: 패턴마다 이미지 크기 수동조절/별도물리영역 복제 대�
 투사체는 배우 자식 수명은 유지하되 월드 위치는 독립한다. 독립 unit6 + Main연결1
 반례 검증이며, 자동 생성된 동시 위협에 안전한 보행 경로가 있다는 증명은 아니다.
 
+후속 스폰 예약: 기존 WaveSpawner의 selected 경로만 0.8초 예약+화면 가장자리
+방향 표시를 사용한다. 살아있는 일반+예약으로 floor10을 계산하고, 플레이어 접근
+시 다른 화면 밖/최소420 지점에서 예고부터 다시 시작한다. 확대/화면비에 따라
+기존560 상단 거리보다 더 멀리 배치할 수 있다. 강적 전환은 예약만 취소하며
+기존 군중과 무제한 증원을 유지한다. CanvasItem의 viewport/canvas 변환을 ADAPT
+(https://docs.godotengine.org/en/stable/classes/class_canvasitem.html).
+경험 반증: 화면 안 즉시 생성, 같은 부족분 중복 예약, pause 중 생성, phase 취소
+콜백 뒤 추가 생성. 집중6+Main1 및 전체949/949 통과; 캡처730017에서 가장자리
+예고 확인. 정상 속도 군중 압박·예고 혼잡의 사람 검수는 아직 NOT_RUN.
+
 ### R07. 전투 수식·사건·오의 호환성
 
 **수정:** `scripts/combat/basic_weapon_controller.gd`, `projectile.gd`, 기존
