@@ -2,6 +2,8 @@ extends EnemyChaser
 class_name SchoolEncounterActor
 
 const PATTERN_CONTROLLER_SCRIPT = preload("res://scripts/enemies/encounter_pattern_controller.gd")
+const DANGER_GEOMETRY = preload("res://scripts/enemies/encounter_danger_geometry.gd")
+const WARNING_VISUAL = preload("res://scripts/enemies/encounter_warning_visual.gd")
 const ENEMY_PATTERN_PROJECTILE_SCENE = preload("res://scenes/projectiles/shuriken_projectile.tscn")
 const TALISMAN_PROJECTILE_TEXTURE = preload("res://assets/runtime/visual-core/talisman_projectile_v1.png")
 const FALLBACK_TELEGRAPH_TEXTURE = preload("res://assets/runtime/visual-core/cheonsul_flame_field_v1.png")
@@ -12,6 +14,13 @@ const DEFAULT_ACTOR_VISUAL_SCALE := 0.05
 const HUNDRED_DEMON_ARRAY_MASTER_VISUAL_SCALE := 0.09
 const BONGMA_FAMILIAR_PROXY_VISUAL_SCALE := 0.03
 const DEFAULT_PROXY_VISUAL_SCALE := 0.085
+const FALLBACK_CORE_ART := [
+	"res://assets/runtime/visual-core/flame_ninja_v1.png",
+	"res://assets/runtime/visual-core/cursed_lantern_v1.png",
+	"res://assets/runtime/visual-core/shadow_beast_v1.png",
+]
+const FALLBACK_ELITE_ART := "res://assets/runtime/encounters/actors/mobile_array_caster.png"
+const FALLBACK_BOSS_ART := "res://assets/runtime/visual-core/cheonsul_stage_boss_v1.png"
 const TELEGRAPHED_ZONE_RADIUS := 92.0
 const LINE_DASH_HALF_WIDTH := 30.0
 const PULSE_RADIUS := 118.0
@@ -21,7 +30,8 @@ const PROXY_LIFETIME := 0.85
 const MARK_DURATION := 3.5
 var definition = null
 var pattern_controller = null
-var _telegraph_visual: Sprite2D
+var _telegraph_visual: Node2D
+var _pattern_geometry
 var _telegraphed_position := Vector2.ZERO
 var _telegraph_origin := Vector2.ZERO
 var _marked_target: Node2D
@@ -186,7 +196,7 @@ func _resolve_pattern_damage(target_node: Node, multiplier: float = 1.0) -> int:
 func _resolve_telegraphed_zone_damage() -> int:
 	if target == null or not is_instance_valid(target):
 		return 0
-	if target.global_position.distance_squared_to(_telegraphed_position) > TELEGRAPHED_ZONE_RADIUS * TELEGRAPHED_ZONE_RADIUS:
+	if _pattern_geometry == null or not _pattern_geometry.contains(target.global_position):
 		return 0
 	return _resolve_pattern_damage(target)
 
@@ -197,18 +207,33 @@ func _capture_telegraph_position(pattern: Dictionary) -> void:
 	if primitive_id in [&"telegraphed_zone", &"line_dash", &"mark_or_link", &"summon_or_proxy", &"barrier_or_lane"] \
 		and target != null and is_instance_valid(target):
 		_telegraphed_position = target.global_position
+		_lock_damage_geometry(primitive_id)
 		return
 	_telegraphed_position = global_position
+	_lock_damage_geometry(primitive_id)
+
+
+func _lock_damage_geometry(primitive_id: StringName) -> void:
+	_pattern_geometry = null
+	match primitive_id:
+		&"telegraphed_zone":
+			_pattern_geometry = DANGER_GEOMETRY.new(_telegraphed_position, _telegraphed_position, TELEGRAPHED_ZONE_RADIUS)
+		&"line_dash", &"barrier_or_lane":
+			_pattern_geometry = DANGER_GEOMETRY.new(_telegraph_origin, _telegraphed_position, LINE_DASH_HALF_WIDTH)
+		&"pulse_or_ring":
+			_pattern_geometry = DANGER_GEOMETRY.new(_telegraph_origin, _telegraph_origin, PULSE_RADIUS)
+		&"summon_or_proxy":
+			_pattern_geometry = DANGER_GEOMETRY.new(_telegraphed_position, _telegraphed_position, PROXY_RADIUS)
+		&"chase_contact":
+			_pattern_geometry = DANGER_GEOMETRY.new(_telegraph_origin, _telegraph_origin, contact_range)
 
 
 func _resolve_line_dash() -> int:
 	if target == null or not is_instance_valid(target):
 		return 0
-	var dash_start := _telegraph_origin
 	var dash_end := _telegraphed_position
 	global_position = dash_end
-	var closest := Geometry2D.get_closest_point_to_segment(target.global_position, dash_start, dash_end)
-	if target.global_position.distance_squared_to(closest) > LINE_DASH_HALF_WIDTH * LINE_DASH_HALF_WIDTH:
+	if _pattern_geometry == null or not _pattern_geometry.contains(target.global_position):
 		return 0
 	return _resolve_pattern_damage(target, _marked_damage_multiplier(target))
 
@@ -216,8 +241,7 @@ func _resolve_line_dash() -> int:
 func _resolve_locked_lane() -> int:
 	if target == null or not is_instance_valid(target):
 		return 0
-	var closest := Geometry2D.get_closest_point_to_segment(target.global_position, _telegraph_origin, _telegraphed_position)
-	if target.global_position.distance_squared_to(closest) > LINE_DASH_HALF_WIDTH * LINE_DASH_HALF_WIDTH:
+	if _pattern_geometry == null or not _pattern_geometry.contains(target.global_position):
 		return 0
 	return _resolve_pattern_damage(target, _marked_damage_multiplier(target))
 
@@ -225,7 +249,7 @@ func _resolve_locked_lane() -> int:
 func _resolve_pulse() -> int:
 	if target == null or not is_instance_valid(target):
 		return 0
-	if target.global_position.distance_squared_to(global_position) > PULSE_RADIUS * PULSE_RADIUS:
+	if _pattern_geometry == null or not _pattern_geometry.contains(target.global_position):
 		return 0
 	return _resolve_pattern_damage(target, _marked_damage_multiplier(target))
 
@@ -233,7 +257,7 @@ func _resolve_pulse() -> int:
 func _resolve_chase_contact() -> int:
 	if target == null or not is_instance_valid(target):
 		return 0
-	if target.global_position.distance_squared_to(global_position) > contact_range * contact_range:
+	if _pattern_geometry == null or not _pattern_geometry.contains(target.global_position):
 		return 0
 	return _resolve_pattern_damage(target, _marked_damage_multiplier(target))
 
@@ -274,9 +298,15 @@ func _spawn_proxy_hazard() -> void:
 	visual.z_index = 1
 	proxy.add_child(visual)
 	add_child(proxy)
+	var boundary := WARNING_VISUAL.new()
+	boundary.name = "DangerBoundary"
+	proxy.add_child(boundary)
+	boundary.configure(_pattern_geometry, _school_projectile_color())
 	_proxy_hazards.append({
 		"node": proxy,
 		"position": _telegraphed_position,
+		"geometry": _pattern_geometry,
+		"boundary": boundary,
 		"arm_remaining": PROXY_ARM_DURATION,
 		"remaining": PROXY_LIFETIME,
 		"resolved": false,
@@ -297,9 +327,13 @@ func _advance_runtime_effects(delta: float) -> void:
 		hazard["arm_remaining"] = maxf(float(hazard.get("arm_remaining", 0.0)) - delta, 0.0)
 		hazard["remaining"] = maxf(float(hazard.get("remaining", 0.0)) - delta, 0.0)
 		if not bool(hazard.get("resolved", false)) and float(hazard["arm_remaining"]) <= 0.0:
-			if target != null and is_instance_valid(target) and target.global_position.distance_squared_to(Vector2(hazard["position"])) <= PROXY_RADIUS * PROXY_RADIUS:
+			var geometry = hazard.get("geometry")
+			if target != null and is_instance_valid(target) and geometry != null and geometry.contains(target.global_position):
 				_resolve_pattern_damage(target, _marked_damage_multiplier(target))
 			hazard["resolved"] = true
+			var boundary = hazard.get("boundary")
+			if is_instance_valid(boundary):
+				boundary.queue_free()
 		if float(hazard["remaining"]) <= 0.0 or not is_instance_valid(proxy):
 			if is_instance_valid(proxy) and not proxy.is_queued_for_deletion():
 				proxy.queue_free()
@@ -378,15 +412,19 @@ func _show_telegraph(pattern: Dictionary) -> void:
 	var primitive_id := StringName(pattern.get("primitive_id", &""))
 	var asset_path := "res://assets/runtime/encounters/telegraphs/%s_%s.png" % [definition.school_id, primitive_id]
 	var texture = load(asset_path) as Texture2D if ResourceLoader.exists(asset_path) else FALLBACK_TELEGRAPH_TEXTURE
-	_telegraph_visual = Sprite2D.new()
+	_telegraph_visual = WARNING_VISUAL.new()
 	_telegraph_visual.name = "PatternTelegraph"
 	_telegraph_visual.top_level = true
-	_telegraph_visual.texture = texture
 	_telegraph_visual.global_position = _telegraphed_position
-	_telegraph_visual.scale = Vector2.ONE * 0.13
-	_telegraph_visual.modulate = Color(_school_projectile_color(), 0.58)
 	_telegraph_visual.z_index = 1
 	add_child(_telegraph_visual)
+	_telegraph_visual.configure(_pattern_geometry, _school_projectile_color())
+	var ornament := Sprite2D.new()
+	ornament.name = "SchoolOrnament"
+	ornament.texture = texture
+	ornament.scale = Vector2.ONE * 0.13
+	ornament.modulate = Color(_school_projectile_color(), 0.32 if _pattern_geometry != null else 0.58)
+	_telegraph_visual.add_child(ornament)
 
 
 func _clear_telegraph() -> void:
@@ -396,13 +434,23 @@ func _clear_telegraph() -> void:
 
 
 func _apply_visual_asset() -> void:
-	if definition == null or not ResourceLoader.exists(definition.visual_asset_path):
+	if definition == null:
 		return
 	var visual := get_node_or_null("Visual") as Sprite2D
-	var texture = load(definition.visual_asset_path) as Texture2D
+	var path: String = definition.visual_asset_path
+	var uses_fallback := not ResourceLoader.exists(path)
+	if uses_fallback:
+		match definition.role:
+			&"boss": path = FALLBACK_BOSS_ART
+			&"elite": path = FALLBACK_ELITE_ART
+			_:
+				# Stable role variation; no random reroll or final-art approval implied.
+				path = FALLBACK_CORE_ART[posmod(String(definition.actor_id).hash(), FALLBACK_CORE_ART.size())]
+	var texture = load(path) as Texture2D
 	if visual != null and texture != null:
 		visual.texture = texture
 		visual.scale = Vector2.ONE * _actor_visual_scale()
+		visual.set_meta(&"provisional_existing_art", uses_fallback)
 
 
 func _actor_visual_scale() -> float:

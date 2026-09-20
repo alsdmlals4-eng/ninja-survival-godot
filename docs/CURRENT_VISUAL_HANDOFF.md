@@ -1,5 +1,26 @@
 # CURRENT VISUAL HANDOFF — Ninja Survival / 닌자의 신
 
+## 2026-09-21 runtime visibility and truthful danger boundaries
+
+SchoolEncounterActor preserves the2 existing dedicated actor textures. The other18
+catalog paths have no file; they now render previously approved runtime art rather
+than invisible damaging units. Boss fallback: visual-core/cheonsul_stage_boss_v1;
+Elite fallback: encounters/actors/mobile_array_caster; Core deterministic fallback
+pool: flame_ninja_v1/cursed_lantern_v1/shadow_beast_v1. Paths are under assets/runtime.
+`Visual.provisional_existing_art` identifies fallback use. This is temporary reuse,
+not18 newly designed/approved character assets; school/role-specific final art and
+animation remain R08. Do not replace the dedicated source or declare fallback LOCK.
+
+Circle/capsule PatternTelegraph and delayed proxy DangerBoundary render the same
+world geometry used by their damage owner. Existing school PNGs remain low-alpha
+ornaments. This native diagnostic/gameplay boundary is not generated bitmap art.
+Source runtime capture: diagnostics/selected-run-774574 (external project diagnostics
+root C:/Users/user/Tools/NinjaSurvival-Local); explicit paused zone/lane fixtures,
+not naturally played Boss fairness. Actor10/10 focused tests include geometry and
+delayed boundary lifetime. Player/BongmaBoss imported alpha matches source exactly;
+isolated player render is intact. Small-scale dark silhouette/background contrast
+is still a readability risk; no image pixels/import settings were changed.
+
 ## 2026-09-14 future cutout asset processing
 
 User requires chroma-key generation followed by background removal for future isolated

@@ -42,6 +42,7 @@ func _run() -> void:
 	await create_timer(2.0).timeout
 	if not main._combat_enabled: _fail("battlefield input"); return
 	await _capture("battle")
+	await _capture_warning_fixtures()
 	await _click(main.hud.settings_button)
 	if not paused: _fail("pause"); return
 	await _click(main.hud.resume_button.get_parent().get_node("PreferencesButton"))
@@ -124,6 +125,35 @@ func _run() -> void:
 	main.queue_free()
 	await process_frame
 	quit(0)
+
+func _capture_warning_fixtures() -> void:
+	# Explicit render fixture, not proof of a naturally played encounter.
+	paused = true
+	var player_visual: Sprite2D = main.player.get_node("Visual")
+	print("PLAYER_RENDER_STATE texture=", player_visual.texture.resource_path, " filter=", player_visual.texture_filter, " modulate=", player_visual.modulate, " self=", player_visual.self_modulate, " material=", player_visual.material, " viewportfilter=", root.canvas_item_default_texture_filter)
+	main.get_node("BattlefieldBackdrop").hide()
+	await _capture("visibility-no-floor")
+	main.get_node("BattlefieldBackdrop").show()
+	var old_filter := player_visual.texture_filter
+	player_visual.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	await _capture("visibility-linear")
+	player_visual.texture_filter = old_filter
+	for fixture in [
+		[&"five_element_tuner", &"telegraphed_zone", "warning-zone"],
+		[&"ghost_general", &"line_dash", "warning-lane"],
+	]:
+		var actor = load("res://scenes/enemies/school_encounter_actor.tscn").instantiate()
+		main.add_child(actor)
+		actor.global_position = main.player.global_position + Vector2(-190, -90)
+		actor.configure_definition(load("res://scripts/data/encounter_catalog.gd").actor_definition_for(fixture[0]))
+		actor.configure_target(main.player)
+		for pattern in actor.definition.pattern_definitions:
+			if pattern.primitive_id == fixture[1]:
+				actor._on_pattern_state_changed(&"telegraph", pattern)
+		await _capture(fixture[2])
+		actor.queue_free()
+		await process_frame
+	paused = false
 
 func _click(button: Control) -> void:
 	if button == null or (button is BaseButton and button.disabled): _fail("unavailable control"); return

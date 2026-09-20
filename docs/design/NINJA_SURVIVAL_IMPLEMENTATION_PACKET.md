@@ -1264,6 +1264,23 @@ Stage1/2 슬롯1,3/4/최종2; 전조~최후 hazard/소환체 종료까지 점유
 **완료:** 24전장 방문 순열과4시작 유파의96경로 기계 행렬+대표 실제 완주.
 HP/시간을 조작한 fixture는 정상속도 플레이와 구분하며 재미 검증 대신 쓰지 않는다.
 
+R06 2026-09-21 구현 차이 기록: 원형/캡슐의 `EncounterDangerGeometry`를 실제
+즉시 피해와 `EncounterWarningVisual`이 공유하며, 소환 지연 피해는 같은 geometry와
+자기 경계 표시를 판정까지 보유한다. 기존 PNG는 문양 장식으로 유지한다. 공식
+[Godot custom drawing](https://docs.godotengine.org/en/stable/tutorials/2d/custom_drawing_in_2d.html)
+및 [Geometry2D](https://docs.godotengine.org/en/stable/classes/class_geometry2d.html)를
+ADAPT: 패턴마다 이미지 크기 수동조절/별도물리영역 복제 대신 기존 수학 판정 도형을
+직접 그린다. 역효과는 경계의 기하학적 느낌이며 최종 아트 가독성은 별도 검수한다.
+경험 가설: 표시 밖으로 이동하면 원형/돌진 피해를 피할 수 있다. 반증: 경계 밖
+피격, 이동 후 뒤늦은 조준 추적, 소환 피해 전 표시 소실. 좌표/경계/지연수명 반례
+시험과 실제 렌더를 연결했다. 투사체/표식, WINDUP/LOCKED, 공동 슬롯/안전경로는
+이 작은 교정으로 완료 처리하지 않는다. 96경로 기계행렬은 모두 통과했지만 자연
+플레이 및 패턴 전체 공정성 검증이 아니다.
+
+18개의 전용 적 이미지 누락은 기존 승인 이미지 fallback으로 투명 적을 방지한다.
+데이터 ID/전용경로/현재2개 전용원본은 유지한다. `provisional_existing_art`로
+구분하고 최종 역할별 외형 제작·승인 완료로 세지 않는다.
+
 ### R07. 전투 수식·사건·오의 호환성
 
 **수정:** `scripts/combat/basic_weapon_controller.gd`, `projectile.gd`, 기존

@@ -1,5 +1,41 @@
 # ACTIVE_CONTEXT
 
+## Latest continuation — 2026-09-21
+
+R03 accelerated actual-Main route matrix completed: 4 origins × 24 visit orders =
+96 unique PASS, four shards24 each, all exit0. Logs: diagnostics/selected-matrix-
+shard0..3-20260921.log under C:/Users/user/Tools/NinjaSurvival-Local.
+This uses real actors/store/settlement but accelerated time/damage and UI signals;
+not96 natural or pointer-played runs. Started before the subsequent warning-shape
+change; it verifies unchanged route/settlement consumers, not new geometry.
+8267121 full GUT932/932,117 scripts,15,747 assertions,355.624s,exit0;
+exact-head remote GUT/Windows PASS (run35522701312).
+
+R06 bounded correction: circle/capsule warnings and instantaneous damage consume
+one locked world-space geometry; existing textures remain ornaments, not radius
+authority. Summon keeps its own boundary until the delayed hit resolves. No new
+raster, damage/timing/attack-order change. Focused RED→GREEN10/10,95 assertions.
+Source runtime/render covers zone/lane plus real title/camp/settings/recovery input;
+fixtures deliberately place/pause actors, not naturally played encounters.
+Independent review found the proxy boundary expired before its .35s delayed hit;
+reproduced and corrected without changing damage delay.
+
+Actual render revealed18/20 actor-specific image paths absent. All20 now display
+existing approved art when their own file is absent;2 present dedicated images
+are preserved. Fallback metadata explicitly marks provisional existing art.
+This is a visibility correction, NOT completion/approval of18 final enemy designs.
+Source/import alpha readback for player/Bongma Boss matches exactly; isolated
+render shows the approved player is intact. Small dark silhouettes on the busy
+floor remain a visual readability issue, not a proven corrupt-import defect.
+
+Next core: R06 shared danger-slot lifetime, WINDUP/LOCKED fairness/escape and spawn
+reservation; then natural-speed full run, R07 integrated builds, R08 actual final
+art/motion/audio/readability, R09 input/performance/device and R10 delivery gates.
+Current PR147 remains Draft; do not merge unfinished whole packet or claim core0.
+Final changed-state full GUT935/935,117 scripts,15,806 assertions,284.037s,exit0
+(diagnostics/actor-warning-final-full-20260921.log). Independent focused re-review
+found no additional P0/P1/P2 after the proxy fix. Build/journal publication follows.
+
 ## Selected Main adoption and recovery — 2026-09-20–21
 
 Current approved packet R02/R03 continuation now connects default title new game

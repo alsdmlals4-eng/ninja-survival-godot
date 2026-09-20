@@ -168,6 +168,71 @@ func _pattern_projectile_count(actor: Node) -> int:
 	return count
 
 
+func test_warning_geometry_and_damage_agree_at_zone_and_lane_boundaries() -> void:
+	for fixture in [
+		{ "actor": &"five_element_tuner", "primitive": &"telegraphed_zone", "inside": Vector2(502, 135), "outside": Vector2(502.1, 135) },
+		{ "actor": &"ghost_general", "primitive": &"line_dash", "inside": Vector2(310, 165), "outside": Vector2(310, 165.1) },
+	]:
+		var actor = ACTOR_SCENE.instantiate()
+		add_child_autofree(actor)
+		actor.global_position = Vector2(210, 135)
+		assert_true(actor.configure_definition(ENCOUNTER_CATALOG_SCRIPT.actor_definition_for(fixture.actor)))
+		var target := DamageTarget.new()
+		add_child_autofree(target)
+		target.global_position = Vector2(410, 135)
+		actor.configure_target(target)
+		var pattern := _pattern_with_primitive(actor.definition.pattern_definitions, fixture.primitive)
+		actor._on_pattern_state_changed(&"telegraph", pattern)
+		var geometry = actor._telegraph_visual.get("geometry")
+		assert_not_null(geometry, "Warning must consume the locked damage geometry, not an unrelated image scale.")
+		if geometry == null:
+			continue
+		assert_true(geometry.contains(fixture.inside))
+		assert_false(geometry.contains(fixture.outside))
+		target.global_position = fixture.outside
+		actor._on_pattern_execute_requested(pattern)
+		assert_eq(target.received_damage, 0)
+		target.global_position = fixture.inside
+		actor._on_pattern_execute_requested(pattern)
+		assert_gt(target.received_damage, 0)
+
+
+func test_every_spawnable_actor_has_a_visible_runtime_texture_and_preserves_locked_art() -> void:
+	for definition in ENCOUNTER_CATALOG_SCRIPT.build_actor_definitions().values():
+		var actor = ACTOR_SCENE.instantiate()
+		add_child_autofree(actor)
+		assert_true(actor.configure_definition(definition))
+		var visual: Sprite2D = actor.get_node("Visual")
+		assert_not_null(visual.texture, "%s must not be an invisible damaging enemy when final art is absent." % definition.actor_id)
+		if ResourceLoader.exists(definition.visual_asset_path) and visual.texture != null:
+			assert_eq(visual.texture.resource_path, definition.visual_asset_path)
+
+
+func test_proxy_keeps_its_boundary_until_delayed_damage_even_after_caster_recovers() -> void:
+	var actor = ACTOR_SCENE.instantiate()
+	add_child_autofree(actor)
+	actor.configure_definition(ENCOUNTER_CATALOG_SCRIPT.actor_definition_for(&"shadow_chief"))
+	var target := DamageTarget.new()
+	add_child_autofree(target)
+	target.position = Vector2(120, 0)
+	actor.configure_target(target)
+	var pattern := _pattern_with_primitive(actor.definition.pattern_definitions, &"summon_or_proxy")
+	actor._on_pattern_state_changed(&"telegraph", pattern)
+	actor._on_pattern_execute_requested(pattern)
+	actor._on_pattern_state_changed(&"recovery", pattern)
+	var proxy := actor.get_node("EncounterProxy")
+	var warning := proxy.get_node_or_null("DangerBoundary")
+	assert_not_null(warning, "Proxy must retain its own boundary after the actor's execute phase ends.")
+	if warning == null:
+		return
+	actor._advance_runtime_effects(0.34)
+	assert_false(warning.is_queued_for_deletion())
+	assert_eq(target.received_damage, 0)
+	actor._advance_runtime_effects(0.02)
+	assert_gt(target.received_damage, 0)
+	assert_true(warning.is_queued_for_deletion(), "Single-hit danger cue ends when its actual damage is resolved.")
+
+
 func _pattern_with_primitive(patterns: Array, primitive_id: StringName) -> Dictionary:
 	for pattern in patterns:
 		if StringName(pattern.get("primitive_id", &"")) == primitive_id:
