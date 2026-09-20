@@ -84,7 +84,31 @@ frame-far-step,stationary,timed,circular-contact}-20260921.log. Timing instrumen
 found208,000 enemy calls/3848.627ms in the dense sample; excludes GPU timing.
 Independent static impact review no new confirmed P0/P1/P2; not runtime equivalence.
 
-Next core: R06 natural-speed fairness and complete run, R07 integrated builds, R08 actual final
+R07 next actual-consumer corrections: rank/manual were multiplying rather than
+adding, projectiles rounded at rank then again at launch, and production had zero
+calls to apply_committed_backpack. Exact failed examples: katana rank1/manual18%
+14 instead of13; kunai rank1/manual22%9 instead of8; Main continue thunder manual
+did10/no side hit instead of12/6. BasicWeaponController now holds base damage plus
+rank separately, and selected adoption applies only committed cp.backpack.
+No new save schema/tag supplier; absent melee/projectile tag suppliers remain0,
+not school_damage substitution. Guiin's separate20*(1+rank)*ultimate rule preserved.
+Retry also resumed a failed battle's projectile and combo clock; checkpoint-only
+reset retires own-world/resolver attacks, clocks/boons/effects. Pause does not reset.
+Focused weapon21/21,874 assertions; actual Main2/2,15 assertions. Initial test setup
+mistakes (same-equipped item false / isolation's legacy default) were corrected;
+the actual damage/consumer/retry REDs were separately observed. Wrong-origin forced
+sword fixture was not treated as a product bug. Actual Guiin cancellation preserved.
+Independent static impact review confirms no new P0/P1/P2. Changed-state full
+GUT967/967,122 scripts,16,605 assertions,274.767s,exit0
+(diagnostics/weapon-final-full-20260921.log).
+Source Windows pointer/render729423 PASS, battle/phase/camp/menu/recovery evidence;
+still accelerated gates, not naturally completed combat. Python21/21 PASS15.758s.
+R09 repeated circular diagnostic1000 p50=16.926/p95=45.732ms differs materially
+from first sample. Both show spikes; do not advertise a universal improvement ratio.
+QA now pins and logs starter seed921 as well as placement seed, and offers explicit
+legacy-contact comparison. Earlier samples did not pin the starter book draft.
+
+Next core: R06 natural-speed fairness and complete run, remaining R07 integrated builds, R08 actual final
 art/motion/audio/readability, R09 input/performance/device and R10 delivery gates.
 Current PR147 remains Draft; do not merge unfinished whole packet or claim core0.
 Final changed-state full GUT935/935,117 scripts,15,806 assertions,284.037s,exit0

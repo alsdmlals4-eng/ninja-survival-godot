@@ -18,6 +18,76 @@ class DamageTarget:
 		return health <= 0
 
 
+func test_all_eight_weapons_add_rank_and_manual_before_one_rounding() -> void:
+	var cases := [
+		[&"katana", "melee", [10,12,13,15,16], [12,13,15,16,18]],
+		[&"dual_tanto", "melee", [6,7,8,9,10], [7,8,9,10,11]],
+		[&"naginata", "melee", [17,20,22,25,27], [20,23,25,28,30]],
+		[&"kusarigama", "melee", [14,16,18,20,22], [17,19,21,23,25]],
+		[&"shuriken", "projectile", [9,10,12,13,14], [10,11,13,14,15]],
+		[&"kunai", "projectile", [6,7,8,9,10], [7,8,8,9,10]],
+		[&"shortbow", "projectile", [16,18,21,23,26], [18,20,22,25,27]],
+		[&"powder_bomb", "projectile", [18,21,23,26,29], [20,23,25,28,31]],
+	]
+	var f := _new_fixture()
+	f.controller.set_process(false)
+	f.controller.shuriken_projectile_scene = SHURIKEN_SCENE
+	var target := DamageTarget.new()
+	f.world.add_child(target)
+	target.position = Vector2(20, 0)
+	target.add_to_group("enemies")
+	var modifiers := RunModifierSet.new()
+	modifiers.school_damage_pct = 99.0
+	f.resolver.set_modifiers(modifiers)
+	for row in cases:
+		for rank in range(5):
+			for manual in range(2):
+				var gear = load("res://scripts/core/equipment_loadout_state.gd").new()
+				if row[0] not in [&"katana", &"shuriken"]:
+					assert_true(gear.acquire(row[0]))
+					assert_true(gear.equip(StringName(row[1]), row[0]))
+				for level in range(rank): assert_true(gear.upgrade_equipped(StringName(row[1])))
+				assert_true(f.controller.apply_equipment_snapshot(gear.get_snapshot()))
+				var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+				if manual == 1: assert_gt(bag.add_item(&"melee_manual" if row[1] == "melee" else &"projectile_manual", Vector2i(1,1)), 0)
+				assert_true(f.controller.apply_committed_backpack(bag))
+				target.health = 100
+				if row[1] == "melee":
+					f.controller.swing_katana_once()
+				else:
+					var projectile = f.controller.fire_shuriken_once()
+					assert_not_null(projectile)
+					if row[0] == &"powder_bomb": projectile._physics_process(0.46)
+					else: projectile.hit_body(target)
+				assert_eq(100 - target.health, row[2 + manual][rank], "%s rank%d manual%d" % [row[0], rank, manual])
+				for projectile in get_tree().get_nodes_in_group("friendly_weapon_projectiles"):
+					if not projectile.is_queued_for_deletion(): projectile.queue_free()
+
+func test_kunai_combined_manual_uses_unrounded_base_and_launch_snapshot() -> void:
+	var f := _new_fixture()
+	f.controller.set_process(false)
+	f.controller.shuriken_projectile_scene = SHURIKEN_SCENE
+	var gear = load("res://scripts/core/equipment_loadout_state.gd").new()
+	gear.acquire(&"kunai")
+	gear.equip(&"projectile", &"kunai")
+	gear.upgrade_equipped(&"projectile")
+	f.controller.apply_equipment_snapshot(gear.get_snapshot())
+	var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	assert_gt(bag.add_item(&"projectile_manual", Vector2i(1,1)), 0)
+	assert_gt(bag.add_item(&"blast_powder", Vector2i(2,1)), 0)
+	assert_true(f.controller.apply_committed_backpack(bag))
+	var target := DamageTarget.new()
+	f.world.add_child(target)
+	target.position = Vector2(20, 0)
+	target.add_to_group("enemies")
+	var projectile = f.controller.fire_shuriken_once()
+	gear.upgrade_equipped(&"projectile")
+	f.controller.apply_equipment_snapshot(gear.get_snapshot())
+	f.controller.apply_committed_backpack(load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state())
+	projectile.hit_body(target)
+	assert_eq(target.health, 92, "6*(1+.15+.10+.12)=8, never9; later gear cannot rewrite an airborne hit.")
+
+
 func test_committed_manual_affects_only_weapon_hits_and_removal_restores_damage() -> void:
 	var fixture := _new_fixture()
 	var controller = fixture.controller
@@ -369,7 +439,7 @@ func test_invalid_equipment_does_not_replace_current_weapon_profile() -> void:
 		return
 	assert_false(fixture.controller.apply_equipment_snapshot({}))
 	assert_eq(fixture.controller.katana_damage, 10.0)
-	assert_eq(fixture.controller.shuriken_damage, 9)
+	assert_eq(fixture.controller.shuriken_damage, 9.0)
 
 
 func test_powder_bomb_locks_target_position_then_damages_only_current_blast_occupants() -> void:

@@ -20,7 +20,7 @@ signal shuriken_fired(projectile: Node2D)
 @export var shuriken_interval: float = 0.75
 @export var shuriken_projectile_scene: PackedScene
 @export var shuriken_speed: float = 560.0
-@export var shuriken_damage: int = 9
+@export var shuriken_damage: float = 9.0
 @export var shuriken_target_radius: float = 480.0
 @export var weapon_effect_texture: Texture2D
 @export var katana_effect_lifetime: float = 0.14
@@ -34,6 +34,7 @@ var _melee_shape: String = "cone"
 var _melee_width: float = 0.0
 var _projectile_profile: Dictionary = {}
 var _melee_equipment_bonus: float = 0.0
+var _projectile_equipment_bonus: float = 0.0
 var _guiin_original: Dictionary = {}
 var _guiin_sword_remaining: float = 0.0
 var _melee_manual_bonus: float = 0.0
@@ -85,6 +86,30 @@ func configure(new_combat_resolver: CombatResolver) -> void:
 	combat_resolver = new_combat_resolver
 
 
+func reset_for_checkpoint() -> void:
+	# A checkpoint owns the committed build, not the failed battle's live attacks
+	# or temporary clocks. Pause alone never calls this reset.
+	end_guiin_form()
+	_combination_generation += 1
+	_katana_remaining = 0.0
+	_shuriken_remaining = 0.0
+	_thunder_remaining = 0.0
+	_explosive_remaining = 0.0
+	_mist_remaining = 0.0
+	_mist_cooldown = 0.0
+	var source := get_parent()
+	_equipment_powers.clear(source)
+	if source is PlayerController: source.remove_ninjutsu_boon(MIST_BOON)
+	for effect in _active_katana_effects:
+		var node = effect.get("node")
+		if is_instance_valid(node) and not node.is_queued_for_deletion(): node.queue_free()
+	_active_katana_effects.clear()
+	if get_tree() == null or source == null: return
+	for projectile in get_tree().get_nodes_in_group("friendly_weapon_projectiles"):
+		if projectile is BasicProjectile and projectile.get_parent() == source.get_parent() and projectile.combat_resolver == combat_resolver:
+			projectile.queue_free()
+
+
 func apply_equipment_snapshot(snapshot: Dictionary) -> bool:
 	if not _guiin_original.is_empty():
 		return false
@@ -96,7 +121,7 @@ func apply_equipment_snapshot(snapshot: Dictionary) -> bool:
 	katana_interval = float(melee["interval"])
 	_melee_equipment_bonus = equipment.equipped_damage_bonus(&"melee")
 	katana_radius = float(melee["range"])
-	katana_damage = float(melee["damage"]) * (1.0 + equipment.equipped_damage_bonus(&"melee"))
+	katana_damage = float(melee["damage"])
 	katana_half_angle_degrees = float(melee.get("angle", 0.0)) * 0.5
 	_melee_shape = str(melee["shape"])
 	_melee_width = float(melee.get("width", 0.0))
@@ -104,7 +129,8 @@ func apply_equipment_snapshot(snapshot: Dictionary) -> bool:
 	shuriken_interval = float(projectile["interval"])
 	shuriken_target_radius = float(projectile["range"])
 	shuriken_speed = float(projectile.get("speed", 0.0))
-	shuriken_damage = roundi(float(projectile["damage"]) * (1.0 + equipment.equipped_damage_bonus(&"projectile")))
+	_projectile_equipment_bonus = equipment.equipped_damage_bonus(&"projectile")
+	shuriken_damage = float(projectile["damage"])
 	_equipment_powers.configure(snapshot, get_parent())
 	_combination_generation += 1 # In-flight projectiles cannot acquire a newly equipped power.
 	return true
@@ -249,7 +275,7 @@ func swing_katana_once() -> int:
 	for target in cone_targets:
 		if generation != _combination_generation:
 			break
-		var actual := _resolve_basic_damage(target, katana_damage * (1.0 + _melee_manual_bonus if _guiin_original.is_empty() else 1.0))
+		var actual := _resolve_basic_damage(target, katana_damage * (1.0 + _melee_equipment_bonus + _melee_manual_bonus if _guiin_original.is_empty() else 1.0))
 		if actual > 0 and not first_hit and generation == _combination_generation:
 			first_hit = true
 			if _guiin_original.is_empty():
@@ -325,7 +351,7 @@ func _spawn_projectile(source: Node2D, aim: Vector2, cast_claim: Dictionary = {}
 	var projectile := projectile_node as Node2D
 	projectile.global_position = source.global_position
 	if projectile.has_method("configure"):
-		projectile.call("configure", aim, shuriken_speed, roundi(shuriken_damage * (1.0 + _projectile_manual_bonus)), combat_resolver)
+		projectile.call("configure", aim, shuriken_speed, roundi(shuriken_damage * (1.0 + _projectile_equipment_bonus + _projectile_manual_bonus)), combat_resolver)
 	if projectile is BasicProjectile:
 		projectile.damage_applied.connect(_on_projectile_damage.bind(cast_claim))
 	shuriken_fired.emit(projectile)

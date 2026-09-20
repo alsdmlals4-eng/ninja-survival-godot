@@ -196,7 +196,10 @@ func adopt(profile: Dictionary) -> bool:
 	_main.run_build_state.configure(ITEMS.build_items(), _main._fate_defs)
 	if not _main.run_build_state.restore_from_checkpoint(build): return false
 	if not _main.ninjutsu_loadout.restore_selected_snapshot(cp.loadout, cp.loadout.active_spell_ids, cp.access.unlocked_ninjutsu_school_ids): return false
+	_main.basic_weapons.reset_for_checkpoint()
 	if not _main.basic_weapons.apply_equipment_snapshot(cp.build.equipment): return false
+	var committed_bag = load("res://scripts/backpack/backpack_state.gd").from_persistent_snapshot(cp.backpack)
+	if not _main.basic_weapons.apply_committed_backpack(committed_bag): return false
 	_main.school_host.deactivate()
 	_main.school_host.selected_school_id = &""
 	_main._sync_run_modifiers()
