@@ -871,7 +871,63 @@ begin_rest 재호출은 후보 재추첨·구매 제한 초기화를 일으키�
 
 ### R02. 준비 단계와 두 확정 거래
 
-#### 2026-09-20 추가 요청 대조 — 방향 확정 / 세부 설계 검토 대기
+#### 2026-09-20 실행 순서 — 승인된 전체 여정 연결
+
+Spec: 상세 규칙 R-CAMP와 최신 Decisions. 기존 R01 저장 책임자, 별도 장비3슬롯,
+3x3 시작 공간/인법2선택, 자동무기/수동 이동·대시·오의, 실제 사용자 저장을 보호한다.
+Native 실행: 이 packet을 계획, Active Context를 진행 기록으로 재사용한다.
+
+- [x] 성장 분리(도메인/집중 검사): `equipment_growth_catalog.gd` 데이터, `equipment_loadout_state.gd`
+  부여 API/호환 복원, `tradition_access_state.gd` 흔적 효과, coordinator bundle 교차검증.
+  시험 먼저: 부여 뒤 rank0, 중복 부여 거부, 교체/판매 시 격리, 옛 rank 보존,
+  위조 효과/흔적 불일치 거부. `imbue_equipped(school,slot)->bool`,
+  `equipped_imbuements(slot)->Array`, `forge_quote(slot)->Dictionary`를 소비자 계약으로 한다.
+- [x] 모닥불 강화 거래(저장 API/집중 검사; 화면 연결 제외): 기존 coordinator의 `commit_selected_forge(request)->Dictionary`,
+  저장된 session/revision/대상 검증, 도메인 계산 비용/결과, 동일 의도 재시도는 현재
+  저장 상태 반환. 실패 저장은 금액/효과 모두 무변경. focused RED→GREEN→full.
+- [ ] 준비 진입/구매: 보스 clear의 보상·HP·소유/후보를 기존 profile에 한 번 기록,
+  인법/장비/가방/소모품 수령을 기존 세션과 연결. 돈 부족/버퍼 가득참/해금 거부 시험.
+- [ ] 전투 연결: 확정 장비의 부여만 BasicWeapon/Player에서 소비. 원타/추가타
+  구분, 범위 다중 타격의 회복 제한, 회피/무적/피해감소 중복 사건 방지 시험.
+- [ ] Main 연결: 시작 선택 UI→첫 전장→네 전장/정비→최종전, 신규/구형 이어하기를
+  구분하고 준비/출전 원자적 readback 후 입력 허용. 실제 title/UI 입력 통합 시험.
+- [ ] 실행본: 각 학교 실제 입력 확인, 전체 여정 자동 경계시험+대표 자연 실행,
+  오류/화면 점검, 독립 영향 검토, 정확한 HEAD CI/Windows 실행본 인도.
+  사람의 완주·재미는 사용자 검수 전 NOT_RUN. 기존 자산 우선, 필요한 신규 이미지는
+  실제 consumer/크기/상태 확인 후 생성하여 후보와 승인/연결 증거를 구분한다.
+
+Review focus: 구형 숫자 강화 저장의 조용한 재해석, 반복 입력/저장 후 재개,
+가방 밖 책의 전투력, 임시 구매의 부분 반영, 최종 준비의 잘못된 다섯 번째 전장 요구.
+각 항목은 해당 단계의 실패 fixture와 함께 검증한다. 전체 계약 감사 예산은 재초기화하지 않는다.
+
+#### 2026-09-20 구현 증분 — 준비 진입·구매·전투 소비
+
+`commit_selected_entry`는 중지된 실제 전장의 run/departure/school/revision,
+cleared encounter, gold, health/maximum_health, emergency_potions를 받는다.
+기존 profile의 마지막 출전은 보존하고 준비 HP/보상/운명/상점 후보를 한 번 생성한다.
+입력은 UI 수치 변경 권한이 아니라 Main의 전투 상태 캡처다. 미소유 비상약 증가를
+거부하고, 소비된 약을 출전 시 수량으로 복구하지 않는다. entry 실패는 live HP를
+회복시키지 않는다. readback 성공 후 실제 Player에 채택하는 연결은 아직 잔여다.
+
+`commit_selected_purchase`는 run/session/revisions+kind/offer_id만 받는다.
+`shop_item`/`bag`은 저장된 제안, `book`/`equipment`는 해금/미소유 목록,
+`potion`/`emergency`는 데이터 정의를 사용한다. UI가 비용/효과/성공 결과를 보내지 않는다.
+소유 장비는 자동 장착하지 않고, 인법은 버퍼에 들어가며 실제 배치/출전 전 비활성이다.
+새 선택형 checkpoint/preparation의 선택적 `vitals={health,max_health,emergency_potions}`는
+구형 숫자/부여 없는 스냅샷과 함께 읽는다. vitals 없는 예전 준비의 약 구매는 거부하며
+실제 HP를 임의로 지어내지 않는다. 출전 거래는 존재하는 준비 vitals를 함께 저장한다.
+
+전투 소비: BasicWeaponController → EquipmentPowerRuntime → Player/CombatResolver.
+확정 장비만 부여를 소비하며 시전당 첫 실제 적중, 회복/보호막 시간 제한, 추가타 재귀 금지,
+오의 중 새 공격 부여 중단, 장비 교체 시 이전 투사체의 새 효과 습득 금지.
+RunBuildState는 장착품의 회피/감소와 수치 강화를 합성한다. 신규 equipment 처치 문맥을
+봉마 비오의 영력 소비자에 연결했고 흑영의 직접 타격 범위는 넓히지 않았다.
+
+남은 연결: 실제 준비 UI 입력/재채택, 출전/구매 중 layout 후보 보존,
+Main 시작선택/신규 프로필/준비·전투 이어하기/정산/실제 HP·비상약 자동 사용,
+대표 사용자 조작/전체 여정/시각·밸런스 검증. 이 증분은 R02/R03 전체 완료가 아니다.
+
+#### 2026-09-20 이전 추가 요청 대조 — 상단 승인·구현 증분으로 대체된 이력
 
 유파 강화=장비 고유 효과, 흡수=인술 획득 자격, 모닥불=별도 엽전 확률 강화와
 인술/가방/소모품 구매. 사용자 방향은 Decisions 최신 절이 소유한다.

@@ -1,6 +1,32 @@
 # ACTIVE_CONTEXT
 
-## Latest user addition — school imbuement / campfire economy — 2026-09-20
+## Approved playable-run continuation — 2026-09-20
+
+User approved delegated detail decisions and requests actual new-game → four
+school battlefields/rests → final Boss playability. Follow packet R02–R10 without
+repeating approval within this scope. Current implementation increment separates
+school imbuements from paid numeric ranks (legacy numeric records preserved),
+adds durable cost/outcome forge commands, and binds each present power to its
+trace receipt. Focused growth8/8 and trace/forge16/16 PASS; not yet Main/UI/combat
+adoption. Added preparation-entry persistence (reserved rewards/Fate/25% base
+heal), camp purchases (book/equipment/reserved item/bag/potion/emergency reserve),
+optional backward-compatible vitals, departure HP carry, and actual basic-weapon
+power consumers. Focused entry4/4, purchase4/4, power7/7 passed before coverage
+extensions. Main remains legacy: do not present the new profile APIs as a playable
+selected full run. Next: UI/domain draft adoption preserving layout during purchase,
+Main new-game/continue/settlement and actual HP/emergency consumption, then full-run
+input/render/Windows delivery. Changed-state local full regression PASS:
+109 scripts / 892 tests / 14,933 assertions / 297.081s, exit0;
+Python21/21 PASS, diff check PASS. Log: diagnostics/camp-growth-final-full-20260920.log
+under C:/Users/user/Tools/NinjaSurvival-Local. Remote exact-head check pending commit.
+Current Hera editor identifies Blacksmith, not this project: protected/unmodified.
+Change-impact independent review found oneP2 (equipment proc kill omitted from
+Bongma's nonultimate charge); actual resolver test RED1/1→GREEN1/1,35 assertions.
+Purchase/entry followup static review found no new concreteP0/P1/P2; no engine or
+Human evidence inferred. Existing full audit budget not reset. Real player files,
+approved assets, plugins and global settings remain untouched.
+
+## Previous addition assessment — superseded by approval above — 2026-09-20
 
 User requests school-specific equipment powers (examples: Guiin katana lifesteal,
 Heukyeong evasion, Cheonsul shuriken elemental proc), separate from campfire coin

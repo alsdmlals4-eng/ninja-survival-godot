@@ -118,6 +118,10 @@ func _coordinator(store):
 
 func test_preview_composes_all_owners_without_touching_disk_or_request() -> void:
 	var f := _fixture()
+	var with_vitals: Dictionary = f.profile.duplicate(true)
+	with_vitals.active_run.preparation.vitals = {"health": 63, "max_health": 100, "emergency_potions": 1}
+	assert_true(f.store.transact_profile(with_vitals, 1, "setup:vitals").ok)
+	f.profile = f.store.load_profile().profile
 	var c = _coordinator(f.store)
 	if c == null: return
 	var request := _request(f)
@@ -132,11 +136,13 @@ func test_preview_composes_all_owners_without_touching_disk_or_request() -> void
 	assert_eq(cp.circuit.phase, "core")
 	assert_eq(int(cp.build.gold), 150)
 	assert_eq(cp.build.selected_fates, [request.fate_id])
-	assert_eq(int(cp.build.equipment.upgrade_rank_by_instance.gear_ninja_suit), 1)
+	assert_eq(int(cp.build.equipment.upgrade_rank_by_instance.gear_ninja_suit), 0)
+	assert_eq(cp.build.equipment.imbuements.gear_ninja_suit, ["cheonsul"])
 	assert_eq(cp.access, f.profile.active_run.preparation.access)
 	assert_eq(cp.buffer.size(), 1, "Unplaced earned reward is carried, not erased")
 	assert_eq(cp.loadout.active_spell_ids, f.profile.active_run.checkpoint.loadout.active_spell_ids)
 	assert_eq(int(cp.ultimate_charge.resource_amount), 60)
+	assert_eq(cp.vitals, f.profile.active_run.preparation.vitals)
 	assert_null(result.profile.active_run.preparation)
 	assert_eq(result.profile.meta, f.profile.meta)
 	assert_eq(request, before)
@@ -180,6 +186,7 @@ func test_unresolved_trace_rewards_chests_or_fate_blocks_departure() -> void:
 				access.restore_selected_snapshot(profile.active_run.checkpoint.access)
 				access.stabilize_school(&"cheonsul")
 				prep.access = access.get_snapshot()
+				prep.equipment = profile.active_run.checkpoint.build.equipment.duplicate(true)
 			"reward": prep.reward_state.boss_pending = true
 			"chest": prep.reward_state.chests = 1
 		assert_true(f.store.transact_profile(profile, 1, "fixture:" + failure).ok)

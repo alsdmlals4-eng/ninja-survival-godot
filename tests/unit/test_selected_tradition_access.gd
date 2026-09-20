@@ -61,13 +61,15 @@ func test_start_trace_keeps_start_access_and_stale_revision_consumes_nothing() -
 	assert_false(access.decide_trace(&"guiin", &"enhance", gear, &"melee", 3))
 	assert_eq(access.get_snapshot(), before)
 	assert_true(access.decide_trace(&"guiin", &"enhance", gear, &"melee", 0))
-	assert_eq(gear.get_snapshot().upgrade_rank_by_instance.gear_katana, 1)
+	assert_eq(gear.get_snapshot().upgrade_rank_by_instance.gear_katana, 0)
+	assert_eq(gear.equipped_imbuements(&"melee"), ["guiin"])
 	assert_true(access.unlocked_ninjutsu_school_ids().has(&"guiin"))
 	access.stabilize_school(&"heukyeong")
 	assert_true(access.decide_trace(&"heukyeong", &"enhance", gear, &"outfit", 1))
 	assert_false(access.unlocked_ninjutsu_school_ids().has(&"heukyeong"))
 	assert_true(access.eligible_item_ids().has(&"projectile_manual"), "Forfeiting books does not close common combination materials.")
-	assert_eq(gear.get_snapshot().upgrade_rank_by_instance.gear_ninja_suit, 1)
+	assert_eq(gear.get_snapshot().upgrade_rank_by_instance.gear_ninja_suit, 0)
+	assert_eq(gear.equipped_imbuements(&"outfit"), ["heukyeong"])
 
 
 func test_candidate_trace_and_equipment_changes_do_not_mutate_committed_sources() -> void:
@@ -84,7 +86,8 @@ func test_candidate_trace_and_equipment_changes_do_not_mutate_committed_sources(
 	assert_true(candidate.decide_trace(&"guiin", &"enhance", candidate_gear, &"projectile", 0))
 	assert_true(access.get_snapshot().trace_decisions.is_empty())
 	assert_eq(gear.get_snapshot().upgrade_rank_by_instance.gear_shuriken, 0)
-	assert_eq(candidate_gear.get_snapshot().upgrade_rank_by_instance.gear_shuriken, 1)
+	assert_eq(candidate_gear.get_snapshot().upgrade_rank_by_instance.gear_shuriken, 0)
+	assert_eq(candidate_gear.equipped_imbuements(&"projectile"), ["guiin"])
 	var hostile: Dictionary = candidate.get_snapshot()
 	hostile.trace_decisions.clear()
 	assert_false(candidate.get_snapshot().trace_decisions.is_empty())

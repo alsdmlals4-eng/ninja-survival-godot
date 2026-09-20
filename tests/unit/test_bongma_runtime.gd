@@ -94,7 +94,7 @@ func test_only_owned_nonultimate_kills_gain_two_with_one_second_event_limit() ->
 
 
 func test_owned_damage_over_time_clone_and_reaction_kills_charge_but_unknown_does_not() -> void:
-	for kind in [&"dot", &"clone", &"reaction", &"combination", &"unknown", &"ultimate"]:
+	for kind in [&"dot", &"clone", &"reaction", &"combination", &"equipment", &"unknown", &"ultimate"]:
 		var runtime = _make_runtime()
 		var resolver = load("res://scripts/combat/combat_resolver.gd").new()
 		runtime.world.add_child(resolver)
@@ -102,9 +102,13 @@ func test_owned_damage_over_time_clone_and_reaction_kills_charge_but_unknown_doe
 		runtime.activate()
 		var enemy = _target(runtime)
 		enemy.died.connect(runtime.on_enemy_died)
-		var dealt: int = resolver.deal_combination_damage(enemy, 99999) if kind == &"combination" else resolver.deal_school_damage(enemy, 99999, kind)
+		var dealt: int
+		match kind:
+			&"combination": dealt = resolver.deal_combination_damage(enemy, 99999)
+			&"equipment": dealt = resolver.deal_equipment_damage(enemy, 99999)
+			_: dealt = resolver.deal_school_damage(enemy, 99999, kind)
 		assert_gt(dealt, 0)
-		var expected := 2.0 if kind in [&"dot", &"clone", &"reaction", &"combination"] else 0.0
+		var expected := 2.0 if kind in [&"dot", &"clone", &"reaction", &"combination", &"equipment"] else 0.0
 		assert_eq(runtime.spirit, expected, str(kind))
 		runtime.on_enemy_died(enemy)
 		assert_eq(runtime.spirit, expected, "Replayed death must not grant more spirit.")

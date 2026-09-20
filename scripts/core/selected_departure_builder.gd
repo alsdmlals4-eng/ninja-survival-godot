@@ -95,6 +95,8 @@ func prepare(request: Dictionary, store) -> Dictionary:
 	checkpoint.access = prep.access.duplicate(true)
 	checkpoint.loadout = loadout
 	checkpoint.ultimate_charge = normalized.ultimate_charge
+	if prep.has("vitals"):
+		checkpoint.vitals = prep.vitals.duplicate(true)
 	checkpoint.build.gold = int(prep.gold)
 	checkpoint.build.equipment = equipment.get_snapshot()
 	checkpoint.build.selected_fates = fate_result.selected

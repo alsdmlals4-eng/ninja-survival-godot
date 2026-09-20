@@ -72,10 +72,10 @@ func decide_trace(school_id: StringName, choice: StringName, equipment, slot: St
 		if not EQUIPMENT_STATE.SLOTS.has(str(slot)):
 			return false
 		var before: Dictionary = equipment.get_snapshot()
-		if not equipment.upgrade_equipped(slot):
+		if not equipment.imbue_equipped(school_id, slot):
 			return false
 		record["equipment_instance"] = before.equipped_slots[str(slot)]
-		record["rank"] = equipment.get_snapshot().upgrade_rank_by_instance[record.equipment_instance]
+		record["imbuement"] = str(school_id)
 	else:
 		return false
 	_trace_decisions[school_id] = record
@@ -117,11 +117,13 @@ func restore_selected_snapshot(snapshot: Dictionary) -> bool:
 			var instance := str(record.equipment_instance)
 			if not instance.begins_with("gear_") or EQUIPMENT_STATE.CATALOG.definition(StringName(instance.trim_prefix("gear_"))).is_empty():
 				return false
-			var rank = record.get("rank")
-			if not (rank is int or rank is float):
-				return false
-			if not is_finite(float(rank)) or float(rank) != floor(float(rank)) or rank < 1 or rank > 4:
-				return false
+			if record.has("imbuement"):
+				if not _is_text(record.imbuement) or str(record.imbuement) != str(school): return false
+			else:
+				# Preserve old numeric trace receipts; never retroactively mint powers.
+				var rank = record.get("rank")
+				if not (rank is int or rank is float): return false
+				if not is_finite(float(rank)) or float(rank) != floor(float(rank)) or rank < 1 or rank > 4: return false
 		else:
 			return false
 		candidate._trace_decisions[StringName(school)] = record.duplicate(true)

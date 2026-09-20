@@ -7,6 +7,8 @@ const BACKPACK_SCRIPT = preload("res://scripts/backpack/backpack_state.gd")
 const BACKPACK_RESOLVER = preload("res://scripts/backpack/backpack_resolver.gd")
 const SELECTED_CATALOG = preload("res://scripts/data/selected_backpack_catalog.gd")
 const SPATIAL_CATALOG = preload("res://scripts/data/mvp4_catalog.gd")
+const POWER_RUNTIME = preload("res://scripts/combat/equipment_power_runtime.gd")
+var _equipment_powers = POWER_RUNTIME.new()
 
 signal katana_resolved(target_count: int)
 signal shuriken_fired(projectile: Node2D)
@@ -103,6 +105,8 @@ func apply_equipment_snapshot(snapshot: Dictionary) -> bool:
 	shuriken_target_radius = float(projectile["range"])
 	shuriken_speed = float(projectile.get("speed", 0.0))
 	shuriken_damage = roundi(float(projectile["damage"]) * (1.0 + equipment.equipped_damage_bonus(&"projectile")))
+	_equipment_powers.configure(snapshot, get_parent())
+	_combination_generation += 1 # In-flight projectiles cannot acquire a newly equipped power.
 	return true
 
 
@@ -146,6 +150,7 @@ func end_guiin_form() -> void:
 
 func _exit_tree() -> void:
 	end_guiin_form()
+	_equipment_powers.clear(get_parent())
 	var player := get_parent() as PlayerController
 	if is_instance_valid(player):
 		player.remove_ninjutsu_boon(MIST_BOON)
@@ -163,6 +168,7 @@ func _process(delta: float) -> void:
 		return
 
 	_advance_katana_effects(delta)
+	_equipment_powers.advance(delta, source)
 	_thunder_remaining = maxf(_thunder_remaining - delta, 0.0)
 	_explosive_remaining = maxf(_explosive_remaining - delta, 0.0)
 	_mist_cooldown = maxf(_mist_cooldown - delta, 0.0)
@@ -246,6 +252,8 @@ func swing_katana_once() -> int:
 		var actual := _resolve_basic_damage(target, katana_damage * (1.0 + _melee_manual_bonus if _guiin_original.is_empty() else 1.0))
 		if actual > 0 and not first_hit and generation == _combination_generation:
 			first_hit = true
+			if _guiin_original.is_empty():
+				_equipment_powers.on_weapon_hit(&"melee", target, actual, source, combat_resolver)
 			if _guiin_original.is_empty() and _combination_effects.has(&"thunder_blade") and _thunder_remaining <= 0.0 and is_instance_valid(target):
 				_thunder_remaining = 1.0
 				_trigger_combination(target.global_position, 120.0, 6.0, target, 2)
@@ -341,6 +349,7 @@ func _on_projectile_damage(target: Node, actual: int, claim: Dictionary) -> void
 	var source := get_parent()
 	if not is_instance_valid(source) or (source.has_method("is_dead") and source.is_dead()) or get_tree().paused or not _guiin_original.is_empty():
 		return
+	_equipment_powers.on_weapon_hit(&"projectile", target, actual, source, combat_resolver)
 	if _combination_effects.has(&"explosive_bomb") and _explosive_remaining <= 0.0 and is_instance_valid(target) and target is Node2D:
 		_explosive_remaining = 4.0
 		_trigger_combination(target.global_position, 96.0, 12.0, null, 0)

@@ -211,11 +211,13 @@ func apply_run_modifiers(modifiers: RunModifierSet) -> void:
 	health_changed.emit(health, max_health)
 
 
-func heal(amount: int) -> int:
+func heal(amount: int, maximum_actual: int = -1) -> int:
 	if amount <= 0 or _dead:
 		return 0
 	var healing_multiplier := maxf(1.0 + _run_modifiers.healing_pct, 0.0)
 	var resolved := maxi(roundi(float(amount) * healing_multiplier), 0)
+	if maximum_actual >= 0:
+		resolved = mini(resolved, maximum_actual)
 	if resolved <= 0:
 		return 0
 	var before := health

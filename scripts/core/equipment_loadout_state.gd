@@ -1,13 +1,14 @@
 extends RefCounted
 
 const CATALOG = preload("res://scripts/data/equipment_catalog.gd")
+const GROWTH = preload("res://scripts/data/equipment_growth_catalog.gd")
 const SLOTS := ["melee", "projectile", "outfit"]
 const STARTERS := ["katana", "shuriken", "ninja_suit"]
 var _snapshot: Dictionary = {}
 
 
 func _init() -> void:
-	_snapshot = {"owned_instances": {}, "equipped_slots": {}, "upgrade_rank_by_instance": {}, "revision": 0}
+	_snapshot = {"owned_instances": {}, "equipped_slots": {}, "upgrade_rank_by_instance": {}, "imbuements": {}, "revision": 0}
 	for id in STARTERS:
 		var instance_id: String = "gear_" + str(id)
 		_snapshot["owned_instances"][instance_id] = {"definition_id": id, "acquisition_price": 0, "starter": true}
@@ -55,6 +56,7 @@ func sell(id: StringName) -> int:
 	var proceeds := floori(float(item["acquisition_price"]) * 0.5)
 	_snapshot["owned_instances"].erase(instance_id)
 	_snapshot["upgrade_rank_by_instance"].erase(instance_id)
+	_snapshot["imbuements"].erase(instance_id)
 	_snapshot["revision"] += 1
 	return proceeds
 
@@ -67,6 +69,41 @@ func upgrade_equipped(slot: StringName) -> bool:
 	_snapshot["upgrade_rank_by_instance"][id] = rank + 1
 	_snapshot["revision"] += 1
 	return true
+
+
+func imbue_equipped(school: StringName, slot: StringName) -> bool:
+	var id: String = _snapshot.equipped_slots.get(str(slot), "")
+	if id.is_empty() or not GROWTH.SCHOOLS.has(str(school)): return false
+	for powers in _snapshot.imbuements.values():
+		if powers.has(str(school)): return false
+	if not _snapshot.imbuements.has(id): _snapshot.imbuements[id] = []
+	_snapshot.imbuements[id].append(str(school))
+	_snapshot.revision += 1
+	return true
+
+
+func equipped_imbuements(slot: StringName) -> Array:
+	var id: String = _snapshot.equipped_slots.get(str(slot), "")
+	return Array(_snapshot.imbuements.get(id, [])).duplicate()
+
+
+func forge_quote(slot: StringName) -> Dictionary:
+	var id: String = _snapshot.equipped_slots.get(str(slot), "")
+	if id.is_empty(): return {"ok": false, "reason": &"invalid_slot"}
+	var quote := GROWTH.forge_quote(int(_snapshot.upgrade_rank_by_instance[id]))
+	if quote.ok: quote["equipment_instance"] = id
+	return quote
+
+
+# Caller uses a detached candidate and atomically persists cost + this result.
+func forge_equipped(slot: StringName, roll: float) -> Dictionary:
+	if not is_finite(roll) or roll < 0.0 or roll >= 1.0:
+		return {"ok": false, "reason": &"invalid_roll"}
+	var quote := forge_quote(slot)
+	if not quote.ok: return quote
+	quote["succeeded"] = roll < float(quote.chance_percent) / 100.0
+	if quote.succeeded: upgrade_equipped(slot)
+	return quote
 
 
 func equipped_damage_bonus(slot: StringName) -> float:
@@ -90,6 +127,14 @@ static func is_valid_snapshot(value: Dictionary) -> bool:
 		return false
 	if not _whole(value.get("revision")) or float(value["revision"]) < 0:
 		return false
+	var imbuements = value.get("imbuements", {})
+	if not (imbuements is Dictionary): return false
+	var schools: Array = []
+	for id in imbuements:
+		if not (id is String) or not owned.has(id) or not (imbuements[id] is Array) or imbuements[id].is_empty(): return false
+		for school in imbuements[id]:
+			if not (school is String) or not GROWTH.SCHOOLS.has(school) or schools.has(school): return false
+			schools.append(school)
 	for instance_id in owned:
 		var item = owned[instance_id]
 		if not (item is Dictionary) or not (item.get("definition_id") is String):
@@ -121,6 +166,7 @@ func restore_snapshot(value: Dictionary) -> bool:
 	if not is_valid_snapshot(value):
 		return false
 	_snapshot = value.duplicate(true)
+	_snapshot["imbuements"] = value.get("imbuements", {}).duplicate(true)
 	_snapshot["revision"] = int(_snapshot["revision"])
 	for id in _snapshot["upgrade_rank_by_instance"]:
 		_snapshot["upgrade_rank_by_instance"][id] = int(_snapshot["upgrade_rank_by_instance"][id])

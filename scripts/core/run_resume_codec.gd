@@ -103,8 +103,9 @@ func _decode_selected_preparation(raw, checkpoint: Dictionary) -> Dictionary:
 	var invalid := {"ok": false, "reason": &"invalid_preparation"}
 	if not (raw is Dictionary) or not _to_json_primitive(raw).ok:
 		return invalid
-	if raw.size() != 12 + int(raw.has("fate_state")):
+	if raw.size() != 12 + int(raw.has("fate_state")) + int(raw.has("vitals")):
 		return invalid
+	if raw.has("vitals") and not _valid_vitals(raw.vitals): return invalid
 	if not _profile_unique_ids([raw.get("prepare_session_id")]) or raw.prepare_session_id == checkpoint.prepare_session_id:
 		return invalid
 	if raw.get("phase") != "preparing" or not _profile_integer(raw.get("revision")) or not _profile_integer(raw.get("gold")):
@@ -212,8 +213,9 @@ const SELECTED_COORDINATOR = preload("res://scripts/core/rest_commit_coordinator
 # Profile preparation and retry eligibility are validated separately by their owners.
 func decode_selected_checkpoint(raw: Dictionary) -> Dictionary:
 	var invalid := {"ok": false, "reason": &"invalid_selected_checkpoint"}
-	if raw.size() != 10 or raw.get("rules_version") != PROFILE_CONTRACT:
+	if raw.size() != 10 + int(raw.has("vitals")) or raw.get("rules_version") != PROFILE_CONTRACT:
 		return invalid
+	if raw.has("vitals") and not _valid_vitals(raw.vitals): return invalid
 	if not _profile_unique_ids([raw.get("prepare_session_id")]):
 		return invalid
 	for key in ["build", "route", "circuit", "backpack", "loadout", "access", "ultimate_charge"]:
@@ -291,6 +293,13 @@ func decode_selected_checkpoint(raw: Dictionary) -> Dictionary:
 	if build.get("committed_backpack_modifiers") != resolution.modifiers.to_persistent_snapshot():
 		return invalid
 	return {"ok": true, "checkpoint": candidate}
+
+
+static func _valid_vitals(value) -> bool:
+	if not (value is Dictionary) or value.size() != 3: return false
+	for field in ["health", "max_health", "emergency_potions"]:
+		if not _profile_integer(value.get(field)): return false
+	return value.health > 0 and value.max_health > 0 and value.health <= value.max_health and value.emergency_potions <= 1
 
 
 func encode_checkpoint(checkpoint: Dictionary) -> Dictionary:

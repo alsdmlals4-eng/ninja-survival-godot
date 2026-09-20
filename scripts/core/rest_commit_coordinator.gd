@@ -13,6 +13,9 @@ const BAG_CATALOG = preload("res://scripts/data/mvp4_catalog.gd")
 const CARRIED_ITEM = preload("res://scripts/data/item_instance.gd")
 const REST_BUFFER = preload("res://scripts/backpack/rest_backpack_session.gd")
 const SELECTED_DEPARTURE = preload("res://scripts/core/selected_departure_builder.gd")
+const SELECTED_FORGE = preload("res://scripts/core/selected_forge_builder.gd")
+const SELECTED_ENTRY = preload("res://scripts/core/selected_preparation_builder.gd")
+const SELECTED_PURCHASE = preload("res://scripts/core/selected_purchase_builder.gd")
 
 
 # Pure cross-owner gate, not a disk transaction or a mutation of live owners.
@@ -30,6 +33,14 @@ static func validate_selected_build_bundle(bundle: Dictionary) -> bool:
 	var equipment = SELECTED_EQUIPMENT.new()
 	if not access.restore_selected_snapshot(bundle.access) or not equipment.restore_snapshot(bundle.equipment):
 		return false
+	# Old numeric receipts remain history. New powers require an exact trace binding.
+	var powers: Dictionary = equipment.get_snapshot().imbuements
+	for instance_id in powers:
+		for school in powers[instance_id]:
+			var receipt: Dictionary = bundle.access.trace_decisions.get(StringName(school), {})
+			if receipt.get("choice") != "enhance" or receipt.get("imbuement") != school \
+				or receipt.get("equipment_instance") != instance_id:
+				return false
 	var origin = bundle.loadout.get("origin_school_id")
 	if not (origin is String or origin is StringName) or StringName(origin) != access.starting_school_id():
 		return false
@@ -116,6 +127,40 @@ func prepare_selected_trace(request: Dictionary) -> Dictionary:
 	if _selected_profile_store == null or _commit_in_progress:
 		return {"ok": false, "reason": &"not_ready"}
 	return _prepare_selected_trace_request(request)
+
+
+func commit_selected_forge(request: Dictionary) -> Dictionary:
+	return _commit_selected_candidate(request, SELECTED_FORGE)
+
+
+func commit_selected_entry(request: Dictionary) -> Dictionary:
+	return _commit_selected_candidate(request, SELECTED_ENTRY)
+
+
+func commit_selected_purchase(request: Dictionary) -> Dictionary:
+	return _commit_selected_candidate(request, SELECTED_PURCHASE)
+
+
+func _commit_selected_candidate(request: Dictionary, builder: Script) -> Dictionary:
+	if _selected_profile_store == null or _commit_in_progress:
+		return {"ok": false, "reason": &"not_ready"}
+	_commit_in_progress = true
+	var prepared: Dictionary = builder.new().prepare(request, _selected_profile_store)
+	var result := prepared
+	if prepared.ok and not prepared.get("already_applied", false):
+		result = _selected_profile_store.transact_profile(prepared.profile,
+			int(request.expected_revision), prepared.transaction_id)
+		if result.ok:
+			var readback: Dictionary = _selected_profile_store.load_profile()
+			if not readback.ok or readback.profile.revision != result.revision \
+				or not readback.profile.meta.transaction_receipts.has(prepared.transaction_id):
+				result = {"ok": false, "reason": &"committed_reload_required", "persisted": true}
+			else:
+				result = {"ok": true, "already_applied": result.already_applied,
+					"profile": readback.profile, "transaction_id": prepared.transaction_id,
+					"outcome": prepared.get("outcome", {}), "warning": result.get("warning", &"")}
+	_commit_in_progress = false
+	return result
 
 
 func prepare_selected_departure(request: Dictionary) -> Dictionary:

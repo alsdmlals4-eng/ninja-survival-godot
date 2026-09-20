@@ -123,6 +123,10 @@ func get_checkpoint_snapshot() -> Dictionary:
 
 
 func can_restore_from_checkpoint(snapshot: Dictionary) -> bool:
+	var receipts = snapshot.get("economy_receipts", [])
+	if not (receipts is Array): return false
+	for receipt in receipts:
+		if not (receipt is Dictionary): return false
 	if snapshot.has("equipment"):
 		if not (snapshot.equipment is Dictionary) or not EquipmentStateScript.is_valid_snapshot(snapshot.equipment):
 			return false
@@ -161,7 +165,7 @@ func restore_from_checkpoint(snapshot: Dictionary) -> bool:
 	owned_items = restored_owned_items.duplicate(true)
 	selected_fates = validated_fates
 	_committed_backpack_modifiers = restored_modifiers.copy_values()
-	_economy_receipts = Array(snapshot.get("economy_receipts", [])).duplicate(true)
+	_economy_receipts.assign(Array(snapshot.get("economy_receipts", [])).duplicate(true))
 	if snapshot.has("equipment"):
 		_equipment = EquipmentStateScript.new()
 		_equipment.restore_snapshot(snapshot.equipment)
@@ -268,6 +272,11 @@ func _recompute_modifiers() -> void:
 	var modifiers = _committed_backpack_modifiers.copy_values()
 	if _equipment != null:
 		modifiers.damage_taken_pct -= _equipment.outfit_reduction()
+		for slot in EquipmentStateScript.SLOTS:
+			for school in _equipment.equipped_imbuements(StringName(slot)):
+				var power: Dictionary = EquipmentStateScript.GROWTH.power(StringName(school), StringName(slot))
+				if power.kind == "evasion": modifiers.evasion_chance += float(power.amount)
+				elif power.kind == "reduction": modifiers.damage_taken_pct -= float(power.amount)
 
 	for fate_id in selected_fates:
 		var fate = _fate_defs.get(fate_id)
@@ -280,7 +289,7 @@ func _recompute_modifiers() -> void:
 		modifiers.heukyeong_mark_duration_pct += modifiers.ultimate_charge_gain_pct
 		modifiers.ultimate_charge_gain_pct = 0.0
 
-	modifiers.evasion_chance = clampf(modifiers.evasion_chance, 0.0, 0.95)
+	modifiers.evasion_chance = clampf(modifiers.evasion_chance, 0.0, 0.40 if _equipment != null else 0.95)
 	modifiers.heukyeong_marked_crit_bonus = clampf(modifiers.heukyeong_marked_crit_bonus, 0.0, 1.0)
 	_modifiers = modifiers
 
