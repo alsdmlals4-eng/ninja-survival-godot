@@ -13,21 +13,25 @@ const BUILD = preload("res://scripts/core/run_build_state.gd")
 const FATES = preload("res://scripts/data/mvp3_catalog.gd")
 const MODIFIERS = preload("res://scripts/data/run_modifier_set.gd")
 const REWARDS = preload("res://scripts/core/rest_reward_controller.gd")
+const LAYOUT = preload("res://scripts/core/selected_layout_contract.gd")
 
 func prepare(request: Dictionary, store) -> Dictionary:
-	if request.size() != 6: return _fail(&"invalid_purchase")
+	if request.size() != 6 + int(request.has("spatial_session")) or not LAYOUT.primitive(request): return _fail(&"invalid_purchase")
 	var identity: Array = ["purchase-v1"]
 	for field in ["run_id", "prepare_session_id", "kind", "offer_id"]:
 		var value = request.get(field)
 		if not (value is String or value is StringName) or str(value).length() > 256: return _fail(&"invalid_purchase")
 		identity.append(str(value))
 	if request.run_id == "" or request.prepare_session_id == "" \
-		or str(request.kind) not in ["shop_item", "bag", "book", "equipment", "potion", "emergency"]: return _fail(&"invalid_purchase")
+		or str(request.kind) not in ["shop_item", "bag", "book", "equipment", "potion", "emergency", "boss_reward", "chest", "sell_item", "reroll"]: return _fail(&"invalid_purchase")
 	for field in ["expected_revision", "expected_prepare_revision"]:
 		var value = request.get(field)
 		if not (value is int or value is float) or not is_finite(float(value)) or value < 0 \
 			or value >= 9007199254740991 or float(value) != floor(float(value)): return _fail(&"invalid_purchase")
 		identity.append(int(value))
+	if request.has("spatial_session"):
+		if not (request.spatial_session is Dictionary): return _fail(&"invalid_layout")
+		identity.append(JSON.parse_string(JSON.stringify(request.spatial_session, "", true, true)))
 	var transaction_id := "buy:" + JSON.stringify(identity).sha256_text()
 	var loaded: Dictionary = store.load_profile()
 	if not loaded.ok: return loaded
@@ -50,6 +54,9 @@ func prepare(request: Dictionary, store) -> Dictionary:
 	session.begin(BAG.from_persistent_snapshot(prep.spatial_session.backpack), RESOLVER.new(),
 		ITEMS.build_items(), BAGS.build_bags(), StringName(run.starting_school))
 	if not session.restore_preparation_snapshot(prep.spatial_session): return _fail(&"invalid_preparation")
+	if request.has("spatial_session"):
+		if not LAYOUT.same_owned_inventory(prep.spatial_session, request.spatial_session) \
+			or not session.restore_preparation_snapshot(request.spatial_session): return _fail(&"invalid_layout")
 	var build = BUILD.new()
 	build.configure(ITEMS.build_items(), FATES.build_fates())
 	var build_snapshot: Dictionary = run.checkpoint.build.duplicate(true)
@@ -68,6 +75,13 @@ func prepare(request: Dictionary, store) -> Dictionary:
 		updated.gold = build.gold
 		updated.equipment = gear.get_snapshot()
 		updated.spatial_session = session.persistent_preparation_snapshot()
+		# Saved preparation reflects its owned draft; live combat still reads checkpoint.
+		var active: Array = []
+		for item in updated.spatial_session.backpack.items:
+			var spell := BOOKS.spell_id(StringName(item.definition_id))
+			if spell != &"": active.append(str(spell))
+		updated.loadout.active_spell_ids = active
+		updated.loadout.pending_spell_ids = []
 		updated.reward_state = rewards.persistent_snapshot()
 		updated.revision = int(prep.revision) + 1
 	rewards.free()
@@ -80,6 +94,16 @@ func prepare(request: Dictionary, store) -> Dictionary:
 
 func _purchase(kind: String, id: String, prep: Dictionary, build, gear, session, rewards, access) -> Dictionary:
 	match kind:
+		"boss_reward":
+			var index: int = rewards.boss_reward_options().find(StringName(id))
+			return {"ok": true} if index >= 0 and rewards.choose_boss_reward(index) else _fail(&"boss_reward_unavailable")
+		"chest":
+			return {"ok": true} if id == "" and rewards.open_chest() else _fail(&"chest_unavailable")
+		"sell_item":
+			return {"ok": true} if id.is_valid_int() and str(id.to_int()) == id and id.to_int() > 0 \
+				and rewards.sell_item(id.to_int()) else _fail(&"sale_unavailable")
+		"reroll":
+			return {"ok": true} if id == "" and rewards.reroll_shop() else _fail(&"reroll_unavailable")
 		"shop_item":
 			var index: int = rewards.shop_item_options().find(StringName(id))
 			return {"ok": true} if index >= 0 and rewards.buy_shop_item(index) else _fail(&"item_unavailable")

@@ -107,6 +107,40 @@ func _request(fixture: Dictionary) -> Dictionary:
 		"equipped_slots": prep.equipment.equipped_slots.duplicate(true), "next_school_id": "guiin",
 		"fate_id": prep.fate_state.candidate_ids[0], "ultimate_charge": {"school_id": "bongma", "resource_amount": 60}}
 
+func test_purchased_bag_can_be_placed_in_departure_draft_without_free_bags() -> void:
+	var f := _fixture()
+	var c = _coordinator(f.store)
+	var prep: Dictionary = f.profile.active_run.preparation
+	var bought: Dictionary = c.commit_selected_purchase({"run_id": "run:depart", "prepare_session_id": prep.prepare_session_id,
+		"kind": "bag", "offer_id": str(prep.reward_state.shop.bag_id),
+		"expected_revision": f.profile.revision, "expected_prepare_revision": prep.revision})
+	assert_true(bought.ok, str(bought))
+	if not bought.ok: return
+	f.profile = bought.profile
+	var request := _request(f)
+	var session = SPATIAL.new()
+	session.begin(BAG.from_persistent_snapshot(request.spatial_session.backpack), RESOLVER.new(), ITEMS.build_items(), BAGS.build_bags(), &"bongma")
+	assert_true(session.restore_preparation_snapshot(request.spatial_session))
+	var placed := false
+	for y in range(6):
+		for x in range(6):
+			for rotation in range(4):
+				if not placed: placed = session.place_pending_bag(Vector2i(x, y), rotation)
+	assert_true(placed)
+	if not placed: return
+	request.spatial_session = session.persistent_preparation_snapshot()
+	var before := FileAccess.get_file_as_bytes(f.path)
+	var result: Dictionary = c.prepare_selected_departure(request)
+	assert_true(result.ok, str(result))
+	if not result.ok: return
+	assert_eq(result.profile.active_run.checkpoint.backpack.bags.size(), request.spatial_session.backpack.bags.size())
+	assert_eq(FileAccess.get_file_as_bytes(f.path), before)
+	var invalid: Dictionary = request.duplicate(true)
+	invalid.spatial_session.backpack.next_instance_id += 1
+	assert_false(c.prepare_selected_departure(invalid).ok)
+	assert_true(c.commit_selected_departure(request).ok)
+	assert_true(c.commit_selected_departure(request).already_applied)
+
 func _coordinator(store):
 	var coordinator = COORD.new()
 	assert_true(coordinator.has_method("prepare_selected_departure"), "Missing atomic departure candidate")

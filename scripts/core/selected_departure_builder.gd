@@ -12,6 +12,7 @@ const BOOKS = preload("res://scripts/data/ninjutsu_book_catalog.gd")
 const BUILD = preload("res://scripts/core/run_build_state.gd")
 const FATE = preload("res://scripts/core/fate_controller.gd")
 const FATES = preload("res://scripts/data/mvp3_catalog.gd")
+const LAYOUT = preload("res://scripts/core/selected_layout_contract.gd")
 
 
 func prepare(request: Dictionary, store) -> Dictionary:
@@ -48,9 +49,8 @@ func prepare(request: Dictionary, store) -> Dictionary:
 			return _fail(&"no_fifth_school")
 	elif not route.set_provisional_next_school(StringName(request.next_school_id)) or not route.commit_provisional_next_school():
 		return _fail(&"route_pending")
-	# Pending bag acquisition must be resolved by its preparation transaction;
-	# departure cannot silently discard a paid, unplaced bag.
-	if prep.spatial_session.pending_bag != null:
+	# A paid bag may be placed in this draft, but cannot be discarded at departure.
+	if normalized.spatial_session.get("pending_bag") != null:
 		return _fail(&"pending_bag")
 	var session = SESSION.new()
 	session.begin(BAG.from_persistent_snapshot(prep.spatial_session.backpack), RESOLVER.new(),
@@ -60,7 +60,7 @@ func prepare(request: Dictionary, store) -> Dictionary:
 	var failures: Array = session.commit_failures(int(prep.reward_state.chests), bool(prep.reward_state.boss_pending), false)
 	if not failures.is_empty():
 		return {"ok": false, "reason": failures[0], "failures": failures}
-	if not _same_inventory(prep.spatial_session, normalized.spatial_session):
+	if not LAYOUT.same_owned_inventory(prep.spatial_session, normalized.spatial_session):
 		return _fail(&"ownership_changed")
 	var equipment = GEAR.new()
 	equipment.restore_snapshot(prep.equipment)
@@ -165,20 +165,6 @@ func _valid_request(request: Dictionary) -> bool:
 				if record.has(field) and not _integer(record[field]):
 					return false
 	return true
-
-
-func _same_inventory(before: Dictionary, after: Dictionary) -> bool:
-	if before.backpack.next_instance_id != after.backpack.next_instance_id or before.preserve_buffer != after.preserve_buffer:
-		return false
-	return _inventory(before.backpack.items + before.buffer) == _inventory(after.backpack.items + after.buffer) \
-		and _inventory(before.backpack.bags) == _inventory(after.backpack.bags)
-
-
-func _inventory(records: Array) -> Dictionary:
-	var result := {}
-	for record in records:
-		result[int(record.instance_id)] = str(record.definition_id)
-	return result
 
 
 func _integer(value) -> bool:

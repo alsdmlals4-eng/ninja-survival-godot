@@ -887,7 +887,7 @@ Native 실행: 이 packet을 계획, Active Context를 진행 기록으로 재�
   저장 상태 반환. 실패 저장은 금액/효과 모두 무변경. focused RED→GREEN→full.
 - [ ] 준비 진입/구매: 보스 clear의 보상·HP·소유/후보를 기존 profile에 한 번 기록,
   인법/장비/가방/소모품 수령을 기존 세션과 연결. 돈 부족/버퍼 가득참/해금 거부 시험.
-- [ ] 전투 연결: 확정 장비의 부여만 BasicWeapon/Player에서 소비. 원타/추가타
+- [x] 전투 소비자 연결(자동 시험 범위; Main 채택/화면 검수 제외): 확정 장비의 부여만 BasicWeapon/Player에서 소비. 원타/추가타
   구분, 범위 다중 타격의 회복 제한, 회피/무적/피해감소 중복 사건 방지 시험.
 - [ ] Main 연결: 시작 선택 UI→첫 전장→네 전장/정비→최종전, 신규/구형 이어하기를
   구분하고 준비/출전 원자적 readback 후 입력 허용. 실제 title/UI 입력 통합 시험.
@@ -909,9 +909,19 @@ cleared encounter, gold, health/maximum_health, emergency_potions를 받는다.
 거부하고, 소비된 약을 출전 시 수량으로 복구하지 않는다. entry 실패는 live HP를
 회복시키지 않는다. readback 성공 후 실제 Player에 채택하는 연결은 아직 잔여다.
 
-`commit_selected_purchase`는 run/session/revisions+kind/offer_id만 받는다.
+`commit_selected_purchase`는 run/session/revisions+kind/offer_id와 선택적 공간 배치 후보를 받는다.
 `shop_item`/`bag`은 저장된 제안, `book`/`equipment`는 해금/미소유 목록,
 `potion`/`emergency`는 데이터 정의를 사용한다. UI가 비용/효과/성공 결과를 보내지 않는다.
+`boss_reward`/`chest`/`sell_item`/`reroll`은 기존 보상·상점 책임자의 저장된 후보와
+RNG를 복원해 처리한다. 같은 요청 재전송은 비용·상자·보상을 다시 소비하지 않는다.
+선택적 `spatial_session`은 가방+버퍼 소유 instance/definition, 구매한 pending bag,
+다음 ID를 대조한 뒤 기존 공간 resolver를 통과해야 한다. 구매/수령 확인 시 화면에서
+편집한 배치도 같은 준비 거래에 보존한다. 이것은 전투 출전 확정이 아니다.
+순수 드래그/장착/운명/경로 편집은 여전히 메모리 후보이며, 경제 거래나 출전 확인 없이
+파일을 쓰지 않는다. 실패하면 배치와 경제 모두 저장되지 않고 UI의 후보를 보존한다.
+구매 가방을 실제 배치한 후보는 출전에서도 허용한다. 미배치 가방 폐기, 공짜 가방 추가,
+instance ID 변경은 거부한다. 이를 위해 `SelectedLayoutContract`는 소유권 비교만,
+RestBackpackSession은 공간 합법성만 담당하며 새 저장 책임자를 만들지 않는다.
 소유 장비는 자동 장착하지 않고, 인법은 버퍼에 들어가며 실제 배치/출전 전 비활성이다.
 새 선택형 checkpoint/preparation의 선택적 `vitals={health,max_health,emergency_potions}`는
 구형 숫자/부여 없는 스냅샷과 함께 읽는다. vitals 없는 예전 준비의 약 구매는 거부하며
@@ -923,7 +933,7 @@ cleared encounter, gold, health/maximum_health, emergency_potions를 받는다.
 RunBuildState는 장착품의 회피/감소와 수치 강화를 합성한다. 신규 equipment 처치 문맥을
 봉마 비오의 영력 소비자에 연결했고 흑영의 직접 타격 범위는 넓히지 않았다.
 
-남은 연결: 실제 준비 UI 입력/재채택, 출전/구매 중 layout 후보 보존,
+남은 연결: 실제 준비 UI 입력/재채택(검증된 layout 후보를 위 API로 전달), 조합의 저장 거래,
 Main 시작선택/신규 프로필/준비·전투 이어하기/정산/실제 HP·비상약 자동 사용,
 대표 사용자 조작/전체 여정/시각·밸런스 검증. 이 증분은 R02/R03 전체 완료가 아니다.
 
@@ -1089,7 +1099,8 @@ in-progress guard, session_id/revision 검사, 연타 idempotence가 필수다.
 기존 Main의 `activate_starter` 경로를 새 게임 selected 경로에서 제거하고
 StartLoadoutSession의 검증된 bundle을 소비한다. legacy fixture/codec은 별도 호환 경로.
 화면: 새 게임 확인 → 시작 유파 →3택1 두 번→시작 가방/장비 확인→첫 전장 선택→출전.
-시작 유파와 첫 전장은 독립. 최초 일반 공격은 무기2+선택 인법2, 총4패턴이다.
+시작 유파와 첫 전장은 독립. 시작 구성은 무기2+선택 인법2지만 보호/이동 인법을
+선택하면 공격 채널을 추가하지 않으므로 항상 4공격 패턴이라고 표시하지 않는다.
 이전 문서의 ‘3자동 공격’ 표현은 예전 starter1 기준이며 새 구현을 지시하지 않는다.
 일반 공격은 자동, 직접 입력은 이동/무적대시/수동 오의/메뉴다. 하단 인법 버튼 없음.
 

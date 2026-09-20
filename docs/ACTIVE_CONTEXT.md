@@ -7,7 +7,7 @@ school battlefields/rests → final Boss playability. Follow packet R02–R10 wi
 repeating approval within this scope. Current implementation increment separates
 school imbuements from paid numeric ranks (legacy numeric records preserved),
 adds durable cost/outcome forge commands, and binds each present power to its
-trace receipt. Focused growth8/8 and trace/forge16/16 PASS; not yet Main/UI/combat
+trace receipt. Focused growth8/8 and trace/forge16/16 PASS; not yet Main/UI
 adoption. Added preparation-entry persistence (reserved rewards/Fate/25% base
 heal), camp purchases (book/equipment/reserved item/bag/potion/emergency reserve),
 optional backward-compatible vitals, departure HP carry, and actual basic-weapon
@@ -18,7 +18,20 @@ Main new-game/continue/settlement and actual HP/emergency consumption, then full
 input/render/Windows delivery. Changed-state local full regression PASS:
 109 scripts / 892 tests / 14,933 assertions / 297.081s, exit0;
 Python21/21 PASS, diff check PASS. Log: diagnostics/camp-growth-final-full-20260920.log
-under C:/Users/user/Tools/NinjaSurvival-Local. Remote exact-head check pending commit.
+under C:/Users/user/Tools/NinjaSurvival-Local. ac39fa60e8e3673bd03d901513181c09fc3a8a00
+remote run35513867898 PASS (GUT and Windows internal build); branch readback matches.
+Further R02 business increment: reserved Boss reward/chest/sale/reroll in the same
+profile transaction, optional owned-layout candidate preserved on purchase, and
+paid pending-bag placement accepted at departure without mint/discard. Reproduced
+bag departure blocker RED1/1, full departure16/16 GREEN (1,248 assertions).
+Business6/6 GREEN,154 assertions. Shared SelectedLayoutContract owns identity
+comparison only; session/resolver retain geometry. Independent static impact review:
+no concrete P0/P1/P2; two later tests cover reroll retry and bag-placement purchase.
+Final changed-state full regression PASS:110 scripts /899 tests /15,112 assertions /
+298.771s /exit0, no SCRIPT ERROR/ERROR/WARNING; Python21/21 and diff check PASS.
+Log: diagnostics/camp-business-final-full-20260920.log. Main/UI remains unmodified legacy.
+Next dependency: combination saved command and selected preparation UI adapter,
+then Main/profile lifecycle/HP/emergency adoption; no fresh approval required.
 Current Hera editor identifies Blacksmith, not this project: protected/unmodified.
 Change-impact independent review found oneP2 (equipment proc kill omitted from
 Bongma's nonultimate charge); actual resolver test RED1/1→GREEN1/1,35 assertions.
