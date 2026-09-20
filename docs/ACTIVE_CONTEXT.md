@@ -1,5 +1,54 @@
 # ACTIVE_CONTEXT
 
+## Latest user addition — school imbuement / campfire economy — 2026-09-20
+
+User requests school-specific equipment powers (examples: Guiin katana lifesteal,
+Heukyeong evasion, Cheonsul shuriken elemental proc), separate from campfire coin
+chance-based numerical upgrades, with book/bag/consumable purchases. Absorption
+continues to unlock acquisition eligibility only. Current rank-only trace upgrade
+does not satisfy this request. Decisions records direction; Detailed Rules marks
+the old rank-only trace contract as superseded; packet R02 records consumer/gaps,
+alternatives and proposed dependency order. Detailed economics/procs/consumables
+and compatibility remain DESIGN_REVIEW_PENDING, not implemented/approved tuning.
+No speculative code/schema/save conversion was applied. Continue approved unrelated
+fixes; get product detail agreement before replacing the trace/economy semantics.
+
+## Four-school rest reality check — 2026-09-20
+
+Latest user asks continuation and whether every school's Elite/Boss/rest works.
+Fresh task HEAD6ef885a, main ebbabdd5, Base23ecad5a unchanged; PR147 remains Draft.
+Plan: verify the actual existing Main path for all four schools before wiring the
+new selected-profile preparation entry; preserve old runtime and real saves.
+Reuse current isolated worktree and packet R02/R03; no duplicate plan or new rules.
+AgentMemory tools unavailable; current repository/consumer evidence is the resume owner.
+Characterization added to test_four_school_battle_contract.gd: real Main title
+selection, named Elite/Boss actors, uncollected/late Trace and warning gates,
+Workbench visibility, Player/weapons/spawn/school suspension, stopped combat clock,
+unresolved departure block, one chest, shop offers, redraw/duplicate-death invariants,
+and removal of remaining enemies after one frame. Focused2/2,356 assertions PASS.
+This deliberately advances encounter time and applies99999 damage; NOT natural
+play, image/readability/Human evidence, or selected-profile Main integration.
+Existing Main still uses legacy SchoolCircuit/Workbench commit/save paths.
+Ruling: do not hook selected-profile writes blindly into that legacy path: its
+starter/scroll rewards and route ownership differ from selected book/equipment canon.
+Preflight also found healing_applied is only a validated boolean in the profile
+codec; no preparation HP snapshot or runtime heal consumer accompanies it yet.
+Thus rest UI entry is verified separately from once-only healing/resume completion.
+Remaining: R02 prepare-entry persistence + runtime adoption (including HP/heal
+boundary), R03 Main/start/continue/recovery; no new completion or schema claim.
+Independent impact review found a P2: full-health fixture could hide erroneous
+redraw healing. Corrected to max-20; temporary heal(1) mutation failed all4 cases
+and was removed. Mutation also exposed a real stale deferred Control argument:
+new UI regression RED1/1 with Object conversion error, then changed deferred focus
+to instance ID lookup with Control/tree/queued/visibility checks. UI18/18,158
+assertions GREEN. Follow-up impact review found no P0/P1/P2 in these changes;
+not another whole audit or review of new economy design.
+Final local full861/861,105 scripts,14,060 assertions,138.562s,exit0;
+Python21/21 and diff check PASS. Logs: diagnostics/rest-focus-{red,green,final-full}-20260920.log
+under C:/Users/user/Tools/NinjaSurvival-Local. No actual saves/tuning/art/engine changed.
+No new image/PDF for this intermediate increment; existing daily log appended.
+PR147 exact-head CI/readback must be checked after push; keep Draft, no main merge.
+
 ## R02 departure continuation — 2026-09-20
 
 User approves continuing from876a8a4. Fresh main ebbabdd5 and Base23ecad5a unchanged.

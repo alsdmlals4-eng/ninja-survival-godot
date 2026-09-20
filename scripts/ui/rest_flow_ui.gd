@@ -367,12 +367,14 @@ func _render_workbench_routes(route_snapshot: Dictionary, provisional_school_id:
 		button.pressed.connect(_on_workbench_route_pressed.bind(school_id))
 		workbench_route_cards.add_child(button)
 	if focus_target != null:
-		_focus_if_current.call_deferred(focus_target)
+		_focus_if_current.call_deferred(focus_target.get_instance_id())
 	return rendered_provisional
 
 
-func _focus_if_current(target: Control) -> void:
-	if is_instance_valid(target) and target.is_inside_tree() and not target.is_queued_for_deletion() and target.is_visible_in_tree():
+func _focus_if_current(target_id: int) -> void:
+	# A redraw can free the card before this deferred call is dispatched.
+	var target := instance_from_id(target_id)
+	if target is Control and target.is_inside_tree() and not target.is_queued_for_deletion() and target.is_visible_in_tree():
 		target.grab_focus()
 
 

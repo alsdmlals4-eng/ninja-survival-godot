@@ -589,6 +589,23 @@ func test_workbench_focuses_the_provisional_route_card() -> void:
 	assert_eq(ui.get_viewport().gui_get_focus_owner(), route_cards.get_child(1))
 
 
+func test_workbench_deferred_focus_survives_retired_route_card() -> void:
+	var ui = _new_ui()
+	var catalog = load(CATALOG_PATH)
+	var candidates: Array[StringName] = [&"guardian_path"]
+	var no_failures: Array[StringName] = []
+	var routes := {"unvisited_school_ids": [&"bongma", &"heukyeong"], "provisional_school_id": &"heukyeong"}
+	ui.show_workbench(routes, candidates, catalog.build_fates(), &"guardian_path", no_failures)
+	var cards = ui.get_node("Panel/Margin/Content/WorkbenchView/RouteCards")
+	# Deterministically reproduce retirement before the queued focus callback.
+	var retired_id: int = cards.get_child(1).get_instance_id()
+	cards.get_child(1).free()
+	assert_false(is_instance_id_valid(retired_id))
+	ui.show_workbench(routes, candidates, catalog.build_fates(), &"guardian_path", no_failures)
+	await get_tree().process_frame
+	assert_eq(ui.get_viewport().gui_get_focus_owner(), cards.get_child(1))
+
+
 func test_preview_and_complete_are_distinct_terminal_states() -> void:
 	var ui = _new_ui()
 	if ui == null:
