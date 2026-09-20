@@ -44,6 +44,16 @@ func decode_profile_v2(payload: Dictionary, pending_transaction_id: String = "")
 		var active_result := _decode_active_departure(payload.active_run, meta.settled_run_ids)
 		if not active_result.ok:
 			return active_result
+		var run: Dictionary = payload.active_run
+		var inventories: Array = [run.checkpoint.backpack.items + run.checkpoint.buffer]
+		if run.preparation is Dictionary:
+			inventories.append(run.preparation.spatial_session.backpack.items + run.preparation.spatial_session.buffer)
+		for inventory in inventories:
+			var support_count := 0
+			for item in inventory:
+				if str(item.definition_id).begins_with("start_support:"): support_count += 1
+			if support_count > 1 or (support_count > 0 and not meta.unlocked_support_choice):
+				return {"ok": false, "reason": &"invalid_start_support"}
 		var retry_id: String = "retry:" + payload.active_run.run_id
 		if payload.active_run.retry_consumed and not receipts.has(retry_id) and pending_transaction_id != retry_id:
 			return {"ok": false, "reason": &"invalid_retry_receipt"}
@@ -103,9 +113,10 @@ func _decode_selected_preparation(raw, checkpoint: Dictionary) -> Dictionary:
 	var invalid := {"ok": false, "reason": &"invalid_preparation"}
 	if not (raw is Dictionary) or not _to_json_primitive(raw).ok:
 		return invalid
-	if raw.size() != 12 + int(raw.has("fate_state")) + int(raw.has("vitals")):
+	if raw.size() != 12 + int(raw.has("fate_state")) + int(raw.has("vitals")) + int(raw.has("ultimate_charge")):
 		return invalid
 	if raw.has("vitals") and not _valid_vitals(raw.vitals): return invalid
+	if raw.has("ultimate_charge") and not valid_selected_charge(raw.ultimate_charge, str(checkpoint.loadout.origin_school_id)): return invalid
 	if not _profile_unique_ids([raw.get("prepare_session_id")]) or raw.prepare_session_id == checkpoint.prepare_session_id:
 		return invalid
 	if raw.get("phase") != "preparing" or not _profile_integer(raw.get("revision")) or not _profile_integer(raw.get("gold")):
@@ -280,11 +291,7 @@ func decode_selected_checkpoint(raw: Dictionary) -> Dictionary:
 			return invalid # Trace decisions must be resolved before another departure.
 	var charge: Dictionary = candidate.ultimate_charge
 	invalid.reason = &"invalid_ultimate_charge"
-	var amount = charge.get("resource_amount")
-	if charge.size() != 2 or charge.get("school_id") != origin or not (amount is int or amount is float):
-		return invalid
-	var charge_caps := {"bongma": 120, "cheonsul": 3, "guiin": 100, "heukyeong": 3}
-	if not is_finite(float(amount)) or amount < 0 or amount > charge_caps[origin]:
+	if not valid_selected_charge(charge, origin):
 		return invalid
 	var bag = BACKPACK_STATE_SCRIPT.from_persistent_snapshot(candidate.backpack)
 	invalid.reason = &"selected_modifier_mismatch"
@@ -293,6 +300,13 @@ func decode_selected_checkpoint(raw: Dictionary) -> Dictionary:
 	if build.get("committed_backpack_modifiers") != resolution.modifiers.to_persistent_snapshot():
 		return invalid
 	return {"ok": true, "checkpoint": candidate}
+
+
+static func valid_selected_charge(value, origin: String) -> bool:
+	if not (value is Dictionary) or value.size() != 2 or value.get("school_id") != origin: return false
+	var amount = value.get("resource_amount")
+	var caps := {"bongma": 120, "cheonsul": 3, "guiin": 100, "heukyeong": 3}
+	return caps.has(origin) and (amount is int or amount is float) and is_finite(float(amount)) and amount >= 0 and amount <= caps[origin]
 
 
 static func _valid_vitals(value) -> bool:

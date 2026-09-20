@@ -2,6 +2,20 @@ extends "res://tests/support/selected_profile_fixture.gd"
 
 const ENCOUNTER = preload("res://scripts/core/stage_encounter_state.gd")
 
+func test_rest_persists_battle_charge_and_rejects_invalid_charge() -> void:
+	var f := _departure_fixture()
+	var c = _coordinator(f.store)
+	var request := _entry_request(f)
+	request["ultimate_charge"] = {"school_id": "bongma", "resource_amount": 73.5}
+	var bad := request.duplicate(true)
+	bad.ultimate_charge.resource_amount = 121
+	assert_false(c.commit_selected_entry(bad).ok)
+	var result: Dictionary = c.commit_selected_entry(request)
+	assert_true(result.ok, str(result))
+	if result.ok:
+		assert_eq(result.profile.active_run.preparation.ultimate_charge, request.ultimate_charge)
+		assert_eq(float(result.profile.active_run.checkpoint.ultimate_charge.resource_amount), 0.0)
+
 func _departure_fixture() -> Dictionary:
 	var f := _fixture()
 	var profile: Dictionary = f.profile.duplicate(true)

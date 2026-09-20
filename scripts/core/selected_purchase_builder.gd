@@ -14,16 +14,25 @@ const FATES = preload("res://scripts/data/mvp3_catalog.gd")
 const MODIFIERS = preload("res://scripts/data/run_modifier_set.gd")
 const REWARDS = preload("res://scripts/core/rest_reward_controller.gd")
 const LAYOUT = preload("res://scripts/core/selected_layout_contract.gd")
+const COMBINATION = preload("res://scripts/backpack/combination_resolver.gd")
 
 func prepare(request: Dictionary, store) -> Dictionary:
-	if request.size() != 6 + int(request.has("spatial_session")) or not LAYOUT.primitive(request): return _fail(&"invalid_purchase")
+	if request.size() != 6 + int(request.has("spatial_session")) + int(request.has("combination")) or not LAYOUT.primitive(request): return _fail(&"invalid_purchase")
 	var identity: Array = ["purchase-v1"]
 	for field in ["run_id", "prepare_session_id", "kind", "offer_id"]:
 		var value = request.get(field)
 		if not (value is String or value is StringName) or str(value).length() > 256: return _fail(&"invalid_purchase")
 		identity.append(str(value))
 	if request.run_id == "" or request.prepare_session_id == "" \
-		or str(request.kind) not in ["shop_item", "bag", "book", "equipment", "potion", "emergency", "boss_reward", "chest", "sell_item", "reroll"]: return _fail(&"invalid_purchase")
+		or str(request.kind) not in ["shop_item", "bag", "book", "equipment", "equip", "potion", "emergency", "boss_reward", "chest", "sell_item", "reroll", "combination"]: return _fail(&"invalid_purchase")
+	if (str(request.kind) == "combination") != request.has("combination"): return _fail(&"invalid_combination")
+	if request.has("combination"):
+		var intent = request.combination
+		if not (intent is Dictionary) or intent.size() != 5: return _fail(&"invalid_combination")
+		for field in ["source_a", "source_b", "x", "y", "rotation"]:
+			if not LAYOUT.integer(intent.get(field)): return _fail(&"invalid_combination")
+		if intent.source_a <= 0 or intent.source_b <= 0 or intent.rotation < 0 or intent.rotation > 3: return _fail(&"invalid_combination")
+		identity.append(JSON.parse_string(JSON.stringify(intent, "", true, true)))
 	for field in ["expected_revision", "expected_prepare_revision"]:
 		var value = request.get(field)
 		if not (value is int or value is float) or not is_finite(float(value)) or value < 0 \
@@ -70,7 +79,7 @@ func prepare(request: Dictionary, store) -> Dictionary:
 	rewards.configure(build, session, ITEMS.build_items(), BAGS.build_bags(), RandomNumberGenerator.new(), access)
 	var outcome := _fail(&"invalid_rewards")
 	if rewards.restore_persistent_snapshot(prep.reward_state):
-		outcome = _purchase(str(request.kind), str(request.offer_id), updated, build, gear, session, rewards, access)
+		outcome = _purchase(str(request.kind), str(request.offer_id), updated, build, gear, session, rewards, access, request.get("combination", {}))
 	if outcome.ok:
 		updated.gold = build.gold
 		updated.equipment = gear.get_snapshot()
@@ -92,8 +101,18 @@ func prepare(request: Dictionary, store) -> Dictionary:
 	return {"ok": true, "already_applied": false, "profile": decoded.profile,
 		"transaction_id": transaction_id, "outcome": outcome}
 
-func _purchase(kind: String, id: String, prep: Dictionary, build, gear, session, rewards, access) -> Dictionary:
+func _purchase(kind: String, id: String, prep: Dictionary, build, gear, session, rewards, access, combination: Dictionary = {}) -> Dictionary:
 	match kind:
+		"equip":
+			var definition: Dictionary = GEAR.CATALOG.definition(StringName(id))
+			return {"ok": true} if not definition.is_empty() and gear.equip(StringName(definition.slot), StringName(id)) else _fail(&"equipment_unavailable")
+		"combination":
+			var resolver = COMBINATION.new()
+			if not resolver.begin_result_preview(session, StringName(id), int(combination.source_a), int(combination.source_b)):
+				return _fail(&"combination_unavailable")
+			var combined: bool = resolver.commit_result(session, Vector2i(combination.x, combination.y), int(combination.rotation))
+			if not combined: resolver.cancel_result(session)
+			return {"ok": true} if combined else _fail(&"combination_placement")
 		"boss_reward":
 			var index: int = rewards.boss_reward_options().find(StringName(id))
 			return {"ok": true} if index >= 0 and rewards.choose_boss_reward(index) else _fail(&"boss_reward_unavailable")

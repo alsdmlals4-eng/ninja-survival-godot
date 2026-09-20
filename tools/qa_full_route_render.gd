@@ -13,6 +13,8 @@ func _run() -> void:
 	print("QA_FIXTURE_ID ", fixture_id)
 	main.wallet_storage_path = "user://qa_full_route_" + fixture_id + "_wallet.json"
 	main.resume_storage_path = "user://qa_full_route_" + fixture_id + "_resume.json"
+	main.profile_storage_path = "user://qa_full_route_" + fixture_id + "_profile.json"
+	main.selected_rules_enabled = false # Explicitly a legacy regression probe.
 	root.add_child(main)
 	main._on_title_new_game_requested()
 	if "--heukyeong" in OS.get_cmdline_user_args():

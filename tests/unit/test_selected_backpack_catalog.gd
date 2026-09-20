@@ -59,7 +59,11 @@ func test_selected_combination_results_are_unique_but_materials_can_stack() -> v
 	assert_false(ids.has(&"shuriken"))
 	assert_false(ids.has(&"bomb"))
 	var definitions: Dictionary = catalog.build_items()
-	assert_eq(definitions.size(), 70)
+	assert_eq(definitions.size(), 73, "Three zero-sale starter variants are not acquisition pool entries")
+	for id in catalog.START_SUPPORT_IDS:
+		var starter := StringName("start_support:" + str(id))
+		assert_false(ids.has(starter))
+		assert_eq(definitions[starter].sell_price(), 0)
 	definitions[&"water_style"].base_price = 999
 	assert_eq(catalog.build_items()[&"water_style"].base_price, 30)
 	assert_eq(LEGACY.build_items()[&"water_style"].base_price, 30)

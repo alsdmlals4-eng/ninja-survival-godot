@@ -10,6 +10,10 @@ static func prepare(node: Node) -> void:
 	var error := DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(directory))
 	assert(error == OK, "Cannot isolate Main fixture storage.")
 	var prefix := directory.path_join("%d_%d_%d" % [OS.get_process_id(), Time.get_ticks_usec(), node.get_instance_id()])
+	# Existing fixtures explicitly exercise v1 compatibility. Selected acceptance
+	# tests re-enable the new default after isolation, always with a private path.
+	node.selected_rules_enabled = false
+	node.profile_storage_path = prefix + "_profile.json"
 	if node.wallet_storage_path == "user://ninja_soul_wallet_v1.json":
 		node.wallet_storage_path = prefix + "_wallet.json"
 	if node.resume_storage_path == "user://run_resume_v1.json":

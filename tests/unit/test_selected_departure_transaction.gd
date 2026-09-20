@@ -107,6 +107,29 @@ func _request(fixture: Dictionary) -> Dictionary:
 		"equipped_slots": prep.equipment.equipped_slots.duplicate(true), "next_school_id": "guiin",
 		"fate_id": prep.fate_state.candidate_ids[0], "ultimate_charge": {"school_id": "bongma", "resource_amount": 60}}
 
+func test_adapter_recovers_already_saved_departure_after_readback_failure() -> void:
+	var f := _fixture()
+	var adapter = load("res://scripts/ui/selected_rest_adapter.gd").new()
+	assert_true(adapter.open(f.store).ok)
+	assert_true(adapter.choose_route(&"guiin"))
+	assert_true(adapter.choose_fate(StringName(adapter.snapshot().fate_state.candidate_ids[0])))
+	f.store.fail_read_after_write = true
+	var failed: Dictionary = adapter.depart({"school_id": "bongma", "resource_amount": 60})
+	assert_false(failed.ok)
+	assert_true(failed.get("persisted", false))
+	assert_true(adapter.reload_required)
+	f.store.fail_read_after_write = false
+	f.store.read_blocked = false
+	var saved: Dictionary = f.store.load_profile().profile
+	var recovered: Dictionary = adapter.reload()
+	assert_true(recovered.ok, str(recovered))
+	assert_true(recovered.get("departed", false))
+	if recovered.ok and recovered.has("profile"):
+		assert_eq(recovered.profile, saved)
+		assert_null(recovered.profile.active_run.preparation)
+		assert_eq(recovered.profile.active_run.checkpoint.route.active_school_id, "guiin")
+	assert_eq(f.store.load_profile().profile, saved)
+
 func test_purchased_bag_can_be_placed_in_departure_draft_without_free_bags() -> void:
 	var f := _fixture()
 	var c = _coordinator(f.store)

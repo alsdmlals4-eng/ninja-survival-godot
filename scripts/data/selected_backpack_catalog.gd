@@ -5,6 +5,8 @@ const LEGACY = preload("res://scripts/data/mvp4_catalog.gd")
 const BOOKS = preload("res://scripts/data/ninjutsu_book_catalog.gd")
 const ITEM = preload("res://scripts/data/item_definition.gd")
 const REPLACEMENTS := {&"katana": &"melee_manual", &"shuriken": &"projectile_manual", &"bomb": &"blast_powder"}
+const START_SUPPORT_IDS := [&"taijutsu_training", &"protection_talisman", &"ninjutsu_training"]
+const SUPPORT_UNLOCK_COST := 3
 
 
 static func build_items() -> Dictionary:
@@ -28,6 +30,11 @@ static func build_items() -> Dictionary:
 	for id in LEGACY.COMBINATION_RESULT_IDS:
 		items[id].school_payload["combination_effect"] = str(id)
 	items.merge(BOOKS.build_items())
+	for id in START_SUPPORT_IDS:
+		var starter = items[id].duplicate(true)
+		starter.id = StringName("start_support:" + str(id))
+		starter.base_price = 0
+		items[starter.id] = starter
 	return items
 
 

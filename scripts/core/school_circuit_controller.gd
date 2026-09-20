@@ -43,6 +43,18 @@ var _next_core_encounter_index: int = 0
 var _workbench_configured: bool = false
 var _workbench_started: bool = false
 var _school_started: bool = false
+var _selected_encounters := false
+
+# Selected profile owns rest/build transactions; this owner retains encounters.
+func configure_selected_encounters(build_state: RunBuildState, route_snapshot: Dictionary) -> bool:
+	if _workbench_configured or build_state == null: return false
+	var candidate := RunRouteState.new()
+	if not candidate.restore_from_checkpoint(route_snapshot): return false
+	route_state = candidate
+	_build_state = build_state
+	_selected_encounters = true
+	_workbench_configured = true
+	return true
 
 
 func _ready() -> void:
@@ -149,6 +161,12 @@ func mark_boss_defeated() -> bool:
 		return false
 	if not route_state.mark_active_school_cleared():
 		return false
+	if _selected_encounters:
+		_build_state.grant_school_boss_clear_gold()
+		_school_started = false
+		_workbench_started = true
+		boss_cleared.emit(_active_school_id)
+		return true
 	if _access_state != null:
 		_access_state.stabilize_school(_active_school_id)
 	if not _begin_workbench_for_cleared_school():
@@ -209,7 +227,7 @@ func choose_boss_reward(index: int) -> bool:
 
 func _is_origin_school_battlefield() -> bool:
 	# Legacy origin scroll rewards must not gate another battlefield's lifecycle.
-	return _ninjutsu_loadout != null and StringName(
+	return not _selected_encounters and _ninjutsu_loadout != null and StringName(
 		_ninjutsu_loadout.call("get_snapshot").get("origin_school_id", &"")
 	) == _active_school_id
 

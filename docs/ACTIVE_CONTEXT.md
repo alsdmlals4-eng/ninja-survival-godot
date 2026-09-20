@@ -1,5 +1,70 @@
 # ACTIVE_CONTEXT
 
+## Selected Main adoption and recovery — 2026-09-20–21
+
+Current approved packet R02/R03 continuation now connects default title new game
+to the two-book draft, independent first battlefield, selected encounters, saved
+camp UI, four-school departure and final Boss/settlement. Main owns transitions;
+SelectedRunSession orchestrates existing owners, SelectedRestAdapter holds detached
+UI drafts, and RunResumeStore/Codec remains the only profile owner. Existing v1
+tests explicitly select legacy mode; they are not selected-mode coverage.
+
+New camp controls use real trace/forge/purchase/equipment/combination commands.
+Explicit equipment confirmation saves preparation together with the spatial draft;
+it does not publish combat power. Pure movement/route/Fate remains unsaved until
+an economic confirmation or departure. Legacy numeric ranks, real saves, approved
+art, other worktrees/editor sessions and settings are protected.
+
+Intermediate whole regression:912/912,115 scripts,15,437 assertions,385.577s.
+Independent change-impact review found3P2 recovery defects: rest charge lived only
+in RAM, departure readback recovery expected a deleted preparation, and a last-soul
+retry could not recheck its already-paid receipt. Reproduced and corrected with
+optional persisted preparation charge, exact departure replay, pending retry
+readback recovery. Focused recovery26/26,1,499 assertions,133.17s PASS, including
+final held-input release gating. Old preparation without charge falls back to its
+last departure charge; no historical charge is invented. Last departure stays intact.
+
+Actual Windows/OpenGL pointer/render probe passes title→draft→battlefield,
+accelerated Elite/Trace/Boss→camp absorb/reward/chest→route/Fate→next battlefield.
+Tools: tools/qa_selected_run_render.gd; captures under diagnostics/selected-run-827587
+in C:/Users/user/Tools/NinjaSurvival-Local. This is not natural-speed or Human play.
+Visual review exposed initial focus jumping past unresolved trace; a failing input
+regression was added and focus priority corrected. Selected combo-list legacy
+catalog mismatch also reproduced RED then corrected. Start cancellation preserves
+save bytes; no new save until confirmation. Final full regression/readback pending.
+
+R05 followup: three-soul support unlock uses the same ledger; next new run selects
+one real zero-sale support (three canonical variants; existing acquisition pool
+stays19). Actual HP modifiers apply at start. Selected codex displays24 books,
+9 separate gear,19 support,6 bags,3 combinations. Title's six modals incorrectly
+used WHEN_PAUSED, so direct signals passed while pointer clicks failed. Reproduced
+and fixed to ALWAYS; title/codex focused7/7 PASS. Recovery UI explicitly selects
+and confirms a store inventory; existing hash comparison/archive publication is
+the sole writer. Recovery/lifecycle focused7/7 PASS, no engine warnings/orphans.
+
+Intermediate full after support:921/921,115 scripts,15,608 assertions,421.109s;
+not the final run after modal/text/recovery UI changes. Final changed-state GUT:
+924/924,116 scripts,15,684 assertions,445.823s,exit0;
+diagnostics/selected-adoption-final-full-20260921.log. Python21/21 PASS.
+No engine ERROR/WARNING; GUT reports transient per-test orphan lists in older
+UI fixtures, so this is not an orphan-free full-suite claim. Focused recovery
+tests have no orphan reports. Windows export and packaged headless main smoke
+PASS using the existing byte-identical4.7.1 binary/template. Build:
+build/windows-playtest-20260921/NinjaSurvivalInternal.exe plus adjacent .pck.
+Packaged pointer/render NOT_RUN; source-project pointer evidence follows.
+Latest pointer/render probe: diagnostics/selected-run-752054,
+selected-render-recovery-final-20260921.log. Actual start/camp/departure/awakening/
+codex/support/new-game confirmation and explicit recovery clicks PASS; inspected
+screens. QA only funds/corrupts its isolated file and accelerates encounter gates.
+No natural-speed/Human/device/final-art completion inferred. Focused independent
+review of recovery/modal changes found no new confirmed P0/P1/P2 (static only).
+
+Next: PR147 synchronization; R05 settings and
+archive-only recovery guidance, R03 broader start matrix, R06–R10 natural
+run/input/performance/assets/delivery remain open.
+Keep Draft; no whole-game/main/Human/device/release completion claim. Existing full
+review budget remains consumed; only focused impact/recovery checks continued.
+
 ## Approved playable-run continuation — 2026-09-20
 
 User approved delegated detail decisions and requests actual new-game → four

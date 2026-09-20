@@ -871,6 +871,34 @@ begin_rest 재호출은 후보 재추첨·구매 제한 초기화를 일으키�
 
 ### R02. 준비 단계와 두 확정 거래
 
+#### 2026-09-21 Main/UI 연결 증분
+
+SelectedRestAdapter/Screen이 기존 RestFlowUI에 흔적·장비 부여·확률 강화·책/장비/
+회복약 구매·조합을 연결한다. 기존 공간 resolver/거래 책임자는 유지한다.
+Main의 기본 신규 시작은 SelectedRunSession을 통해 실제 두 권 선택·첫 전장 독립
+선택·네 준비·최종 재앙으로 이어진다. SchoolCircuit의 selected 모드는 옛 자동
+인법 지급과 legacy 준비 저장을 실행하지 않는다. 옛 저장은 별도 호환 경로다.
+
+MINOR_TECHNICAL_DRIFT: 장비 ‘장착’ 확인 버튼은 준비 저장 거래로 구현한다.
+직후 유파 부여/수치 강화가 화면에 보이는 실제 장착품을 대상으로 해야 하므로,
+순수 공간/경로/운명 미리보기와 달리 명시적 장착 확인을 저장한다. 출전 전 전투
+checkpoint/능력은 변하지 않는다. 구매 장착·강화·출전/저장실패 시험으로 검증하고,
+되돌림은 이 presentation/command 연결 단위이며 기존 저장 기록을 삭제하지 않는다.
+
+휴식 entry는 정지된 전투의 ultimate_charge도 선택적 필드로 보존한다. 저장에
+존재하면 출전 요청과 일치해야 하며, 이어하기에서도 마지막 출전이 아닌 휴식 값을
+사용한다. 구형 필드 없는 preparation은 이전 checkpoint charge로 읽는다.
+출전/재도전의 쓰기 성공 후 readback만 실패하면 같은 거래를 재조회하고 비용을
+다시 쓰지 않는다. 최종전에도 확인/대시/오의 입력 해제를 기다린다.
+
+근거: 기존 분리 owner 재사용 ADAPT, 별도 UI 전용 저장 체계 REJECT. Godot 공식
+[ScrollContainer](https://docs.godotengine.org/en/stable/classes/class_scrollcontainer.html)
+및 [키보드 초점](https://docs.godotengine.org/en/stable/tutorials/ui/gui_navigation.html)을
+재확인해 기존 follow_focus를 사용한다. 첫 화면은 미해결 흔적에 초점을 둔다.
+경험 가설: 흡수/부여/수치 강화를 구분하고 출전 전 준비가 안전하게 보존됨을
+이해한다. 반증: 먼저 처리할 선택을 못 찾거나 출전 전 전투력 반영으로 오해함.
+실제 pointer/render는 일부 흐름 통과; 사람 이해도·반복 피로는 NOT_RUN.
+
 #### 2026-09-20 실행 순서 — 승인된 전체 여정 연결
 
 Spec: 상세 규칙 R-CAMP와 최신 Decisions. 기존 R01 저장 책임자, 별도 장비3슬롯,
@@ -1142,6 +1170,29 @@ kind는 support/book/equipment/bag; string prefix 추측으로 거래 종류를 
 ·조합 취소·4번째 준비에서 돈/품목/효과가 일치한다.
 
 ### R05. 정산·각성·재도전·도감·설정
+
+#### 2026-09-21 실제 연결 증분
+
+`RunSettlementLedger.unlock_selected_support`가 같은 프로필 안에서3소울과
+해금을 원자적으로 기록한다. `start_support:` 정의3개는 정본 효과·크기를
+재사용하고 판매0이며 기존 획득 풀19개에 들어가지 않는다. StartLoadoutSession/
+UI→ledger→codec이 해금·한 개 소유·실제3×3배치를 검증한다. 시작 최대체력은
+지난 런 수치가 아닌 캐릭터 기본값+확정 배치에서 계산한다. 현재 런에 무료 지원품을
+추가하지 않는다. 도감은 selected title에서24인법/장비9/보조19/가방6/조합3을
+별도로 읽고 효과명·수치를 표시한다. Legacy 도감/저장 경로는 보존한다.
+
+`SelectedProfileRecoveryUI`는 기존store의 읽기 전용 inventory를 표시하고
+별도 선택→확정에서만 publish_recovery_candidate를 호출한다. UI가 파일을
+직접 교체하지 않는다. 확인 후 원본이 바뀌면 store의 해시 비교로 거부하고 원본은
+복구 보관소에 보존한다. 자동 최신본 선택/새 저장 owner/이전 저장 삭제 없음.
+
+Windows 포인터 검사에서 제목6개 팝업의 WHEN_PAUSED가 실제 클릭을 막는 결함을
+재현해 ALWAYS로 교정했다. 직접signal시험과 실제클릭은 다른 근거다. 근거:
+https://docs.godotengine.org/en/stable/classes/class_node.html#enum-node-processmode .
+경험 가설: 비용·지원품 공간·복구 확인을 누르기 전에 이해할 수 있다. 반증:
+해금을 현재 런 무료획득으로 오해하거나 임시 파일을 확정본으로 오인하면 재검토.
+focused/lifecycle/UI와 실제 캡처는 Active Context에 연결한다. 사람 이해/재미는
+NOT_RUN. 설정consumer와 archive-only 수동복구 안내는 아직 남은 R05이다.
 
 **수정:** `scripts/core/run_settlement_ledger.gd`, `ninja_soul_wallet.gd`,
 `run_checkpoint.gd`, `main_controller.gd`, `scripts/ui/title_screen.gd`,

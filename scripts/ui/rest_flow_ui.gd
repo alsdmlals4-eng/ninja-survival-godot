@@ -33,6 +33,9 @@ const WORKBENCH_SCHOOL_DETAILS := {
 }
 
 const WORKBENCH_FAILURE_TEXT := {
+	&"trace_pending": "회수한 흔적의 흡수 또는 장비 부여를 먼저 선택하세요.",
+	&"reload_required": "저장 상태 다시 읽기를 눌러 완료된 거래를 확인하세요.",
+	&"charge_changed": "저장된 오의 충전 상태를 다시 불러와야 합니다.",
 	&"missing_session": "작업대 세션을 다시 열어야 합니다.",
 	&"already_committed": "이 작업대는 이미 확정되었습니다.",
 	&"commit_in_progress": "작업대 확정을 처리 중입니다.",
@@ -259,7 +262,7 @@ func show_workbench(
 ) -> void:
 	_show_only(workbench_view)
 	var provisional_school_id := StringName(route_snapshot.get("provisional_school_id", &""))
-	var has_route := _render_workbench_routes(route_snapshot, provisional_school_id)
+	var has_route := _render_workbench_routes(route_snapshot, provisional_school_id, not bool(workbench_context.get("external_focus_owner", false)))
 	var final_preparation := bool(route_snapshot.get("final_binding_eligible", false))
 	get_node("Panel/Margin/Content/WorkbenchView/TitleLabel").text = (
 		"최종 준비 — 백팩과 운명을 확정하면 재앙 보스에 도전합니다."
@@ -269,6 +272,7 @@ func show_workbench(
 		has_route = true
 	workbench_commit_button.text = "최종전 출전 확정" if final_preparation else "출전 확정"
 	var has_fate := _render_workbench_fates(fate_candidate_ids, fate_definitions, pending_fate_id)
+	if final_preparation and bool(workbench_context.get("allow_final_fate_skip", false)): has_fate = true
 	_render_workbench_reward_status(workbench_context)
 	_render_workbench_spatial_inputs(workbench_context)
 	_render_workbench_commit(has_route, has_fate, readiness_failures)
@@ -335,7 +339,7 @@ func _string_array(values: Array) -> Array[String]:
 	return result
 
 
-func _render_workbench_routes(route_snapshot: Dictionary, provisional_school_id: StringName) -> bool:
+func _render_workbench_routes(route_snapshot: Dictionary, provisional_school_id: StringName, automatic_focus := true) -> bool:
 	_clear_children(workbench_route_cards)
 	var rendered_provisional := false
 	var focus_target: Button = null
@@ -366,7 +370,7 @@ func _render_workbench_routes(route_snapshot: Dictionary, provisional_school_id:
 		button.text = "\n".join(lines)
 		button.pressed.connect(_on_workbench_route_pressed.bind(school_id))
 		workbench_route_cards.add_child(button)
-	if focus_target != null:
+	if focus_target != null and automatic_focus:
 		_focus_if_current.call_deferred(focus_target.get_instance_id())
 	return rendered_provisional
 

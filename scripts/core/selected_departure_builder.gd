@@ -38,6 +38,8 @@ func prepare(request: Dictionary, store) -> Dictionary:
 		return _fail(&"wrong_preparation")
 	if prep.revision != request.expected_prepare_revision or prep.equipment.revision != request.expected_equipment_revision:
 		return _fail(&"stale_preparation")
+	if prep.has("ultimate_charge") and prep.ultimate_charge != normalized.ultimate_charge:
+		return _fail(&"charge_changed")
 	var route = ROUTE.new()
 	if not route.restore_from_checkpoint(run.checkpoint.route) or not route.mark_active_school_cleared():
 		return _fail(&"invalid_route")

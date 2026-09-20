@@ -14,7 +14,7 @@ const REWARDS = preload("res://scripts/core/rest_reward_controller.gd")
 const MODIFIERS = preload("res://scripts/data/run_modifier_set.gd")
 
 func prepare(request: Dictionary, store) -> Dictionary:
-	if request.size() != 9: return _fail(&"invalid_entry")
+	if request.size() != 9 + int(request.has("ultimate_charge")): return _fail(&"invalid_entry")
 	for field in ["run_id", "departure_id", "school_id"]:
 		if not (request.get(field) is String or request.get(field) is StringName) \
 			or str(request[field]).is_empty() or str(request[field]).length() > 256: return _fail(&"invalid_entry")
@@ -38,6 +38,9 @@ func prepare(request: Dictionary, store) -> Dictionary:
 	var run = profile.active_run
 	if not (run is Dictionary) or run.run_id != str(request.run_id): return _fail(&"wrong_run")
 	var cp: Dictionary = run.checkpoint
+	var charge = request.get("ultimate_charge", cp.ultimate_charge)
+	if not load("res://scripts/core/run_resume_codec.gd").valid_selected_charge(charge, str(run.starting_school)):
+		return _fail(&"invalid_ultimate_charge")
 	if run.preparation != null or cp.prepare_session_id != str(request.departure_id) \
 		or cp.route.active_school_id != str(request.school_id) or cp.circuit.phase != "core": return _fail(&"wrong_departure")
 	if int(request.gold) < int(cp.build.gold): return _fail(&"invalid_battle_gold")
@@ -81,6 +84,7 @@ func prepare(request: Dictionary, store) -> Dictionary:
 		"spatial_session": session.persistent_preparation_snapshot(), "loadout": cp.loadout.duplicate(true),
 		"gold": int(request.gold), "reward_state": rewards.persistent_snapshot(), "pending_fate": "",
 		"provisional_school": "", "healing_applied": true, "fate_state": fate.persistent_preparation_snapshot(),
+		"ultimate_charge": charge.duplicate(true),
 		"vitals": {"health": mini(int(request.health) + healing, int(request.maximum_health)),
 			"max_health": int(request.maximum_health), "emergency_potions": int(request.emergency_potions)}}
 	fate.free()
