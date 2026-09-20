@@ -70,6 +70,24 @@ func test_telegraphed_zone_uses_the_locked_warning_position() -> void:
 
 	assert_eq(target.received_damage, 0, "Moving out of a telegraphed zone before execution must avoid its damage.")
 
+func test_world_offset_and_caster_motion_cannot_displace_locked_warning() -> void:
+	var actor = ACTOR_SCENE.instantiate()
+	add_child_autofree(actor)
+	actor.global_position = Vector2(215.0, -80.0)
+	assert_true(actor.configure_definition(ENCOUNTER_CATALOG_SCRIPT.actor_definition_for(&"five_element_tuner")))
+	var target := DamageTarget.new()
+	add_child_autofree(target)
+	target.global_position = Vector2(410.0, 135.0)
+	assert_true(actor.configure_target(target))
+	var zone_pattern: Dictionary = actor.definition.pattern_definitions[0]
+	actor._on_pattern_state_changed(&"telegraph", zone_pattern)
+	assert_eq(actor._telegraph_visual.global_position, Vector2(410.0, 135.0), "Rendered warning must equal damage center away from world origin.")
+	actor.global_position += Vector2(50.0, 15.0)
+	assert_eq(actor._telegraph_visual.global_position, Vector2(410.0, 135.0), "Locked field must not follow caster transforms.")
+	target.global_position = Vector2(410.0, 135.0)
+	actor._on_pattern_execute_requested(zone_pattern)
+	assert_gt(target.received_damage, 0)
+
 
 func test_line_dash_relocates_to_the_locked_lane_without_hitting_a_player_who_evades_sideways() -> void:
 	var actor = ACTOR_SCENE.instantiate()

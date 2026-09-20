@@ -35,6 +35,11 @@ var _touch_available: bool = false
 var _stage_phase_requested_visible: bool = false
 var _ultimate_ready: bool = false
 var _ultimate_feedback_remaining: float = 0.0
+var _input_help_enabled := true
+
+func set_input_help_enabled(enabled: bool) -> void:
+	_input_help_enabled = enabled
+	_render_ultimate_ready()
 
 
 func _ready() -> void:
@@ -115,7 +120,7 @@ func show_ultimate_feedback(result: StringName) -> void:
 
 
 func _render_ultimate_ready() -> void:
-	ultimate_button.text = "오의 · 준비 [E/Y]" if _ultimate_ready else "오의 · 충전 중 [E/Y]"
+	ultimate_button.text = ("오의 · 준비" if _ultimate_ready else "오의 · 충전 중") + (" [E/Y]" if _input_help_enabled else "")
 	ultimate_button.tooltip_text = "E / 패드 Y / 클릭·터치로 오의 발동. 일반 공격은 자동입니다."
 
 

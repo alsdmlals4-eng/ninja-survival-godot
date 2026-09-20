@@ -380,6 +380,7 @@ func _show_telegraph(pattern: Dictionary) -> void:
 	var texture = load(asset_path) as Texture2D if ResourceLoader.exists(asset_path) else FALLBACK_TELEGRAPH_TEXTURE
 	_telegraph_visual = Sprite2D.new()
 	_telegraph_visual.name = "PatternTelegraph"
+	_telegraph_visual.top_level = true
 	_telegraph_visual.texture = texture
 	_telegraph_visual.global_position = _telegraphed_position
 	_telegraph_visual.scale = Vector2.ONE * 0.13

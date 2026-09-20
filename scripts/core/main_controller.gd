@@ -124,6 +124,11 @@ func _ready() -> void:
 	school_selection.hide()
 	title_screen.show_title()
 	_refresh_title_resume_state()
+	if selected_rules_enabled:
+		var settings = preload("res://scripts/ui/game_settings_controller.gd").new()
+		settings.name = "GameSettings"
+		add_child(settings)
+		settings.configure(self, profile_storage_path + ".settings.cfg")
 
 
 func _setup_mvp3_nodes() -> void:
@@ -787,6 +792,9 @@ func _on_settings_requested() -> void:
 
 
 func _on_resume_requested() -> void:
+	if selected_rules_enabled and selected_run != null:
+		selected_run.resume_after_menu_release()
+		return
 	get_tree().paused = false
 
 

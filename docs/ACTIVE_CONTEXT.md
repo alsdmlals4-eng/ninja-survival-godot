@@ -59,8 +59,30 @@ screens. QA only funds/corrupts its isolated file and accelerates encounter gate
 No natural-speed/Human/device/final-art completion inferred. Focused independent
 review of recovery/modal changes found no new confirmed P0/P1/P2 (static only).
 
-Next: PR147 synchronization; R05 settings and
-archive-only recovery guidance, R03 broader start matrix, R06–R10 natural
+R05 settings now uses one Main-owned controller: validated local cfg, explicit
+apply/cancel/readback, unreadable originals preserved on explicit replacement.
+Master audio/window mode belong to one weak host owner; HUD hints, hit shake and
+player effect density stay local. No run profile/global installed settings change.
+Density20~100% affects katana/book effects only, never enemy warnings/projectiles.
+Audio assets remain R08. Focused5/5,35 assertions PASS; host interference P2 and
+held-pause dash edge reproduced/fixed. Pause retains effects until input release
+and2 physics ticks. Source Windows pointer/settings/pause return PASS, captures
+diagnostics/selected-run-754722. Archive-only recovery explains actual preservation
+path/no deletion/manual review, not automatic archive recovery. Whole settings
+930/930,117 scripts,15,737 assertions,490.462s PASS before later refactor/visual fix.
+
+Ninjutsu ID/lane lookup now keeps private prototypes and returns detached copies;
+public build_definitions remains fresh mutable. 1000-query diagnostic2680.236ms
+to6.25ms; microbenchmark, not frame-time/camp-latency acceptance. Before-change
+mutation-isolation characterization6/6 PASS. World-offset warning was displaced
+by caster position; top_level=true fixes its locked center. RED1/7→GREEN7/7,
+36 assertions. No gameplay geometry/timing/balance change. Static impact review clean.
+tools/qa_selected_route_matrix.gd tests Main/actors/transactions:4 origins×24orders.
+Four shards running; earlier sequential probes were stopped for workload partitioning,
+not completed matrices. First adoption f7abf0d remote checks PASS,run35521299978.
+
+Next: exact-head verification and PR147 sync; R03 matrix,
+R06 warning geometry/fairness/shared hazard budget and R06–R10 natural
 run/input/performance/assets/delivery remain open.
 Keep Draft; no whole-game/main/Human/device/release completion claim. Existing full
 review budget remains consumed; only focused impact/recovery checks continued.

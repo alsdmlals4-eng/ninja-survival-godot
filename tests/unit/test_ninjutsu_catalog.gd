@@ -7,6 +7,23 @@ const SCHOOL_IDS: Array[StringName] = [&"bongma", &"cheonsul", &"guiin", &"heuky
 func test_ninjutsu_catalog_resource_exists() -> void:
 	assert_true(ResourceLoader.exists(CATALOG_PATH))
 
+func test_lookup_callers_cannot_mutate_later_canonical_queries() -> void:
+	var catalog = _catalog()
+	var first = catalog.definition_for_id(&"bongma_talisman_wheel")
+	first.effect_config.damage = 999.0
+	first.tags.clear()
+	first.school_id = &"guiin"
+	var all: Dictionary = catalog.build_definitions()
+	all[&"bongma_talisman_wheel"].effect_config.damage = 888.0
+	var later = catalog.definition_for_id(&"bongma_talisman_wheel")
+	assert_eq(later.effect_config.damage, 5.0)
+	assert_true(later.tags.has(&"injutsu"))
+	assert_eq(later.school_id, &"bongma")
+	var starter = catalog.definition_for_lane(&"bongma", &"starter")
+	starter.display_name = "changed"
+	assert_eq(catalog.definition_for_id(&"bongma_hundred_demon_familiar").display_name, "백귀 식신")
+	assert_null(catalog.definition_for_id(&"not_real"))
+
 
 func test_every_school_has_one_starter_elite_scroll_and_boss_scroll() -> void:
 	var catalog = _catalog()

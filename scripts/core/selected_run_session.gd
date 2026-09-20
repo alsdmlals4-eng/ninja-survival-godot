@@ -23,6 +23,13 @@ var _start_revision := 0
 var _new_run_id := ""
 var _start_layer: CanvasLayer
 var _waiting_input_release := false
+var _waiting_pause_release := false
+var _pause_release_tick := -1
+
+func resume_after_menu_release() -> void:
+	_waiting_pause_release = true
+	_pause_release_tick = -1
+	process_mode = Node.PROCESS_MODE_ALWAYS
 var _entry_request: Dictionary = {}
 var _rest_charge: Dictionary = {}
 var _victory_pending := false
@@ -233,6 +240,16 @@ func adopt(profile: Dictionary) -> bool:
 	return true
 
 func _process(_delta: float) -> void:
+	if _waiting_pause_release:
+		if Input.is_action_pressed(&"dash") or Input.is_action_pressed(&"ultimate") or Input.is_action_pressed(&"ui_accept"):
+			_pause_release_tick = -1
+			return
+		# Godot retains just_pressed separately for physics even after release.
+		# Drain that input edge while the whole battle remains paused.
+		if _pause_release_tick < 0: _pause_release_tick = Engine.get_physics_frames()
+		if Engine.get_physics_frames() < _pause_release_tick + 2: return
+		_waiting_pause_release = false
+		get_tree().paused = false
 	if get_tree().paused: return
 	if _waiting_input_release and not Input.is_action_pressed(&"dash") and not Input.is_action_pressed(&"ultimate") and not Input.is_action_pressed(&"ui_accept"):
 		_waiting_input_release = false

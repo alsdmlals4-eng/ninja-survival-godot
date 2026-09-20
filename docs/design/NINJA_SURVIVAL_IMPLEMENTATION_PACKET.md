@@ -539,7 +539,7 @@ schema1의 진행 중 런은 아이템 의미가 달라져 자동 변환을 **RE
 |---|---|---|---|---|
 | 메인 | 6버튼 클릭 | 방향/Tab 초점, Enter/A 확인 | 큰 버튼 탭 | 이어하기 실패 이유, 파괴적 새 게임 재확인 |
 | 시작 선택 | 유파/전장 카드 별도 | 두 그룹 간 이동 | 카드 탭 후 시작 | 처음 초점 복원, 선택이 곧 출전 아님 |
-| 전투 | 상단 오의/설정 | WASD/스틱, Space/B 대시, E/Y 오의 | 좌 이동패드, 우 대시/오의 | 메뉴가 열리면 held 입력 초기화 |
+| 전투 | 상단 오의/설정 | WASD/스틱, Space/패드 아래 버튼 대시, E/패드 위 버튼 오의 | 좌 이동패드, 우 대시/오의 | 메뉴 복귀 시 held 입력 해제 대기 |
 | 준비 가방 | 드래그/회전 버튼 | pick→방향→R/회전 버튼→place, B 취소 | 탭 pick→셀 탭 place, 회전 | 불법 배치 빨간 윤곽+이유, 원위치 복귀 |
 | 캐릭터 장비 | 슬롯→목록→비교→교체 | 순차 초점·확인·B 취소 | 슬롯 탭→목록 탭→확인 | 교체는 미리보기, 출전 전 원복 가능 |
 | 흔적 강화 | 강화→장비1개→확인 | 단계별 초점·뒤로 | 카드 탭→대상 탭→확인 | 해금 포기 경고, 취소0소비, 저장 실패 전부 원복 |
@@ -1192,7 +1192,20 @@ https://docs.godotengine.org/en/stable/classes/class_node.html#enum-node-process
 경험 가설: 비용·지원품 공간·복구 확인을 누르기 전에 이해할 수 있다. 반증:
 해금을 현재 런 무료획득으로 오해하거나 임시 파일을 확정본으로 오인하면 재검토.
 focused/lifecycle/UI와 실제 캡처는 Active Context에 연결한다. 사람 이해/재미는
-NOT_RUN. 설정consumer와 archive-only 수동복구 안내는 아직 남은 R05이다.
+NOT_RUN. 후속 설정consumer/복구 안내 증분은 아래 기록한다.
+
+`GameSettingsController/UI`는 Main 소유 로컬 환경설정이며 새 autoload/진행 저장
+owner가 아니다. profile 경로의 `.settings.cfg`에 ConfigFile 임시 쓰기→재읽기→게시,
+명시 적용/취소/실패 표시를 연결한다. 손상 설정은 명시 교체 때 보존한다. 실제 소비는
+Master 음량, 현재 창 모드, 피격 카메라, HUD 키 안내, 일본도/인법 cosmetic 농도
+20~100%다. 적 경계/투사체/피해는 바꾸지 않는다. 모든 오의/음향 자산 완료가 아니다.
+패드 안내는 실제 아래/위 버튼과 일치시켰다. 멈춤 복귀는 메뉴 키 해제+2물리tick까지
+기존 pause를 유지하며 효과 취소/입장 무적을 재부여하지 않는다.
+가설: 적 경고를 가리지 않는 표현 조절과 신뢰 가능한 멈춤/복귀. 반증: 농도 조절이
+전조를 숨기거나 메뉴 복귀가 대시/오의를 소모하면 실패. evidence는 Active Context.
+복구 후보0인 화면은 실제 보관 경로와 원본 유지/게임 종료/수동 검토 안내를 제공한다.
+공식 근거: https://docs.godotengine.org/en/stable/classes/class_configfile.html,
+https://docs.godotengine.org/en/stable/classes/class_audioserver.html .
 
 **수정:** `scripts/core/run_settlement_ledger.gd`, `ninja_soul_wallet.gd`,
 `run_checkpoint.gd`, `main_controller.gd`, `scripts/ui/title_screen.gd`,

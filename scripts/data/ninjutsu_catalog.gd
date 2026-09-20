@@ -7,6 +7,13 @@ const SCHOOL_IDS: Array[StringName] = [&"bongma", &"cheonsul", &"guiin", &"heuky
 const ACQUISITION_LANES: Array[StringName] = [&"starter", &"elite_scroll", &"boss_scroll"]
 const EFFECT_KINDS := ["familiar", "chain", "ward", "orbit", "dash_ward", "seal_zone", "flame_zone", "water_zone", "lightning_chain", "wind_projectile", "dash_token", "shield", "pulse", "afterimage_line", "ring", "kick_cone", "dash_speed", "proximity_guard", "needle", "poison_zone", "execution", "dart", "clone", "dash_guard"]
 const TAGS := [&"injutsu", &"melee", &"projectile", &"movement", &"survival"]
+static var _lookup_definitions: Dictionary = {}
+
+# Internal prototypes only. Public queries always return detached value copies;
+# build_definitions() retains its fresh, caller-mutable authoring contract.
+static func _lookup() -> Dictionary:
+	if _lookup_definitions.is_empty(): _lookup_definitions = build_definitions()
+	return _lookup_definitions
 
 
 static func build_definitions() -> Dictionary:
@@ -42,14 +49,14 @@ static func build_definitions() -> Dictionary:
 static func definition_for_lane(school_id: StringName, lane: StringName):
 	if not SCHOOL_IDS.has(school_id) or not ACQUISITION_LANES.has(lane):
 		return null
-	for definition in build_definitions().values():
+	for definition in _lookup().values():
 		if definition.school_id == school_id and definition.acquisition_lane == lane:
 			return definition.copy_value()
 	return null
 
 
 static func definition_for_id(ninjutsu_id: StringName):
-	var definition = build_definitions().get(ninjutsu_id)
+	var definition = _lookup().get(ninjutsu_id)
 	return definition.copy_value() if definition != null else null
 
 

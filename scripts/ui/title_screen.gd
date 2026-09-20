@@ -12,6 +12,7 @@ signal continue_requested
 signal quit_requested
 signal support_unlock_requested
 signal recovery_requested
+signal preferences_requested
 
 @onready var start_button: Button = $LogoLockup/MenuButtons/StartButton
 @onready var continue_button: Button = $LogoLockup/MenuButtons/ContinueButton
@@ -165,6 +166,9 @@ func _close_guide() -> void:
 
 func _open_settings() -> void:
 	_close_all_panels()
+	if preferences_requested.has_connections():
+		preferences_requested.emit()
+		return
 	settings_panel.show()
 	_refresh_fullscreen_button()
 	fullscreen_button.grab_focus.call_deferred()

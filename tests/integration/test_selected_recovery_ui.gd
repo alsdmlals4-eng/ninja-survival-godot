@@ -2,6 +2,22 @@ extends "res://tests/support/selected_profile_fixture.gd"
 
 const VIEW_PATH := "res://scripts/ui/selected_profile_recovery_ui.gd"
 
+func test_no_valid_live_candidate_explains_preserved_archive_without_publishing() -> void:
+	var fixture := _fixture()
+	var view = add_child_autofree(load(VIEW_PATH).new())
+	var inventory: Dictionary = fixture.store.inspect_profile_recovery()
+	for item in inventory.candidates: item.valid = false
+	inventory.publication_incomplete = true
+	view.show_inventory(inventory)
+	watch_signals(view)
+	assert_true(view.confirm_button.disabled)
+	assert_true(view.status_label.text.contains(ProjectSettings.globalize_path(inventory.recovery_archive_root)))
+	assert_true(view.status_label.text.contains("게임을 종료"))
+	assert_true(view.status_label.text.contains("삭제하지"))
+	view.confirm_button.pressed.emit()
+	assert_signal_not_emitted(view, "recovery_confirmed")
+	await get_tree().process_frame
+
 func test_recovery_is_explicit_and_cancel_preserves_every_source() -> void:
 	var fixture := _fixture()
 	assert_true(ResourceLoader.exists(VIEW_PATH))

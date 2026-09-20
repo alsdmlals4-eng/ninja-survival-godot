@@ -61,6 +61,9 @@ func show_inventory(inventory: Dictionary) -> void:
 		button.pressed.connect(_select.bind(candidate.role, description))
 		choice_buttons.append(button)
 	status_label.text = "기록을 고르고 내용을 확인한 뒤 복구 확정을 누르세요. 취소하면 파일을 바꾸지 않습니다."
+	if choice_buttons.all(func(button): return button.disabled):
+		var archive := ProjectSettings.globalize_path(str(inventory.get("recovery_archive_root", "")))
+		status_label.text = "지금 바로 선택할 수 있는 정상 기록이 없습니다. 새 게임으로 덮어쓰거나 원본을 삭제하지 마세요.\n게임을 종료한 뒤 아래 보관소와 저장 폴더 전체를 복사해 보관하세요. inventory.json과 *.original 기록의 확인이 필요합니다. 번호가 크다는 이유만으로 복원하지 않습니다. 원본을 유지한 상태로 개발자에게 복구 검토를 요청하세요.\n보관소: " + archive
 	show()
 	cancel_button.grab_focus.call_deferred()
 

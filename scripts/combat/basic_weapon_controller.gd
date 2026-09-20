@@ -423,6 +423,7 @@ func _spawn_katana_effect(source: Node2D, target: Node2D) -> void:
 		return
 	var effect := Sprite2D.new()
 	effect.name = "KatanaEffect"
+	effect.add_to_group("player_cosmetic_effect")
 	effect.texture = weapon_effect_texture
 	effect.region_enabled = true
 	var texture_size := weapon_effect_texture.get_size()

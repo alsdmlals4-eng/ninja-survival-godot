@@ -888,6 +888,7 @@ func _spawn_effect(definition, position: Vector2, effect_scale: float, duration:
 		return null
 	var effect := Sprite2D.new()
 	effect.name = "NinjutsuEffect"
+	effect.add_to_group("player_cosmetic_effect")
 	effect.texture = _effect_texture(definition)
 	effect.global_position = position
 	effect.scale = Vector2.ONE * effect_scale

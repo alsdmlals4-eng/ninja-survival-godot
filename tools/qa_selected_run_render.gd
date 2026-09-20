@@ -19,6 +19,17 @@ func _run() -> void:
 	main.profile_storage_path = fixture + "_profile.json"
 	root.add_child(main)
 	await process_frame
+	await _click(main.title_screen.settings_button)
+	var settings = main.get_node("GameSettings")
+	if not settings.ui.visible: _fail("title settings"); return
+	await _click(settings.ui.volume)
+	await _click(settings.ui.effects)
+	await _click(settings.ui.shake)
+	await _click(settings.ui.input_help)
+	await _click(settings.ui.apply_button)
+	if not FileAccess.file_exists(settings.storage_path): _fail("settings save"); return
+	await _capture("settings")
+	await _click(settings.ui.close_button)
 	await _click(main.title_screen.start_button)
 	var ui = main.selected_run.start_ui
 	if ui == null: _fail("title input"); return
@@ -31,6 +42,14 @@ func _run() -> void:
 	await create_timer(2.0).timeout
 	if not main._combat_enabled: _fail("battlefield input"); return
 	await _capture("battle")
+	await _click(main.hud.settings_button)
+	if not paused: _fail("pause"); return
+	await _click(main.hud.resume_button.get_parent().get_node("PreferencesButton"))
+	await _capture("paused-settings")
+	await _click(settings.ui.close_button)
+	await _click(main.hud.resume_button)
+	await create_timer(0.15, true).timeout
+	if paused: _fail("settings resume"); return
 	main.school_circuit.sync_elapsed(180.0)
 	var elite = _actor(&"elite")
 	if elite == null: _fail("elite"); return
@@ -106,15 +125,15 @@ func _run() -> void:
 	await process_frame
 	quit(0)
 
-func _click(button: Button) -> void:
-	if button == null or button.disabled: _fail("unavailable button"); return
+func _click(button: Control) -> void:
+	if button == null or (button is BaseButton and button.disabled): _fail("unavailable control"); return
 	# Focus-follow scrolling is the same Control path available to a keyboard user.
 	button.grab_focus()
 	await process_frame
 	await process_frame
 	var center := button.get_global_rect().get_center()
-	if not Rect2(Vector2.ZERO, Vector2(root.size)).has_point(center): _fail("offscreen button: " + button.text); return
-	print("INPUT_TARGET ", button.text, " rect=", button.get_global_rect(), " focus=", button.has_focus(), " viewport=", root.size)
+	if not Rect2(Vector2.ZERO, Vector2(root.size)).has_point(center): _fail("offscreen control: " + str(button.name)); return
+	print("INPUT_TARGET ", button.name, " rect=", button.get_global_rect(), " focus=", button.has_focus(), " viewport=", root.size)
 	var motion := InputEventMouseMotion.new()
 	motion.position = center
 	Input.parse_input_event(motion)
