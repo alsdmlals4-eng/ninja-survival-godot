@@ -127,9 +127,18 @@ Current PR147 remains Draft; do not merge unfinished whole packet or claim core0
 Historical warning/fallback checkpoint full GUT935/935,117 scripts,15,806 assertions,284.037s,exit0
 (diagnostics/actor-warning-final-full-20260921.log). Independent focused re-review
 found no additional P0/P1/P2 after the proxy fix. Code commit7cba5cb is pushed.
-Previous playable checkpoint (re-export pending): build/windows-playtest-20260921-settings/README.md; exact
-7cba5cb export, PCK8B515E4D9168BB4A3DF8217EEC477E1F259BEEA320F9FFEE3E41ED9EE44C1BD9,
-EXE headless main smoke exit0/no engine error. Full packaged interactive play NOT_RUN.
+Current playable checkpoint: build/windows-playtest-20260921-settings/README.md;
+9d1bbf153cb36f0879a639b75b7d913dd4d1a41b export, PCK
+2F907604214101388FC3818BE5A34F46BA273184F7BB7E920980C4151FE201C1.
+Export and EXE headless main smoke exit0/no engine error. Full packaged interactive
+play NOT_RUN. New player candidate lives only under docs/visual/candidates/
+player-gameplay-20260921; technical alpha/small-size issues and LOCK are open.
+No production texture replacement or motion approval. See its README/preview.
+Existing September v0.3 evidence PDF updated in place to18 pages, original9 pages
+preserved, four unique dated sections14/16/20/21. Changed pages14–18 rendered and
+inspected; SHA256 c773792b56910fafd477d115662d260c3380bd6fb0610b641ea938da538ebbe8.
+Output remains C:/Users/user/Documents/증빙서류/9월 증빙서류/
+닌자의신_2026-09_AI활용_작업일지_증빙집_v0.3.pdf; unsubmitted cumulative report.
 Superseded own build moved intact to DELETE_REVIEW/ninja-survival-godot/20260921,
 161,263,296bytes/2files, restore guidance included; not deleted.
 
