@@ -1382,6 +1382,31 @@ player/적 새 후보의 최종 LOCK를 대신하지 않는다. 미승인 가족
 **완료:** 자동 input event는 패드/터치 실기기 PASS가 아니다. 연결 장치 없으면
 `DEVICE_NOT_RUN`을 남기고 가능한 desktop 경로는 계속 검증한다.
 
+2026-09-21 군중 실측: `tools/qa_horde_frame_sample.gd`가 실제 Main/자동 무기/적/
+렌더를 사용해100/300/600/1000을 누적한다. 정지한 고체력 QA 플레이어·고체력 적,
+1280×720/Windows/Godot4.7.1/RTX3050/VSync1이며 다른 앱을 종료하지 않았다.
+표본당1.5초 준비+5초 수집, 실제 frame interval p50/p95/p99와 엔진 monitor를 구분한다.
+GPU 시간과 목표 기기 통과는 NOT_MEASURED/NOT_RUN. 최대 적 수 제한이 아니다.
+
+기준1000은 p50 193.930/p95 232.325ms, physics p95 31.283ms였다. 충돌을 끈
+진단에서 개선되지만 밀집/화면상 개체분포도 달라져 완벽한 단일 변수 비교는 아니다.
+별도 계측에서 적208,000회 추적 호출이3848.627ms를 사용했다.
+대안: 먼 적만 직접 이동(REJECT: p95 234.139ms, 효과 없음/혼합 상태 위험),
+전체 별도 crowd manager·다중메시(REFERENCE_ONLY:현재 증거로 렌더를 병목으로
+확정할 수 없음), 현재 단일 플레이어의 원형 접촉만 직접 계산(ADAPT:한정된 기존
+전장 계약, 기존 몸체·피해·tick·스포너 유지). 첫 후보1000 p50 61.788/p95 136.800ms,
+physics p95 17.027ms. 여전히 심한 끊김이 있어 R09 완료/FPS 보장으로 쓰지 않는다.
+
+Main selected만 opt-in한다. 중앙 단일 원형·균일scale·mask1·충돌예외 없음 조건 외에는
+물리 solver를 쓴다. 같은 layer1의 다른 몸체를 새로 추가하면 반드시 opt-in 계약을
+재검토한다. FLOATING은 적에게 바닥/움직이는 플랫폼이 없는 탑다운 의미이며 기존
+grounded fallback 전체 동등성을 주장하지 않는다. 근거:
+[Godot CharacterBody2D](https://docs.godotengine.org/en/stable/classes/class_characterbody2d.html).
+피해·상태·부모/저장·아트·엔진은 변경하지 않고 회귀는 속도/둔화/속박/5방향 접촉/
+쿨다운/순간이동/대시 레이어/반경 변경/추가 벽을 포함한다. 최적화 경험 반증은 밀집에서
+멈춤, 몸체 관통, 원거리 접촉 피해, 적 수 감소다. 자연 이동 중 프레임과 실제 조작감은
+후속 측정이며 정지 fixture의 개선을 전체 플레이 개선율로 일반화하지 않는다.
+
 ### R10. 통합·정본·블루프린트·정리·전달
 
 **수정:** 기존 tests/tools/CI, `docs/ACTIVE_CONTEXT.md`, 본 명세, Human Blueprint,

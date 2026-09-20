@@ -67,6 +67,23 @@ normal-mask query wiring1/1 PASS. Source Windows pointer/render743686 PASS and
 WINDUP/LOCKED screenshots inspected. Independent final query-delta review found
 no additional P0/P1/P2. Existing saves/art/engine/global settings untouched.
 
+R09 measured dense-crowd blocker: actual Windows1280x720/RTX3050/VSync1,
+stationary QA player/high-HP enemies, baseline1000 p50=193.930/p95=232.325ms.
+FAR-only shortcut did not improve it(p95=234.139) and was withdrawn; its test is
+recoverable under DELETE_REVIEW/ninja-survival-godot/20260921/ineffective-far-step.
+No cap/AI tick reduction. Selected-only centered circular contact keeps real bodies,
+dash layer handling/cooldown/slow/bind and uses FLOATING instead of platform rules.
+Unsupported shape/mask/exception uses physics; sole layer1 player is a Main contract,
+not dynamic detection of arbitrary new same-layer blockers. Focused5/5,30 assertions.
+First candidate1000 p50=61.788/p95=136.800ms, physics p95=17.027ms: improved in
+this diagnostic but still a performance blocker, NOT60fps/minimum-device approval.
+Changed-state full GUT963/963,121 scripts,15,986 assertions,268.932s,exit0
+(diagnostics/contact-full-20260921.log). This does not close the performance gate.
+Logs/tools: tools/qa_horde_frame_sample.gd; diagnostics/horde-{frame-baseline,
+frame-far-step,stationary,timed,circular-contact}-20260921.log. Timing instrumentation
+found208,000 enemy calls/3848.627ms in the dense sample; excludes GPU timing.
+Independent static impact review no new confirmed P0/P1/P2; not runtime equivalence.
+
 Next core: R06 natural-speed fairness and complete run, R07 integrated builds, R08 actual final
 art/motion/audio/readability, R09 input/performance/device and R10 delivery gates.
 Current PR147 remains Draft; do not merge unfinished whole packet or claim core0.

@@ -20,6 +20,7 @@ var _book_slows: Dictionary = {}
 var _book_bind_remaining := 0.0
 var _book_bind_protection := 0.0
 var _book_bind_source: StringName = &""
+var _open_field_contact := false
 
 
 func book_control_role() -> StringName:
@@ -109,14 +110,63 @@ func _physics_process(delta: float) -> void:
 		return
 
 	var offset := target.global_position - global_position
+	var touching := false
 	if not offset.is_zero_approx():
 		velocity = offset.normalized() * move_speed * book_movement_multiplier()
-		move_and_slide()
+		var contact := _step_open_field_contact(delta)
+		if contact < 0:
+			move_and_slide()
+			touching = _is_touching_target()
+		else:
+			touching = contact == 1
 	else:
 		velocity = Vector2.ZERO
 
-	if _is_touching_target() or offset.length_squared() <= contact_range * contact_range:
+	if touching or offset.length_squared() <= contact_range * contact_range:
 		_try_contact_damage()
+
+
+func enable_open_field_contact() -> void:
+	# Main's selected open field has one layer-1 body: the player. Additional
+	# blockers/masks/shapes fall back to the solver; no crowd cap or tick skipping.
+	_open_field_contact = true
+	motion_mode = MOTION_MODE_FLOATING
+	platform_wall_layers = 0
+
+
+func _step_open_field_contact(delta: float) -> int:
+	if not _open_field_contact or collision_mask != 1 or not target is PhysicsBody2D or not is_finite(delta) or delta < 0.0:
+		return -1
+	var own := get_node_or_null("CollisionShape2D") as CollisionShape2D
+	var other := target.get_node_or_null("CollisionShape2D") as CollisionShape2D
+	if not _is_centered_circle(self, own) or not _is_centered_circle(target, other):
+		return -1
+	if not get_collision_exceptions().is_empty() or not target.get_collision_exceptions().is_empty():
+		return -1
+	var motion := velocity * delta
+	if not motion.is_finite(): return -1
+	if own.disabled or other.disabled or (target.collision_layer & collision_mask) == 0:
+		global_position += motion
+		return 0
+	var offset := global_position - target.global_position
+	var distance := offset.length()
+	var radius: float = own.shape.radius * absf(own.global_scale.x) + other.shape.radius * absf(other.global_scale.x) + safe_margin
+	# Pursuit is radial and both colliders are centered circles. Clamp travel to
+	# the contact boundary, including overlap recovery after the player's dash.
+	var travel := motion.length()
+	if distance <= radius + travel:
+		global_position = target.global_position + offset.normalized() * radius
+		velocity = Vector2.ZERO
+		return 1
+	global_position += motion
+	return 0
+
+
+func _is_centered_circle(body: PhysicsBody2D, collision: CollisionShape2D) -> bool:
+	if collision == null or not collision.shape is CircleShape2D or collision.position != Vector2.ZERO:
+		return false
+	var owners := body.get_shape_owners()
+	return owners.size() == 1 and body.shape_owner_get_shape_count(owners[0]) == 1 and is_equal_approx(absf(collision.global_scale.x), absf(collision.global_scale.y))
 
 
 func set_target(new_target: Node2D) -> void:

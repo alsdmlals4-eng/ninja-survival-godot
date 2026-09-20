@@ -1033,6 +1033,8 @@ func _on_reward_collected(_orb: RewardOrb) -> void:
 func _wire_enemy(enemy: Node) -> void:
 	if enemy.has_method("set_target"):
 		enemy.set_target(player)
+	if selected_rules_enabled and enemy.has_method("enable_open_field_contact"):
+		enemy.enable_open_field_contact()
 	if recent_hit_hp_presenter != null and recent_hit_hp_presenter.has_method("observe_enemy"):
 		recent_hit_hp_presenter.call("observe_enemy", enemy)
 	if school_circuit != null and enemy.is_in_group("enemies") and not enemy.has_meta(SCHOOL_CIRCUIT_ROLE_META):
