@@ -17,6 +17,15 @@ class SampledActor extends SchoolEncounterActor:
 		measured_usec += Time.get_ticks_usec() - begin
 		measured_calls += 1
 
+class SampledPlayer extends PlayerController:
+	static var measured_usec := 0
+	static var measured_calls := 0
+	func _physics_process(delta: float) -> void:
+		var begin := Time.get_ticks_usec()
+		super._physics_process(delta)
+		measured_usec += Time.get_ticks_usec() - begin
+		measured_calls += 1
+
 func _initialize() -> void:
 	call_deferred("_run")
 
@@ -32,6 +41,7 @@ func _run() -> void:
 	legacy_contact = OS.get_cmdline_user_args().has("--probe-legacy-contact")
 	root.size = Vector2i(1280, 720)
 	main = load("res://scenes/main/main_scene.tscn").instantiate()
+	if time_enemy_calls: main.get_node("Player").set_script(SampledPlayer)
 	var prefix := "user://qa_horde_%d_%d" % [OS.get_process_id(), Time.get_ticks_usec()]
 	main.profile_storage_path = prefix + "_profile.json"
 	main.wallet_storage_path = prefix + "_wallet.json"
@@ -77,6 +87,8 @@ func _run() -> void:
 		var frames: Array[float] = []
 		SampledActor.measured_usec = 0
 		SampledActor.measured_calls = 0
+		SampledPlayer.measured_usec = 0
+		SampledPlayer.measured_calls = 0
 		var cpu: Array[float] = []
 		var physics: Array[float] = []
 		var sample_until := Time.get_ticks_msec() + 5000
@@ -93,7 +105,8 @@ func _run() -> void:
 			"engine_process_ms_p95": _quantile(cpu, 0.95), "engine_physics_ms_p95": _quantile(physics, 0.95),
 			"memory_bytes": Performance.get_monitor(Performance.MEMORY_STATIC), "nodes": Performance.get_monitor(Performance.OBJECT_NODE_COUNT),
 			"collision_pairs": Performance.get_monitor(Performance.PHYSICS_2D_COLLISION_PAIRS), "draw_calls": Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), "gpu_time": "NOT_MEASURED",
-			"instrumented_enemy_calls": SampledActor.measured_calls, "instrumented_enemy_ms": SampledActor.measured_usec / 1000.0}))
+			"instrumented_enemy_calls": SampledActor.measured_calls, "instrumented_enemy_ms": SampledActor.measured_usec / 1000.0,
+			"instrumented_player_calls": SampledPlayer.measured_calls, "instrumented_player_ms": SampledPlayer.measured_usec / 1000.0}))
 	main.queue_free()
 	await process_frame
 	print("HORDE_PROFILE_COMPLETED not target-device performance approval")

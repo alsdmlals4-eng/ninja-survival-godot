@@ -108,13 +108,26 @@ from first sample. Both show spikes; do not advertise a universal improvement ra
 QA now pins and logs starter seed921 as well as placement seed, and offers explicit
 legacy-contact comparison. Earlier samples did not pin the starter book draft.
 
+R09 pinned comparison (same921 starter/placement, seal_chain+talisman_wheel):
+legacy1000 p50=193.641/p95=239.029ms; circular p50=56.586/p95=112.842ms.
+Still not a performance pass. Unchanged contact transforms were independently
+reproduced:60 blocked ticks emitted60 redundant notifications. Exact-equality
+assignment guard gives focused6/6,34 assertions with unchanged contact damage.
+Guard sample p95=129.746ms: no frame improvement attributable to that guard.
+Diagnostic player/enemy timers measure298 calls/128.399ms versus298,000 calls/
+2989.086ms in a5s1000 sample; this is intrusive instrumented CPU time, not GPU.
+Independent static delta review no confirmed P0/P1/P2. Full regression968/968,
+122 scripts,16,609 assertions,274.468s,exit0(contact-guard-full-20260921.log).
+Python21/21 PASS15.489s. No performance/human approval implied.
+4ee2491 exact-head remote GUT/Windows PASS(run35528546943).
+
 Next core: R06 natural-speed fairness and complete run, remaining R07 integrated builds, R08 actual final
 art/motion/audio/readability, R09 input/performance/device and R10 delivery gates.
 Current PR147 remains Draft; do not merge unfinished whole packet or claim core0.
-Final changed-state full GUT935/935,117 scripts,15,806 assertions,284.037s,exit0
+Historical warning/fallback checkpoint full GUT935/935,117 scripts,15,806 assertions,284.037s,exit0
 (diagnostics/actor-warning-final-full-20260921.log). Independent focused re-review
 found no additional P0/P1/P2 after the proxy fix. Code commit7cba5cb is pushed.
-Playable checkpoint: build/windows-playtest-20260921-settings/README.md; exact
+Previous playable checkpoint (re-export pending): build/windows-playtest-20260921-settings/README.md; exact
 7cba5cb export, PCK8B515E4D9168BB4A3DF8217EEC477E1F259BEEA320F9FFEE3E41ED9EE44C1BD9,
 EXE headless main smoke exit0/no engine error. Full packaged interactive play NOT_RUN.
 Superseded own build moved intact to DELETE_REVIEW/ninja-survival-godot/20260921,

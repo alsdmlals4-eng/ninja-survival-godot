@@ -155,7 +155,9 @@ func _step_open_field_contact(delta: float) -> int:
 	# the contact boundary, including overlap recovery after the player's dash.
 	var travel := motion.length()
 	if distance <= radius + travel:
-		global_position = target.global_position + offset.normalized() * radius
+		var contact_position := target.global_position + offset.normalized() * radius
+		if global_position != contact_position:
+			global_position = contact_position
 		velocity = Vector2.ZERO
 		return 1
 	global_position += motion

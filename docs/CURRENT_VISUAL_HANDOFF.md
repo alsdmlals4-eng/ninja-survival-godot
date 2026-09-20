@@ -1,5 +1,17 @@
 # CURRENT VISUAL HANDOFF — Ninja Survival / 닌자의 신
 
+## 2026-09-21 player camera candidate, not runtime-ready
+
+`visual/candidates/player-gameplay-20260921/README.md` owns one revised appearance,
+three background-processing operations, exact prompts/hashes and inspection.
+Existing player art is unchanged. Magenta source and extracted RGBA are retained.
+Initial output ignored the chroma request; source is not perfectly flat and the
+cutout still has faint outlying alpha. Isolated Godot light/dark280/96/64px preview
+was rendered/inspected; small-size detail aliases. State APPEARANCE_REVIEW_ONLY /
+TECHNICAL_REVISION_REQUIRED / USER_LOCK_PENDING, not runtime/motion/approval PASS.
+No Aseprite animation or canonical binding was performed. Correct cleanup and
+small-size readability before production; final appearance LOCK remains separate.
+
 ## 2026-09-21 runtime visibility and truthful danger boundaries
 
 Selected spawn reservation uses a small native beige edge chevron, not a damaging
