@@ -195,17 +195,12 @@ placeholder/card/text UI는 기술 Spike와 자동 테스트에 사용할 수 �
 
 ## 읽기 순서
 
-1. `AGENTS.md`
-2. `docs/CURRENT_CONFIRMED_DECISIONS.md`
-3. `docs/ACTIVE_CONTEXT.md`
-4. `docs/canon/2026-08-21-dec014-025-product-canon.md`
-5. `docs/canon/2026-08-22-dec026-encounter-pattern-budget.md`
-6. `docs/traceability/2026-08-22-dec026-post-gate-traceability.md`
-7. `docs/planning/2026-08-22-dec026-phase-b-definition-of-ready.md`
-8. `docs/superpowers/plans/2026-08-22-dec026-t08-plus-migration-plan.md`
-9. 실제 `scripts/`, `scenes/`, `data/`, `tests/`, workflow
-10. 현재 작업에 필요한 repository GDD·visual 문서·asset manifest와 실제 consumer
-11. 현재 작업에 영향을 주는 최신 Base owner
+[AGENTS](AGENTS.md)의 current-authority 순서를 따른다. 현재 결정·Active Context와
+최신 main·관련 PR·실제 사용처를 먼저 확인한 뒤,
+[프로젝트 작업 계약](docs/operations/NINJA_SURVIVAL_PROJECT_WORK_CONTRACT.md)과
+[조건별 문서 지도](docs/DOCUMENTATION_MAP.md)에서 이번 작업에 필요한 항목만 읽는다.
+과거 Txx 계획·DOR·검토 기록은 관련 변경의 근거가 필요할 때 참조하며,
+현재 실행 권한이나 매번 읽어야 하는 필수 목록으로 사용하지 않는다.
 
 Notion migration archive는 `HISTORICAL_REFERENCE_ONLY`이므로 현재 작업의 읽기 순서나 정본 owner에 포함하지 않는다.
 
