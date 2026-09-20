@@ -1,5 +1,27 @@
 # CURRENT_CONFIRMED_DECISIONS
 
+## Latest 2026-09-20 — 승인된 운영 경량화와 재미 검증 연결
+
+사용자가 사전 비교·구체 적용안을 승인했다. 최신 완료 main의 운영 규칙만 교정하고
+검사·독립 검토·정상 PR 병합·main readback까지 수행한다. 이어 Base #885의 재미 검증
+기준을 같은 범위에 추가하도록 요청했다. 게임 기획·코드·저장 호환성·엔진·승인 자산은
+변경하지 않는다. 설치 플러그인·전역 설정·다른 PR도 보호한다.
+
+운영 owner: [프로젝트 작업 계약](operations/NINJA_SURVIVAL_PROJECT_WORK_CONTRACT.md).
+최신 Base 관찰과 선택 적용/미적용: [Base 채택 기록](BASE_RULES_VERSION.md).
+최소 읽기·동일 승인 재사용·필요 시 신규 조사·한 계약의 전체 검토 2회로 통일한다.
+이번 승인은 기존 프로젝트 5회 검토 예외를 대체하지만 필수 CI/runtime acceptance를 줄이지 않는다.
+재미 가설·입력/규칙/선택/정보·효과·실제 사용처·반증은 기존 기능/검증 기록에 연결한다.
+자동 검사와 실제 사람의 재미 검증은 별개이며 이번 사람·기기·출시 검증은 NOT_RUN이다.
+
+PR #147의 재기획/수동 오의/저장 구현은 별도 미병합 작업이다. 여기서는 운영 규칙
+변경만 승인됐으며 그 PR의 게임 delta를 main으로 옮기거나 승인 상태를 새로 해석하지 않는다.
+앞으로도 작업일지는 기존 기록에 날짜별로 누적하고, 확인된 폐기 후보는 사용자 삭제
+검토로 넘긴다. 역사적 계약/승인/증거는 남기되 아래 dated snapshot을 현재 실행 권한으로
+사용하지 않는다. 제품 결정은 해당 최신 canon과 실제 consumer를 함께 대조한다.
+
+## Historical/merged product evidence snapshot — 2026-09-02
+
 ```yaml
 owner_role: CURRENT_APPROVED_PRODUCT_AND_PROTECTED_SCOPE_LEDGER
 updated_at: 2026-09-02 KST
@@ -86,7 +108,7 @@ human_player_gdd_pdf: exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf
 human_player_gdd_pdf_manifest: docs/publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json
 human_player_gdd_pdf_policy: ALWAYS_SYNC_ON_HUMAN_GDD_OR_EXPORTER_CHANGE
 human_player_gdd_pdf_status: CURRENT_MERGED_MAIN_9855F9A5FA2E4297E3171A1B1903D3517719AD93
-mandatory_work_gate: FRESH_READ_REUSE_FIRST_TARGETED_WEB_RESEARCH_FEASIBILITY_AND_ADVERSARIAL_REVIEW_UNTIL_CLEAN
+mandatory_work_gate: PROJECT_NATIVE_CONTRACT_CURRENT_APPROVAL_REUSED_EVIDENCE_TWO_SHARED_REVIEWS
 current_repository_only_policy: docs/canon/2026-08-28-dec035-repository-only-project-record.md
 current_human_validation_deferment: docs/canon/2026-08-29-dec036-human-player-validation-deferred-from-current-build-gate.md
 current_implementation_contract: docs/implementation/2026-08-29-four-school-circuit-implementation-contract.md
