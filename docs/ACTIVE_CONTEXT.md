@@ -30,6 +30,13 @@ not waived acceptance. Current delivery is persisted command foundation only.
 Next: prepare-entry persistence and live owner adoption/input connection without
 partial signals, then R03 new-game/continue/recovery flow. Keep PR147 Draft.
 Diagnostics: C:/Users/user/Tools/NinjaSurvival-Local/diagnostics/r02-depart-{red,green,extended,full}-20260920.log.
+Remote implementation83ba0ed run35508027472 passed859 assertions-based tests but
+FAILED the shutdown error gate (11 objects/5 resources retained). Investigation
+reproduced a test-only FaultStore callback -> coordinator -> store reference cycle:
+weak lifetime assertions RED22/24, then weak callback capture GREEN24/24.
+Only the test injection changed; production semantics/error gates remain intact.
+Local Windows exit0/log silence was not proof of Linux shutdown cleanliness.
+Corrected full/remote evidence follows; do not cite the failed run as PASS.
 
 ## R02 continuation — 2026-09-20
 

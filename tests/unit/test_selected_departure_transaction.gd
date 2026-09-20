@@ -253,15 +253,23 @@ func test_reentrant_departure_and_trace_are_blocked_during_publication() -> void
 	if c == null: return
 	var request := _request(f)
 	var reentries: Array = []
+	# FaultStore is retained by the coordinator: the injected callback must not
+	# retain the coordinator in return (a test-only reference cycle).
+	var coordinator_lifetime: WeakRef = weakref(c)
 	f.store.on_write = func():
-		reentries.append(c.commit_selected_departure(request))
-		reentries.append(c.commit_selected_trace({}))
+		reentries.append(coordinator_lifetime.get_ref().commit_selected_departure(request))
+		reentries.append(coordinator_lifetime.get_ref().commit_selected_trace({}))
 	var result: Dictionary = c.commit_selected_departure(request)
 	assert_true(result.ok, str(result))
 	assert_eq(reentries.size(), 2)
 	for reentry in reentries:
 		assert_false(reentry.ok)
 		assert_eq(reentry.reason, &"not_ready")
+	var store_lifetime: WeakRef = weakref(f.store)
+	c = null
+	f.store = null
+	assert_null(coordinator_lifetime.get_ref(), "Reentry fixture must not retain the coordinator")
+	assert_null(store_lifetime.get_ref(), "Reentry fixture must not retain the store")
 
 func test_owned_equipment_switch_and_unplaced_book_update_only_departing_build() -> void:
 	var f := _fixture()
