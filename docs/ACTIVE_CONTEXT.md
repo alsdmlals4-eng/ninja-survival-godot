@@ -1,5 +1,67 @@
 # ACTIVE_CONTEXT
 
+## Current implementation continuation — 2026-09-20
+
+User approved the next bundle: resume PR147 against current main and complete R01
+recovery publication/preservation before R02/R03 integration. Baseline branch
+f5e9b77be12730d1c78134cae8dd864b24c74847, main ebbabdd5d272649bc9bc0ba390324399735878ef.
+Merge main's lean routing while retaining this branch's product decisions/history.
+Old planning-only and five-loop status below is dated history, not a current gate.
+Plan: baseline tests → recovery RED/GREEN and failure tests → full regression →
+independent review using current shared budget → PR147 exact-head sync/readback.
+PR147 stays Draft until its whole integration readiness is satisfied; this bundle
+does not authorize declaring R02~R10 or whole-game complete. PR135/49 remain read-only.
+Use existing RunResumeStore/Codec and existing work log, not a new save manager.
+Protected: real player saves, game tuning/art/engine pins, unrelated untracked imports
+and addons. Tests use explicit gut-only files. Recovery UI/Main cutover is R03.
+Progress: main reconciliation in progress; recovery implementation and validation pending.
+
+## Current operating work — 2026-09-20
+
+승인: 사전 제시한 프로젝트 네이티브 경량화 적용안 + Base #885 재미 검증 연결 추가.
+Owner: [프로젝트 작업 계약](operations/NINJA_SURVIVAL_PROJECT_WORK_CONTRACT.md).
+Read path: [AGENTS](../AGENTS.md) → [현재 결정](CURRENT_CONFIRMED_DECISIONS.md) → main/PR/실제 대상
+→ [작업 계약](operations/NINJA_SURVIVAL_PROJECT_WORK_CONTRACT.md) → [조건별 문서 지도](DOCUMENTATION_MAP.md).
+Base observation: 23ecad5a3084f97c4e5d1e39a9a6d70d1eeb37ef (#883 + #885), not a permanent pin.
+Source main: b5c2dd61cd589ebd218d1b4da3f016fb94a02126. 전용 브랜치 codex/ninja-lean-rules-20260920.
+
+계획/진행: 정본·사용처·PR 대조 → AGENTS/작업 계약/라우팅 교정 → 문서 검사·보호 범위 확인
+→ 같은 계약의 전체 독립 검토 2회 → exact-head CI·정상 PR 병합 → main readback.
+현재 작업 인도: [PR #148](https://github.com/alsdmlals4-eng/ninja-survival-godot/pull/148).
+운영 문서·재미 검증 연결 교정 및 전체 독립 검토 2회 완료. 병합/최신 main의 최종 상태는
+이 PR의 exact-head checks와 post-merge readback 기록에서 확인한다. 아래 검증 시점을
+새 승인 요청이나 반복 전체 검토의 근거로 사용하지 않는다.
+기존 Python 문서 검사 baseline 10/10 PASS → 신규 경로 검사 RED(정본 5개 도달 실패)
+→ 교정 후 전체 문서 검사 12/12 PASS. 이는 DOC/STATIC 증거이며 에이전트 실행 보장은 아니다.
+1회차: P0/P1 없음, P2 1건(문서 지도의 종료된 승인·5회 검토를 현행으로 표시)을 검증해
+과거 증거로 교정했다. README의 중복 필수 읽기 목록도 같은 조건별 라우터로 연결했다.
+2회차: 교정된 전체 10파일 후보 83348a274bd7d769ae4acd0a9857b41d5398a28e 독립 재검토,
+P0/P1/P2 0건. 공유 전체 검토 예산 2/2 사용; 이후는 증거 기록·대상 검사만 수행한다.
+해당 후보 원격 [검증 실행](https://github.com/alsdmlals4-eng/ninja-survival-godot/actions/runs/35477689811):
+경로 검사 2개, Base manifest, Godot import/headless main-scene smoke, GUT 605/605,
+Windows 내부 검증용 export/artifact PASS. 이는 화면·입력·사람 플레이 통과가 아니다.
+이 기록 추가 후 최종 PR HEAD에서 문서 검사와 CI를 다시 확인하며 결과는 PR에 누적한다.
+보호 경로 diff 없음; GitHub main 보호 규칙/ruleset은 확인 시 부재였다. 이를 우회 권한으로
+해석하지 않으며 이번 PR은 독립 검토 2회·exact-head GUT/Windows CI·미해결 검토 0을 확인한다.
+앱 강제 스킬 규칙은 유지하고 설치 스킬 원본은 수정하지 않는다. 승인 대화 적용안을
+계획으로 재사용하며 별도 spec/plan/작업 DB를 늘리지 않는다.
+
+Protected: scripts/scenes/data/tests/assets/project.godot/export presets, 엔진·GUT pin,
+기존 PDF/manifest·역사적 adapter, 다른 checkout/worktree, PR #147/#135/#49.
+PR #147 overlap: AGENTS, Decisions, Active Context, Documentation Map, Work Contract.
+해당 PR은 읽기 전용이며 후속 명시적 재개 시 이 운영 변경을 보존하도록 비교한다.
+9월 14~16일 구현/누적 증빙일지의 원본은 그 PR의 기존 기록이다. 이 작업은 원본을
+복제하거나 새 PDF를 만들지 않는다. 게임 구현 재개 위치는 PR 상태/승인 원본을 다시 읽어 결정한다.
+
+증거 상한: 이번 운영 채택은 DOC/STATIC 및 위 CI 자동 검사 범위다. 로컬 게임 실행,
+실제 render/input, HUMAN/FUN, 기기 실기/출시는 NOT_RUN. Base #885 적용 자체가 재미 통과는 아니다.
+Rollback: 이번 운영 PR의 변경만 되돌린다. 제품/저장/자산 migration은 없다.
+
+## Historical product/publication snapshot — 2026-09-02
+
+아래 상태·증거·제품 단계는 그 시점의 보존 기록이며 현재 작업의 차단/실행 권한이 아니다.
+최신 제품 재개는 위 경로와 최신 main/명시적으로 승인된 작업 PR을 대조한다.
+
 ## Latest closeout — cumulative monthly journal, 2026-09-16
 
 User requests dated additions to the existing journal and current-work GitHub sync.
@@ -937,9 +999,9 @@ current_integrated_human_blueprint_pdf_baseline_main: 16cf7a6bb2a8676ad979985605
 current_integrated_human_blueprint_pdf_main_readback: PR_145_E39ADE1CEF351ED0323FD450F051EA3439D706C0_SHA256_DFF66D9E1937D2E1335406CF82D16F18A9309715C30A6B355A107AEADE2931A0
 current_integrated_human_blueprint_pdf_scope: THREE_GUIDE_PAGES_PLUS_UNCHANGED_HISTORICAL_28_PAGE_OBJECTS_PLUS_SEVEN_CURRENT_MAIN_WIREFRAME_FLOW_LOCKED_IMAGE_PAGES
 current_integrated_human_blueprint_pdf_evidence: FOCUSED_EXPORT_TEST_PASSED_PDFINFO_PYPDF_FULL_38_PAGE_RENDER_AND_CODEX_VISUAL_INSPECTION_PASSED_HUMAN_REVIEW_NOT_RUN
-mandatory_work_gate: FRESH_READ_REUSE_FIRST_TARGETED_WEB_RESEARCH_FEASIBILITY_AND_ADVERSARIAL_REVIEW_UNTIL_CLEAN
+mandatory_work_gate: PROJECT_NATIVE_CONTRACT_CURRENT_APPROVAL_REUSED_EVIDENCE_TWO_SHARED_REVIEWS
 current_project_work_contract: docs/operations/NINJA_SURVIVAL_PROJECT_WORK_CONTRACT.md
-current_base_observation: 19355b7ef065a21d0f2b685c7d9be64a4a3970f8
+current_base_observation: SEE_CURRENT_SECTION_AND_BASE_RULES_VERSION
 base_adaptation_state: ADAPT_ACTIVE
 full_base_adapter_state: NOT_INSTALLED_SEPARATE_ONBOARDING_REQUIRED
 repository_only_policy: docs/canon/2026-08-28-dec035-repository-only-project-record.md

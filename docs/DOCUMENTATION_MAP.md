@@ -57,57 +57,39 @@ current-main/T16 labels below are not the latest implementation frontier.
 
 이 문서는 제품 규칙 자체의 정본이 아니라 **정본 위치와 읽기 순서를 설명하는 navigation contract**다.
 
-## 1. Mandatory current read path
+## 1. Current-authority read path
 
-새 작업은 과거 handoff 문장만으로 현재 상태를 복원하지 않는다.
+[AGENTS](../AGENTS.md) → [현재 결정](CURRENT_CONFIRMED_DECISIONS.md)·[재개 상태](ACTIVE_CONTEXT.md)
+→ 최신 원격 main·관련 PR·실제 변경 대상/사용처·테스트
+→ [프로젝트 작업 계약](operations/NINJA_SURVIVAL_PROJECT_WORK_CONTRACT.md)
+→ [채택한 Base와 drift](BASE_RULES_VERSION.md) → 이번 작업의 최소 분야 owner/스킬.
 
-1. `../AGENTS.md`
-2. 현재 사용자 지시 / active task contract
-3. `CURRENT_CONFIRMED_DECISIONS.md`
-4. `canon/2026-08-21-dec014-025-product-canon.md`
-5. `canon/2026-08-22-dec026-encounter-pattern-budget.md`
-6. `canon/2026-08-30-dec037-player-control-stage-3x3-backpack.md` (조작 닌자·Stage/Phase·3×3 시작 가방의 최신 공개 경험 결정)
-7. `design/NINJA_SURVIVAL_HUMAN_GDD.md` (28쪽 사람용 게임 경험 블루프린트 원고) → `../exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf` (기본 다운로드 열람본: 기존 28쪽 + wireframe·flow·잠금 이미지 보강부) → `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf` (보존 snapshot); `implementation/2026-08-30-player-control-stage-backpack-blueprint-spec.md`는 user final PDF review 전 runtime 이행 경계를 소유한다.
-8. `design/NINJA_SURVIVAL_MASTER_GDD.md`는 기술 canon·구현 계약을 확인할 때 읽는다.
-9. `implementation/2026-08-29-four-school-circuit-implementation-contract.md`
-10. `planning/2026-08-29-phase2-four-school-definition-of-ready.md`
-11. `canon/2026-08-29-dec036-human-player-validation-deferred-from-current-build-gate.md`
-12. `ACTIVE_CONTEXT.md`
-13. `traceability/2026-08-22-dec026-post-gate-traceability.md`
-14. `planning/2026-08-22-dec026-phase-b-definition-of-ready.md` (historical)
-15. 실제 `../scripts/**`, `../scenes/**`, `../data/**`, `../tests/**`, `../.github/workflows/**`
-16. `design/NINJA_SURVIVAL_MASTER_GDD.md`, `CURRENT_VISUAL_HANDOFF.md`, asset manifest/provenance
-17. L1+ proposal 또는 mutation 전, work ordering, reuse, approval, evidence, cleanup, and learning boundary는 `operations/NINJA_SURVIVAL_PROJECT_WORK_CONTRACT.md`를 읽는다. 이 문서는 procedural adapter이며 제품/canon owner가 아니다.
-18. 현재 작업에 Base freshness가 materially 필요할 때 최신 Base owner
+같은 작업 안에서는 바뀐 owner와 직접 의존성만 다시 확인한다. 아래 표는 조건부
+목적지이며 매번 모든 행을 읽는 체크리스트가 아니다. 과거 대화나 낡은 현재 상태
+요약으로 main·진행 중 PR·승인 상태를 대신하지 않는다.
 
-## 2. Current product / implementation router
+| 이번에 필요한 정보 | 다음 책임 원본 |
+|---|---|
+| 기획·규칙·보호 범위 | 현재 결정이 가리키는 dated canon. 공간/조작은 [DEC-037](canon/2026-08-30-dec037-player-control-stage-3x3-backpack.md), 기존 제품/전투는 DEC-014~026 및 이후 승인 결정으로 차이를 확인 |
+| 구현/계속 작업 | Active Context의 승인 계획과 실제 코드·씬·데이터·테스트. 이전 Phase 기록을 현재 실행 권한으로 사용하지 않음 |
+| 운영·조사·승인·검토·정상 병합 | 프로젝트 작업 계약 §2~10; Base 경로는 공용 원격 소속이며 프로젝트 내부 누락 파일로 오해하지 않음 |
+| 재미 검증·효과·비주얼·UI 명세 | [작업 계약 §11](operations/NINJA_SURVIVAL_PROJECT_WORK_CONTRACT.md#11-닌자의-신-재미-검증과-표현-명세-연결) → 해당 기능의 승인 경험 원본·실제 consumer·검증 기록. 자동 검사를 사람의 재미 증거로 쓰지 않음 |
+| 이미지·스타일·승격 | [시각 정본](CURRENT_VISUAL_HANDOFF.md) → 관련 manifest/실제 슬롯 → DEC-034와 최신 사용자 이미지 지침 |
+| 사람이 게임 전체를 읽는 자료 | [Human GDD](design/NINJA_SURVIVAL_HUMAN_GDD.md), [통합 블루프린트](../exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf); 보존 snapshot과 최신 구현을 구분 |
+| 기술 상세·publication 검사 | [Master GDD](design/NINJA_SURVIVAL_MASTER_GDD.md), [PDF 발행](PDF_EXPORT.md)과 해당 manifest·exporter |
+| 과거 이관 증거 | [이관 manifest](migration/notion/MIGRATION_MANIFEST.md). 이관 완료 Notion은 HISTORICAL_REFERENCE_ONLY이며 재조회하지 않음 |
 
-마지막 제품 구현 baseline은 **T16 전투 중 현재 유파 도움말까지 merged machine scope**다. PR #77 직전 GitHub `main` (`f77a1c…`)은 그 뒤의 문서 증거 정정이었다. 문서가 병합되면 SHA가 다시 바뀌므로 작업 전 GitHub `main`을 fresh-read하며, 두 SHA 축을 같은 의미로 취급하지 않는다.
+## 2. 구현 상태와 이력의 경계
 
-```text
-MVP-0~3 baseline · INTEGRATED
--> T01~T05 spatial / backpack / REST / combination · INTEGRATED
--> T06 committed RunBuildState modifier authority · INTEGRATED
--> T07 Boss/Shop/Chest spatial acquisition foundation · INTEGRATED
--> T08 RunRouteState / four-school route domain · INTEGRATED
--> T09 encounter definitions + Stage profiles · INTEGRATED
--> T10 Elite -> Trace -> Boss lifecycle gate · INTEGRATED
--> T11 tradition access packages + reward lanes · INTEGRATED
--> T12 Atomic Workbench + Fate + next-route commit · INTEGRATED
--> T13 Persistent Workbench route-preview UI/input · INTEGRATED
--> T14 Cheonsul lifecycle / Boss-clear Workbench machine slice · INTEGRATED
--> T15 starting-school Korean function-help machine slice · INTEGRATED
--> T16 combat HUD current-school help reopen machine slice · INTEGRATED
--> User vertical-slice validation · DEFERRED / NOT_RUN
--> remaining schools / full circuit / final calamity / full-run verification · SEPARATE FUTURE SCOPE
-```
+현재 구현은 매번 fresh main과 실제 consumer에서 확인한다. T12~T16·PR #129 등은
+누적 이력이며 ‘마지막 구현’의 영구 포인터가 아니다. 2026-09-20 운영 감사 시 main에는
+PR #139의 선택 통합, PR #141의 메달 조정, PR #143~146의 블루프린트 보강이 존재했다.
+3×3 가방은 결정뿐 아니라 main catalog와 BackpackState 테스트에 연결돼 있다.
 
-Important:
-
-- latest product implementation merge is `63fcf81…` (T16 help); `f77a1c…` is the documented pre-PR #77 GitHub-main readback, not a durable current-main claim.
-- closed PR #43 (T12 WIP) and #44 (old front-door docs) are **closed / unmerged / historical read-only**.
-- PR #49 and closed #43/#44 remain historical read-only; they are not resume baselines.
-- Human Usability / Player Experience / device / Android evidence are not implied by T01~T16 automated evidence.
+PR #147의 재기획/오의/저장 작업은 별도 미병합 구현이며 main 사실로 승격하지 않는다.
+재개할 때 PR 상태·현재 HEAD·승인 원본을 다시 확인한다. 다른 open/draft/ready PR은
+읽기 전용이며 이 지도는 그 PR을 병합하거나 변경할 권한을 주지 않는다.
+Human Usability·Player Experience·기기·출시는 별도 실제 검증 없이는 NOT_RUN이다.
 
 ## 3. Authority map — Repository GDD / Detail Canon / AI Workspace / GitHub
 
@@ -208,23 +190,27 @@ GitHub repository는 다음의 구현 사실 정본이다.
 code/data/test/runtime evidence로 재확인하고, 앞으로 만들 제품 행동은 최신
 approved Decision/Canon을 따른다.
 
-## 4. Current product canon owners
+## 4. Product owners and historical evidence
+
+이 표는 위치 안내다. 현재 진행·승인·검증 상태를 별도로 복제하지 않는다.
+현재 상태는 Decisions/Active Context와 최신 main에서 확인하고, 이번 작업의 승인·검토
+예산은 [작업 계약](operations/NINJA_SURVIVAL_PROJECT_WORK_CONTRACT.md)을 따른다.
 
 | Document | Role | Current state |
 |---|---|---|
-| `CURRENT_CONFIRMED_DECISIONS.md` | mutable approved-decision / protected-scope ledger | CURRENT · T12~T16 machine scope integrated / human gate deferred |
-| `ACTIVE_CONTEXT.md` | mutable resume-state router | CURRENT · T16 help merged / human gate deferred |
+| `CURRENT_CONFIRMED_DECISIONS.md` | mutable approved-decision / protected-scope ledger | 현재 승인 owner; 최신 절과 실제 main을 대조 |
+| `ACTIVE_CONTEXT.md` | mutable resume-state router | 현재 재개 owner; 과거 snapshot은 이력 |
 | `design/NINJA_SURVIVAL_HUMAN_GDD.md` | 사람용 게임 설명 원고 | CURRENT · 핵심 재미/흐름/선택/구현 구조를 쉬운 말로 설명 |
-| `../exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf` | 사람이 내려받아 읽는 기본 통합 Blueprint: 3쪽 읽기 지도 + 보존 28쪽 + 7쪽 wireframe/flow/locked visual companion | CURRENT_ON_BRANCH_PENDING_MAIN_PUBLICATION · integration composer/visual route 변경 시 재발행; runtime/Human/device evidence는 별도 |
+| `../exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_20260902.pdf` | 사람이 내려받아 읽는 기본 통합 Blueprint: 3쪽 읽기 지도 + 보존 28쪽 + 7쪽 wireframe/flow/locked visual companion | PR145 main 발행 기록; 신선도는 publication manifest/실제 파일로 확인, runtime/Human/device evidence는 별도 |
 | `../exports/NINJA_SURVIVAL_HUMAN_GDD_20260830.pdf` | historical 28쪽 게임 경험 Blueprint snapshot | RETAINED · 기존 레이아웃/검수 snapshot을 보존하며 통합본의 pages 4–31에 다시 포함 |
 | `design/NINJA_SURVIVAL_MASTER_GDD.md` | 기술 canon·구현 계약·증거 경계 | CURRENT · Human GDD와 중복 소유하지 않음 |
 | `PDF_EXPORT.md` + `publication/NINJA_SURVIVAL_HUMAN_GDD_PDF_MANIFEST.json` + `publication/NINJA_SURVIVAL_HUMAN_BLUEPRINT_INTEGRATED_PDF_MANIFEST.json` | PDF 발행/신선도/검수 상태 | CURRENT contract; 통합본은 기존 snapshot·wireframe·flow·locked assets의 결합 상태도 기록 |
 | `canon/2026-08-28-dec034-generate-then-approve-visual-workflow.md` | concrete consumer/board 후 1개 후보 생성과 사용자 LOCK 기준 | CURRENT · chat-start/gap-only 생성 금지 |
 | `canon/2026-08-28-dec035-repository-only-project-record.md` | preservation-first Notion migration / repository-only cutover | CURRENT · final remote readback complete |
 | `canon/2026-08-29-dec036-human-player-validation-deferred-from-current-build-gate.md` | current implementation gate에서 Human/Player 검수 deferment | CURRENT · NOT_RUN evidence를 PASS로 바꾸지 않음 |
-| `implementation/2026-08-29-four-school-circuit-implementation-contract.md` | 네 유파 shared circuit의 구현 scope·owner·acceptance | PROPOSED · user contract approval 대기 |
-| `planning/2026-08-29-phase2-four-school-definition-of-ready.md` | current package의 Phase 2 preproduction verdict | READY_FOR_USER_IMPLEMENTATION_CONTRACT_APPROVAL |
-| `reviews/2026-08-29-four-school-contract-adversarial-review.md` | contract/DOR 적대적 검토 evidence | CURRENT · 5 whole-state loops |
+| `implementation/2026-08-29-four-school-circuit-implementation-contract.md` | 네 유파 shared circuit의 구현 scope·owner·acceptance | HISTORICAL IMPLEMENTATION EVIDENCE · PR129 machine scope 병합; 새 작업 승인 대기 아님 |
+| `planning/2026-08-29-phase2-four-school-definition-of-ready.md` | 당시 Phase 2 preproduction verdict | HISTORICAL GATE EVIDENCE · 당시 승인 대기 상태를 현행으로 재사용하지 않음 |
+| `reviews/2026-08-29-four-school-contract-adversarial-review.md` | 당시 contract/DOR 적대적 검토 evidence | HISTORICAL REVIEW EVIDENCE · 당시 5회 기록은 현행 검토 요구가 아님 |
 | `migration/notion/MIGRATION_MANIFEST.md` | former Notion structure, work-product and asset continuity audit | CURRENT MIGRATION ARCHIVE · not active canon |
 | `visual/SCREEN_SURFACE_AND_VISUAL_COVERAGE.md` | canonical screen-first visual coverage and Codex handoff | CURRENT · consumer/board first, user LOCK 전 candidate only |
 | `visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md` | 28쪽 Human Blueprint/PDF를 보존한 current-main screen atlas: editable player-flow, wireframe, locked-reference visual atlas, HUD-priority, and consumer links | CURRENT_MAIN_RECONCILED · links owners; does not replace canon, manifests, runtime render, Human, or device evidence |

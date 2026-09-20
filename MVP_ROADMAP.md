@@ -1,5 +1,14 @@
 # MVP_ROADMAP
 
+## Current execution — 2026-09-20
+
+Approved PR147 continuation: latest-main rule reconciliation → R01 recovery
+publication/original preservation → R02 preparation transactions → R03 Main cutover.
+Use Implementation Packet section J and current Active Context for completed
+increments. R04~R10 follow their existing dependencies. Below planning-only and
+five-review statements are historical; section 7 of the current work contract governs.
+Do not recreate existing weapons/ninjutsu/save sub-owners or infer full-run readiness.
+
 ## Active roadmap — 2026-09-10 planning restart
 
 1. A+B control boundary is approved: automatic ordinary attacks plus direct
@@ -8,9 +17,9 @@
    `docs/research/2026-09-10-full-product-reassessment.md` remain research inputs.
    Bounded ultimate input/HUD is implemented on the current task branch;
    see `docs/reviews/2026-09-10-manual-ultimate-review.md` for evidence and PR status.
-   Latest user direction pauses images/runtime and delegates detailed planning.
+   The September 10 planning-only direction was superseded by September 14 implementation approval.
    Read `docs/design/NINJA_SURVIVAL_DETAILED_RULES.md` and its review record.
-   Floor coverage is a deferred implementation defect, not the next planning action.
+   Floor coverage remains a runtime validation item; save/entry integration is first.
 2. Resolve representative-slice implementation readiness: status/reaction ownership,
    loadout/backpack mapping, save migration and acceptance tasks from the detail owner.
 3. Refine screen flow, state transitions and asset specifications; compare viable
