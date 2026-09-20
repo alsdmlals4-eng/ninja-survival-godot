@@ -909,7 +909,9 @@ https://docs.godotengine.org/en/stable/classes/class_json.html
 현재 경험 가설은 ‘검토한 빌드와 경로가 함께 출발하며 중단으로 갈라지지 않음’이다.
 자동 검사로 거래 불변성을 확인하되 화면 이해/조작/재미는 R03 이후 별도 검증한다.
 기계 증거: 출전 API 미구현 RED7/7 → GREEN7/7 → 확장13/13.
-최종 전체 GUT859/859(출전15개 포함),105스크립트·13,824단언 및 Python21/21 통과.
+최종 전체 GUT859/859(출전15개 포함),105스크립트·13,826단언 및 Python21/21 통과.
+첫 원격 실행의 테스트용 callback 참조 순환을 약한 참조 회귀검사로 재현·교정했다.
+교정 후 Linux CI35508292707의 종료 오류 검사와 Windows 내부 빌드까지 통과했다.
 24가지 완료 순서·여섯 칸 보관함·미배치 효과0·소유 장비 교체·누적 Fate·저장 실패와
 중복/재진입/재시작/후속 거래 보존을 검사했다. 독립 변경 집중 검토는 제품 코드와
 초기7개 시험을 대조했고 P0/P1/P2 지적이 없었다. 이후8개는 범위를 늘리지 않는
@@ -957,11 +959,12 @@ stale preview, 세 장비 슬롯, 시작 유파 예외와 타 유파 흡수를 �
 | 배치/장착/운명/경로 편집 | 메모리 후보 | 변경0 | 마지막 준비 확정 기준으로 복귀 |
 | 출전 확정 | 최종 배치+gear+인법+Fate+route+checkpoint 함께 저장 | readback 후1회 반영 | 전체 후보 보존, 전투 진입 금지 |
 
-신규 제안 `prepare_selected_departure(request: Dictionary)->Dictionary`는 live owner를
+구현된 `prepare_selected_departure(request: Dictionary)->Dictionary`는 live owner를
 변경하지 않고 clone의 합법성/복원 가능성을 검증하여 profile candidate를 만든다.
-`commit_selected_departure(request: Dictionary)->Dictionary`는 R01 거래 성공 이후에만
-검증된 복사본을 채택한다. 채택 중 외부 signal 재진입은 막고 모든 owner 채택 후
-UI/전투 signal을 한 번 공개한다. v1 `commit_pending()`를 selected 모드에 억지 사용 금지.
+`commit_selected_departure(request: Dictionary)->Dictionary`는 R01 거래·readback 후
+저장된 profile을 반환한다. **후속 runtime 소비자 계약(아직 미구현):** 검증된 복사본을
+일괄 채택하고, 채택 중 외부 signal 재진입을 막고 모든 owner 채택 후 UI/전투 signal을
+한 번 공개한다. v1 `commit_pending()`를 selected 모드에 억지 사용 금지.
 in-progress guard, session_id/revision 검사, 연타 idempotence가 필수다.
 
 흔적 시작유파는 강화만/인법 유지, 타유파 흡수는 후보 해금만/자동 지급0.

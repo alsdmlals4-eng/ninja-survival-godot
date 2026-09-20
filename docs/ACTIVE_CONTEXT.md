@@ -36,7 +36,16 @@ reproduced a test-only FaultStore callback -> coordinator -> store reference cyc
 weak lifetime assertions RED22/24, then weak callback capture GREEN24/24.
 Only the test injection changed; production semantics/error gates remain intact.
 Local Windows exit0/log silence was not proof of Linux shutdown cleanliness.
-Corrected full/remote evidence follows; do not cite the failed run as PASS.
+Corrected67c6bf175998193dacaa2b6f68f871dfa42e2f7d: local full859/859,
+13,826 assertions/170.028s/exit0, no SCRIPT ERROR/ERROR/WARNING; remote run
+https://github.com/alsdmlals4-eng/ninja-survival-godot/actions/runs/35508292707
+PASS (859/859,13,826 assertions/62.685s, shutdown error gate, navigation,
+import/main smoke and Windows internal build). Do not cite the earlier run as PASS.
+Same September v0.3 PDF now13 pages; original1–9 retained, Sep20 extended in place.
+Rendered changed pages12–13 checked; repeat DAILY_ALREADY_CURRENT. SHA256
+788a7626d31656ee55cf5f4cc58643f2a4c3f25c104fab248693f4800117281d.
+Final record-only commit has its own CI/readback in PR147, not substituted by
+the implementation-head evidence above. No merge; whole-R02/live adoption remains open.
 
 ## R02 continuation — 2026-09-20
 
