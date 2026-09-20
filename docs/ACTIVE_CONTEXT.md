@@ -14,7 +14,12 @@ does not authorize declaring R02~R10 or whole-game complete. PR135/49 remain rea
 Use existing RunResumeStore/Codec and existing work log, not a new save manager.
 Protected: real player saves, game tuning/art/engine pins, unrelated untracked imports
 and addons. Tests use explicit gut-only files. Recovery UI/Main cutover is R03.
-Progress: main reconciliation in progress; recovery implementation and validation pending.
+Progress: main reconciled at d802b643 (prior product increments preserved); baseline
+820/820 GUT and navigation2/2 PASS. Recovery publication tests RED8/8 missing API
+→ GREEN8/8,251 assertions. Full regression and independent review pending.
+Ruling: recovery picker/Main is R03 as explicitly sequenced in the existing packet;
+this R01 increment exposes the reviewed persistence API, not a prematurely switched
+title flow. No real player-save recovery or Human/FUN pass is claimed.
 
 ## Current operating work — 2026-09-20
 

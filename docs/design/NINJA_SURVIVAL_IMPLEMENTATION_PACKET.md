@@ -653,6 +653,24 @@ R06/R07의 독립 fixture와 R08의 상태 브리프는 저장 구현 중에도 
 
 ### R01. 단일 프로필·저장 복구
 
+2026-09-20 후속: `publish_recovery_candidate(role, observed)`를 기존 store에 추가한다.
+현재 조회한 canonical/previous/temporary 전체와 SHA256이 일치해야 한다. 모든 원본
+(손상본 포함)을 같은 프로필 경로의 `.recovery/<고유 기록>/`에 바이트 그대로 보관하고
+선택·해시·목록을 inventory.json에 남긴 뒤 선택본을 stage/readback한다. 다시 목록을
+대조한 후 원래 파일은 같은 보관 폴더로 옮기고 정본을 교체한다. 실패하면 이동한
+원본을 역순 복귀하며 복귀 실패도 원본 보관 경로를 반환한다. 자동 최신 tmp 채택,
+원본 삭제, 게임 보상/재화 계산, 새로운 저장 포맷은 추가하지 않는다.
+보존본과 displaced 원본의 중복은 실패 복구를 위한 의도된 보존이며 자동 정리하지 않는다.
+호출 중 재진입 거래는 거부한다. 다중 프로세스 writer/OS 전원 차단 내구성은 미검증이다.
+복구 화면과 사용자 확인 입력은 R03 Main 전환에서 이 API를 소비한다.
+검증: 전용 gut 임시 디렉터리에서 3역할 선택, 손상본 보존, 낡은 목록,
+보관/임시 쓰기 실패, 보관 중 원본 변경, 이동/되돌림/최종 readback 실패를 검사한다.
+공식 API 확인: [FileAccess](https://docs.godotengine.org/en/stable/classes/class_fileaccess.html),
+[DirAccess](https://docs.godotengine.org/en/stable/classes/class_diraccess.html).
+기존 store 확장 ADAPT, 최신 후보 자동 승격 및 두 번째 저장 관리자 REJECT.
+새 재미 규칙은 없으며, 중단 후 빌드/재화가 바뀌지 않는 신뢰성 가설을 기계 검사한다.
+HUMAN/FUN 결과는 별개 NOT_RUN이다.
+
 현재 범위: departure/preparation 값 저장, 임시 I/O 실패 보호, 읽기 전용 복구 후보
 조회·선택 재검증, 구형 잔액 비파괴 이관 API, receipt가 있는 재도전 자격 보존까지
 구현했다. Main은 아직 기존 진입이며 복구 확정/원본 보관 UI, 재도전 업무 거래와
@@ -1057,10 +1075,11 @@ SWOT 강화/완화계획+승인 이미지+wireframe+atlas/상태군을 통합한
 산출물 단계이며 이번 명세 준비가 PDF 재생성 완료를 뜻하지 않는다.
 
 검증 순서: focused RED/GREEN → full GUT → parse/import → actual runtime/input
-→ 96경로 기계 matrix → 대표 정상속도 완주 → 전체5회 적대검토 → exact-head CI
+→ 96경로 기계 matrix → 대표 정상속도 완주 → 현행 작업 계약의 공유 전체 검토 → exact-head CI
 → 허용된 protected PR merge → new-main readback → 동일 build 사용자 전달.
-각 전체 검토는 기능/흐름/저장/입력/아트/성능/문서/보호범위를 모두 재공격한다.
-5개 관점 검토를5회 전체 검토라고 쓰지 않는다. Human/출시 승인 자동 추정 금지.
+각 전체 검토는 승인 범위의 기능/흐름/저장/입력/아트/성능/문서/보호범위를 재공격한다.
+2026-09-20 승인된 같은 계약 2회 예산을 적용하며, 기존 유효 검토 이력은 재사용한다.
+과거 5회 기록은 역사 증거다. Human/출시 승인 자동 추정 금지.
 
 삭제 후보는 실제 consumer0·고유자료0·Git복구·용량을 확인한 것만
 `C:/Users/user/Documents/GitHub/Ninza/DELETE_REVIEW/ninja-survival-godot/<date>/`

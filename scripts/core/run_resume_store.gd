@@ -83,6 +83,10 @@ func load_profile() -> Dictionary:
 func inspect_profile_recovery() -> Dictionary:
 	if not _configured or not _profile_mode or _profile_transaction_busy:
 		return {"ok": false, "reason": &"not_ready"}
+	return _profile_recovery_inventory()
+
+
+func _profile_recovery_inventory() -> Dictionary:
 	var candidates: Array = []
 	var roles := ["canonical", "previous", "temporary"]
 	var paths := [_storage_path, _previous_storage_path(), _temporary_storage_path()]
@@ -151,6 +155,116 @@ func read_recovery_candidate(role: String, observed: Dictionary) -> Dictionary:
 	if not decoded.ok:
 		return decoded
 	return {"ok": true, "profile": decoded.profile, "source_sha256": digest, "role": role}
+
+
+# Explicit reviewed choice only. Preserve every source, including corrupt bytes,
+# before displacing live paths. This is not a multi-process lock or crash-proof FS.
+func publish_recovery_candidate(role: String, observed: Dictionary) -> Dictionary:
+	var selected := read_recovery_candidate(role, observed)
+	if not selected.ok:
+		return selected
+	_profile_transaction_busy = true
+	var result := _publish_reviewed_recovery(role, observed, selected)
+	_profile_transaction_busy = false
+	return result
+
+
+func _publish_reviewed_recovery(role: String, observed: Dictionary, selected: Dictionary) -> Dictionary:
+	var sources: Dictionary = {}
+	for item in observed.candidates:
+		if not item.exists:
+			continue
+		var read := _read_recovery_bytes(item.path)
+		if not read.ok or _recovery_digest(read.bytes) != item.sha256:
+			return {"ok": false, "reason": &"stale_recovery_inventory"}
+		sources[item.role] = read.bytes
+	if _profile_recovery_inventory() != observed:
+		return {"ok": false, "reason": &"stale_recovery_inventory"}
+	var archive := _storage_path + ".recovery/" + str(Time.get_unix_time_from_system()).replace(".", "_") + "_" + str(Time.get_ticks_usec())
+	if DirAccess.dir_exists_absolute(archive) or FileAccess.file_exists(archive):
+		return {"ok": false, "reason": &"recovery_archive_exists"}
+	if DirAccess.make_dir_recursive_absolute(archive) != OK:
+		return {"ok": false, "reason": &"recovery_archive_failed"}
+	for source_role in sources:
+		if not _preserve_recovery_bytes(archive.path_join(source_role + ".original"), sources[source_role]):
+			return {"ok": false, "reason": &"recovery_preservation_failed", "archive_path": archive}
+	var receipt := {"selected_role": role, "selected_sha256": selected.source_sha256,
+		"inventory": observed}
+	if not _preserve_recovery_bytes(archive.path_join("inventory.json"), JSON.stringify(receipt).to_utf8_buffer()):
+		return {"ok": false, "reason": &"recovery_preservation_failed", "archive_path": archive}
+	var staged := archive.path_join("selected.pending")
+	var selected_bytes: PackedByteArray = sources[role]
+	if not _preserve_recovery_bytes(staged, selected_bytes) or not _readback_matches(staged, selected_bytes.get_string_from_utf8()):
+		return {"ok": false, "reason": &"recovery_staging_failed", "archive_path": archive}
+	if _profile_recovery_inventory() != observed:
+		return {"ok": false, "reason": &"stale_recovery_inventory", "archive_path": archive}
+	var displaced: Array = []
+	for item in observed.candidates:
+		if not item.exists:
+			continue
+		var backup: String = archive.path_join(item.role + ".displaced")
+		# Recheck each exact source immediately before moving it.
+		var read := _read_recovery_bytes(item.path)
+		if not read.ok or _recovery_digest(read.bytes) != item.sha256:
+			return _rollback_recovery(displaced, archive, &"stale_recovery_inventory")
+		if _rename_record(ProjectSettings.globalize_path(item.path), ProjectSettings.globalize_path(backup)) != OK:
+			return _rollback_recovery(displaced, archive, &"recovery_displace_failed")
+		displaced.append({"source": item.path, "backup": backup})
+	if FileAccess.file_exists(_storage_path) or _rename_record(ProjectSettings.globalize_path(staged), ProjectSettings.globalize_path(_storage_path)) != OK:
+		return _rollback_recovery(displaced, archive, &"recovery_publish_failed")
+	if not _readback_matches(_storage_path, selected_bytes.get_string_from_utf8()):
+		var quarantine := archive.path_join("failed-publication")
+		if _rename_record(ProjectSettings.globalize_path(_storage_path), ProjectSettings.globalize_path(quarantine)) != OK:
+			return {"ok": false, "reason": &"recovery_required", "archive_path": archive}
+		return _rollback_recovery(displaced, archive, &"recovery_readback_failed")
+	return {"ok": true, "profile": selected.profile, "source_sha256": selected.source_sha256,
+		"archive_path": archive, "role": role}
+
+
+func _rollback_recovery(displaced: Array, archive: String, reason: StringName) -> Dictionary:
+	var restored := true
+	for index in range(displaced.size() - 1, -1, -1):
+		var item: Dictionary = displaced[index]
+		# Never overwrite a file that appeared while recovery was in progress.
+		if FileAccess.file_exists(item.source) or _rename_record(ProjectSettings.globalize_path(item.backup), ProjectSettings.globalize_path(item.source)) != OK:
+			restored = false
+	return {"ok": false, "reason": reason if restored else &"recovery_required", "archive_path": archive}
+
+
+func _read_recovery_bytes(path: String) -> Dictionary:
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return {"ok": false}
+	var bytes := file.get_buffer(file.get_length())
+	var succeeded := file.get_error() == OK
+	file.close()
+	return {"ok": succeeded, "bytes": bytes}
+
+
+func _recovery_digest(bytes: PackedByteArray) -> String:
+	var hash := HashingContext.new()
+	hash.start(HashingContext.HASH_SHA256)
+	hash.update(bytes)
+	return hash.finish().hex_encode()
+
+
+func _preserve_recovery_bytes(path: String, bytes: PackedByteArray) -> bool:
+	if FileAccess.file_exists(path) or not _write_recovery_file(path, bytes):
+		return false
+	var read := _read_recovery_bytes(path)
+	return read.ok and read.bytes == bytes
+
+
+# Narrow filesystem boundary for genuine I/O failure injection.
+func _write_recovery_file(path: String, bytes: PackedByteArray) -> bool:
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	if file == null:
+		return false
+	var succeeded := file.store_buffer(bytes)
+	file.flush()
+	succeeded = succeeded and file.get_error() == OK
+	file.close()
+	return succeeded
 
 
 # The caller owns business legality; this owner validates the complete envelope,
