@@ -1,5 +1,79 @@
 # ACTIVE_CONTEXT
 
+## Current requested delta — 2026-09-21 readable combat
+
+User requests idle motion, draft effect descriptions, ultimate/dash hover help,
+automatic origin-school Stage1, below-unit red HP, upper-left numeric vitals,
+and backpack item imagery. Item8 had no text. Continue existing PR147 scope.
+Execution: (1) test/fix new-start routing preserving old resume, (2) reuse codex
+effect data in drafts and runtime resources in HUD, (3) event-driven per-enemy
+bars and visual-only idle breathing, (4) inventory imagery consumer/provenance,
+(5) focused/full regression, Windows render/input and updated playable export.
+Do not change damage/economy/colliders/save schema or replace approved player art.
+EXP has no domain owner: detailed rules section447 explicitly excludes a new
+XP level-up system; question sent, never relabel RewardOrb as XP.
+Hypothesis: visible choice effects/status/controls reduce unexplained outcomes;
+counterexamples are stale numbers, hidden hover help, unreadable crowds and an
+idle sprite whose feet drift. Functional/render evidence is not human fun PASS.
+Research: Godot Control tooltip_text requires non-IGNORE hit testing (ADOPT native
+tooltips); Backpack Battles Steam app2427700 inventory-readable item identity
+(ADAPT image+name+effect, never copy its art/UI). Native tooltip versus custom
+popup versus always-expanded help: use native for compact HUD and expanded
+draft effects for touch/keyboard. No new overlay framework or global settings.
+
+Implemented delta: same-origin new start (historical cross-school resume retained),
+data-derived draft descriptions, per-school ultimate/dash hover help, upper-left
+numeric HP/ultimate, event-driven red bars below every enemy, visual-only idle
+breathing. New atlas stays USER_LOCK_PENDING with explicit QA injection only;
+3 base gear + 4 shared school book covers have consumers, six other weapons do
+not, and the bag drawing is prepared but not bound. No EXP domain was invented.
+Before-final-HP-fix full GUT976/976,123scripts,16,680assertions,293.757s,exit0;
+Python21/21,13.799s. Windows pointer/render766371 PASS includes candidate atlas,
+draft/start, hover, idle fixture, accelerated Elite/Trace/Boss/camp/next route.
+Foot-pivot/pose-reset tests and two still captures do not approve a full animation set.
+Review corrections: bar height27→5px after theme resolution; opaque hover panel;
+observe HP after definition; first Core definition after _ready now initializes
+full catalog HP instead of retaining20. Initial HP RED20≠34 reproduced, focused
+20/20·189assertions PASS; independent change-impact review no new P0/P1/P2.
+Configured HP values are unchanged; living damaged/reconfigured/dead actors are
+not healed by this correction. Corrected HP whole regression977/977·16,694assertions
+passed (371.85s). Final theme-aware changed state:979/979,123scripts,16,703assertions,
+310.518s,exit0 (readability-theme-final-full-20260921.log). One escape-fixture
+warning about2 unfreed children persists intermittently; focused7/7 had no warning.
+Do not call this a warning-free run or a diagnosed/fixed leak. Python21/21,17.577s.
+Atlas limited review found bag drawing has no consumer; README now states that.
+This is bounded change-impact review, not a reset of the two whole-contract reviews.
+
+Same-origin24-route matrix: all24 actual-Main/store/settlement paths PASS, exit0;
+4origins ×6 remaining-order permutations. Started before the HP/presentation
+followups: route/transaction evidence, not their visual or natural balance acceptance.
+Log diagnostics/readability-route24-20260921.log. Source Windows render778948 PASS
+and large-Boss HP fixture inspected. Review found final Boss changing from smaller
+art into Bongma would retain the old bar height; RED36.125<56.43 reproduced and
+theme_changed now repositions only its bar. Returning to smaller art also restores
+height. Focused16/16·118assertions PASS; limited review finding closed on readback.
+No per-frame crowd layout loop. Full-natural-play/packed-pointer acceptance NOT_RUN.
+Latest standalone build: build/windows-playtest-20260921-readable, PCK SHA256
+06193F1420BD77EC54AA5464019514C385C59143A1093B3E8C1F3F04C89DFAA9.
+Export and EXE headless120frames exit0. Previous settings build remains because a
+separate running instance was observed; do not stop or delete it without direction.
+Actual catalog Core HP26..44 now replaces erroneous default20; natural difficulty
+may increase. This is an initialization correction, not a balance-tuning pass.
+Local code/required regressions are verified; exact pushed-head CI is read from
+PR147. Keep Draft: whole-game art/EXP/Human/performance gates are not closed.
+Existing unsubmitted monthly v0.3 evidence PDF updated in place:19pages, original
+9pages preserved, dates09-14/16/20/21, updated pages17..19 rendered/visually checked.
+PDF SHA256 b7ed9b23877b11eb88648c4aeb121234de14429d4c5aec0bde60c582f0c74159.
+Destination remains C:/Users/user/Documents/증빙서류/9월 증빙서류/
+닌자의신_2026-09_AI활용_작업일지_증빙집_v0.3.pdf. No new daily book or submission.
+
+Earlier96-route and independent-first-field entries below are historical results,
+superseded for new starts by the latest same-origin Stage1 decision. They remain
+old-save/regression evidence, not current new-start UX authority. R06 natural
+balance/readability, R07 remaining integration, R08 final art/motion/audio, R09
+crowd/input/device performance, R10 delivery/Human gates remain open; core=0 is
+not claimed. EXP selection and inventory LOCK questions await user response.
+
 ## Latest continuation — 2026-09-21
 
 R03 accelerated actual-Main route matrix completed: 4 origins × 24 visit orders =

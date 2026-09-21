@@ -280,10 +280,11 @@ func test_main_keeps_enemy_and_game_over_owners_without_persistent_score_or_heal
 	if recent_hit_presenter == null:
 		return
 	first_enemy.take_damage(1)
-	assert_eq(recent_hit_presenter.visible_enemy(), first_enemy)
-	assert_eq(recent_hit_presenter.visible_bar().max_value, float(first_enemy.max_health))
+	var hp_bar = first_enemy.get_node("EnemyHpBar")
+	assert_eq(hp_bar.max_value, float(first_enemy.max_health))
+	assert_eq(hp_bar.value, float(first_enemy.health))
 	first_enemy.take_damage(first_enemy.max_health)
-	assert_null(recent_hit_presenter.visible_enemy(), "사망한 적의 HP bar는 즉시 정리해야 합니다.")
+	assert_false(hp_bar.visible, "사망한 적의 HP bar는 즉시 숨겨야 합니다.")
 	assert_eq(state.kill_count, 2)
 
 	player.advance_damage_protection(1.01)

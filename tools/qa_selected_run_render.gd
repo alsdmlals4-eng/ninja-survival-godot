@@ -17,6 +17,13 @@ func _run() -> void:
 	main.wallet_storage_path = fixture + "_wallet.json"
 	main.resume_storage_path = fixture + "_resume.json"
 	main.profile_storage_path = fixture + "_profile.json"
+	if "--inventory-preview" in OS.get_cmdline_user_args():
+		var candidate := Image.load_from_file("res://docs/visual/candidates/inventory-icons-20260921/atlas-cutout.png")
+		if candidate == null or candidate.is_empty():
+			_fail("inventory preview source missing or empty")
+			return
+		main.inventory_icon_atlas = ImageTexture.create_from_image(candidate)
+		print("CANDIDATE_PREVIEW_ONLY inventory atlas; production scene assignment remains null pending LOCK")
 	root.add_child(main)
 	await process_frame
 	await _click(main.title_screen.settings_button)
@@ -34,15 +41,19 @@ func _run() -> void:
 	var ui = main.selected_run.start_ui
 	if ui == null: _fail("title input"); return
 	await _click(ui.school_buttons[1])
+	await _capture("draft-effects")
 	await _click(ui.option_buttons[0])
 	await _click(ui.option_buttons[0])
 	await _capture("start")
 	await _click(ui.confirm_button)
-	await _click(main.school_selection.get_node("Panel/Margin/Choices/BongmaButton"))
 	await _capture("spawn-warning")
 	await create_timer(2.0).timeout
 	if not main._combat_enabled: _fail("battlefield input"); return
 	await _capture("battle")
+	await _capture_idle_fixture()
+	await _capture_large_boss_bar_fixture()
+	await _hover(main.hud.dash_label, "dash-tooltip")
+	await _hover(main.hud.ultimate_button, "ultimate-tooltip")
 	await _capture_warning_fixtures()
 	await _click(main.hud.settings_button)
 	if not paused: _fail("pause"); return
@@ -68,8 +79,8 @@ func _run() -> void:
 	var screen = main.selected_run.rest_screen
 	if screen == null: _fail("rest"); return
 	await _capture("rest-entry")
-	await _click(screen.action_button("trace", "absorb"))
-	if not screen.adapter.snapshot().access.trace_decisions.has("bongma"): _fail("trace input"); return
+	await _click(screen.action_button("trace", "melee"))
+	if not screen.adapter.snapshot().access.trace_decisions.has("cheonsul"): _fail("trace input"); return
 	await _click(main.rest_flow_ui.workbench_boss_reward_choices.get_child(0))
 	await _click(main.rest_flow_ui.workbench_chest_open_button)
 	await _capture("rest-rewards")
@@ -80,7 +91,7 @@ func _run() -> void:
 	if main.rest_flow_ui.workbench_commit_button.disabled: _fail("departure readiness"); return
 	await _click(main.rest_flow_ui.workbench_commit_button)
 	await process_frame
-	if not main._combat_enabled or main.school_circuit.route_state.active_school_id() == &"bongma": _fail("departure input"); return
+	if not main._combat_enabled or main.school_circuit.route_state.active_school_id() == &"cheonsul": _fail("departure input"); return
 	# Isolated QA funding only: verify the real awakening and support controls.
 	main._set_combat_enabled(false)
 	var store = main.selected_run.store
@@ -173,6 +184,33 @@ func _capture_warning_fixtures() -> void:
 	await process_frame
 	paused = false
 
+func _capture_idle_fixture() -> void:
+	paused = true
+	var visual = main.player.get_node("Visual")
+	var before: Vector2 = main.player.global_position
+	var saved_velocity: Vector2 = main.player.velocity
+	main.player.velocity = Vector2.ZERO
+	visual._process(0.6)
+	await _capture("idle-breath-a")
+	visual._process(1.2)
+	await _capture("idle-breath-b")
+	if main.player.global_position != before: _fail("idle moved body")
+	main.player.velocity = saved_velocity
+	paused = false
+
+func _capture_large_boss_bar_fixture() -> void:
+	paused = true
+	var staged = main._instantiate_school_encounter_actor(&"hundred_demon_array_master", &"boss")
+	staged.position = main.player.position + Vector2(160, 0)
+	main.add_child(staged)
+	staged.set_physics_process(false)
+	main.recent_hit_hp_presenter.observe_enemy(staged)
+	staged.take_damage(10)
+	await _capture("large-boss-hp-fixture")
+	staged.queue_free()
+	await process_frame
+	paused = false
+
 func _click(button: Control) -> void:
 	if button == null or (button is BaseButton and button.disabled): _fail("unavailable control"); return
 	# Focus-follow scrolling is the same Control path available to a keyboard user.
@@ -204,6 +242,13 @@ func _capture(label: String) -> void:
 	await RenderingServer.frame_post_draw
 	if root.get_texture().get_image().save_png(output.path_join(label + ".png")) != OK: _fail("capture")
 	print("CAPTURE ", output.path_join(label + ".png"))
+
+func _hover(control: Control, label: String) -> void:
+	var event := InputEventMouseMotion.new()
+	event.position = control.get_global_rect().get_center()
+	Input.parse_input_event(event)
+	await create_timer(0.9, true).timeout
+	await _capture(label)
 
 func _fail(reason: String) -> void:
 	push_error("SELECTED_RUN_RENDER_FAIL " + reason)

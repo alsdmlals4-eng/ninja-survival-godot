@@ -98,8 +98,13 @@ func configure_definition(value) -> bool:
 		_ensure_pattern_controller()
 		if pattern_controller == null or not pattern_controller.configure(value.pattern_definitions):
 			return false
+	# WaveSpawner supplies the first definition after _ready. Initialize only a
+	# fresh, undamaged actor; reconfiguration must never be an implicit heal.
+	var initialize_health := definition == null and not _dead and health == max_health
 	definition = value.copy_value()
 	max_health = maxi(definition.max_health, 1)
+	if initialize_health:
+		health = max_health
 	move_speed = maxf(definition.move_speed, 0.0)
 	contact_damage = maxi(definition.contact_damage, 0)
 	contact_range = maxf(definition.contact_range, 0.0)

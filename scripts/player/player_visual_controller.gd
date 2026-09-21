@@ -13,9 +13,14 @@ enum Pose {
 
 var _pose: Pose = Pose.MOVE
 var _remaining_seconds: float = 0.0
+var _neutral_scale: Vector2
+var _neutral_position: Vector2
+var _idle_time := 0.0
 
 
 func _ready() -> void:
+	_neutral_scale = scale
+	_neutral_position = position
 	_show_move()
 	var player := get_parent() as PlayerController
 	if player != null:
@@ -24,6 +29,18 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	advance_pose(delta)
+	var player := get_parent() as PlayerController
+	if player == null: return
+	if player.is_dead() or _pose == Pose.HIT or player.velocity.length_squared() > 1.0:
+		_idle_time = 0.0
+		scale = _neutral_scale
+		position = _neutral_position
+		return
+	_idle_time = fmod(_idle_time + maxf(delta, 0.0), 2.4)
+	var breath := sin(_idle_time / 2.4 * TAU) * 0.015
+	scale = _neutral_scale * Vector2(1.0 - breath * 0.3, 1.0 + breath)
+	# Keep the ground contact at the authored +24px foot pivot. No body/weapon motion.
+	position = _neutral_position - Vector2(0, 24.0 * breath)
 
 
 func show_hit() -> void:

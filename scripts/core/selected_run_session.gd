@@ -107,6 +107,7 @@ func begin_new_game() -> void:
 	panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_start_layer.add_child(panel)
 	start_ui = START_UI.new()
+	start_ui.inventory_atlas = _main.inventory_icon_atlas
 	start_ui.support_enabled = loaded.ok and loaded.profile.meta.unlocked_support_choice
 	start_ui.custom_minimum_size = Vector2(1000, 650)
 	panel.add_child(start_ui)
@@ -126,12 +127,11 @@ func _prepared(bundle: Dictionary) -> void:
 	_bundle = bundle.duplicate(true)
 	_start_layer.hide()
 	choosing_first_battlefield = true
-	_main.school_selection._selected = false
-	_main.school_selection.get_node("Panel/Margin/Choices/Title").text = "첫 전장 선택 · 시작 유파와 인법은 그대로 유지됩니다"
-	_main.school_selection.show_starting_school_selection()
+	start_battlefield(StringName(_bundle.loadout.origin_school_id))
 
 func start_battlefield(school: StringName) -> void:
 	if not choosing_first_battlefield: return
+	if school != StringName(_bundle.loadout.origin_school_id): return
 	# Import only on confirmed start. Legacy run and wallet bytes remain read-only.
 	if _start_revision == 0 and FileAccess.file_exists(_main.wallet_storage_path):
 		var imported: Dictionary = store.import_legacy_wallet(_main.wallet_storage_path)
@@ -156,14 +156,13 @@ func _show_start_error(result: Dictionary) -> void:
 	_main.school_selection.hide()
 	_start_layer.show()
 	start_ui.status_label.text = "출전 저장 실패 · %s. 선택한 빌드는 유지됩니다." % result.get("reason", "unknown")
-	# The committed bundle is immutable; re-confirm merely retries battlefield selection.
+	# Retry exactly the same immutable build and origin, including ambiguous readback.
 	start_ui.confirm_button.disabled = false
 	if not start_ui.confirm_button.pressed.is_connected(_retry_first_choice): start_ui.confirm_button.pressed.connect(_retry_first_choice)
 
 func _retry_first_choice() -> void:
 	_start_layer.hide()
-	_main.school_selection._selected = false
-	_main.school_selection.show_starting_school_selection()
+	start_battlefield(StringName(_bundle.loadout.origin_school_id))
 
 func continue_run() -> void:
 	var loaded: Dictionary = store.load_profile()
@@ -289,6 +288,7 @@ func _open_rest() -> void:
 	_main.player.health_changed.emit(_main.player.health, _main.player.max_health)
 	emergency_potions = int(prep.get("vitals", {}).get("emergency_potions", 0))
 	rest_screen = REST_SCREEN.new()
+	_main.rest_flow_ui.inventory_atlas = _main.inventory_icon_atlas
 	add_child(rest_screen)
 	var result: Dictionary = rest_screen.configure(_main.rest_flow_ui, store, _rest_charge)
 	if result.ok: rest_screen.departed.connect(adopt)

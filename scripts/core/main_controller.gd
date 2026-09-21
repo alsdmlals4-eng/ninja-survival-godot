@@ -49,6 +49,7 @@ const SCHOOL_CIRCUIT_TEST_BOSS_ROLE := &"test_boss"
 @export var resume_storage_path: String = RUN_RESUME_STORE_SCRIPT.DEFAULT_STORAGE_PATH
 @export var profile_storage_path := "user://ninja_profile_v2.json"
 @export var selected_rules_enabled := true
+@export var inventory_icon_atlas: Texture2D
 var selected_run: Node
 
 var game_over: bool = false
@@ -147,6 +148,7 @@ func _setup_mvp3_nodes() -> void:
 	contribution_tracker = _ensure_script_node("ContributionTracker", CONTRIBUTION_TRACKER_SCRIPT) as CombatContributionTracker
 	combat_resolver = _ensure_script_node("CombatResolver", COMBAT_RESOLVER_SCRIPT) as CombatResolver
 	recent_hit_hp_presenter = _ensure_script_node("RecentHitHpPresenter", RECENT_HIT_HP_PRESENTER_SCRIPT)
+	recent_hit_hp_presenter.persistent_bars = true
 
 	var existing_rest_ui := get_node_or_null("RestFlowUI")
 	if existing_rest_ui is RestFlowUI:
@@ -183,6 +185,8 @@ func _ensure_script_node(node_name: String, script: Script) -> Node:
 
 func _connect_existing_signals() -> void:
 	player.died.connect(_on_player_died)
+	player.health_changed.connect(hud.set_health)
+	school_host.resource_changed.connect(hud.set_ultimate_resource)
 	player.dash_state_changed.connect(hud.set_dash_state)
 	wave_spawner.enemy_spawned.connect(_wire_enemy)
 	title_screen.new_game_requested.connect(_on_title_new_game_requested)
@@ -776,6 +780,8 @@ func _set_combat_enabled(enabled: bool) -> void:
 
 	var combat_hud_enabled := enabled and not game_over and school_host.selected_school_id != &""
 	hud.show_combat_hud(combat_hud_enabled)
+	hud.set_health(player.health, player.max_health)
+	hud.set_school(school_host.selected_school_id)
 	hud.set_ultimate_ready(school_host.is_ultimate_ready())
 	if combat_hud_enabled:
 		if not _final_battle_started:
@@ -1035,8 +1041,6 @@ func _wire_enemy(enemy: Node) -> void:
 		enemy.set_target(player)
 	if selected_rules_enabled and enemy.has_method("enable_open_field_contact"):
 		enemy.enable_open_field_contact()
-	if recent_hit_hp_presenter != null and recent_hit_hp_presenter.has_method("observe_enemy"):
-		recent_hit_hp_presenter.call("observe_enemy", enemy)
 	if school_circuit != null and enemy.is_in_group("enemies") and not enemy.has_meta(SCHOOL_CIRCUIT_ROLE_META):
 		var circuit_encounter: Dictionary = school_circuit.next_core_encounter()
 		var circuit_encounter_id := StringName(circuit_encounter.get("id", &""))
@@ -1049,6 +1053,8 @@ func _wire_enemy(enemy: Node) -> void:
 		if encounter_id != &"":
 			enemy.set_meta(CHEONSUL_ENCOUNTER_ID_META, encounter_id)
 			_configure_school_encounter_actor(enemy, encounter_id, &"core")
+	if recent_hit_hp_presenter != null and recent_hit_hp_presenter.has_method("observe_enemy"):
+		recent_hit_hp_presenter.call("observe_enemy", enemy)
 	if enemy.has_signal("died"):
 		var death_callback := Callable(self, "_on_enemy_died")
 		if not enemy.is_connected("died", death_callback):

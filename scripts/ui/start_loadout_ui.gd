@@ -7,6 +7,9 @@ const SESSION = preload("res://scripts/core/start_loadout_session.gd")
 const NINJUTSU = preload("res://scripts/data/ninjutsu_catalog.gd")
 const BOOKS = preload("res://scripts/data/ninjutsu_book_catalog.gd")
 const ITEMS = preload("res://scripts/data/selected_backpack_catalog.gd")
+const DETAILS = preload("res://scripts/ui/codex_presentation.gd")
+const ICONS = preload("res://scripts/ui/inventory_icon_catalog.gd")
+@export var inventory_atlas: Texture2D
 const SCHOOLS := [&"bongma", &"cheonsul", &"guiin", &"heukyeong"]
 const SCHOOL_NAMES := ["봉마류", "천술류", "귀인류", "흑영류"]
 
@@ -44,7 +47,7 @@ func _ready() -> void:
 	column.add_theme_constant_override("separation", 14)
 	scroll.add_child(column)
 	_label(column, "출전 준비 · 시작 빌드", 30)
-	_label(column, "시작 유파와 인법 두 권을 고릅니다. 확정 후 첫 전장을 따로 선택합니다.", 16)
+	_label(column, "시작 유파와 인법 두 권을 고릅니다. 선택한 유파의 스테이지 1로 바로 출전합니다.", 16)
 	var schools := HBoxContainer.new()
 	column.add_child(schools)
 	for index in range(4):
@@ -54,16 +57,30 @@ func _ready() -> void:
 	_label(column, "캐릭터 장비 · 가방 공간을 사용하지 않습니다", 20)
 	var gear := HBoxContainer.new()
 	column.add_child(gear)
+	var gear_index := 0
 	for text in ["근접  |  일본도", "투사  |  수리검", "의복  |  닌자복"]:
 		var panel := PanelContainer.new()
 		panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		gear.add_child(panel)
-		_label(panel, text, 19)
+		var row := HBoxContainer.new()
+		panel.add_child(row)
+		var icon := TextureRect.new()
+		icon.name = "StartingGear%d" % gear_index
+		icon.texture = ICONS.icon(inventory_atlas, [&"katana", &"shuriken", &"ninja_suit"][gear_index])
+		icon.custom_minimum_size = Vector2(64, 64)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.visible = icon.texture != null
+		row.add_child(icon)
+		_label(row, text, 19)
+		gear_index += 1
 	_draft_label = _label(column, "", 20)
 	var options := HBoxContainer.new()
 	column.add_child(options)
 	for index in range(3):
 		var button := _button(options, "")
+		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		button.custom_minimum_size = Vector2(230, 150)
 		button.pressed.connect(_choose.bind(index))
 		option_buttons.append(button)
 	if support_enabled:
@@ -157,7 +174,7 @@ func _restart() -> void:
 
 func _confirm() -> void:
 	if session.confirm():
-		status_label.text = "준비 확정: 인법 두 권과 장비 세 슬롯. 다음으로 첫 전장을 선택하세요."
+		status_label.text = "준비 확정: 선택한 유파의 스테이지 1로 출전합니다."
 		_refresh()
 		prepared.emit(session.committed_snapshot())
 
@@ -171,18 +188,25 @@ func _refresh() -> void:
 		button.visible = index < state.draft.options.size()
 		if button.visible:
 			var definition = NINJUTSU.definition_for_id(state.draft.options[index])
-			button.text = definition.display_name
+			var detail: String = DETAILS.new()._selected_effect_detail(definition.effect_config)
+			button.text = definition.display_name + "\n" + detail
+			button.tooltip_text = definition.display_name + "\n가방 1×2 · 배치 후 자동 발동\n" + detail
+			button.icon = ICONS.icon(inventory_atlas, definition.ninjutsu_id)
+			button.expand_icon = true
+			button.add_theme_constant_override("icon_max_width", 48)
 	for index in range(4):
 		school_buttons[index].disabled = confirmed or SCHOOLS[index] == state.draft.school_id
 	_cell_owners.clear()
 	var defs: Dictionary = ITEMS.build_items()
 	var letters: Dictionary = {}
+	var images: Dictionary = {}
 	for index in range(_book_labels.size()):
 		_book_labels[index].text = "%s · 선택 전" % ["A", "B", "C"][index]
 	for index in range(state.backpack.items.size()):
 		var item: Dictionary = state.backpack.items[index]
 		var definition = defs[StringName(item.definition_id)]
 		letters[int(item.instance_id)] = ["A", "B", "C"][index]
+		images[int(item.instance_id)] = ICONS.icon(inventory_atlas, definition.id)
 		_book_labels[index].text = "%s · %s · %d×%d" % [["A", "B", "C"][index], definition.display_name, definition.footprint_size.x, definition.footprint_size.y]
 		for local_cell in definition.footprint(int(item.rotation_quarters)):
 			_cell_owners[Vector2i(item.origin_x, item.origin_y) + local_cell] = int(item.instance_id)
@@ -190,6 +214,9 @@ func _refresh() -> void:
 		var owner: int = _cell_owners.get(Vector2i(index % 3 + 1, index / 3 + 1), 0)
 		cell_buttons[index].text = ("[%s]" if owner == _selected_book else "%s") % letters[owner] if owner > 0 else "·"
 		cell_buttons[index].disabled = confirmed
+		cell_buttons[index].icon = images.get(owner)
+		cell_buttons[index].expand_icon = true
+		cell_buttons[index].add_theme_constant_override("icon_max_width", 32)
 	_bag_label.text = "시작 가방 · 3×3 · %d / 9칸 사용" % _cell_owners.size()
 	confirm_button.disabled = confirmed or not state.draft.complete or (support_enabled and state.support_id == &"")
 	for index in range(support_buttons.size()):

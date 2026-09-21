@@ -1,5 +1,7 @@
 extends CanvasLayer
 class_name RestFlowUI
+@export var inventory_atlas: Texture2D
+const INVENTORY_ICONS = preload("res://scripts/ui/inventory_icon_catalog.gd")
 
 const WORKBENCH_SCHOOL_DETAILS := {
 	&"bongma": {
@@ -529,6 +531,9 @@ func _render_workbench_buffer() -> void:
 		var button := Button.new()
 		var item_name := str(item.get("display_name", item.get("definition_id", "아이템")))
 		button.text = item_name
+		button.icon = INVENTORY_ICONS.icon(inventory_atlas, StringName(item.get("definition_id", "")))
+		button.expand_icon = true
+		button.add_theme_constant_override("icon_max_width", 40)
 		button.tooltip_text = "배치할 아이템을 선택합니다. 회전 후 6×6 보드의 칸을 누르세요."
 		button.disabled = not _pending_combination.is_empty()
 		button.pressed.connect(_on_workbench_buffer_item_pressed.bind(index))
@@ -561,6 +566,9 @@ func _render_workbench_board(workbench_context: Dictionary = {}) -> void:
 			if not board_item.is_empty():
 				button.text = str(board_item.get("display_name", "아이템"))
 				button.tooltip_text = "%s — 눌러서 이동·회전" % button.text
+				button.icon = INVENTORY_ICONS.icon(inventory_atlas, StringName(board_item.get("definition_id", "")))
+				button.expand_icon = true
+				button.add_theme_constant_override("icon_max_width", 32)
 			elif is_active:
 				button.text = "□"
 				button.tooltip_text = "활성 칸 %d, %d" % [x + 1, y + 1]

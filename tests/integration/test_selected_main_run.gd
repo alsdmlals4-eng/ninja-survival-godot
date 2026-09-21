@@ -191,7 +191,7 @@ func test_last_soul_retry_recovers_saved_receipt_after_readback_failure() -> voi
 	assert_false(main.game_over)
 	assert_eq(fault.load_profile().profile, saved, "Retry recovery must not debit twice")
 
-func test_default_new_game_two_books_independent_battlefield_and_saved_continue() -> void:
+func test_default_new_game_two_books_origin_battlefield_and_saved_continue() -> void:
 	var main = MAIN.instantiate()
 	ISOLATION.prepare(main)
 	assert_true("selected_rules_enabled" in main, "Default Main still uses legacy starter flow")
@@ -207,13 +207,12 @@ func test_default_new_game_two_books_independent_battlefield_and_saved_continue(
 	ui.option_buttons[0].pressed.emit()
 	ui.option_buttons[0].pressed.emit()
 	ui.confirm_button.pressed.emit()
-	assert_true(main.school_selection.visible)
-	main.school_selection.school_selected.emit(&"heukyeong")
+	assert_false(main.school_selection.visible)
 	await get_tree().process_frame
 	await get_tree().process_frame
 	assert_true(main._combat_enabled)
 	assert_eq(main.school_host.selected_school_id, &"guiin")
-	assert_eq(main.school_circuit.route_state.active_school_id(), &"heukyeong")
+	assert_eq(main.school_circuit.route_state.active_school_id(), &"guiin")
 	assert_eq(main.ninjutsu_loadout.get_snapshot().active_spell_ids.size(), 2)
 	var loaded: Dictionary = main.selected_run.store.load_profile()
 	assert_true(loaded.ok)
@@ -229,7 +228,7 @@ func test_default_new_game_two_books_independent_battlefield_and_saved_continue(
 	assert_true(copy._combat_enabled)
 	assert_eq(copy.ninjutsu_loadout.get_snapshot(), main.ninjutsu_loadout.get_snapshot())
 	assert_eq(copy.school_host.selected_school_id, &"guiin")
-	assert_eq(copy.school_circuit.route_state.active_school_id(), &"heukyeong")
+	assert_eq(copy.school_circuit.route_state.active_school_id(), &"guiin")
 
 # Accelerates encounter time/damage only; this is not natural play/balance evidence.
 func test_four_battlefields_rest_choices_and_final_boss_use_selected_profile() -> void:

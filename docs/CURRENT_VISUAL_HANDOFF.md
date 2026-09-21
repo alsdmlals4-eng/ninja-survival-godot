@@ -1,5 +1,15 @@
 # CURRENT VISUAL HANDOFF — Ninja Survival / 닌자의 신
 
+## 2026-09-21 readable combat / inventory candidate
+
+`visual/candidates/inventory-icons-20260921/README.md` owns new chroma-source,
+RGBA cutout, prompts, hashes, alpha/Aseprite inspection and source mapping.
+USER_LOCK_PENDING; optional QA-only atlas injection previews real UI consumers.
+Production Main.inventory_icon_atlas remains unassigned; no silent final approval.
+The unchanged approved player now has a2.4s visual-only breathing cycle with fixed
+foot contact, reset on movement/hit/death. This is procedural presentation of the
+existing sprite, not newly approved idle frames or completed walk/dash/death art.
+
 ## 2026-09-21 player camera candidate, not runtime-ready
 
 `visual/candidates/player-gameplay-20260921/README.md` owns one revised appearance,

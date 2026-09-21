@@ -1,5 +1,5 @@
 extends SceneTree
-## 4 origins x 24 battlefield orders through real Main, transactions and actors.
+## 4 origins x 6 remaining battlefield orders through real Main, transactions and actors.
 ## Encounter clock/damage accelerated. NOT natural play or fun verification.
 const SCHOOLS := [&"bongma", &"cheonsul", &"guiin", &"heukyeong"]
 var main
@@ -19,13 +19,14 @@ func _run() -> void:
 	var case_index := 0
 	for origin in range(4):
 		for order in _permutations(SCHOOLS):
+			if order[0] != SCHOOLS[origin]: continue
 			case_index += 1
 			if (case_index - 1) % shards != shard: continue
 			if not await _route(origin, order):
 				quit(1)
 				return
 			completed += 1
-			print("ROUTE_PASS case=", case_index, "/96 origin=", SCHOOLS[origin], " order=", order)
+			print("ROUTE_PASS case=", case_index, "/24 origin=", SCHOOLS[origin], " order=", order)
 	print("SELECTED_ROUTE_MATRIX_SHARD_PASS shard=", shard, "/", shards, " count=", completed, " · accelerated Main/actor/store; natural play NOT_RUN")
 	quit(0)
 
@@ -52,7 +53,6 @@ func _route(origin: int, order: Array) -> bool:
 	ui.option_buttons[0].pressed.emit()
 	if ui.confirm_button.disabled: return _fail("start draft")
 	ui.confirm_button.pressed.emit()
-	main.school_selection.school_selected.emit(order[0])
 	await process_frame
 	await process_frame
 	for index in range(4):

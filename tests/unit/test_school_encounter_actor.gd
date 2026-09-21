@@ -16,6 +16,19 @@ class DamageTarget extends Node2D:
 		return amount
 
 
+func test_first_definition_after_ready_initializes_full_health_without_rehealing() -> void:
+	var actor = ACTOR_SCENE.instantiate()
+	add_child_autofree(actor)
+	actor.set_physics_process(false)
+	var definition = ENCOUNTER_CATALOG_SCRIPT.actor_definition_for(&"seal_chaser")
+	definition.max_health = 34
+	assert_true(actor.configure_definition(definition))
+	assert_eq(actor.health, 34, "Wave actors receive their first definition after _ready; spawn must not retain default 20 HP.")
+	actor.take_damage(3)
+	assert_true(actor.configure_definition(definition))
+	assert_eq(actor.health, 31, "Reapplying a definition must not heal a damaged actor.")
+
+
 func test_core_actor_configures_without_a_pattern_controller_or_projectile_attack() -> void:
 	var actor = ACTOR_SCENE.instantiate()
 	add_child_autofree(actor)

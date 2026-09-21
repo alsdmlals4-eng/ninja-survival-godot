@@ -9,6 +9,8 @@ const BAR_OFFSET := Vector2(-32.0, -52.0)
 var _current_enemy: Node2D
 var _bar: ProgressBar
 var _remaining: float = 0.0
+var persistent_bars := false
+var _bars: Dictionary = {}
 
 
 func observe_enemy(enemy: Node) -> bool:
@@ -20,7 +22,39 @@ func observe_enemy(enemy: Node) -> bool:
 	var death_callback := Callable(self, "_on_enemy_died")
 	if enemy.has_signal(&"died") and not enemy.is_connected(&"died", death_callback):
 		enemy.connect(&"died", death_callback)
+	if persistent_bars and not _bars.has(enemy.get_instance_id()):
+		var bar := _create_bar()
+		bar.name = "EnemyHpBar"
+		bar.position = Vector2(-24, 34)
+		bar.size = Vector2(48, 5)
+		var fill := StyleBoxFlat.new()
+		fill.bg_color = Color(0.82, 0.10, 0.13)
+		var background := StyleBoxFlat.new()
+		background.bg_color = Color(0.05, 0.02, 0.03, 0.85)
+		bar.add_theme_stylebox_override("fill", fill)
+		bar.add_theme_stylebox_override("background", background)
+		bar.max_value = float(enemy.max_health)
+		bar.value = float(enemy.health)
+		enemy.add_child(bar)
+		# Tree entry resolves theme caches; resize after that, not against stale defaults.
+		bar.size = Vector2(48, 5)
+		var id := enemy.get_instance_id()
+		_bars[id] = bar
+		_place_persistent_bar(&"", enemy)
+		if enemy.has_signal("theme_changed"):
+			enemy.connect("theme_changed", _place_persistent_bar.bind(enemy))
+		enemy.tree_exiting.connect(func(): _bars.erase(id), CONNECT_ONE_SHOT)
 	return true
+
+
+func _place_persistent_bar(_theme: StringName, enemy: Node) -> void:
+	var bar = _bars.get(enemy.get_instance_id())
+	if not is_instance_valid(bar): return
+	bar.position.y = 34.0
+	var visual := enemy.get_node_or_null("Visual") as Sprite2D
+	if visual != null and visual.texture != null:
+		var bounds: Rect2 = visual.transform * visual.get_rect()
+		bar.position.y = maxf(bar.position.y, bounds.end.y + 4.0)
 
 
 func record_hit(enemy: Node2D, remaining_health: int, maximum_health: int) -> bool:
@@ -60,12 +94,21 @@ func _process(delta: float) -> void:
 
 
 func _on_enemy_damaged(enemy: Node, actual_damage: int, remaining_health: int, maximum_health: int) -> void:
+	if persistent_bars:
+		var bar = _bars.get(enemy.get_instance_id())
+		if is_instance_valid(bar):
+			bar.max_value = maximum_health
+			bar.value = maxi(remaining_health, 0)
+		return
 	if actual_damage <= 0 or not enemy is Node2D:
 		return
 	record_hit(enemy as Node2D, remaining_health, maximum_health)
 
 
 func _on_enemy_died(enemy: Node) -> void:
+	if persistent_bars:
+		var bar = _bars.get(enemy.get_instance_id())
+		if is_instance_valid(bar): bar.hide()
 	if enemy == _current_enemy:
 		_clear_current()
 

@@ -122,7 +122,7 @@ func test_normal_enemy_death_grants_current_gold_and_kill_credit_after_selection
 	assert_not_null(enemy)
 	if enemy == null:
 		return
-	assert_eq(enemy.take_damage(9999), 20)
+	assert_eq(enemy.take_damage(9999), 34, "Fresh Bongma seal chaser has its catalog HP, not the unconfigured default 20.")
 	assert_true(build_state.gold in [0, 1], "Normal enemies use the fixed 20% 1G policy, so a miss still produces the kill credit.")
 	var receipts: Array = build_state.get_economy_receipts()
 	assert_eq(receipts.size(), 1)

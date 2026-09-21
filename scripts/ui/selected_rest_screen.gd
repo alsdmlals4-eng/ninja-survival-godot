@@ -8,6 +8,8 @@ const GEAR = preload("res://scripts/core/equipment_loadout_state.gd")
 const BOOKS = preload("res://scripts/data/ninjutsu_book_catalog.gd")
 const FATES = preload("res://scripts/data/mvp3_catalog.gd")
 const SHOP = preload("res://scripts/core/shop_controller.gd")
+const ICONS = preload("res://scripts/ui/inventory_icon_catalog.gd")
+const DETAILS = preload("res://scripts/ui/codex_presentation.gd")
 
 var adapter
 var view
@@ -119,6 +121,16 @@ func _label(text: String) -> void:
 func _button(kind: String, id: String, text: String, disabled := false) -> void:
 	var button := Button.new()
 	button.text = text
+	var icon_id := StringName(id)
+	if kind in ["forge", "trace"] and GEAR.SLOTS.has(id):
+		var equipment: Dictionary = adapter.snapshot().equipment
+		icon_id = StringName(equipment.owned_instances[equipment.equipped_slots[id]].definition_id)
+	button.icon = ICONS.icon(view.inventory_atlas, icon_id)
+	button.expand_icon = true
+	button.add_theme_constant_override("icon_max_width", 40)
+	if kind == "book":
+		var definition = BOOKS.NINJUTSU.definition_for_id(StringName(id))
+		button.tooltip_text = DETAILS.new()._selected_effect_detail(definition.effect_config)
 	button.custom_minimum_size.y = 44
 	button.disabled = disabled or adapter.reload_required or not adapter.pending_combination.is_empty()
 	if kind == "reload": button.disabled = false
