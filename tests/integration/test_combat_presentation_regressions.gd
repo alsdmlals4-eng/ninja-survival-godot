@@ -119,14 +119,24 @@ func test_cooldown_hud_reads_spell_owner_without_advancing_it() -> void:
 	loadout.commit_drafted_start(loadout.start_draft_snapshot().picks)
 	controller._loadout = loadout
 	var first: StringName = loadout.active_spell_ids()[0]
-	controller._remaining_by_spell[first] = 1.25
+	# Avoid libc tie-rounding differences at exactly1.25 between Windows/Linux.
+	controller._remaining_by_spell[first] = 1.26
 	var rows: Array = controller.cooldown_snapshot()
 	assert_eq(rows.size(), 2)
-	assert_eq(rows[0].remaining, 1.25)
+	assert_eq(rows[0].remaining, 1.26)
 	var hud = load("res://scenes/ui/hud.tscn").instantiate()
 	add_child_autofree(hud)
 	assert_true(hud.has_method("set_skill_cooldowns"))
 	if not hud.has_method("set_skill_cooldowns"): return
 	hud.set_skill_cooldowns(rows)
 	assert_true(hud.find_child("SkillCooldowns", true, false).text.contains("1.3초"))
-	assert_eq(controller._remaining_by_spell[first], 1.25)
+	assert_eq(controller._remaining_by_spell[first], 1.26)
+	# Rendering fixture on real owners: support still runs during sword form.
+	loadout._active_spell_ids.assign([&"guiin_demon_step", &"guiin_ghost_blood_wave"])
+	var resolver := CombatResolver.new()
+	add_child_autofree(resolver)
+	resolver.sword_only_mode = true
+	controller._combat_resolver = resolver
+	rows = controller.cooldown_snapshot()
+	assert_eq(rows[0].status, "대시 연계")
+	assert_eq(rows[1].status, "귀인화 중 억제")
