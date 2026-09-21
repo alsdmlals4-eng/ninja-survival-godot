@@ -3,6 +3,18 @@ extends "res://tests/support/selected_profile_fixture.gd"
 const SCREEN_PATH = "res://scripts/ui/selected_rest_screen.gd"
 const REST_VIEW = preload("res://scenes/ui/rest_flow_ui.tscn")
 
+func test_deferred_focus_does_not_access_a_closed_rest_view() -> void:
+	var fixture := _fixture()
+	var view = REST_VIEW.instantiate()
+	add_child(view)
+	var screen = add_child_autofree(load(SCREEN_PATH).new())
+	assert_true(screen.configure(view, fixture.store, {"school_id": "bongma", "resource_amount": 0}).ok)
+	view.free()
+	screen._focus_pending_action()
+	screen._restore_action_focus("trace:absorb")
+	await get_tree().process_frame
+	assert_false(is_instance_valid(screen.view))
+
 func test_real_buttons_unlock_books_buy_equip_and_forge_without_live_combat_changes() -> void:
 	var fixture := _fixture()
 	assert_true(ResourceLoader.exists(SCREEN_PATH), "Selected rest needs visible actions, not API-only completion")

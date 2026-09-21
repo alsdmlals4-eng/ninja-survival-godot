@@ -41,6 +41,10 @@ added support/sword suppression checks. CI35602413233 failed before tests at
 Godot download(connection reset); its Windows build passed. Latest exact-head
 remote result is the PR check surface, not either historical failed attempt.
 PR147 remains Draft; exact pushed-head CI is checked separately from local results.
+Follow-up CI35602733035 passed994 assertions/tests but failed the script-error
+gate: deferred rest focus accessed a freed view. A deterministic reproduction
+failed2/3 before the guard; focused3/3,65assertions now PASS. Rebuild and full
+exact-head checks must supersede the pre-guard export/hash above before delivery.
 Existing September v0.3 evidence book is updated in place from the dated owner;
 the original9pages remain, no separate daily PDF or official submission is made.
 

@@ -444,7 +444,7 @@ Human재미/자연속도밸런스/최종그림/1000몹성능/출시 PASS는 아�
 24회 사람의 자연 플레이가 아니다. bae3201 원격35602413233은 테스트 전 Godot
 다운로드에서 connection reset으로 실패했고 Windows빌드는 성공했다. 최신 HEAD의
 최종 상태는 PR147 exact-head 검사에서 확인하며 실패 이력은 그대로 보존한다.
-플레이어 원본 그림의 축소 표시 보정은 Godot 공식 이미지 import/mipmap과 CanvasItem
-texture_filter 안내를 재확인했다. https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_images.html
-및 https://docs.godotengine.org/en/stable/classes/class_canvasitem.html.
-이번에도 기존 미제출 월간 v0.3 PDF에 같은 날짜로 추가하며 원래9쪽을 보존한다.
+축소 표시 기준은 Godot 공식 import/mipmap·CanvasItem 문서(구현 명세 참조)를 확인했다.
+ff9cd05 원격35602733035는994/994 단언 통과 후 해제된 휴식 UI의 지연 포커스
+오류로 실패했다. 재현검사2/3 실패를 확인하고 닫힌 화면 접근을 차단했다.
+수정 후 휴식UI 집중3/3·65단언·8.812초·종료0, SCRIPT ERROR 없음.

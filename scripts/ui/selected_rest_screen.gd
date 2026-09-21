@@ -95,8 +95,11 @@ func _ensure_focus_visible_after_layout() -> void:
 		view.get_node("Panel/Margin").ensure_control_visible(target)
 
 func _focus_pending_action() -> void:
+	# A queued focus callback can outlive the view during departure/restart.
+	if not is_instance_valid(view) or not view.is_inside_tree() or view.is_queued_for_deletion(): return
+	if not view.workbench_view.is_visible_in_tree(): return
 	for key in _buttons:
-		if (key.begins_with("reload:") or key.begins_with("trace:")) and not _buttons[key].disabled:
+		if (key.begins_with("reload:") or key.begins_with("trace:")) and is_instance_valid(_buttons[key]) and not _buttons[key].disabled:
 			_restore_action_focus(key)
 			return
 	if adapter.snapshot().get("reward_state", {}).get("boss_pending", false) and view.workbench_boss_reward_choices.get_child_count() > 0:
