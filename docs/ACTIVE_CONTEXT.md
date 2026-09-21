@@ -19,8 +19,8 @@ No plugin/global setting/engine install changes; unrelated untracked imports
 and other worktrees protected. New exact-head export replaces the prior readable
 build only after verification; existing running builds are not terminated.
 
-Latest local full GUT994/994,126scripts,16,829assertions,369.432s exit0;
-Python21/21 17.887s. Escape-fixture unfreed-child2 warning remains, not hidden.
+Latest local full GUT995/995,126scripts,16,847assertions,274.373s exit0;
+Python21/21 14.385s. Escape-fixture unfreed-child2 warning remains, not hidden.
 XP actual kill/acquire/camp save/reopen/departure/reload and malformed receipt
 focused4/4 29assertions PASS. Bounded reviewer found pad settings access and
 sword-mode support-status errors; both corrected and read back, no new full-loop.
@@ -29,7 +29,7 @@ Space/pointer events, idle/floor/20-role fixtures/level choice. Standalone EXE
 headless120frames exit0; EXE itself did not execute custom -s QA, so that evidence
 is explicitly full-engine + exported PCK, not EXE pointer acceptance.
 Playable export: build/windows-playtest-20260921-growth/NinjaSurvivalInternal.exe.
-PCK SHA256510C2420AFA6EAC6CA6E3B6DD7524B27F824B1096F5B80E88F796763A4D265AB.
+Final PCK SHA256FBE5BADE6D332E03BD18553C4E0D68CB7B4B320C608444CA40ABAF5D74E02A6D.
 Updated24-route actual-Main matrix PASS, exit0: growth-route24-20260921.log.
 All4origins ×6visit orders now resolve pending growth choices through actual
 owners and physics-release gating, then final settlement. Combat time/damage
@@ -43,8 +43,11 @@ remote result is the PR check surface, not either historical failed attempt.
 PR147 remains Draft; exact pushed-head CI is checked separately from local results.
 Follow-up CI35602733035 passed994 assertions/tests but failed the script-error
 gate: deferred rest focus accessed a freed view. A deterministic reproduction
-failed2/3 before the guard; focused3/3,65assertions now PASS. Rebuild and full
-exact-head checks must supersede the pre-guard export/hash above before delivery.
+failed2/3 before the guard; focused3/3,65assertions now PASS. Code1931e93:
+remote35603475554 GUT995/995,16,845assertions186.426s and Windows export PASS.
+Final exported-PCK fullscreen/input/render724717 PASS; final EXE120frame smoke
+exit0. combat-growth-closeout-full/export/render/exe logs supersede prior builds.
+Later documentation-only receipt commits require their own exact-head CI result.
 Existing September v0.3 evidence book is updated in place from the dated owner;
 the original9pages remain, no separate daily PDF or official submission is made.
 
