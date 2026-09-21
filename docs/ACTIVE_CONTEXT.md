@@ -1,5 +1,577 @@
 # ACTIVE_CONTEXT
 
+## Current follow-up — fullscreen / motion / images / XP (2026-09-21)
+
+Latest user explicitly adds kill XP and level acquire/upgrade; the earlier no-XP
+pending question below is historical, not the current execution boundary.
+Implementation stays on PR147 branch codex/replanning-art-motion-20260910.
+Changed consumers: HUD dash GUI propagation + Escape/padStart settings access;
+viewport-aware Parallax2D floor/props; directed moving/fading katana and shuriken;
+18 atlas enemy roles with original Bongma dedicated Elite/Boss retained;
+standing idle image + procedural breathing; Main inventory atlas; active spell
+cooldowns; RunExperienceState/SelectedLevelController and optional growth save.
+Current test/readback evidence is appended in AI_WORK_EVIDENCE's existing Sept21
+entry. Do not infer full regression from the earlier979 result below.
+Runtime trial asset source/hash/approval limits are in
+visual/candidates/player-idle-20260921/README.md. No final art LOCK, human fun,
+natural full-run balance or 1000-mob performance acceptance is inferred.
+No plugin/global setting/engine install changes; unrelated untracked imports
+and other worktrees protected. New exact-head export replaces the prior readable
+build only after verification; existing running builds are not terminated.
+
+Latest local full GUT995/995,126scripts,16,847assertions,274.373s exit0;
+Python21/21 14.385s. Escape-fixture unfreed-child2 warning remains, not hidden.
+XP actual kill/acquire/camp save/reopen/departure/reload and malformed receipt
+focused4/4 29assertions PASS. Bounded reviewer found pad settings access and
+sword-mode support-status errors; both corrected and read back, no new full-loop.
+1920×1080 source render826356 and exported-PCK render843892 PASS using actual
+Space/pointer events, idle/floor/20-role fixtures/level choice. Standalone EXE
+headless120frames exit0; EXE itself did not execute custom -s QA, so that evidence
+is explicitly full-engine + exported PCK, not EXE pointer acceptance.
+Playable export: build/windows-playtest-20260921-growth/NinjaSurvivalInternal.exe.
+Final PCK SHA256FBE5BADE6D332E03BD18553C4E0D68CB7B4B320C608444CA40ABAF5D74E02A6D.
+Updated24-route actual-Main matrix PASS, exit0: growth-route24-20260921.log.
+All4origins ×6visit orders now resolve pending growth choices through actual
+owners and physics-release gating, then final settlement. Combat time/damage
+are accelerated; this is not24 human/natural playthroughs.
+Implementation9618db8; test-only portability followup bae3201 preserves shipped
+gameplay/export bytes. Latest focused presentation8/8 79assertions PASS.
+CI35601796953 failed one1.25 tie-rounding expectation; fixed fixture1.26 and
+added support/sword suppression checks. CI35602413233 failed before tests at
+Godot download(connection reset); its Windows build passed. Latest exact-head
+remote result is the PR check surface, not either historical failed attempt.
+PR147 remains Draft; exact pushed-head CI is checked separately from local results.
+Follow-up CI35602733035 passed994 assertions/tests but failed the script-error
+gate: deferred rest focus accessed a freed view. A deterministic reproduction
+failed2/3 before the guard; focused3/3,65assertions now PASS. Code1931e93:
+remote35603475554 GUT995/995,16,845assertions186.426s and Windows export PASS.
+Final exported-PCK fullscreen/input/render724717 PASS; final EXE120frame smoke
+exit0. combat-growth-closeout-full/export/render/exe logs supersede prior builds.
+Later documentation-only receipt commits require their own exact-head CI result.
+Existing September v0.3 evidence book is updated in place from the dated owner;
+the original9pages remain, no separate daily PDF or official submission is made.
+
+## Current requested delta — 2026-09-21 readable combat
+
+User requests idle motion, draft effect descriptions, ultimate/dash hover help,
+automatic origin-school Stage1, below-unit red HP, upper-left numeric vitals,
+and backpack item imagery. Item8 had no text. Continue existing PR147 scope.
+Execution: (1) test/fix new-start routing preserving old resume, (2) reuse codex
+effect data in drafts and runtime resources in HUD, (3) event-driven per-enemy
+bars and visual-only idle breathing, (4) inventory imagery consumer/provenance,
+(5) focused/full regression, Windows render/input and updated playable export.
+Do not change damage/economy/colliders/save schema or replace approved player art.
+EXP has no domain owner: detailed rules section447 explicitly excludes a new
+XP level-up system; question sent, never relabel RewardOrb as XP.
+Hypothesis: visible choice effects/status/controls reduce unexplained outcomes;
+counterexamples are stale numbers, hidden hover help, unreadable crowds and an
+idle sprite whose feet drift. Functional/render evidence is not human fun PASS.
+Research: Godot Control tooltip_text requires non-IGNORE hit testing (ADOPT native
+tooltips); Backpack Battles Steam app2427700 inventory-readable item identity
+(ADAPT image+name+effect, never copy its art/UI). Native tooltip versus custom
+popup versus always-expanded help: use native for compact HUD and expanded
+draft effects for touch/keyboard. No new overlay framework or global settings.
+
+Implemented delta: same-origin new start (historical cross-school resume retained),
+data-derived draft descriptions, per-school ultimate/dash hover help, upper-left
+numeric HP/ultimate, event-driven red bars below every enemy, visual-only idle
+breathing. New atlas stays USER_LOCK_PENDING with explicit QA injection only;
+3 base gear + 4 shared school book covers have consumers, six other weapons do
+not, and the bag drawing is prepared but not bound. No EXP domain was invented.
+Before-final-HP-fix full GUT976/976,123scripts,16,680assertions,293.757s,exit0;
+Python21/21,13.799s. Windows pointer/render766371 PASS includes candidate atlas,
+draft/start, hover, idle fixture, accelerated Elite/Trace/Boss/camp/next route.
+Foot-pivot/pose-reset tests and two still captures do not approve a full animation set.
+Review corrections: bar height27→5px after theme resolution; opaque hover panel;
+observe HP after definition; first Core definition after _ready now initializes
+full catalog HP instead of retaining20. Initial HP RED20≠34 reproduced, focused
+20/20·189assertions PASS; independent change-impact review no new P0/P1/P2.
+Configured HP values are unchanged; living damaged/reconfigured/dead actors are
+not healed by this correction. Corrected HP whole regression977/977·16,694assertions
+passed (371.85s). Final theme-aware changed state:979/979,123scripts,16,703assertions,
+310.518s,exit0 (readability-theme-final-full-20260921.log). One escape-fixture
+warning about2 unfreed children persists intermittently; focused7/7 had no warning.
+Do not call this a warning-free run or a diagnosed/fixed leak. Python21/21,17.577s.
+Atlas limited review found bag drawing has no consumer; README now states that.
+This is bounded change-impact review, not a reset of the two whole-contract reviews.
+
+Same-origin24-route matrix: all24 actual-Main/store/settlement paths PASS, exit0;
+4origins ×6 remaining-order permutations. Started before the HP/presentation
+followups: route/transaction evidence, not their visual or natural balance acceptance.
+Log diagnostics/readability-route24-20260921.log. Source Windows render778948 PASS
+and large-Boss HP fixture inspected. Review found final Boss changing from smaller
+art into Bongma would retain the old bar height; RED36.125<56.43 reproduced and
+theme_changed now repositions only its bar. Returning to smaller art also restores
+height. Focused16/16·118assertions PASS; limited review finding closed on readback.
+No per-frame crowd layout loop. Full-natural-play/packed-pointer acceptance NOT_RUN.
+Latest standalone build: build/windows-playtest-20260921-readable, PCK SHA256
+06193F1420BD77EC54AA5464019514C385C59143A1093B3E8C1F3F04C89DFAA9.
+Export and EXE headless120frames exit0. Previous settings build remains because a
+separate running instance was observed; do not stop or delete it without direction.
+Actual catalog Core HP26..44 now replaces erroneous default20; natural difficulty
+may increase. This is an initialization correction, not a balance-tuning pass.
+Local code/required regressions are verified; exact pushed-head CI is read from
+PR147. Keep Draft: whole-game art/EXP/Human/performance gates are not closed.
+Existing unsubmitted monthly v0.3 evidence PDF updated in place:19pages, original
+9pages preserved, dates09-14/16/20/21, updated pages17..19 rendered/visually checked.
+PDF SHA256 b7ed9b23877b11eb88648c4aeb121234de14429d4c5aec0bde60c582f0c74159.
+Destination remains C:/Users/user/Documents/증빙서류/9월 증빙서류/
+닌자의신_2026-09_AI활용_작업일지_증빙집_v0.3.pdf. No new daily book or submission.
+
+Earlier96-route and independent-first-field entries below are historical results,
+superseded for new starts by the latest same-origin Stage1 decision. They remain
+old-save/regression evidence, not current new-start UX authority. R06 natural
+balance/readability, R07 remaining integration, R08 final art/motion/audio, R09
+crowd/input/device performance, R10 delivery/Human gates remain open; core=0 is
+not claimed. EXP selection and inventory LOCK questions await user response.
+
+## Latest continuation — 2026-09-21
+
+R03 accelerated actual-Main route matrix completed: 4 origins × 24 visit orders =
+96 unique PASS, four shards24 each, all exit0. Logs: diagnostics/selected-matrix-
+shard0..3-20260921.log under C:/Users/user/Tools/NinjaSurvival-Local.
+This uses real actors/store/settlement but accelerated time/damage and UI signals;
+not96 natural or pointer-played runs. Started before the subsequent warning-shape
+change; it verifies unchanged route/settlement consumers, not new geometry.
+8267121 full GUT932/932,117 scripts,15,747 assertions,355.624s,exit0;
+exact-head remote GUT/Windows PASS (run35522701312).
+
+R06 bounded correction: circle/capsule warnings and instantaneous damage consume
+one locked world-space geometry; existing textures remain ornaments, not radius
+authority. Summon keeps its own boundary until the delayed hit resolves. No new
+raster, damage/timing/attack-order change. Focused RED→GREEN10/10,95 assertions.
+Source runtime/render covers zone/lane plus real title/camp/settings/recovery input;
+fixtures deliberately place/pause actors, not naturally played encounters.
+Independent review found the proxy boundary expired before its .35s delayed hit;
+reproduced and corrected without changing damage delay.
+
+Actual render revealed18/20 actor-specific image paths absent. All20 now display
+existing approved art when their own file is absent;2 present dedicated images
+are preserved. Fallback metadata explicitly marks provisional existing art.
+This is a visibility correction, NOT completion/approval of18 final enemy designs.
+Source/import alpha readback for player/Bongma Boss matches exactly; isolated
+render shows the approved player is intact. Small dark silhouettes on the busy
+floor remain a visual readability issue, not a proven corrupt-import defect.
+
+R06 subsequent shared budget now connects existing StageProfile1/1/2/2 to one
+Main-local owner. Admission happens before telegraph; rejection consumes neither
+pattern order nor opening bonus. Slots survive recovery while projectile/proxy
+children remain and freeze during pause. Fired enemy bullets no longer inherit
+caster movement. A death-timing counterexample caused19 damage after caster death
+before deferred disposal; immediate child retirement before slot return fixes it.
+Focused6/6,41 assertions and actual Main wiring1/1,3 assertions PASS; static
+independent impact review no additional P0/P1/P2. Exact18122f8 remote checks PASS,
+GUT942/942,15,850 assertions (run35524550021).
+
+R06 fair spawning now reserves offscreen/min420 positions for0.8s in the existing
+WaveSpawner. Floor counts live+pending, unsafe reservations restart elsewhere,
+phase stop cancels reservations without deleting living mobs, and no cap is added.
+Cancellation from enemy_spawned is epoch-guarded. Focused6/6,52 assertions; actual
+Main1/1,5 assertions; full949/949,119 scripts,15,910 assertions,265.442s PASS.
+Windows pointer/render PASS (diagnostics/selected-run-730017), spawn chevrons viewed.
+Independent static impact review found no new confirmed P0/P1/P2; not Human play.
+
+R06 subsequent selected-only WINDUP/LOCKED and walk escape are implemented,
+final full gate PASS958/958,120 scripts,15,956 assertions,269.741s,exit0
+(diagnostics/escape-final-full-20260921.log); Python21/21 PASS13.998s.
+Fan shots now consume the same origin/directions as their
+visible arrow notice (RED→GREEN actor11/11,104 assertions). 16×4 candidate search
+inflates circle/capsule hazards by the real body radius+6, includes other reserved
+warnings/proxies/projectile paths, and checks normal-walk collision mask even
+during dash. Direct query rejects initial overlap before cast_motion (which by
+itself ignores overlap). No future crowd-motion safety proof is implied.
+Fixed time=max(.65,distance/current speed+.15), total>=fixed+.2. Geometry is already
+fixed from WINDUP (early lock, no retarget), becomes fully opaque at LOCKED;
+blocked admission preserves slot/order/first-theme bonus and retries after.1s.
+Disabled player is rejected before a query. Focused escape7/7,31 assertions before
+the additional opacity assertions. Main wiring focused8/8,97 before query upgrade.
+Live regression also found actor registration at origin then teleport displaced
+the idle player:~30px horde/~420px Elite. Normal/selectedElite/Boss/Final now enter
+physics at their destination; horde/Elite/Boss RED→GREEN. Actual Main after final
+normal-mask query wiring1/1 PASS. Source Windows pointer/render743686 PASS and
+WINDUP/LOCKED screenshots inspected. Independent final query-delta review found
+no additional P0/P1/P2. Existing saves/art/engine/global settings untouched.
+
+R09 measured dense-crowd blocker: actual Windows1280x720/RTX3050/VSync1,
+stationary QA player/high-HP enemies, baseline1000 p50=193.930/p95=232.325ms.
+FAR-only shortcut did not improve it(p95=234.139) and was withdrawn; its test is
+recoverable under DELETE_REVIEW/ninja-survival-godot/20260921/ineffective-far-step.
+No cap/AI tick reduction. Selected-only centered circular contact keeps real bodies,
+dash layer handling/cooldown/slow/bind and uses FLOATING instead of platform rules.
+Unsupported shape/mask/exception uses physics; sole layer1 player is a Main contract,
+not dynamic detection of arbitrary new same-layer blockers. Focused5/5,30 assertions.
+First candidate1000 p50=61.788/p95=136.800ms, physics p95=17.027ms: improved in
+this diagnostic but still a performance blocker, NOT60fps/minimum-device approval.
+Changed-state full GUT963/963,121 scripts,15,986 assertions,268.932s,exit0
+(diagnostics/contact-full-20260921.log). This does not close the performance gate.
+Logs/tools: tools/qa_horde_frame_sample.gd; diagnostics/horde-{frame-baseline,
+frame-far-step,stationary,timed,circular-contact}-20260921.log. Timing instrumentation
+found208,000 enemy calls/3848.627ms in the dense sample; excludes GPU timing.
+Independent static impact review no new confirmed P0/P1/P2; not runtime equivalence.
+
+R07 next actual-consumer corrections: rank/manual were multiplying rather than
+adding, projectiles rounded at rank then again at launch, and production had zero
+calls to apply_committed_backpack. Exact failed examples: katana rank1/manual18%
+14 instead of13; kunai rank1/manual22%9 instead of8; Main continue thunder manual
+did10/no side hit instead of12/6. BasicWeaponController now holds base damage plus
+rank separately, and selected adoption applies only committed cp.backpack.
+No new save schema/tag supplier; absent melee/projectile tag suppliers remain0,
+not school_damage substitution. Guiin's separate20*(1+rank)*ultimate rule preserved.
+Retry also resumed a failed battle's projectile and combo clock; checkpoint-only
+reset retires own-world/resolver attacks, clocks/boons/effects. Pause does not reset.
+Focused weapon21/21,874 assertions; actual Main2/2,15 assertions. Initial test setup
+mistakes (same-equipped item false / isolation's legacy default) were corrected;
+the actual damage/consumer/retry REDs were separately observed. Wrong-origin forced
+sword fixture was not treated as a product bug. Actual Guiin cancellation preserved.
+Independent static impact review confirms no new P0/P1/P2. Changed-state full
+GUT967/967,122 scripts,16,605 assertions,274.767s,exit0
+(diagnostics/weapon-final-full-20260921.log).
+Source Windows pointer/render729423 PASS, battle/phase/camp/menu/recovery evidence;
+still accelerated gates, not naturally completed combat. Python21/21 PASS15.758s.
+R09 repeated circular diagnostic1000 p50=16.926/p95=45.732ms differs materially
+from first sample. Both show spikes; do not advertise a universal improvement ratio.
+QA now pins and logs starter seed921 as well as placement seed, and offers explicit
+legacy-contact comparison. Earlier samples did not pin the starter book draft.
+
+R09 pinned comparison (same921 starter/placement, seal_chain+talisman_wheel):
+legacy1000 p50=193.641/p95=239.029ms; circular p50=56.586/p95=112.842ms.
+Still not a performance pass. Unchanged contact transforms were independently
+reproduced:60 blocked ticks emitted60 redundant notifications. Exact-equality
+assignment guard gives focused6/6,34 assertions with unchanged contact damage.
+Guard sample p95=129.746ms: no frame improvement attributable to that guard.
+Diagnostic player/enemy timers measure298 calls/128.399ms versus298,000 calls/
+2989.086ms in a5s1000 sample; this is intrusive instrumented CPU time, not GPU.
+Independent static delta review no confirmed P0/P1/P2. Full regression968/968,
+122 scripts,16,609 assertions,274.468s,exit0(contact-guard-full-20260921.log).
+Python21/21 PASS15.489s. No performance/human approval implied.
+4ee2491 exact-head remote GUT/Windows PASS(run35528546943).
+
+Next core: R06 natural-speed fairness and complete run, remaining R07 integrated builds, R08 actual final
+art/motion/audio/readability, R09 input/performance/device and R10 delivery gates.
+Current PR147 remains Draft; do not merge unfinished whole packet or claim core0.
+Historical warning/fallback checkpoint full GUT935/935,117 scripts,15,806 assertions,284.037s,exit0
+(diagnostics/actor-warning-final-full-20260921.log). Independent focused re-review
+found no additional P0/P1/P2 after the proxy fix. Code commit7cba5cb is pushed.
+Current playable checkpoint: build/windows-playtest-20260921-settings/README.md;
+9d1bbf153cb36f0879a639b75b7d913dd4d1a41b export, PCK
+2F907604214101388FC3818BE5A34F46BA273184F7BB7E920980C4151FE201C1.
+Export and EXE headless main smoke exit0/no engine error. Full packaged interactive
+play NOT_RUN. New player candidate lives only under docs/visual/candidates/
+player-gameplay-20260921; technical alpha/small-size issues and LOCK are open.
+No production texture replacement or motion approval. See its README/preview.
+Existing September v0.3 evidence PDF updated in place to18 pages, original9 pages
+preserved, four unique dated sections14/16/20/21. Changed pages14–18 rendered and
+inspected; SHA256 c773792b56910fafd477d115662d260c3380bd6fb0610b641ea938da538ebbe8.
+Output remains C:/Users/user/Documents/증빙서류/9월 증빙서류/
+닌자의신_2026-09_AI활용_작업일지_증빙집_v0.3.pdf; unsubmitted cumulative report.
+Superseded own build moved intact to DELETE_REVIEW/ninja-survival-godot/20260921,
+161,263,296bytes/2files, restore guidance included; not deleted.
+
+## Selected Main adoption and recovery — 2026-09-20–21
+
+Current approved packet R02/R03 continuation now connects default title new game
+to the two-book draft, independent first battlefield, selected encounters, saved
+camp UI, four-school departure and final Boss/settlement. Main owns transitions;
+SelectedRunSession orchestrates existing owners, SelectedRestAdapter holds detached
+UI drafts, and RunResumeStore/Codec remains the only profile owner. Existing v1
+tests explicitly select legacy mode; they are not selected-mode coverage.
+
+New camp controls use real trace/forge/purchase/equipment/combination commands.
+Explicit equipment confirmation saves preparation together with the spatial draft;
+it does not publish combat power. Pure movement/route/Fate remains unsaved until
+an economic confirmation or departure. Legacy numeric ranks, real saves, approved
+art, other worktrees/editor sessions and settings are protected.
+
+Intermediate whole regression:912/912,115 scripts,15,437 assertions,385.577s.
+Independent change-impact review found3P2 recovery defects: rest charge lived only
+in RAM, departure readback recovery expected a deleted preparation, and a last-soul
+retry could not recheck its already-paid receipt. Reproduced and corrected with
+optional persisted preparation charge, exact departure replay, pending retry
+readback recovery. Focused recovery26/26,1,499 assertions,133.17s PASS, including
+final held-input release gating. Old preparation without charge falls back to its
+last departure charge; no historical charge is invented. Last departure stays intact.
+
+Actual Windows/OpenGL pointer/render probe passes title→draft→battlefield,
+accelerated Elite/Trace/Boss→camp absorb/reward/chest→route/Fate→next battlefield.
+Tools: tools/qa_selected_run_render.gd; captures under diagnostics/selected-run-827587
+in C:/Users/user/Tools/NinjaSurvival-Local. This is not natural-speed or Human play.
+Visual review exposed initial focus jumping past unresolved trace; a failing input
+regression was added and focus priority corrected. Selected combo-list legacy
+catalog mismatch also reproduced RED then corrected. Start cancellation preserves
+save bytes; no new save until confirmation. Final full regression/readback pending.
+
+R05 followup: three-soul support unlock uses the same ledger; next new run selects
+one real zero-sale support (three canonical variants; existing acquisition pool
+stays19). Actual HP modifiers apply at start. Selected codex displays24 books,
+9 separate gear,19 support,6 bags,3 combinations. Title's six modals incorrectly
+used WHEN_PAUSED, so direct signals passed while pointer clicks failed. Reproduced
+and fixed to ALWAYS; title/codex focused7/7 PASS. Recovery UI explicitly selects
+and confirms a store inventory; existing hash comparison/archive publication is
+the sole writer. Recovery/lifecycle focused7/7 PASS, no engine warnings/orphans.
+
+Intermediate full after support:921/921,115 scripts,15,608 assertions,421.109s;
+not the final run after modal/text/recovery UI changes. Final changed-state GUT:
+924/924,116 scripts,15,684 assertions,445.823s,exit0;
+diagnostics/selected-adoption-final-full-20260921.log. Python21/21 PASS.
+No engine ERROR/WARNING; GUT reports transient per-test orphan lists in older
+UI fixtures, so this is not an orphan-free full-suite claim. Focused recovery
+tests have no orphan reports. Windows export and packaged headless main smoke
+PASS using the existing byte-identical4.7.1 binary/template. Build:
+build/windows-playtest-20260921/NinjaSurvivalInternal.exe plus adjacent .pck.
+Packaged pointer/render NOT_RUN; source-project pointer evidence follows.
+Latest pointer/render probe: diagnostics/selected-run-752054,
+selected-render-recovery-final-20260921.log. Actual start/camp/departure/awakening/
+codex/support/new-game confirmation and explicit recovery clicks PASS; inspected
+screens. QA only funds/corrupts its isolated file and accelerates encounter gates.
+No natural-speed/Human/device/final-art completion inferred. Focused independent
+review of recovery/modal changes found no new confirmed P0/P1/P2 (static only).
+
+R05 settings now uses one Main-owned controller: validated local cfg, explicit
+apply/cancel/readback, unreadable originals preserved on explicit replacement.
+Master audio/window mode belong to one weak host owner; HUD hints, hit shake and
+player effect density stay local. No run profile/global installed settings change.
+Density20~100% affects katana/book effects only, never enemy warnings/projectiles.
+Audio assets remain R08. Focused5/5,35 assertions PASS; host interference P2 and
+held-pause dash edge reproduced/fixed. Pause retains effects until input release
+and2 physics ticks. Source Windows pointer/settings/pause return PASS, captures
+diagnostics/selected-run-754722. Archive-only recovery explains actual preservation
+path/no deletion/manual review, not automatic archive recovery. Whole settings
+930/930,117 scripts,15,737 assertions,490.462s PASS before later refactor/visual fix.
+
+Ninjutsu ID/lane lookup now keeps private prototypes and returns detached copies;
+public build_definitions remains fresh mutable. 1000-query diagnostic2680.236ms
+to6.25ms; microbenchmark, not frame-time/camp-latency acceptance. Before-change
+mutation-isolation characterization6/6 PASS. World-offset warning was displaced
+by caster position; top_level=true fixes its locked center. RED1/7→GREEN7/7,
+36 assertions. No gameplay geometry/timing/balance change. Static impact review clean.
+tools/qa_selected_route_matrix.gd tests Main/actors/transactions:4 origins×24orders.
+Four shards running; earlier sequential probes were stopped for workload partitioning,
+not completed matrices. First adoption f7abf0d remote checks PASS,run35521299978.
+
+Next: exact-head verification and PR147 sync; R03 matrix,
+R06 warning geometry/fairness/shared hazard budget and R06–R10 natural
+run/input/performance/assets/delivery remain open.
+Keep Draft; no whole-game/main/Human/device/release completion claim. Existing full
+review budget remains consumed; only focused impact/recovery checks continued.
+
+## Approved playable-run continuation — 2026-09-20
+
+User approved delegated detail decisions and requests actual new-game → four
+school battlefields/rests → final Boss playability. Follow packet R02–R10 without
+repeating approval within this scope. Current implementation increment separates
+school imbuements from paid numeric ranks (legacy numeric records preserved),
+adds durable cost/outcome forge commands, and binds each present power to its
+trace receipt. Focused growth8/8 and trace/forge16/16 PASS; not yet Main/UI
+adoption. Added preparation-entry persistence (reserved rewards/Fate/25% base
+heal), camp purchases (book/equipment/reserved item/bag/potion/emergency reserve),
+optional backward-compatible vitals, departure HP carry, and actual basic-weapon
+power consumers. Focused entry4/4, purchase4/4, power7/7 passed before coverage
+extensions. Main remains legacy: do not present the new profile APIs as a playable
+selected full run. Next: UI/domain draft adoption preserving layout during purchase,
+Main new-game/continue/settlement and actual HP/emergency consumption, then full-run
+input/render/Windows delivery. Changed-state local full regression PASS:
+109 scripts / 892 tests / 14,933 assertions / 297.081s, exit0;
+Python21/21 PASS, diff check PASS. Log: diagnostics/camp-growth-final-full-20260920.log
+under C:/Users/user/Tools/NinjaSurvival-Local. ac39fa60e8e3673bd03d901513181c09fc3a8a00
+remote run35513867898 PASS (GUT and Windows internal build); branch readback matches.
+Further R02 business increment: reserved Boss reward/chest/sale/reroll in the same
+profile transaction, optional owned-layout candidate preserved on purchase, and
+paid pending-bag placement accepted at departure without mint/discard. Reproduced
+bag departure blocker RED1/1, full departure16/16 GREEN (1,248 assertions).
+Business6/6 GREEN,154 assertions. Shared SelectedLayoutContract owns identity
+comparison only; session/resolver retain geometry. Independent static impact review:
+no concrete P0/P1/P2; two later tests cover reroll retry and bag-placement purchase.
+Final changed-state full regression PASS:110 scripts /899 tests /15,112 assertions /
+298.771s /exit0, no SCRIPT ERROR/ERROR/WARNING; Python21/21 and diff check PASS.
+Log: diagnostics/camp-business-final-full-20260920.log. Main/UI remains unmodified legacy.
+Next dependency: combination saved command and selected preparation UI adapter,
+then Main/profile lifecycle/HP/emergency adoption; no fresh approval required.
+Current Hera editor identifies Blacksmith, not this project: protected/unmodified.
+Change-impact independent review found oneP2 (equipment proc kill omitted from
+Bongma's nonultimate charge); actual resolver test RED1/1→GREEN1/1,35 assertions.
+Purchase/entry followup static review found no new concreteP0/P1/P2; no engine or
+Human evidence inferred. Existing full audit budget not reset. Real player files,
+approved assets, plugins and global settings remain untouched.
+
+## Previous addition assessment — superseded by approval above — 2026-09-20
+
+User requests school-specific equipment powers (examples: Guiin katana lifesteal,
+Heukyeong evasion, Cheonsul shuriken elemental proc), separate from campfire coin
+chance-based numerical upgrades, with book/bag/consumable purchases. Absorption
+continues to unlock acquisition eligibility only. Current rank-only trace upgrade
+does not satisfy this request. Decisions records direction; Detailed Rules marks
+the old rank-only trace contract as superseded; packet R02 records consumer/gaps,
+alternatives and proposed dependency order. Detailed economics/procs/consumables
+and compatibility remain DESIGN_REVIEW_PENDING, not implemented/approved tuning.
+No speculative code/schema/save conversion was applied. Continue approved unrelated
+fixes; get product detail agreement before replacing the trace/economy semantics.
+
+## Four-school rest reality check — 2026-09-20
+
+Latest user asks continuation and whether every school's Elite/Boss/rest works.
+Fresh task HEAD6ef885a, main ebbabdd5, Base23ecad5a unchanged; PR147 remains Draft.
+Plan: verify the actual existing Main path for all four schools before wiring the
+new selected-profile preparation entry; preserve old runtime and real saves.
+Reuse current isolated worktree and packet R02/R03; no duplicate plan or new rules.
+AgentMemory tools unavailable; current repository/consumer evidence is the resume owner.
+Characterization added to test_four_school_battle_contract.gd: real Main title
+selection, named Elite/Boss actors, uncollected/late Trace and warning gates,
+Workbench visibility, Player/weapons/spawn/school suspension, stopped combat clock,
+unresolved departure block, one chest, shop offers, redraw/duplicate-death invariants,
+and removal of remaining enemies after one frame. Focused2/2,356 assertions PASS.
+This deliberately advances encounter time and applies99999 damage; NOT natural
+play, image/readability/Human evidence, or selected-profile Main integration.
+Existing Main still uses legacy SchoolCircuit/Workbench commit/save paths.
+Ruling: do not hook selected-profile writes blindly into that legacy path: its
+starter/scroll rewards and route ownership differ from selected book/equipment canon.
+Preflight also found healing_applied is only a validated boolean in the profile
+codec; no preparation HP snapshot or runtime heal consumer accompanies it yet.
+Thus rest UI entry is verified separately from once-only healing/resume completion.
+Remaining: R02 prepare-entry persistence + runtime adoption (including HP/heal
+boundary), R03 Main/start/continue/recovery; no new completion or schema claim.
+Independent impact review found a P2: full-health fixture could hide erroneous
+redraw healing. Corrected to max-20; temporary heal(1) mutation failed all4 cases
+and was removed. Mutation also exposed a real stale deferred Control argument:
+new UI regression RED1/1 with Object conversion error, then changed deferred focus
+to instance ID lookup with Control/tree/queued/visibility checks. UI18/18,158
+assertions GREEN. Follow-up impact review found no P0/P1/P2 in these changes;
+not another whole audit or review of new economy design.
+Final local full861/861,105 scripts,14,060 assertions,138.562s,exit0;
+Python21/21 and diff check PASS. Logs: diagnostics/rest-focus-{red,green,final-full}-20260920.log
+under C:/Users/user/Tools/NinjaSurvival-Local. No actual saves/tuning/art/engine changed.
+No new image/PDF for this intermediate increment; existing daily log appended.
+PR147 exact-head CI/readback must be checked after push; keep Draft, no main merge.
+
+## R02 departure continuation — 2026-09-20
+
+User approves continuing from876a8a4. Fresh main ebbabdd5 and Base23ecad5a unchanged.
+Plan: selected departure intent + revision checks → clone preparation owners →
+validate ownership-preserving layout/equipment/Fate/unvisited route → single profile
+transaction/readback → focused/full regression and change-focused review → PR147 sync.
+Reuse existing isolated worktree, codec/store/domains. Existing packet R02 is the
+approved plan; do not create another plan/ledger or restart R01's whole-audit budget.
+SelectedDepartureBuilder is a pure candidate-composition helper, not a new save owner.
+Request carries run/session/revisions, spatial snapshot, equipped slot IDs, next-school,
+Fate selection and boundary ultimate charge. It cannot replace access/gold/rewards or
+mint/delete owned items. Purchase/sale/combination remain separate preparation transactions.
+Unresolved reward/trace/pending bag blocks departure. Nonfinal Fate requires a reserved
+candidate; final preparation permits skip and never asks for a fifth school.
+Experience hypothesis: the reviewed build and route depart together, interruption
+cannot split them; live Main adoption and Human comprehension remain subsequent gates.
+REUSED_EVIDENCE: existing detached-value/store pattern; current official Dictionary/JSON
+docs checked for reference semantics and numeric JSON roundtrip. No engine/schema/art,
+real-save/global/plugin mutation. No UI/Human/full-R02 completion inferred from domain tests.
+Verification: missing APIs RED7/7 → GREEN7/7,251 assertions; expanded focused13/13,
+1,174 assertions. Final full suite includes15 departure tests:859/859 total,
+105 scripts/13,824 assertions,202.378s,exit0; Python21/21 PASS. No SCRIPT ERROR,
+ERROR or WARNING in full GUT log. The24-order check composes domain candidates,
+not24 played runs. Change-focused independent code review found no P0/P1/P2;
+it covered production+initial7 tests, not the8 later coverage-only additions.
+Review set-aside ruling: live adoption/Main/UI/Human are still future packets,
+not waived acceptance. Current delivery is persisted command foundation only.
+Next: prepare-entry persistence and live owner adoption/input connection without
+partial signals, then R03 new-game/continue/recovery flow. Keep PR147 Draft.
+Diagnostics: C:/Users/user/Tools/NinjaSurvival-Local/diagnostics/r02-depart-{red,green,extended,full}-20260920.log.
+Remote implementation83ba0ed run35508027472 passed859 assertions-based tests but
+FAILED the shutdown error gate (11 objects/5 resources retained). Investigation
+reproduced a test-only FaultStore callback -> coordinator -> store reference cycle:
+weak lifetime assertions RED22/24, then weak callback capture GREEN24/24.
+Only the test injection changed; production semantics/error gates remain intact.
+Local Windows exit0/log silence was not proof of Linux shutdown cleanliness.
+Corrected67c6bf175998193dacaa2b6f68f871dfa42e2f7d: local full859/859,
+13,826 assertions/170.028s/exit0, no SCRIPT ERROR/ERROR/WARNING; remote run
+https://github.com/alsdmlals4-eng/ninja-survival-godot/actions/runs/35508292707
+PASS (859/859,13,826 assertions/62.685s, shutdown error gate, navigation,
+import/main smoke and Windows internal build). Do not cite the earlier run as PASS.
+Same September v0.3 PDF now13 pages; original1–9 retained, Sep20 extended in place.
+Rendered changed pages12–13 checked; repeat DAILY_ALREADY_CURRENT. SHA256
+788a7626d31656ee55cf5f4cc58643f2a4c3f25c104fab248693f4800117281d.
+Final record-only commit has its own CI/readback in PR147, not substituted by
+the implementation-head evidence above. No merge; whole-R02/live adoption remains open.
+
+## R02 continuation — 2026-09-20
+
+Latest user approves continuing the recorded R02→R03 order. Start from PR147
+bddab96d904b4ed0a64ed03319a3c210629779ed; fresh main remains ebbabdd5, Base remains
+23ecad5a. Existing isolated worktree retained; no plugin/global/engine/art/save changes.
+Plan: durable trace intent→access/equipment clones→profile transaction/readback;
+then departure composition and runtime/UI adoption as separate dependent increments.
+R02 trace command uses current store values, not arbitrary UI replacement profiles.
+Run/session/profile/preparation/equipment revisions guard stale requests. Same intent
+derives a stable receipt; a reopened duplicate returns the current profile without
+reapplying upgrades. Failed writes leave last departure/combat untouched. Main/UI
+still unconnected; storage commands do not prove Human/FUN or R02 whole completion.
+Baseline selected-codec5/5 PASS; trace8/8 RED missing API→12/12 GREEN,310 assertions.
+Corrected numeric assertion warnings; full GUT844/844,104 scripts,12,606 assertions,
+114.16s/exit0 and Python21/21 PASS. No SCRIPT ERROR/ERROR/WARNING in full GUT log.
+Change-focused independent review found no evidenced P0/P1/P2 in this trace delta;
+it did not repeat the R01 whole audit or judge departure/Main/Human readiness.
+Existing spec R-TRACE and packet R02 are the plan;
+no duplicate design/ledger. Scope ruling: R01's completed review is reused for store,
+not reset; R02 integration receives change-focused review without repeating R01 audit.
+Primary evidence refreshed: Godot Saving games and Dictionary docs; reuse detached
+primitive snapshots ADAPT, mutate live then compensate / new save manager REJECT.
+Experience hypothesis: confirmed trace choice survives interruption; preview/cancel
+must not spend it or change combat. UI comprehension/Human tests remain for R03.
+Post-write readback failure returns persisted=true / committed_reload_required;
+do not treat it as an unsaved failure or locally refund. Identical retry returns
+the newest saved profile even after a later transaction; UI must adopt its current
+run/phase, never replay an old departure. Runtime owner adoption remains unconnected.
+Next: R02 departure composition, persisted readback and one-time owner adoption,
+then R03 Main/UI. PR147 stays Draft; no whole-R02/main/game-completion claim.
+Diagnostics: C:/Users/user/Tools/NinjaSurvival-Local/diagnostics/r02-trace-{red,green,full}-20260920.log.
+Trace implementation c14412da32d6d9839d4f45a550e7a8026e78a635: exact-head remote CI
+https://github.com/alsdmlals4-eng/ninja-survival-godot/actions/runs/35506832482 PASS
+(navigation/Base manifest, import/main smoke, GUT, Windows internal build).
+Local/remote implementation hashes matched; main remained ebbabdd5. Final record-only
+HEAD needs its own remote check, not substitution of this implementation result.
+Same September v0.3 evidence PDF updated in place,12 pages (original1~9 retained),
+Sep20 entry extended rather than duplicated. Page12 rendered/read back; repeat export
+DAILY_ALREADY_CURRENT. SHA256 4ad3d7d26b6e014698cbe0fbe6cad79033926a91f092b9fb296d8d947cfb91b4.
+
+## Current implementation continuation — 2026-09-20
+
+User approved the next bundle: resume PR147 against current main and complete R01
+recovery publication/preservation before R02/R03 integration. Baseline branch
+f5e9b77be12730d1c78134cae8dd864b24c74847, main ebbabdd5d272649bc9bc0ba390324399735878ef.
+Merge main's lean routing while retaining this branch's product decisions/history.
+Old planning-only and five-loop status below is dated history, not a current gate.
+Plan: baseline tests → recovery RED/GREEN and failure tests → full regression →
+independent review using current shared budget → PR147 exact-head sync/readback.
+PR147 stays Draft until its whole integration readiness is satisfied; this bundle
+does not authorize declaring R02~R10 or whole-game complete. PR135/49 remain read-only.
+Use existing RunResumeStore/Codec and existing work log, not a new save manager.
+Protected: real player saves, game tuning/art/engine pins, unrelated untracked imports
+and addons. Tests use explicit gut-only files. Recovery UI/Main cutover is R03.
+Progress: main reconciled at d802b643 (prior product increments preserved); baseline
+820/820 GUT and navigation2/2 PASS. Recovery publication tests RED8/8 missing API
+→ GREEN8/8,251 assertions; first full regression828/828 and Python21/21 PASS.
+Review1 found P1: previous-only publication+rollback failure left archive-only data,
+but reopening treated it as a missing/new profile. RED reproduced; durable incomplete
+marker now blocks load/new transactions/import until explicit successful recovery.
+Focused12/12,319 assertions PASS including retry and marker-cleanup failure.
+Corrected full regression832/832,103 scripts/12,296 assertions (94.719s, exit0),
+Python21/21 PASS. No SCRIPT ERROR/ERROR/WARNING in local full GUT log.
+Review2: no code P0/P1/P2; P2 stale planning pause/five-review wording in
+Documentation Map/Implementation Packet corrected with targeted navigation readback.
+Shared whole-scope review2/2 consumed; no third whole review. R01 publication
+implementation bb713a5d77ec9ebd6ade2e1ebf46fd3f43b4bcf2 remote CI PASS:
+https://github.com/alsdmlals4-eng/ninja-survival-godot/actions/runs/35505637357
+Includes navigation/Base manifest, import/main-scene smoke,832 GUT, Windows artifact.
+Remote artifact upload emitted Node deprecation warnings, not game-test failures.
+Final documentation receipt is checked again at its own PR HEAD; earlier CI is not
+substituted for that check. Next: R02 preparation business transactions, then R03
+Main/recovery UI (including gated archive-only failure guidance). PR147 stays Draft.
+Diagnostics: C:/Users/user/Tools/NinjaSurvival-Local/diagnostics/r01-review-{red,green,full}-20260920.log.
+Local/remote branch bb713a5 matched and main remained ebbabdd5 at implementation readback.
+Existing monthly evidence v0.3 updated in place:12 pages (historical1~9 retained),
+Sep14/16/20 cumulative entries, SHA256 a667139cd3a3ca01355574dfbf0aa25dfc04cb127dffa21b101f88af6a612bc4.
+Page12 rendered/read back; repeated export DAILY_ALREADY_CURRENT. No new issue/version,
+external submission, account/payment evidence or fabricated screenshot was created.
+Ruling: recovery picker/Main is R03 as explicitly sequenced in the existing packet;
+this R01 increment exposes the reviewed persistence API, not a prematurely switched
+title flow. No real player-save recovery or Human/FUN pass is claimed.
+
 ## Current operating work — 2026-09-20
 
 승인: 사전 제시한 프로젝트 네이티브 경량화 적용안 + Base #885 재미 검증 연결 추가.
@@ -45,6 +617,914 @@ Rollback: 이번 운영 PR의 변경만 되돌린다. 제품/저장/자산 migra
 
 아래 상태·증거·제품 단계는 그 시점의 보존 기록이며 현재 작업의 차단/실행 권한이 아니다.
 최신 제품 재개는 위 경로와 최신 main/명시적으로 승인된 작업 PR을 대조한다.
+
+## Latest closeout — cumulative monthly journal, 2026-09-16
+
+User requests dated additions to the existing journal and current-work GitHub sync.
+operations/AI_WORK_EVIDENCE.md now owns dated September14 implementation summary and
+September16 retrospective/closeout. Existing unsubmitted v0.3 PDF updated in place from
+9 to11pages: original nine pages retained, dated supplement re-rendered without duplicate
+append. --update-daily uses manifest hash guard, stages before replacement, verifies base
+page text and dated entries, and returns DAILY_ALREADY_CURRENT on unchanged repeat.
+Both new pages rendered and visually inspected. No new numbered PDF or new game asset.
+PDF SHA256: 61575baa298c4a9cecfdbf812b9164d2908844cbf026c7b4431e74342a98fcbd.
+Latest game head d2b4c87 exact-head GitHub run34855733167 GUT/Windows SUCCESS read back.
+No game code changed in this closeout; no new full-run/Human/device/release evidence.
+PR147 remains Draft; original checkout/other worktrees/main preserved. Current task branch
+sync is the scope, not main integration or R01~R10 completion. Remaining implementation
+is unchanged: recovery publication/preservation, save-first business transactions,
+atomic departure and Main integration. Local submission PDF stays outside Git; its
+maintainable source and updater are versioned. No external submission occurred.
+
+## Latest increment — prepared Fate reservation persistence, 2026-09-14
+
+FateController exports uncommitted candidates/pending choice and its independent RNG
+seed/state; restore validates all fields, exact remaining offer count, IDs and ownership
+before mutation. No build power, redraw or signals on restore. Before initial offers and
+after an applied choice, export returns empty. A pending choice commits once normally;
+the following draw matches the uninterrupted source. Current Main configures this RNG
+separately from reward RNG, so no incorrect shared-RNG assumption was introduced.
+Profile preparation accepts optional fate_state as a thirteenth field and cross-checks
+pending_fate against that owner using checkpoint-selected Fates. Older twelve-field
+records still require empty pending_fate. Actual gut file save/reopen now covers the
+reservation together with post-boss preparation and retry rollback. No Main adoption yet.
+RED missing owner/codec and pre-offer export; final full102scripts/820tests/11977assertions
+PASS exit0, `ninja-fate-preparation-disk-full-20260914.log`. Earlier820/11974 was pre-disk
+extension. Prior4a7ec67 GUT/Windows SUCCESS; latest increment requires exact-head CI.
+Base fetched unchanged d830c0f. Remaining recovery publication/preservation and R02
+save-first business transaction/atomic departure/Main integration continue to apply.
+No whole-game/full five-loop/Human/device/release claim; PDFv0.3 not rebundled here.
+
+## Latest increment — reviewed recovery read / retry eligibility envelope, 2026-09-14
+
+read_recovery_candidate accepts a known role plus the observed inventory, never a user
+path. All three candidates are rechecked before/after reading; even an unselected file
+change rejects stale review. Returns a decoded value/source SHA only, no promotion or
+write. Original preservation and explicit recovery publication/UI remain open.
+Selected profile retry requires retry:run_id receipt (or that pending store transaction).
+Completed-school eligibility cannot disappear; only the rollback checkpoint's active
+battlefield may contribute an extra previously-earned qualification. Unrelated unvisited
+schools are rejected. Actual gut file write/reload keeps that eligibility/checkpoint,
+retry flag, cleared preparation and caller-provided one-soul debit together; duplicate
+transaction leaves balance1, not0. Business eligibility/cost authority/Main still pending.
+RED missing selection API and retry validation gaps; GREEN focused15/15 and5/5.
+Final full102scripts/818tests/11946assertions PASS exit0,
+`ninja-retry-union-full-20260914.log`; preceding read-only scope818/11932 also PASS.
+Prior4ae3cd9 exact-head GUT/Windows SUCCESS. Current head needs fresh CI readback.
+Implementation Packet stale initial-only/profile/reward descriptions corrected in place.
+Continue recovery publication/preservation, then R02 business transactions and Main.
+No Human/runtime/full five-loop/release completion; no user-save or image mutation.
+
+## Latest increment — nondestructive legacy wallet import, 2026-09-14
+
+RunResumeStore.import_legacy_wallet reads the old wallet without writes and reuses
+NinjaSoulWallet.decode_legacy_balance plus the existing profile transaction. Only an
+absent profile with no canonical/previous/temporary candidate can import. The receipt
+is migrate:wallet-v1:<SHA256 of exact source bytes>; active_run stays null. Existing
+profiles refuse reimport, including after reopening. Missing/corrupt/future/fractional
+wallets are rejected rather than reset. Legacy runs are not translated or deleted.
+RED focused11/13 missing API, GREEN13/13, then actual gut-only open/write/flush/readback
+failure fixtures added. Final full102scripts/817tests/11916assertions PASS exit0,
+`ninja-wallet-migration-full-20260914.log`. Source bytes preserved in every fixture;
+failed temporary candidates block a second import. No real player save accessed.
+Prior source2ecb98f exact-head remote GUT/Windows SUCCESS. Main migration prompt/entry,
+explicit recovery selection, retry union and R02 remain open. This is an approved R01
+independent sub-owner increment, not completion of recovery/Main/whole-game gates.
+
+## Latest increment — read-only recovery inventory and stage coherence, 2026-09-14
+
+RunResumeStore.inspect_profile_recovery reports canonical/previous/temporary existence,
+strict profile validity, revision and SHA256 of the bytes inspected. It never promotes,
+rewrites or deletes candidates. Missing storage, corrupt JSON, invalid envelopes and
+valid newer uncommitted temporary files remain distinct. Recovery selection/UI is still
+open; Main has not adopted this API. Gut-only filesystem fixtures verify non-mutation.
+Cross-owner inspection found a preparation from another reward segment was admitted;
+RED focused4/5 reproduced it, then codec validates reward segment against departure stage.
+Final full102scripts/814tests/11862assertions PASS exit0,
+`ninja-recovery-stage-full-20260914.log`. Prior head0abb15e GitHub GUT and Windows SUCCESS.
+This increment's CI must be read at its exact head. No live save or art changed.
+Remaining sequence: explicit recovery choice with stale-hash rejection and preservation,
+retry eligibility union, nondestructive legacy wallet migration, R02 transaction/Fate,
+then Main adoption. Five whole-scope loops, runtime/Human/device/release remain NOT_RUN.
+Monthly evidence PDF v0.3 remains historical partial coverage, not this increment's receipt.
+
+## Latest increment — preparation values admitted to profile2, 2026-09-14
+
+RestBackpackSession serializes confirmed backpack/buffer/pending_bag/preserve_buffer,
+rejects transient preview/whole-layout/combination states and validates before restore.
+Instance IDs remain unique; restored baseline clears edit history and invalidates old
+commit-coordinator generation. This sub-owner does not adopt combat/economy.
+RunResumeCodec now admits a 12-field post-school preparation with matching selected
+bundle/access/reward state. Route is derived from the last departure plus its one school
+clear, not duplicated or merged into the retry checkpoint. Prior trace decisions and
+starting draft are preserved. Only empty pending_fate is admitted until Fate owner wiring.
+Actual profile2 file write/reopen/idempotent replay is covered on gut-only storage.
+Combined reward/spatial restore test preserves a purchased unplaced bag and forbids
+another purchase/reward claim. RED missing session/codec paths, GREEN focused checks;
+full102scripts/812tests/11821assertions PASS exit0,
+`ninja-preparation-profile-full-20260914.log`. Earlier full811tests was the sub-owner scope.
+Source commit27cefdb exact-head GitHub GUT/Windows SUCCESS; newer change needs current CI.
+Main still uses the legacy entry. Remaining R01: recovery selection, retry eligibility
+union and nondestructive legacy migration; R02 needs business transaction/Fate wiring.
+Full five-loop project closure, runtime full-run, Human/device/release remain NOT_RUN.
+Evidence supplement source records updated here; monthly PDF still v0.3 pending rebundle.
+
+## Latest increment — reward/shop serialization and selected acquisition, 2026-09-14
+
+RestRewardController/ShopController now export and validate/restore value snapshots:
+fixed boss offers, consumed flag, chest count, shop offers/lanes/bag purchase limit,
+reroll index, text history and shared RNG seed/state as exact decimal strings.
+Restore performs no draw, acquire, spend or notification. Prepared access is required;
+fresh configured selected owners restore without calling begin_rest. Gold/inventory,
+pending bag and profile2 preparation transactions are NOT included by this sub-owner API.
+RED missing API2tests, then selected acquisition test reproduced dropped replacement
+manuals, then fresh-owner restore test reproduced missing lane setup. Corrections verified:
+focused14tests/303assertions; full102scripts/809tests/11770assertions PASS exit0,
+`ninja-reward-persistence-full-20260914.log`. Existing main entry not migrated.
+Shop/reward filter now chooses legacy versus selected canonical acquisition from the
+actual backpack contract. Old katana/shuriken/bomb do not leak into new selectable runs.
+No new image or player-save mutation. Whole-scope review, profile2 preparation, Main,
+Human/device and release remain open; continue session pending-bag persistence next.
+
+## Latest increment — temporary profile I/O failure coverage, 2026-09-14
+
+Approved R01 continuation: RunResumeStore now owns narrow open/store/flush operations.
+It checks store_string's result before flush, closes the handle explicitly and distinguishes
+temporary_open_failed / temporary_write_failed / temporary_flush_failed. Tests inject
+open, partial-write, flush and temporary-readback failures using a real gut-only file.
+Old bytes, balance, caller request and receipt remain unchanged; candidate remnants are
+preserved and block overwrite on retry. RED 1/9 failed before implementation; GREEN9/9,
+143assertions. Full102scripts/806tests/11571assertions PASS, exit0, log
+`ninja-profile-temporary-full-20260914.log`. This is failure simulation, not power-loss proof.
+Fresh prior head d556637 CI GUT and Windows SUCCESS; current increment needs exact-head CI.
+Base remote still d830c0f; project five-loop/full-scope gate remains in force and unfinished.
+
+Reward owner readback: RestRewardController owns chest count, boss offer IDs/lanes and
+pending choice; ShopController owns offers/lanes/bag limit/reroll tier; both share an RNG.
+Existing begin_rest rerolls and resets state, so cannot be used as preparation restore.
+Selected acquisition catalog mapping, explicit RNG persistence and pending-bag ownership
+must be resolved in R01 preparation serialization before Main uses profile2. No new
+generic dictionary escape hatch or second save system. R01 and whole-game remain open.
+
+## Latest increment — monthly evidence supplement / chroma pipeline, 2026-09-14
+
+User requested future chroma-background generation followed by removal and a separate
+project-named monthly AI work evidence PDF. Owners: CURRENT_VISUAL_HANDOFF and
+operations/AI_WORK_EVIDENCE.md; no new raster generated or existing asset replaced.
+The September issue covers four verified September14 commits through 8e2558c only,
+with exact-head GitHub run34786019166 logs, source hashes and explicit missing prompt
+screenshots/account/receipts. It is retrospective, partial, unsubmitted, not date certification.
+Generator refuses overwrite; v0.1/v0.2 draft formatting corrections are superseded by v0.3.
+Nine-page layout was rendered/read; text-log evidence is never described as screenshots.
+No agreement/email originals were read, no external submission or payment action occurred.
+Game implementation remains at the following R01 frontier; this increment changes evidence
+operations and image policy, not Main/runtime. Continue preparation/reward owner inspection.
+
+## Latest increment — selected departure profile persistence, 2026-09-14
+
+Follow-up failure-injection readback: previous rename, candidate promote, promote rollback,
+failed-canonical quarantine and canonical rollback failures are exercised via the existing
+store I/O boundary. Failed promote + failed rollback previously removed the candidate;
+now both `.previous` and `.tmp` remain with recovery_required. No automatic recovery choice.
+Final full102scripts/805tests/11529assertions PASS, exit0,
+`ninja-profile-rename-full-gut-20260914.log`. Earlier failed test-fixture typed-array assignment
+was corrected before rerun; the failed receipt is not promoted to PASS. Previous checkpoint
+commit587a0dc GitHub GUT and Windows internal artifact both SUCCESS. Latest source receipt
+must be read from current PR head; neither this test count nor CI is whole-game approval.
+
+R01 now accepts a validated non-null active run at a departure boundary. Codec checks
+origin versus battlefield (different is legal), route mirrors, phase, resolved traces,
+equipment, placed/active books, carried-buffer identity, Fate IDs, economy receipt shape,
+resource caps and recomputed spatial modifiers. Twenty-four clear orders reach a valid
+final departure in domain tests; this is NOT twenty-four played runs.
+Buffer inspection reproduced ignored malformed/duplicate/unabsorbed/unchosen-free books;
+the existing cross-owner gate now rejects them without mutating the candidate.
+Disk replay reproduced int/float request-digest drift after JSON reload; store canonicalizes
+numeric request identity and uses full precision for profile writes. Fractional charge,
+replay, invalid-origin rejection and settled-run exclusion are tested on dedicated gut paths.
+Full102scripts/803tests/11496assertions PASS, exit0:
+`ninja-selected-checkpoint-full-gut-20260914.log` in local temporary evidence.
+
+R01 still open: preparation/reward-state persistence, retry qualification union across a
+rollback, all I/O failure injections, recovery and non-destructive legacy migration.
+Non-null preparation explicitly returns preparation_validation_pending. Main still uses
+the legacy entry/resume path; default-game cutover, live full-run and Human/device gates
+remain NOT_RUN. No player save touched. PR147 continues; no main merge claim.
+Next read RestRewardController/ShopController persistence owners before finalizing the
+preparation reward_state schema; do not hide unresolved reward ownership in a generic dict.
+
+## Earlier increment — R01 profile envelope and durable transaction foundation, 2026-09-14
+
+User approved R01~R10 execution. RunResumeCodec now validates schema2 empty-run profiles:
+strict numeric fields, content contract, unique transaction/settlement IDs, receipt digest/
+revision and unlock/settlement receipt linkage. Pending transaction validation is internal
+to store candidate preparation; disk decode/readback always use strict receipt validation.
+RunResumeStore reuses existing tmp/previous/write/readback machinery in explicit profile
+mode; v1 write/clear/reconfigure APIs cannot mutate a profile. Request digest distinguishes
+same-ID replay from conflict; stale revision and caller receipt mutation fail closed.
+Tested disk roundtrip, replay, conflict, missing-directory write failure, canonical readback
+rollback and cleanup-warning success using dedicated gut paths. Full101scripts/798tests/
+10592assertions PASS, exit0, `ninja-profile-transaction-full-gut-20260914.log`.
+
+R01 is NOT complete: non-null active_run intentionally returns active_run_validation_pending.
+Next: checkpoint/preparation domain cross-validation, all rename/rollback failure injection,
+recovery selection, legacy-wallet migration, then business transaction facades and Main.
+The store does not enforce purchase/settlement pricing; those remain their domain owners.
+Cross-process writer exclusion/crash-proof durability NOT_VERIFIED. No actual player save
+or main entry switched; no new autoload, artwork, paid dependency or project deletion.
+
+
+## Earlier planning request — remaining-work specifications, 2026-09-14
+
+The preceding planning turn requested remaining work and implementation/design input.
+The later execution approval at the top of this file supersedes that turn-only boundary.
+Read `docs/design/NINJA_SURVIVAL_IMPLEMENTATION_PACKET.md` section J first: R01~R10 map
+single profile2, preparation transactions, Main entry, reward pools, meta/menus, encounters,
+combat contract regressions, art/audio, device/performance and final delivery.
+Source baseline c360486; fetched main b5c2dd6; PR147 Draft head c360486 GitHub GUT and
+Windows internal build both SUCCESS on readback. PR135/49 untouched/read-only.
+No game code, image, player save or deletion is part of this document change.
+Verified source gaps: legacy Main starter, legacy reward filters, codex excludes selectable,
+no profile2. Existing final boss/24effects/8weapons are reuse+integration, not blank rewrites.
+Base observed d830c0f; native contract/five-loop requirement retained, no adapter upgrade.
+Next implementation priority after this planning task: R01 profile2 codec/store transactions.
+
+
+## Latest increment — legacy wallet validation before profile2 migration, 2026-09-13
+
+Reproduced numeric coercion accepting1.5/string/bool/future schema and null causing an
+engine error. Strict decode now rejects malformed/nonfinite/lossy values before integer
+conversion; malformed JSON uses parser error return without an engine exception. Original
+bytes remain untouched. Reconfigure failure formerly changed balance/path before I/O;
+now adopts only a successful candidate and keeps the previous usable binding on failure.
+Full100scripts/792tests/10524assertions PASS, exit0:
+`ninja-wallet-input-full-gut-20260913.log`. Tests use dedicated gut paths, not player saves.
+Prior b3bb667 exact-head GitHub GUT/Windows artifact both SUCCESS. Current save work is
+input safety only; one-file profile2 atomic durability and Main adoption still NOT_IMPLEMENTED.
+Do not describe this v1 write path as atomic or crash-proof. Existing owners remain singular.
+
+
+## Latest increment — start bundle cross-owner gate, 2026-09-13
+
+RestCommitCoordinator validates selected bag geometry, actual placed spell IDs, restored
+trace access, equipment and loadout origin as one side-effect-free build bundle. Existing
+domain validators remain owners. StartLoadoutSession includes initial access and returns
+only a validated bundle. Four-school JSON roundtrips, absent-book power, forged access,
+wrong origin, invalid gear and legacy/malformed catalog boundary are covered; existing
+60start-pair regression remains. Full100scripts/790tests/10494assertions PASS, exit0,
+`ninja-selected-bundle-full-gut-20260913.log` (local temporary evidence).
+This is NOT the persistent transaction: wallet/checkpoint profile2, preparation UI commit,
+default Main cutover and whole Run remain required. No human/render/release claim.
+
+
+## Latest increment — selected trace access and validated restore, 2026-09-13
+
+TraditionAccessState separates stabilized material packages from absorbed book access.
+Starting-school trace enhances one equipped candidate item; foreign traces absorb OR
+enhance once. Stale equipment revision, invalid choice and repeated consumption leave
+both candidates unchanged. Selected material IDs follow the independent catalog.
+JSON restore derives unlocks from decisions, validates school sets/equipment record/rank,
+and rejects malformed or forged unlocks before any mutation. Legacy initialization stays.
+Full100scripts/789tests/10445assertions PASS, exit0:
+`ninja-selected-trace-restore-full-gut-20260913.log` (temporary local evidence).
+Head888ac5d GitHub GUT and Windows artifact checks both passed. This increment is domain
+and machine evidence, NOT profile2 disk durability, Main cutover, Human or release evidence.
+Next: selected preparation cross-owner validation and single-profile atomic persistence.
+Five whole-game review loops, runtime full-run and user-facing default wiring remain open.
+
+
+## Latest increment — RunBuildState equipment owner, 2026-09-13
+
+RunBuildState validates/copies the committed equipment snapshot and derives outfit
+reduction once alongside bag/Fate modifiers. Preview mutations and malformed slots do
+not affect combat. Actual Player100damage resolves92 with outfit rank1; repeated apply
+does not stack reduction. Checkpoint preserves equipment; legacy restore/codec cannot
+silently drop or interpret it. This is in-memory ownership, NOT profile2 persistence.
+Full99scripts/784tests/10374assertions PASS (`ninja-equipment-owner-full-gut-20260913.log`).
+Previous combination head649682b has both GitHub GUT and Windows artifact checksSUCCESS.
+Current full-game next dependency: selected preparation equipment/books/route transaction,
+single profile2 wallet/checkpoint durability, then default Main cutover and complete Run.
+Unseen-art/Human/device gates and five whole-scope reviews remain open. No deletion.
+
+
+## Latest increment — conditional combination consumers, 2026-09-13
+
+Thunder first melee hit damages at most2other targets/120/6 with1s cooldown. Explosive
+shares one claim per projectile volley,96/12 with4s cooldown; pierce/bomb damage uses
+the same actual-hit signal. Combination damage bypasses weapon/manual/school multipliers
+and ultimate/direct-ninjutsu feedback, while owned nonultimate Bongma kill credit remains.
+Water mist requires actual surviving HP loss,1s+20%/3s cooldown through existing Player boon;
+static8% remains resolver-owned. Pause/source removal and ultimate exclusions are separate.
+RED found a death callback attaching a new combo retroactively; generation check rejects it.
+Full99scripts/782tests/10350assertions PASS (`ninja-combination-reentrant-full-gut-20260913.log`).
+OpenGL MATERIAL_RUNTIME_PASS includes real timed thunder secondary6 and unequip cessation.
+New proc art/fullMain/profile2/Human and five whole-scope review completion NOT_RUN.
+Next: RunBuildState equipment ownership/selected preparation and single profile2 transaction.
+
+
+## Latest increment — selected support geometry and weapon passives, 2026-09-13
+
+Selected catalog includes19remapped supports/3results/48book definitions. Legacy catalogs
+remain unchanged; selected bag rejects physical weapon IDs. Actual preparation combination
+uses new recipe owner; illegal output placement consumes nothing; results are unique.
+BasicWeaponController derives committed melee/projectile manual bonuses from validated
+canonical bag definitions, caps60%, isolates source edits and excludes ninjutsu/ultimate.
+Full99scripts/778tests/10314assertions PASS (`ninja-selected-materials-full-gut-20260913.log`).
+OpenGL exact-project process MATERIAL_RUNTIME_PASS checks118→120→100 damage across manual,
+combination and unequip. This is isolated runtime evidence, not full Main/user visual QA.
+Next: conditional combo lightning/explosion/mist effects, preparation/profile2/Main binding.
+Hera currently targets GRIMOIRE PID11900; untouched. Unknown generated files preserved.
+Whole-game queue and five whole-scope reviews remain open; no release/main merge claim.
+
+
+## Latest increment — owned nonultimate kill resource, 2026-09-13
+
+Bongma now accepts owned dot/clone/reaction death contexts alongside normal/weapon/direct
+injutsu, matching R-ULTIMATE. Unknown/ultimate/stale context remains excluded; one-second
+limit and enemy death claim preserve deduplication. Focused RED confirmed three omitted
+routes before correction. Full98scripts/773tests/10255assertions PASS
+(`ninja-bongma-owned-kills-full-gut-20260913.log`). No Main/profile2/art promotion.
+Continue selected support catalog/equipment/preparation/profile2 integration, then complete
+Run acceptance and five whole-scope reviews. Whole-game completion remains unclaimed.
+
+
+## Latest increment — selected restore boundary, 2026-09-13
+
+Explicit selectable-v2 restore validates original two picks, active/placement equality,
+unlocks and four/one limits before mutation. Legacy restore still rejects this contract.
+Malformed scalar/object contract tests found an engine Variant comparison error; a type
+guard fixes rejection without mutation or signals. Empty placed books restore no hidden starter.
+Full98scripts/772tests/10230assertions PASS (`ninja-selected-restore-hardened-full-gut-20260913.log`).
+This is an in-memory restore API, NOT profile2 file persistence or Main cutover.
+Confirmed follow-up: selected bag catalog currently excludes support materials; apply
+R-COMBINATION remapping before selected preparation integration, never legacy weapon IDs.
+Single wallet/checkpoint profile2, complete selected Run and whole-scope reviews remain open.
+
+
+## Latest increment — all24 effect routes and60pair smoke, 2026-09-13
+
+All24 selected books now have mechanical consumers, NOT final-art/game-complete.
+Water first-entry damage/inside slow/wet lifetime; ordered wet→shock bounded reaction;
+Cheonsul read-only status/quarter-charge notification; thunder dash arms one direct hit;
+talisman wheel3orbiters/radius90/max2hits with0.5gap. Technical orbit test values PI/s,
+contact24, sample0.025; visual/balance lock not claimed. No hidden full-disc damage.
+60start pairs each advance10s real actors and cleanup; focused40tests/495assertions PASS.
+Definition cache reduced same focused suite31.685s→1.914s (local observation, not FPS claim).
+Full98scripts/770tests/10175assertions PASS (`ninja-all-books-sixty-pairs-full-gut-20260913.log`).
+Next approved work: selected loadout restore + single profile2 transaction, equipment/build
+commit and Main start/preparation/route integration. Ordinary Main still legacy until these
+boundaries pass. Ultimate60pair/fullRun/render/Human/5whole-scope reviews remain pending.
+
+
+## Latest increment — clone, seal chain and suppression, 2026-09-13
+
+Selected effects now20/24;4remain (talisman wheel, water bind, lightning chain, thunder step).
+Clone uses fixed-origin bounded3ticks with clone damage kind and sword-only skip consumption.
+Seal chain connects at most3targets within140, first12/followups8, bind0.6;
+suppression waits0.2 then fixed-radius100 hit16/bind0.4. Source removal cancels controls.
+EnemyChaser owns transient movement multiplier without changing base speed; elite/boss
+bind becomes20%/10% slow; core rebind protection2s; strongest slow capped40%.
+Pattern clocks remain independent; idle control processing enabled only while needed.
+Full98scripts/762tests/9841assertions PASS (`ninja-control-corrected-full-gut-20260913.log`).
+These3effects GPU-specific final render/input NOT_RUN; generic existing visual only.
+Whole approved game queue remains active; selected Main/profile2/complete Run still pending.
+
+
+## Latest increment — flame mark and breath status readback, 2026-09-13
+
+Selected effects now17/24;7remain. Flame direct6/radius90 every1.8s plus burn3s/2per1s;
+burn/poison share the clock algorithm but keep independent source maps and expiry.
+Cheonsul reads selected burn for breath+2 without copying status/hidden elemental alternation.
+Main wires the provider but does not enable selectable-v2 for ordinary new-game yet.
+Full97scripts/754tests/9797assertions PASS (`ninja-flame-full-gut-20260913.log`),
+OpenGL FLAME_RUNTIME_PASS direct/burn/unequip; human/final art/complete new Run NOT_RUN.
+Remaining:3Bongma controls/orbit,3Cheonsul water/lightning/dash token,1Heukyeong clone.
+Then selected start/profile2/UI and complete Run integration; all approved work remains active.
+
+
+## Latest increment — poison mist and summon suppression, 2026-09-13
+
+Selected effects now16/24;8remain. Poison mist is target-centered radius96,
+zone2s, poison3s/4damage per1s, cooldown5s. Refresh preserves tick phase;
+sword form consumes lifetime without damage/backlog. Unequip/stage clear cancels
+status; damage callbacks cannot restart a cleared generation in the same tick.
+Existing selected familiar now survives sword form with frozen attack cooldown.
+Full97scripts/751tests/9779assertions PASS (ninja-poison-lifecycle-full-gut-20260913.log).
+OpenGL real-process poison delayed tick/unequip PASS; final-art/readability NOT_RUN.
+PR147 continuation only; default Main cutover/profile2/end-to-end selected Run and
+five whole-approved-scope review loops remain incomplete. No merge/release claim.
+Next: remaining status/control books, their ultimate consumers, profile2/UI integration.
+
+
+## Latest increment — chain execution, 2026-09-13
+
+Selected effects now15/24;9remain. Chain execution selects mark→lowHP ratio→
+distance→stableID, ordinary HP<=15% execution, heavy17.5 rounded damage,
+max2followups within140 only after confirmed kill. Class and role protect bosses.
+Final full97scripts/747tests/9763assertions PASS. Execution-specific GPU smoke
+not run; normal-speed full new-mode run and final visuals still not proven.
+
+## Latest correction — selected combined caps, 2026-09-13
+
+Selected Loadout rules now cap combined movement at1.6x and add equipment/
+book mitigation before the60% cap. Empty selected loadout retains these rules;
+legacy contracts keep their old calculations until explicit migration.
+Final local full97scripts/744tests/9750assertions PASS, no logged engine errors.
+Selected effect count remains14/24. Remaining10: seal chain/talisman wheel/
+suppression seal/flame mark/water bind/lightning chain/thunder step/poison mist/
+chain execution/shadow clone. Then tag damage, gear/economy/profile2, default
+Main starting draft and complete normal-speed new-mode run remain open.
+New art/Human/device/export and five whole-approved-scope review gate are not complete.
+
+## Latest increment — selected familiar, 2026-09-13
+
+Selected effects now14/24;10remain. Existing BongmaFamiliar scene supplies
+follow/attack behavior; selected controller owns membership and0.7s cadence.
+Its own process attack clock is disabled; range320/follow maximum180/damage8.
+Unequip/sword-only/stage/death clears the owned summon and re-equip preserves
+the ID cooldown. Full742tests/9741assertions PASS; real process spawn/cadence/
+unequip GPU smoke PASS. Existing sprite is fallback, not new art approval.
+
+## Latest increment — selected needle/dart and mark, 2026-09-13
+
+Selected effect consumers now cover13/24;11remain. Needle/dart use first swept
+circle intersection, fixed launch aim, lifetimes and direct_injutsu damage.
+Needle grants8s priority-only mark, no legacy crit/burst; unequip/stage/death
+clears it. Marks expire during sword form and freeze only during pause.
+GPU real-process needle and dart smoke both PASS; final full count below is
+740tests/9722assertions PASS. Heukyeong origin queries selected mark without
+copying it, enabling existing direct-hit charge bonus and ultimate bonus.
+No new art/cutover/release claim.
+
+## Latest increment — wind projectile, 2026-09-13
+
+Follow-up: final calamity entry now resets per-book clocks only after successful
+final Workbench commit. Actual four-school→final Main test reproduced the old
+0.01s clock leak and now passes. Full734tests/9693assertions PASS.
+
+Selected book consumers now cover11/24;13remain. Wind uses swept movement with
+per-target dedupe, full lifetime clamp and direct_injutsu damage. Final local
+GUT97scripts/734tests/9692assertions PASS; GPU real-process wind smoke PASS.
+The detailed Korean wind receipt at the end supersedes the counts below.
+Main default cutover/profile2/remaining effects/full-run/Human gates remain open.
+
+## Latest — support books and actual lifecycle consumers, 2026-09-13
+
+Continue without routine approval as explicitly requested. This turn completed
+successive logic increments:4support books →2fixed ward books → Main cleanup/
+Stage reset → common school Loadout binding/intrinsic suppression.
+Selected effect consumers now cover10/24 books (4offense,6support);14remain.
+Player owns transient damage reduction/shield/speed resolution, controller owns
+conditions/durations; no save schema fields or new autoload. Ward family takes
+maximum rather than sum; total transient reduction capped60%. Reduction precedes
+shield; dash invulnerability does not spend shield; real dash-end emits once.
+Main now clears transient effects when combat stops and reconfigures the cast
+consumer on successful school entry. All school runtimes suppress intrinsic
+attacks when bound to selected mode; their charge/ultimate ownership remains.
+Default starting UI/profile path still legacy; do not claim selected full-run.
+Final local full GUT97scripts/731tests/9673assertions PASS; GPU physics/process
+support smoke PASS using `tools/qa_selected_books_runtime.gd -- --support`.
+No new art, visual approval, normal-speed Human test or main merge. Full five
+whole-scope review loops still open, not inferred from targeted correction passes.
+Next ready work:14effect implementations and shared status/projectile consumers;
+then start/Main/gear/economy/profile2 integration and full-run acceptance.
+
+## Latest — four selected offensive books, 2026-09-13 continuation
+
+Current WIP now consumes Guiin pulse/afterimage line/ring/kick cone definitions.
+The remaining new-effect count is20, not23. Fixed origin/direction, per-cast line
+hit dedupe, exact scheduled ring/kick ticks, Loadout signal cancellation,
+reentrant-call guard and configure-time Stage reset are implemented.
+Main binds Guiin to Loadout: selectable mode suppresses its legacy free pulse
+while school-owned charge remains. Default Main start/profile still legacy.
+Actual GPU-backed engine process smoke with production Player/Enemy passed:
+`tools/qa_selected_books_runtime.gd`; no Main/save writes and no art-quality claim.
+First full regression717tests/9608assertions passed; later visual-cancellation
+regression reproduced and corrected, final run receipt follows in review owner.
+Whole-game queue remains open:20effects, tags, other school intrinsic suppression,
+Stage lifecycle consumer wiring, gear/Workbench/profile2, normal-speed full run,
+visual assets/Human/device and full five-loop closeout. Do not mark P03 complete.
+
+## Latest — selected-book combat consumer WIP, 2026-09-13
+
+User clarified the loop means benchmark → specify → implement → verify/correct,
+not repeated checks alone. Existing Implementation Packet records the next plan.
+NinjutsuAutoController now has an opt-in selectable-v2 branch consuming only
+guiin_ghost_blood_wave config (0.9s/80radius/10damage), with initial cooldown,
+0.12s no-target retry, committed membership and retained unequip cooldown.
+Legacy starter handling stays unchanged. Unsupported new books do not fall
+through to generic attacks. Target must belong to the configured world.
+RED reproduced starter skip; focused2tests/22assertions then full96scripts/
+708tests/9563assertions passed with Godot4.7.1/GUT9.7.1.
+This is WIP, not P03 completion: remaining23 effects, tag-modifier integration,
+intrinsic-attack suppression, reused Stage timer-reset, Main/profile2 cutover,
+new render/input evidence and five full adversarial loops remain open.
+No new assets, production save-format change, merge or Human approval.
+
+## Latest — plan-first start-loadout preparation, 2026-09-13
+
+User approved the proposed plan-first continuation. Implemented an isolated
+start preparation session/UI: two seeded three-choice rounds, two real1×2
+starting books on the existing3×3 board, move/rotate, restart without reroll,
+three external equipment slots, explicit single confirmation and defensive
+snapshots. Book item records project the existing24 Ninjutsu definitions;
+free/paid acquisition variants do not add new skills or enter legacy rewards.
+BackpackState keeps an explicit selectable-books-v2 mode through copy/JSON;
+schema1 refuses this mode even for an empty board. Existing geometry/copy/
+resolver and old-save defaults remain intact. This slice supports books only;
+new support/combination economy is not yet mapped into its catalog.
+
+Correction: `MVP4Catalog.build_bags()` already has3×3 starting area. Earlier
+status text saying the geometry itself was not implemented was stale; the
+new start-book/selection integration was missing. Treat old entries below as
+increment history, not current geometry authority.
+
+Fresh local full GUT:96scripts/707tests/9548assertions PASS, including new
+60-pair real geometry/confirmation coverage. Actual GPU pointer draft/move/
+confirm PASS; keyboard selection/confirm integration PASS. Capture:
+`reviews/start-loadout-preparation-20260913.png`. Native functional layout,
+not final art, human approval or device QA. Hera reported no live editor;
+render used the verified Godot4.7.1 CLI, no editor-attachment claim.
+Default wallet/resume hashes remain equal to the prior isolation baseline.
+
+Main is intentionally unchanged until24-effect consumers and profile2 are ready.
+No default-new-game cutover, new-save transaction, combat-pair validation,
+whole-game completion or merge. Next: effect consumers + committed equipment/
+Workbench/profile2, then attach this prepared snapshot to real Main atomically.
+Current branch/remote and CI evidence are recorded after exact-head verification;
+PR147 remains the current continuation and other PRs stay read-only.
+
+## Latest — whole-run continuation, 2026-09-12
+
+Delivery readback: code/data headca44becd1366c97a771b2275e44fdc74adb57051 equals
+its remote task branch and passed remote GUT + Windows internal build in run
+34672556291. Protected main remainsb5c2dd61cd589ebd218d1b4da3f016fb94a02126;
+PR147 is still Draft/unmerged, other PRs unchanged. Base remote remainsd830c0f,
+not silently replacing the adopted project-native contract.700-test local run
+and this CI are not a final whole-scope acceptance gate.
+Finished isolated Main fixtures952files/38720bytes moved, not deleted, to
+`C:/Users/user/Documents/GitHub/Ninza/DELETE_REVIEW/ninja-survival-godot/2026-09-12/gut-main-isolated-20260912`.
+Three owned ultimate-render wallet fixtures also moved into existing
+`full-route-runtime-fixtures` (now17payloads/19445bytes). READMEs explain disposal.
+Default player wallet/resume, untracked Godot imports and other worktrees remain.
+
+Latest P01/P03 preparation: NinjutsuCatalog contains24 known IDs/six per school,
+typed tags and copied effect parameters from current R-NINJUTSU. Original12 IDs
+and legacy lane mapping preserved; nonexistent asset paths stay empty. New12
+records are not exposed as available in the player codex before runtime hookup.
+NinjutsuLoadoutState now owns deterministic3-choice/two-round draft, unique
+picks, zero preview power, explicit placed-ID commit and4active/1unlocked-foreign
+limits. All60 unordered start pairs reached and committed in domain fixtures.
+Schema1 explicitly refuses selectable-v2 data instead of stripping its meaning.
+94scripts/700tests/8611assertions PASS with parse/error scan. Actual Main still
+uses the legacy start/placement path: no24-effect,3x3start, new draft UI, schema2
+or60-combat-pair acceptance claim. Next: bind book definitions/geometry and effect
+consumers, then atomic profile2 and actual start/Workbench UI. Exactdf8b5b5 remote
+checks passed; this increment requires own CI. Player default wallet/resume hashes
+remain identical to the storage-isolation baseline after the700-test suite.
+
+Newest save-safety prerequisite: existing RunResumeStore now readbacks/decodes
+temporary and canonical bytes, rolls back old canonical on failed new readback,
+and preserves failed/unresolved temporary candidates instead of silently
+overwriting them.94scripts/694tests/7637assertions PASS; injected readback failures
+and previous-cleanup warning covered. This is shared I/O preparation only, NOT
+profile2 wallet/checkpoint atomic cutover, recovery UI or filesystem crash-proof
+evidence. Exactced53fc both remote checks passed. Main's currently ignored
+checkpoint-save failure and two-file retry remain explicit profile2 integration
+gaps; do not claim whole-run durable settlement. P03 data/book preparation still
+precedes the complete P04 schema2 cutover per implementation packet.
+
+Newest Heukyeong increment: execution_charge is separate from live marks;
+0.125/sec nearby charge, marked owned direct weapon/injutsu damage+0.25/max1sec.
+Paired resolver event IDs capture pre-impact marks and actual damage, including
+lethal cleanup, excluding normal DoT/summons/reactions/bursts/ultimate. Needle
+explicitly labels direct_injutsu; other new books still need source classification.
+Ultimate costs3 before effects, visible320 targets sorted boss/final->elite->normal,
+distance then stable instanceID, at most3, damage26/18/18 plus fixed marked4.
+Marks remain; no status multiplier and no implicit instant kill. Full94scripts/
+691tests/7608assertions PASS; actual Main/button/noncombat and GPU role-fixture
+damage checks passed. `reviews/heukyeong-execution-runtime-20260912.png` inspected:
+existing hit feedback only, final execution VFX/production role art NOT verified.
+Exact874d576 CI both passed. New increment needs own CI, no merge. Next focus:
+profile2 transaction boundary, equipment/build/Workbench wiring,24books/start
+selection and trace choices, settlement, then full normal-speed acceptance.
+
+Newest Cheonsul increment:94scripts/686tests/7570assertions PASS including error
+scan. Nearby live same-world targets gate0.125/sec base charge; wet->shock adds
+0.25/max1persec, modifiers once, no paused/dead/active-breath charge. Preparation
+cancels breath. A reproduced callback bug revived canceled breath during burn
+processing; generation checks now prevent pending ticks from restarting it.
+Real GPU Main button/breath/preparation-cleanup verified and capture inspected:
+`reviews/cheonsul-breath-lifecycle-20260912.png`. Legacy automatic elemental casts
+still await24-book cutover. Exact4fbed23 remote GUT/Windows checks passed; current
+increment needs own CI. No full normal-speed/Human/device/whole-scope closure.
+
+Newest Bongma increment:94scripts/682tests/7538assertions PASS with parse/error
+scan. Living same-world target<=480 gates5/sec charge; owned nonultimate kills
+give2 at most once/sec with death-ID dedupe. Resolver scopes synchronous damage
+ownership and restores nested contexts. Ultimate pays100 only after two valid
+dedicated familiars exist, immediate8damage each,0.5sec attacks for6sec, target320,
+follow<=180 with separate formation positions. Legacy base familiar stays normal;
+its removal depends on the24-book cutover, not this increment. Pause/death/
+preparation/duplicate input/range/other-world cases covered. Actual Main GPU
+capture `reviews/bongma-dedicated-familiars-20260912.png` inspected; HUD activation
+and preparation cleanup verified. Legacy tiny art is not new-asset/Human approval.
+Exact0fdc357 both remote checks passed. Bongma increment needs own CI; no merge.
+Next: Cheonsul charge and lifecycle, Heukyeong ultimate, then remaining equipment/
+profile2/24-book/trace integration and normal-speed full-run validation.
+
+Current local increment: persistent six-slot buffer is connected to real Circuit
+departure, retry, JSON save/load and following preparations; held items remain
+outside resolved combat power. Existing stricter legacy RestBackpackSession mode
+is retained by default. Known item IDs/unique instance IDs/next-ID/collision/
+capacity/rotation are validated before replacement. Checkpoint capture/read now
+copy RefCounted backpack/items/modifiers explicitly rather than aliasing objects.
+
+Actual preparation now renders the existing spatial ShopController's three offers,
+purchase, increasing-price reroll, and explicit selected-buffer sale. This is the
+legacy item economy consumer, NOT the new external-equipment/profile2 cutover.
+Full buffer blocks purchase without debit; explicit sale frees room for a chest.
+Live GPU pointer selection/sale and exact refund verified using isolated QA paths,
+without expanding the fixture board. See `reviews/preparation-shop-buffer-selected-20260912.png`.
+UI remains provisional/plain and scroll-heavy; no Human/accessibility pass.
+Latest full run after rotation-button correction and storage isolation:94scripts/
+675tests/7475assertions PASS, including parse/error scan. Added a test-only storage
+helper at36 Main entrypoints; explicit fixture paths remain intact. Actual default
+wallet/resume SHA-256 stayed unchanged across this full run. Generated files in
+`user://gut_main_isolated_20260912` are owned QA disposal candidates, not profiles.
+Exact e9da812 remote checks passed. New increment needs its own CI; no merge;
+whole-scope five-loop closure remains open.
+
+Next: equipment/build/preparation/profile2 atomic binding; remaining school
+charges/ultimates and24books/start choices/trace branch; final settlement and
+normal-speed full-run validation. The entries below are historical increments,
+not overriding current status. Buffer wiring is no longer an unimplemented item.
+
+Latest Guiin refinement:93scripts/666tests/7358assertions PASS. Replaced hit/kill
+charge and decay with4/sec for a living target<=480 plus4/sec for danger<=110;
+modifiers apply once, no gain while paused/dead/form active. Form activation
+requires a visible target<=168. Temporary sword inherits only current melee rank
+(20/23/26/29/32 at ranks0..4), not the old weapon damage/shape. Tested all4melee
+types×5ranks. Exact21ccd94 passed both remote checks; new changes need own CI.
+Real GPU Main capture `reviews/guiin-sword-runtime-20260912.png` inspected:
+actual HUD/input/sword-only mode, legacy art; tiny detailed actors remain a visual
+quality issue. New equipment/profile2 integration, other school charges/ultimates,
+24books/start choices/buffer/trace/full normal-speed flow remain open.
+
+Newest local continuation:93scripts/662tests/7210assertions PASS. Guiin manual
+input now starts a6second temporary sword profile (20damage,0.325sec,168range,
+150degree cone), immediate strike, frozen original weapon clocks, no projectile
+or school-damage channels. Already-fired owned projectiles are cleared so early
+mode exit cannot revive them. Damaging auto-book casts pause; original profile
+restores on expiration, preparation, death/deactivation and scene exit. Actual
+Main input/preparation integration tested. Normal legacy Guiin resource gain/
+decay and book behavior are still pending replacement, as are new charge rules,
+damage tags, defensive books and exact new art. No Guiin render/Human pass.
+Previous e3c2c49 exact head passed remote GUT/Windows artifact checks. Work remains
+on current task branch; full implementation and five-loop completion stay open.
+
+Continuation checkpoint: whole-run increment `efbf249` was pushed and its exact
+head passed both remote checks (GUT and Windows internal build). No merge.
+Latest local continuation:93scripts/659tests/7182assertions PASS, including error
+scan. Hit protection0.35sec and entry protection1sec are wired into actual Main;
+pause freezes protection, blocked hits do not extend it. Existing forced-death
+fixtures now advance protection first; incoming-horde fixture disables outgoing
+damage to keep its crowd alive and tests max1resolved hit/frame.
+
+Equipment catalog/loadout:9definitions, external3slots, unique owned types,
+per-instance ranks, replacement-before-sale and price-based proceeds. BasicWeapon
+consumer now accepts validated copied equipment snapshots:4melee shapes,
+kunai2shot, shortbow1pierce, fixed-position delayed powder blast. Projectile hit
+sets prevent repeat contact/deferred-deletion double hits. These new equipment
+profiles are component-tested, NOT yet Main/Workbench/shop/save-bound; no new
+weapon visual approval or runtime-render claim. Next bind single RunBuildState
+owner, preparation economics and profile2 together; old schema1 must not silently
+discard new equipment or auto-convert changed inventory meanings.
+
+ResumeStore now rejects invalid encoded candidates before touching the valid
+record; previous-backup cleanup failure reports a warning instead of falsely
+reporting committed data as rolled back. These fixes do not complete profile2
+atomic wallet/settlement or crash/power-loss verification.
+
+CONTINUOUS_WORK_ACTIVE. Base remote d830c0f freshly read; selective adoption in
+the native work contract, not full adapter replacement. Current task remains
+PR147/codex/replanning-art-motion-20260910; other PRs read-only.
+
+Local implementation: foreign battlefield Elite/Boss progression no longer
+requires an origin-only legacy scroll. Final preparation commits build/Fate
+without a nonexistent fifth route. Fate pool with two remaining candidates stays
+selectable. Actual Main now reaches a final calamity actor and completion view.
+Final actor reuses existing school patterns/approved runtime assets provisionally,
+HP1800 and clear-order quarters; theme changes wait for pattern/projectile/proxy
+completion and never heal or clamp damage. New art is NOT approved by this wiring.
+
+Earlier full GUT:92scripts/645tests/7055assertions PASS, engine-error scan included.
+Earlier transient live-orb assertion failed; isolated and full reruns passed.
+Real GPU Main fixture reached final preparation/battle/completion, with accelerated
+time, forced kills and test-only expanded board. It exposed and fixed repeat-floor
+negative-origin gaps and overflowing UI (native scroll, paths preserved). New
+save-path injection isolates this fixture before Main ready. Dash now traverses
+enemies while retaining terrain and restores exact masks. Origin identity remains
+fixed; HUD uses current battlefield. First final-theme pattern gets0.2sec extra.
+Actors/VFX remain tiny/overlapping. Terminal save/settlement, normal-speed runtime,
+equipment/24books/draft/trace/save/ultimates/art queue remains.
+No five-loop completion, merge or full-game completion claimed.
+
+## Latest — breath rendering and basic combat continuation, 2026-09-12
+
+IN_PROGRESS. User approved displayed breath appearance and resumed implementation.
+VFX registered in existing Runtime Visual Core Manifest; aligned4frame Aseprite
+source+JSON retained. Runtime follows player/fixed direction, pause freezes,
+dash/deactivate/death hide, expiration fades; recast opacity reset regression added.
+Godot4.7.1 OpenGL/NVIDIA3050 actual fixture capture:
+`reviews/breath-runtime-20260912.png`; real existing scenes, no Main/profile/wallet.
+Not a human test or full-run capture. Existing actors remain tiny/low-contrast.
+Hera now points to GRIMOIRE; session list contains other projects only. No mutations
+to them. Own CLI fixture used instead, no claim of Ninja live-editor attachment.
+
+R-INPUT continuation: stationary dash uses last movement orDOWN; active reentry
+and direct paused requests reject without spending. Katana120degree front cone
+removes3target cap; shuriken targeting limited480; paused/dead direct weapon calls
+reject. Stable instance-ID distance ties. Full GUT91scripts/637tests/6936assertions
+passed after RED failures; error/warning scan included. No final5-loop or merge.
+
+Remaining: equipment3slots/8weapons/outfit and committed-preview transaction,
+24books/start2draft/bag rules, new charge/other ultimates, schema2 wallet+save,
+trace/route/economy/UI, collision-through dash and hit/entry protection, complete
+art and end-to-end/Human/device validation. Basic-weapon VFX cone agreement still
+needs render review; old slash asset was not newly approved. Continue approved work.
+
+## Latest — integration continuation checkpoint, 2026-09-12
+
+User authorizes all previously listed implementation work through integration
+validation. Work remains IN_PROGRESS, not complete and not ready to merge.
+Breath additions: actual automatic-weapon direction before first movement,
+visible-in-viewport activation eligibility, geometry/death/pause/deactivation
+tests, and real Main HUD button -> Host -> breath -> dash cancellation test.
+Godot4.7.1/GUT9.7.1:91 scripts,629/629 tests,6896 assertions, no error/warning.
+One intermediate run skipped a test script due to type inference errors;
+its602-test green banner was REJECTED. Explicit types corrected the fixture;
+final scan checked engine errors, warnings and expected script coverage.
+Candidate `visual/candidates/breath-20260912/README.md` owns new VFX provenance,
+alpha checks and required alignment. It is NOT_LOCKED and not bound to runtime.
+No claim of full-run/new-design integration, render/Human/device pass or five-loop
+completion. Other equipment/book/save/trace/UI packages listed below remain open.
+Current Hera pid37728 belongs to OMENWARD, not this project; no mutation there.
+Next: approve/refine breath appearance, align/export, exact Ninja render session;
+continue equipment/start draft/24book/ultimate/save/route/UI packages as authorized.
+
+Cleanup readback: local date folder currently contains breath-test-download;
+the historical README mentioned below was not found. Do not repeat its claimed
+counts as current or infer deletion. No disposable files deleted this turn.
+
+## Latest — implementation resumed, 2026-09-12
+
+Latest user explicitly requested remaining implementation inspection and execution.
+This supersedes planning-only continuation below, not final art/Blueprint approval.
+Current-task Draft147 now contains a local Cheonsul forward-breath logic increment:
+fixed movement-facing direction, moving origin, six ticks, range/cone targeting,
+status bonus without consumption, dash cancellation and pause request guard.
+GUT on Godot 4.7.1 / GUT 9.7.1: 623/623 tests, 6860 assertions (91 scripts).
+An additional RED test exposed status expiry during large-delta catch-up; corrected
+by advancing status time before each tick. Runtime visual/Human validation NOT_RUN.
+Not merged/pushed for this increment. Full five-loop completion gate remains open.
+Remaining breath work: auto-weapon-facing fallback before first movement, visible
+target policy, dedicated VFX, expanded death/angle/range boundaries and final review.
+Remaining product work: equipment slots/24 books/start draft, charge redesign,
+other ultimates, schema2 persistence, trace/route/economy, UI/art and full-run QA.
+Do not interpret passing legacy-catalog tests as these packages being implemented.
+
+## Latest — user-managed cleanup, 2026-09-12
+
+User requests confirmed disposable files gathered for manual deletion, never
+directly deleted by the agent. Local review folder:
+`C:/Users/user/Documents/GitHub/Ninza/DELETE_REVIEW/ninja-survival-godot/2026-09-12/`.
+Its README owns exact local sources/counts/reasons. Original dirty checkout,
+assets/provenance/PDF publications and registered worktrees remain preserved.
+Planning continuation is unchanged: integrate legacy book/route/economy and visuals.
+
+## Latest — breath / sword-only ultimate revision
+
+User replaces Cheonsul area blast with forward elemental breath and Guiin radial
+pulse with stronger sword-only offense. R-ULTIMATE contains proposed geometry,
+timing, non-sword attack suppression and restore semantics. Temporary Guiin sword
+for every melee loadout is direction-approved by the user's 2026-09-12 continuation.
+The former asynchronous question is resolved; no art LOCK is implied.
+Checkpoint fields now separate persistent charge from temporary effects.
+No code/image/PDF changes. Next: integrate legacy book/route/economy text and
+visuals before final Blueprint publication; runtime checks remain NOT_RUN.
+
+## Current — three equipment slots / ninja outfit / one-item trace upgrade
+
+Latest user moved katana, shuriken and ninja outfit outside backpack. The 8/9-cell
+start below is historical: two starting books now use 4/9 cells. Updated owners:
+Detailed Rules R-EQUIPMENT/R-LOADOUT/R-TRACE and Implementation Packet.
+Stage trace upgrade forfeits that school's ninjutsu access and upgrades one item.
+Starting-school exception is USER_APPROVED: retain access/books, enhancement only.
+R-NINJUTSU now specifies 24 effects; R-WEAPON-CONTENT specifies eight weapons;
+R-COMBINATION specifies three support recipes without consuming equipped gear.
+These are delegated review specs, not runtime/asset/final approval. Actual current
+catalog remains twelve and old acquisition lanes; do not confuse source tables
+with implemented definitions. R-ULTIMATE now specifies independent combat charge,
+school bonuses and book-independent manual effects for all 60 starting spell pairs.
+This is delegated review design only; pair-wise execution remains NOT_RUN.
+73-page PDF is preserved previous publication, not this revision; its live source
+hash comparison is now stale. No gameplay mutation or merge. Next: synchronize
+remaining book/economy/art and route/save boundaries, then export/review. No repeat
+question about the starting-school exception is needed.
+
+## Historical approval — starting contents use backpack, 2026-09-11
+
+User approved the prior revision direction and explicitly rejected free intrinsic
+starting spells/equipment. All four initial contents (katana, shuriken, two picked
+ninjutsu books) occupy the 3×3 bag. The approved direction plus recommended 8/9-cell
+initial packing lives at the top of the change analysis below. Reconcile detailed
+rules, item/activation contracts, initial-arrangement screen, packet and the next
+PDF together; do not resume the old bag-free automatic-weapon implementation.
+Final art/cutout/motion work and revised Blueprint remain pending; no game mutation.
+
+## Follow-up review — tags / draft / trace / player, 2026-09-11
+
+The user requests five tag families, two three-choice starting-ninjutsu picks,
+more weapons/ninjutsu and a more appealing anime player. Absorb-versus-strengthen
+after Stage clear is explicitly under consideration, not final approval.
+Current change proposal: `research/2026-09-11-tags-draft-and-trace-review.md`.
+The 73-page PDF below remains the previous review snapshot, not a publication of
+this follow-up. Reconcile rules, packet, visual tables and PDF after resolving
+these product choices; do not start the previous P01 unchanged.
+Player appearance: `visual/candidates/player-refinement-20260911/README.md`.
+Appearance source prepared, but clean-cutout QA failed; no runtime asset LOCK.
+Weapon/ninjutsu additional imagery and player motion remain pending.
+
+## Active task override — 2026-09-11
+
+- Scope: HUMAN_BLUEPRINT_AND_IMPLEMENTATION_INPUT_PREPARATION. Latest user
+  explicitly reopened needed image/atlas production; the image pause below is
+  historical. No new game implementation, save migration, canonical asset LOCK
+  or combined Draft PR #147 merge is authorized by this preparation task.
+- Reader source: `design/NINJA_SURVIVAL_HUMAN_BLUEPRINT.md`; detailed rules remain
+  `design/NINJA_SURVIVAL_DETAILED_RULES.md`; technical handoff is
+  `design/NINJA_SURVIVAL_IMPLEMENTATION_PACKET.md`.
+- Current bounded workflow: user review of the new standalone PDF at
+  `../exports/NINJA_SURVIVAL_HUMAN_BLUEPRINT_20260911.pdf`. Source/asset checks
+  and player Aseprite pixel comparison are separate from gameplay verification.
+  Review/delivery evidence: `reviews/2026-09-11-human-blueprint-review.md`.
+  Final design and asset LOCK pending; next safe product work after approval
+  is P01 in the implementation packet, not automatic merge of combined PR #147.
+- Working location: rediscover current continuation worktree/PR before mutation;
+  do not infer main from the old checkout or dated PR evidence below.
+
+## Active task override — 2026-09-10
+
+- Latest scope: PLANNING_ONLY_DELEGATED_DETAIL_SELECTION. The user asked to
+  review planning before images, then delegated Internet-informed detailed rules.
+- Current detail owner: `design/NINJA_SURVIVAL_DETAILED_RULES.md`;
+  DELEGATED_DESIGN / SPECIFIED_FOR_REVIEW, not implemented or Human approved.
+- Next: read the detail owner and its review record, then refine implementation
+  readiness and representative-slice requirements within planning. Do not resume
+  floor repair, image generation, asset binding or save migration in this step.
+- Delivery/readback for this documentation package:
+  `reviews/2026-09-10-detailed-rules-review.md`.
+- Resume: PLANNING_REOPENED_BY_USER; read the dated restart entry in Decisions.
+- Scope confirmed: full product reassessment, including genre/core; existing
+  elements are reusable inputs evaluated through evidence, not deletion targets.
+- Research: docs/research/2026-09-10-full-product-reassessment.md (PARTIALLY_DECIDED).
+- Approved: A+B = auto ordinary attacks; direct movement, invulnerable dash,
+  pattern counterplay and ultimate timing. No manual ordinary attack mode.
+- Blueprint: dated A+B section in docs/visual/NINJA_SURVIVAL_SCREEN_BLUEPRINT.md
+  defines representative decisions, input/HUD gaps, motion and acceptance targets.
+- Current branch implementation: E / pad Y / top-button ultimate request, existing
+  runtime readiness and failure feedback. See `reviews/2026-09-10-manual-ultimate-review.md`
+  for exact tests, live input capture, limitations and delivery status.
+- Delivery: Draft PR #147; implementation `33ece77` passed GUT and Windows
+  internal build CI. Resolve current final-head checks from that PR; not merged.
+- Deferred implementation follow-up: repair/verify the observed battlefield
+  coverage gap when runtime work resumes. The latest planning-only request
+  overrides this as an immediate action. New art remains candidate-only.
+- Candidate: docs/visual/candidates/ab-gameplay-composition-v1.png; one generated
+  and visually inspected composition, no baked UI, no runtime binding or motion.
+  Prompt/source/hash and concerns are in its adjacent candidate receipt.
+- Old images: REFERENCE_ONLY_FOR_NEW_CYCLE; existing runtime binding remains.
+- Existing PDF: historical design/reference, not the new Blueprint approval gate.
+- Read baseline: origin/main b5c2dd61cd589ebd218d1b4da3f016fb94a02126.
+- Open PRs observed: #135 and #49; both read-only. #135 overlaps visual, combat,
+  scene and decision files; its selected earlier changes already have #139 lineage.
+- Base observed: 2f93e872d9ed4fa18018ac759b01acd7d34e9b58; selective routing only.
+- Aseprite: CLIENT_DISCOVERED and CALL_VERIFIED by candidate-only canvas creation
+  and metadata readback (16×16, RGB, one 100ms frame). This is a transport probe,
+  not image, motion, export, runtime or Human completion.
+- New game design/art direction: control boundary approved; new art not locked.
+- Resolved source finding: MainController/HUD/project input now connect to the
+  existing school ultimates on this branch (not merged main). Cheonsul may be charged
+  yet reject activation when no status-bearing target exists. Do not invent a
+  new resource owner or report readiness as guaranteed successful activation.
+- Research evidence: official product comparison, professional sources and small
+  response sample; full redesign/Human/device validation NOT_RUN. Bounded live
+  E/button activation was observed; live paused-input QA was blocked by the
+  temporary inspector pausing with SceneTree. Automated modal checks are separate.
+
+The older router block below is the previous cycle's evidence snapshot. Its
+resume/next-gate/style statements do not override this active-task entry.
 
 ```yaml
 project: NINJA_SURVIVAL
@@ -470,3 +1950,11 @@ T12~T16 machine scope + Cheonsul first authoring baseline
 ```
 
 DEC-029/030/031/032/033 define the four-school shared-chassis package and its final-package boundary. DEC-036 moves Human/Player observation out of the current implementation gate; it stays `NOT_RUN` and cannot be inferred from automation. The failure rule remains default Run end with one Ninja-Soul-gated school retry.
+# 2026-09-13 연속 구현 추가 — 풍주
+
+선택형 인법 실제 효과 연결은 11/24, 나머지13종은 미완료다.
+풍주: 3초 주기, 고정 시전 방향, 600속도/360거리/48폭/0.6초, 적당14피해1회.
+기존 시전 레코드에 이동 구간 판정과 기존 대체 Sprite 이동을 연결했다. 최종 VFX 승격은 아니다.
+전체 GUT 97scripts/734tests/9692assertions PASS, 실제 엔진 process 지연 명중 smoke PASS.
+Main 기본 시작 모드 전환/profile2/나머지 효과/정상 속도 전체 런/Human 검증은 아직 남는다.
+아래 이전 10/24 기록은 앞선 증분의 영수증이다.

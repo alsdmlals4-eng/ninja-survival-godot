@@ -18,7 +18,231 @@ class DamageTarget:
 		return health <= 0
 
 
-func test_katana_hits_at_most_three_closest_valid_targets_and_records_damage() -> void:
+func test_all_eight_weapons_add_rank_and_manual_before_one_rounding() -> void:
+	var cases := [
+		[&"katana", "melee", [10,12,13,15,16], [12,13,15,16,18]],
+		[&"dual_tanto", "melee", [6,7,8,9,10], [7,8,9,10,11]],
+		[&"naginata", "melee", [17,20,22,25,27], [20,23,25,28,30]],
+		[&"kusarigama", "melee", [14,16,18,20,22], [17,19,21,23,25]],
+		[&"shuriken", "projectile", [9,10,12,13,14], [10,11,13,14,15]],
+		[&"kunai", "projectile", [6,7,8,9,10], [7,8,8,9,10]],
+		[&"shortbow", "projectile", [16,18,21,23,26], [18,20,22,25,27]],
+		[&"powder_bomb", "projectile", [18,21,23,26,29], [20,23,25,28,31]],
+	]
+	var f := _new_fixture()
+	f.controller.set_process(false)
+	f.controller.shuriken_projectile_scene = SHURIKEN_SCENE
+	var target := DamageTarget.new()
+	f.world.add_child(target)
+	target.position = Vector2(20, 0)
+	target.add_to_group("enemies")
+	var modifiers := RunModifierSet.new()
+	modifiers.school_damage_pct = 99.0
+	f.resolver.set_modifiers(modifiers)
+	for row in cases:
+		for rank in range(5):
+			for manual in range(2):
+				var gear = load("res://scripts/core/equipment_loadout_state.gd").new()
+				if row[0] not in [&"katana", &"shuriken"]:
+					assert_true(gear.acquire(row[0]))
+					assert_true(gear.equip(StringName(row[1]), row[0]))
+				for level in range(rank): assert_true(gear.upgrade_equipped(StringName(row[1])))
+				assert_true(f.controller.apply_equipment_snapshot(gear.get_snapshot()))
+				var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+				if manual == 1: assert_gt(bag.add_item(&"melee_manual" if row[1] == "melee" else &"projectile_manual", Vector2i(1,1)), 0)
+				assert_true(f.controller.apply_committed_backpack(bag))
+				target.health = 100
+				if row[1] == "melee":
+					f.controller.swing_katana_once()
+				else:
+					var projectile = f.controller.fire_shuriken_once()
+					assert_not_null(projectile)
+					if row[0] == &"powder_bomb": projectile._physics_process(0.46)
+					else: projectile.hit_body(target)
+				assert_eq(100 - target.health, row[2 + manual][rank], "%s rank%d manual%d" % [row[0], rank, manual])
+				for projectile in get_tree().get_nodes_in_group("friendly_weapon_projectiles"):
+					if not projectile.is_queued_for_deletion(): projectile.queue_free()
+
+func test_kunai_combined_manual_uses_unrounded_base_and_launch_snapshot() -> void:
+	var f := _new_fixture()
+	f.controller.set_process(false)
+	f.controller.shuriken_projectile_scene = SHURIKEN_SCENE
+	var gear = load("res://scripts/core/equipment_loadout_state.gd").new()
+	gear.acquire(&"kunai")
+	gear.equip(&"projectile", &"kunai")
+	gear.upgrade_equipped(&"projectile")
+	f.controller.apply_equipment_snapshot(gear.get_snapshot())
+	var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	assert_gt(bag.add_item(&"projectile_manual", Vector2i(1,1)), 0)
+	assert_gt(bag.add_item(&"blast_powder", Vector2i(2,1)), 0)
+	assert_true(f.controller.apply_committed_backpack(bag))
+	var target := DamageTarget.new()
+	f.world.add_child(target)
+	target.position = Vector2(20, 0)
+	target.add_to_group("enemies")
+	var projectile = f.controller.fire_shuriken_once()
+	gear.upgrade_equipped(&"projectile")
+	f.controller.apply_equipment_snapshot(gear.get_snapshot())
+	f.controller.apply_committed_backpack(load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state())
+	projectile.hit_body(target)
+	assert_eq(target.health, 92, "6*(1+.15+.10+.12)=8, never9; later gear cannot rewrite an airborne hit.")
+
+
+func test_committed_manual_affects_only_weapon_hits_and_removal_restores_damage() -> void:
+	var fixture := _new_fixture()
+	var controller = fixture.controller
+	assert_true(controller.has_method("apply_committed_backpack"))
+	if not controller.has_method("apply_committed_backpack"):
+		return
+	var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	var manual: int = bag.add_item(&"melee_manual", Vector2i(1, 1))
+	var target := DamageTarget.new()
+	fixture.world.add_child(target)
+	target.position = Vector2(20, 0)
+	target.add_to_group("enemies")
+	assert_true(controller.apply_committed_backpack(bag))
+	assert_eq(controller.swing_katana_once(), 1)
+	assert_eq(target.health, 88, "10 * 1.18 rounded once gives12 weapon damage.")
+	assert_eq(fixture.resolver.deal_school_damage(target, 10, &"direct_injutsu"), 10)
+	assert_not_null(bag.remove_item(manual))
+	assert_eq(controller.swing_katana_once(), 1)
+	assert_eq(target.health, 66, "Editing the source does not mutate the committed weapon bonus.")
+	assert_true(controller.apply_committed_backpack(bag))
+	assert_eq(controller.swing_katana_once(), 1)
+	assert_eq(target.health, 56)
+
+
+func test_projectile_manual_stack_caps_and_does_not_strengthen_guiin_ultimate() -> void:
+	var fixture := _new_fixture()
+	var controller = fixture.controller
+	var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	for y in range(1, 4):
+		for x in range(1, 4):
+			assert_gt(bag.add_item(&"projectile_manual", Vector2i(x, y)), 0)
+	assert_true(controller.apply_committed_backpack(bag))
+	controller.shuriken_projectile_scene = SHURIKEN_SCENE
+	var target := DamageTarget.new()
+	fixture.world.add_child(target)
+	target.position = Vector2(20, 0)
+	target.add_to_group("enemies")
+	var projectile = controller.fire_shuriken_once()
+	assert_not_null(projectile)
+	assert_eq(projectile.damage, 14, "9 * 1.60 rounded =14; nine manuals cannot give+90%.")
+	var melee_bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	assert_gt(melee_bag.add_item(&"melee_manual", Vector2i(1, 1)), 0)
+	assert_true(controller.apply_committed_backpack(melee_bag))
+	assert_true(controller.begin_guiin_form())
+	assert_eq(target.health, 80, "Manual weapon bonus does not multiply the temporary ultimate sword.")
+	assert_false(controller.apply_committed_backpack(bag), "Cannot change committed loadout during the temporary mode.")
+	controller.end_guiin_form()
+	assert_eq(controller.swing_katana_once(), 1)
+	assert_eq(target.health, 68, "Original weapon/manual bonus resumes after sword form.")
+
+
+func test_thunder_combo_hits_only_two_other_targets_once_without_school_scaling() -> void:
+	var fixture := _new_fixture()
+	var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	assert_gt(bag.add_item(&"thunder_blade", Vector2i(1, 1)), 0)
+	assert_true(fixture.controller.apply_committed_backpack(bag))
+	var modifiers := RunModifierSet.new()
+	modifiers.school_damage_pct = 10.0
+	fixture.resolver.set_modifiers(modifiers)
+	var targets: Array = []
+	for point in [Vector2(20, 0), Vector2(20, 40), Vector2(20, -50), Vector2(20, 70)]:
+		var target := DamageTarget.new()
+		fixture.world.add_child(target)
+		target.position = point
+		target.add_to_group("enemies")
+		targets.append(target)
+	assert_eq(fixture.controller.swing_katana_once(), 1)
+	assert_eq(targets[0].health, 88)
+	assert_eq(targets[1].health, 94)
+	assert_eq(targets[2].health, 94)
+	assert_eq(targets[3].health, 100)
+	fixture.controller.swing_katana_once()
+	assert_eq(targets[1].health, 94, "Immediate repeated swing cannot bypass1s internal cooldown.")
+
+
+func test_explosive_combo_claim_is_shared_by_all_projectiles_in_one_volley() -> void:
+	var fixture := _new_fixture()
+	var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	assert_gt(bag.add_item(&"explosive_bomb", Vector2i(1, 1)), 0)
+	assert_true(fixture.controller.apply_committed_backpack(bag))
+	var gear = load("res://scripts/core/equipment_loadout_state.gd").new()
+	assert_true(gear.acquire(&"kunai"))
+	assert_true(gear.equip(&"projectile", &"kunai"))
+	assert_true(fixture.controller.apply_equipment_snapshot(gear.get_snapshot()))
+	fixture.controller.shuriken_projectile_scene = SHURIKEN_SCENE
+	var target := DamageTarget.new()
+	fixture.world.add_child(target)
+	target.position = Vector2(20, 0)
+	target.add_to_group("enemies")
+	assert_not_null(fixture.controller.fire_shuriken_once())
+	var volley: Array = []
+	for child in fixture.world.get_children():
+		if child is BasicProjectile:
+			volley.append(child)
+	assert_eq(volley.size(), 2)
+	assert_true(volley[0].hit_body(target))
+	assert_eq(target.health, 81, "7direct+12explosion.")
+	assert_true(volley[1].hit_body(target))
+	assert_eq(target.health, 74, "Second kunai gets only7direct, no recursive/second blast.")
+
+
+func test_death_callback_cannot_attach_a_new_combo_to_an_already_started_swing() -> void:
+	var fixture := _new_fixture()
+	var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	bag.add_item(&"thunder_blade", Vector2i(1, 1))
+	var first = load("res://scripts/enemies/enemy_chaser.gd").new()
+	first.max_health = 10
+	fixture.world.add_child(first)
+	first.set_physics_process(false)
+	first.position = Vector2(20, 0)
+	first.died.connect(func(_enemy): fixture.controller.apply_committed_backpack(bag))
+	var other := DamageTarget.new()
+	fixture.world.add_child(other)
+	other.position = Vector2(20, 50)
+	other.add_to_group("enemies")
+	fixture.controller.swing_katana_once()
+	assert_eq(other.health, 100, "Newly committed combo cannot retroactively proc from the killing swing.")
+
+
+func test_water_mist_requires_hp_loss_and_expires_without_resetting_base_bonus() -> void:
+	var world := Node2D.new()
+	add_child_autofree(world)
+	var player = load("res://scripts/player/player_controller.gd").new()
+	world.add_child(player)
+	player.set_physics_process(false)
+	player.set_selected_combat_rules(true)
+	var weapon = BASIC_WEAPON_SCRIPT.new()
+	player.add_child(weapon)
+	weapon.set_process(false)
+	var bag = load("res://scripts/backpack/backpack_state.gd").new().create_selectable_starting_state()
+	assert_gt(bag.add_item(&"water_mist", Vector2i(1, 1)), 0)
+	var catalog = load("res://scripts/data/selected_backpack_catalog.gd")
+	var legacy = load("res://scripts/data/mvp4_catalog.gd")
+	var resolver = load("res://scripts/backpack/backpack_resolver.gd").new()
+	player.apply_run_modifiers(resolver.resolve(bag, catalog.build_items(), legacy.build_bags(), &"bongma").modifiers)
+	assert_true(weapon.apply_committed_backpack(bag))
+	assert_almost_eq(player.move_speed, 259.2, 0.01)
+	player.set_ninjutsu_boon(&"test_shield", 0.0, 0.0, 2)
+	assert_eq(player.take_damage(1), 0)
+	assert_almost_eq(player.move_speed, 259.2, 0.01)
+	player.remove_ninjutsu_boon(&"test_shield")
+	assert_eq(player.take_damage(1), 1)
+	assert_almost_eq(player.move_speed, 307.2, 0.01)
+	get_tree().paused = true
+	weapon._process(2.0)
+	assert_almost_eq(player.move_speed, 307.2, 0.01)
+	get_tree().paused = false
+	weapon._process(1.0)
+	assert_almost_eq(player.move_speed, 259.2, 0.01)
+	player.advance_damage_protection(2.0)
+	assert_eq(player.take_damage(1), 1)
+	assert_almost_eq(player.move_speed, 259.2, 0.01, "3s cooldown prevents immediate reactivation.")
+
+
+func test_katana_hits_entire_forward_crowd_without_three_target_cap() -> void:
 	var fixture := _new_fixture()
 	var controller := fixture.get("controller") as BasicWeaponController
 	controller.katana_radius = 112.0
@@ -31,13 +255,57 @@ func test_katana_hits_at_most_three_closest_valid_targets_and_records_damage() -
 		(fixture.get("world") as Node2D).add_child(target)
 		targets.append(target)
 
-	assert_eq(controller.swing_katana_once(), 3)
+	assert_eq(controller.swing_katana_once(), 4)
 	assert_eq(targets[0].health, 90)
 	assert_eq(targets[1].health, 90)
 	assert_eq(targets[2].health, 90)
-	assert_eq(targets[3].health, 100)
+	assert_eq(targets[3].health, 90)
 	assert_eq(targets[4].health, 100)
-	assert_eq(fixture.tracker.damage, 30)
+	assert_eq(fixture.tracker.damage, 40)
+
+
+func test_katana_excludes_rear_and_outside_sixty_degree_half_angle() -> void:
+	var fixture := _new_fixture()
+	var targets: Array[DamageTarget] = []
+	for point in [Vector2(20, 0), Vector2(-30, 0), Vector2(50, 86.60254), Vector2(48.48096, 87.46197)]:
+		var target := DamageTarget.new()
+		fixture.world.add_child(target)
+		target.position = point
+		target.add_to_group("enemies")
+		targets.append(target)
+	assert_eq(fixture.controller.swing_katana_once(), 2)
+	assert_eq(targets[0].health, 90)
+	assert_eq(targets[1].health, 100)
+	assert_eq(targets[2].health, 90)
+	assert_eq(targets[3].health, 100)
+
+
+func test_shuriken_does_not_aim_beyond_480_world_units() -> void:
+	var fixture := _new_fixture()
+	fixture.controller.shuriken_projectile_scene = SHURIKEN_SCENE
+	var target := DamageTarget.new()
+	fixture.world.add_child(target)
+	target.position = Vector2(481, 0)
+	target.add_to_group("enemies")
+	assert_null(fixture.controller.fire_shuriken_once())
+	target.position.x = 480
+	assert_not_null(fixture.controller.fire_shuriken_once())
+
+
+func test_paused_direct_weapon_calls_do_not_damage_or_spawn() -> void:
+	var fixture := _new_fixture()
+	fixture.controller.shuriken_projectile_scene = SHURIKEN_SCENE
+	var target := DamageTarget.new()
+	fixture.world.add_child(target)
+	target.position = Vector2(20, 0)
+	target.add_to_group("enemies")
+	get_tree().paused = true
+	var hits: int = fixture.controller.swing_katana_once()
+	var projectile = fixture.controller.fire_shuriken_once()
+	get_tree().paused = false
+	assert_eq(hits, 0)
+	assert_null(projectile)
+	assert_eq(target.health, 100)
 
 
 func test_shuriken_spawns_toward_nearest_valid_target_with_combat_resolver() -> void:
@@ -107,3 +375,166 @@ func _new_fixture() -> Dictionary:
 		"resolver": resolver,
 		"controller": controller,
 	}
+
+
+func test_equipped_naginata_uses_forward_rectangle_and_instance_upgrade() -> void:
+	var fixture := _new_fixture()
+	var controller = fixture.controller
+	assert_true(controller.has_method("apply_equipment_snapshot"))
+	if not controller.has_method("apply_equipment_snapshot"):
+		return
+	var equipment = load("res://scripts/core/equipment_loadout_state.gd").new()
+	assert_true(equipment.acquire(&"naginata"))
+	assert_true(equipment.equip(&"melee", &"naginata"))
+	assert_true(equipment.upgrade_equipped(&"melee"))
+	assert_true(controller.apply_equipment_snapshot(equipment.get_snapshot()))
+	var targets: Array[DamageTarget] = []
+	for point in [Vector2(20, 0), Vector2(179, 23), Vector2(100, 25), Vector2(-1, 0), Vector2(181, 0)]:
+		var target := DamageTarget.new()
+		fixture.world.add_child(target)
+		target.position = point
+		target.add_to_group("enemies")
+		targets.append(target)
+	# Rear target would be the nearest: remove it from automatic aim by positioning it outside range.
+	targets[3].position = Vector2(-181, 0)
+	assert_eq(controller.swing_katana_once(), 2)
+	assert_eq(targets[0].health, 80) # 17 * 1.15 = 19.55, rounded once.
+	assert_eq(targets[1].health, 80)
+	assert_eq(targets[2].health, 100)
+	assert_eq(targets[3].health, 100)
+	assert_eq(targets[4].health, 100)
+
+
+func test_kunai_emits_two_projectiles_at_six_degree_offsets_with_bounded_lifetime() -> void:
+	var fixture := _new_fixture()
+	assert_true(fixture.controller.has_method("apply_equipment_snapshot"))
+	if not fixture.controller.has_method("apply_equipment_snapshot"):
+		return
+	var equipment = load("res://scripts/core/equipment_loadout_state.gd").new()
+	assert_true(equipment.acquire(&"kunai"))
+	assert_true(equipment.equip(&"projectile", &"kunai"))
+	assert_true(fixture.controller.apply_equipment_snapshot(equipment.get_snapshot()))
+	fixture.controller.shuriken_projectile_scene = SHURIKEN_SCENE
+	var target := DamageTarget.new()
+	fixture.world.add_child(target)
+	target.position = Vector2(120, 0)
+	target.add_to_group("enemies")
+	var emitted: Array[Node2D] = []
+	fixture.controller.shuriken_fired.connect(func(projectile: Node2D): emitted.append(projectile))
+	assert_not_null(fixture.controller.fire_shuriken_once())
+	assert_eq(emitted.size(), 2)
+	if emitted.size() != 2:
+		return
+	assert_almost_eq(rad_to_deg(emitted[0].direction.angle()), -6.0, 0.001)
+	assert_almost_eq(rad_to_deg(emitted[1].direction.angle()), 6.0, 0.001)
+	assert_eq(emitted[0].damage, 6)
+	assert_eq(emitted[0].lifetime, 1.0)
+	assert_eq(emitted[0].get_node("CollisionShape2D").shape.radius, 6.0)
+
+
+func test_invalid_equipment_does_not_replace_current_weapon_profile() -> void:
+	var fixture := _new_fixture()
+	assert_true(fixture.controller.has_method("apply_equipment_snapshot"))
+	if not fixture.controller.has_method("apply_equipment_snapshot"):
+		return
+	assert_false(fixture.controller.apply_equipment_snapshot({}))
+	assert_eq(fixture.controller.katana_damage, 10.0)
+	assert_eq(fixture.controller.shuriken_damage, 9.0)
+
+
+func test_powder_bomb_locks_target_position_then_damages_only_current_blast_occupants() -> void:
+	var fixture := _new_fixture()
+	var equipment = load("res://scripts/core/equipment_loadout_state.gd").new()
+	assert_true(equipment.acquire(&"powder_bomb"))
+	assert_true(equipment.equip(&"projectile", &"powder_bomb"))
+	assert_true(fixture.controller.apply_equipment_snapshot(equipment.get_snapshot()))
+	if fixture.controller.shuriken_target_radius != 360.0:
+		return
+	fixture.controller.shuriken_projectile_scene = SHURIKEN_SCENE
+	var first := DamageTarget.new()
+	var second := DamageTarget.new()
+	fixture.world.add_child(first)
+	fixture.world.add_child(second)
+	first.position = Vector2(100, 0)
+	second.position = Vector2(160, 0)
+	first.add_to_group("enemies")
+	second.add_to_group("enemies")
+	var bomb: Node2D = fixture.controller.fire_shuriken_once()
+	assert_not_null(bomb)
+	if bomb == null:
+		return
+	assert_eq(bomb.position, Vector2(100, 0))
+	first.position = Vector2(300, 0)
+	bomb._physics_process(0.44)
+	assert_eq(second.health, 100)
+	bomb._physics_process(0.02)
+	assert_eq(first.health, 100)
+	assert_eq(second.health, 82)
+	bomb._physics_process(1.0)
+	assert_eq(second.health, 82)
+
+
+func test_guiin_sword_mode_blocks_other_damage_and_restores_original_weapon_clocks() -> void:
+	var fixture := _new_fixture()
+	assert_true(fixture.controller.has_method("begin_guiin_form"))
+	if not fixture.controller.has_method("begin_guiin_form"):
+		return
+	var target := DamageTarget.new()
+	fixture.world.add_child(target)
+	target.position = Vector2(40, 0)
+	target.add_to_group("enemies")
+	fixture.controller._katana_remaining = 0.27
+	fixture.controller._shuriken_remaining = 0.42
+	fixture.controller.katana_damage = 37.0
+	assert_true(fixture.controller.begin_guiin_form())
+	assert_eq(target.health, 80, "Guiin form immediately uses its own20damage sword, not old equipment damage.")
+	assert_eq(fixture.resolver.deal_basic_weapon_damage(target, 999), 0)
+	assert_eq(fixture.resolver.deal_school_damage(target, 999), 0)
+	assert_eq(fixture.resolver.deal_school_damage(target, 999, &"ultimate"), 0)
+	assert_null(fixture.controller.fire_shuriken_once())
+	assert_false(fixture.controller.begin_guiin_form())
+	fixture.controller._process(0.325)
+	assert_eq(target.health, 60)
+	fixture.controller.end_guiin_form()
+	fixture.controller.end_guiin_form()
+	assert_eq(fixture.controller.katana_damage, 37.0)
+	assert_eq(fixture.controller._katana_remaining, 0.27)
+	assert_eq(fixture.controller._shuriken_remaining, 0.42)
+	assert_eq(fixture.resolver.deal_basic_weapon_damage(target, 9), 9)
+
+
+func test_guiin_clears_precast_projectiles_so_early_exit_cannot_revive_their_damage() -> void:
+	var fixture := _new_fixture()
+	var target := DamageTarget.new()
+	fixture.world.add_child(target)
+	target.position = Vector2(200, 0)
+	target.add_to_group("enemies")
+	fixture.controller.shuriken_projectile_scene = SHURIKEN_SCENE
+	var projectile: BasicProjectile = fixture.controller.fire_shuriken_once()
+	assert_not_null(projectile)
+	assert_true(fixture.controller.begin_guiin_form())
+	assert_true(projectile.is_queued_for_deletion())
+	fixture.controller.end_guiin_form()
+	assert_false(projectile.hit_body(target))
+	assert_eq(target.health, 100)
+
+
+func test_guiin_temporary_sword_inherits_rank_but_never_original_weapon_damage() -> void:
+	var fixture := _new_fixture()
+	var target := DamageTarget.new()
+	fixture.world.add_child(target)
+	target.position = Vector2(40, 0)
+	target.add_to_group("enemies")
+	for weapon in [&"katana", &"dual_tanto", &"naginata", &"kusarigama"]:
+		for rank in range(5):
+			var equipment = load("res://scripts/core/equipment_loadout_state.gd").new()
+			if weapon != &"katana":
+				assert_true(equipment.acquire(weapon))
+				assert_true(equipment.equip(&"melee", weapon))
+			for index in range(rank):
+				assert_true(equipment.upgrade_equipped(&"melee"))
+			assert_true(fixture.controller.apply_equipment_snapshot(equipment.get_snapshot()))
+			target.health = 100
+			assert_true(fixture.controller.begin_guiin_form())
+			assert_eq(target.health, [80, 77, 74, 71, 68][rank])
+			fixture.controller.end_guiin_form()

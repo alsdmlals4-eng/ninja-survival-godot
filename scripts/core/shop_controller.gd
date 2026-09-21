@@ -6,6 +6,7 @@ signal transaction_failed(reason: String)
 
 const BagInstanceScript = preload("res://scripts/data/bag_instance.gd")
 const MVP4CatalogScript = preload("res://scripts/data/mvp4_catalog.gd")
+const SELECTED_CATALOG = preload("res://scripts/data/selected_backpack_catalog.gd")
 
 var offer_ids: Array[StringName] = []
 var offer_lane_ids: Array[StringName] = []
@@ -187,6 +188,66 @@ func get_reroll_cost() -> int:
 			return 15
 
 
+# Reward owner persists the shared RNG exactly once. This value contains no money
+# or inventory: those are restored atomically by the preparation transaction.
+func persistent_snapshot() -> Dictionary:
+	return {"offer_ids": offer_ids.duplicate(), "lane_ids": offer_lane_ids.duplicate(),
+		"bag_id": String(bag_offer_id), "bag_bought": _bag_bought_this_rest,
+		"reroll_index": _reroll_index, "changes": rest_changes.duplicate()}
+
+
+func can_restore_persistent_snapshot(raw: Dictionary) -> bool:
+	if not _spatial_mode or raw.size() != 6:
+		return false
+	if not (raw.get("bag_bought") is bool) or not _saved_count(raw.get("reroll_index")):
+		return false
+	if not (raw.get("bag_id") is String or raw.get("bag_id") is StringName):
+		return false
+	if not MVP4CatalogScript.purchasable_bag_ids().has(StringName(raw.bag_id)) or not _bag_defs.has(StringName(raw.bag_id)):
+		return false
+	if not (raw.get("changes") is Array):
+		return false
+	for value in raw.changes:
+		if not (value is String):
+			return false
+	if not (raw.get("offer_ids") is Array) or not (raw.get("lane_ids") is Array):
+		return false
+	if raw.offer_ids.size() != 3 or raw.lane_ids.size() != 3:
+		return false
+	var seen := {}
+	var lanes := _effective_offer_lanes()
+	for i in range(3):
+		if not (raw.offer_ids[i] is String or raw.offer_ids[i] is StringName) or not (raw.lane_ids[i] is String or raw.lane_ids[i] is StringName):
+			return false
+		var item_id := StringName(raw.offer_ids[i])
+		if seen.has(item_id) or not _item_defs.has(item_id):
+			return false
+		seen[item_id] = true
+		var allowed := false
+		for lane in lanes:
+			if StringName(raw.lane_ids[i]) == lane.lane_id and lane.item_ids.has(item_id):
+				allowed = true
+		if not allowed:
+			return false
+	return true
+
+
+func restore_persistent_snapshot(raw: Dictionary) -> bool:
+	if not can_restore_persistent_snapshot(raw):
+		return false
+	offer_ids = _string_name_array(raw.offer_ids)
+	offer_lane_ids = _string_name_array(raw.lane_ids)
+	bag_offer_id = StringName(raw.bag_id)
+	_bag_bought_this_rest = raw.bag_bought
+	_reroll_index = int(raw.reroll_index)
+	rest_changes.assign(raw.changes)
+	return true
+
+
+static func _saved_count(value) -> bool:
+	return (value is int or value is float) and is_finite(float(value)) and value >= 0 and value <= 9007199254740991 and float(value) == floor(float(value))
+
+
 func _buy_spatial_offer(index: int) -> bool:
 	if index < 0 or index >= offer_ids.size():
 		transaction_failed.emit("잘못된 상품입니다")
@@ -294,14 +355,14 @@ func _effective_offer_lanes() -> Array[Dictionary]:
 	if not _offer_lanes.is_empty():
 		return _sanitize_offer_lanes(_offer_lanes)
 	var fallback_items: Array[StringName] = []
-	for item_id in MVP4CatalogScript.base_acquisition_item_ids():
+	for item_id in acquisition_item_ids():
 		if _item_defs.get(item_id) != null:
 			fallback_items.append(item_id)
 	return [{"lane_id": &"legacy_all", "item_ids": fallback_items}]
 
 
 func _sanitize_offer_lanes(raw_lanes: Array) -> Array[Dictionary]:
-	var canonical: Array[StringName] = MVP4CatalogScript.base_acquisition_item_ids()
+	var canonical: Array[StringName] = acquisition_item_ids()
 	var result: Array[Dictionary] = []
 	var used_lane_ids := {}
 	for raw_lane in raw_lanes:
@@ -392,3 +453,9 @@ func _set_rng(rng: RandomNumberGenerator) -> void:
 		_rng.randomize()
 	else:
 		_rng = rng
+
+
+func acquisition_item_ids() -> Array[StringName]:
+	if _session != null and _session.state != null and _session.state.uses_selectable_books():
+		return SELECTED_CATALOG.base_acquisition_item_ids()
+	return MVP4CatalogScript.base_acquisition_item_ids()

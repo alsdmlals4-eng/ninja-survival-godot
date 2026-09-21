@@ -10,6 +10,43 @@ func test_run_build_state_resource_exists() -> void:
 	assert_true(ResourceLoader.exists(STATE_PATH), "Missing MVP-3 run build state")
 
 
+func test_committed_equipment_owns_defensive_copy_and_outfit_reduction_once() -> void:
+	var state = _new_state()
+	assert_true(state.has_method("commit_equipment_snapshot"))
+	if not state.has_method("commit_equipment_snapshot"):
+		return
+	var gear = load("res://scripts/core/equipment_loadout_state.gd").new()
+	assert_true(state.commit_equipment_snapshot(gear.get_snapshot()))
+	assert_almost_eq(state.get_modifiers().damage_taken_pct, -0.05, 0.0001)
+	assert_true(gear.upgrade_equipped(&"outfit"))
+	assert_almost_eq(state.get_modifiers().damage_taken_pct, -0.05, 0.0001)
+	assert_true(state.commit_equipment_snapshot(gear.get_snapshot()))
+	assert_true(state.commit_equipment_snapshot(gear.get_snapshot()))
+	assert_almost_eq(state.get_modifiers().damage_taken_pct, -0.08, 0.0001)
+	var snapshot: Dictionary = state.equipment_snapshot()
+	snapshot.upgrade_rank_by_instance.gear_ninja_suit = 4
+	assert_eq(state.equipment_snapshot().upgrade_rank_by_instance.gear_ninja_suit, 1)
+	snapshot.equipped_slots.outfit = "not_owned"
+	assert_false(state.commit_equipment_snapshot(snapshot))
+	assert_almost_eq(state.get_modifiers().damage_taken_pct, -0.08, 0.0001)
+	assert_eq(state.get_modifiers().school_damage_pct, 0.0)
+	var player = load("res://scripts/player/player_controller.gd").new()
+	player.max_health = 300
+	add_child_autofree(player)
+	player.set_physics_process(false)
+	player.set_selected_combat_rules(true)
+	player.apply_run_modifiers(state.get_modifiers())
+	assert_eq(player.take_damage(100), 92)
+	state.set_selected_school(&"bongma")
+	var checkpoint: Dictionary = state.get_checkpoint_snapshot()
+	assert_true(checkpoint.has("equipment"), "Selected equipment must not silently vanish from checkpoints.")
+	var restored = _new_state()
+	assert_true(restored.restore_from_checkpoint(checkpoint))
+	assert_almost_eq(restored.get_modifiers().damage_taken_pct, -0.08, 0.0001)
+	checkpoint.erase("equipment")
+	assert_false(state.restore_from_checkpoint(checkpoint), "Legacy checkpoint cannot erase an active selected equipment contract.")
+
+
 func test_gold_grants_spends_and_fixed_policy_rewards_are_atomic() -> void:
 	var state = _new_state()
 	if state == null:

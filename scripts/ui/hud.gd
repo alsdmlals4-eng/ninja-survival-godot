@@ -8,12 +8,14 @@ signal resume_requested
 signal current_tradition_help_requested
 signal restart_requested
 signal retry_requested
+signal ultimate_requested
 
 @onready var combat_top_bar: MarginContainer = $CombatTopBar
 @onready var dash_label: Label = $CombatTopBar/Row/DashLabel
 @onready var stage_phase_label: Label = $CombatTopBar/Row/StagePhaseLabel
 @onready var play_label: Label = $CombatTopBar/Row/PlayLabel
 @onready var settings_button: Button = $CombatTopBar/Row/SettingsButton
+@onready var ultimate_button: Button = $CombatTopBar/Row/UltimateButton
 @onready var settings_panel: Control = $SettingsPanel
 @onready var resume_button: Button = $SettingsPanel/Dialog/Margin/Actions/ResumeButton
 @onready var tradition_help_button: Button = $SettingsPanel/Dialog/Margin/Actions/TraditionHelpButton
@@ -31,9 +33,108 @@ signal retry_requested
 var _combat_hud_visible: bool = false
 var _touch_available: bool = false
 var _stage_phase_requested_visible: bool = false
+var _ultimate_ready: bool = false
+var _ultimate_feedback_remaining: float = 0.0
+var _input_help_enabled := true
+var _vitals: VBoxContainer
+var _health_gauge: ProgressBar
+var _ultimate_gauge: ProgressBar
+var _ultimate_effect := "유파를 선택하면 해당 오의를 사용할 수 있습니다."
+var _skill_cooldowns: Label
+var _experience_gauge: ProgressBar
+
+func set_experience(level: int, current: int, required: int) -> void:
+	_experience_gauge.show()
+	_experience_gauge.max_value = maxi(required, 1)
+	_experience_gauge.value = current
+	_experience_gauge.get_node("Value").text = "Lv.%d · 경험치 %d / %d" % [level, current, required]
+
+func set_skill_cooldowns(rows: Array) -> void:
+	var lines := PackedStringArray()
+	for row in rows:
+		var timing := "%.1f초" % float(row.remaining) if float(row.remaining) > 0.05 else "준비"
+		if row.status == "근접 시 발동" or row.status == "귀인화 중 억제": timing = row.status
+		elif not str(row.status).is_empty(): timing += " · " + str(row.status)
+		lines.append("%s  %s" % [row.name, timing])
+	_skill_cooldowns.text = "\n".join(lines)
+
+func _make_gauge(node_name: String, color: Color) -> ProgressBar:
+	var bar := ProgressBar.new()
+	bar.name = node_name
+	bar.custom_minimum_size = Vector2(244, 26)
+	bar.show_percentage = false
+	bar.mouse_filter = Control.MOUSE_FILTER_PASS
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = color
+	var background := StyleBoxFlat.new()
+	background.bg_color = Color(0.025, 0.035, 0.06, 0.92)
+	bar.add_theme_stylebox_override("fill", fill)
+	bar.add_theme_stylebox_override("background", background)
+	_vitals.add_child(bar)
+	var label := Label.new()
+	label.name = "Value"
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.add_theme_color_override("font_outline_color", Color.BLACK)
+	label.add_theme_constant_override("outline_size", 4)
+	bar.add_child(label)
+	label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	return bar
+
+func set_ultimate_resource(_label: String, current: float, maximum: float) -> void:
+	_ultimate_gauge.max_value = maxf(maximum, 1.0)
+	_ultimate_gauge.value = clampf(current, 0.0, _ultimate_gauge.max_value)
+	_ultimate_gauge.get_node("Value").text = "오의 %.1f / %.0f" % [_ultimate_gauge.value, _ultimate_gauge.max_value]
+
+func set_school(school: StringName) -> void:
+	_ultimate_effect = {
+		&"bongma": "백귀진 · 영력 100 소모\n6초 동안 식신 2기를 추가 소환하고 식신 공격을 가속합니다.",
+		&"cheonsul": "오행폭주 · 반응 게이지 충전 후 발동\n바라보는 방향에 속성 브레스를 연속 방출합니다.\n전방 화면 안에 적이 있어야 발동하며 방향은 발동 시 고정됩니다.",
+		&"guiin": "귀인화 · 귀혈 충전 후 발동\n6초 동안 검 공격을 강화합니다.\n수리검과 자동 인술은 중단되고, 이동·무적 대시는 사용할 수 있습니다.",
+		&"heukyeong": "암영처형 · 처형 게이지 충전 후 발동\n가까운 위험 표적을 우선해 최대 3명에게 연속 피해를 줍니다.\n표식 대상은 추가 피해. 보스 즉사 기술이 아니며 대상이 없으면 소모하지 않습니다.",
+	}.get(school, "유파를 선택하면 해당 오의를 사용할 수 있습니다.")
+	_refresh_tooltips()
+
+func _refresh_tooltips() -> void:
+	var detail := _ultimate_effect + "\nE / 패드 Y / 클릭·터치로 발동. 일반 공격은 자동입니다."
+	ultimate_button.tooltip_text = detail
+	if is_instance_valid(_ultimate_gauge): _ultimate_gauge.tooltip_text = detail
+
+func set_input_help_enabled(enabled: bool) -> void:
+	_input_help_enabled = enabled
+	_render_ultimate_ready()
 
 
 func _ready() -> void:
+	_vitals = VBoxContainer.new()
+	_vitals.name = "PlayerVitals"
+	_vitals.position = Vector2(30, 74)
+	_vitals.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_vitals)
+	_health_gauge = _make_gauge("HealthGauge", Color(0.65, 0.08, 0.12))
+	_ultimate_gauge = _make_gauge("UltimateGauge", Color(0.42, 0.30, 0.12))
+	_experience_gauge = _make_gauge("ExperienceGauge", Color(0.10, 0.37, 0.62))
+	_experience_gauge.hide()
+	_skill_cooldowns = Label.new()
+	_skill_cooldowns.name = "SkillCooldowns"
+	_skill_cooldowns.add_theme_font_size_override("font_size", 14)
+	_skill_cooldowns.add_theme_color_override("font_outline_color", Color.BLACK)
+	_skill_cooldowns.add_theme_constant_override("outline_size", 4)
+	_vitals.add_child(_skill_cooldowns)
+	set_health(0, 100)
+	set_ultimate_resource("", 0, 100)
+	_vitals.hide()
+	dash_label.mouse_filter = Control.MOUSE_FILTER_PASS
+	dash_label.tooltip_text = "무적 대시 · Shift / Space / 패드 A\n이동 방향으로 빠르게 회피합니다. 대시 중 피해를 받지 않습니다.\n최대 2회 충전, 사용한 충전은 시간이 지나면 회복됩니다."
+	dash_button.tooltip_text = dash_label.tooltip_text
+	var help_theme := Theme.new()
+	var help_panel := StyleBoxFlat.new()
+	help_panel.bg_color = Color(0.025, 0.035, 0.06, 0.98)
+	help_panel.set_content_margin_all(12)
+	help_theme.set_stylebox("panel", "TooltipPanel", help_panel)
+	for control in [dash_label, dash_button, ultimate_button, _ultimate_gauge]:
+		control.theme = help_theme
 	_touch_available = DisplayServer.is_touchscreen_available()
 	combat_top_bar.hide()
 	stage_phase_label.hide()
@@ -46,6 +147,8 @@ func _ready() -> void:
 	tradition_help_button.pressed.connect(_on_tradition_help_pressed)
 	restart_button.pressed.connect(_on_restart_pressed)
 	retry_button.pressed.connect(_on_retry_pressed)
+	ultimate_button.pressed.connect(_on_ultimate_pressed)
+	set_ultimate_ready(false)
 	_connect_touch_button(move_up_button, &"move_up")
 	_connect_touch_button(move_down_button, &"move_down")
 	_connect_touch_button(move_left_button, &"move_left")
@@ -71,6 +174,7 @@ func set_stage_phase(stage_text: String, phase_text: String, visible: bool) -> v
 func show_combat_hud(enabled: bool) -> void:
 	_combat_hud_visible = enabled
 	combat_top_bar.visible = enabled
+	_vitals.visible = enabled
 	touch_controls.visible = enabled and _touch_available
 	stage_phase_label.visible = enabled and _stage_phase_requested_visible
 	if not enabled:
@@ -79,7 +183,43 @@ func show_combat_hud(enabled: bool) -> void:
 
 
 func combat_persistent_control_names() -> Array[String]:
-	return ["DashLabel", "PlayLabel", "SettingsButton"]
+	return ["DashLabel", "PlayLabel", "UltimateButton", "SettingsButton"]
+
+
+func _process(delta: float) -> void:
+	if _ultimate_feedback_remaining <= 0.0:
+		return
+	_ultimate_feedback_remaining = maxf(_ultimate_feedback_remaining - delta, 0.0)
+	if _ultimate_feedback_remaining <= 0.0:
+		_render_ultimate_ready()
+
+
+func set_ultimate_ready(ready: bool) -> void:
+	_ultimate_ready = ready
+	if _ultimate_feedback_remaining <= 0.0:
+		_render_ultimate_ready()
+
+
+func show_ultimate_feedback(result: StringName) -> void:
+	var messages := {
+		&"activated": "오의 · 발동",
+		&"charging": "오의 · 충전 부족",
+		&"no_target": "오의 · 대상 없음",
+		&"inactive": "오의 · 사용 불가",
+		&"unavailable": "오의 · 지금 사용 불가",
+	}
+	ultimate_button.text = messages.get(result, "오의 · 지금 사용 불가")
+	_ultimate_feedback_remaining = 1.4
+
+
+func _render_ultimate_ready() -> void:
+	ultimate_button.text = ("오의 · 준비" if _ultimate_ready else "오의 · 충전 중") + (" [E/Y]" if _input_help_enabled else "")
+	_refresh_tooltips()
+
+
+func _on_ultimate_pressed() -> void:
+	if _combat_hud_visible and not settings_panel.visible and not game_over_panel.visible and not get_tree().paused:
+		ultimate_requested.emit()
 
 
 func dash_text() -> String:
@@ -102,6 +242,22 @@ func close_settings() -> void:
 	settings_panel.hide()
 	if _combat_hud_visible and settings_button.visible:
 		settings_button.grab_focus()
+
+
+func _input(event: InputEvent) -> void:
+	var settings_shortcut: bool = (event is InputEventJoypadButton and event.button_index == JOY_BUTTON_START and event.pressed) \
+		or (event is InputEventKey and event.keycode == KEY_ESCAPE and event.pressed and not event.echo)
+	if settings_shortcut and _combat_hud_visible and not settings_panel.visible \
+		and not game_over_panel.visible and not get_tree().paused:
+		open_settings()
+		get_viewport().set_input_as_handled()
+		return
+	# Space / pad A also belong to ui_accept. During live combat they belong
+	# to dash, even when a HUD button retained keyboard focus. Input's action
+	# state remains available to PlayerController; only GUI propagation stops.
+	if _combat_hud_visible and not settings_panel.visible and not game_over_panel.visible \
+			and not get_tree().paused and event.is_action(&"dash"):
+		get_viewport().set_input_as_handled()
 
 
 func show_game_over(retry_available: bool = false, ninja_soul_balance: int = 0) -> void:
@@ -160,10 +316,10 @@ func _release_touch_actions() -> void:
 		Input.action_release(action_name)
 
 
-## Historical parser compatibility only. MainController has no live health or
-## score HUD consumers; normal combat continues to render only the compact bar.
-func set_health(_current: int, _maximum: int) -> void:
-	pass
+func set_health(current: int, maximum: int) -> void:
+	_health_gauge.max_value = maxi(maximum, 1)
+	_health_gauge.value = clampi(current, 0, maxi(maximum, 1))
+	_health_gauge.get_node("Value").text = "체력 %d / %d" % [int(_health_gauge.value), int(_health_gauge.max_value)]
 
 
 func set_score(_score: int, _kills: int) -> void:

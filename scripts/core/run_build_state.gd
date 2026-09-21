@@ -11,6 +11,7 @@ const MAX_OWNED_ITEMS := 6
 const MAX_DUPLICATE_ITEMS := 2
 const RunModifierSetScript = preload("res://scripts/data/run_modifier_set.gd")
 const RunEconomyPolicyScript = preload("res://scripts/data/run_economy_policy.gd")
+const EquipmentStateScript = preload("res://scripts/core/equipment_loadout_state.gd")
 
 var gold: int = 0
 var selected_school_id: StringName = &""
@@ -24,6 +25,22 @@ var _modifiers = RunModifierSetScript.new()
 var _economy_policy: Resource
 var _economy_rng: RandomNumberGenerator
 var _economy_receipts: Array[Dictionary] = []
+var _equipment = null
+
+
+# Preparation's outer transaction owns when this validated snapshot is committed.
+# No signal is emitted here before the rest of that transaction is applied.
+func commit_equipment_snapshot(snapshot: Dictionary) -> bool:
+	var candidate = EquipmentStateScript.new()
+	if not candidate.restore_snapshot(snapshot):
+		return false
+	_equipment = candidate
+	_recompute_modifiers()
+	return true
+
+
+func equipment_snapshot() -> Dictionary:
+	return {} if _equipment == null else _equipment.get_snapshot()
 
 
 func configure(
@@ -92,7 +109,7 @@ func get_economy_receipts() -> Array[Dictionary]:
 
 
 func get_checkpoint_snapshot() -> Dictionary:
-	return {
+	var snapshot := {
 		"gold": gold,
 		"selected_school_id": selected_school_id,
 		"owned_items": owned_items.duplicate(true),
@@ -100,9 +117,21 @@ func get_checkpoint_snapshot() -> Dictionary:
 		"committed_backpack_modifiers": get_committed_backpack_modifiers(),
 		"economy_receipts": get_economy_receipts(),
 	}
+	if _equipment != null:
+		snapshot["equipment"] = equipment_snapshot()
+	return snapshot
 
 
 func can_restore_from_checkpoint(snapshot: Dictionary) -> bool:
+	var receipts = snapshot.get("economy_receipts", [])
+	if not (receipts is Array): return false
+	for receipt in receipts:
+		if not (receipt is Dictionary): return false
+	if snapshot.has("equipment"):
+		if not (snapshot.equipment is Dictionary) or not EquipmentStateScript.is_valid_snapshot(snapshot.equipment):
+			return false
+	elif _equipment != null:
+		return false
 	var restored_gold := int(snapshot.get("gold", -1))
 	var restored_school_id := StringName(snapshot.get("selected_school_id", &""))
 	var restored_owned_items = snapshot.get("owned_items", null)
@@ -136,7 +165,10 @@ func restore_from_checkpoint(snapshot: Dictionary) -> bool:
 	owned_items = restored_owned_items.duplicate(true)
 	selected_fates = validated_fates
 	_committed_backpack_modifiers = restored_modifiers.copy_values()
-	_economy_receipts = Array(snapshot.get("economy_receipts", [])).duplicate(true)
+	_economy_receipts.assign(Array(snapshot.get("economy_receipts", [])).duplicate(true))
+	if snapshot.has("equipment"):
+		_equipment = EquipmentStateScript.new()
+		_equipment.restore_snapshot(snapshot.equipment)
 	_recompute_modifiers()
 	gold_changed.emit(gold)
 	inventory_changed.emit()
@@ -238,6 +270,13 @@ func _grant_economy_reward(source: StringName, amount: int) -> int:
 
 func _recompute_modifiers() -> void:
 	var modifiers = _committed_backpack_modifiers.copy_values()
+	if _equipment != null:
+		modifiers.damage_taken_pct -= _equipment.outfit_reduction()
+		for slot in EquipmentStateScript.SLOTS:
+			for school in _equipment.equipped_imbuements(StringName(slot)):
+				var power: Dictionary = EquipmentStateScript.GROWTH.power(StringName(school), StringName(slot))
+				if power.kind == "evasion": modifiers.evasion_chance += float(power.amount)
+				elif power.kind == "reduction": modifiers.damage_taken_pct -= float(power.amount)
 
 	for fate_id in selected_fates:
 		var fate = _fate_defs.get(fate_id)
@@ -250,7 +289,7 @@ func _recompute_modifiers() -> void:
 		modifiers.heukyeong_mark_duration_pct += modifiers.ultimate_charge_gain_pct
 		modifiers.ultimate_charge_gain_pct = 0.0
 
-	modifiers.evasion_chance = clampf(modifiers.evasion_chance, 0.0, 0.95)
+	modifiers.evasion_chance = clampf(modifiers.evasion_chance, 0.0, 0.40 if _equipment != null else 0.95)
 	modifiers.heukyeong_marked_crit_bonus = clampf(modifiers.heukyeong_marked_crit_bonus, 0.0, 1.0)
 	_modifiers = modifiers
 

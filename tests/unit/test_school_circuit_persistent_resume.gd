@@ -60,6 +60,32 @@ func test_persistent_resume_rejects_a_checkpoint_without_a_prior_committed_schoo
 	assert_eq(circuit.route_state.active_school_id(), &"")
 
 
+func test_carried_items_restore_as_inactive_and_reject_collision_before_route_mutation() -> void:
+	var circuit = _new_fixture().circuit
+	var route = ROUTE_STATE_SCRIPT.new()
+	assert_true(route.set_provisional_next_school(&"cheonsul"))
+	assert_true(route.commit_provisional_next_school())
+	assert_true(route.mark_active_school_cleared())
+	assert_true(route.set_provisional_next_school(&"bongma"))
+	assert_true(route.commit_provisional_next_school())
+	var backpack = BACKPACK_STATE_SCRIPT.new().create_starting_state()
+	var id: int = backpack.add_item(&"shuriken", Vector2i(1, 1))
+	var item = backpack.get_item(id)
+	var snapshot := {"active_school_id": &"bongma", "committed_backpack_state": backpack, "carried_buffer": [item]}
+	assert_false(circuit.restore_from_persistent_checkpoint(route.get_route_snapshot(), snapshot))
+	assert_eq(circuit.route_state.active_school_id(), &"")
+	backpack.remove_item(id)
+	assert_true(circuit.restore_from_persistent_checkpoint(route.get_route_snapshot(), snapshot))
+	assert_eq(circuit.get_checkpoint_snapshot().carried_buffer[0].instance_id, id)
+	assert_eq(circuit.get_checkpoint_snapshot().committed_backpack_state.items.size(), 0)
+	assert_true(circuit.sync_elapsed(180.0))
+	assert_true(circuit.mark_elite_defeated())
+	assert_true(circuit.recover_trace())
+	assert_true(circuit.sync_elapsed(270.0))
+	assert_true(circuit.mark_boss_defeated())
+	assert_eq(circuit.workbench_snapshot().buffer[0].instance_id, id)
+
+
 func _new_fixture() -> Dictionary:
 	var build_state = BUILD_STATE_SCRIPT.new()
 	add_child_autofree(build_state)

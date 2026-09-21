@@ -3,6 +3,15 @@ extends GutTest
 
 const TITLE_SCREEN := "res://scenes/ui/title_screen.tscn"
 
+func test_title_modal_controls_accept_input_in_running_and_paused_tree() -> void:
+	var title = add_child_autofree(load(TITLE_SCREEN).instantiate())
+	var original_pause := get_tree().paused
+	for paused in [false, true]:
+		get_tree().paused = paused
+		for panel in [title.guide_panel, title.settings_panel, title.awakening_panel, title.codex_panel, title.new_game_confirm_panel, title.quit_confirm_panel]:
+			assert_true(panel.can_process(), "%s must accept title input paused=%s" % [panel.name, paused])
+	get_tree().paused = original_pause
+
 
 func test_title_exposes_all_requested_actions_and_disables_continue_without_a_valid_checkpoint() -> void:
 	var title := (load(TITLE_SCREEN) as PackedScene).instantiate()

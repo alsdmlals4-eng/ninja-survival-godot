@@ -5,17 +5,25 @@ class_name PlayerVisualController
 enum Pose {
 	MOVE,
 	HIT,
+	IDLE,
 }
 
 @export var move_texture: Texture2D
 @export var hit_texture: Texture2D
+@export var idle_texture: Texture2D
+@export var idle_scale := Vector2(0.04, 0.04)
 @export var hit_hold_seconds: float = 0.16
 
 var _pose: Pose = Pose.MOVE
 var _remaining_seconds: float = 0.0
+var _neutral_scale: Vector2
+var _neutral_position: Vector2
+var _idle_time := 0.0
 
 
 func _ready() -> void:
+	_neutral_scale = scale
+	_neutral_position = position
 	_show_move()
 	var player := get_parent() as PlayerController
 	if player != null:
@@ -24,16 +32,37 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	advance_pose(delta)
+	var player := get_parent() as PlayerController
+	if player == null: return
+	if player.is_dead() or _pose == Pose.HIT or player.velocity.length_squared() > 1.0:
+		if _pose == Pose.IDLE:
+			_show_move()
+		_idle_time = 0.0
+		scale = _neutral_scale
+		position = _neutral_position
+		return
+	_idle_time = fmod(_idle_time + maxf(delta, 0.0), 2.4)
+	var breath := sin(_idle_time / 2.4 * TAU) * 0.03
+	var base_scale := _neutral_scale
+	if idle_texture != null:
+		_pose = Pose.IDLE
+		texture = idle_texture
+		base_scale = idle_scale
+	scale = base_scale * Vector2(1.0 - breath * 0.3, 1.0 + breath)
+	# Keep the ground contact at the authored +24px foot pivot. No body/weapon motion.
+	position = _neutral_position - Vector2(0, 24.0 * breath)
 
 
 func show_hit() -> void:
+	scale = _neutral_scale
+	position = _neutral_position
 	_pose = Pose.HIT
 	_remaining_seconds = maxf(hit_hold_seconds, 0.0)
 	texture = hit_texture
 
 
 func advance_pose(delta: float) -> void:
-	if _pose == Pose.MOVE or delta <= 0.0:
+	if _pose != Pose.HIT or delta <= 0.0:
 		return
 	_remaining_seconds = maxf(_remaining_seconds - delta, 0.0)
 	if _remaining_seconds <= 0.0:

@@ -1,5 +1,7 @@
 extends CanvasLayer
 class_name RestFlowUI
+@export var inventory_atlas: Texture2D
+const INVENTORY_ICONS = preload("res://scripts/ui/inventory_icon_catalog.gd")
 
 const WORKBENCH_SCHOOL_DETAILS := {
 	&"bongma": {
@@ -33,12 +35,16 @@ const WORKBENCH_SCHOOL_DETAILS := {
 }
 
 const WORKBENCH_FAILURE_TEXT := {
+	&"trace_pending": "회수한 흔적의 흡수 또는 장비 부여를 먼저 선택하세요.",
+	&"reload_required": "저장 상태 다시 읽기를 눌러 완료된 거래를 확인하세요.",
+	&"charge_changed": "저장된 오의 충전 상태를 다시 불러와야 합니다.",
 	&"missing_session": "작업대 세션을 다시 열어야 합니다.",
 	&"already_committed": "이 작업대는 이미 확정되었습니다.",
 	&"commit_in_progress": "작업대 확정을 처리 중입니다.",
 	&"boss_reward_pending": "보스 보상을 먼저 선택하세요.",
 	&"chest_pending": "남은 상자를 먼저 정리하세요.",
 	&"buffer_not_empty": "작업 버퍼의 아이템을 모두 배치하세요.",
+	&"invalid_carried_buffer": "보관 아이템의 상태가 유효하지 않습니다. 출전할 수 없습니다.",
 	&"pending_bag": "대기 중인 가방을 먼저 배치하세요.",
 	&"item_preview_pending": "아이템 미리보기를 확정하거나 취소하세요.",
 	&"whole_layout_mode_active": "전체 배치 이동 모드를 종료하세요.",
@@ -78,6 +84,9 @@ signal workbench_route_selected_requested(school_id: StringName)
 signal workbench_boss_reward_selected(index: int)
 signal workbench_chest_open_requested
 signal workbench_bag_purchase_requested
+signal workbench_shop_buy_requested(index: int)
+signal workbench_shop_sell_requested(instance_id: int)
+signal workbench_shop_reroll_requested
 signal workbench_bag_placement_requested(origin: Vector2i, rotation_quarters: int)
 signal workbench_buffer_placement_requested(buffer_index: int, origin: Vector2i, rotation_quarters: int)
 signal workbench_existing_item_move_requested(instance_id: int, origin: Vector2i, rotation_quarters: int)
@@ -131,6 +140,9 @@ signal restart_requested
 @onready var workbench_undo_button: Button = $Panel/Margin/Content/WorkbenchView/UndoButton
 @onready var workbench_commit_status_label: Label = $Panel/Margin/Content/WorkbenchView/CommitStatusLabel
 @onready var workbench_commit_button: Button = $Panel/Margin/Content/WorkbenchView/CommitButton
+@onready var workbench_shop_offers: Container = $Panel/Margin/Content/WorkbenchView/ShopOffers
+@onready var workbench_shop_reroll_button: Button = $Panel/Margin/Content/WorkbenchView/ShopRerollButton
+@onready var workbench_buffer_sell_button: Button = $Panel/Margin/Content/WorkbenchView/BufferSellButton
 @onready var preview_summary_label: Label = $Panel/Margin/Content/PreviewView/SummaryLabel
 @onready var preview_start_button: Button = $Panel/Margin/Content/PreviewView/StartButton
 @onready var complete_summary_label: Label = $Panel/Margin/Content/CompleteView/SummaryLabel
@@ -156,6 +168,11 @@ func _ready() -> void:
 	workbench_bag_offer_button.pressed.connect(_on_workbench_bag_offer_pressed)
 	workbench_pending_bag_button.pressed.connect(_on_workbench_pending_bag_pressed)
 	workbench_buffer_rotate_button.pressed.connect(_on_workbench_buffer_rotate_pressed)
+	workbench_buffer_sell_button.pressed.connect(_on_workbench_buffer_sell_pressed)
+	workbench_shop_reroll_button.pressed.connect(func():
+		if not workbench_shop_reroll_button.disabled:
+			workbench_shop_reroll_requested.emit()
+	)
 	workbench_combination_cancel_button.pressed.connect(_on_workbench_combination_cancel_pressed)
 	workbench_undo_button.pressed.connect(_on_workbench_undo_pressed)
 	preview_start_button.pressed.connect(_on_preview_start_pressed)
@@ -247,8 +264,17 @@ func show_workbench(
 ) -> void:
 	_show_only(workbench_view)
 	var provisional_school_id := StringName(route_snapshot.get("provisional_school_id", &""))
-	var has_route := _render_workbench_routes(route_snapshot, provisional_school_id)
+	var has_route := _render_workbench_routes(route_snapshot, provisional_school_id, not bool(workbench_context.get("external_focus_owner", false)))
+	var final_preparation := bool(route_snapshot.get("final_binding_eligible", false))
+	get_node("Panel/Margin/Content/WorkbenchView/TitleLabel").text = (
+		"최종 준비 — 백팩과 운명을 확정하면 재앙 보스에 도전합니다."
+		if final_preparation else "작업대 — 다음 전장은 출전 확정 전까지 임시 선택입니다."
+	)
+	if final_preparation:
+		has_route = true
+	workbench_commit_button.text = "최종전 출전 확정" if final_preparation else "출전 확정"
 	var has_fate := _render_workbench_fates(fate_candidate_ids, fate_definitions, pending_fate_id)
+	if final_preparation and bool(workbench_context.get("allow_final_fate_skip", false)): has_fate = true
 	_render_workbench_reward_status(workbench_context)
 	_render_workbench_spatial_inputs(workbench_context)
 	_render_workbench_commit(has_route, has_fate, readiness_failures)
@@ -315,7 +341,7 @@ func _string_array(values: Array) -> Array[String]:
 	return result
 
 
-func _render_workbench_routes(route_snapshot: Dictionary, provisional_school_id: StringName) -> bool:
+func _render_workbench_routes(route_snapshot: Dictionary, provisional_school_id: StringName, automatic_focus := true) -> bool:
 	_clear_children(workbench_route_cards)
 	var rendered_provisional := false
 	var focus_target: Button = null
@@ -346,9 +372,16 @@ func _render_workbench_routes(route_snapshot: Dictionary, provisional_school_id:
 		button.text = "\n".join(lines)
 		button.pressed.connect(_on_workbench_route_pressed.bind(school_id))
 		workbench_route_cards.add_child(button)
-	if focus_target != null:
-		focus_target.call_deferred("grab_focus")
+	if focus_target != null and automatic_focus:
+		_focus_if_current.call_deferred(focus_target.get_instance_id())
 	return rendered_provisional
+
+
+func _focus_if_current(target_id: int) -> void:
+	# A redraw can free the card before this deferred call is dispatched.
+	var target := instance_from_id(target_id)
+	if target is Control and target.is_inside_tree() and not target.is_queued_for_deletion() and target.is_visible_in_tree():
+		target.grab_focus()
 
 
 func _render_workbench_fates(
@@ -425,6 +458,7 @@ func _render_workbench_spatial_inputs(workbench_context: Dictionary) -> void:
 	_render_workbench_boss_rewards(workbench_context)
 	_render_workbench_chest(workbench_context)
 	_render_workbench_gold(workbench_context)
+	_render_workbench_shop(workbench_context)
 	_render_workbench_bag_offer(workbench_context)
 	_render_workbench_buffer()
 	_render_workbench_board(workbench_context)
@@ -456,11 +490,34 @@ func _render_workbench_gold(workbench_context: Dictionary) -> void:
 	workbench_gold_label.text = "보유 G %dG" % maxi(int(workbench_context.get("gold", 0)), 0)
 
 
+func _render_workbench_shop(context: Dictionary) -> void:
+	_clear_children(workbench_shop_offers)
+	var offers: Array = context.get("shop_offers", [])
+	var gold := int(context.get("gold", 0))
+	for index in range(offers.size()):
+		var offer: Dictionary = offers[index]
+		var button := Button.new()
+		var price := int(offer.get("price", 0))
+		button.text = "구매: %s · %dG" % [str(offer.get("display_name", "아이템")), price]
+		button.tooltip_text = "보관함으로 받습니다. 전투 효과는 백팩 배치 후 출전 확정 시 반영됩니다."
+		button.disabled = gold < price or _workbench_buffer.size() >= 6 or not _pending_combination.is_empty()
+		button.pressed.connect(_on_workbench_shop_offer_pressed.bind(index))
+		workbench_shop_offers.add_child(button)
+	var cost := int(context.get("shop_reroll_cost", 0))
+	workbench_shop_reroll_button.visible = not offers.is_empty()
+	workbench_shop_reroll_button.text = "상점 새로고침 · %dG" % cost
+	workbench_shop_reroll_button.disabled = offers.is_empty() or gold < cost or not _pending_combination.is_empty()
+
+
 func _render_workbench_bag_offer(workbench_context: Dictionary) -> void:
 	var bag_offer: Dictionary = workbench_context.get("bag_offer", {})
 	var display_name := str(bag_offer.get("display_name", "가방 없음"))
 	var price := maxi(int(bag_offer.get("price", 0)), 0)
 	workbench_bag_offer_button.text = "가방 구매: %s · %dG" % [display_name, price]
+	workbench_bag_offer_button.icon = INVENTORY_ICONS.icon(inventory_atlas, &"bag")
+	workbench_bag_offer_button.add_theme_constant_override("icon_max_width", 36)
+	workbench_pending_bag_button.icon = INVENTORY_ICONS.icon(inventory_atlas, &"bag")
+	workbench_pending_bag_button.add_theme_constant_override("icon_max_width", 36)
 	workbench_bag_offer_button.tooltip_text = "가방을 작업대 대기 상태로 받고, 6×6 보드의 시작 칸을 선택해 배치합니다."
 	var gold := maxi(int(workbench_context.get("gold", 0)), 0)
 	workbench_bag_offer_button.disabled = bag_offer.is_empty() or not _workbench_pending_bag.is_empty() or not _pending_combination.is_empty() or gold < price
@@ -478,6 +535,9 @@ func _render_workbench_buffer() -> void:
 		var button := Button.new()
 		var item_name := str(item.get("display_name", item.get("definition_id", "아이템")))
 		button.text = item_name
+		button.icon = INVENTORY_ICONS.icon(inventory_atlas, StringName(item.get("definition_id", "")))
+		button.expand_icon = true
+		button.add_theme_constant_override("icon_max_width", 40)
 		button.tooltip_text = "배치할 아이템을 선택합니다. 회전 후 6×6 보드의 칸을 누르세요."
 		button.disabled = not _pending_combination.is_empty()
 		button.pressed.connect(_on_workbench_buffer_item_pressed.bind(index))
@@ -510,6 +570,9 @@ func _render_workbench_board(workbench_context: Dictionary = {}) -> void:
 			if not board_item.is_empty():
 				button.text = str(board_item.get("display_name", "아이템"))
 				button.tooltip_text = "%s — 눌러서 이동·회전" % button.text
+				button.icon = INVENTORY_ICONS.icon(inventory_atlas, StringName(board_item.get("definition_id", "")))
+				button.expand_icon = true
+				button.add_theme_constant_override("icon_max_width", 32)
 			elif is_active:
 				button.text = "□"
 				button.tooltip_text = "활성 칸 %d, %d" % [x + 1, y + 1]
@@ -548,6 +611,12 @@ func _render_workbench_combinations(workbench_context: Dictionary) -> void:
 
 
 func _update_workbench_buffer_selection() -> void:
+	workbench_buffer_rotate_button.disabled = _selected_buffer_index < 0 and not _selected_pending_bag and _selected_board_item_id <= 0 and _pending_combination.is_empty()
+	workbench_buffer_sell_button.disabled = _selected_buffer_index < 0 or _selected_buffer_index >= _workbench_buffer.size() or not _pending_combination.is_empty()
+	workbench_buffer_sell_button.text = "판매할 보관 아이템을 선택하세요"
+	if not workbench_buffer_sell_button.disabled:
+		var selected: Dictionary = _workbench_buffer[_selected_buffer_index]
+		workbench_buffer_sell_button.text = "%s 판매 · +%dG" % [str(selected.get("display_name", "아이템")), int(selected.get("sell_price", 0))]
 	for index in range(workbench_buffer_items.get_child_count()):
 		var button := workbench_buffer_items.get_child(index) as Button
 		if button == null:
@@ -613,6 +682,23 @@ func _on_workbench_buffer_rotate_pressed() -> void:
 	_update_workbench_buffer_selection()
 
 
+func _on_workbench_shop_offer_pressed(index: int) -> void:
+	if index < 0 or index >= workbench_shop_offers.get_child_count():
+		return
+	var button := workbench_shop_offers.get_child(index) as Button
+	if button != null and not button.disabled:
+		workbench_shop_buy_requested.emit(index)
+
+
+func _on_workbench_buffer_sell_pressed() -> void:
+	if workbench_buffer_sell_button.disabled or _selected_buffer_index < 0 or _selected_buffer_index >= _workbench_buffer.size():
+		return
+	var instance_id := int(_workbench_buffer[_selected_buffer_index].get("instance_id", 0))
+	_selected_buffer_index = -1
+	workbench_buffer_sell_button.disabled = true
+	workbench_shop_sell_requested.emit(instance_id)
+
+
 func _on_workbench_board_cell_pressed(origin: Vector2i) -> void:
 	if not _pending_combination.is_empty():
 		workbench_combination_commit_requested.emit(origin, _selected_buffer_rotation)
@@ -659,7 +745,10 @@ func _on_workbench_combination_cancel_pressed() -> void:
 
 func _clear_children(container: Node) -> void:
 	for child in container.get_children():
-		child.free()
+		if child is BaseButton:
+			child.disabled = true
+		container.remove_child(child)
+		child.queue_free()
 
 
 func _on_result_continue_pressed() -> void:

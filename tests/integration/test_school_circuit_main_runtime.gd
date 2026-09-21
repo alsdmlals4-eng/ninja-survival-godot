@@ -16,6 +16,7 @@ const EXPECTED_STARTER_NINJUTSU_IDS := {
 	&"heukyeong": &"heukyeong_shadow_needle",
 }
 const RETRY_WALLET_PATH := "user://gut_school_circuit_retry_wallet.json"
+const RESUME_PATH := "user://gut_school_circuit_resume.json"
 
 
 func before_each() -> void:
@@ -24,6 +25,110 @@ func before_each() -> void:
 
 func after_each() -> void:
 	_remove_retry_wallet_storage()
+
+
+func test_main_leaving_combat_cleans_selected_support() -> void:
+	var main = _new_main()
+	var loadout = main.ninjutsu_loadout
+	assert_true(loadout.begin_start_draft(&"guiin", 12))
+	for index in range(2):
+		loadout.choose_start_draft(loadout.start_draft_snapshot().options[0])
+	loadout.commit_drafted_start(loadout.start_draft_snapshot().picks)
+	loadout.commit_placed_ninjutsu([&"guiin_demon_step"], [&"guiin"])
+	assert_true(main.school_host.select_school(&"guiin"))
+	main.ninjutsu_auto_controller.tick_auto_cast(5.0)
+	assert_true(main._start_school_circuit(&"guiin"))
+	main._set_combat_enabled(true)
+	main.player.request_dash()
+	main.player._advance_dash_state(0.2)
+	assert_almost_eq(main.player.move_speed, 240.0, 0.001, "New Stage starts with the full book cooldown.")
+	main.ninjutsu_auto_controller.tick_auto_cast(5.0)
+	main.player.request_dash()
+	main.player._advance_dash_state(0.2)
+	assert_almost_eq(main.player.move_speed, 276.0, 0.001)
+	main._set_combat_enabled(false)
+	assert_almost_eq(main.player.move_speed, 240.0, 0.001, "Preparation must not retain a combat movement boon.")
+	await get_tree().process_frame
+
+
+func test_preparation_shop_buttons_buy_sell_and_reroll_through_spatial_owner() -> void:
+	var main: Node = _new_main()
+	main._on_school_selected(&"cheonsul")
+	var circuit = main.school_circuit
+	assert_true(_clear_active_school_to_workbench(main, circuit))
+	main.run_build_state.grant_gold(200)
+	main._render_school_circuit_workbench()
+	var ui = main.get_node("RestFlowUI")
+	var offers = ui.get_node_or_null("Panel/Margin/Content/WorkbenchView/ShopOffers")
+	assert_not_null(offers, "Actual preparation needs spatial shop controls, not the inactive legacy ShopView.")
+	if offers == null:
+		return
+	assert_eq(offers.get_child_count(), 3)
+	var first: Dictionary = circuit.workbench_snapshot().shop_offers[0]
+	var gold: int = main.run_build_state.gold
+	offers.get_child(0).pressed.emit()
+	assert_eq(main.run_build_state.gold, gold - int(first.price))
+	assert_eq(circuit.workbench_snapshot().buffer.size(), 1)
+	var held: Dictionary = circuit.workbench_snapshot().buffer[0]
+	ui.workbench_buffer_items.get_child(0).pressed.emit()
+	assert_false(ui.workbench_buffer_rotate_button.disabled, "Selecting a held item must enable the real rotation button.")
+	ui.workbench_buffer_rotate_button.pressed.emit()
+	assert_eq(ui._selected_buffer_rotation, 1)
+	var sale = ui.get_node("Panel/Margin/Content/WorkbenchView/BufferSellButton")
+	assert_false(sale.disabled)
+	sale.pressed.emit()
+	assert_eq(circuit.workbench_snapshot().buffer.size(), 0)
+	assert_eq(main.run_build_state.gold, gold - int(first.price) + int(held.sell_price))
+	var after_sale: int = main.run_build_state.gold
+	sale.pressed.emit()
+	assert_eq(main.run_build_state.gold, after_sale, "Stale selection must not sell another item or pay twice.")
+	var reroll = ui.get_node("Panel/Margin/Content/WorkbenchView/ShopRerollButton")
+	reroll.pressed.emit()
+	assert_eq(main.run_build_state.gold, after_sale - 5)
+	assert_eq(circuit.workbench_snapshot().shop_reroll_cost, 10)
+	assert_eq(circuit._committed_backpack_state.items.size(), 0)
+	var filled: Array = circuit._backpack_session._acquire_items_to_buffer([&"shuriken", &"shuriken", &"shuriken", &"shuriken", &"shuriken", &"shuriken"])
+	assert_eq(filled.size(), 6)
+	main._render_school_circuit_workbench()
+	assert_true(ui.workbench_shop_offers.get_child(0).disabled)
+	var full_gold: int = main.run_build_state.gold
+	ui.workbench_shop_buy_requested.emit(0)
+	assert_eq(main.run_build_state.gold, full_gold)
+	assert_false(circuit.open_chest())
+	for _index in range(2):
+		ui.workbench_buffer_items.get_child(0).pressed.emit()
+		sale.pressed.emit()
+	assert_true(circuit.open_chest(), "Explicit sale frees capacity without discarding rewards automatically.")
+	assert_eq(circuit.workbench_snapshot().buffer.size(), 6)
+
+
+func test_main_departure_saves_unplaced_rewards_and_next_preparation_keeps_them() -> void:
+	var main: Node = _new_main()
+	main._on_school_selected(&"cheonsul")
+	var circuit = main.school_circuit
+	assert_true(_clear_active_school_to_workbench(main, circuit))
+	assert_true(circuit.choose_boss_reward(0))
+	assert_true(circuit.open_chest())
+	var held: Array = circuit.workbench_snapshot().buffer
+	assert_gt(held.size(), 0)
+	assert_true(circuit.choose_fate(circuit.workbench_snapshot().fate_candidate_ids[0]))
+	assert_true(circuit.choose_next_route(&"bongma"))
+	main._render_school_circuit_workbench()
+	assert_false(main.get_node("RestFlowUI").workbench_commit_button.disabled)
+	main.get_node("RestFlowUI").workbench_commit_requested.emit()
+	assert_eq(circuit.route_state.active_school_id(), &"bongma")
+	assert_eq(circuit._committed_backpack_state.items.size(), 0)
+	var saved: Dictionary = main.run_resume_store.load_checkpoint()
+	assert_true(saved.get("ok", false))
+	if not saved.get("ok", false):
+		return
+	var restored: Array = saved.checkpoint.circuit.carried_buffer
+	assert_eq(restored.size(), held.size())
+	for index in range(held.size()):
+		assert_eq(restored[index].instance_id, held[index].instance_id)
+	assert_true(_clear_active_school_to_workbench(main, circuit))
+	assert_eq(circuit.workbench_snapshot().buffer, held)
+	assert_eq(circuit._backpack_session.state.bags.size(), 1, "No test-only capacity expansion is used here.")
 
 
 func test_each_school_selection_starts_the_same_circuit_runtime_with_its_own_encounter_identity() -> void:
@@ -207,6 +312,7 @@ func test_checkpoint_retry_spends_one_soul_once_and_restores_the_next_school_bas
 	main.get_node("RunBuildState").grant_gold(9)
 	var player: PlayerController = main.get_node("Player")
 	player.set_rng_seed(178) # First roll is 0.99936014, safely above the 0.95 evasion ceiling.
+	player.advance_damage_protection(1.01)
 	assert_gt(player.take_damage(99999), 0, "The deterministic lethal hit must not be evaded.")
 	assert_true(main.game_over)
 	assert_true(main.get_node("HUD/GameOverPanel/RetryButton").visible)
@@ -218,9 +324,70 @@ func test_checkpoint_retry_spends_one_soul_once_and_restores_the_next_school_bas
 	assert_eq(circuit.get_snapshot().get("elapsed_seconds"), 0.0)
 	assert_false(main.get_node("HUD/GameOverPanel").visible)
 	player.set_rng_seed(178)
+	player.advance_damage_protection(1.01)
 	assert_gt(player.take_damage(99999), 0, "The post-retry lethal hit must not be evaded.")
 	assert_true(main.game_over)
 	assert_false(main.get_node("HUD/GameOverPanel/RetryButton").visible, "A Run must not offer a second paid retry.")
+
+
+func test_second_school_can_clear_without_unlocking_foreign_origin_scrolls() -> void:
+	var main: Node = _new_main()
+	main._on_school_selected(&"cheonsul")
+	var circuit = main.school_circuit
+	assert_true(_clear_active_school_to_workbench(main, circuit))
+	assert_true(circuit.choose_boss_reward(0))
+	assert_true(circuit.open_chest())
+	assert_true(_place_every_buffer_item(circuit))
+	assert_true(circuit.choose_fate(circuit.workbench_snapshot()["fate_candidate_ids"][0]))
+	assert_true(circuit.choose_next_route(&"bongma"))
+	main.get_node("RestFlowUI").workbench_commit_requested.emit()
+	var origin_spells: Array = main.ninjutsu_loadout.active_spell_ids().duplicate()
+	assert_eq(circuit.route_state.active_school_id(), &"bongma")
+	assert_true(main.get_node("HUD/CombatTopBar/Row/StagePhaseLabel").text.contains("봉마류"), "HUD describes the current battlefield, not the player's origin.")
+	assert_true(_clear_active_school_to_workbench(main, circuit), "Foreign battlefield progress must not require an origin-only scroll grant.")
+	assert_eq(main.run_build_state.selected_school_id, &"cheonsul", "Battlefield theme must not replace the player's origin modifier identity.")
+	assert_true(circuit.choose_boss_reward(0), "Foreign boss spatial reward must remain available.")
+	assert_eq(main.ninjutsu_loadout.active_spell_ids(), origin_spells)
+	assert_true(main.ninjutsu_loadout.pending_spell_ids().is_empty())
+
+
+func test_four_battlefields_prepare_final_binding_without_a_fifth_route() -> void:
+	var main: Node = _new_main()
+	main._on_title_new_game_requested()
+	main.school_selection._choose(&"cheonsul")
+	var circuit = main.school_circuit
+	circuit._rng.seed = 178
+	var order: Array[StringName] = [&"cheonsul", &"bongma", &"guiin", &"heukyeong"]
+	for index in range(order.size()):
+		assert_true(_clear_active_school_to_workbench(main, circuit))
+		assert_true(circuit.choose_boss_reward(0))
+		assert_true(circuit.open_chest())
+		assert_true(_place_every_buffer_item(circuit))
+		assert_true(circuit.choose_fate(circuit.workbench_snapshot()["fate_candidate_ids"][0]))
+		if index < 3:
+			assert_true(circuit.choose_next_route(order[index + 1]))
+			main.get_node("RestFlowUI").workbench_commit_requested.emit()
+	assert_eq(circuit.route_state.clear_order(), order)
+	assert_true(circuit.route_state.is_final_binding_eligible())
+	assert_true(circuit.workbench_snapshot()["readiness_failures"].is_empty(), "Final preparation must not require an impossible fifth-school route.")
+	main._render_school_circuit_workbench()
+	assert_false(main.get_node("RestFlowUI").workbench_commit_button.disabled)
+	main.ninjutsu_auto_controller._remaining_by_spell[&"cheonsul_wind_pillar"] = 0.01
+	main.get_node("RestFlowUI").workbench_commit_requested.emit()
+	assert_false(main.ninjutsu_auto_controller._remaining_by_spell.has(&"cheonsul_wind_pillar"), "Successful final battlefield entry resets all per-book clocks.")
+	assert_false(circuit.commit_workbench(), "Final build may commit only once.")
+	assert_eq(circuit.route_state.stage_index(), 4)
+	assert_eq(circuit.route_state.active_school_id(), &"")
+	var final_boss = _role_enemy(main, &"final_boss")
+	assert_not_null(final_boss, "Final preparation must launch an actual enemy in Main.")
+	if final_boss == null:
+		return
+	assert_eq(final_boss.theme_school_id(), order[0])
+	assert_true(main._combat_enabled)
+	final_boss.take_damage(99999)
+	assert_false(main._combat_enabled)
+	assert_true(main.get_node("RestFlowUI").complete_view.visible)
+	assert_true(main.get_node("RestFlowUI").complete_summary_label.text.contains("최종 재앙"))
 
 
 func test_invalid_checkpoint_never_debits_a_soul_or_consumes_the_retry() -> void:
@@ -240,6 +407,7 @@ func test_invalid_checkpoint_never_debits_a_soul_or_consumes_the_retry() -> void
 	main.run_checkpoint._snapshot["build"] = {}
 	var player: PlayerController = main.get_node("Player")
 	player.set_rng_seed(178) # Keep the invalid-checkpoint path independent of build-provided evasion.
+	player.advance_damage_protection(1.01)
 	assert_gt(player.take_damage(99999), 0, "The deterministic lethal hit must not be evaded.")
 	assert_true(main.game_over)
 	main.get_node("HUD").retry_requested.emit()
@@ -250,6 +418,14 @@ func test_invalid_checkpoint_never_debits_a_soul_or_consumes_the_retry() -> void
 
 func _new_main():
 	var main = MAIN_SCENE.instantiate()
+	var fields: Array[StringName] = []
+	for field in main.get_property_list():
+		fields.append(StringName(field["name"]))
+	assert_true(fields.has(&"wallet_storage_path"), "Test storage must be injectable before Main ready writes a wallet.")
+	if fields.has(&"wallet_storage_path"):
+		main.wallet_storage_path = RETRY_WALLET_PATH + ".initial"
+		main.resume_storage_path = RESUME_PATH
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	return main
 
@@ -346,5 +522,10 @@ func _first_legal_item_move(circuit, item_id: int, source_origin: Vector2i) -> D
 
 
 func _remove_retry_wallet_storage() -> void:
+	if FileAccess.file_exists(RETRY_WALLET_PATH + ".initial"):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(RETRY_WALLET_PATH + ".initial"))
 	if FileAccess.file_exists(RETRY_WALLET_PATH):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(RETRY_WALLET_PATH))
+	for suffix in ["", ".tmp", ".previous"]:
+		if FileAccess.file_exists(RESUME_PATH + suffix):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(RESUME_PATH + suffix))

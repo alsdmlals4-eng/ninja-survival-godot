@@ -7,6 +7,17 @@ const ENEMY_PATH := "res://scripts/enemies/enemy_chaser.gd"
 const TRACKER_PATH := "res://scripts/combat/combat_contribution_tracker.gd"
 const RESOLVER_PATH := "res://scripts/combat/combat_resolver.gd"
 const MODIFIER_PATH := "res://scripts/data/run_modifier_set.gd"
+var _previous_viewport_size: Vector2i
+
+
+func before_each() -> void:
+	_previous_viewport_size = get_tree().root.size
+	get_tree().root.size = Vector2i(1152, 648)
+
+
+func after_each() -> void:
+	get_tree().paused = false
+	get_tree().root.size = _previous_viewport_size
 
 
 class ImmuneEnemy:
@@ -23,6 +34,86 @@ class ImmuneEnemy:
 
 	func is_dead() -> bool:
 		return false
+
+
+func test_execution_needs_no_marks_prioritizes_boss_elite_then_nearest_and_caps_three() -> void:
+	var runtime = _make_runtime()
+	runtime._attack_remaining = 999.0
+	var normal = _enemy(runtime.world, Vector2(10, 0), 1000)
+	var extra = _enemy(runtime.world, Vector2(20, 0), 1000)
+	var elite = _enemy(runtime.world, Vector2(100, 0), 1000)
+	elite.set_meta(&"school_circuit_role", &"elite")
+	var boss = _enemy(runtime.world, Vector2(300, 0), 1000)
+	boss.set_meta(&"school_circuit_role", &"boss")
+	runtime._process(24.0)
+	assert_true(runtime.is_ultimate_ready())
+	assert_true(runtime.try_use_ultimate())
+	assert_eq(boss.health, 974)
+	assert_eq(elite.health, 982)
+	assert_eq(normal.health, 982)
+	assert_eq(extra.health, 1000)
+	assert_false(runtime.is_ultimate_ready())
+	assert_false(runtime.try_use_ultimate())
+
+
+func test_execution_charge_ignores_empty_far_pause_and_death() -> void:
+	var runtime = _make_runtime()
+	runtime._attack_remaining = 999.0
+	runtime._process(24.0)
+	assert_false(runtime.is_ultimate_ready())
+	var enemy = _enemy(runtime.world, Vector2(481, 0), 1000)
+	runtime._process(24.0)
+	assert_false(runtime.is_ultimate_ready())
+	enemy.position.x = 100
+	get_tree().paused = true
+	runtime._process(24.0)
+	get_tree().paused = false
+	assert_false(runtime.is_ultimate_ready())
+	runtime._process(24.0)
+	assert_true(runtime.is_ultimate_ready())
+	enemy.hide()
+	assert_false(runtime.try_use_ultimate())
+	enemy.show()
+	runtime.player.take_damage(99999)
+	assert_false(runtime.try_use_ultimate())
+
+
+func test_owned_marked_direct_damage_bonus_excludes_dot_and_ultimate_and_survives_lethal_cleanup() -> void:
+	var runtime = _make_runtime()
+	var systems := _configure_run_systems(runtime)
+	runtime._attack_remaining = 999.0
+	var enemy = _enemy(runtime.world, Vector2(100, 0), 1000)
+	runtime.apply_needle_hit(enemy, false)
+	assert_eq(runtime.execution_charge, 0.0, "A mark created by this hit is not a preexisting mark.")
+	systems.resolver.deal_school_damage(enemy, 2.0, &"normal")
+	systems.resolver.deal_school_damage(enemy, 8.0, &"ultimate")
+	assert_eq(runtime.execution_charge, 0.0)
+	systems.resolver.deal_basic_weapon_damage(enemy, 10.0)
+	assert_eq(runtime.execution_charge, 0.25)
+	systems.resolver.deal_school_damage(enemy, 6.0, &"direct_injutsu")
+	assert_eq(runtime.execution_charge, 0.25)
+	runtime._process(1.0)
+	assert_eq(runtime.execution_charge, 0.375)
+	enemy.died.connect(runtime.on_enemy_died)
+	systems.resolver.deal_basic_weapon_damage(enemy, 99999.0)
+	assert_eq(runtime.get_mark_count(enemy), 0)
+	assert_eq(runtime.execution_charge, 0.625, "Lethal hit keeps its pre-impact marked qualification.")
+	assert_true(runtime._pending_direct_hits.is_empty())
+	runtime._on_damage_finished(1, 10)
+	assert_eq(runtime.execution_charge, 0.625, "Replayed/unknown resolved IDs cannot reward again.")
+
+
+func test_execution_ties_use_stable_instance_order_and_outside_target_is_excluded() -> void:
+	var runtime = _make_runtime()
+	var first = _enemy(runtime.world, Vector2(100, 0), 1000)
+	var second = _enemy(runtime.world, Vector2(100, 0), 1000)
+	var outside = _enemy(runtime.world, Vector2(321, 0), 1000)
+	outside.set_meta(&"school_circuit_role", &"boss")
+	runtime.execution_charge = 3.0
+	assert_true(runtime.try_use_ultimate())
+	assert_eq(first.health, 974)
+	assert_eq(second.health, 982)
+	assert_eq(outside.health, 1000)
 
 
 func _make_runtime():
@@ -216,7 +307,7 @@ func test_resource_bonus_uses_fractional_credit_without_fractional_visible_marks
 	assert_eq(runtime.get_total_active_marks(), 6)
 
 
-func test_two_live_enemies_can_reach_shadow_execution_threshold() -> void:
+func test_marks_are_independent_of_execution_charge() -> void:
 	var runtime = _make_runtime()
 	if runtime == null:
 		return
@@ -225,7 +316,7 @@ func test_two_live_enemies_can_reach_shadow_execution_threshold() -> void:
 	runtime.apply_needle_hit(first, true)
 	runtime.apply_needle_hit(second, false)
 	assert_eq(runtime.get_total_active_marks(), 3)
-	assert_true(runtime.is_ultimate_ready(), "Two-enemy MVP waves must be able to reach Shadow Execution")
+	assert_false(runtime.is_ultimate_ready(), "Marks are not the execution resource.")
 
 
 func test_queued_enemy_is_pruned_from_live_mark_charge() -> void:
@@ -273,7 +364,7 @@ func test_forbidden_path_boosts_burst_status_damage_but_not_needle_base() -> voi
 	assert_eq(systems.tracker.status_events, 3, "Two mark applications plus one burst should be tracked")
 
 
-func test_shadow_execution_uses_current_marks_status_multiplier_and_clears_all() -> void:
+func test_shadow_execution_adds_fixed_mark_bonus_without_status_multiplier_or_consumption() -> void:
 	var runtime = _make_runtime()
 	if runtime == null:
 		return
@@ -287,10 +378,11 @@ func test_shadow_execution_uses_current_marks_status_multiplier_and_clears_all()
 	assert_eq(runtime.get_total_active_marks(), 3)
 	var first_before: int = first.health
 	var second_before: int = second.health
+	runtime.execution_charge = 3.0
 	assert_true(runtime.try_use_ultimate())
-	assert_eq(first.health, first_before - 26)
+	assert_eq(first.health, first_before - 30)
 	assert_eq(second.health, second_before - 22)
-	assert_eq(runtime.get_total_active_marks(), 0)
+	assert_eq(runtime.get_total_active_marks(), 3)
 	assert_false(runtime.is_ultimate_ready())
 
 
@@ -310,9 +402,10 @@ func test_seal_path_penalizes_needle_but_strengthens_shadow_execution() -> void:
 	assert_eq(second.health, 195)
 	var first_before: int = first.health
 	var second_before: int = second.health
+	runtime.execution_charge = 3.0
 	assert_true(runtime.try_use_ultimate())
-	assert_eq(first.health, first_before - 28)
-	assert_eq(second.health, second_before - 23)
+	assert_eq(first.health, first_before - 38)
+	assert_eq(second.health, second_before - 28)
 
 
 func test_deactivate_clears_marks_badges_and_fractional_credit() -> void:

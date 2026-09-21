@@ -1,11 +1,19 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/rest_flow_ui.gd" id="1_rest"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.035, 0.045, 0.065, 0.96)
+content_margin_left = 24.0
+content_margin_top = 24.0
+content_margin_right = 24.0
+content_margin_bottom = 24.0
 
 [node name="RestFlowUI" type="CanvasLayer"]
 script = ExtResource("1_rest")
 
 [node name="Panel" type="PanelContainer" parent="."]
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 visible = false
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,15 +21,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Margin" type="MarginContainer" parent="Panel"]
+[node name="Margin" type="ScrollContainer" parent="Panel"]
 layout_mode = 2
-theme_override_constants/margin_left = 48
-theme_override_constants/margin_top = 36
-theme_override_constants/margin_right = 48
-theme_override_constants/margin_bottom = 36
+follow_focus = true
 
 [node name="Content" type="VBoxContainer" parent="Panel/Margin"]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="ResultView" type="VBoxContainer" parent="Panel/Margin/Content"]
 visible = false
@@ -134,6 +140,13 @@ text = "보유 G 0G"
 layout_mode = 2
 text = "가방 구매: 가방 없음 · 0G"
 
+[node name="ShopOffers" type="VBoxContainer" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+
+[node name="ShopRerollButton" type="Button" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+text = "상점 새로고침 5G"
+
 [node name="PendingBagButton" type="Button" parent="Panel/Margin/Content/WorkbenchView"]
 visible = false
 layout_mode = 2
@@ -141,7 +154,7 @@ text = "대기 가방 배치"
 
 [node name="BufferTitleLabel" type="Label" parent="Panel/Margin/Content/WorkbenchView"]
 layout_mode = 2
-text = "작업 버퍼 — 하나를 선택해 회전·배치"
+text = "보관함 6칸 — 미배치 아이템은 다음 준비까지 보관 · 배치 전에는 효과 없음"
 
 [node name="BufferItems" type="HBoxContainer" parent="Panel/Margin/Content/WorkbenchView"]
 layout_mode = 2
@@ -149,6 +162,11 @@ layout_mode = 2
 [node name="BufferRotateButton" type="Button" parent="Panel/Margin/Content/WorkbenchView"]
 layout_mode = 2
 text = "선택 아이템 회전 0°"
+
+[node name="BufferSellButton" type="Button" parent="Panel/Margin/Content/WorkbenchView"]
+layout_mode = 2
+disabled = true
+text = "판매할 보관 아이템을 선택하세요"
 
 [node name="BoardTitleLabel" type="Label" parent="Panel/Margin/Content/WorkbenchView"]
 layout_mode = 2
@@ -209,7 +227,7 @@ layout_mode = 2
 
 [node name="TitleLabel" type="Label" parent="Panel/Margin/Content/CompleteView"]
 layout_mode = 2
-text = "MVP-3 LOOP COMPLETE"
+text = "여정 완료"
 
 [node name="SummaryLabel" type="Label" parent="Panel/Margin/Content/CompleteView"]
 layout_mode = 2
@@ -217,4 +235,4 @@ autowrap_mode = 2
 
 [node name="RestartButton" type="Button" parent="Panel/Margin/Content/CompleteView"]
 layout_mode = 2
-text = "RESTART"
+text = "메인으로 돌아가기"

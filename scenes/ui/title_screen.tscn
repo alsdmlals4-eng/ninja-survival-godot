@@ -208,7 +208,7 @@ text = "종료"
 
 [node name="GuidePanel" type="Control" parent="."]
 visible = false
-process_mode = 2
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -271,7 +271,7 @@ text = "닫기"
 
 [node name="SettingsPanel" type="Control" parent="."]
 visible = false
-process_mode = 2
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -331,7 +331,7 @@ text = "닫기"
 
 [node name="AwakeningPanel" type="Control" parent="."]
 visible = false
-process_mode = 2
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -403,7 +403,7 @@ text = "닫기"
 
 [node name="CodexPanel" type="Control" parent="."]
 visible = false
-process_mode = 2
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -505,7 +505,7 @@ text = "닫기"
 
 [node name="NewGameConfirmPanel" type="Control" parent="."]
 visible = false
-process_mode = 2
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -581,7 +581,7 @@ text = "새 게임 시작"
 
 [node name="QuitConfirmPanel" type="Control" parent="."]
 visible = false
-process_mode = 2
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

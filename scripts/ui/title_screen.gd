@@ -10,6 +10,9 @@ signal new_game_requested
 signal new_game_confirmed
 signal continue_requested
 signal quit_requested
+signal support_unlock_requested
+signal recovery_requested
+signal preferences_requested
 
 @onready var start_button: Button = $LogoLockup/MenuButtons/StartButton
 @onready var continue_button: Button = $LogoLockup/MenuButtons/ContinueButton
@@ -38,6 +41,50 @@ signal quit_requested
 @onready var quit_cancel_button: Button = $QuitConfirmPanel/Dialog/Margin/Actions/Buttons/CancelButton
 
 var _codex_sections: Array = []
+var _support_tab: Button
+var support_unlock_button: Button
+var recovery_button: Button
+var _selected_rules := false
+
+func set_selected_rules() -> void:
+	_selected_rules = true
+	_codex_sections = CODEX_PRESENTATION_SCRIPT.new().build_selected_sections()
+	if _support_tab == null:
+		_support_tab = Button.new()
+		_support_tab.name = "SupportTab"
+		_support_tab.text = "보조품"
+		_support_tab.toggle_mode = true
+		$CodexPanel/Dialog/Margin/Actions/Tabs.add_child(_support_tab)
+		_support_tab.pressed.connect(_show_codex_section.bind(&"support"))
+	if support_unlock_button == null:
+		support_unlock_button = Button.new()
+		support_unlock_button.name = "SupportUnlockButton"
+		support_unlock_button.custom_minimum_size.y = 44
+		var actions = $AwakeningPanel/Dialog/Margin/Actions
+		actions.add_child(support_unlock_button)
+		actions.move_child(support_unlock_button, awakening_close_button.get_index())
+		support_unlock_button.pressed.connect(func(): support_unlock_requested.emit())
+	set_support_unlock_state(false, 0)
+	if recovery_button == null:
+		recovery_button = Button.new()
+		recovery_button.name = "RecoveryButton"
+		recovery_button.text = "저장 복구 기록 확인"
+		recovery_button.custom_minimum_size.y = 44
+		$LogoLockup/MenuButtons.add_child(recovery_button)
+		$LogoLockup/MenuButtons.move_child(recovery_button, continue_status_label.get_index() + 1)
+		recovery_button.pressed.connect(func(): recovery_requested.emit())
+		recovery_button.hide()
+
+func set_recovery_available(available: bool) -> void:
+	if is_instance_valid(recovery_button): recovery_button.visible = available
+
+func set_support_unlock_state(unlocked: bool, balance: int, status := "") -> void:
+	if not _selected_rules: return
+	set_awakening_balance(balance)
+	var cost: int = preload("res://scripts/data/selected_backpack_catalog.gd").SUPPORT_UNLOCK_COST
+	support_unlock_button.text = "시작 지원품 선택 · 해금 완료" if unlocked else "시작 지원품 선택 해금 · 닌자소울 %d개" % cost
+	support_unlock_button.disabled = unlocked or balance < cost
+	$AwakeningPanel/Dialog/Margin/Actions/BodyLabel.text = "다음 새 게임부터 체술단련·호신 부적·인법단련 중 1개를 선택합니다. 가방을 차지하며 판매가는 0엽전입니다. 현재 런은 바뀌지 않습니다.\n" + status
 
 
 func _ready() -> void:
@@ -84,7 +131,7 @@ func set_continue_state(available: bool, status_text: String = "") -> void:
 
 
 func set_awakening_balance(balance: int) -> void:
-	awakening_balance_label.text = "보유 각성 · %d" % maxi(balance, 0)
+	awakening_balance_label.text = ("보유 닌자소울 · %d" if _selected_rules else "보유 각성 · %d") % maxi(balance, 0)
 
 
 func show_new_game_confirmation() -> void:
@@ -119,6 +166,9 @@ func _close_guide() -> void:
 
 func _open_settings() -> void:
 	_close_all_panels()
+	if preferences_requested.has_connections():
+		preferences_requested.emit()
+		return
 	settings_panel.show()
 	_refresh_fullscreen_button()
 	fullscreen_button.grab_focus.call_deferred()
@@ -215,13 +265,15 @@ func _close_all_panels() -> void:
 
 
 func _codex_tab_buttons() -> Array[Button]:
-	return [
+	var buttons: Array[Button] = [
 		$CodexPanel/Dialog/Margin/Actions/Tabs/EnemyTab,
 		$CodexPanel/Dialog/Margin/Actions/Tabs/NinjutsuTab,
 		$CodexPanel/Dialog/Margin/Actions/Tabs/EquipmentTab,
 		$CodexPanel/Dialog/Margin/Actions/Tabs/BagsTab,
 		$CodexPanel/Dialog/Margin/Actions/Tabs/CombinationsTab,
 	]
+	if is_instance_valid(_support_tab): buttons.append(_support_tab)
+	return buttons
 
 
 func _section_id_for_tab(tab_button: Button) -> StringName:
@@ -236,6 +288,8 @@ func _section_id_for_tab(tab_button: Button) -> StringName:
 			return &"bags"
 		&"CombinationsTab":
 			return &"combinations"
+		&"SupportTab":
+			return &"support"
 		_:
 			return &""
 

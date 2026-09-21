@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=22 format=3]
 
 [ext_resource type="Script" path="res://scripts/core/game_state.gd" id="1_state"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
@@ -19,10 +19,13 @@
 [ext_resource type="Texture2D" path="res://assets/runtime/visual-core/moonlit_battlefield_floor_tile_v1.png" id="17_floor"]
 [ext_resource type="Texture2D" path="res://assets/runtime/visual-core/moonlit_battlefield_prop_atlas_v1.png" id="18_props"]
 [ext_resource type="PackedScene" path="res://scenes/ui/title_screen.tscn" id="19_title"]
+[ext_resource type="Script" path="res://scripts/ui/viewport_parallax_coverage.gd" id="20_coverage"]
+[ext_resource type="Texture2D" path="res://assets/runtime/ui/inventory-icons-v1.png" id="21_inventory"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("4_main")
 reward_orb_scene = ExtResource("8_orb")
+inventory_icon_atlas = ExtResource("21_inventory")
 
 [node name="GameState" type="Node" parent="."]
 script = ExtResource("1_state")
@@ -31,6 +34,7 @@ script = ExtResource("1_state")
 script = ExtResource("6_ddd")
 
 [node name="BattlefieldBackdrop" type="Parallax2D" parent="."]
+script = ExtResource("20_coverage")
 z_index = -10
 repeat_size = Vector2(1254, 1254)
 repeat_times = 1
@@ -38,11 +42,12 @@ scroll_scale = Vector2(1, 1)
 
 [node name="FloorTile" type="Sprite2D" parent="BattlefieldBackdrop"]
 texture_filter = 4
-position = Vector2(-627, -627)
+position = Vector2(0, 0)
 centered = false
 texture = ExtResource("17_floor")
 
 [node name="BattlefieldProps" type="Parallax2D" parent="."]
+script = ExtResource("20_coverage")
 z_index = -5
 repeat_size = Vector2(1254, 1254)
 repeat_times = 1

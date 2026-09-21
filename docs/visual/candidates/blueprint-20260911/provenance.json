@@ -1,0 +1,128 @@
+{
+  "guiin": {
+    "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-c16d8a34-f95b-42ec-8eee-993a9613ff12.png",
+    "prompt": "Create a real transparent PNG game sprite atlas, six columns five rows. VERY SMALL characters with huge completely empty transparent gutters, each figure only 40 percent cell width including all equipment, keep death poses compact curled up. No effects. Dark painterly anime elevated three-quarter right-facing mature corrupted ninja and Japanese yokai. Five rows: lean oni-masked ninja; gaunt single-horn yokai; stocky muscular oni; unique armored twin-horn axe oni elite; crowned demonic samurai boss with katana. Six same-character poses across each row: idle, walk left contact, walk right contact, preparation, release, compact curled dead. Palette navy, gray, muted red. Do not fill cells, no background, no checkerboard, no frames, actual alpha zero between figures.",
+    "generator": "image_gen",
+    "created": "2026-09-11",
+    "reference_images": [],
+    "approval": "PENDING",
+    "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+  },
+  "heukyeong": {
+    "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-78257633-17a3-449e-8eeb-e4530b33302d.png",
+    "prompt": "Generate a production texture atlas on transparent background, REAL alpha channel. IMPORTANT: very widely spaced SMALL assets, each one occupies ONLY the central 50% width and 50% height of its equal cell. A full half-cell of empty transparent separation between neighboring assets, including rows. Do not enlarge objects to fill space. No labels, grid lines, presentation backdrop, aura or lighting outside object. 6 columns 5 rows of tiny dark painterly anime game characters. Rows: masked dagger ninja; four-legged long-eared shadow yokai; bulky chained-sickle corrupted ninja; three-eyed crow yokai elite with claws; crowned shadow assassin boss with twin curved blades. Each row same character six poses: idle, left walking contact, right walking contact, preparing, releasing, dead. All face right elevated 3/4 view. Navy charcoal purple accents, mature proportions. Full silhouette completely contained in its small central area. Transparent empty pixels everywhere else. No frame borders.",
+    "generator": "image_gen",
+    "created": "2026-09-11",
+    "reference_images": [],
+    "approval": "PENDING",
+    "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+  },
+  "vfx": {
+    "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-c4eb4595-47bb-4204-a88f-1b0dcc814477.png",
+    "prompt": "Generate a production texture atlas on transparent background, REAL alpha channel. IMPORTANT: very widely spaced SMALL assets, each one occupies ONLY the central 50% width and 50% height of its equal cell. A full half-cell of empty transparent separation between neighboring assets, including rows. Do not enlarge objects to fill space. No labels, grid lines, presentation backdrop, aura or lighting outside object. 4 columns 4 rows of small game effect textures. Row1 white katana crescent, silver shuriken trail, navy dash puff, white hit sparks. Row2 gold seal ring, gold chain, small blue fox spirit, blue protective dome. Row3 orange fireball, blue water mist, violet lightning, red blade crescent. Row4 purple needle, green poison puff, red enemy talisman projectile, amber warning arc. Restrained painterly 2D textures. Full silhouette completely contained in its small central area. Transparent empty pixels everywhere else. No frame borders.",
+    "generator": "image_gen",
+    "created": "2026-09-11",
+    "reference_images": [],
+    "approval": "PENDING",
+    "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+  },
+  "title": {
+    "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-db85bdb5-f820-47c3-a579-0f9b63f9cae1.png",
+    "prompt": "Create a 16:9 finished in-game main menu BACKGROUND illustration for Korean game 닌자의 신, but do NOT put text, title or UI on image. Dark moonlit ninja fantasy painterly anime. A small black-haired ponytail ninja in navy and black robes with red sash stands on the far RIGHT third overlooking subdued ancient rooftops; faint moon and ink mist behind him. LEFT sixty percent very dark low-detail negative space for separate title and six menu buttons. A few weathered shrine silhouettes distant, no large colorful magic. Navy charcoal warm ivory moon subdued gold and red, premium ink-painted texture, strong composition readable behind UI, not photorealistic, not chunky pixel art. Full-bleed rectangular background.",
+    "generator": "image_gen",
+    "created": "2026-09-11",
+    "reference_images": [],
+    "approval": "PENDING",
+    "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+  },
+  "player": {
+    "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-bd49146d-a2e4-44f0-a02e-e972dd2f87f5.png",
+    "prompt": "A game sprite sheet, transparent background. Exactly 4 columns and 3 rows with generous equal-sized empty gutters. 12 full body sprites of SAME young male ninja, black ponytail, dark navy clothes, red sash, sword sheathed at hip, compact painterly anime game sprite, elevated 3/4 right-facing view. First row 4 visibly different run cycle contact-passing-contact-passing poses. Second row idle, fast dash lean, damaged recoil, recovered ready. Third row 4 sequential death fall poses, ending lying down. Every sprite isolated on transparent background; all visible feet consistent anchors per equal cell, scale consistent, full weapons and cloth inside cell. No text, no backdrop, no patterned areas, no floor, no cast shadows.",
+    "generator": "image_gen",
+    "created": "2026-09-11",
+    "reference_images": [],
+    "approval": "PENDING",
+    "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+  },
+  "logo": {
+    "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-007da419-ba14-4be9-9cb5-9412f5ac0c68.png",
+    "prompt": "Transparent-background game UI branding asset for Korean dark ninja fantasy game. Only two completely separated components with ample transparent space: LEFT elegant strong Korean brush-calligraphy wordmark reading exactly '닌자의 신' in warm ivory ink with subtle worn gold; RIGHT a single small round antique gold medallion made from four joined puzzle quadrants, each distinct seal/familiar, elemental sigil, oni mask, shadow-eye motif. Medallion diameter same height as one Korean character of the title, not larger than title. Dark navy accents, premium painterly ink texture, legible title at menu scale. No English, no slogan, no background, no parchment, no extra icons. Real transparent background.",
+    "generator": "image_gen",
+    "created": "2026-09-11",
+    "reference_images": [],
+    "approval": "PENDING",
+    "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+  },
+  "cheonsul": {
+    "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-c13b30bf-f19a-45c4-9b89-a7cba7911eea.png",
+    "prompt": "Generate a production texture atlas on transparent background, REAL alpha channel. IMPORTANT: very widely spaced SMALL assets, each one occupies ONLY the central 50% width and 50% height of its equal cell. A full half-cell of empty transparent separation between neighboring assets, including rows. Do not enlarge objects to fill space. No labels, grid lines, presentation backdrop, aura or lighting outside object. 6 columns 5 rows of tiny dark painterly anime game characters. Rows: masked talisman ninja; fast lizard yokai; bulky armored corrupted ninja; multiarmed ritual yokai elite clutching orb; porcelain-masked elemental sorcerer boss with forked staff. Each row same character six poses: idle, left walking contact, right walking contact, preparing, releasing, dead. All face right elevated 3/4 view. Navy ivory with subdued blue orange accents, mature proportions. Full silhouette completely contained in its small central area. Transparent empty pixels everywhere else. No frame borders.",
+    "generator": "image_gen",
+    "created": "2026-09-11",
+    "reference_images": [],
+    "approval": "PENDING",
+    "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+  },
+  "equipment": {
+    "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-4d550c7a-cbea-409d-b21e-2437a9a4cbaa.png",
+    "prompt": "Create a production game icon atlas on a TRANSPARENT background with real alpha. Exactly 6 columns 5 rows, 30 generous equal cells. Painterly Japanese ninja fantasy dark navy, ivory paper, warm gold, simple small legible objects with clean silhouettes. SOLID OPAQUE OBJECTS ONLY; surrounding empty pixels fully transparent; NO glow, aura, smoke, gradients, lighting outside object, background shading or drop shadows. Row1 bandaged fist charm; protective paper charm; lucky coin charm; ninjutsu training book; enlightenment prayer beads; regeneration herbal scroll. Row2 ultimate treatise scroll; school medallion; sheathed black katana; silver shuriken; plain iron bomb; blue water scroll. Row3 lightning scroll; fire scroll; stealth scroll; poison needle; barrier talisman; large summoning scroll. Row4 forbidden red talisman; water mist charm; lightning sword; reinforced explosive bomb; small two-part pouch; long three-part pouch. Row5 square pouch; T-shaped tactical pouch; L-shaped ritual pouch; locked book; chest token; empty transparent cell. Equal cells with 20 percent transparent gutters. No text, no outlines of cells, no UI or backdrop.",
+    "generator": "image_gen",
+    "created": "2026-09-11",
+    "reference_images": [],
+    "approval": "PENDING",
+    "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+  },
+  "props": {
+    "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-5595e425-9be2-440b-92c6-f16c923a3da4.png",
+    "prompt": "Create a production game sprite atlas on a TRANSPARENT background with real alpha. 3 columns one row: isolated stone lantern, twisted dead tree, small rubble pile. Dark painterly anime elevated topdown view. Opaque crisp objects only with no surrounding glow, mist, floor, shadow, gradients or backdrop of any kind. Lantern has amber glass but no light spilling outside its silhouette. Tree full branches and roots inside its spacious cell. At least 20 percent transparent empty padding around each object. Every pixel outside objects fully transparent, game engine will draw shadows separately.",
+    "generator": "image_gen",
+    "created": "2026-09-11",
+    "reference_images": [],
+    "approval": "PENDING",
+    "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+  },
+  "final": {
+    "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-0310878f-86a9-46db-b898-a5f7d73c9b02.png",
+    "prompt": "Generate a production texture atlas on transparent background, REAL alpha channel. IMPORTANT: very widely spaced SMALL assets, each one occupies ONLY the central 50% width and 50% height of its equal cell. A full half-cell of empty transparent separation between neighboring assets, including rows. Do not enlarge objects to fill space. No labels, grid lines, presentation backdrop, aura or lighting outside object. 3 columns 2 rows of tiny dark painterly anime game sprites of SAME final calamity yokai ninja lord. Dark navy armored robes, pale cracked horned mask, small four-part gold chest medallion, red sash. Six poses in reading order: idle, left walking contact, right walking contact, ritual preparation, forward claw strike, dead collapse. Right facing elevated view, mature proportions. Full silhouette completely contained in its small central area. Transparent empty pixels everywhere else. No frame borders.",
+    "generator": "image_gen",
+    "created": "2026-09-11",
+    "reference_images": [],
+    "approval": "PENDING",
+    "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+  },
+  "combat": {
+    "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-0fdbddf6-6c63-4f7a-8c49-073a76a9a193.png",
+    "prompt": "A realistic proposed 16:9 in-game screenshot of a 2D top-down action survivor ninja game, no text or HUD. Dark seamless low-contrast slate stone floor fills entire screen, no rooms, no walls. All units quite small relative to arena: player central lower-right just 6 percent screen height, black ponytail navy ninja red scarf running east, separate short pale katana crescent and two silver shuriken going east without attack pose. Thirty corrupted ninja and grotesque small yokai pursuing from scattered angles, most on left; no evenly spaced parade, feet touching floor with subtle contact shadows and same light/camera perspective. Upper-right a distinct masked mobile onmyoji boss staff talismans, 11 percent screen height, amber outlined cone telegraph on floor points toward player but leaves open escape space. Clear actual game camera, subdued painterly anime sprites unified with background, sparse VFX, visible player and danger, no key art, no oversized characters, no labels.",
+    "generator": "image_gen",
+    "created": "2026-09-11",
+    "reference_images": [],
+    "approval": "PENDING",
+    "source_role": "TARGET_COMPOSITION_ONLY"
+  },
+  "bongma": {
+    "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-3f523154-80df-4b47-99e4-6140787b8544.png",
+    "prompt": "Generate a production texture atlas on transparent background, REAL alpha channel. IMPORTANT: very widely spaced SMALL assets, each one occupies ONLY the central 50% width and 50% height of its equal cell. A full half-cell of empty transparent separation between neighboring assets, including rows. Do not enlarge objects to fill space. No labels, grid lines, presentation backdrop, aura or lighting outside object. 6 columns 5 rows of tiny dark painterly anime game characters. Rows: masked seal ninja; paper fox yokai; stone lion yokai; tall horned guardian elite with club; fox-masked onmyoji boss in navy ritual robes with staff and talismans. Each row same character six poses: idle, left walking contact, right walking contact, preparing, releasing, dead. All face right at elevated 3/4 view. Navy ivory gold with subdued blue, mature proportions. Full silhouette completely contained in its small central area. Transparent empty pixels everywhere else. No frame borders.",
+    "generator": "image_gen",
+    "created": "2026-09-11",
+    "reference_images": [],
+    "approval": "PENDING",
+    "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+  },
+  "floor": {
+    "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-6714dccf-1dfd-449c-91da-cc243639adee.png",
+    "prompt": "Use case: stylized-concept. Actual game asset: square seamlessly repeating ground texture only, for a top-down dark moonlit ninja survivor. Entire image same orthographic top-down scale. Low-contrast hand-painted charcoal/deep navy irregular cracked slate slabs. Fine muted brush texture, quiet broad value masses, no pixel art, not photographic. Uniform illumination, no vignette, no directional gradient. Tileable on ALL four edges with continuous stone shapes. No trees, lights, buildings, debris piles, borders, creatures, text, UI or glow. Only an infinite floor surface. Design at 1024x1024 or square, compact repeating features not giant central feature. Keep player silhouettes and orange warnings readable on it.",
+    "generator": "image_gen",
+    "created": "2026-09-11",
+    "reference_images": [],
+    "approval": "PENDING",
+    "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+  },
+  "icons": {
+    "source_path": "C:/Users/user/.codex/generated_images/01a04af3-2ac6-72b2-af89-ea12e783328f/exec-9b79312a-0700-4f5a-9501-7a3b213cac6a.png",
+    "prompt": "Generate a production texture atlas on transparent background, REAL alpha channel. IMPORTANT: very widely spaced SMALL assets, each one occupies ONLY the central 50% width and 50% height of its equal cell. A full half-cell of empty transparent separation between neighboring assets, including rows. Do not enlarge objects to fill space. No labels, grid lines, presentation backdrop, aura or lighting outside object. 3 columns 4 rows of small game skill icons. Row1 gold familiar fox, gold seal chain, protective blue ward; Row2 orange flame mark, blue water bind, violet lightning chain; Row3 crimson blood crescent, red ninja afterimage, asura ring; Row4 purple shadow needle, green poison mist, purple execution blade. Dark Japanese ninja fantasy painterly icon silhouettes, no lettering. Full silhouette completely contained in its small central area. Transparent empty pixels everywhere else. No frame borders.",
+    "generator": "image_gen",
+    "created": "2026-09-11",
+    "reference_images": [],
+    "approval": "PENDING",
+    "source_role": "INTENDED_GAME_ASSET_CANDIDATE"
+  }
+}

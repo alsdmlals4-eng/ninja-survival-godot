@@ -24,6 +24,16 @@
 
 ## Runtime assets
 
+### 2026-09-12 replacement-cycle breath
+
+| Asset | Path / SHA256 | Approval / consumer / evidence |
+|---|---|---|
+| NINJA_CHEONSUL_BREATH_01 | `assets/runtime/visual-core/cheonsul_breath_v1.png` / `b151f40c0def23e2719ba7cc5e9d3a797f618704899d2691cecba10b901a9199` | Latest user accepted displayed blue-white/gold family. Mechanical Aseprite registration only; 2800x700 RGBA,4cells700px,pivot64,350. `CheonsulRuntime/BreathVisual`; import and GUT plus isolated GPU fixture render observed. Full combat readability/Human/device NOT_RUN. |
+
+Source, exact prompt, original hash and retained editable motion source:
+`docs/visual/candidates/breath-20260912/README.md`. Appearance approval is specific
+to this family, not a replacement-cycle blanket approval or release acceptance.
+
 | Asset ID | Local source | SHA-256 | Metadata | Consumer | Status |
 | --- | --- | --- | --- | --- | --- |
 | `NINJA_RUNTIME_TITLE_LOGO_NINJA_GOD_01` | `assets/runtime/ui/title_logo_ninja_god_v1.png` | `c946ae4b08fd77f1e36bc25b22d0d41fdd5060fc80e98faeb9e6f2d2ac9a7a5b` | PNG, 1672×941, RGBA transparent `닌자의 신` title logo; sampled alpha `0..255`, every corner alpha `0`; dark navy ink, stone-gold lettering, crescent, and red seal | `scenes/ui/title_screen.tscn` → `TitleScreen/LogoLockup/TitleLogo` | `USER_LOCKED` → `CANON_REGISTERED` → `IMPLEMENTED` → `MACHINE_VERIFIED` 2026-08-31; source copied hash-identically; Godot 4.7.1 import/editor parse/300-frame main smoke, focused title/start/MVP-2 GUT `15/15` / `193`, and full GUT `580/580` / `6455` pass; runtime-render/Human/device evidence `NOT_RUN` |

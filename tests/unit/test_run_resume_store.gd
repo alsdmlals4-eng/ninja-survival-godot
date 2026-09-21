@@ -7,6 +7,19 @@ const RUN_MODIFIER_SET_PATH := "res://scripts/data/run_modifier_set.gd"
 const RUN_ROUTE_STATE_PATH := "res://scripts/core/run_route_state.gd"
 const NINJUTSU_LOADOUT_PATH := "res://scripts/core/ninjutsu_loadout_state.gd"
 
+class CleanupFailureStore:
+	extends "res://scripts/core/run_resume_store.gd"
+	func _remove_previous_record() -> Error:
+		return ERR_FILE_NO_PERMISSION
+
+class ReadbackFailureStore:
+	extends "res://scripts/core/run_resume_store.gd"
+	var fail_suffix := "disabled"
+	func _readback_matches(path: String, expected_text: String) -> bool:
+		if (fail_suffix == "canonical" and path == storage_path()) or path.ends_with(fail_suffix):
+			return false
+		return FileAccess.get_file_as_string(path) == expected_text
+
 var _storage_path := "user://gut_run_resume_store.json"
 
 
@@ -65,6 +78,70 @@ func test_store_clear_removes_only_its_own_record() -> void:
 	assert_true(store.clear_record())
 	assert_false(store.has_record())
 	assert_eq(store.load_checkpoint().get("reason"), &"missing")
+
+
+func test_invalid_candidate_cannot_replace_a_valid_checkpoint() -> void:
+	var store = load(STORE_PATH).new()
+	assert_true(store.configure(_storage_path))
+	var checkpoint := _make_committed_checkpoint()
+	assert_true(store.save_checkpoint(checkpoint))
+	var before := FileAccess.get_file_as_string(_storage_path)
+	checkpoint["build"]["gold"] = -1
+	assert_false(store.save_checkpoint(checkpoint))
+	assert_eq(FileAccess.get_file_as_string(_storage_path), before)
+	assert_false(FileAccess.file_exists(_storage_path + ".tmp"))
+	assert_false(FileAccess.file_exists(_storage_path + ".previous"))
+
+
+func test_cleanup_failure_does_not_report_a_committed_save_as_failure() -> void:
+	var store := CleanupFailureStore.new()
+	assert_true(store.configure(_storage_path))
+	var checkpoint := _make_committed_checkpoint()
+	assert_true(store.save_checkpoint(checkpoint))
+	checkpoint["build"]["gold"] = 42
+	assert_true(store.save_checkpoint(checkpoint))
+	assert_eq(store.load_checkpoint()["checkpoint"]["build"]["gold"], 42)
+	assert_true(FileAccess.file_exists(_storage_path + ".previous"))
+	assert_true(store.has_method("last_save_warning"))
+	if store.has_method("last_save_warning"):
+		assert_eq(store.last_save_warning(), &"previous_cleanup_pending")
+
+
+func test_temporary_readback_failure_keeps_previous_canonical_bytes() -> void:
+	var store := ReadbackFailureStore.new()
+	assert_true(store.configure(_storage_path))
+	var checkpoint := _make_committed_checkpoint()
+	assert_true(store.save_checkpoint(checkpoint))
+	var before := FileAccess.get_file_as_string(_storage_path)
+	checkpoint.build.gold = 99
+	store.fail_suffix = ".tmp"
+	assert_false(store.save_checkpoint(checkpoint))
+	assert_eq(FileAccess.get_file_as_string(_storage_path), before)
+
+
+func test_canonical_readback_failure_rolls_back_and_preserves_failed_candidate() -> void:
+	var store := ReadbackFailureStore.new()
+	assert_true(store.configure(_storage_path))
+	var checkpoint := _make_committed_checkpoint()
+	assert_true(store.save_checkpoint(checkpoint))
+	var before := FileAccess.get_file_as_string(_storage_path)
+	checkpoint.build.gold = 99
+	store.fail_suffix = "canonical"
+	assert_false(store.save_checkpoint(checkpoint))
+	assert_eq(FileAccess.get_file_as_string(_storage_path), before)
+	assert_true(FileAccess.file_exists(_storage_path + ".tmp"))
+	assert_false(FileAccess.file_exists(_storage_path + ".previous"))
+
+
+func test_unresolved_temporary_file_is_preserved_and_blocks_implicit_overwrite() -> void:
+	var store = load(STORE_PATH).new()
+	assert_true(store.configure(_storage_path))
+	var temporary := FileAccess.open(_storage_path + ".tmp", FileAccess.WRITE)
+	temporary.store_string("unresolved candidate")
+	temporary.close()
+	assert_false(store.save_checkpoint(_make_committed_checkpoint()))
+	assert_eq(FileAccess.get_file_as_string(_storage_path + ".tmp"), "unresolved candidate")
+	assert_false(FileAccess.file_exists(_storage_path))
 
 
 func _make_committed_checkpoint() -> Dictionary:

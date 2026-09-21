@@ -140,6 +140,7 @@ func _make_checkpoint(main) -> Dictionary:
 
 func _new_main():
 	var main := MAIN_SCENE.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 	return main

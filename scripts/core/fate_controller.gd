@@ -27,6 +27,48 @@ func configure(
 		_rng = rng
 
 
+# Values for an uncommitted preparation, not an already-applied Fate.
+func persistent_preparation_snapshot() -> Dictionary:
+	if _build_state == null or _rng == null or candidate_ids.is_empty() or selected_this_rest != _pending_fate_id:
+		return {}
+	return {"candidate_ids": candidate_ids.duplicate(), "pending_fate": String(_pending_fate_id),
+		"rng_seed": str(_rng.seed), "rng_state": str(_rng.state)}
+
+
+func restore_preparation_snapshot(raw: Dictionary) -> bool:
+	if _build_state == null or _rng == null or raw.size() != 4:
+		return false
+	if not (raw.get("candidate_ids") is Array) or not (raw.get("pending_fate") is String):
+		return false
+	for key in ["rng_seed", "rng_state"]:
+		var value = raw.get(key)
+		if not (value is String) or not value.is_valid_int() or str(value.to_int()) != value:
+			return false
+	var available := 0
+	for id in _fate_defs:
+		if not _build_state.has_fate(StringName(id)):
+			available += 1
+	if raw.candidate_ids.size() != mini(3, available):
+		return false
+	var restored: Array[StringName] = []
+	for id in raw.candidate_ids:
+		if not (id is String or id is StringName):
+			return false
+		var fate_id := StringName(id)
+		if not _fate_defs.has(fate_id) or restored.has(fate_id) or _build_state.has_fate(fate_id):
+			return false
+		restored.append(fate_id)
+	var pending := StringName(raw.pending_fate)
+	if pending != &"" and not restored.has(pending):
+		return false
+	candidate_ids = restored
+	_pending_fate_id = pending
+	selected_this_rest = pending
+	_rng.seed = raw.rng_seed.to_int()
+	_rng.state = raw.rng_state.to_int()
+	return true
+
+
 func begin_rest() -> void:
 	selected_this_rest = &""
 	_pending_fate_id = &""
@@ -89,9 +131,7 @@ func _roll_candidates() -> Array[StringName]:
 		if not _build_state.has_fate(fate_id):
 			pool.append(fate_id)
 
-	if pool.size() < 3:
-		return []
-	if pool.size() == 3:
+	if pool.size() <= 3:
 		return pool
 
 	var rolled: Array[StringName] = []

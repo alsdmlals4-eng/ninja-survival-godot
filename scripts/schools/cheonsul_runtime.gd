@@ -15,7 +15,12 @@ const REACTION_DAMAGE := 10
 const CHAIN_RADIUS := 120.0
 const CHAIN_DAMAGE := 6
 const REACTION_MAXIMUM := 3.0
-const ULTIMATE_DAMAGE := 18
+const ULTIMATE_DAMAGE := 8
+const BREATH_DURATION := 1.5
+const BREATH_TICK_INTERVAL := 0.25
+const BREATH_RANGE := 320.0
+const BREATH_HALF_ANGLE := PI / 6.0
+const BREATH_TEXTURE: Texture2D = preload("res://assets/runtime/visual-core/cheonsul_breath_v1.png")
 
 @export var badge_scene: PackedScene
 
@@ -26,13 +31,41 @@ var _next_token: StringName = &"wet"
 var _states: Dictionary = {}
 var _field_visuals: Array[Dictionary] = []
 var _last_ultimate_ready: bool = false
+var _breath_remaining := 0.0
+var _breath_elapsed := 0.0
+var _breath_ticks := 0
+var _breath_direction := Vector2.RIGHT
+var _breath_visual: Sprite2D
+var _reaction_bonus_remaining := 0.0
+var _breath_generation := 0
+var _selected_status_provider: Node
+
+
+func configure_selected_status_provider(provider: Node) -> void:
+	if is_instance_valid(_selected_status_provider) and _selected_status_provider.has_signal("selected_reaction_resolved") and _selected_status_provider.is_connected("selected_reaction_resolved", _on_selected_reaction):
+		_selected_status_provider.disconnect("selected_reaction_resolved", _on_selected_reaction)
+	_selected_status_provider = provider
+	if is_instance_valid(provider) and provider.has_signal("selected_reaction_resolved"):
+		provider.connect("selected_reaction_resolved", _on_selected_reaction)
+
+
+func _on_selected_reaction(center: Vector2) -> void:
+	if not active or not uses_selected_ninjutsu() or _ninjutsu_loadout.call("origin_school_id") != &"cheonsul" or not is_instance_valid(player) or player.is_dead() or get_tree().paused:
+		return
+	if _breath_remaining > 0.0 or _reaction_bonus_remaining > 0.0 or center.distance_squared_to(player.global_position) > 480.0 * 480.0:
+		return
+	_reaction_bonus_remaining = 1.0
+	_add_reaction_progress(0.25)
 
 
 func activate() -> void:
 	if active:
 		return
 	super.activate()
+	if is_instance_valid(player) and not player.dash_started.is_connected(_cancel_breath_on_dash):
+		player.dash_started.connect(_cancel_breath_on_dash)
 	reaction_count = 0.0
+	_reaction_bonus_remaining = 0.0
 	_cast_remaining = CAST_INTERVAL
 	_next_token = &"wet"
 	_clear_states()
@@ -42,16 +75,31 @@ func activate() -> void:
 
 
 func deactivate() -> void:
+	cancel_ultimate()
+	if is_instance_valid(player) and player.dash_started.is_connected(_cancel_breath_on_dash):
+		player.dash_started.disconnect(_cancel_breath_on_dash)
 	_clear_states()
 	_clear_field_visuals()
 	super.deactivate()
 
 
 func _process(delta: float) -> void:
-	if not active or delta <= 0.0:
+	if not active or delta <= 0.0 or not is_finite(delta) or get_tree().paused:
+		return
+	if not is_instance_valid(player) or player.is_dead():
+		cancel_ultimate()
+		return
+	if _breath_remaining <= 0.0:
+		_reaction_bonus_remaining = maxf(_reaction_bonus_remaining - delta, 0.0)
+		for enemy in _valid_enemies():
+			if enemy.global_position.distance_squared_to(player.global_position) <= 480.0 * 480.0:
+				_add_reaction_progress(0.125 * delta)
+				break
+	_advance_breath(delta)
+	_sync_breath_visual()
+	if not active or not can_process() or player.is_dead():
 		return
 
-	_tick_states(delta)
 	_tick_field_visuals(delta)
 
 	_cast_remaining -= delta
@@ -67,7 +115,9 @@ func _process(delta: float) -> void:
 
 
 func apply_flame_cast(center: Vector2) -> int:
-	if not active:
+	if uses_selected_ninjutsu():
+		return 0
+	if not active or not is_instance_valid(player) or player.is_dead() or get_tree().paused:
 		return 0
 
 	_spawn_field_visual(center)
@@ -101,7 +151,7 @@ func apply_flame_cast(center: Vector2) -> int:
 
 
 func apply_token(enemy: Node2D, token: StringName) -> bool:
-	if not active or not _is_valid_enemy(enemy):
+	if not active or not _is_valid_enemy(enemy) or not is_instance_valid(player) or player.is_dead() or get_tree().paused:
 		return false
 	if token != &"wet" and token != &"shock":
 		return false
@@ -125,6 +175,10 @@ func apply_token(enemy: Node2D, token: StringName) -> bool:
 	_states[enemy.get_instance_id()] = state
 
 	var reaction_center := enemy.global_position
+	# Wet is consumed before notification; repeated shock cannot replay it.
+	if _breath_remaining <= 0.0 and _reaction_bonus_remaining <= 0.0 and reaction_center.distance_squared_to(player.global_position) <= 480.0 * 480.0:
+		_reaction_bonus_remaining = 1.0
+		_add_reaction_progress(0.25)
 	var reaction_multiplier := _reaction_effect_multiplier()
 	_deal_damage(enemy, REACTION_DAMAGE, &"normal", reaction_multiplier)
 	for other in _valid_enemies():
@@ -134,13 +188,14 @@ func apply_token(enemy: Node2D, token: StringName) -> bool:
 			_deal_damage(other, CHAIN_DAMAGE, &"normal", reaction_multiplier)
 
 	_record_status_event()
-	_add_reaction_progress()
 	school_feedback.emit("WET + SHOCK")
 	_update_badge(enemy.get_instance_id())
 	return true
 
 
 func has_status(enemy: Node, token: StringName) -> bool:
+	if uses_selected_ninjutsu():
+		return is_instance_valid(_selected_status_provider) and _selected_status_provider.has_method("has_selected_status") and bool(_selected_status_provider.call("has_selected_status", enemy, token))
 	_prune_invalid_states()
 	if not is_instance_valid(enemy):
 		return false
@@ -165,36 +220,121 @@ func on_enemy_died(enemy: Node) -> void:
 
 
 func is_ultimate_ready() -> bool:
-	return active and reaction_count >= REACTION_MAXIMUM
+	return active and _breath_remaining <= 0.0 and reaction_count >= REACTION_MAXIMUM
 
 
 func try_use_ultimate() -> bool:
-	if not is_ultimate_ready():
+	if not is_ultimate_ready() or not is_instance_valid(player) or player.is_dead() or get_tree().paused:
 		return false
-
-	_prune_invalid_states()
-	var targets: Array[Node2D] = []
-	for instance_id in _states.keys():
-		var state: Dictionary = _states[instance_id]
-		if not _state_has_any_status(state):
-			continue
-		var enemy = state["enemy"]
-		if _is_valid_enemy(enemy):
-			targets.append(enemy as Node2D)
-
-	if targets.is_empty():
+	_breath_direction = player.combat_facing_direction()
+	if _breath_targets(_breath_direction, true).is_empty():
 		return false
-
-	for enemy in targets:
-		if _is_valid_enemy(enemy):
-			_deal_damage(enemy, ULTIMATE_DAMAGE, &"ultimate")
-
-	_clear_states()
 	reaction_count = 0.0
+	_breath_remaining = BREATH_DURATION
+	_breath_generation += 1
+	_breath_elapsed = 0.0
+	_breath_ticks = 0
+	_breath_tick()
+	_sync_breath_visual()
 	_emit_resource()
 	_emit_ultimate_ready_if_changed(true)
 	school_feedback.emit("오행폭주")
 	return true
+
+
+func ultimate_block_reason() -> StringName:
+	var reason := super.ultimate_block_reason()
+	if reason != &"":
+		return reason
+	if not is_instance_valid(player) or player.is_dead() or get_tree().paused:
+		return &"inactive"
+	return &"no_target" if _breath_targets(player.combat_facing_direction(), true).is_empty() else &""
+
+
+func _breath_targets(direction: Vector2, visible_only: bool = false) -> Array[Node2D]:
+	var targets: Array[Node2D] = []
+	for enemy in _valid_enemies():
+		if visible_only:
+			var screen_position := enemy.get_global_transform_with_canvas().origin
+			if not enemy.is_visible_in_tree() or not enemy.get_viewport_rect().has_point(screen_position):
+				continue
+		var offset: Vector2 = enemy.global_position - player.global_position
+		if offset.length_squared() > BREATH_RANGE * BREATH_RANGE:
+			continue
+		if offset.is_zero_approx() or offset.normalized().dot(direction) >= cos(BREATH_HALF_ANGLE) - 0.000001:
+			targets.append(enemy)
+	return targets
+
+
+func _breath_tick() -> void:
+	var generation := _breath_generation
+	_breath_ticks += 1
+	for enemy in _breath_targets(_breath_direction):
+		if generation != _breath_generation or _breath_remaining <= 0.0 or not active or not is_instance_valid(player) or player.is_dead():
+			break
+		var bonus := 2 if has_status(enemy, &"burn") or has_status(enemy, &"wet") or has_status(enemy, &"shock") else 0
+		_deal_damage(enemy, ULTIMATE_DAMAGE + bonus, &"ultimate")
+	emit_player_action_resolved()
+
+
+func _advance_breath(delta: float) -> void:
+	var generation := _breath_generation
+	var remaining := delta
+	while _breath_remaining > CAST_EPSILON and remaining > CAST_EPSILON:
+		var next_boundary := _breath_ticks * BREATH_TICK_INTERVAL if _breath_ticks < 6 else BREATH_DURATION
+		var step := minf(remaining, maxf(next_boundary - _breath_elapsed, 0.0))
+		_tick_states(step)
+		if generation != _breath_generation:
+			return
+		_breath_elapsed += step
+		remaining -= step
+		_breath_remaining = maxf(BREATH_DURATION - _breath_elapsed, 0.0)
+		if _breath_ticks < 6 and _breath_elapsed + CAST_EPSILON >= next_boundary:
+			_breath_tick()
+			if generation != _breath_generation:
+				return
+	if remaining > 0.0:
+		_tick_states(remaining)
+
+
+func _cancel_breath_on_dash(_direction: Vector2) -> void:
+	cancel_ultimate()
+
+
+func cancel_ultimate() -> void:
+	_breath_generation += 1
+	_breath_remaining = 0.0
+	_sync_breath_visual()
+
+
+func _sync_breath_visual() -> void:
+	if _breath_remaining <= CAST_EPSILON or not is_instance_valid(player):
+		if is_instance_valid(_breath_visual):
+			_breath_visual.hide()
+		return
+	if not is_instance_valid(_breath_visual):
+		_breath_visual = Sprite2D.new()
+		_breath_visual.name = "BreathVisual"
+		_breath_visual.texture = BREATH_TEXTURE
+		_breath_visual.hframes = 4
+		_breath_visual.centered = false
+		# Aseprite registration: identical emission pivot in each 700px cell.
+		_breath_visual.offset = Vector2(-64, -350)
+		_breath_visual.scale = Vector2.ONE * (BREATH_RANGE / 600.0)
+		_breath_visual.modulate.a = 0.65
+		add_child(_breath_visual)
+	_breath_visual.show()
+	_breath_visual.global_position = player.global_position
+	_breath_visual.global_rotation = _breath_direction.angle()
+	if _breath_elapsed < 0.1:
+		_breath_visual.frame = 0
+		_breath_visual.modulate.a = 0.65
+	elif _breath_remaining <= 0.15:
+		_breath_visual.frame = 3
+		_breath_visual.modulate.a = 0.65 * _breath_remaining / 0.15
+	else:
+		_breath_visual.frame = 1 + (int((_breath_elapsed - 0.1) / 0.125) % 2)
+		_breath_visual.modulate.a = 0.65
 
 
 func _apply_burn(enemy: Node2D) -> void:
@@ -365,6 +505,8 @@ func _is_valid_enemy(candidate) -> bool:
 		return false
 	if candidate.is_queued_for_deletion():
 		return false
+	if is_instance_valid(world) and not world.is_ancestor_of(candidate):
+		return false
 	if candidate.has_method("is_dead") and candidate.is_dead():
 		return false
 	return candidate.has_method("take_damage")
@@ -436,10 +578,10 @@ func _reaction_effect_multiplier() -> float:
 	)
 
 
-func _add_reaction_progress() -> void:
+func _add_reaction_progress(amount: float) -> void:
 	var gain_multiplier := maxf(1.0 + run_modifiers.school_resource_gain_pct, 0.0)
 	gain_multiplier *= maxf(1.0 + run_modifiers.ultimate_charge_gain_pct, 0.0)
-	reaction_count = clampf(reaction_count + gain_multiplier, 0.0, REACTION_MAXIMUM)
+	reaction_count = clampf(reaction_count + amount * gain_multiplier, 0.0, REACTION_MAXIMUM)
 	_emit_resource()
 	_emit_ultimate_ready_if_changed()
 

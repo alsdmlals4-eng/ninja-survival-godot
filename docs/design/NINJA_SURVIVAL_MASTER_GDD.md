@@ -1,5 +1,13 @@
 # 닌자의 신 — Master Game Design Document
 
+> **현재 읽기 경로 (2026-09-20):** 아래 2026-08/09 baseline과 SHA는 당시의 기록이다.
+> 이후 재기획과 성장 규칙은 [현재 결정](../CURRENT_CONFIRMED_DECISIONS.md),
+> [상세 규칙 R-CAMP](NINJA_SURVIVAL_DETAILED_RULES.md),
+> [구현 명세 R02–R10](NINJA_SURVIVAL_IMPLEMENTATION_PACKET.md)을 함께 읽는다.
+> 유파 강화는 장비에 유파 고유 효과 부여, 모닥불 확률 강화는 별도 엽전 수치 성장이다.
+> 최신 실행/검증 상태는 [Active Context](../ACTIVE_CONTEXT.md)가 안내한다.
+> 새 저장·성장 API의 구현은 기본 Main의 새 규칙 연결이나 실제 완주 완료를 뜻하지 않는다.
+
 > **문서 상태:** `CURRENT_PRODUCT_GDD / IMPLEMENTATION_CONTRACT_COMPANION`
 > **기준:** fresh-read된 completed `origin/main`은 PR #139 squash merge `3428f916f20f545284c337c7eb41b0eacf268351`이다. 사용자 승인 source head `d65a712d441d3ca854ee8ae2edff468bb4974983`의 선택된 runtime/title/encounter 변경은 이 main에 흡수되었고, 원본 source PR과 branch는 read-only로 보존된다.
 > **생성일:** 2026-08-30 KST

@@ -5,6 +5,7 @@ const MAIN_SCENE := "res://scenes/main/main_scene.tscn"
 
 func test_start_intent_reveals_starting_stage_selection_without_starting_combat() -> void:
 	var main := (load(MAIN_SCENE) as PackedScene).instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 
@@ -33,6 +34,7 @@ func test_start_intent_reveals_starting_stage_selection_without_starting_combat(
 
 func test_title_secondary_buttons_open_only_their_own_panels_before_a_stage_is_selected() -> void:
 	var main := (load(MAIN_SCENE) as PackedScene).instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 

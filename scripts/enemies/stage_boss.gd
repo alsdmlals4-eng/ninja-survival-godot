@@ -10,6 +10,10 @@ const TIER_STATS := {
 var tier: int = 1
 
 
+func book_control_role() -> StringName:
+	return &"boss"
+
+
 func configure_tier(new_tier: int) -> bool:
 	if not TIER_STATS.has(new_tier):
 		return false

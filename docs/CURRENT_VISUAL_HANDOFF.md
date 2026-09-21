@@ -1,5 +1,165 @@
 # CURRENT VISUAL HANDOFF — Ninja Survival / 닌자의 신
 
+## Latest 2026-09-21 runtime connection request
+
+User explicitly requested connecting missing new images and school monsters.
+Main now binds inventory-icons-v1.png (three base equipment icons, four shared
+school book covers, bag offer/pending controls). Six additional weapon pictures
+are not newly produced by this delta; do not claim every catalog entry has unique art.
+Existing Sept11 four enemy sheets supply18 missing role visuals; two dedicated
+Bongma Elite/Boss textures remain. Region229×229, walk2cells, prepare/release
+states are presentation only. Death frames are not wired because death removal
+remains domain-owned; this is not a complete animation pack.
+New standing idle uses chroma source -> image-tool alpha extraction -> Aseprite
+inspection -> exact scene binding. Moving/hit approved PNG sources are unchanged;
+their import mipmaps and player texture filtering improve strong minification.
+Provenance and hashes: visual/candidates/player-idle-20260921/README.md.
+State RUNTIME_REVIEW_REQUESTED_NOT_FINAL_LOCK supersedes QA-injection-only for
+these specified assets, not for every older candidate. Human/final-art gate remains.
+
+## 2026-09-21 readable combat / inventory candidate
+
+`visual/candidates/inventory-icons-20260921/README.md` owns new chroma-source,
+RGBA cutout, prompts, hashes, alpha/Aseprite inspection and source mapping.
+USER_LOCK_PENDING; optional QA-only atlas injection previews real UI consumers.
+Production Main.inventory_icon_atlas remains unassigned; no silent final approval.
+The unchanged approved player now has a2.4s visual-only breathing cycle with fixed
+foot contact, reset on movement/hit/death. This is procedural presentation of the
+existing sprite, not newly approved idle frames or completed walk/dash/death art.
+
+## 2026-09-21 player camera candidate, not runtime-ready
+
+`visual/candidates/player-gameplay-20260921/README.md` owns one revised appearance,
+three background-processing operations, exact prompts/hashes and inspection.
+Existing player art is unchanged. Magenta source and extracted RGBA are retained.
+Initial output ignored the chroma request; source is not perfectly flat and the
+cutout still has faint outlying alpha. Isolated Godot light/dark280/96/64px preview
+was rendered/inspected; small-size detail aliases. State APPEARANCE_REVIEW_ONLY /
+TECHNICAL_REVISION_REQUIRED / USER_LOCK_PENDING, not runtime/motion/approval PASS.
+No Aseprite animation or canonical binding was performed. Correct cleanup and
+small-size readability before production; final appearance LOCK remains separate.
+
+## 2026-09-21 runtime visibility and truthful danger boundaries
+
+Selected spawn reservation uses a small native beige edge chevron, not a damaging
+floor decal. It points to the reserved offscreen location for at least0.8s and is
+cancelled/restarted with that reservation. Actual source render730017 inspected;
+no new raster asset or final-art approval implied. Human crowd readability NOT_RUN.
+
+Fan projectile notices now draw open direction arrows from the actor's same locked
+origin/rays; these are NOT filled instantaneous damage areas. Source render740431
+inspected. Selected WINDUP starts at65% opacity, LOCKED at100%; geometry is fixed
+already at WINDUP, never tracks the player afterwards. Source final phase captures
+743686/warning-windup.png and warning-locked.png inspected; pointer probe PASS.
+Native gameplay drawing, not newly generated/LOCKed artwork. Deliberately paused
+fixtures are not natural fight/human readability approval.
+
+SchoolEncounterActor preserves the2 existing dedicated actor textures. The other18
+catalog paths have no file; they now render previously approved runtime art rather
+than invisible damaging units. Boss fallback: visual-core/cheonsul_stage_boss_v1;
+Elite fallback: encounters/actors/mobile_array_caster; Core deterministic fallback
+pool: flame_ninja_v1/cursed_lantern_v1/shadow_beast_v1. Paths are under assets/runtime.
+`Visual.provisional_existing_art` identifies fallback use. This is temporary reuse,
+not18 newly designed/approved character assets; school/role-specific final art and
+animation remain R08. Do not replace the dedicated source or declare fallback LOCK.
+
+Circle/capsule PatternTelegraph and delayed proxy DangerBoundary render the same
+world geometry used by their damage owner. Existing school PNGs remain low-alpha
+ornaments. This native diagnostic/gameplay boundary is not generated bitmap art.
+Source runtime capture: diagnostics/selected-run-774574 (external project diagnostics
+root C:/Users/user/Tools/NinjaSurvival-Local); explicit paused zone/lane fixtures,
+not naturally played Boss fairness. Actor10/10 focused tests include geometry and
+delayed boundary lifetime. Player/BongmaBoss imported alpha matches source exactly;
+isolated player render is intact. Small-scale dark silhouette/background contrast
+is still a readability risk; no image pixels/import settings were changed.
+
+## 2026-09-14 future cutout asset processing
+
+User requires chroma-key generation followed by background removal for future isolated
+character/object/UI/VFX assets. Pick a uniform key absent from subject colors; green is not
+mandatory when it conflicts with the artwork. Preserve source and processed RGBA, verify
+actual alpha, silhouette, fringe/spill and translucent effects on dark/light backgrounds.
+Record key color, removal method, hashes, dimensions, pivot/state family and consumer.
+Do not regenerate existing assets solely to comply retroactively. Floor/background images
+retain their intentional background. No new art generated by this policy update.
+
+## 2026-09-12 breath candidate
+
+`visual/candidates/breath-20260912/README.md` owns one newly generated 2x2
+blue-white/amber breath state family, original path, exact prompt and SHA256.
+User accepted the displayed appearance. Aseprite mechanically registered four
+700px frames at pivot64,350; PNG+JSON and editable source retained. Bound to
+CheonsulRuntime/BreathVisual through the existing Runtime Visual Core Manifest.
+`reviews/breath-runtime-20260912.png` is an actual GPU-rendered isolated fixture
+with existing player/enemy/floor scenes, not a full Main run or human playtest.
+Old player/enemy imagery remains tiny and low-contrast; overall readability and
+new player production art are NOT_APPROVED by this breath appearance approval.
+
+## Latest ultimate briefs — design only
+
+User requests Cheonsul forward elemental breath and sword-only enhanced Guiin.
+Do not reuse target-centered blast or radial-pulse imagery as their new effects.
+R-ULTIMATE owns dimensions/ticks/lifetime/cancel; presentation follows those events.
+Needed: breath begin/sustain/end/dash-cancel and sword-mode begin/slash/end,
+with player pivot and enemy telegraph visibility. No raster generated or approved
+in this revision. Temporary sword across melee loadouts is direction-approved
+2026-09-12, not approval of a sword image or animation.
+
+## Latest player revision request — 2026-09-11
+
+User supplied the handsome anime ninja reference again. Appearance review source
+and exact prompt/failed cutout attempts are in
+`visual/candidates/player-refinement-20260911/README.md`.
+The earlier Blueprint player is not the accepted answer to this revision.
+New source remains APPEARANCE_REVIEW_ONLY / TECHNICAL_REVISION_REQUIRED: halo,
+camera and motion must be corrected before runtime use. No asset LOCK or binding.
+Additional weapon/ninjutsu imagery remains pending the follow-up design/visual work.
+
+## Active visual cycle — 2026-09-11 Blueprint batch
+
+Latest user explicitly requests new game-use images and atlases inside a complete
+human Blueprint. This supersedes the historical image pause below, not final LOCK.
+Candidate source/provenance/inspection: `visual/candidates/blueprint-20260911/`.
+The human book is `design/NINJA_SURVIVAL_HUMAN_BLUEPRINT.md`; implementation input
+and motion contracts: `design/NINJA_SURVIVAL_IMPLEMENTATION_PACKET.md`.
+All images remain candidates. Existing canonical assets and old PDFs are preserved.
+Alpha channels, cell boundaries, Aseprite frame exports, motion continuity,
+Godot integration and Human approval are reported separately. A visually plausible
+checkerboard background is not transparency. Do not bind a REWORK candidate.
+
+## Active visual cycle — 2026-09-10 restart
+
+Latest user override: **PLANNING_ONLY / IMAGE_PRODUCTION_PAUSED**. Detailed
+rules are now selected in `design/NINJA_SURVIVAL_DETAILED_RULES.md` under delegated
+judgement. Its R-PRESENTATION requirements inform future briefs, not new image
+approval or authorization to generate. Existing candidate/provenance below remains.
+
+All pre-existing images below are reference material for the new production
+cycle under the latest user instruction. Preserve their historical approval,
+source hashes and existing-build consumers. Produce new candidate art after
+the replanned consumer and art direction are defined; do not re-promote old
+images or infer final art direction from their historical LOCK.
+
+Production dependency: player action/role → camera and on-screen size → state
+and transition table → key poses/new raster frames → Aseprite candidate layers,
+durations and PNG+JSON export → frame/pivot/alpha inspection → approved Godot
+integration → actual movement, contact, dash, hit and death capture.
+Frame count, facing directions, event times and pixels per character are
+design outputs, not generic fixed presets. No new runtime asset or animation is ready yet.
+
+Current candidate: `visual/candidates/ab-gameplay-composition-v1.png`, one newly
+generated battle-composition review image. The adjacent Markdown receipt owns
+its exact prompt, source, hash and visual concerns. State is
+`GENERATED_CANDIDATE / USER_APPROVAL_PENDING / NOT_CANON / NOT_RUNTIME`.
+It is embedded in the dated A+B screen-blueprint section. No UI is baked into
+the image; no Godot binding or Aseprite motion export was performed. Candidate
+expansion pauses for user LOCK / REVISE / REJECT. The ultimate-input/HUD planning
+package is independent of this visual approval gate and is now branch-implemented.
+`reviews/manual-ultimate-runtime-20260910.png` is a real 1152×648 input-QA capture
+using the existing runtime art, not the new candidate or a visual approval image.
+It shows the ultimate activation label and an unresolved right-side floor gap.
+Do not use it as evidence of seamless-floor or full-screen visual quality PASS.
+
 > Updated: 2026-09-02 KST
 > Purpose: next-chat resume router for the approved visual direction and current image-production state.
 > Product/runtime authority remains `AGENTS.md` → `docs/CURRENT_CONFIRMED_DECISIONS.md` → `docs/ACTIVE_CONTEXT.md` → actual code/data/tests. This file owns the **current visual continuation state only**.

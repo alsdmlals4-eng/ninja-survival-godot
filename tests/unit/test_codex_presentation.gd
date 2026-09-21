@@ -3,6 +3,31 @@ extends GutTest
 
 const CODEX_PRESENTATION_PATH := "res://scripts/ui/codex_presentation.gd"
 
+func test_selected_codex_separates_twenty_four_books_nine_equipment_and_support() -> void:
+	var presenter = load(CODEX_PRESENTATION_PATH).new()
+	assert_true(presenter.has_method("build_selected_sections"))
+	if not presenter.has_method("build_selected_sections"): return
+	var sections: Array = presenter.build_selected_sections()
+	assert_eq(_section_entries(sections, &"ninjutsu").size(), 24)
+	assert_eq(_section_entries(sections, &"equipment").size(), 9)
+	assert_eq(_section_entries(sections, &"support").size(), 19)
+	assert_eq(_section_entries(sections, &"combinations").size(), 3)
+	var katana := _entry_by_id(_section_entries(sections, &"equipment"), &"katana")
+	assert_true(katana.detail.contains("별도 장비 슬롯"))
+	assert_false(katana.detail.contains("가방 안에 배치"))
+	var book := _entry_by_id(_section_entries(sections, &"ninjutsu"), &"cheonsul_ice_veil")
+	assert_true(book.detail.contains("해금"))
+	assert_true(book.detail.contains("보호막"))
+	assert_false(book.detail.contains("보스 인법서"))
+	var combo := _entry_by_id(_section_entries(sections, &"combinations"), &"thunder_blade")
+	assert_true(combo.detail.contains("근접 비전"))
+	assert_false(combo.detail.contains("일본도"))
+	for entry in _section_entries(sections, &"support"):
+		assert_false(entry.detail.contains("_"), "No internal modifier names: " + entry.title)
+	var emblem := _entry_by_id(_section_entries(sections, &"support"), &"school_emblem")
+	assert_true(emblem.detail.contains("봉마"))
+	assert_false(emblem.detail.contains("조합 재료"))
+
 
 func test_codex_derives_enemy_ninjutsu_and_equipment_sections_from_current_catalogs() -> void:
 	assert_true(ResourceLoader.exists(CODEX_PRESENTATION_PATH), "Codex presentation is required.")

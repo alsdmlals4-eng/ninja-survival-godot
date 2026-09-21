@@ -36,6 +36,35 @@ func test_school_circuit_controller_resource_exists() -> void:
 	assert_true(ResourceLoader.exists(CONTROLLER_PATH), "네 유파 공통 Circuit 조정자가 필요합니다.")
 
 
+func test_unplaced_rewards_survive_departure_retry_and_next_preparation() -> void:
+	var circuit = _new_configured_circuit(&"cheonsul")
+	assert_true(circuit.sync_elapsed(180.0))
+	assert_true(circuit.mark_elite_defeated())
+	assert_true(circuit.recover_trace())
+	assert_true(circuit.sync_elapsed(270.0))
+	assert_true(circuit.mark_boss_defeated())
+	assert_true(circuit.choose_boss_reward(0))
+	assert_true(circuit.open_chest())
+	var held: Array = circuit.workbench_snapshot().buffer
+	assert_gt(held.size(), 0)
+	assert_true(circuit.choose_fate(circuit.workbench_snapshot().fate_candidate_ids[0]))
+	assert_true(circuit.choose_next_route(&"bongma"))
+	assert_true(circuit.commit_workbench())
+	if circuit._workbench_started:
+		return
+	assert_eq(circuit._committed_backpack_state.items.size(), 0)
+	assert_true(circuit.begin_school(&"bongma"))
+	var checkpoint: Dictionary = circuit.get_checkpoint_snapshot()
+	assert_eq(checkpoint.get("carried_buffer", []).size(), held.size())
+	assert_true(circuit.restore_after_retry(checkpoint))
+	assert_true(circuit.sync_elapsed(180.0))
+	assert_true(circuit.mark_elite_defeated())
+	assert_true(circuit.recover_trace())
+	assert_true(circuit.sync_elapsed(270.0))
+	assert_true(circuit.mark_boss_defeated())
+	assert_eq(circuit.workbench_snapshot().buffer, held)
+
+
 func test_each_school_can_begin_first_route_with_its_own_composition() -> void:
 	if not ResourceLoader.exists(CONTROLLER_PATH):
 		return

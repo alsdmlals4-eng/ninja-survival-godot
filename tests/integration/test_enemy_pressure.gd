@@ -10,6 +10,7 @@ func test_normal_horde_floor_is_restored_from_the_annulus_after_a_kill() -> void
 		return
 
 	var main = packed.instantiate()
+	preload("res://tests/helpers/main_storage_isolation.gd").prepare(main)
 	add_child_autofree(main)
 	await get_tree().process_frame
 	(main.get_node("SchoolSelectionUI") as SchoolSelectionUI)._choose(&"bongma")
