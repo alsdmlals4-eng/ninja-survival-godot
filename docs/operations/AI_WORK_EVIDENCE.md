@@ -437,3 +437,14 @@ Human재미/자연속도밸런스/최종그림/1000몹성능/출시 PASS는 아�
 쿨타임 표시 검사에 쓴1.25의 한자리 반올림이 Linux에서1.2, Windows에서1.3으로
 달랐다. 제품 수치/표시를 바꾸지 않고 검사용 값을1.26으로 고쳤다. 보조 인술의
 귀인화 표시 회귀 단언도 추가했다. 이 실패를 같은코드 재시도 성공으로 숨기지 않는다.
+
+후속 검증: 표시집중8/8·79단언·0.801초 통과. 24가지 실제Main 진행순서 모두
+성장 선택→입력 해제→엘리트/흔적/보스→휴식→다음 전장→최종정산까지 통과,
+종료0(growth-route24-20260921.log). 전투 시간과 피해량을 가속한 기계 검사이며
+24회 사람의 자연 플레이가 아니다. bae3201 원격35602413233은 테스트 전 Godot
+다운로드에서 connection reset으로 실패했고 Windows빌드는 성공했다. 최신 HEAD의
+최종 상태는 PR147 exact-head 검사에서 확인하며 실패 이력은 그대로 보존한다.
+플레이어 원본 그림의 축소 표시 보정은 Godot 공식 이미지 import/mipmap과 CanvasItem
+texture_filter 안내를 재확인했다. https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_images.html
+및 https://docs.godotengine.org/en/stable/classes/class_canvasitem.html.
+이번에도 기존 미제출 월간 v0.3 PDF에 같은 날짜로 추가하며 원래9쪽을 보존한다.

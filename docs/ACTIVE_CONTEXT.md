@@ -30,8 +30,19 @@ headless120frames exit0; EXE itself did not execute custom -s QA, so that eviden
 is explicitly full-engine + exported PCK, not EXE pointer acceptance.
 Playable export: build/windows-playtest-20260921-growth/NinjaSurvivalInternal.exe.
 PCK SHA256510C2420AFA6EAC6CA6E3B6DD7524B27F824B1096F5B80E88F796763A4D265AB.
-Updated24-route actual-Main matrix is running; do not mark its unfinished cases PASS.
+Updated24-route actual-Main matrix PASS, exit0: growth-route24-20260921.log.
+All4origins ×6visit orders now resolve pending growth choices through actual
+owners and physics-release gating, then final settlement. Combat time/damage
+are accelerated; this is not24 human/natural playthroughs.
+Implementation9618db8; test-only portability followup bae3201 preserves shipped
+gameplay/export bytes. Latest focused presentation8/8 79assertions PASS.
+CI35601796953 failed one1.25 tie-rounding expectation; fixed fixture1.26 and
+added support/sword suppression checks. CI35602413233 failed before tests at
+Godot download(connection reset); its Windows build passed. Latest exact-head
+remote result is the PR check surface, not either historical failed attempt.
 PR147 remains Draft; exact pushed-head CI is checked separately from local results.
+Existing September v0.3 evidence book is updated in place from the dated owner;
+the original9pages remain, no separate daily PDF or official submission is made.
 
 ## Current requested delta — 2026-09-21 readable combat
 
