@@ -40,6 +40,23 @@ var _vitals: VBoxContainer
 var _health_gauge: ProgressBar
 var _ultimate_gauge: ProgressBar
 var _ultimate_effect := "유파를 선택하면 해당 오의를 사용할 수 있습니다."
+var _skill_cooldowns: Label
+var _experience_gauge: ProgressBar
+
+func set_experience(level: int, current: int, required: int) -> void:
+	_experience_gauge.show()
+	_experience_gauge.max_value = maxi(required, 1)
+	_experience_gauge.value = current
+	_experience_gauge.get_node("Value").text = "Lv.%d · 경험치 %d / %d" % [level, current, required]
+
+func set_skill_cooldowns(rows: Array) -> void:
+	var lines := PackedStringArray()
+	for row in rows:
+		var timing := "%.1f초" % float(row.remaining) if float(row.remaining) > 0.05 else "준비"
+		if row.status == "근접 시 발동" or row.status == "귀인화 중 억제": timing = row.status
+		elif not str(row.status).is_empty(): timing += " · " + str(row.status)
+		lines.append("%s  %s" % [row.name, timing])
+	_skill_cooldowns.text = "\n".join(lines)
 
 func _make_gauge(node_name: String, color: Color) -> ProgressBar:
 	var bar := ProgressBar.new()
@@ -97,6 +114,14 @@ func _ready() -> void:
 	add_child(_vitals)
 	_health_gauge = _make_gauge("HealthGauge", Color(0.65, 0.08, 0.12))
 	_ultimate_gauge = _make_gauge("UltimateGauge", Color(0.42, 0.30, 0.12))
+	_experience_gauge = _make_gauge("ExperienceGauge", Color(0.10, 0.37, 0.62))
+	_experience_gauge.hide()
+	_skill_cooldowns = Label.new()
+	_skill_cooldowns.name = "SkillCooldowns"
+	_skill_cooldowns.add_theme_font_size_override("font_size", 14)
+	_skill_cooldowns.add_theme_color_override("font_outline_color", Color.BLACK)
+	_skill_cooldowns.add_theme_constant_override("outline_size", 4)
+	_vitals.add_child(_skill_cooldowns)
 	set_health(0, 100)
 	set_ultimate_resource("", 0, 100)
 	_vitals.hide()
@@ -217,6 +242,22 @@ func close_settings() -> void:
 	settings_panel.hide()
 	if _combat_hud_visible and settings_button.visible:
 		settings_button.grab_focus()
+
+
+func _input(event: InputEvent) -> void:
+	var settings_shortcut: bool = (event is InputEventJoypadButton and event.button_index == JOY_BUTTON_START and event.pressed) \
+		or (event is InputEventKey and event.keycode == KEY_ESCAPE and event.pressed and not event.echo)
+	if settings_shortcut and _combat_hud_visible and not settings_panel.visible \
+		and not game_over_panel.visible and not get_tree().paused:
+		open_settings()
+		get_viewport().set_input_as_handled()
+		return
+	# Space / pad A also belong to ui_accept. During live combat they belong
+	# to dash, even when a HUD button retained keyboard focus. Input's action
+	# state remains available to PlayerController; only GUI propagation stops.
+	if _combat_hud_visible and not settings_panel.visible and not game_over_panel.visible \
+			and not get_tree().paused and event.is_action(&"dash"):
+		get_viewport().set_input_as_handled()
 
 
 func show_game_over(retry_available: bool = false, ninja_soul_balance: int = 0) -> void:

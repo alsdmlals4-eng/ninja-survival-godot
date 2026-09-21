@@ -16,6 +16,7 @@ var start_ui
 var rest_screen
 var choosing_first_battlefield := false
 var emergency_potions := 0
+var levels
 var _main
 var _profile: Dictionary = {}
 var _bundle: Dictionary = {}
@@ -216,6 +217,12 @@ func adopt(profile: Dictionary) -> bool:
 	_main.rest_flow_ui.hide_all()
 	_main.hud.hide_game_over()
 	_main.ninjutsu_auto_controller.configure(_main.player, _main, _main.combat_resolver, _main.ninjutsu_loadout)
+	if is_instance_valid(levels):
+		remove_child(levels)
+		levels.queue_free()
+	levels = load("res://scripts/core/selected_level_controller.gd").new()
+	add_child(levels)
+	levels.configure(_main, cp)
 	_main.contribution_tracker.reset_segment(_main.combat_ddd.reward_count, _main.run_build_state.gold)
 	var circuit = CIRCUIT.new()
 	if not circuit.configure_selected_encounters(_main.run_build_state, cp.route): circuit.free(); return false
@@ -270,7 +277,7 @@ func enter_rest() -> void:
 			"departure_id": cp.prepare_session_id, "school_id": cp.route.active_school_id,
 			"encounter": _main.school_circuit.encounter_state.get_snapshot(), "gold": _main.run_build_state.gold,
 			"health": _main.player.health, "maximum_health": _main.player.max_health, "emergency_potions": emergency_potions,
-			"ultimate_charge": _rest_charge.duplicate(true)}
+			"ultimate_charge": _rest_charge.duplicate(true), "battle_progress": levels.capture()}
 	var coordinator = COORDINATOR.new()
 	coordinator.configure_selected_profile(store)
 	var result: Dictionary = coordinator.commit_selected_entry(_entry_request)

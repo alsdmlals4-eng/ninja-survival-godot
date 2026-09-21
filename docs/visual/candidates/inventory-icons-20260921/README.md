@@ -1,5 +1,11 @@
 # Inventory atlas candidate · 2026-09-21
 
+Latest follow-up: the user requested actual image connection. The unchanged
+cutout is now assets/runtime/ui/inventory-icons-v1.png and assigned by Main;
+bag offer/pending controls are connected too. Runtime trial is authorized,
+final visual LOCK remains pending. Receipt: ../player-idle-20260921/README.md.
+The creation-time statements below describe the earlier candidate-only checkpoint.
+
 State: CANDIDATE / USER_LOCK_PENDING. One appearance atlas, one background
 extraction. Not eight approved assets, not24 individually painted ninjutsu icons.
 No production scene resource assignment. Explicit QA preview injection only.

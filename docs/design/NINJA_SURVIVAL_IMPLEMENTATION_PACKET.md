@@ -1,5 +1,27 @@
 # 닌자의 신 — 구현 입력 명세
 
+## 최신 증분 — 2026-09-21 전체화면·성장·이미지 연결
+
+실행 순서: 입력/바닥 재현 → 실제 자산 consumer 연결 → 쿨타임/경험치 도메인 →
+모닥불·출전 저장 연결 → 집중/전체 회귀 → 실제 Windows 렌더/입력 → 실행본·증빙.
+보호: 기존 장비 슬롯/흔적/모닥불 거래/체크포인트 재도전/승인 MOVE·HIT 원본.
+RunExperienceState는 성장 수치·직렬화, SelectedLevelController는 선택 UI와
+기존 BackpackState/loadout의 획득 판정을 연결한다. UI가 공간/해금 규칙을 복제하지 않는다.
+optional growth 필드만 기존 v2 profile에 추가하며 없던 이전 저장도 읽는다.
+검기32px 이동·0.14초 소멸과 수리검 방향은 시각 표현이며 피해를 추가 판정하지 않는다.
+재미 가설: 처치→성장 선택이 군중을 해치우는 보상감을 높이고, 실제 쿨타임/효과
+안내가 선택을 이해시키는 데 기여한다. 반례: 잦은 일시정지로 리듬이 끊김,
+항상 신규 획득이 정답, 가방 공간 부족으로 반복 회복만 나옴, 어두운 적 구분 실패.
+자동검사는 처치 중복/자격/공간/저장 보존을, 실제 화면은 입력/표시를 확인한다.
+자연 플레이에서 선택 간격·가방 가치·유파 식별·난이도를 사람이 확인하기 전
+FUN_PASS나 밸런스 완료로 표시하지 않는다. 상세 시험값은 R-REWARD가 owner다.
+대안: 처치 직접 지급 ADAPT(현 구조 재사용), 새 XP 구슬 엔티티 REJECT(중복 owner),
+휴식에서만 성장 REJECT(이번 처치 레벨업 요청 불충족). 공식 기술 참조:
+https://docs.godotengine.org/en/4.4/classes/class_parallax2d.html 및
+https://docs.godotengine.org/en/4.4/tutorials/2d/2d_parallax.html.
+Halls of Torment 개발자 소개의 경험치/특성/장비 연결은 REFERENCE_ONLY:
+https://store.steampowered.com/app/2218750/Halls_of_Torment/ (수치·이미지 복제 없음).
+
 문서 ID: NS-IMPLEMENTATION-PACKET · 2026-09-11 원안 · 승인 범위 연속 구현 중
 
 실행 상태는 최신 사용자 지시와 CURRENT_CONFIRMED_DECISIONS/ACTIVE_CONTEXT를 따른다.

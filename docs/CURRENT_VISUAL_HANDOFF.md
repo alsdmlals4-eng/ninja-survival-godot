@@ -1,5 +1,22 @@
 # CURRENT VISUAL HANDOFF — Ninja Survival / 닌자의 신
 
+## Latest 2026-09-21 runtime connection request
+
+User explicitly requested connecting missing new images and school monsters.
+Main now binds inventory-icons-v1.png (three base equipment icons, four shared
+school book covers, bag offer/pending controls). Six additional weapon pictures
+are not newly produced by this delta; do not claim every catalog entry has unique art.
+Existing Sept11 four enemy sheets supply18 missing role visuals; two dedicated
+Bongma Elite/Boss textures remain. Region229×229, walk2cells, prepare/release
+states are presentation only. Death frames are not wired because death removal
+remains domain-owned; this is not a complete animation pack.
+New standing idle uses chroma source -> image-tool alpha extraction -> Aseprite
+inspection -> exact scene binding. Moving/hit approved PNG sources are unchanged;
+their import mipmaps and player texture filtering improve strong minification.
+Provenance and hashes: visual/candidates/player-idle-20260921/README.md.
+State RUNTIME_REVIEW_REQUESTED_NOT_FINAL_LOCK supersedes QA-injection-only for
+these specified assets, not for every older candidate. Human/final-art gate remains.
+
 ## 2026-09-21 readable combat / inventory candidate
 
 `visual/candidates/inventory-icons-20260921/README.md` owns new chroma-source,

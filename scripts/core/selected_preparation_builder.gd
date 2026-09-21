@@ -14,7 +14,7 @@ const REWARDS = preload("res://scripts/core/rest_reward_controller.gd")
 const MODIFIERS = preload("res://scripts/data/run_modifier_set.gd")
 
 func prepare(request: Dictionary, store) -> Dictionary:
-	if request.size() != 9 + int(request.has("ultimate_charge")): return _fail(&"invalid_entry")
+	if request.size() != 9 + int(request.has("ultimate_charge")) + int(request.has("battle_progress")): return _fail(&"invalid_entry")
 	for field in ["run_id", "departure_id", "school_id"]:
 		if not (request.get(field) is String or request.get(field) is StringName) \
 			or str(request[field]).is_empty() or str(request[field]).length() > 256: return _fail(&"invalid_entry")
@@ -37,7 +37,14 @@ func prepare(request: Dictionary, store) -> Dictionary:
 	if profile.revision != request.expected_revision: return _fail(&"stale_revision")
 	var run = profile.active_run
 	if not (run is Dictionary) or run.run_id != str(request.run_id): return _fail(&"wrong_run")
-	var cp: Dictionary = run.checkpoint
+	var cp: Dictionary = run.checkpoint.duplicate(true)
+	if request.has("battle_progress"):
+		if not load("res://scripts/core/run_experience_state.gd").valid_battle_progress(cp, request.battle_progress):
+			return _fail(&"invalid_battle_progress")
+		var normalized: Dictionary = JSON.parse_string(JSON.stringify(request.battle_progress))
+		cp.growth = normalized.growth
+		cp.backpack = normalized.backpack
+		cp.loadout = normalized.loadout
 	var charge = request.get("ultimate_charge", cp.ultimate_charge)
 	if not load("res://scripts/core/run_resume_codec.gd").valid_selected_charge(charge, str(run.starting_school)):
 		return _fail(&"invalid_ultimate_charge")
@@ -88,6 +95,7 @@ func prepare(request: Dictionary, store) -> Dictionary:
 		"vitals": {"health": mini(int(request.health) + healing, int(request.maximum_health)),
 			"max_health": int(request.maximum_health), "emergency_potions": int(request.emergency_potions)}}
 	fate.free()
+	if cp.has("growth"): prep.growth = cp.growth.duplicate(true)
 	rewards.free()
 	build.free()
 	var candidate: Dictionary = profile.duplicate(true)

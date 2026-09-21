@@ -3,6 +3,20 @@ extends GutTest
 const MAIN = preload("res://scenes/main/main_scene.tscn")
 const ISOLATION = preload("res://tests/helpers/main_storage_isolation.gd")
 
+func after_each() -> void:
+	get_tree().paused = false
+
+func _resolve_growth(main) -> void:
+	var levels = main.selected_run.levels
+	while levels.growth.pending_choices() > 0:
+		levels.poll()
+		if levels.options.is_empty(): break
+		var upgrades: Array = levels.options.filter(func(option): return option.kind == "upgrade")
+		assert_true(levels.choose(upgrades[0] if not upgrades.is_empty() else levels.options[-1]))
+		for unused in range(4):
+			await get_tree().physics_frame
+			await get_tree().process_frame
+
 func test_selected_boss_enters_physics_at_destination_without_moving_idle_player() -> void:
 	var main = MAIN.instantiate()
 	ISOLATION.prepare(main)
@@ -245,6 +259,7 @@ func test_four_battlefields_rest_choices_and_final_boss_use_selected_profile() -
 	await get_tree().process_frame
 	var schools := [&"bongma", &"cheonsul", &"guiin", &"heukyeong"]
 	for index in range(4):
+		await _resolve_growth(main)
 		assert_true(main._combat_enabled)
 		assert_eq(main.school_circuit.route_state.active_school_id(), schools[index])
 		main.school_circuit.sync_elapsed(180.0)
@@ -296,6 +311,7 @@ func test_four_battlefields_rest_choices_and_final_boss_use_selected_profile() -
 			await get_tree().process_frame
 			await get_tree().process_frame
 			assert_true(main._combat_enabled)
+	await _resolve_growth(main)
 	assert_true(main._final_battle_started)
 	assert_eq(main.school_circuit.route_state.clear_order(), schools)
 	var final = _enemy(main, &"final_boss")

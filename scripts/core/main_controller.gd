@@ -515,6 +515,11 @@ func _process(delta: float) -> void:
 	if game_over or delta <= 0.0 or get_tree().paused:
 		return
 	if not _combat_enabled: return
+	if selected_rules_enabled and selected_run != null and is_instance_valid(selected_run.levels):
+		selected_run.levels.poll()
+		if get_tree().paused: return
+	if ninjutsu_auto_controller != null:
+		hud.set_skill_cooldowns(ninjutsu_auto_controller.cooldown_snapshot())
 	if _combat_enabled:
 		_run_play_elapsed_seconds += delta
 		hud.set_play_time(_run_play_elapsed_seconds)
@@ -854,6 +859,8 @@ func _on_enemy_died(enemy: Node) -> void:
 	school_host.forward_enemy_died(enemy)
 	if is_test_encounter:
 		return
+	if selected_rules_enabled and selected_run.is_active() and is_instance_valid(selected_run.levels) and circuit_role != &"final_boss":
+		selected_run.levels.grant_kill(circuit_role)
 	if not is_boss and circuit_role != SCHOOL_CIRCUIT_ELITE_ROLE:
 		if school_circuit != null:
 			school_circuit.record_normal_enemy_defeated()

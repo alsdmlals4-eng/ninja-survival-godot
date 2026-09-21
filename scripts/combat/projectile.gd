@@ -44,6 +44,8 @@ func configure(
 	new_combat_resolver: CombatResolver = null
 ) -> void:
 	direction = new_direction.normalized() if not new_direction.is_zero_approx() else Vector2.ZERO
+	if not direction.is_zero_approx():
+		rotation = direction.angle()
 	speed = new_speed
 	damage = new_damage
 	combat_resolver = new_combat_resolver

@@ -1,5 +1,38 @@
 # ACTIVE_CONTEXT
 
+## Current follow-up — fullscreen / motion / images / XP (2026-09-21)
+
+Latest user explicitly adds kill XP and level acquire/upgrade; the earlier no-XP
+pending question below is historical, not the current execution boundary.
+Implementation stays on PR147 branch codex/replanning-art-motion-20260910.
+Changed consumers: HUD dash GUI propagation + Escape/padStart settings access;
+viewport-aware Parallax2D floor/props; directed moving/fading katana and shuriken;
+18 atlas enemy roles with original Bongma dedicated Elite/Boss retained;
+standing idle image + procedural breathing; Main inventory atlas; active spell
+cooldowns; RunExperienceState/SelectedLevelController and optional growth save.
+Current test/readback evidence is appended in AI_WORK_EVIDENCE's existing Sept21
+entry. Do not infer full regression from the earlier979 result below.
+Runtime trial asset source/hash/approval limits are in
+visual/candidates/player-idle-20260921/README.md. No final art LOCK, human fun,
+natural full-run balance or 1000-mob performance acceptance is inferred.
+No plugin/global setting/engine install changes; unrelated untracked imports
+and other worktrees protected. New exact-head export replaces the prior readable
+build only after verification; existing running builds are not terminated.
+
+Latest local full GUT994/994,126scripts,16,829assertions,369.432s exit0;
+Python21/21 17.887s. Escape-fixture unfreed-child2 warning remains, not hidden.
+XP actual kill/acquire/camp save/reopen/departure/reload and malformed receipt
+focused4/4 29assertions PASS. Bounded reviewer found pad settings access and
+sword-mode support-status errors; both corrected and read back, no new full-loop.
+1920×1080 source render826356 and exported-PCK render843892 PASS using actual
+Space/pointer events, idle/floor/20-role fixtures/level choice. Standalone EXE
+headless120frames exit0; EXE itself did not execute custom -s QA, so that evidence
+is explicitly full-engine + exported PCK, not EXE pointer acceptance.
+Playable export: build/windows-playtest-20260921-growth/NinjaSurvivalInternal.exe.
+PCK SHA256510C2420AFA6EAC6CA6E3B6DD7524B27F824B1096F5B80E88F796763A4D265AB.
+Updated24-route actual-Main matrix is running; do not mark its unfinished cases PASS.
+PR147 remains Draft; exact pushed-head CI is checked separately from local results.
+
 ## Current requested delta — 2026-09-21 readable combat
 
 User requests idle motion, draft effect descriptions, ultimate/dash hover help,

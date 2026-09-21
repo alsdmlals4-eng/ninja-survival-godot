@@ -1,5 +1,11 @@
 # Blueprint candidate production receipt — 2026-09-11
 
+2026-09-21 follow-up: only the four school enemy atlases were copied unchanged
+to runtime under the user's explicit monster/image connection request. Eighteen
+roles use them while two dedicated Bongma visuals remain. Creation-time manifest
+and prompts are preserved; current runtime trial receipt, SHA256 and consumers:
+../player-idle-20260921/README.md. Other candidate families are not promoted.
+
 Scope: new planning/approval candidates only. `.gdignore` prevents accidental
 Godot import/export before asset LOCK. No existing game asset was replaced.
 

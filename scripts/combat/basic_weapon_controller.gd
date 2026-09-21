@@ -454,12 +454,15 @@ func _spawn_katana_effect(source: Node2D, target: Node2D) -> void:
 	effect.region_enabled = true
 	var texture_size := weapon_effect_texture.get_size()
 	effect.region_rect = Rect2(Vector2.ZERO, Vector2(texture_size.x * 0.5, texture_size.y))
-	effect.global_position = source.global_position + (target.global_position - source.global_position).normalized() * 36.0
-	effect.rotation = (target.global_position - source.global_position).angle()
+	var aim := (target.global_position - source.global_position).normalized()
+	if aim.is_zero_approx(): aim = Vector2.RIGHT
+	effect.rotation = aim.angle()
 	effect.scale = katana_effect_scale
 	effect.z_index = 2
 	world.add_child(effect)
-	_active_katana_effects.append({"node": effect, "remaining": maxf(katana_effect_lifetime, 0.01)})
+	effect.global_position = source.global_position + aim * 36.0
+	_active_katana_effects.append({"node": effect, "remaining": maxf(katana_effect_lifetime, 0.01),
+		"duration": maxf(katana_effect_lifetime, 0.01), "origin": effect.global_position, "aim": aim})
 
 
 func _advance_katana_effects(delta: float) -> void:
@@ -470,6 +473,9 @@ func _advance_katana_effects(delta: float) -> void:
 		var effect := effect_state.get("node") as Node
 		var remaining := float(effect_state.get("remaining", 0.0)) - delta
 		if remaining > 0.0 and is_instance_valid(effect):
+			var progress := clampf(1.0 - remaining / float(effect_state.duration), 0.0, 1.0)
+			effect.global_position = effect_state.origin + effect_state.aim * 32.0 * progress
+			effect.modulate.a = 1.0 - progress
 			effect_state["remaining"] = remaining
 			_active_katana_effects[index] = effect_state
 			continue

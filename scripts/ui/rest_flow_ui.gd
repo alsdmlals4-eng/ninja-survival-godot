@@ -514,6 +514,10 @@ func _render_workbench_bag_offer(workbench_context: Dictionary) -> void:
 	var display_name := str(bag_offer.get("display_name", "가방 없음"))
 	var price := maxi(int(bag_offer.get("price", 0)), 0)
 	workbench_bag_offer_button.text = "가방 구매: %s · %dG" % [display_name, price]
+	workbench_bag_offer_button.icon = INVENTORY_ICONS.icon(inventory_atlas, &"bag")
+	workbench_bag_offer_button.add_theme_constant_override("icon_max_width", 36)
+	workbench_pending_bag_button.icon = INVENTORY_ICONS.icon(inventory_atlas, &"bag")
+	workbench_pending_bag_button.add_theme_constant_override("icon_max_width", 36)
 	workbench_bag_offer_button.tooltip_text = "가방을 작업대 대기 상태로 받고, 6×6 보드의 시작 칸을 선택해 배치합니다."
 	var gold := maxi(int(workbench_context.get("gold", 0)), 0)
 	workbench_bag_offer_button.disabled = bag_offer.is_empty() or not _workbench_pending_bag.is_empty() or not _pending_combination.is_empty() or gold < price

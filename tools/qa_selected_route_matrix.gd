@@ -56,6 +56,7 @@ func _route(origin: int, order: Array) -> bool:
 	await process_frame
 	await process_frame
 	for index in range(4):
+		await _resolve_growth()
 		if not main._combat_enabled or main.school_circuit.route_state.active_school_id() != order[index]: return _fail("school start")
 		if main.school_host.selected_school_id != SCHOOLS[origin]: return _fail("origin changed")
 		main.school_circuit.sync_elapsed(180.0)
@@ -87,6 +88,7 @@ func _route(origin: int, order: Array) -> bool:
 		main.rest_flow_ui.workbench_commit_button.pressed.emit()
 		await process_frame
 		await process_frame
+	await _resolve_growth()
 	if not main._final_battle_started or main.school_circuit.route_state.clear_order() != order: return _fail("final route")
 	var final = _actor(&"final_boss")
 	if final == null: return _fail("final spawn")
@@ -102,6 +104,17 @@ func _actor(role: StringName):
 	for child in main.get_children():
 		if child.get_meta(&"school_circuit_role", &"") == role and not child.is_queued_for_deletion(): return child
 	return null
+
+func _resolve_growth() -> void:
+	var levels = main.selected_run.levels
+	while levels.growth.pending_choices() > 0:
+		levels.poll()
+		if levels.options.is_empty(): break
+		var upgrades: Array = levels.options.filter(func(option): return option.kind == "upgrade")
+		if not levels.choose(upgrades[0] if not upgrades.is_empty() else levels.options[-1]): _fail("growth choice"); return
+		for unused in range(4):
+			await physics_frame
+			await process_frame
 
 func _fail(reason: String) -> bool:
 	push_error("SELECTED_ROUTE_MATRIX_FAIL case=%d %s" % [completed + 1, reason])

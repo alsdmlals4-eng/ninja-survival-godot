@@ -575,6 +575,10 @@ func _apply_visual_asset() -> void:
 	var visual := get_node_or_null("Visual") as Sprite2D
 	var path: String = definition.visual_asset_path
 	var uses_fallback := not ResourceLoader.exists(path)
+	if uses_fallback and visual != null:
+		var motion = load("res://scripts/enemies/school_actor_motion.gd")
+		visual.set_script(motion)
+		if visual.configure_actor(definition): return
 	if uses_fallback:
 		match definition.role:
 			&"boss": path = FALLBACK_BOSS_ART
@@ -584,6 +588,10 @@ func _apply_visual_asset() -> void:
 				path = FALLBACK_CORE_ART[posmod(String(definition.actor_id).hash(), FALLBACK_CORE_ART.size())]
 	var texture = load(path) as Texture2D
 	if visual != null and texture != null:
+		visual.set_script(null)
+		visual.region_enabled = false
+		visual.position = Vector2.ZERO
+		visual.flip_h = false
 		visual.texture = texture
 		visual.scale = Vector2.ONE * _actor_visual_scale()
 		visual.set_meta(&"provisional_existing_art", uses_fallback)

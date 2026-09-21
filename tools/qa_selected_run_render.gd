@@ -10,6 +10,8 @@ func _initialize() -> void:
 
 func _run() -> void:
 	root.size = Vector2i(1152, 760)
+	if "--fullscreen" in OS.get_cmdline_user_args():
+		root.mode = Window.MODE_FULLSCREEN
 	output = "C:/Users/user/Tools/NinjaSurvival-Local/diagnostics/selected-run-" + str(Time.get_ticks_usec())
 	DirAccess.make_dir_recursive_absolute(output)
 	main = load("res://scenes/main/main_scene.tscn").instantiate()
@@ -23,7 +25,7 @@ func _run() -> void:
 			_fail("inventory preview source missing or empty")
 			return
 		main.inventory_icon_atlas = ImageTexture.create_from_image(candidate)
-		print("CANDIDATE_PREVIEW_ONLY inventory atlas; production scene assignment remains null pending LOCK")
+		print("CANDIDATE_PREVIEW_OVERRIDE inventory atlas; production binding is a runtime trial, not final art LOCK")
 	root.add_child(main)
 	await process_frame
 	await _click(main.title_screen.settings_button)
@@ -50,6 +52,9 @@ func _run() -> void:
 	await create_timer(2.0).timeout
 	if not main._combat_enabled: _fail("battlefield input"); return
 	await _capture("battle")
+	if "--combat-regression" in OS.get_cmdline_user_args():
+		await _combat_regression()
+		return
 	await _capture_idle_fixture()
 	await _capture_large_boss_bar_fixture()
 	await _hover(main.hud.dash_label, "dash-tooltip")
@@ -197,6 +202,64 @@ func _capture_idle_fixture() -> void:
 	if main.player.global_position != before: _fail("idle moved body")
 	main.player.velocity = saved_velocity
 	paused = false
+
+func _combat_regression() -> void:
+	if "--fullscreen" in OS.get_cmdline_user_args():
+		root.mode = Window.MODE_FULLSCREEN
+		await create_timer(0.3).timeout
+	main.wave_spawner.set_process(false)
+	main.player.health = main.player.max_health
+	main.hud.settings_button.grab_focus()
+	var before: Vector2 = main.player.position
+	for pressed in [true, false]:
+		var event := InputEventKey.new()
+		event.keycode = KEY_SPACE
+		event.physical_keycode = KEY_SPACE
+		event.pressed = pressed
+		Input.parse_input_event(event)
+		await physics_frame
+		await process_frame
+	await create_timer(0.25).timeout
+	if paused or main.hud.settings_panel.visible or main.player.position == before:
+		_fail("fullscreen Space must dash, not pause")
+		return
+	await _capture("fullscreen-dash")
+	main.player.position += Vector2(6000, -4200)
+	await process_frame
+	await process_frame
+	await _capture("floor-far-scroll")
+	await _capture_idle_fixture()
+	paused = true
+	var definitions: Dictionary = EncounterCatalog.build_actor_definitions()
+	var staged: Array = []
+	var schools := [&"bongma", &"cheonsul", &"guiin", &"heukyeong"]
+	for school_index in range(4):
+		var row := 0
+		for definition in definitions.values():
+			if definition.school_id != schools[school_index]: continue
+			var actor = load("res://scenes/enemies/school_encounter_actor.tscn").instantiate()
+			main.add_child(actor)
+			actor.configure_definition(definition)
+			actor.position = main.player.position + Vector2((school_index - 1.5) * 220, (row - 2) * 135)
+			staged.append(actor)
+			row += 1
+	await _capture("four-school-roster")
+	for actor in staged: actor.queue_free()
+	await process_frame
+	paused = false
+	main.selected_run.levels.growth.grant(12)
+	main.selected_run.levels.poll()
+	await process_frame
+	await _capture("level-choices")
+	var levels = main.selected_run.levels
+	await _click(levels._choice_buttons[0])
+	await create_timer(0.2, true).timeout
+	if paused or levels.growth.pending_choices() > 0: _fail("level choice input"); return
+	await _capture("level-result")
+	print("COMBAT_REGRESSION_RENDER_PASS ", output, " fullscreen=", root.mode, " viewport=", root.size)
+	main.queue_free()
+	await process_frame
+	quit(0)
 
 func _capture_large_boss_bar_fixture() -> void:
 	paused = true

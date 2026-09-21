@@ -59,7 +59,7 @@ func test_main_scene_repeats_the_locked_battlefield_floor_behind_gameplay() -> v
 		return
 
 	assert_eq(backdrop.repeat_size, BATTLEFIELD_FLOOR_TILE_SIZE)
-	assert_eq(backdrop.repeat_times, 1)
+	assert_gte(backdrop.repeat_times, 3, "Responsive repeat coverage includes scrolling margins.")
 	assert_eq(backdrop.scroll_scale, Vector2.ONE)
 	var floor_tile := backdrop.get_node_or_null("FloorTile") as Sprite2D
 	assert_not_null(floor_tile, "The repeating backdrop must own the locked floor tile")
@@ -88,7 +88,7 @@ func test_main_scene_repeats_locked_sparse_props_between_floor_and_gameplay() ->
 		return
 
 	assert_eq(props.repeat_size, BATTLEFIELD_FLOOR_TILE_SIZE)
-	assert_eq(props.repeat_times, 1)
+	assert_gte(props.repeat_times, 3, "Props follow the same responsive coverage.")
 	assert_eq(props.scroll_scale, Vector2.ONE)
 	assert_gt(props.z_index, floor.z_index, "Props must render above the floor")
 	assert_lt(props.z_index, player.z_index, "Props must stay behind gameplay units")

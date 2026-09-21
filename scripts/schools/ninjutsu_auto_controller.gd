@@ -65,6 +65,36 @@ func _process(delta: float) -> void:
 	tick_auto_cast(delta)
 
 
+func cooldown_snapshot() -> Array:
+	var rows: Array = []
+	if not is_instance_valid(_loadout): return rows
+	for raw_id in _loadout.active_spell_ids():
+		var id := StringName(raw_id)
+		var definition = _definitions.get(id)
+		if definition == null: continue
+		var config: Dictionary = definition.effect_config
+		var interval := float(config.get("cooldown", CAST_INTERVAL))
+		var status := ""
+		if config.get("kind") == "proximity_guard": status = "근접 시 발동"
+		elif _combat_resolver != null and _combat_resolver.sword_only_mode and not SUPPORT_BOOKS.has(id): status = "귀인화 중 억제"
+		elif config.get("kind") in ["dash_token", "dash_ward", "dash_speed", "dash_guard"]: status = "대시 연계"
+		rows.append({"id": id, "name": definition.display_name, "maximum": interval,
+			"remaining": maxf(float(_remaining_by_spell.get(id, interval)), 0.0), "status": status})
+	return rows
+
+
+func apply_growth(snapshot: Dictionary) -> bool:
+	var growth = load("res://scripts/core/run_experience_state.gd").new()
+	if not growth.restore(snapshot): return false
+	_definitions = NINJUTSU_CATALOG_SCRIPT.build_definitions()
+	for id in _definitions:
+		_definitions[id].effect_config = growth.scaled_config(id, _definitions[id].effect_config)
+	if is_instance_valid(_selected_familiar):
+		var config: Dictionary = _definitions[&"bongma_hundred_demon_familiar"].effect_config
+		_selected_familiar.configure(_player, float(config.cooldown), int(config.damage), _combat_resolver)
+	return true
+
+
 func _remove_support(id: StringName) -> void:
 	if id == &"cheonsul_thunder_step":
 		_thunder_remaining = 0.0

@@ -113,8 +113,9 @@ func _decode_selected_preparation(raw, checkpoint: Dictionary) -> Dictionary:
 	var invalid := {"ok": false, "reason": &"invalid_preparation"}
 	if not (raw is Dictionary) or not _to_json_primitive(raw).ok:
 		return invalid
-	if raw.size() != 12 + int(raw.has("fate_state")) + int(raw.has("vitals")) + int(raw.has("ultimate_charge")):
+	if raw.size() != 12 + int(raw.has("fate_state")) + int(raw.has("vitals")) + int(raw.has("ultimate_charge")) + int(raw.has("growth")):
 		return invalid
+	if raw.has("growth") and not load("res://scripts/core/run_experience_state.gd").new().restore(raw.growth): return invalid
 	if raw.has("vitals") and not _valid_vitals(raw.vitals): return invalid
 	if raw.has("ultimate_charge") and not valid_selected_charge(raw.ultimate_charge, str(checkpoint.loadout.origin_school_id)): return invalid
 	if not _profile_unique_ids([raw.get("prepare_session_id")]) or raw.prepare_session_id == checkpoint.prepare_session_id:
@@ -224,8 +225,9 @@ const SELECTED_COORDINATOR = preload("res://scripts/core/rest_commit_coordinator
 # Profile preparation and retry eligibility are validated separately by their owners.
 func decode_selected_checkpoint(raw: Dictionary) -> Dictionary:
 	var invalid := {"ok": false, "reason": &"invalid_selected_checkpoint"}
-	if raw.size() != 10 + int(raw.has("vitals")) or raw.get("rules_version") != PROFILE_CONTRACT:
+	if raw.size() != 10 + int(raw.has("vitals")) + int(raw.has("growth")) or raw.get("rules_version") != PROFILE_CONTRACT:
 		return invalid
+	if raw.has("growth") and not load("res://scripts/core/run_experience_state.gd").new().restore(raw.growth): return invalid
 	if raw.has("vitals") and not _valid_vitals(raw.vitals): return invalid
 	if not _profile_unique_ids([raw.get("prepare_session_id")]):
 		return invalid
